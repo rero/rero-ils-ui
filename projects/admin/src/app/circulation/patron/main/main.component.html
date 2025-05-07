@@ -24,20 +24,18 @@
   <p-tabs [value]="activeTab">
     <p-tablist>
       @for(item of items; track item.id) {
-        <p-tab [value]="item.id">
-          <a pRipple class="ui:flex ui:gap-2" [routerLink]="item.routerLink">
-            <span>{{ item.label | translate }}</span>
-            @if (item.tag?.statistics && item.tag?.statistics()[item.id] && item.tag?.statistics()[item.id] > 0) {
-              @if (item.tag.withCurrency) {
-                <p-badge
-                  [severity]="item.tag.severity || 'info'"
-                  [value]="item.tag.statistics()[item.id] | currency: organisation.default_currency"
-                />
-              } @else {
-                <p-badge [severity]="item.tag.severity || 'info'" [value]="item.tag.statistics()[item.id]" />
-              }
+        <p-tab [value]="item.id" [routerLink]="item.routerLink">
+          <span>{{ item.label | translate }}</span>
+          @if (item.tag?.statistics && item.tag?.statistics()[item.id] && item.tag?.statistics()[item.id] > 0) {
+            @if (item.tag.withCurrency) {
+              <p-badge
+                [severity]="item.tag.severity || 'info'"
+                [value]="item.tag.statistics()[item.id] | currency: organisation.default_currency"
+              />
+            } @else {
+              <p-badge [severity]="item.tag.severity || 'info'" [value]="item.tag.statistics()[item.id]" />
             }
-          </a>
+          }
         </p-tab>
       }
     </p-tablist>
