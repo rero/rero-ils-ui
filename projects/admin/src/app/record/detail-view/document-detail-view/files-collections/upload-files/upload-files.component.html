@@ -90,7 +90,7 @@
 
   @if(filteredFiles.length > 0) {
   <ul class="ui:list-none ui:border ui:border-surface ui:rounded-border ui:p-2">
-    @for (file of filteredFiles;track file.label) {
+    @for (file of filteredFiles;track file.file_id) {
     <li class="ui:odd:bg-surface-50">
       <div class="ui:grid ui:grid-cols-12 ui:gap-4 ui:items-center">
         <div class="ui:col-span-6">

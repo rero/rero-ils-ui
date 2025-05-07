@@ -31,7 +31,7 @@ import { ResultItem } from '@rero/ng-core';
       </h5>
         @if (record.metadata.teachers) {
           <div id="collection-teacher">
-            @for (teacher of record.metadata.teachers; track teacher; let last = $last) {
+            @for (teacher of record.metadata.teachers; track $index; let last = $last) {
               {{ teacher.name }} {{ last ? '' : ', ' }}
             }
           </div>

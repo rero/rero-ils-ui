@@ -19,7 +19,7 @@
     <formly-form [form]="form" [fields]="formFields" [model]="model" />
 
     <p-scrollPanel class="ui:m-6 ui:w-full ui:max-h-[500px]">
-    @for (transaction of transactions; track transaction) {
+    @for (transaction of transactions; track transaction.pid) {
       <p-panel styleClass="ui:mb-2" [header]="transaction.type|translate">
         <div class="ui:ml-4 ui:mb-2">
           @if (transaction.note) {

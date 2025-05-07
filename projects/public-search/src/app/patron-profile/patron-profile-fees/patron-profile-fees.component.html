@@ -30,7 +30,7 @@
 
     @defer (when loaded) {
       @if (paginator.getRecordsCount() > 0) {
-        @for (record of records; track record) {
+        @for (record of records; track $index) {
           <div class="ui:odd:bg-surface-50 ui:my-1">
             <public-search-patron-profile-fee [record]="record" id="fee-{{ record.metadata.pid }}" />
           </div>

@@ -88,7 +88,7 @@
           }
         }
         @if (event.steps) {
-          @for (step of event.steps; track step; let first = $first) {
+          @for (step of event.steps; track $index; let first = $first) {
             <div class="ui:grid ui:grid-cols-12 ui:gap-4 ui:mb-1">
               <div class="ui:col-span-4">
                 @if (first) {

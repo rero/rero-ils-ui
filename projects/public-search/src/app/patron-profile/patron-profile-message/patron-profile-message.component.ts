@@ -23,7 +23,7 @@ import { PatronProfileMenuService } from '../patron-profile-menu.service';
 @Component({
     selector: 'public-search-patron-profile-message',
     template: `
-    @for (message of messages; track message) {
+    @for (message of messages; track $index) {
       <p-message
         styleClass="ui:mb-2"
         [text]="message.text"

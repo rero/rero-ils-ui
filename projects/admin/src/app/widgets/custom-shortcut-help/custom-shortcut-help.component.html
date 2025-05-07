@@ -15,7 +15,7 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-@for (hotkeyGroup of hotkeys; track hotkeyGroup) {
+@for (hotkeyGroup of hotkeys; track $index) {
 <table class="hotkeys-table-help" cellspacing="0" width="100%">
   @if (hotkeyGroup.group) {
   <thead>
@@ -27,7 +27,7 @@
   </thead>
   }
   <tbody>
-    @for (hotkey of hotkeyGroup.hotkeys; track hotkey) {
+    @for (hotkey of hotkeyGroup.hotkeys; track $index) {
     <tr class="hotkeys-table-help-shortcut">
       <td class="hotkeys-table-help-shortcut-description" width="75%">
         {{ hotkey.description }}

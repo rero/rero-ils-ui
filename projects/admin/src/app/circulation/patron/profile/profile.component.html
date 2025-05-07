@@ -133,7 +133,7 @@
         </span>
       </dt>
       <dd>
-        @for (role of $any(patron).roles; track role; let last=$last) {
+        @for (role of $any(patron).roles; track $index; let last=$last) {
           {{ role | translate }}{{ last ? '' : ', ' }}
         }
       </dd>
@@ -155,7 +155,7 @@
         <dt translate>Affiliation libraries</dt>
         <dd>
           <ul class="ui:list-none">
-            @for (library of $any(patron).libraries; track library) {
+            @for (library of $any(patron).libraries; track $index) {
               <li>{{ library.pid | getRecord: 'libraries' : 'field' : 'name' | async }}</li>
             }
           </ul>

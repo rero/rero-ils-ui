@@ -41,7 +41,7 @@
 
       <!-- TITLE ALTERNATIVE GRAPHICS -->
       @if (record.metadata.ui_title_altgr) {
-        @for (altgr_title of record.metadata.ui_title_altgr; track altgr_title; let i = $index) {
+        @for (altgr_title of record.metadata.ui_title_altgr; track $index; let i = $index) {
           <h3 id="{{ 'doc-altgr-title-' + i }}">{{ altgr_title }}</h3>
         }
       }
@@ -59,9 +59,9 @@
         | callbackArrayFilter
           : filterPublicationProvisionActivity;
       @if (provisionActivity) {
-        @for (provision of provisionActivity; track provision) {
+        @for (provision of provisionActivity; track $index) {
           <ul class="ui:list-none">
-            @for (value of $any(provision).value; track value) {
+            @for (value of $any(provision).value; track $index) {
               <li>{{ value }}</li>
             }
           </ul>
@@ -86,7 +86,7 @@
       @if (record.metadata.editionStatement) {
       <div id="doc-edition-statement">
         <ul class="ui:list-none">
-          @for (edition of record.metadata.editionStatement; track edition) {
+          @for (edition of record.metadata.editionStatement; track $index) {
             <li>{{ edition._text[0].value }}</li>
           }
         </ul>
@@ -97,7 +97,7 @@
       @if (record.metadata.frequency) {
         <div id="doc-frequency">
           <b>{{ "Frequency" | translate }}</b>:
-          @for (freq of record.metadata.frequency; track freq; let isLast =
+          @for (freq of record.metadata.frequency; track $index; let isLast =
           $last) {
             {{ freq.label }}
             @if (freq.date) {
@@ -163,7 +163,7 @@
       <!-- ELECTRONIC LOCATOR: RELATED RESOURCE -->
       @if (relatedResources.length > 0) {
         <ul class="ui:list-none">
-          @for (eloc of relatedResources; track eloc) {
+          @for (eloc of relatedResources; track $index) {
           <li>
             <admin-related-resource [electronicLocator]="eloc" />
           </li>
@@ -173,8 +173,8 @@
 
       <!-- SUMMARY -->
       @if (record.metadata.summary) {
-        @for (sum of record.metadata.summary; track sum) {
-          @for (data of sum.label; track data) {
+        @for (sum of record.metadata.summary; track $index) {
+          @for (data of sum.label; track $index) {
             <ng-core-text-read-more
               [text]="data.value"
               [unit]="'character'"
@@ -189,7 +189,7 @@
       <!-- SUBJECTS -->
       @if (record.metadata.subjects; as subjects) {
         <div class="ui:flex ui:gap-1 ui:flex-wrap">
-          @for (subject of subjects; track subject) {
+          @for (subject of subjects; track $index) {
           <p-tag
             severity="secondary"
             [title]="subject.entity.type | translate"
@@ -207,7 +207,7 @@
       <!-- GENRE, FORM -->
       @if (record.metadata.genreForm) {
         <div class="ui:flex ui:gap-1 ui:flex-wrap">
-          @for (genre of record.metadata.genreForm; track genre) {
+          @for (genre of record.metadata.genreForm; track $index) {
             <span>
               <i class="fa fa-tag"></i>
               <shared-entity-link resourceName="genreForm" [entity]="genre.entity" />

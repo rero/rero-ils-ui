@@ -103,7 +103,7 @@
               <dt class="ui:col-span-3" translate>Restrict pickup to</dt>
               <dd class="ui:col-span-7 ui:mb-0">
                 <ul class="ui:list-none">
-                  @for (location of data.restrict_pickup_to; track location) {
+                  @for (location of data.restrict_pickup_to; track $index) {
                     <li>
                       {{ location.pid | getRecord: 'locations' : 'field' : 'pickup_name' | async  }}
                     </li>

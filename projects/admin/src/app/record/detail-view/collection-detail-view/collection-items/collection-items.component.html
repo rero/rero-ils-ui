@@ -17,7 +17,7 @@
 @if (items) {
   <h4 translate>Items</h4>
   <ul class="ui:list-none">
-    @for (item of items; track item) {
+    @for (item of items; track item.pid) {
       @let itemData = item.pid | getRecord: 'items' | async;
       @if (itemData) {
         <li class="ui:p-2 ui:odd:bg-surface-50">

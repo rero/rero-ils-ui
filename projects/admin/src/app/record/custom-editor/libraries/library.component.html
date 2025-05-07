@@ -150,7 +150,7 @@
             <span translate>Opening Hours</span>
           </div>
           <div class="ui:flex ui:gap-1">
-            @for (day of openingHours.controls; track day) {
+            @for (day of openingHours.controls; track $index) {
             <i
               class="fa"
               [ngClass]="{
@@ -163,7 +163,7 @@
         </div>
       </p-accordion-header>
       <p-accordion-content>
-        @for (day of openingHours.controls; track day; let i=$index) {
+        @for (day of openingHours.controls; track $index; let i=$index) {
         <div class="ui:mt-3" formArrayName="opening_hours">
           <div [formGroupName]="i">
             <div class="ui:grid ui:grid-cols-12 ui:gap-4 ui:align-items-top">
@@ -180,7 +180,7 @@
               <div class="ui:col-span-10">
                 @if (day.value.is_open) {
                 <ul class="ui:list-none">
-                  @for (time of $any(day).controls.times.controls; track time;
+                  @for (time of $any(day).controls.times.controls; track $index;
                   let t=$index; let last=$last; let count=$count) {
                   <li formArrayName="times">
                     <div [formGroupName]="t">
@@ -305,7 +305,7 @@
       </p-accordion-header>
       <p-accordion-content>
         <div formArrayName="notification_settings">
-          @for(setting of notificationSettings.controls; track setting; let i=$index) {
+          @for(setting of notificationSettings.controls; track $index; let i=$index) {
           <div class="ui:grid ui:grid-cols-12 ui:mt-1" [formGroupName]="i">
             <div class="ui:col-span-3 ui:flex ui:gap-3 ui:items-center">
               @if ($any(setting).controls.type.value | notificationType:'patron') {

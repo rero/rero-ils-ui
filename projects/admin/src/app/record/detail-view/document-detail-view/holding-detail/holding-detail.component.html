@@ -27,7 +27,7 @@
     }
 
     <!-- NOTES -->
-    @for (note of holding.metadata.notes | notesFilter: noteAuthorizedTypes; track note) {
+    @for (note of holding.metadata.notes | notesFilter: noteAuthorizedTypes; track $index) {
       <dt translate>{{ note.type }}</dt>
       <dd [innerHtml]="note.content | nl2br"></dd>
     }

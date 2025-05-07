@@ -48,7 +48,7 @@
     @if (order.notes && order.notes.length > 0) {
     <dt translate>Notes</dt>
     <dd>
-      @for (note of order.notes; track note) {
+      @for (note of order.notes; track $index) {
       <a href (click)="scrollTo($event, 'notes'); notesCollapsed = false">
         <p-tag [severity]="note | noteBadgeColor">
           {{ note.type | translate }}

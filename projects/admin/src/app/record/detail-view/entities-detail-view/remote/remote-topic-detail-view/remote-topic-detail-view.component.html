@@ -31,7 +31,7 @@
   <dt translate>Variant access point</dt>
   <dd>
     <ul class="ui:list-none">
-      @for (variant_access_point of record.variant_access_point; track variant_access_point) {
+      @for (variant_access_point of record.variant_access_point; track $index) {
         <li>{{ variant_access_point }}</li>
       }
     </ul>
@@ -42,7 +42,7 @@
   <dt translate>Broader</dt>
   <dd>
     <ul class="ui:list-none">
-      @for (broader of record.broader; track broader) {
+      @for (broader of record.broader; track $index) {
         <li>{{ broader.authorized_access_point }}</li>
       }
     </ul>
@@ -53,7 +53,7 @@
   <dt translate>Narrower</dt>
   <dd>
     <ul class="ui:list-none">
-      @for (narrower of record.narrower; track narrower) {
+      @for (narrower of record.narrower; track $index) {
         <li>{{ narrower.authorized_access_point }}</li>
       }
     </ul>
@@ -64,7 +64,7 @@
   <dt translate>Related</dt>
   <dd>
     <ul class="ui:list-none">
-      @for (related of record.related; track related) {
+      @for (related of record.related; track $index) {
         <li>{{ related.authorized_access_point }}</li>
       }
     </ul>
@@ -76,7 +76,7 @@
   <dt translate>Classification</dt>
   <dd>
     <ul class="ui:list-none">
-      @for (classification of record.classification; track classification) {
+      @for (classification of record.classification; track $index) {
         <li class="ui:mb-1 ui:flex ui:gap-1 ui:items-center">
           @if (classification.classificationPortion) {
             <span>{{ classification.classificationPortion }}</span>
@@ -113,7 +113,7 @@
   <dd>
     <ul  class="ui:list-none">
       @if (item.match) {
-        @for(match of item.match; track match) {
+        @for(match of item.match; track $index) {
           <li>
             {{ match.source }}:
             @if (match.uri) {

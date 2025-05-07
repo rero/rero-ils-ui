@@ -39,7 +39,7 @@
             </div>
             @if (orderLine.notes.length > 0) {
               <div class="ui:flex ui:gap-1">
-                @for (note of orderLine.notes; track note) {
+                @for (note of orderLine.notes; track $index) {
                   <i class="fa fa-circle fa-bullet text-{{ note | noteBadgeColor }}" title="{{ note.type | translate }}"></i>
                 }
               </div>

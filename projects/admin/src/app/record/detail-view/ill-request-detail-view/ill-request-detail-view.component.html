@@ -141,7 +141,7 @@
         </span>
       </ng-template>
       <dl class="metadata ui:m-3">
-        @for (note of record.metadata.notes; track note) {
+        @for (note of record.metadata.notes; track $index) {
           <dt translate>{{ note.type }}</dt>
           <dd [innerHTML]="note.content | nl2br"></dd>
         }

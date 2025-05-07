@@ -51,7 +51,7 @@
             </div>
           </div>
           <div>
-            @for (t of tabs.engagedFees.transactions; track t) {
+            @for (t of tabs.engagedFees.transactions; track t.pid) {
               <div class="ui:odd:bg-surface-50">
                 <admin-patron-transaction [transaction]="t" />
               </div>
@@ -86,7 +86,7 @@
             <div class="ui:col-span-1"></div>
           </div>
           <div>
-            @for (t of tabs.overduePreviewFees.transactions; track t) {
+            @for (t of tabs.overduePreviewFees.transactions; track $index) {
               <div class="ui:odd:bg-surface-50">
                 <admin-overdue-transaction [transaction]="t" />
               </div>
@@ -112,7 +112,7 @@
             <div class="ui:col-span-2 ui:flex ui:justify-end" translate>Amount</div>
           </div>
           <div>
-            @for (t of tabs.historyFees.transactions; track t) {
+            @for (t of tabs.historyFees.transactions; track t.pid) {
               <div class="ui:odd:bg-surface-50">
                 <admin-patron-transaction [transaction]="t" />
               </div>

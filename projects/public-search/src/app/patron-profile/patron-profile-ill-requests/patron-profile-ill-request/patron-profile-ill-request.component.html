@@ -98,7 +98,7 @@
         <dt translate>Note</dt>
         <dd>
           <ul class="ui:list-none">
-            @for (note of record.metadata.notes | notesFilter:['public_note']; track note) {
+            @for (note of record.metadata.notes | notesFilter:['public_note']; track $index) {
               <li [innerHTML]="note.content | nl2br"></li>
             }
           </ul>

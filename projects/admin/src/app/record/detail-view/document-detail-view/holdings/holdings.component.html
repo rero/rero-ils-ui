@@ -24,7 +24,7 @@
 @if (holdings) {
   <div class="ui:mt-2">
     <p-accordion [multiple]="true" [(value)]="activePanels">
-      @for (holding of holdings; track holding; let i = $index) {
+      @for (holding of holdings; track holding.metadata.pid; let i = $index) {
         <p-accordion-panel [value]="i" class="ui:mb-2">
           <p-accordion-header>
             <admin-holding-header
