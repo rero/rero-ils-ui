@@ -72,7 +72,7 @@
   </div>
 </div>
 
-@for (message of messages(); track message) {
+@for (message of messages(); track $index) {
   <p-message
     styleClass="ui:my-2"
     [text]="message.detail"

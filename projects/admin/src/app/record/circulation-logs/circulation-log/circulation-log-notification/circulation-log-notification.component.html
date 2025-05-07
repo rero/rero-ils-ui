@@ -56,7 +56,7 @@
     <dt><i class="fa fa-envelope"></i>&nbsp;{{ 'Recipients' | translate}}</dt>
     <dd>
       <ul class="ui:list-none">
-        @for (recipient of record.metadata.notification.recipients; track recipient) {
+        @for (recipient of record.metadata.notification.recipients; track $index) {
           <li>{{ recipient }}</li>
         }
       </ul>

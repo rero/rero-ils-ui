@@ -27,7 +27,7 @@
     </ng-template>
     @if (illRequests.length > 0) {
       <div>
-        @for (record of illRequests; track record) {
+        @for (record of illRequests; track $index) {
           <div class="ui:odd:bg-surface-50">
             <admin-ill-request-item [record]="record" />
           </div>

@@ -28,7 +28,7 @@
     </div>
     <div class="ui:col-span-2">
       @if (exception.times) {
-        @for (time of exception.times; track time) {
+        @for (time of exception.times; track $index) {
           <div>{{ time.start_time }} - {{ time.end_time }}</div>
         }
       }

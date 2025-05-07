@@ -36,7 +36,7 @@
   <dt translate>Language</dt>
   <dd>
     <ul class="ui:list-none">
-      @for (language of record.language; track language) {
+      @for (language of record.language; track $index) {
         <li>{{ ('lang_' + language) | translate }}</li>
       }
     </ul>
@@ -62,7 +62,7 @@
   <dt translate>Variant name</dt>
   <dd>
     <ul class="ui:list-none">
-      @for (variant_name of record.variant_access_point; track variant_name) {
+      @for (variant_name of record.variant_access_point; track $index) {
         <li>{{ variant_name }}</li>
       }
     </ul>

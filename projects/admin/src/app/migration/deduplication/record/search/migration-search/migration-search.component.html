@@ -114,7 +114,7 @@
 
         @if (!showEmptySearchMessage || q) {
         <ng-content select="[top-facets]"/>
-        @for (item of aggregations; track item) {
+        @for (item of aggregations; track $index) {
         <div>
           @if (!aggregationsToHide.includes(item.key)) {
           <ng-core-record-search-aggregation
@@ -139,7 +139,7 @@
         <p-dataview [value]="records" [emptyMessage]="' '">
           <ng-template #list let-records>
             <ul class="ui:list-none">
-              @for (record of records; track record ; let first = $first) {
+              @for (record of records; track record.id ; let first = $first) {
               <li class="ui:py-2" [ngClass]="{ 'ui:border-top-1 ui:surface-border': !first }">
                 <admin-migration-data-deduplication
                   (refresh)="refresh($event)"

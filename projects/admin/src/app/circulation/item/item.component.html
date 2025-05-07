@@ -244,7 +244,7 @@
               <dt translate>Notifications</dt>
               <dd>
                 <ul class="ui:list-none">
-                  @for (notification of notifications; track notification) {
+                  @for (notification of notifications; track $index) {
                     <li>
                       <span class="ui:text-muted-color ui:text-sm">
                         {{ notification.metadata.process_date
@@ -270,7 +270,7 @@
                 </p-tag>
                 <i class="fa fa-long-arrow-right ui:px-2"></i>
               }
-              @for (request of item.pending_loans; track request) {
+              @for (request of item.pending_loans; track request.pid) {
                 <p-tag severity="secondary" styleClass="ui:mr-1">
                   <i class="fa fa-shopping-basket"></i>&nbsp;
                   <a
@@ -282,7 +282,7 @@
             </dd>
           }
 
-          @for (note of getCirculationNoteForAction(); track note) {
+          @for (note of getCirculationNoteForAction(); track $index) {
             <dt>
               <i class="fa fa-sticky-note-o text-warning ui:mr-1"></i>
               @if (note.type !== NOTEAPI) {

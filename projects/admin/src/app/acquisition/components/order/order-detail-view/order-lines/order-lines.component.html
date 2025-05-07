@@ -17,7 +17,7 @@
 -->
 @defer (when orderLines) {
   @if (orderLines.length > 0) {
-    @for (orderLine of orderLines; track orderLine) {
+    @for (orderLine of orderLines; track orderLine.pid) {
       <div class="ui:odd:bg-surface-50">
         <admin-order-line [orderLine]="orderLine" [order]="order" />
       </div>

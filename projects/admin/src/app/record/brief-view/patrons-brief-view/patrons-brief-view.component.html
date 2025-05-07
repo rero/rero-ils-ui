@@ -38,7 +38,7 @@
     </div>
 
     <div class="ui:flex ui:gap-1 ui:flex-wrap">
-      @for (role of record.metadata.roles; track role) {
+      @for (role of record.metadata.roles; track $index) {
         <p-tag [severity]="getRoleTagSeverity(role)">
           {{ role | translate }}
         </p-tag>

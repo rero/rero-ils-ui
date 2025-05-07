@@ -19,7 +19,7 @@
       <ng-template #header>
         <tr>
             <th>&nbsp;</th>
-            @for (patronType of patronTypes; track patronType) {
+            @for (patronType of patronTypes; track $index) {
               <th class="ui:text-center">
                 {{ patronType.metadata.name }}
               </th>
@@ -29,7 +29,7 @@
         <ng-template #body let-itemType>
           <tr>
             <td>{{ itemType.label }}</td>
-            @for (patronType of itemType.patronTypes; track patronType) {
+            @for (patronType of itemType.patronTypes; track $index) {
               <td class="ui:text-center">
                 <input
                   type="checkbox"

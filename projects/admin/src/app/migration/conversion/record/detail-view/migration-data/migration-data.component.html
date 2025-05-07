@@ -26,7 +26,7 @@
     <span translate>Modification date</span>:&nbsp;{{ record()?.updated_at | dateTranslate : "medium" }}
   </div>
   <div class="ui:my-3">
-    @for (message of messages(); track message) {
+    @for (message of messages(); track $index) {
       <p-message
         styleClass="ui:mb-2"
         [text]="message.detail"

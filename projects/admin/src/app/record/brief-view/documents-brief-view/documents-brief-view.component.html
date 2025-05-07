@@ -34,7 +34,7 @@
       <!-- provision activity publications -->
       @if (provisionActivityPublications.length > 0) {
         <ul class="ui:list-none">
-          @for (publication of provisionActivityPublications; track publication) {
+          @for (publication of provisionActivityPublications; track $index) {
             <li>{{ publication.value }}</li>
           }
         </ul>
@@ -44,7 +44,7 @@
       <!-- edition statement -->
       @if (record.metadata.editionStatement) {
         <ul class="ui:list-none">
-          @for (edition of record.metadata.editionStatement; track edition) {
+          @for (edition of record.metadata.editionStatement; track $index) {
             <li>{{ edition._text[0].value }}</li>
           }
         </ul>

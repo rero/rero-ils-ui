@@ -34,7 +34,7 @@
           @if (record.metadata.policy_library_level) {
             {{ 'Library' | translate }}
             <ul class="ui:list-none">
-              @for (library of record.metadata.libraries; track library) {
+              @for (library of record.metadata.libraries; track $index) {
                 <li>
                   <i class="fa fa-university"></i>&nbsp;
                   {{ library.pid | getRecord: 'libraries' : 'field' : 'name' | async }}
@@ -189,7 +189,7 @@
                 <th [attr.colspan]="itemTypes.size" class="ui:text-center" translate>Item types</th>
               </tr>
               <tr>
-                @for (itemType of itemTypes; track itemType) {
+                @for (itemType of itemTypes; track $index) {
                   <th class="ui:text-center">
                     <span id="itty-{{itemType}}">{{ itemType | getRecord: 'item_types' : 'field' : 'name' | async }}</span>
                   </th>
@@ -201,9 +201,9 @@
                 <th id="ptty-{{setting.key}}" class="ui:text-left ui:pl-2">
                   {{ setting.key | getRecord: 'patron_types' : 'field' : 'name' | async }}
                 </th>
-                @for (itemType of itemTypes; track itemType) {
+                @for (itemType of itemTypes; track $index) {
                   <td class="ui:text-center">
-                    @for (currentItemType of setting.value; track currentItemType) {
+                    @for (currentItemType of setting.value; track $index) {
                       @if (itemType === currentItemType) {
                         <i id="ptty-{{setting.key}}-itty-{{currentItemType}}" class="fa fa-check text-success" aria-hidden="true"></i>
                       }

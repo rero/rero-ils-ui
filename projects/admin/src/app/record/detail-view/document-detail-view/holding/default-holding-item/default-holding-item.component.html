@@ -75,7 +75,7 @@
             @if (collections && collections.length > 0) {
               <dt translate>Exhibition/course</dt>
               <dd>
-                @for (collection of collections; track collection; let last=$last) {
+                @for (collection of collections; track $any(collection).metadata.pid; let last=$last) {
                   <a [routerLink]="['/records', 'collections', 'detail', $any(collection).metadata.pid]">
                     {{ $any(collection).metadata.title }}
                   </a>{{ last ? '' : '; ' }}
@@ -86,7 +86,7 @@
         </dl>
         <!-- (hide if not current organisation) -->
         @if (permissions) {
-          @for (note of item.metadata.notes; track note) {
+          @for (note of item.metadata.notes; track $index) {
             <admin-holding-item-note [note]="note" />
           }
           <admin-holding-item-temporary-item-type [record]="item" />

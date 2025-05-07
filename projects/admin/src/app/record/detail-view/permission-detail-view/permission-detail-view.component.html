@@ -36,7 +36,7 @@
           <thead>
             <tr>
               <th>&nbsp;</th>
-              @for (role of roles; track role) {
+              @for (role of roles; track $index) {
                 <th [ngClass]="'type-'+role.type.replace('_', '-')">
                   <span>{{ role.name | translate }}</span>
                 </th>
@@ -44,10 +44,10 @@
             </tr>
           </thead>
           <tbody>
-            @for (permissionName of filteredPermissionNames; track permissionName) {
+            @for (permissionName of filteredPermissionNames; track $index) {
               <tr>
                 <td>{{ permissionName }}</td>
-                @for (role of roles; track role) {
+                @for (role of roles; track $index) {
                   <td [ngClass]="'type-'+role.type.replace('_', '-')">
                     <span title="{{ role.name | translate }}">
                       <i

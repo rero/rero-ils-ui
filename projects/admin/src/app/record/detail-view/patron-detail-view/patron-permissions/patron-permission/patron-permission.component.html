@@ -29,7 +29,7 @@
   @if(!isCollapsed) {
   <div id="reasons" class="ui:col-span-12 ui:my-1 ui:ml-8">
     <ul class="ui:list-none">
-      @for (role of permission.reasons | keyvalue; track role) {
+      @for (role of permission.reasons | keyvalue; track $index) {
         <li>
           <div class="ui:grid ui:grid-cols-12 ui:gap-4">
             <div class="ui:col-span-6">{{ role.key | translate }}</div>

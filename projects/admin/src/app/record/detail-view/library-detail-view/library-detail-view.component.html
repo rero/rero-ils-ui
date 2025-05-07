@@ -64,7 +64,7 @@
       <p-accordion-content>
         @if (locations) {
           <ul class="ui:list-none">
-            @for (location of locations; track location; let last=$last) {
+            @for (location of locations; track location.metadata.pid; let last=$last) {
               <li class="ui:my-2 ui:odd:bg-surface-50">
                 <admin-location [location]="location" [library]="record" (deleteLocation)="deleteLocation($event)" />
               </li>
@@ -84,7 +84,7 @@
             <span translate>Opening Hours</span>
           </div>
           <div class="ui:flex ui:gap-1">
-            @for (day of record.opening_hours; track day) {
+            @for (day of record.opening_hours; track $index) {
               <i class="fa" [ngClass]="{'fa-times-circle-o text-error': !day.is_open, 'fa-circle text-success': day.is_open}"></i>
             }
           </div>
@@ -92,7 +92,7 @@
       </p-accordion-header>
       <p-accordion-content>
         <div class="ui:mt-2">
-          @for (day of record.opening_hours; track day) {
+          @for (day of record.opening_hours; track $index) {
             <admin-day-opening-hours [day]="day" />
           }
         </div>
@@ -112,7 +112,7 @@
         </p-accordion-header>
         <p-accordion-content>
           <div class="ui:mt-2">
-            @for (exception of record.exception_dates; track exception) {
+            @for (exception of record.exception_dates; track $index) {
               <div class="ui:odd:bg-surface-50">
                 <admin-exception-date [exception]="exception" />
               </div>
@@ -133,7 +133,7 @@
         <div class="ui:mt-2 ui:mx-2">
           @if (record.notification_settings; as notificationSettings) {
             <dl class="metadata">
-              @for (setting of notificationSettings; track setting) {
+              @for (setting of notificationSettings; track $index) {
                 <dt>{{ setting.type | translate | ucfirst }}</dt>
                 <dd>
                   {{ setting.email }}

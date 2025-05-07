@@ -31,7 +31,7 @@
     <div class="ui:col-span-2 ui:font-bold ui:text-center ui:uppercase" translate>Access</div>
   </div>
   <div>
-    @for (permission of filteredPermissions; track permission) {
+    @for (permission of filteredPermissions; track $index) {
       <div class="ui:odd:bg-surface-50">
         <admin-patron-permission [permission]="permission" />
       </div>

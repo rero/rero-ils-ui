@@ -44,7 +44,7 @@
     </ng-template>
       <div class="ui:mt-4">
         @if (accountsToDisplay.length > 0) {
-          @for (account of accountsToDisplay; track account) {
+          @for (account of accountsToDisplay; track account.pid) {
             <div class="ui:grid ui:grid-cols-12 ui:py-1 ui:odd:bg-surface-50">
               <div class="ui:col-span-1 ui:text-center">
                 @if (!(form.get('target').value &&

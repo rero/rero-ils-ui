@@ -41,7 +41,7 @@
   </ng-template>
   @if (receipts) {
     @if (receipts.length > 0) {
-        @for (receipt of receipts; track receipt) {
+        @for (receipt of receipts; track receipt.pid) {
           <div class="ui:odd:bg-surface-50">
             <admin-receipt-summary [receiptPid]="receipt.pid" [allowActions]="true" [order]="order" />
           </div>

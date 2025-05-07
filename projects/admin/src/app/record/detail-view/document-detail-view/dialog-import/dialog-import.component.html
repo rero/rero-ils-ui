@@ -19,7 +19,7 @@
 }
 @if (records.length > 0) {
 <ul class="ui:list-none">
-  @for (record of records; track record) {
+  @for (record of records; track record.metadata.pid) {
   <li>
     <a
       [routerLink]="['/records', 'documents', 'detail', $any(record).metadata.pid]"

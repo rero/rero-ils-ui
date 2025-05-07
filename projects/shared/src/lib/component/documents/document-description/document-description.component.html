@@ -39,9 +39,9 @@
     <shared-description-zone>
       <ng-container label>{{ 'General note' | translate }}</ng-container>
       <ng-container content>
-        @for (noteType of notesGeneral | keyvalue; track noteType) {
+        @for (noteType of notesGeneral | keyvalue; track $index) {
           <ul class="ui:list-none">
-            @for (note of noteType.value; track note) {
+            @for (note of noteType.value; track $index) {
               <li>{{ note }}</li>
             }
           </ul>
@@ -56,7 +56,7 @@
       <ng-container label>{{ 'Other responsibilities' | translate }}</ng-container>
       <ng-container content>
         <ul class="ui:list-none">
-          @for (credit of record.metadata.credits; track credit) {
+          @for (credit of record.metadata.credits; track $index) {
             <li>{{ credit }}</li>
           }
         </ul>
@@ -69,7 +69,7 @@
     <shared-description-zone>
       <ng-container label>{{ 'Language' | translate }}</ng-container>
       <ng-container content>
-        @for (lang of record.metadata.language; track lang; let isLast = $last) {
+        @for (lang of record.metadata.language; track $index; let isLast = $last) {
           {{ lang.value | translateLanguage: currentLanguage }}
           @if (!isLast) {, }
         }
@@ -82,7 +82,7 @@
     <shared-description-zone>
       <ng-container label>{{ 'Original language' | translate }}</ng-container>
       <ng-container content>
-        @for (lang of record.metadata.originalLanguage; track lang; let isLast = $last) {
+        @for (lang of record.metadata.originalLanguage; track $index; let isLast = $last) {
             {{ lang | translateLanguage: currentLanguage }}
             @if (!isLast) {, }
         }
@@ -96,7 +96,7 @@
       <ng-container label>{{ 'Original title' | translate }}</ng-container>
       <ng-container content>
         <ul class="ui:list-none">
-          @for (title of record.metadata.originalTitle; track title) {
+          @for (title of record.metadata.originalTitle; track $index) {
             <li>{{ title }}</li>
           }
         </ul>
@@ -111,7 +111,7 @@
         <ng-container label>{{ 'Work' | translate }}</ng-container>
         <ng-container content>
           <ul class="ui:list-none">
-            @for (work of works; track work) {
+            @for (work of works; track $index) {
               <li>{{ work }}</li>
             }
           </ul>
@@ -126,7 +126,7 @@
       <ng-container label>{{ 'Contents' | translate }}</ng-container>
       <ng-container content>
         <ul class="ui:list-none">
-          @for (table of record.metadata.tableOfContents; track table) {
+          @for (table of record.metadata.tableOfContents; track $index) {
             <li>{{ table }}</li>
           }
         </ul>
@@ -140,8 +140,8 @@
       <ng-container label>{{ 'Thesis' | translate }}</ng-container>
       <ng-container content>
         <ul class="ui:list-none">
-          @for (dissertation of record.metadata.dissertation; track dissertation) {
-            @for (label of dissertation.label; track label) {
+          @for (dissertation of record.metadata.dissertation; track $index) {
+            @for (label of dissertation.label; track $index) {
               <li>{{ label.value }}</li>
             }
           }
@@ -155,7 +155,7 @@
     <shared-description-zone>
       <ng-container label>{{ 'Intended audience' | translate }}</ng-container>
       <ng-container content>
-        @for (audience of record.metadata.intendedAudience; track audience; let isLast = $last) {
+        @for (audience of record.metadata.intendedAudience; track $index; let isLast = $last) {
           {{ audience.value | translate }}
           @if (!isLast) {, }
         }
@@ -178,7 +178,7 @@
     <shared-description-zone>
       <ng-container label>{{ 'Colors' | translate }}</ng-container>
       <ng-container content>
-        @for (color of record.metadata.colorContent; track color; let isLast = $last) {
+        @for (color of record.metadata.colorContent; track $index; let isLast = $last) {
           {{ color | translate }}
           @if (!isLast) {, }
         }
@@ -192,7 +192,7 @@
       <ng-container label>{{ 'Scale' | translate }}</ng-container>
       <ng-container content>
         <ul class="ui:list-none">
-          @for (scale of record.metadata.scale; track scale) {
+          @for (scale of record.metadata.scale; track $index) {
             <li>{{ scale.label }}</li>
           }
         </ul>
@@ -206,7 +206,7 @@
       <ng-container label>{{ 'Cartographic data' | translate }}</ng-container>
       <ng-container content>
         <ul class="ui:list-none">
-          @for (cartographic of cartographicAttributes; track cartographic) {
+          @for (cartographic of cartographicAttributes; track $index) {
             <li>
               @if (cartographic.projection) {
                 {{ cartographic.projection }}
@@ -230,7 +230,7 @@
       <ng-container label>{{ 'Classification' | translate }}</ng-container>
       <ng-container content>
         <ul class="ui:list-none">
-          @for (classification of record.metadata.classification; track classification) {
+          @for (classification of record.metadata.classification; track $index) {
             <li>
               {{ classification.classificationPortion }}
               @if (classification.subdivision) {
@@ -252,7 +252,7 @@
       <ng-container label>{{ 'Use and access condition' | translate }}</ng-container>
       <ng-container content>
         <ul class="ui:list-none">
-          @for (usage of record.metadata.usageAndAccessPolicy; track usage) {
+          @for (usage of record.metadata.usageAndAccessPolicy; track $index) {
             <li>{{ usage.label }}</li>
           }
         </ul>
@@ -273,12 +273,12 @@
 
   <!-- TITLE (KEY TITLE, ABBREVIATED TITLE, VARIANT TITLE)-->
   @if (titleVariants !== {}) {
-    @for (title of titleVariants | keyvalue; track title) {
+    @for (title of titleVariants | keyvalue; track $index) {
       <shared-description-zone>
         <ng-container label>{{ $any(title).key | translate | ucfirst }}</ng-container>
         <ng-container content>
           <ul class="ui:list-none">
-            @for (value of $any(title).value; track value) {
+            @for (value of $any(title).value; track $index) {
               <li>{{ value }}</li>
             }
           </ul>
@@ -293,7 +293,7 @@
       <ng-container label>{{ 'Statement of responsibility' | translate }}</ng-container>
       <ng-container content>
         <ul class="ui:list-none">
-          @for (responsibility of record.metadata.ui_responsibilities; track responsibility) {
+          @for (responsibility of record.metadata.ui_responsibilities; track $index) {
             <li>{{ responsibility }}</li>
           }
         </ul>
@@ -307,7 +307,7 @@
       <ng-container label>{{ 'Series statement' | translate }}</ng-container>
       <ng-container content>
         <ul class="ui:list-none">
-          @for (serie of editionStatement; track serie) {
+          @for (serie of editionStatement; track $index) {
             <li>{{ serie.value }}</li>
           }
         </ul>
@@ -317,12 +317,12 @@
 
   <!-- PROVISION ACTIVITY STATEMENT (TYPES PRODUCTION, DIFFUSION/DISTRIBUTION, FABRICATION) -->
   @if (record.metadata.provisionActivity | documentProvisionActivity | keyvalue | callbackArrayFilter: filterNotPublicationProvisionActivity;as provisionActivity) {
-    @for (provision of provisionActivity; track provision) {
+    @for (provision of provisionActivity; track $index) {
       <shared-description-zone>
         <ng-container label>{{ provision.key | translate }}</ng-container>
         <ng-container content>
           <ul class="ui:list-none">
-            @for (value of provision.value; track value; let isLast = $last) {
+            @for (value of provision.value; track $index; let isLast = $last) {
               <li>{{ value }}@if (!isLast) {, }</li>
             }
           </ul>
@@ -336,7 +336,7 @@
     <shared-description-zone>
       <ng-container label>{{ 'Date of the original' | translate }}</ng-container>
       <ng-container content>
-        @for (provision of provisionActivityOriginalDate; track provision; let isLast = $last) {
+        @for (provision of provisionActivityOriginalDate; track $index; let isLast = $last) {
           {{ provision.original_date }}@if (!isLast) {, }
         }
       </ng-container>
@@ -388,7 +388,7 @@
     <shared-description-zone>
       <ng-container label>{{ 'Production method' | translate }}</ng-container>
       <ng-container content>
-        @for (method of record.metadata.productionMethod; track method; let isLast = $last) {
+        @for (method of record.metadata.productionMethod; track $index; let isLast = $last) {
           {{ method | translate }}@if (!isLast) {, }
         }
       </ng-container>
@@ -397,12 +397,12 @@
 
   <!-- NOTE (TYPE: CITED BY, OTHER PHYSICAL DETAILS, ACCOMPANYING MATERIAL) -->
   @if (notesExceptGeneral) {
-    @for (noteType of notesExceptGeneral | keyvalue; track noteType) {
+    @for (noteType of notesExceptGeneral | keyvalue; track $index) {
       <shared-description-zone>
         <ng-container label>{{ noteType.key | translate | ucfirst }}</ng-container>
         <ng-container content>
           <ul class="ui:list-none">
-            @for (note of noteType.value; track note) {
+            @for (note of noteType.value; track $index) {
               <li>{{ note }}</li>
             }
           </ul>
@@ -417,7 +417,7 @@
       <ng-container label>{{ 'Supplementary content' | translate }}</ng-container>
       <ng-container content>
         <ul class="ui:list-none">
-          @for (sup of record.metadata.supplementaryContent; track sup) {
+          @for (sup of record.metadata.supplementaryContent; track $index) {
             <li>{{ sup }}</li>
           }
         </ul>
@@ -431,7 +431,7 @@
       <ng-container label>{{ 'Terms of availability' | translate }}</ng-container>
       <ng-container content>
         <ul class="ui:list-none">
-          @for (term of record.metadata.acquisitionTerms; track term) {
+          @for (term of record.metadata.acquisitionTerms; track $index) {
             <li>{{ term }}</li>
           }
         </ul>
@@ -445,7 +445,7 @@
       <ng-container label>{{ 'Identifier' | translate }}</ng-container>
       <ng-container content>
         <ul class="ui:list-none">
-          @for (identifier of identifiedBy; track identifier; let i = $index) {
+          @for (identifier of identifiedBy; track $index; let i = $index) {
             <li [attr.id]="i | idAttribute:{prefix: 'doc-identifier'}">
               @if (identifier.type === 'uri') {
                 <a class="rero-ils-external-link" [href]="identifier.value | safeUrl">{{ identifier.value }}</a>
@@ -470,10 +470,10 @@
     <shared-description-zone>
       <ng-container label>{{ 'Carrier and content type' | translate }}</ng-container>
       <ng-container content>
-        @for (content of record.metadata.contentMediaCarrier; track content; let isLastL1 = $last) {
+        @for (content of record.metadata.contentMediaCarrier; track $index; let isLastL1 = $last) {
             {{ content.carrierType | translate }}
             @if (content.contentType) {
-              (@for (type of content.contentType; track type; let isLast = $last) {
+              (@for (type of content.contentType; track $index; let isLast = $last) {
                 {{ type | translate }}@if (!isLast) {, }
               })
             }

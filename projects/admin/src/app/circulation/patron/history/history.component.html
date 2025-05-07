@@ -23,7 +23,7 @@
       </div>
     </ng-template>
     @if (logs.length > 0) {
-        @for (log of logs; track log) {
+        @for (log of logs; track $index) {
           <div class="ui:odd:bg-surface-50">
             <admin-history-log [log]="log" />
           </div>

@@ -38,7 +38,7 @@
           </label>
           @if (receipt.notes.length > 0 && isCollapsed) {
             <span class="ui:flex ui:gap-1">
-              @for (note of receipt.notes; track note) {
+              @for (note of receipt.notes; track $index) {
                 <i class="fa fa-circle text-{{ note | noteBadgeColor }}" aria-hidden="true" [title]="note.type | translate"></i>
               }
             </span>
@@ -57,7 +57,7 @@
         </div>
         @if (!collapsable || !isCollapsed) {
           <!-- RECEPTION LINES ROWS :: One line for each reception line -->
-          @for (line of receipt.receipt_lines; track line) {
+          @for (line of receipt.receipt_lines; track line.pid) {
             <div class="ui:col-span-9 ui:flex ui:gap-2 ui:flex-wrap">
               <strong>{{ line.quantity }}</strong>&nbsp;x
               <div>
@@ -80,7 +80,7 @@
             </div>
           }
           <!-- RECEIPT ADJUSTMENTS :: One line for each adjustment -->
-          @for (adjustment of receipt.amount_adjustments; track adjustment) {
+          @for (adjustment of receipt.amount_adjustments; track $index) {
             <div class="ui:col-span-9">
               <i class="fa fa-long-arrow-right ui:mr-4"></i>
               {{ adjustment.label }}

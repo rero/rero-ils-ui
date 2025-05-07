@@ -23,8 +23,8 @@
       </div>
     </ng-template>
 
-    @for(holding of holdings; track holding) {
-      @for (location of holding.metadata.electronic_location; track location) {
+    @for(holding of holdings; track $index) {
+      @for (location of holding.metadata.electronic_location; track $index) {
         <div class="ui:grid ui:grid-cols-12 ui:gap-4 ui:p-2 ui:odd:bg-surface-50 ui:items-center">
           <div class="ui:col-span-6">
             {{ holding.metadata.library.name }}

@@ -118,7 +118,7 @@
         />
       }
       <ul class="ui:list-none">
-        @for (time of times.controls; track time; let t=$index) {
+        @for (time of times.controls; track $index; let t=$index) {
           <li formArrayName="times" class="ui:mb-1">
             <div [formGroupName]="t">
               <div class="ui:grid ui:grid-cols-12 ui:gap-4">
