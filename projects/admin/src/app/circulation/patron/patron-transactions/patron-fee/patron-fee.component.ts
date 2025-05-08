@@ -16,8 +16,6 @@
  */
 import { Component, inject, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import { CirculationStatistics } from '@app/admin/circulation/circulationStatistics';
-import { CirculationService } from '@app/admin/circulation/services/circulation.service';
 import { FormlyFieldConfig } from '@ngx-formly/core';
 import { TranslateService } from '@ngx-translate/core';
 import { ApiService, CONFIG, RecordService } from '@rero/ng-core';
@@ -27,6 +25,8 @@ import { MessageService } from 'primeng/api';
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { PatronTransactionApiService } from 'projects/admin/src/app/api/patron-transaction-api.service';
 import { OrganisationService } from 'projects/admin/src/app/service/organisation.service';
+import { CirculationStatsService } from '../../service/circulation-stats.service';
+import { switchMap } from 'rxjs';
 
 @Component({
     selector: 'admin-patron-fee',
@@ -44,7 +44,7 @@ export class PatronFeeComponent implements OnInit {
   private userService: UserService = inject(UserService);
   private patronTransactionApiService: PatronTransactionApiService = inject(PatronTransactionApiService);
   private apiService: ApiService = inject(ApiService);
-  private circulationService: CirculationService = inject(CirculationService);
+  private circulationStatsService: CirculationStatsService = inject(CirculationStatsService);
 
   /** form */
   form: FormGroup = new FormGroup({});
@@ -53,13 +53,13 @@ export class PatronFeeComponent implements OnInit {
   /** model */
   model: FeeFormModel;
 
-  patronPid: string | undefined;
+  patron: any;
   organisationPid: string | undefined;
 
   // /** OnInit Hook */
   ngOnInit(): void {
     const data: any = this.dynamicDialogConfig.data;
-    this.patronPid = data.patronPid;
+    this.patron = data.patron;
     this.organisationPid = data.organisationPid;
 
     const librarySchema$ = this.recordService.getSchemaForm('patron_transactions');
@@ -72,10 +72,10 @@ export class PatronFeeComponent implements OnInit {
     if (model.creation_date instanceof Date) {
       model.creation_date = DateTime.fromObject(model.creation_date).toISO();
     }
-    this.patronTransactionApiService.addFee(model).subscribe({
+    this.patronTransactionApiService.addFee(model).pipe(
+      switchMap(() => this.circulationStatsService.getStats(this.patron.pid))
+    ).subscribe({
       next: () => {
-        this.circulationService.statisticsIncrease(CirculationStatistics.FEES_ENGAGED, model.total_amount);
-        this.circulationService.statisticsIncrease(CirculationStatistics.FEES, model.total_amount);
         this.closeModal();
         this.messageService.add({
           severity: 'success',
@@ -150,7 +150,7 @@ export class PatronFeeComponent implements OnInit {
       total_amount: null,
       creation_date: new Date(),
       patron: {
-        $ref: this.apiService.getRefEndpoint('patrons', this.patronPid)
+        $ref: this.apiService.getRefEndpoint('patrons', this.patron.pid)
       },
       organisation: {
         $ref: this.apiService.getRefEndpoint('organisations', this.organisationPid)

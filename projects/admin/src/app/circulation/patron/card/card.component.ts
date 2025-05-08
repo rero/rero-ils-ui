@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2019-2024 RERO
+ * Copyright (C) 2019-2025 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -17,7 +17,7 @@
 import { Component, EventEmitter, inject, Input, OnInit, Output } from '@angular/core';
 import { DateTime } from 'luxon';
 import { getSeverity } from '../../../utils/utils';
-import { CirculationService } from '../../services/circulation.service';
+import { CirculationStatsService } from '../service/circulation-stats.service';
 
 @Component({
     selector: 'admin-circulation-patron-detailed',
@@ -26,7 +26,7 @@ import { CirculationService } from '../../services/circulation.service';
 })
 export class CardComponent implements OnInit {
 
-  private circulationService: CirculationService = inject(CirculationService);
+  private circulationStatsService: CirculationStatsService = inject(CirculationStatsService);
 
   // COMPONENT ATTRIBUTES =====================================================
   /** the patron */
@@ -71,7 +71,7 @@ export class CardComponent implements OnInit {
       this.patronAge = Math.floor(DateTime.now().diff(birthDate, 'years').years);
     }
 
-    this.circulationMessages = this.circulationService.messages();
+    this.circulationMessages = this.circulationStatsService.messages();
   }
 
   /** Clear current patron */

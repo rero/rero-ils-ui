@@ -17,8 +17,7 @@
 
 import { Component, inject, OnInit } from '@angular/core';
 import { PatronService } from '../../../service/patron.service';
-import { CirculationStatistics } from '../../circulationStatistics';
-import { CirculationService } from '../../services/circulation.service';
+import { CirculationStatsService } from '../service/circulation-stats.service';
 
 @Component({
     selector: 'admin-pending',
@@ -28,16 +27,19 @@ import { CirculationService } from '../../services/circulation.service';
 export class PendingComponent implements OnInit {
 
   private patronService: PatronService = inject(PatronService);
-  private circulationService: CirculationService = inject(CirculationService);
+  private circulationStatsService: CirculationStatsService = inject(CirculationStatsService);
 
   /** Array of loans */
   loans: [];
+
+  private patron: any;
 
   /**
    * Init
    */
   ngOnInit() {
     this.patronService.currentPatron$.subscribe((patron: any) => {
+      this.patron = patron;
       if (patron) {
         this.patronService.getItemsRequested(patron.pid)
         .subscribe(loans => {
@@ -55,7 +57,6 @@ export class PendingComponent implements OnInit {
     // Remove loan in list
     const index = this.loans.findIndex((element: any) => element.id == loanId);
     this.loans.splice(index, 1);
-    // Update count on tab
-    this.circulationService.statisticsDecrease(CirculationStatistics.PENDING, 1);
+    this.circulationStatsService.updateStats(this.patron.pid);
   }
 }

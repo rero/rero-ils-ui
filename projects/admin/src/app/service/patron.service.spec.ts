@@ -135,7 +135,7 @@ describe('PatronService', () => {
 
   it('should return overdue preview about overdue loans related to a patron', () => {
     httpClientSpy.get.and.returnValue(of([{...testOverduePreview}]));
-    service.getOverduesPreview('1').subscribe((result: any) => {
+    service.getOverduePreview('1').subscribe((result: any) => {
       expect(result[0].fees).toEqual(testOverduePreview.fees);
       expect(result[0].loan).toBeInstanceOf(Loan);
       expect(result[0].loan.document_pid).toEqual('2000110');

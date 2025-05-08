@@ -193,7 +193,7 @@ export class PatronService {
    * @param patronPid - string : the patron pid to search
    * @return Observable
    */
-  getOverduesPreview(patronPid: string): Observable<Array<{fees: LoanOverduePreview, loan: Loan}>> {
+  getOverduePreview(patronPid: string): Observable<Array<{fees: LoanOverduePreview, loan: Loan}>> {
     const url = [this.apiService.getEndpointByType('patrons'), patronPid, 'overdues', 'preview'].join('/');
     return this.httpClient.get(url).pipe(
       map((data: Array<any>) => data.map(record => {

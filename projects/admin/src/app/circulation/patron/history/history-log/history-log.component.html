@@ -21,18 +21,21 @@
       <shared-open-close-button (status)="isCollapsed = $event; loadCheckout()" />
       <div class="ui:flex ui:flex-col">
         @if (document) {
-          <a [routerLink]="['/records','documents','detail', log.metadata.loan.item.document.pid]">
-             {{ log.metadata.loan.item.document.title }}
-          </a>
+          <div class="ui:flex ui:gap-2">
+            <a [routerLink]="['/records','documents','detail', log.metadata.loan.item.document.pid]">
+              {{ log.metadata.loan.item.document.title }}
+            </a>
+            @if (log.metadata.loan.item.enumerationAndChronology) {
+              <p-tag severity="info" [value]="log.metadata.loan.item.enumerationAndChronology" />
+            }
+        </div>
         } @else {
           {{ log.metadata.loan.item.document.title }}
         }
         @if (document?.metadata?.contribution && document.metadata.contribution.length > 0) {
           <shared-contribution [contributions]="document.metadata.contribution" [limitRecord]="3" />
         }
-        @if (log.metadata.loan.item.enumerationAndChronology) {
-          <p-tag severity="info" [value]="log.metadata.loan.item.enumerationAndChronology" />
-        }
+
       </div>
     </div>
     <div class="ui:col-span-2">

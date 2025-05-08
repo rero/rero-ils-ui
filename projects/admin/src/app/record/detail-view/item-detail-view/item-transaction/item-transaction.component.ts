@@ -116,7 +116,7 @@ export class ItemTransactionComponent implements OnInit, OnDestroy {
   /** Inform parent to cancel the request. */
   emitUpdatePickupLocation(event:  SelectChangeEvent): void {
     const data = {
-      pickupLocationPid: event.value,
+      pickupLocationPid: event.value.value,
       transaction: this.transaction
     };
     this.updatePickupLocationEvent.emit(data);

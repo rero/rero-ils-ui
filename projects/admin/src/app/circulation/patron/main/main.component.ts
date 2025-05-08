@@ -15,19 +15,15 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { Component, inject, OnDestroy, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
-import { LoanState } from '@app/admin/classes/loans';
+import { ActivatedRoute, NavigationEnd, Router, Scroll } from '@angular/router';
 import { OrganisationService } from '@app/admin/service/organisation.service';
 import { PatronService } from '@app/admin/service/patron.service';
-import { getSeverity } from '@app/admin/utils/utils';
 import { HotkeysService } from '@ngneat/hotkeys';
 import { TranslateService } from '@ngx-translate/core';
-import { RecordService } from '@rero/ng-core';
 import { MenuItem } from 'primeng/api';
-import { forkJoin, Subscription, switchMap, tap } from 'rxjs';
-import { OperationLogsApiService } from '@rero/shared';
-import { CirculationStatistics } from '../../circulationStatistics';
-import { CirculationService } from '../../services/circulation.service';
+import { map, Subscription, switchMap, tap } from 'rxjs';
+import { CirculationStatsService } from '../service/circulation-stats.service';
+import { PatronTransactionService } from '../../services/patron-transaction.service';
 
 @Component({
     selector: 'admin-main',
@@ -40,59 +36,14 @@ export class MainComponent implements OnInit, OnDestroy {
   private router: Router = inject(Router);
   private patronService: PatronService = inject(PatronService);
   private organisationService: OrganisationService = inject(OrganisationService);
+  private patronTransactionService: PatronTransactionService = inject(PatronTransactionService);
   private hotKeysService: HotkeysService = inject(HotkeysService);
   private translateService: TranslateService = inject(TranslateService);
-  private circulationService: CirculationService = inject(CirculationService);
-  private operationLogsApiService: OperationLogsApiService = inject(OperationLogsApiService);
-  private recordService: RecordService = inject(RecordService);
+  private circulationStatsService: CirculationStatsService = inject(CirculationStatsService);
 
   // COMPONENT ATTRIBUTES ====================================================
   /** shortcuts for patron tabs */
-  private _shortcuts = [
-    {
-      keys: '1',
-      group: this.translateService.instant('Patron profile shortcuts'),
-      description: this.translateService.instant('Go to "circulation" tab'),
-      callback: ($event) => {
-        this.router.navigate(['/circulation', 'patron', this.barcode, 'loan']);
-      }
-    }, {
-      keys: '2',
-      group: this.translateService.instant('Patron profile shortcuts'),
-      description: this.translateService.instant('Go to "pickup" tab'),
-      callback: ($event) => {
-        this.router.navigate(['/circulation', 'patron', this.barcode, 'pickup']);
-      }
-    }, {
-      keys: '3',
-      group: this.translateService.instant('Patron profile shortcuts'),
-      description: this.translateService.instant('Go to "pending" tab'),
-      callback: ($event) => {
-        this.router.navigate(['/circulation', 'patron', this.barcode, 'pending']);
-      }
-    }, {
-      keys: '4',
-      group: this.translateService.instant('Patron profile shortcuts'),
-      description: this.translateService.instant('Go to "patron profile" tab'),
-      callback: ($event) => {
-        this.router.navigate(['/circulation', 'patron', this.barcode, 'profile']);
-      }
-    }, {
-      keys: '5',
-      group: this.translateService.instant('Patron profile shortcuts'),
-      description: this.translateService.instant('Go to "fees" tab'),
-      callback: ($event) => {
-        this.router.navigate(['/circulation', 'patron', this.barcode, 'fees']);
-      }
-    }, {
-      keys: '6',
-      group: this.translateService.instant('Patron profile shortcuts'),
-      description: this.translateService.instant('Go to "history" tab'),
-      callback: ($event) => {
-        this.router.navigate(['/circulation', 'patron', this.barcode, 'history']);
-      }
-    }
-  ];
+  private _shortcuts = [];
 
   /** the current logged patron */
   patron: any = undefined;
@@ -100,11 +51,13 @@ export class MainComponent implements OnInit, OnDestroy {
   /** the current patron barcode */
   barcode: string;
 
-  items: MenuItem[] | undefined;
+  items: MenuItem[] | undefined = [];
 
   activeTab: string;
 
   subscription = new Subscription();
+
+  stats: any;
 
   // GETTER & SETTER ====================================================
   /**
@@ -118,11 +71,20 @@ export class MainComponent implements OnInit, OnDestroy {
   /** OnInit hook */
   ngOnInit(): void {
     /** load patron if the barcode changes */
-    this.route.params.subscribe((data: any) => {
-      if (data.hasOwnProperty('barcode')) {
+    this.subscription.add(this.route.params.subscribe((data: any) => {
+      if (data.hasOwnProperty('barcode') && (this.barcode !== data.barcode)) {
         this.load(data.barcode);
       }
-    });
+    }));
+    this.subscription.add(this.router.events.subscribe((event: NavigationEnd | any) => {
+      if (event instanceof NavigationEnd) {
+        this.activeTab = this.router.url.split('/').pop();
+      }
+    }
+    ));
+    // Active the active tab
+   this.activeTab = this.router.url.split('/').pop();
+
   }
 
   onActiveItemChange(event: MenuItem): void {
@@ -145,41 +107,38 @@ export class MainComponent implements OnInit, OnDestroy {
    */
   load(barcode: string): void {
     this.barcode = barcode;
-
     this.subscription.add(
       this.patronService.getPatron(barcode)
       .pipe(
         tap((patron: any) => this.patron = patron),
+        // load statistics
+        switchMap((patron: any) =>
+          this.circulationStatsService.getStats(patron.pid)
+        ),
+        // load overdue transactions
+        switchMap(() => this.patronService.getOverduePreview(this.patron.pid)),
+        // compute the total of the overdue transactions
+        map((overdues) => {
+            let fees = 0;
+            overdues.map((fee: any) => {
+              fees += fee.fees.total;
+            });
+            this.circulationStatsService.setOverdueFees(fees, overdues);
+        }),
+        // get engaged fees patron transactions
+        tap(() => this.patronTransactionService.emitPatronTransactionByPatron(this.patron.pid, undefined, 'open')),
+        // subscribe to the engaged patron transactions
+        switchMap(() => this.patronTransactionService.patronTransactionsSubject$),
+        // set engaged fees in the shared service
+        map((transactions) => {
+          this.circulationStatsService.setFeesEngaged(this.patronTransactionService.computeTotalTransactionsAmount(transactions), transactions);
+        }),
+        tap(() => this.initializeTabs(this.patron.keep_history)),
+        tap(() => this.initializeShortcuts(this.patron.keep_history)),
         tap(() => {
-          // We need to unregister/register the shortcuts after the patron was loaded.
-          // Otherwise, the patron could be considered has null and this will
-          // cause error for navigation url construction
           this._unregisterShortcuts();
           this._registerShortcuts();
-        }),
-        switchMap((patron: any) => {
-          const circulationInformations$ = this.patronService.getCirculationInformations(patron.pid);
-          const checkInHistory$ = this.operationLogsApiService.getCheckInHistory(patron.pid, 1, 1);
-          const overduesPreview$ = this.patronService.getOverduesPreview(this.patron.pid);
-          return forkJoin([circulationInformations$, checkInHistory$, overduesPreview$]);
-        }),
-        tap(([informations, checkInHistory, overduesPreview]: any) => {
-          this.circulationService.clear();
-          this.circulationService.statisticsIncrease(CirculationStatistics.FEES_ENGAGED, informations.fees.engaged);
-          this.circulationService.statisticsIncrease(CirculationStatistics.FEES, informations.fees.engaged);
-          this._parseStatistics(informations.statistics || {});
-          for (const message of (informations.messages || [])) {
-            this.circulationService.addCirculationMessage({
-              severity: getSeverity(message.type),
-              detail: message.content
-            });
-          }
-          overduesPreview.map((overdue: any) => this.circulationService.statisticsIncrease(CirculationStatistics.FEES, overdue.fees.total));
-          if (this.patron.keep_history) {
-            this.circulationService.statisticsIncrease(CirculationStatistics.HISTORY, this.recordService.totalHits(checkInHistory.hits.total));
-          }
-        }),
-        tap(() => this.initializeMenu(this.patron.keep_history))
+        })
       )
       .subscribe()
     );
@@ -210,38 +169,14 @@ export class MainComponent implements OnInit, OnDestroy {
     }
   }
 
-  /**
-   * Parse statistics from API into corresponding tab statistic.
-   * @param data: a dictionary of loan state/value
-   */
-  private _parseStatistics(data: any): void {
-    for (const key of Object.keys(data)) {
-      switch (key) {
-        case LoanState[LoanState.PENDING]:
-        case LoanState[LoanState.ITEM_IN_TRANSIT_FOR_PICKUP]:
-          this.circulationService.statisticsIncrease(CirculationStatistics.PENDING, Number(data[key]));
-          break;
-        case LoanState[LoanState.ITEM_AT_DESK]:
-          this.circulationService.statisticsIncrease(CirculationStatistics.PICKUP,  Number(data[key]));
-          break;
-        case LoanState[LoanState.ITEM_ON_LOAN]:
-          this.circulationService.statisticsIncrease(CirculationStatistics.LOAN,  Number(data[key]));
-          break;
-        case 'ill_requests':
-          this.circulationService.statisticsIncrease(CirculationStatistics.ILL, Number(data[key]));
-          break;
-      }
-    }
-  }
-
-  private initializeMenu(keepHistory: boolean): void {
-    this.items = [
+  private initializeTabs(keepHistory: boolean): void {
+    let items = [
       {
         id: 'loan',
         label: this.translateService.instant('On loan'),
         routerLink: ['/circulation', 'patron', this.barcode, 'loan'],
         tag: {
-          statistics: this.circulationService.statistics
+          statistics: this.circulationStatsService.statistics
         }
       },
       {
@@ -249,7 +184,7 @@ export class MainComponent implements OnInit, OnDestroy {
         label: this.translateService.instant('To pick up'),
         routerLink: ['/circulation', 'patron', this.barcode, 'pickup'],
         tag: {
-          statistics: this.circulationService.statistics
+          statistics: this.circulationStatsService.statistics
         }
       },
       {
@@ -257,7 +192,7 @@ export class MainComponent implements OnInit, OnDestroy {
         label: this.translateService.instant('Pending'),
         routerLink: ['/circulation', 'patron', this.barcode, 'pending'],
         tag: {
-          statistics: this.circulationService.statistics
+          statistics: this.circulationStatsService.statistics
         }
       },
       {
@@ -265,7 +200,7 @@ export class MainComponent implements OnInit, OnDestroy {
         label: this.translateService.instant('Interlibrary loan'),
         routerLink: ['/circulation', 'patron', this.barcode, 'ill'],
         tag: {
-          statistics: this.circulationService.statistics
+          statistics: this.circulationStatsService.statistics
         }
       },
       {
@@ -279,23 +214,78 @@ export class MainComponent implements OnInit, OnDestroy {
         routerLink: ['/circulation', 'patron', this.barcode, 'fees'],
         tag: {
           severity: 'warn',
-          statistics: this.circulationService.statistics,
+          statistics: this.circulationStatsService.statistics,
           withCurrency: true,
         }
       }
     ];
     if (keepHistory) {
-      this.items.push({
+      items.push({
         id: 'history',
         label: this.translateService.instant('History'),
-        routerLink: ['/circulation', 'patron', this.barcode, 'history'],
-        tag: {
-          statistics: this.circulationService.statistics
-        }
+        routerLink: ['/circulation', 'patron', this.barcode, 'history']
       });
     }
+    this.items = items;
+  }
 
-    // Active the active tab
-    this.activeTab = this.router.url.split('/').pop();
+  private initializeShortcuts(keepHistory: boolean): void {
+    this._shortcuts = [
+      {
+        keys: '1',
+        group: this.translateService.instant('Patron profile shortcuts'),
+        description: this.translateService.instant('Go to "circulation" tab'),
+        callback: ($event) => {
+          this.router.navigate(['/circulation', 'patron', this.barcode, 'loan']);
+        }
+      }, {
+        keys: '2',
+        group: this.translateService.instant('Patron profile shortcuts'),
+        description: this.translateService.instant('Go to "pickup" tab'),
+        callback: ($event) => {
+          this.router.navigate(['/circulation', 'patron', this.barcode, 'pickup']);
+        }
+      }, {
+        keys: '3',
+        group: this.translateService.instant('Patron profile shortcuts'),
+        description: this.translateService.instant('Go to "pending" tab'),
+        callback: ($event) => {
+          this.router.navigate(['/circulation', 'patron', this.barcode, 'pending']);
+        }
+      }, {
+        keys: '4',
+        group: this.translateService.instant('Patron profile shortcuts'),
+        description: this.translateService.instant('Go to "ILL" tab'),
+        callback: ($event) => {
+          this.router.navigate(['/circulation', 'patron', this.barcode, 'ill']);
+        }
+      }, {
+        keys: '5',
+        group: this.translateService.instant('Patron profile shortcuts'),
+        description: this.translateService.instant('Go to "patron profile" tab'),
+        callback: ($event) => {
+          this.router.navigate(['/circulation', 'patron', this.barcode, 'profile']);
+        }
+      }, {
+        keys: '6',
+        group: this.translateService.instant('Patron profile shortcuts'),
+        description: this.translateService.instant('Go to "fees" tab'),
+        callback: ($event) => {
+          this.router.navigate(['/circulation', 'patron', this.barcode, 'fees']);
+        }
+      }
+    ];
+    if(keepHistory) {
+        this._shortcuts.push(
+          {
+            keys: '7',
+            group: this.translateService.instant('Patron profile shortcuts'),
+            description: this.translateService.instant('Go to "history" tab'),
+            callback: ($event) => {
+              this.router.navigate(['/circulation', 'patron', this.barcode, 'history']);
+            }
+          }
+        );
+    }
   }
 }

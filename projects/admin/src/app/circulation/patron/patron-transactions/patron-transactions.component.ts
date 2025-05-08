@@ -15,18 +15,17 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { Component, inject, model, OnDestroy, OnInit } from '@angular/core';
+import { Component, computed, inject, model, OnDestroy, OnInit, WritableSignal } from '@angular/core';
 import { Loan, LoanOverduePreview } from '@app/admin/classes/loans';
 import { PatronTransaction, PatronTransactionStatus } from '@app/admin/classes/patron-transaction';
 import { OrganisationService } from '@app/admin/service/organisation.service';
-import { PatronService } from '@app/admin/service/patron.service';
 import { TranslateService } from '@ngx-translate/core';
 import { UserService } from '@rero/shared';
 import { MenuItem } from 'primeng/api';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { Subscription } from 'rxjs';
-import { CirculationService } from '../../services/circulation.service';
 import { PatronTransactionService } from '../../services/patron-transaction.service';
+import { CirculationStatsService } from '../service/circulation-stats.service';
 import { PatronFeeComponent } from './patron-fee/patron-fee.component';
 import { PatronTransactionEventFormComponent } from './patron-transaction-event-form/patron-transaction-event-form.component';
 
@@ -38,34 +37,42 @@ import { PatronTransactionEventFormComponent } from './patron-transaction-event-
 export class PatronTransactionsComponent implements OnInit, OnDestroy {
 
   private dialogService: DialogService = inject(DialogService);
-  private patronService: PatronService = inject(PatronService);
   private organisationService: OrganisationService = inject(OrganisationService);
   private patronTransactionService: PatronTransactionService = inject(PatronTransactionService);
   private userService: UserService = inject(UserService);
   private translateService: TranslateService = inject(TranslateService);
-  private circulationService: CirculationService = inject(CirculationService);
+
+  private circulationStatsService: CirculationStatsService = inject(CirculationStatsService);
 
   private dynamicDialogRef: DynamicDialogRef | undefined;
 
   activePanel = model<undefined | string>(undefined);
 
+  statistics = this.circulationStatsService.statistics;
+
   // COMPONENTS ATTRIBUTES ===============================================================
   /** all tab reference array */
   tabs = {
     engagedFees: {
-      transactions: [] as PatronTransaction[],
-      totalAmount: 0
+      transactions: null as WritableSignal<PatronTransaction[]>,
     },
     overduePreviewFees: {
-      transactions: [] as {fees: LoanOverduePreview, loan: Loan}[],
-      totalAmount: 0
+      transactions: null as  WritableSignal<{fees: LoanOverduePreview, loan: Loan}[]>,
     },
     historyFees: {
       transactions: null as PatronTransaction[]
     }
   };
 
-  actions: MenuItem[] | undefined;
+  actions = computed<MenuItem[] | undefined>(() => {
+    return [
+      {
+        label: this.translateService.instant('for my library'),
+        command: () => this.payAllTransactionsInMyLibrary(),
+        disabled: this.myLibraryEngagedFees().length === 0
+      }
+    ];
+  });
 
   /** Current patron */
   private patron: any = undefined;
@@ -86,19 +93,17 @@ export class PatronTransactionsComponent implements OnInit, OnDestroy {
    * Get engaged fees related to the current user library
    * @return the list of corresponding transactions.
    */
-  get myLibraryEngagedFees(): PatronTransaction[] {
+  myLibraryEngagedFees = computed<PatronTransaction[]>(() => {
     const libraryPID = this.userService.user.currentLibrary;
-    return this.tabs.engagedFees.transactions.filter(t => t.library != null && t.library.pid === libraryPID);
-  }
-
-  get statistics() {
-    return this.circulationService.statistics;
-  }
+    return this.tabs.engagedFees.transactions().filter(t => t.library != null && t.library.pid === libraryPID);
+  });
 
   // CONSTRUCTOR & HOOKS ==================================================================
   /** OnInit hook */
   ngOnInit(): void {
     this.activePanel.set("0");
+    this.tabs.overduePreviewFees.transactions = this.circulationStatsService.overdueTransactions;
+    this.tabs.engagedFees.transactions = this.circulationStatsService.engagedTransactions;
     this.subscriptions.add(
       this.activePanel.subscribe(val => {
         // lazy loading history
@@ -107,45 +112,12 @@ export class PatronTransactionsComponent implements OnInit, OnDestroy {
         }
       })
     );
-    this.patronService.currentPatron$.subscribe((patron: any) => {
-      if (patron) {
-        this.patron = patron;
-        // engaged fees
-        this.subscriptions.add(
-          this.patronTransactionService
-            .patronTransactionsSubject$
-            .subscribe((transactions) => {
-              this.tabs.engagedFees.transactions = transactions;
-              this.tabs.engagedFees.totalAmount = this.patronTransactionService.computeTotalTransactionsAmount(transactions);
-              this.generateActionsMenu();
-            }
-          )
-        );
-        // overdue fees
-        this.patronService
-          .getOverduesPreview(this.patron.pid)
-          .subscribe((overdues) => {
-            this.tabs.overduePreviewFees.transactions = overdues;
-            this.tabs.overduePreviewFees.totalAmount = overdues.reduce((acc, overdue) => acc + overdue.fees.total, 0);
-          });
-        this.reloadEngagedFees();
-      }
-    });
+
   }
 
   /** OnDestroy hook */
   ngOnDestroy(): void {
     this.subscriptions.unsubscribe();
-  }
-
-  generateActionsMenu(): void {
-    this.actions = [
-      {
-        label: this.translateService.instant('for my library'),
-        command: () => this.payAllTransactionsInMyLibrary(),
-        disabled: this.myLibraryEngagedFees.length === 0
-      }
-    ];
   }
 
   // COMPONENT FUNCTIONS ==================================================================
@@ -171,7 +143,7 @@ export class PatronTransactionsComponent implements OnInit, OnDestroy {
       data: {
         action: 'pay',
         mode: 'full',
-        transactions: this.tabs.engagedFees.transactions
+        transactions: this.tabs.engagedFees.transactions()
       }
     });
   }
@@ -187,7 +159,7 @@ export class PatronTransactionsComponent implements OnInit, OnDestroy {
       data: {
         action: 'pay',
         mode: 'full',
-        transactions: this.myLibraryEngagedFees
+        transactions: this.myLibraryEngagedFees()
       }
     });
   }
@@ -201,7 +173,7 @@ export class PatronTransactionsComponent implements OnInit, OnDestroy {
       width: '30vw',
       closable: true,
       data: {
-        patronPid: this.patron.pid,
+        patron: this.patron,
         organisationPid: this.patron.organisation.pid
       }
     });
