@@ -16,6 +16,7 @@
  */
 import { HttpErrorResponse } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
+import { TranslateService } from '@ngx-translate/core';
 import { RecordHandleErrorService as CoreRecordHandleErrorService } from '@rero/ng-core';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { MessageService } from 'primeng/api';
@@ -28,6 +29,7 @@ export class RecordHandleErrorService extends CoreRecordHandleErrorService {
 
   private spinner: NgxSpinnerService = inject(NgxSpinnerService);
   private messageService = inject(MessageService);
+  protected translateService: TranslateService = inject(TranslateService);
 
   /**
    * Http handle Error
