@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2020-2024 RERO
+ * Copyright (C) 2020-2025 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -17,8 +17,7 @@
 
 import { Component, inject, OnInit } from '@angular/core';
 import { PatronService } from '../../../service/patron.service';
-import { CirculationStatistics } from '../../circulationStatistics';
-import { CirculationService } from '../../services/circulation.service';
+import { CirculationStatsService } from '../service/circulation-stats.service';
 
 @Component({
     selector: 'admin-pickup',
@@ -28,14 +27,17 @@ import { CirculationService } from '../../services/circulation.service';
 export class PickupComponent implements OnInit {
 
   private patronService: PatronService = inject(PatronService);
-  private circulationService: CirculationService = inject(CirculationService);
+  private circulationStatsService: CirculationStatsService = inject(CirculationStatsService);
 
   /** Loans */
   loans: [];
 
+  patron: any;
+
   /** OnInit hook */
   ngOnInit() {
     this.patronService.currentPatron$.subscribe((patron: any) => {
+      this.patron = patron;
       if (patron) {
         this.patronService.getItemsPickup(patron.pid)
         .subscribe(loans => {
@@ -53,7 +55,6 @@ export class PickupComponent implements OnInit {
     // Remove loan in list
     const index = this.loans.findIndex((element: any) => element.id == loanId);
     this.loans.splice(index, 1);
-    // Update count on tab
-    this.circulationService.statisticsDecrease(CirculationStatistics.PICKUP, 1);
+    this.circulationStatsService.updateStats(this.patron.pid);
   }
 }

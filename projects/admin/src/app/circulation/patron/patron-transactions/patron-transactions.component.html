@@ -20,9 +20,9 @@
       <p-accordion-header>
         <div class="ui:flex ui:items-center ui:w-full">
           <h6 class="ui:flex ui:grow" translate>Engaged fees</h6>
-          @if (statistics()['fees_engaged'] > 0) {
+          @if (statistics()['feesEngaged'] > 0) {
             <p-tag severity="warn" class="ui:mr-2">
-              {{ statistics()['fees_engaged'] | currency: organisation.default_currency }}
+              {{ statistics()['feesEngaged'] | currency: organisation.default_currency }}
             </p-tag>
           }
         </div>
@@ -31,27 +31,27 @@
         <div class="ui:flex ui:justify-end ui:my-2">
           <p-button size="small" icon="fa fa-plus" [label]="'Add a fee'|translate" (onClick)="addFee()" />
         </div>
-        @if (tabs.engagedFees.transactions.length > 0) {
+        @if (tabs.engagedFees.transactions().length > 0) {
           <div class="ui:grid ui:grid-cols-12 ui:gap-4 ui:py-4 ui:px-2 ui:my-1 ui:text-lg ui:font-bold ui:items-center ui:border-t ui:border-surface">
             <div class="ui:col-span-2" translate>Date</div>
             <div class="ui:col-span-3" translate>Category</div>
             <div class="ui:col-span-3" translate>Library</div>
             <div class="ui:col-span-2 ui:text-right">
-              {{ 'Total amount' | translate }}: {{ statistics()['fees_engaged'] | currency: organisation.default_currency }}
+              {{ 'Total amount' | translate }}: {{ statistics()['feesEngaged'] | currency: organisation.default_currency }}
             </div>
             <div class="ui:col-span-2 ui:flex ui:justify-end">
               <p-splitButton
                 size="sm"
                 [label]="'Pay all'|translate"
-                [disabled]="tabs.engagedFees.totalAmount <= 0"
-                [model]="actions"
+                [disabled]="statistics()['feesEngaged'] <= 0"
+                [model]="actions()"
                 (onClick)="payAllTransactions()"
                 appendTo="body"
               />
             </div>
           </div>
           <div>
-            @for (t of tabs.engagedFees.transactions; track t.pid) {
+            @for (t of tabs.engagedFees.transactions(); track t.pid) {
               <div class="ui:odd:bg-surface-50">
                 <admin-patron-transaction [transaction]="t" />
               </div>
@@ -68,25 +68,25 @@
       <p-accordion-header>
         <div class="ui:flex ui:items-center ui:w-full">
           <h6 class="ui:flex ui:grow" translate>Overdue preview fees</h6>
-          @if (tabs.overduePreviewFees.totalAmount > 0) {
+          @if (statistics().overdueFees > 0) {
             <p-tag severity="secondary" class="ui:mr-2">
-              {{ tabs.overduePreviewFees.totalAmount | currency: organisation.default_currency }}
+              {{ statistics().overdueFees| currency: organisation.default_currency }}
             </p-tag>
           }
         </div>
       </p-accordion-header>
       <p-accordion-content>
-        @if (tabs.overduePreviewFees.transactions.length > 0) {
+        @if (tabs.overduePreviewFees.transactions().length > 0) {
           <div class="ui:grid ui:grid-cols-12 ui:gap-4 ui:py-4 ui:px-2 ui:my-1 ui:text-lg ui:font-bold ui:items-center ui:border-t ui:border-b ui:border-surface">
             <div class="ui:col-span-2" translate>Due date</div>
             <div class="ui:col-span-8" translate>Document</div>
             <div class="ui:col-span-2 ui:text-right">
-              {{ 'Total amount' | translate }}: {{ tabs.overduePreviewFees.totalAmount | currency: organisation.default_currency }}
+              {{ 'Total amount' | translate }}: {{ statistics().overdueFees | currency: organisation.default_currency }}
             </div>
             <div class="ui:col-span-1"></div>
           </div>
           <div>
-            @for (t of tabs.overduePreviewFees.transactions; track $index) {
+            @for (t of tabs.overduePreviewFees.transactions(); track $index) {
               <div class="ui:odd:bg-surface-50">
                 <admin-overdue-transaction [transaction]="t" />
               </div>
