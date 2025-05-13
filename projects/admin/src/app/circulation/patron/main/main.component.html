@@ -21,7 +21,7 @@
     [displayCirculationMessages]="true"
     (clearPatron)="clearPatron()"
   />
-  <p-tabs [value]="activeTab">
+  <p-tabs [value]="activeTab()">
     <p-tablist>
       @for(item of items; track item.id) {
         <p-tab [value]="item.id" [routerLink]="item.routerLink">

@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { Component, computed, inject, model, OnDestroy, OnInit, WritableSignal } from '@angular/core';
+import { Component, computed, inject, model, ModelSignal, OnDestroy, OnInit, WritableSignal } from '@angular/core';
 import { Loan, LoanOverduePreview } from '@app/admin/classes/loans';
 import { PatronTransaction, PatronTransactionStatus } from '@app/admin/classes/patron-transaction';
 import { OrganisationService } from '@app/admin/service/organisation.service';
@@ -28,6 +28,7 @@ import { PatronTransactionService } from '../../services/patron-transaction.serv
 import { CirculationStatsService } from '../service/circulation-stats.service';
 import { PatronFeeComponent } from './patron-fee/patron-fee.component';
 import { PatronTransactionEventFormComponent } from './patron-transaction-event-form/patron-transaction-event-form.component';
+import { PatronService } from '@app/admin/service/patron.service';
 
 @Component({
     selector: 'admin-patron-transactions',
@@ -41,12 +42,13 @@ export class PatronTransactionsComponent implements OnInit, OnDestroy {
   private patronTransactionService: PatronTransactionService = inject(PatronTransactionService);
   private userService: UserService = inject(UserService);
   private translateService: TranslateService = inject(TranslateService);
+  private patronService: PatronService = inject(PatronService);
 
   private circulationStatsService: CirculationStatsService = inject(CirculationStatsService);
 
   private dynamicDialogRef: DynamicDialogRef | undefined;
 
-  activePanel = model<undefined | string>(undefined);
+  activePanel: ModelSignal<undefined | string> = model<undefined | string>(undefined);
 
   statistics = this.circulationStatsService.statistics;
 
@@ -104,15 +106,15 @@ export class PatronTransactionsComponent implements OnInit, OnDestroy {
     this.activePanel.set("0");
     this.tabs.overduePreviewFees.transactions = this.circulationStatsService.overdueTransactions;
     this.tabs.engagedFees.transactions = this.circulationStatsService.engagedTransactions;
+    this.patronService.currentPatron$.subscribe(patron => this.patron = patron);
     this.subscriptions.add(
-      this.activePanel.subscribe(val => {
+      this.activePanel. subscribe(val => {
         // lazy loading history
         if (val === "2") {
           this.loadFeesHistory();
         }
       })
     );
-
   }
 
   /** OnDestroy hook */
@@ -123,7 +125,7 @@ export class PatronTransactionsComponent implements OnInit, OnDestroy {
   // COMPONENT FUNCTIONS ==================================================================
   /** load all PatronTransactions for the patron without 'status' restriction */
   loadFeesHistory(): void {
-    if (this.patron && this.tabs.historyFees.transactions === null) {
+    if (this.patron) {
       this.patronTransactionService
         .patronTransactionsByPatron$(this.patron.pid, undefined, PatronTransactionStatus.CLOSED.toString())
         .subscribe(transactions => {

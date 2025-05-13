@@ -104,7 +104,7 @@
         <h6 translate>History</h6>
       </p-accordion-header>
       <p-accordion-content>
-        @if (tabs.historyFees.transactions !== null && tabs.historyFees.transactions.length > 0) {
+        @if (tabs.historyFees?.transactions?.length > 0) {
           <div class="ui:grid ui:grid-cols-12 ui:gap-4 ui:py-4 ui:my-1 ui:text-lg ui:font-bold ui:items-center">
             <div class="ui:col-span-2" translate>Date</div>
             <div class="ui:col-span-3" translate>Category</div>

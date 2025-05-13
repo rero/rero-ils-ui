@@ -36,7 +36,6 @@ export class RecordHandleErrorService extends CoreRecordHandleErrorService {
    * @returns Observable
    */
   handleError(error: HttpErrorResponse, resourceName?: string): Observable<never> {
-    console.log(resourceName.startsWith('import_'));
     if (resourceName.startsWith('import_')) {
       this.messageService.add({
         severity: 'error',

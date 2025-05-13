@@ -21,15 +21,17 @@
       <div class="ui:col-span-2" translate>Note</div>
       <div class="ui:col-span-10">{{ transaction.note }}</div>
     }
-    @if (transaction.document !== null && transaction.document.pid | getRecord:'documents' | async; as document) {
-      <div class="ui:col-span-2" translate>Document</div>
-      <div class="ui:col-span-10">
-        @if ($any(document).metadata.title | mainTitle; as title) {
-          <a [routerLink]="['/records','documents','detail', transaction.document.pid]">
-            {{ title | truncateText: 15 }}
-          </a>
-        }
-      </div>
+    @if (transaction?.document?.pid) {
+      @if(transaction.document.pid | getRecord:'documents' | async; as document) {
+        <div class="ui:col-span-2" translate>Document</div>
+        <div class="ui:col-span-10">
+          @if ($any(document).metadata.title | mainTitle; as title) {
+            <a [routerLink]="['/records','documents','detail', transaction.document.pid]">
+              {{ title | truncateText: 15 }}
+            </a>
+          }
+        </div>
+      }
     }
     @if (item) {
       <div class="ui:col-span-2" translate>Item</div>

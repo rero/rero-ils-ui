@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, inject, OnDestroy, OnInit } from '@angular/core';
+import { Component, inject, model, ModelSignal, OnDestroy, OnInit, signal } from '@angular/core';
 import { ActivatedRoute, NavigationEnd, Router, Scroll } from '@angular/router';
 import { OrganisationService } from '@app/admin/service/organisation.service';
 import { PatronService } from '@app/admin/service/patron.service';
@@ -53,7 +53,7 @@ export class MainComponent implements OnInit, OnDestroy {
 
   items: MenuItem[] | undefined = [];
 
-  activeTab: string;
+  activeTab: ModelSignal<string> = model.required<string>();
 
   subscription = new Subscription();
 
@@ -78,20 +78,14 @@ export class MainComponent implements OnInit, OnDestroy {
     }));
     this.subscription.add(this.router.events.subscribe((event: NavigationEnd | any) => {
       if (event instanceof NavigationEnd) {
-        this.activeTab = this.router.url.split('/').pop();
+        this.activeTab.set(this.router.url.split('/').pop());
       }
     }
     ));
     // Active the active tab
-   this.activeTab = this.router.url.split('/').pop();
-
+   this.activeTab.set(this.router.url.split('/').pop());
   }
 
-  onActiveItemChange(event: MenuItem): void {
-    if (event) {
-      this.router.navigate(event.routerLink);
-    }
-  }
 
   /** OnDestroy hook */
   ngOnDestroy(): void {
