@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { Component, inject, Input, OnInit } from '@angular/core';
+import { Component, inject, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { PatronTransactionService } from '@app/admin/circulation/services/patron-transaction.service';
 import { PatronTransaction, PatronTransactionEventType, PatronTransactionStatus } from '@app/admin/classes/patron-transaction';
@@ -35,7 +35,7 @@ import { SelectChangeEvent } from 'primeng/select';
     templateUrl: './patron-transaction.component.html',
     standalone: false
 })
-export class PatronTransactionComponent implements OnInit {
+export class PatronTransactionComponent implements OnChanges {
 
   private dialogService: DialogService = inject(DialogService);
   private organisationService: OrganisationService = inject(OrganisationService);
@@ -87,18 +87,17 @@ export class PatronTransactionComponent implements OnInit {
     return this.organisationService.organisation;
   }
   // HOOKS ============================================
-  /** OnInit hook */
-  ngOnInit(): void {
-    if (this.transaction) {
-      // Open the current event if the url parameter match with transaction pid
-      if (this.router.snapshot.queryParams.event === this.transaction.pid) {
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if(changes?.transaction?.currentValue) {
+            // Open the current event if the url parameter match with transaction pid
+      if (this.router.snapshot.queryParams.event === changes.transaction.currentValue) {
         this.isCollapsed = false;
       }
-      this.patronTransactionService.loadTransactionHistory(this.transaction);
+      this.patronTransactionService.loadTransactionHistory(this.transaction).subscribe(events => this.transaction.events = events);
       this.generateActionsMenu();
     }
   }
-
   // COMPONENT FUNCTIONS ========================================================
 
   /** Check if the transaction contains a 'dispute' linked event

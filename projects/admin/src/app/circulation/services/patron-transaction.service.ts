@@ -137,13 +137,13 @@ export class PatronTransactionService {
    * Load events linked to a patron transaction
    * @param transaction - the parent transaction
    */
-  loadTransactionHistory(transaction: PatronTransaction) {
+  loadTransactionHistory(transaction: PatronTransaction): Observable<any> {
     const query = `parent.pid:${transaction.pid}`;
-    this.recordService.getRecords('patron_transaction_events', query, 1, RecordService.MAX_REST_RESULTS_SIZE).pipe(
+    return this.recordService.getRecords('patron_transaction_events', query, 1, RecordService.MAX_REST_RESULTS_SIZE).pipe(
       map((data: Record) => data.hits),
       map(hits => this.recordService.totalHits(hits.total) === 0 ? [] : hits.hits),
       map(hits => hits.map(hit => new PatronTransactionEvent(hit.metadata)))
-    ).subscribe(events => transaction.events = events);
+    );
   }
 
   /**

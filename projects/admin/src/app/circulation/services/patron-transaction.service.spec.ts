@@ -158,7 +158,7 @@ describe('PatronTransactionService', () => {
     spyOn(recordService, 'getRecords').and.returnValue(of(apiResponse));
     const transaction = new PatronTransaction(patronTransaction.metadata);
     expect(transaction.events.length).toEqual(0);
-    service.loadTransactionHistory(transaction);
+    service.loadTransactionHistory(transaction).subscribe(events => transaction.events = events);
     expect(transaction.events.length).toEqual(1);
     const transactionEvent = transaction.events[0];
     expect(transactionEvent).toBeInstanceOf(PatronTransactionEvent);
