@@ -32,7 +32,7 @@
     }
   </div>
 </header>
-<div class="container ui:pb-6">
+<div class="container ui:mb-2">
 @if (user?.hasAdminUiAccess) {
   <admin-menu-app />
   <div class="ui:px-8">
@@ -56,10 +56,3 @@
   </div>
 }
 </div>
-
-<footer class="container ui:px-8 ui:flex ui:border-t ui:border-surface ui:justify-center ui:items-center ui:mt-6 ui:py-6">
-  <p class="ui:text-muted-color ui:mb-0">
-    {{ 'Powered by' | translate }} <a href="https://github.com/rero/rero-ils" target="_blank">RERO ILS</a> & <a href="https://inveniosoftware.org/" target="_blank">Invenio</a> |
-    <a href="https://www.rero.ch/" target="_blank">RERO+</a>
-  </p>
-</footer>
