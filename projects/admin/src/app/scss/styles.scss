@@ -44,3 +44,13 @@ body {
   max-width: 1440px;
   margin: auto;
 }
+
+@media print {
+  body, .container, .main-content {
+    min-width: 992px !important;
+  }
+
+  button, header, .p-menubar {
+    display : none
+  }
+}

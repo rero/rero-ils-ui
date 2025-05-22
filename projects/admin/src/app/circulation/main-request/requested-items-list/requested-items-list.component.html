@@ -31,7 +31,7 @@
     </ng-template>
     @if (items.length > 0) {
       @for (item of items; track item.pid) {
-        <div class="ui:odd:bg-surface-50">
+        <div class="ui:odd:bg-surface-50 ui:print:border-b-1">
           <admin-requested-item
             [item]="item"
             [isCollapsed]="isCollapsed"
