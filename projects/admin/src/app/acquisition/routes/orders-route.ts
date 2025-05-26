@@ -73,8 +73,7 @@ export class OrdersRoute extends BaseRoute implements RouteInterface {
               'account',
               'vendor',
               'order_date',
-              'receipt_date',
-              'type'
+              'receipt_date'
             ],
             aggregationsBucketSize: 10,
             itemHeaders: {
