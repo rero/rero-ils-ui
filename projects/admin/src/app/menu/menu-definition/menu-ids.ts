@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2024 RERO
+ * Copyright (C) 2024-2025 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -30,7 +30,7 @@ export const MENU_IDS = {
       ITEM_TYPE: 'app-admin-item-type',
       LIBRARY: 'app-admin-library',
       MIGRATION: 'app-admin-migration',
-      MY_LIBRARY: 'app-admin-library',
+      MY_LIBRARY: 'app-admin-my-library',
       MY_ORGANISATION: 'app-admin-organisation',
       PATRON_TYPE: 'app-admin-patron-type',
       PERMISSION: 'app-admin-permission',
