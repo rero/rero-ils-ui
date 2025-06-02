@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2021-2024 RERO
+ * Copyright (C) 2021-2025 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -17,7 +17,6 @@
 
 import { Component, inject, Input, OnInit } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-import { RecordService } from '@rero/ng-core';
 import { AppSettingsService } from '@rero/shared';
 import { MenuItem } from 'primeng/api';
 
@@ -28,7 +27,6 @@ import { MenuItem } from 'primeng/api';
 })
 export class DocumentDetailViewComponent implements OnInit {
   private appSettingsService: AppSettingsService = inject(AppSettingsService);
-  private recordService: RecordService = inject(RecordService);
   private translateService: TranslateService = inject(TranslateService);
 
   @Input() viewcode: string;
@@ -42,7 +40,6 @@ export class DocumentDetailViewComponent implements OnInit {
   ngOnInit(): void {
     // Set view code to app settings
     this.appSettingsService.currentViewCode = this.viewcode;
-    this.recordService.getRecord('documents', this.documentpid, 1).subscribe(doc => this.document = doc);
     this.exportItems = [
       {
         icon: "fa fa-file-code-o",

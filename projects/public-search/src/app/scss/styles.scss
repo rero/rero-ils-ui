@@ -31,3 +31,10 @@ legend {
   @apply ui:text-base;
   width: auto;
 }
+
+public-search-document {
+  .p-menubar-root-list {
+    @apply ui:items-start;
+  }
+}
+
