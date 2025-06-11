@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2024 RERO
+ * Copyright (C) 2024-2025 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -39,6 +39,8 @@ export class MenuService {
   private configService: CoreConfigService = inject(CoreConfigService);
   private httpClient: HttpClient = inject(HttpClient);
   private permissionsService: PermissionsService = inject(PermissionsService);
+
+  private libraryKeys = ['library', 'owner_library', 'owning_library'];
 
   private logoutEvent = new EventEmitter<boolean>();
 
@@ -142,6 +144,7 @@ export class MenuService {
     const routerLink = [...item.routerLink];
     routerLink[4] = library.pid;
     item.routerLink = routerLink;
+    this.updateLibraryQueryParams(library);
   }
 
   public updateLibraryQueryParams(library: ISwitchLibrary): void {
@@ -189,9 +192,11 @@ export class MenuService {
   }
 
   private processQueryParams(queryParams: object, library: ISwitchLibrary): Object {
-    if ('library' in queryParams) {
-      return { ...queryParams, library: library.pid }
-    }
+    Object.keys(queryParams).forEach((key: string) => {
+      if (this.libraryKeys.includes(key)) {
+        queryParams[key] = library.pid;
+      }
+    });
 
     return queryParams;
   }
