@@ -27,7 +27,9 @@
     </p-tablist>
     <p-tabpanels>
       <p-tabpanel value="get">
-        <shared-doc-files [documentPid]="document.metadata.pid" />
+        <div class="ui:mb-2">
+          <shared-doc-files [documentPid]="document.metadata.pid" />
+        </div>
         <public-search-holdings [viewcode]="viewcode" [documentPid]="document.metadata.pid" />
         <public-search-electronic-holdings [viewcode]="viewcode" [documentPid]="document.metadata.pid" />
       </p-tabpanel>

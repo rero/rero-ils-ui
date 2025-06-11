@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2019-2024 RERO
+ * Copyright (C) 2019-2025 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -21,7 +21,6 @@ import { RecordPermissionService } from '@app/admin/service/record-permission.se
 import { TranslateService } from '@ngx-translate/core';
 import { RecordUiService } from '@rero/ng-core';
 import { IPermissions, PERMISSION_OPERATOR, PERMISSIONS, PermissionsService, UserService } from '@rero/shared';
-import { AccordionTabOpenEvent } from 'primeng/accordion';
 import { forkJoin, Observable } from 'rxjs';
 
 @Component({
@@ -100,7 +99,6 @@ export class HoldingsComponent implements OnInit {
 
   /** onInit hook */
   ngOnInit() {
-    this.activePanels.set(this.isCurrentOrganisation? [0]: null)
     this.options = [
       {
         label: this.translateService.instant('an item'),
@@ -125,6 +123,7 @@ export class HoldingsComponent implements OnInit {
         .subscribe(([holdings, counter, holdPerm, itemPerm]) => {
           this.holdings = holdings;
           this.holdingsTotal = counter;
+          this.activePanels.set(this.holdingsTotal === 1 ? [0] : null);
           this.canAdd = this.canAdd && (holdPerm.create.can || itemPerm.create.can);
         });
     } else {
