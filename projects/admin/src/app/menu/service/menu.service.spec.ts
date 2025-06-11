@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2024 RERO
+ * Copyright (C) 2024-2025 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -20,13 +20,14 @@ import { MenuService } from './menu.service';
 import { of } from 'rxjs';
 import { PERMISSION_OPERATOR, PermissionsService, UserService } from '@rero/shared';
 import { LibraryApiService } from '../api/library-api.service';
-import { LibraryService } from './library.service';
+import { ISwitchLibrary, LibraryService } from './library.service';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { LibrarySwitchStorageService } from './library-switch-storage.service';
 import { CoreConfigService, LocalStorageService } from '@rero/ng-core';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { MenuItem } from 'primeng/api';
+import { MENU_IDS } from '../menu-definition/menu-ids';
 
 
 @Injectable({
@@ -103,10 +104,39 @@ describe('MenuService', () => {
         {
           label: 'Menu 2 - line 1',
           untranslatedLabel: 'Menu 2 - line 1',
+          queryParams: {
+            q: '',
+            page: '1',
+            size: '10',
+            library: '1',
+            owner_library: '1',
+            owning_library: '1'
+          }
         }
+      ]
+    },
+    {
+      label: 'Admin',
+      translateLabel: 'Admin',
+      id: MENU_IDS.APP.ADMIN.MENU,
+      icon: 'fa fa-cogs',
+      items: [
+        {
+          label: 'My library',
+          translateLabel: 'My library',
+          id: MENU_IDS.APP.ADMIN.MY_LIBRARY,
+          icon: 'fa fa-university',
+          routerLink: ['/', 'records', 'libraries', 'detail', '1'],
+        },
       ]
     }
   ];
+
+  const librarySwitch: ISwitchLibrary = {
+    pid: '2',
+    code: 'lib2',
+    name : 'library 2'
+  }
 
   const translations = {
     'ui_language_de': 'Deutsch',
@@ -200,6 +230,15 @@ describe('MenuService', () => {
     expect(menu[0].items[1].label).toEqual('Menu 1 - line 3');
     expect(menu[1].label).toEqual('Menu 2');
     expect(menu[1].items.length).toEqual(1);
+  });
+
+  it('should change the library code with the switch', () => {
+    const menu = service.generateAppMenu(appMenu);
+    service.updateLibraryLink(librarySwitch);
+    expect(menu[2].items[0].routerLink[4]).toEqual('2');
+    expect(menu[1].items[0].queryParams.library).toEqual('2');
+    expect(menu[1].items[0].queryParams.owner_library).toEqual('2');
+    expect(menu[1].items[0].queryParams.owning_library).toEqual('2');
   });
 
   it('should return true on the logout event', () => {
