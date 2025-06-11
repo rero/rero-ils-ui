@@ -205,7 +205,8 @@ export class ItemRequestComponent implements OnInit {
               label: this.translateService.instant('Pickup location'),
               required: true,
               placeholder: this.translateService.instant('Select…'),
-              options: pickups
+              options: pickups,
+              filter: true
             }
           }
         ];
