@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2020-2024 RERO
+ * Copyright (C) 2020-2025 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -15,9 +15,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { FormlyFieldConfig } from '@ngx-formly/core';
+import { _ } from "@ngx-translate/core";
 import { ComponentCanDeactivateGuard, JSONSchema7, Record, RecordService, RouteInterface } from '@rero/ng-core';
 import { PERMISSIONS } from '@rero/shared';
-import { Observable, of } from 'rxjs';
+import { of } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { CAN_ACCESS_ACTIONS, CanAccessGuard } from '../guard/can-access.guard';
 import { PermissionGuard } from '../guard/permission.guard';
@@ -77,11 +78,11 @@ export class HoldingsRoute extends BaseRoute implements RouteInterface {
                 field, jsonSchema
               );
             },
-            deleteMessage: (pid: string): Observable<string[]> => {
-              return of([
-                this.routeToolService.translateService.instant('Do you really want to delete this record?'),
-                this.routeToolService.translateService.instant('This will also delete all items and issues of the holdings.')
-              ]);
+            deleteMessage: (): string[] => {
+              return [
+                this.routeToolService.translateService.instant(_('Do you really want to delete this record?')),
+                this.routeToolService.translateService.instant(_('This will also delete all items and issues of the holdings.'))
+              ];
             },
             redirectUrl: (record: any, action: string) => {
               switch (action) {
