@@ -24,9 +24,9 @@
       />
     </div>
   }
-  <p-accordion [multiple]="true" [value]="[0]">
+  <p-accordion [multiple]="true" [value]="holdingsTotal === 1 ? [0] : []">
     @for (holding of holdings; track $index; let idx = $index) {
-      <p-accordion-panel [value]="idx">
+      <p-accordion-panel [value]="idx" class="ui:mb-2">
         <p-accordion-header>
           <div class="ui:w-full">
             <div class="ui:grid ui:grid-cols-12 ui:gap-4 ui:mb-4">
