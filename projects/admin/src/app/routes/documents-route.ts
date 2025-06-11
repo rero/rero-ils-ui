@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2020-2024 RERO
+ * Copyright (C) 2020-2025 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -18,7 +18,7 @@
 import { _ } from "@ngx-translate/core";
 import { ComponentCanDeactivateGuard, RouteInterface } from '@rero/ng-core';
 import { PERMISSIONS, PERMISSION_OPERATOR } from '@rero/shared';
-import { Observable, of } from 'rxjs';
+import { of } from 'rxjs';
 import { CAN_ACCESS_ACTIONS, CanAccessGuard } from '../guard/can-access.guard';
 import { PermissionGuard } from '../guard/permission.guard';
 import { DocumentsBriefViewComponent } from '../record/brief-view/documents-brief-view/documents-brief-view.component';
@@ -176,11 +176,11 @@ export class DocumentsRoute extends BaseRoute implements RouteInterface {
           {
             key: 'holdings',
             name: 'holdings',
-            deleteMessage: (pid: string): Observable<string[]> => {
-              return of([
-                this.routeToolService.translateService.instant('Do you really want to delete this record?'),
-                this.routeToolService.translateService.instant('This will also delete all items and issues of the holdings.')
-              ]);
+            deleteMessage: (): string[] => {
+              return [
+                this.routeToolService.translateService.instant(_('Do you really want to delete this record?')),
+                this.routeToolService.translateService.instant(_('This will also delete all items and issues of the holdings.'))
+              ];
             },
             hideInTabs: true
           }

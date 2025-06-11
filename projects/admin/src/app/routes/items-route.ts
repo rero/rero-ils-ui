@@ -307,7 +307,7 @@ export class ItemsRoute extends BaseRoute implements RouteInterface {
         record.location = holdingData.metadata.location;
         record.document = holdingData.metadata.document;
         record.holding = { $ref: this.routeToolService.apiService.getRefEndpoint('holdings', holdingPid) };
-        if (holdingData.metadata.patterns.frequency === 'rdafr:1016') {  // 'rdafr:1016 --> 'irregular frequency'
+        if (holdingData.metadata?.patterns?.frequency === 'rdafr:1016') {  // 'rdafr:1016 --> 'irregular frequency'
           record.issue.regular = false;
         }
       }

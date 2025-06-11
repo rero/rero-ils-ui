@@ -84,7 +84,7 @@ export class HoldingHeaderComponent implements OnInit {
   }
 
   delete(callBackend?: boolean) {
-    const params: any = { holding: this.holding };
+    const params: any = { holding: this.holding() };
     if (callBackend !== undefined) {
       params.callBackend = callBackend;
     }
