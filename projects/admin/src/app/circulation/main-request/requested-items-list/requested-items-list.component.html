@@ -20,7 +20,7 @@
       <div class="ui:grid ui:grid-cols-12 ui:gap-4 ui:py-4 ui:m-2 ui:text-lg ui:font-bold ui:items-center">
         <div class="ui:col-span-3">
           <div class="ui:flex ui:gap-2 ui:items-center">
-            <shared-open-close-button (status)="isCollapsed = $event" />
+            <shared-open-close-button (status)="isCollapsed = $event" [collapsed]="isCollapsed" />
             <span translate>Item</span>
           </div>
         </div>
