@@ -63,6 +63,7 @@ import { NegativeAmountPipe } from './pipes/negative-amount.pipe';
 import { NoteBadgeColorPipe } from './pipes/note-badge-color.pipe';
 import { ReceiptLineTotalAmountPipe } from './pipes/receipt-line-total-amount.pipe';
 import { ReceptionDatesPipe } from './pipes/reception-dates.pipe';
+import { OverlayBadgeModule } from 'primeng/overlaybadge';
 
 @NgModule({
   declarations: [
@@ -120,6 +121,7 @@ import { ReceptionDatesPipe } from './pipes/reception-dates.pipe';
     TranslateModule,
     TreeTableModule,
     InputNumberModule,
+    OverlayBadgeModule
   ],
   providers: [
     { provide: FORMLY_CONFIG, multi: true, useFactory: registerFormlyExtension, deps: [TranslateService] },
