@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { Component, EventEmitter, inject, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, inject, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
 import { PatronTransactionService } from '@app/admin/circulation/services/patron-transaction.service';
 import { Organisation } from '@app/admin/classes/core';
 import { Item, ItemAction, ItemNote, ItemNoteType } from '@app/admin/classes/items';
@@ -33,7 +33,7 @@ import { map } from 'rxjs/operators';
     templateUrl: './item.component.html',
     standalone: false
 })
-export class ItemComponent implements OnInit {
+export class ItemComponent implements OnChanges {
 
   private recordService: RecordService = inject(RecordService);
   private organisationService: OrganisationService = inject(OrganisationService);
@@ -87,31 +87,31 @@ export class ItemComponent implements OnInit {
   get canUseDebugMode(): boolean {
     return this.permissionsService.canAccessDebugMode();
   }
-
-  /** OnInit hook */
-  ngOnInit() {
-    this.loan = (this.item && this.item.loan) ? new Loan(this.item.loan) : null;
-    if (this.loan) {
-      const loanPid = this.item.loan.pid;
-      this.patronTransactionService.patronTransactionsByLoan$(loanPid, 'overdue', 'open').subscribe(
-        (transactions) => {
-          this.totalAmountOfFee = this.patronTransactionService.computeTotalTransactionsAmount(transactions);
-          if (this.totalAmountOfFee > 0) {
-            this.hasFeesEmitter.emit(true);
+  ngOnChanges(changes: SimpleChanges): void {
+    if(changes?.item?.currentValue){
+      this.loan = (this.item && this.item.loan) ? new Loan(this.item.loan) : null;
+      if (this.loan) {
+        const loanPid = this.item.loan.pid;
+        this.patronTransactionService.patronTransactionsByLoan$(loanPid, 'overdue', 'open').subscribe(
+          (transactions) => {
+            this.totalAmountOfFee = this.patronTransactionService.computeTotalTransactionsAmount(transactions);
+            if (this.totalAmountOfFee > 0) {
+              this.hasFeesEmitter.emit(true);
+            }
           }
-        }
-      );
-      this.notifications$ = this.recordService.getRecords(
-        'notifications', `context.loan.pid:${loanPid}`, 1, RecordService.MAX_REST_RESULTS_SIZE,
-        [], {}, null, 'mostrecent'
-      ).pipe(
-        map((results: any) => results.hits.hits)
-      );
-    }
-    if (this.item?.document?.pid) {
-      this.recordService.getRecord('documents', this.item.document.pid, 1, {
-        Accept: 'application/rero+json, application/json'
-      }).subscribe(document => this.document = document.metadata);
+        );
+        this.notifications$ = this.recordService.getRecords(
+          'notifications', `context.loan.pid:${loanPid}`, 1, RecordService.MAX_REST_RESULTS_SIZE,
+          [], {}, null, 'mostrecent'
+        ).pipe(
+          map((results: any) => results.hits.hits)
+        );
+      }
+      if (this.item?.document?.pid) {
+        this.recordService.getRecord('documents', this.item.document.pid, 1, {
+          Accept: 'application/rero+json, application/json'
+        }).subscribe(document => this.document = document.metadata);
+      }
     }
   }
 
