@@ -390,10 +390,10 @@ export class CheckinComponent implements OnInit {
 
   /** Reset search input */
   private _resetSearchInput(): void {
+    this.searchInputDisabled = false;
+    this.searchText = '';
     setTimeout(() => {
-      this.searchInputDisabled = false;
       this.searchInputFocus = true;
-      this.searchText = '';
     });
   }
 }

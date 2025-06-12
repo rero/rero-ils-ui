@@ -458,10 +458,10 @@ export class LoanComponent implements OnInit, OnDestroy {
 
   /** Reset search input */
   private _resetSearchInput(): void {
-    setTimeout(() => {
       this.searchInputDisabled = false;
-      this.searchInputFocus = true;
       this.searchText = '';
-    });
+      setTimeout(() => {
+        this.searchInputFocus = true;
+      });
   }
 }
