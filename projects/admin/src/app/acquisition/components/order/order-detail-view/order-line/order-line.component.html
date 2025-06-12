@@ -37,13 +37,22 @@
                 <shared-document-brief-view [record]="$any(document).metadata" />
               }
             </div>
-            @if (orderLine.notes.length > 0) {
-              <div class="ui:flex ui:gap-1">
-                @for (note of orderLine.notes; track $index) {
-                  <i class="fa fa-circle fa-bullet text-{{ note | noteBadgeColor }}" title="{{ note.type | translate }}"></i>
-                }
-              </div>
-            }
+            <div class="ui:flex ui:pt-2 ui:gap-2">
+              @if (orderLine.notes.length > 0) {
+                <div class="ui:flex ui:gap-1">
+                  @for (note of orderLine.notes; track $index) {
+                    <i class="fa fa-circle fa-bullet text-{{ note | noteBadgeColor }}" [title]="note.type | translate"></i>
+                  }
+                </div>
+              }
+              @if (orderLine.priority > 0) {
+                <div class="ui:flex">
+                  <p-overlaybadge [value]="orderLine.priority" [severity]="severity()">
+                    <i class="fa fa-tachometer" style="font-size: 1.2rem"></i>
+                  </p-overlaybadge>
+                </div>
+              }
+            </div>
           </div>
           <div [hidden]="!isCollapsed">{{ account.metadata.number }}</div>
           <div class="ui:mt-2" [hidden]="isCollapsed">

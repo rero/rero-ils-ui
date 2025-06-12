@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2021-2024 RERO
+ * Copyright (C) 2021-2025 RERO
  * Copyright (C) 2021 UCLouvain
  *
  * This program is free software: you can redistribute it and/or modify
@@ -85,5 +85,20 @@ export class OrderLineComponent implements OnInit, OnDestroy {
   /** Delete the order line */
   deleteOrderLine() {
     this.acqOrderApiService.deleteOrderLine(this.orderLine);
+  }
+
+  severity(): string {
+    switch(this.orderLine.priority) {
+      case 2:
+        return 'primary';
+      case 3:
+        return 'info';
+      case 4:
+        return 'warn';
+      case 5:
+        return 'danger';
+      default:
+        return 'success';
+    }
   }
 }
