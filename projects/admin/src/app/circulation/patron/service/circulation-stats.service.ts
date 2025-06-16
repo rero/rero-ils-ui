@@ -63,6 +63,10 @@ export class CirculationStatsService {
     );
   }
 
+  clearMessages(): void {
+    this.messages.set([]);
+  }
+
   private processStats(circulations: any): void {
 
     // Count on tabs

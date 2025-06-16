@@ -69,7 +69,13 @@ describe('CirculationStatsService', () => {
   it('should return the stats', () => {
     service.updateStats('1');
     expect(service.statistics()).toEqual(stats);
-    expect(service.messages()).toEqual([{ severity: 'warn', detail: 'warning message'}])
+  });
+
+  it('should clear circulation messages', () => {
+    service.updateStats('1');
+    expect(service.messages()).toEqual([{ severity: 'warn', detail: 'warning message'}]);
+    service.clearMessages();
+    expect(service.messages()).toEqual([]);
   });
 
   it('should return stats without history', () => {

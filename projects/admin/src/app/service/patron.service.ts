@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2019-204 RERO
+ * Copyright (C) 2019-2024 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -20,7 +20,7 @@ import { ApiService, RecordService } from '@rero/ng-core';
 import { Record } from '@rero/ng-core/lib/record/record';
 import { User } from '@rero/shared';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { map, switchMap, tap } from 'rxjs/operators';
+import { map, switchMap } from 'rxjs/operators';
 import { Item } from '../classes/items';
 import { Loan, LoanOverduePreview, LoanState } from '../classes/loans';
 
@@ -45,13 +45,6 @@ export class PatronService {
   }
 
   /**
-   * Clear patron
-   */
-  clearPatron() {
-    this.currentPatron.next(undefined);
-  }
-
-  /**
    * Get patron by barcode
    * @param barcode - string
    * @return Observable
@@ -63,7 +56,7 @@ export class PatronService {
         switchMap((response: Record) => {
           switch (this.recordService.totalHits(response.hits.total)) {
             case 0: {
-              this.clearPatron();
+              this.currentPatron.next(undefined);
               break;
             }
             case 1: {

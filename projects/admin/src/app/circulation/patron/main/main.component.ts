@@ -14,16 +14,16 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, inject, model, ModelSignal, OnDestroy, OnInit, signal } from '@angular/core';
-import { ActivatedRoute, NavigationEnd, Router, Scroll } from '@angular/router';
+import { Component, inject, model, ModelSignal, OnDestroy, OnInit } from '@angular/core';
+import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { OrganisationService } from '@app/admin/service/organisation.service';
 import { PatronService } from '@app/admin/service/patron.service';
 import { HotkeysService } from '@ngneat/hotkeys';
 import { TranslateService } from '@ngx-translate/core';
 import { MenuItem } from 'primeng/api';
 import { map, Subscription, switchMap, tap } from 'rxjs';
-import { CirculationStatsService } from '../service/circulation-stats.service';
 import { PatronTransactionService } from '../../services/patron-transaction.service';
+import { CirculationStatsService } from '../service/circulation-stats.service';
 
 @Component({
     selector: 'admin-main',
@@ -91,7 +91,6 @@ export class MainComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this._unregisterShortcuts();
     this.subscription.unsubscribe();
-    this.patronService.clearPatron();
   }
 
   // COMPONENT FUNCTIONS ====================================================
@@ -140,7 +139,6 @@ export class MainComponent implements OnInit, OnDestroy {
 
   /** reset the patron currently viewed */
   clearPatron(): void {
-    this.patronService.clearPatron();
     this.router.navigate(['/circulation']);
   }
 

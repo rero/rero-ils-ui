@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, EventEmitter, inject, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, inject, Input, OnChanges, OnDestroy, Output, signal, SimpleChanges, WritableSignal } from '@angular/core';
 import { DateTime } from 'luxon';
 import { getSeverity } from '../../../utils/utils';
 import { CirculationStatsService } from '../service/circulation-stats.service';
@@ -24,7 +24,7 @@ import { CirculationStatsService } from '../service/circulation-stats.service';
     templateUrl: './card.component.html',
     standalone: false
 })
-export class CardComponent implements OnInit {
+export class CardComponent implements OnChanges, OnDestroy {
 
   private circulationStatsService: CirculationStatsService = inject(CirculationStatsService);
 
@@ -49,10 +49,11 @@ export class CardComponent implements OnInit {
   /** Patron age */
   patronAge: number;
   /** circulation messages about the loaded patron if exists */
-  circulationMessages: {severity: string, detail: string}[] = [];
+  circulationMessages: WritableSignal<{severity: string, detail: string}[]> = signal([]);
 
-  ngOnInit(): void {
-    if (this.patron) {
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes.patron) {
+      if (this.patron) {
       this.patronLink = (this.linkMode === 'detail')
         ? '/records/patrons/detail/' + this.patron.pid
         : '/circulation/patron/' + this.barcode + '/loan';
@@ -71,7 +72,12 @@ export class CardComponent implements OnInit {
       this.patronAge = Math.floor(DateTime.now().diff(birthDate, 'years').years);
     }
 
-    this.circulationMessages = this.circulationStatsService.messages();
+    this.circulationMessages = this.circulationStatsService.messages;
+    }
+  }
+
+  ngOnDestroy(): void {
+    this.circulationStatsService.clearMessages();
   }
 
   /** Clear current patron */
@@ -79,6 +85,7 @@ export class CardComponent implements OnInit {
     if (this.patron) {
       this.clearPatron.emit(this.patron);
     }
+    this.circulationStatsService.clearMessages();
   }
 
   /**
