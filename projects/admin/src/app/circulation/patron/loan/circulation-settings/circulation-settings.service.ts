@@ -37,6 +37,10 @@ export class CirculationSettingsService {
     this.checkoutCirculationSettings.push(circulationSetting);
   }
 
+  clear() {
+    this.checkoutCirculationSettings = [];
+  }
+
   getSettings(): ICirculationSetting[] {
     return this.checkoutCirculationSettings;
   }

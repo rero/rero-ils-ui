@@ -124,6 +124,7 @@ export class LoanComponent implements OnInit, OnDestroy {
   /** OnDestroy hook */
   ngOnDestroy(): void {
     this.subscription.unsubscribe();
+    this.circulationSettingsService.clear();
   }
 
   // COMPONENT FUNCTIONS ========================================================
