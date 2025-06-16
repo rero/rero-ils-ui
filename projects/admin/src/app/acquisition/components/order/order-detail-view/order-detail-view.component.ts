@@ -93,7 +93,7 @@ export class OrderDetailViewComponent implements DetailRecord, OnInit, OnDestroy
   }
 
   get createInfoMessage(): string {
-    return this.recordPermissionService.generateTooltipMessage(this.recordPermissions.create.reasons);
+    return this.recordPermissionService.generateTooltipMessage(this.recordPermissions.create.reasons, 'create');
   }
 
   addTabToUrl(event) {

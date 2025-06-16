@@ -198,8 +198,9 @@ export class RouteToolService {
             can: permission.delete.can,
             message: permission.delete.can
               ? ""
-              : this.recordPermissionService.generateDeleteMessage(
-                  permission.delete.reasons
+              : this.recordPermissionService.generateTooltipMessage(
+                  permission.delete.reasons,
+                  'delete'
                 ),
           });
         });
@@ -259,8 +260,9 @@ export class RouteToolService {
                 can: permission.delete.can,
                 message: permission.delete.can
                   ? ""
-                  : this.recordPermissionService.generateDeleteMessage(
-                      permission.delete.reasons
+                  : this.recordPermissionService.generateTooltipMessage(
+                      permission.delete.reasons,
+                      'delete'
                     ),
               },
             };

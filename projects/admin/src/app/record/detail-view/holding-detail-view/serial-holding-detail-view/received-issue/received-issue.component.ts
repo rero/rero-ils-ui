@@ -114,7 +114,7 @@ export class ReceivedIssueComponent implements OnInit, OnDestroy {
    */
   deleteInfoMessage(issue: any): string {
     return (this.recordPermissions?.delete?.reasons)
-      ? this.recordPermissionService.generateDeleteMessage(this.recordPermissions.delete.reasons)
+      ? this.recordPermissionService.generateTooltipMessage(this.recordPermissions.delete.reasons, 'delete')
       : '';
   }
 

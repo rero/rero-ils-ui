@@ -72,7 +72,7 @@ export class DefaultHoldingItemComponent implements OnInit {
 
   /** Message containing the reasons why the item cannot be deleted. */
   get deleteInfoMessage(): string {
-    return this.recordPermissionService.generateDeleteMessage(this.permissions.delete.reasons);
+    return this.recordPermissionService.generateTooltipMessage(this.permissions.delete.reasons, 'delete');
   }
 
   /** Message containing the reasons wht the item cannot be requested. */

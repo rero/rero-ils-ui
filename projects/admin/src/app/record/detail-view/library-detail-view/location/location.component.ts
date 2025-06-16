@@ -65,7 +65,7 @@ export class LocationComponent implements OnInit {
    * Return a message containing the reasons wht the item cannot be requested
    */
   get deleteInfoMessage(): string {
-    return this.recordPermissionService.generateDeleteMessage(this.permissions.delete.reasons);
+    return this.recordPermissionService.generateTooltipMessage(this.permissions.delete.reasons, 'delete');
   }
 
 }

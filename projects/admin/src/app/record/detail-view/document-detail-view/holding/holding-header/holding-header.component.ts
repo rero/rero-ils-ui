@@ -54,8 +54,9 @@ export class HoldingHeaderComponent implements OnInit {
   }
 
   get deleteInfoMessage(): string {
-    return this.recordPermissionService.generateDeleteMessage(
-      this.permissions.delete.reasons
+    return this.recordPermissionService.generateTooltipMessage(
+      this.permissions.delete.reasons,
+      'delete'
     );
   }
 
