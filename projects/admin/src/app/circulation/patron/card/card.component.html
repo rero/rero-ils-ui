@@ -90,7 +90,7 @@
                 />
               }
             }
-            @for (message of circulationMessages; track $index) {
+            @for (message of circulationMessages(); track $index) {
               <p-message
                 class="ui:w-full"
                 [severity]="message.severity"
