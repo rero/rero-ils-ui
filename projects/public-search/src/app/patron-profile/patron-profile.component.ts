@@ -211,7 +211,7 @@ export class PatronProfileComponent implements OnInit, OnDestroy {
               this.tabs.fee.feeTotal = feeResponse.aggregations.total.value;
               this.tabs.request.count = this.recordService.totalHits(requestResponse.hits.total);
               this.tabs.illRequest.count = this.recordService.totalHits(illRequestResponse.hits.total);
-              if (historyQuery) {
+              if (historyResponse?.hits?.total) {
                 this.tabs.history.count = this.recordService.totalHits(historyResponse.hits.total);
               }
             }

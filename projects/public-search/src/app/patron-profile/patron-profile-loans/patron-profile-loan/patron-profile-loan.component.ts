@@ -109,9 +109,7 @@ export class PatronProfileLoanComponent implements OnInit {
       this.actionDone = true;
       if (extendLoan !== undefined) {
         this.actionSuccess = true;
-        this.record.metadata.end_date = extendLoan.end_date;
-        this.record.metadata.extension_count = extendLoan.extension_count;
-        this.record.metadata.is_late = extendLoan.is_late;
+        ['end_date', 'extension_count', 'is_late', 'due_soon_date'].map(field =>  this.record.metadata[field] = extendLoan[field]);
         if ('overdue' in this.record.metadata) {
           delete this.record.metadata.overdue;
         }
