@@ -54,7 +54,7 @@ export class ReceiptListComponent implements OnChanges, OnDestroy {
    * @return the message to display into the tooltip box
    */
   get createInfoMessage(): string {
-    return this.recordPermissionService.generateTooltipMessage(this.recordPermissions.create.reasons);
+    return this.recordPermissionService.generateTooltipMessage(this.recordPermissions.create.reasons, 'create');
   }
 
   canAdd(): boolean {

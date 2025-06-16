@@ -66,31 +66,31 @@ describe('RecordPermissionService', () => {
   it('should return the message generated for the tooltip', () => {
     const reasons = {
       links: {
-        acq_orders: 'Acq orders'
+        acq_orders: '2'
       },
       others: {
-        is_default: 'Default message'
+        harvested: ''
       }
     };
     const message = [
-      'You cannot delete the record for the following reasons:',
-      '- has Acq orders acquisition orders attached',
-      '- The default record cannot be deleted'
+      'You cannot operate the record for the following reasons:',
+      '- 2 acquisition orders attached.',
+      '- The record has been harvested.'
     ].join('\n');
-    expect(service.generateTooltipMessage(reasons)).toEqual(message);
+    expect(service.generateTooltipMessage(reasons, 'create')).toEqual(message);
   });
 
   it('should return the message generated for the delete', () => {
     const reasons = {
       links: {
-        acq_orders: 'Acq orders'
+        acq_orders: '3'
       }
     };
     const message = [
       'You cannot delete the record for the following reason:',
-      '- has Acq orders acquisition orders attached'
+      '- 3 acquisition orders attached.'
     ].join('\n');
-    expect(service.generateDeleteMessage(reasons)).toEqual(message);
+    expect(service.generateTooltipMessage(reasons, 'delete')).toEqual(message);
   });
 
   it('should return a list of permissions based on the current library', () => {

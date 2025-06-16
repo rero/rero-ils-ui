@@ -62,7 +62,7 @@ export class ReceiptSummaryComponent implements OnInit {
    */
   get deleteInfoMessage(): string {
     return (!this.recordPermissions.delete.can)
-      ? this.recordPermissionService.generateDeleteMessage(this.recordPermissions.delete.reasons)
+      ? this.recordPermissionService.generateTooltipMessage(this.recordPermissions.delete.reasons, 'delete')
       : '';
   }
 

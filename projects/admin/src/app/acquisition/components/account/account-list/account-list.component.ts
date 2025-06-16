@@ -156,7 +156,7 @@ export class AccountListComponent implements OnInit {
   }
 
   deleteInfoMessage(permissions): string {
-    return this.recordPermissionService.generateDeleteMessage(permissions.delete.reasons);
+    return this.recordPermissionService.generateTooltipMessage(permissions.delete.reasons, 'delete');
   }
 
   expandAll() {
