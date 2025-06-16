@@ -16,38 +16,62 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <p-select
-  styleClass="ui:w-full"
+  scrollHeight="50vh"
+  [fluid]="true"
   [showClear]="true"
   [options]="accountList"
   [placeholder]="'Select…' | translate"
   [(ngModel)]="selectedAccount"
   (onChange)="selectAccount($event)"
   [loading]="loading"
+  [filter]="true"
+  filterBy="name"
 >
-  <ng-template #selectedItem>
-    {{ selectedAccount.name }}
+  <ng-template #selectedItem let-account>
+    <div class="ui:flex">
+      <span class="ui:flex ui:grow ui:gap-2 ui:items-center">
+        {{ selectedAccount.name }}
+        @if (account.number) {
+          <span class="ui:text-sm">[{{ account.number }}]</span>
+        }
+      </span>
+      <div>
+        <ng-container
+          [ngTemplateOutlet]="balance"
+          [ngTemplateOutletContext]="{ account }"
+        />
+      </div>
+    </div>
+
   </ng-template>
   <ng-template #item let-account>
-    <div class="ui:flex">
-      <span
-        class="ui:flex ui:grow"
-        [style.padding-left.px]="account.depth * 20"
-      >
-        {{ account.name }}
-      </span>
-      @if (account.number) {
-      <span class="ui:flex">[{{ account.number }}]</span>
-      }
-      <span
-        class="ui:flex ui:ml-6"
-        [class]="{
-          'text-success': account.remaining_balance.self > 0,
-          'text-muted': account.remaining_balance.self === 0,
-          'text-warning': account.remaining_balance.self < 0
-        }"
-      >
-        {{ account.remaining_balance.self | currency : defaultCurrency }}
-      </span>
+    <div class="ui:flex ui:grow">
+      <div class="ui:flex ui:grow ui:gap-2  ui:items-center">
+        <span [style.padding-left.px]="account.depth * 20">
+          {{ account.name }}
+        </span>
+        @if (account.number) {
+          <span class="ui:text-sm">[{{ account.number }}]</span>
+        }
+      </div>
+      <div>
+        <ng-container
+          [ngTemplateOutlet]="balance"
+          [ngTemplateOutletContext]="{ account }"
+        />
+      </div>
     </div>
   </ng-template>
 </p-select>
+
+<ng-template #balance let-account="account">
+  <span
+    [class]="{
+      'text-success': account.remaining_balance.self > 0,
+      'text-muted': account.remaining_balance.self === 0,
+      'text-warning': account.remaining_balance.self < 0
+    }"
+  >
+    {{ account.remaining_balance.self | currency : defaultCurrency }}
+  </span>
+</ng-template>
