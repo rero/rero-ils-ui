@@ -179,6 +179,9 @@ export class OrderReceiptForm {
       {
         key: 'reference',
         type: 'string',
+        expressions: {
+          "props.disabled": "model.pid !=null"
+        },
         props: {
           label: _('Reference'),
         },
@@ -190,11 +193,17 @@ export class OrderReceiptForm {
           type: 'date',
           label: _('Reception date'),
           required: true
-        }
+        },
+        expressions: {
+          "props.disabled": "model?.receiveLines?.length < 1"
+        },
       },
       {
         key: 'receiveLines',
         type: 'repeat',
+        expressions: {
+          "props.disabled": "model.length < 1"
+        },
         props: {
           className: 'ui:font-bold',
           label: _('Order line(s)'),

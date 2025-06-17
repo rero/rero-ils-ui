@@ -142,9 +142,8 @@ describe('CanOrderReceiptGuard', () => {
     const orderReceived = cloneDeep(order);
     orderReceived.status = AcqOrderStatus.RECEIVED;
     spyOn(acqOrderApiService, 'getOrder').and.returnValue(of(orderReceived));
-    guard.canActivate(activatedRouteSnapshotSpy).subscribe(() => {
-      tick();
-      expect(router.url).toBe('/errors/403');
+    guard.canActivate(activatedRouteSnapshotSpy).subscribe((access: boolean) => {
+      expect(access).toBeTruthy();
     });
   }));
 

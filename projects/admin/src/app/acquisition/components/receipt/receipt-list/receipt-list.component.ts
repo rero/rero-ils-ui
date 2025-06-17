@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, inject, Input, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
+import { Component, inject, Input, OnChanges, OnDestroy, SimpleChanges } from '@angular/core';
 import { RecordPermissionService } from '@app/admin/service/record-permission.service';
 import { CurrentLibraryPermissionValidator } from '@app/admin/utils/permissions';
 import { Subscription } from 'rxjs';
@@ -30,7 +30,7 @@ import { ReceivedOrderPermissionValidator } from '../../../utils/permissions';
     templateUrl: './receipt-list.component.html',
     standalone: false
 })
-export class ReceiptListComponent implements OnInit, OnChanges, OnDestroy {
+export class ReceiptListComponent implements OnChanges, OnDestroy {
 
   private acqReceiptApiService: AcqReceiptApiService = inject(AcqReceiptApiService);
   private recordPermissionService: RecordPermissionService = inject(RecordPermissionService);
@@ -69,20 +69,10 @@ export class ReceiptListComponent implements OnInit, OnChanges, OnDestroy {
     return (this.receipts) ? this.receipts.length : 0;
   }
 
-  /** OnInit hook */
-  ngOnInit(): void {
-    this.loadPermissions();
-    this._loadReceipts();
-    this.subscriptions.add(
-      this.acqReceiptApiService.deletedReceiptSubject$.subscribe((deletedReceipt: IAcqReceipt) => {
-        this.receipts = this.receipts.filter((receipt: IAcqReceipt) => receipt.pid !== deletedReceipt.pid);
-      })
-    );
-  }
-
   /** OnChanges hook */
   ngOnChanges(changes: SimpleChanges) {
     if (changes.hasOwnProperty('order')) {
+      this.loadPermissions();
       this._loadReceipts();
     }
   }

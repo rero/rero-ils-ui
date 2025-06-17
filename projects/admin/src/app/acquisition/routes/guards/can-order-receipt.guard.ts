@@ -91,7 +91,7 @@ export class CanOrderReceiptGuard  {
           if (!order.is_current_budget) {
             return false;
           }
-          const validStatuses = [AcqOrderStatus.ORDERED, AcqOrderStatus.PARTIALLY_RECEIVED];
+          const validStatuses = [AcqOrderStatus.ORDERED, AcqOrderStatus.PARTIALLY_RECEIVED, AcqOrderStatus.RECEIVED];
           return validStatuses.some((key: string) => key === order.status);
         }),
         catchError(() => of(false))

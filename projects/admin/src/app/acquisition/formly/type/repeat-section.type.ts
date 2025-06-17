@@ -34,11 +34,13 @@ import { FieldArrayType } from '@ngx-formly/core';
                 <p-button
                   [outlined]="true"
                   size="small"
+                  [disabled]="props.disabled"
                   (onClick)="field.props.selectUnselect($event, 'select', field.fieldGroup)"
                   [label]="'Select all' | translate"
                 />
                 <p-button
                   [outlined]="true"
+                  [disabled]="props.disabled"
                   size="small"
                   (onClick)="field.props.selectUnselect($event, 'unselect', field.fieldGroup)"
                   translate
