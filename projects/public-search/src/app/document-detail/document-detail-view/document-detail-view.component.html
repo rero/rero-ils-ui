@@ -38,7 +38,7 @@
         <shared-document-description [record]="document" />
       </p-tabpanel>
       @if (showinfo !== 'false') {
-        <p-tabpanel value="more">
+        <p-tabpanel value="more" class="ui:[&_more-info]:!block">
           <ng-content select="more-info" />
         </p-tabpanel>
       }
