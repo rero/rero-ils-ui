@@ -20,7 +20,7 @@ import { AcqOrderStatus } from '@app/admin/acquisition/classes/order';
 import { RecordPermissions } from '@app/admin/classes/permissions';
 import { RecordPermissionService } from '@app/admin/service/record-permission.service';
 import { CurrentLibraryPermissionValidator } from '@app/admin/utils/permissions';
-import { forkJoin } from 'rxjs';
+import { forkJoin, Observable, of, switchMap, tap } from 'rxjs';
 import { AcqOrderApiService } from '../../../api/acq-order-api.service';
 import { AcqReceiptApiService } from '../../../api/acq-receipt-api.service';
 import { IAcqReceipt } from '../../../classes/receipt';
@@ -65,27 +65,36 @@ export class ReceiptSummaryComponent implements OnInit {
       ? this.recordPermissionService.generateDeleteMessage(this.recordPermissions.delete.reasons)
       : '';
   }
+
   /** OnInit hook */
   ngOnInit(): void {
     if (!this.collapsable){
       this.isCollapsed = false;
     }
     this.acqReceiptApiService
-      .getReceipt(this.receiptPid)
-      .subscribe((receipt: IAcqReceipt) => {
-        this.receipt = receipt;
-        // Load permissions only if we need to display the action buttons
-        if (this.allowActions) {
-          const order$ = this.acqOrderApiService.getOrder(this.receipt.acq_order.pid);
-          const permissions$ = this.recordPermissionService.getPermission('acq_receipts', this.receipt.pid);
-          forkJoin([order$, permissions$]).subscribe(
-            ([order, permissions]) => {
-              this.recordPermissions = this.currentLibraryPermissionValidator.validate(permissions, this.receipt.library.pid);
-              this.recordPermissions = this.receivedOrderPermissionValidator.validate(permissions, order);
-            }
-          );
-        }
-      });
+      .getReceipt(this.receiptPid).pipe(
+        tap((receipt: IAcqReceipt)=> this.receipt = receipt),
+        switchMap(():Observable<any> => {
+          // Load permissions only if we need to display the action buttons
+          if (this.allowActions) {
+            return this.updatePermissions();
+          }
+          return of(null)
+        })
+      )
+      .subscribe();
+  }
+
+  updatePermissions() {
+    const order$ = this.acqOrderApiService.getOrder(this.receipt.acq_order.pid);
+    const permissions$ = this.recordPermissionService.getPermission('acq_receipts', this.receipt.pid);
+    return forkJoin([order$, permissions$]).pipe(
+      tap(([order, permissions]) => {
+        // modify permissions in place
+        this.currentLibraryPermissionValidator.validate(permissions, this.receipt.library.pid);
+        this.recordPermissions = this.receivedOrderPermissionValidator.validate(permissions, order);
+      })
+    );
   }
 
   // COMPONENT FUNCTIONS ======================================================

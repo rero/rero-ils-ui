@@ -104,6 +104,13 @@
     <!-- ACTION BUTTON COLUMN -->
     @if (recordPermissions && allowActions) {
       <div class="ui:col-span-2 ui:flex ui:flex-wrap ui:gap-1 ui:justify-end">
+         <shared-action-button
+          icon="fa fa-edit"
+          [title]="'Edit' | translate"
+          severity="primary"
+          [routerLink]="['/', 'acquisition', 'records', 'acq_orders', 'receive', receipt.acq_order.pid]"
+          [queryParams]="{ receipt: receipt.pid }"
+        />
         <shared-action-button
           icon="fa fa-trash"
           [title]="'Delete' | translate"

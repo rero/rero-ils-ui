@@ -63,20 +63,7 @@ export class OrderReceiptViewComponent implements OnInit {
   knownDataCollapsed = true;
 
   /** Form fields */
-  private _fields: FormlyFieldConfig[];
-
-  // GETTER & SETTER ==========================================================
-
-  /** Get formly fields to use to render the form */
-  get fields(): FormlyFieldConfig[] {
-    // If the model contains a PID, we would set the `reference` field in readonly.
-    // The reference field should be enabled only for `AcqReceipt` creation, not for update.
-    // To update this field, user must use the classic resource editor.
-    if (this.model.pid) {
-      this._fields.find(field => field.key === 'reference').props.readonly = true;
-    }
-    return this._fields;
-  }
+  fields: FormlyFieldConfig[];
 
   /** OnInit hook */
   ngOnInit(): void {
@@ -123,11 +110,11 @@ export class OrderReceiptViewComponent implements OnInit {
     // Try to load the receipt depending of the url argument
     const receiptPid = this.route.snapshot.queryParams.receipt;
     if (receiptPid) {
+      this.model.pid = receiptPid;
       this.acqReceiptApiService
         .getReceipt(receiptPid)
         .subscribe((receipt: IAcqReceipt) => {
           this.receiptRecord = receipt;
-          this.model.pid = receiptPid;
           this.model.reference = receipt.reference;
           this.model.notes = receipt.notes;
           if (receipt.amount_adjustments) {
@@ -148,7 +135,7 @@ export class OrderReceiptViewComponent implements OnInit {
       .subscribe((loaded: boolean) => {
         this.orderRecord = this.orderReceiptForm.getOrderRecord();
         this.model = this.orderReceiptForm.getModel();
-        this._fields = this.orderReceiptForm.getConfig();
+        this.fields = this.orderReceiptForm.getConfig();
         this.loaded = loaded;
       });
   }
