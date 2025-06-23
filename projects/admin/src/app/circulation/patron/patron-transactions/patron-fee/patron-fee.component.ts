@@ -29,9 +29,9 @@ import { CirculationStatsService } from '../../service/circulation-stats.service
 import { switchMap } from 'rxjs';
 
 @Component({
-    selector: 'admin-patron-fee',
-    templateUrl: './patron-fee.component.html',
-    standalone: false
+  selector: 'admin-patron-fee',
+  templateUrl: './patron-fee.component.html',
+  standalone: false
 })
 export class PatronFeeComponent implements OnInit {
 
@@ -105,6 +105,7 @@ export class PatronFeeComponent implements OnInit {
       key: 'type',
       type: 'select',
       props: {
+        appendTo: 'body',
         label: 'Type',
         required: true,
         options: properties.type.widget.formlyConfig.props.options
