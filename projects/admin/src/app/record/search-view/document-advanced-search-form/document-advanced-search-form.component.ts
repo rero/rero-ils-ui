@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2019-2024 RERO
+ * Copyright (C) 2019-2025 RERO
  * Copyright (C) 2021-2023 UCLouvain
  *
  * This program is free software: you can redistribute it and/or modify
@@ -158,6 +158,7 @@ export class DocumentAdvancedSearchFormComponent implements OnInit {
       field.props.class = "ui:w-full";
       field.props.styleClass = "ui:w-full";
       field.props.filter = true,
+      field.props.required = true;
       field.type = 'select';
       field.props.options.next(this.fieldDataConfig[fieldParentKey]);
     } else {
@@ -179,7 +180,7 @@ export class DocumentAdvancedSearchFormComponent implements OnInit {
   private initFieldSearchType(field: any, fieldParentKey: string): void {
     if (Object.keys(this.fieldsSearchTypeConfig).some(key => key === fieldParentKey)) {
       field.props.sort = false;
-      field.props.readonly = this.fieldsSearchTypeConfig[fieldParentKey].length < 2;
+      field.props.disabled = this.fieldsSearchTypeConfig[fieldParentKey].length < 2;
       field.props.options.next(this.fieldsSearchTypeConfig[fieldParentKey]);
       const fieldSearchTypeValue = this.fieldsSearchTypeConfig[fieldParentKey][0].value;
       if (
@@ -232,6 +233,7 @@ export class DocumentAdvancedSearchFormComponent implements OnInit {
                 key: 'searchType',
                 defaultValue: false,
                 props: {
+                  required: true,
                   hideLabelSelectOption: true,
                   options: new BehaviorSubject([]),
                   appendTo: 'body'
@@ -301,6 +303,7 @@ export class DocumentAdvancedSearchFormComponent implements OnInit {
                   key: 'searchType',
                   defaultValue: false,
                   props: {
+                    required: true,
                     hideLabelSelectOption: true,
                     options: new BehaviorSubject([]),
                     appendTo: 'body'
