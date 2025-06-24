@@ -40,19 +40,18 @@
 
   <!-- KNOWN ORDER/RECEIPT DATA -->
   <p-panel toggleable collapsed [header]="'Order overview' | translate">
-    <div class="ui:p-2">
       <admin-order-summary [order]="orderRecord" />
       @if (receiptRecord) {
-        <p-panel [header]="'Already in this receipt' | translate">
+        <p-divider styleClass="ui:[&>.p-divider-content]:bg-transparent">
+          <span translate>Already in this receipt</span>
+        </p-divider>
           <admin-receipt-summary
             [receiptPid]="receiptRecord.pid"
             [collapsable]="false"
             [allowActions]="false"
             class="container"
           />
-        </p-panel>
       }
-    </div>
   </p-panel>
 
   <!-- FORMLY FORM -->

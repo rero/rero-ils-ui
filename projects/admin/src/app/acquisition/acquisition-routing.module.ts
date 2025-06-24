@@ -29,6 +29,7 @@ import { OrderLinesRoute } from './routes/order-lines-route';
 import { OrdersRoute } from './routes/orders-route';
 import { ReceiptsRoute } from './routes/receipts-route';
 import { VendorsRoute } from './routes/vendors-route';
+import { ReceiptLinesRoute } from './routes/receipt-lines-route';
 
 const initializeRoutes = () => {
   const routes: Routes = [
@@ -54,6 +55,7 @@ const initializeRoutes = () => {
         new OrderLinesRoute().getConfiguration(),
         new OrdersRoute().getConfiguration(),
         new ReceiptsRoute().getConfiguration(),
+        new ReceiptLinesRoute().getConfiguration(),
         new VendorsRoute().getConfiguration()
       ],
     },

@@ -15,13 +15,11 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<div class="ui:grid ui:grid-cols-12 ui:gap-4 ui:p-2">
   @if (receipt) {
     <!-- RECEIPT INFORMATION COLUMN -->
-    <div class="ui:col-span-10">
-      <div class="ui:grid ui:grid-cols-12 ui:gap-4">
+      <div class="ui:grid ui:grid-cols-12 ui:gap-4 ui:p-4">
         <!-- FIRST ROW :: receipt detail (always visible) -->
-        <div class="ui:col-span-9 ui:flex ui:flex-wrap ui:gap-2 ui:items-center">
+        <div class="ui:col-span-7 ui:flex ui:flex-wrap ui:gap-2 ui:items-center">
           @if (collapsable) {
             <shared-open-close-button (status)="isCollapsed = $event" />
           }
@@ -55,37 +53,43 @@
         <div class="ui:col-span-3 ui:flex ui:font-bold ui:justify-end ui:items-center" [class.ui:border-right-1]="recordPermissions && allowActions">
           {{ receipt.total_amount | currency:receipt.currency:'symbol' }}
         </div>
+        <!-- ACTION BUTTON COLUMN -->
+        @if (recordPermissions && allowActions) {
+          <div class="ui:col-span-2 ui:flex ui:flex-wrap ui:gap-1 ui:justify-end">
+            @if(recordPermissions.update?.can) {
+              <shared-action-button
+                icon="fa fa-edit"
+                [title]="'Edit' | translate"
+                severity="primary"
+                [routerLink]="['/', 'acquisition', 'records', 'acq_orders', 'receive', receipt.acq_order.pid]"
+                [queryParams]="{ receipt: receipt.pid }"
+              />
+            }
+            <shared-action-button
+              icon="fa fa-trash"
+              [title]="'Delete' | translate"
+              severity="danger"
+              [disabled]="!recordPermissions.delete.can"
+              [message]="deleteInfoMessage"
+              (btnClick)="deleteReceipt()"
+            />
+          </div>
+        }
         @if (!collapsable || !isCollapsed) {
           <!-- RECEPTION LINES ROWS :: One line for each reception line -->
-          @for (line of receipt.receipt_lines; track line.pid) {
-            <div class="ui:col-span-9 ui:flex ui:gap-2 ui:flex-wrap">
-              <strong>{{ line.quantity }}</strong>&nbsp;x
-              <div>
-                @if (line.document.pid | getRecord: 'documents' | async; as document) {
-                  <shared-document-brief-view [record]="$any(document).metadata" />
-                }
-                @if ($any(line).acq_account.pid | getRecord: 'acq_accounts' | async; as account) {
-                  <span class="ui:font-bold ui:text-muted-color ui:text-sm">[{{ $any(account).metadata.number }}]</span>
-                }
-              </div>
-            </div>
-            <div class="ui:col-span-3 ui:flex ui:flex-col ui:gap-2 ui:items-end" [class.ui:border-right-1]="recordPermissions && allowActions">
-              <div class="ui:font-bold">{{ line | receiptLineTotalAmount | currency:receipt.currency:'symbol' }}</div>
-              <div class="ui:text-sm ui:text-muted-color">
-                {{ line.quantity }} x {{ line.amount | currency:receipt.currency:'symbol' }}
-                @if (line.vat_rate) {
-                  + {{ line.vat_rate }}%
-                }
-              </div>
-            </div>
-          }
+           <div class="ui:col-span-12">
+            @for (line of receipt.receipt_lines; track line.pid) {
+              <admin-receipt-line [line]="line" [receipt]="receipt" [allowActions]="allowActions"/>
+
+            }
+          </div>
           <!-- RECEIPT ADJUSTMENTS :: One line for each adjustment -->
           @for (adjustment of receipt.amount_adjustments; track $index) {
-            <div class="ui:col-span-9">
+            <div class="ui:col-start-1 ui:col-span-7">
               <i class="fa fa-long-arrow-right ui:mr-4"></i>
               {{ adjustment.label }}
             </div>
-            <div class="ui:col-span-3 ui:flex-col ui:font-bold ui:flex ui:items-end" [class.ui:border-right-1]="recordPermissions && allowActions">
+            <div class="ui:col-span-3 ui:flex-col ui:font-bold ui:flex ui:items-end">
               <div>
                 {{ adjustment.amount | currency:receipt.currency:'symbol' }}
               </div>
@@ -93,37 +97,15 @@
           }
           <!-- RECEIPT NOTES -->
           @if (receipt.notes.length > 0) {
-            <div class="ui:col-span-9">
+            <div class="ui:col-start-1 ui:col-span-7">
               <admin-notes [notes]="receipt.notes" />
             </div>
-            <div class="ui:col-span-3" [class.ui:border-right-1]="recordPermissions && allowActions">&nbsp;</div>
           }
         }
       </div>
-    </div>
-    <!-- ACTION BUTTON COLUMN -->
-    @if (recordPermissions && allowActions) {
-      <div class="ui:col-span-2 ui:flex ui:flex-wrap ui:gap-1 ui:justify-end">
-         <shared-action-button
-          icon="fa fa-edit"
-          [title]="'Edit' | translate"
-          severity="primary"
-          [routerLink]="['/', 'acquisition', 'records', 'acq_orders', 'receive', receipt.acq_order.pid]"
-          [queryParams]="{ receipt: receipt.pid }"
-        />
-        <shared-action-button
-          icon="fa fa-trash"
-          [title]="'Delete' | translate"
-          severity="danger"
-          [disabled]="!recordPermissions.delete.can"
-          [message]="deleteInfoMessage"
-          (btnClick)="deleteReceipt()"
-        />
-      </div>
-    }
+
   } @else {
     <div class="ui:my-3">
       <i class="fa fa-spinner ui:animate-spin"></i>&nbsp;{{ "Loading in progress…" | translate }}
     </div>
   }
-</div>

@@ -64,6 +64,7 @@ import { NoteBadgeColorPipe } from './pipes/note-badge-color.pipe';
 import { ReceiptLineTotalAmountPipe } from './pipes/receipt-line-total-amount.pipe';
 import { ReceptionDatesPipe } from './pipes/reception-dates.pipe';
 import { OverlayBadgeModule } from 'primeng/overlaybadge';
+import { ReceiptLineComponent } from './components/receipt/receipt-line/receipt-line.component';
 
 @NgModule({
   declarations: [
@@ -88,6 +89,7 @@ import { OverlayBadgeModule } from 'primeng/overlaybadge';
     OrderLinesComponent,
     OrderReceiptViewComponent,
     OrderSummaryComponent,
+    ReceiptLineComponent,
     ReceiptLineTotalAmountPipe,
     ReceiptListComponent,
     ReceiptSummaryComponent,

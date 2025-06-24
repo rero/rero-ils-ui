@@ -27,8 +27,8 @@ import { TranslateService } from '@ngx-translate/core';
 import { extractIdOnRef } from '@rero/ng-core';
 import { DetailRecord } from '@rero/ng-core/lib/record/detail/view/detail-record';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
-import { forkJoin, Observable, Subscription } from 'rxjs';
-import { map, switchMap, tap } from 'rxjs/operators';
+import { forkJoin, merge, Observable, Subscription } from 'rxjs';
+import { map, switchMap, take, tap } from 'rxjs/operators';
 import {
   AcqOrderHistoryVersion,
   AcqOrderStatus,
@@ -122,9 +122,8 @@ export class OrderDetailViewComponent implements DetailRecord, OnInit, OnDestroy
           return forkJoin(obs);
         }),
         switchMap(() =>
-          // reload order if an order line has been deleted
-          this.acqReceiptApiService.deletedReceiptSubject$
-        ),
+          merge(this.acqReceiptApiService.deletedReceiptSubject$, this.acqReceiptApiService.deletedReceiptLineSubject$)
+      ),
         switchMap(() => this.acqOrderService.getOrder(this.order.pid, 1)),
         tap(order => this.order = order)
       ).subscribe()

@@ -43,7 +43,7 @@
     @if (receipts.length > 0) {
         @for (receipt of receipts; track receipt.pid) {
           <div class="ui:odd:bg-surface-50">
-            <admin-receipt-summary [receiptPid]="receipt.pid" [allowActions]="true" [order]="order" />
+            <admin-receipt-summary [receiptPid]="receipt.pid" [allowActions]="true" />
           </div>
         }
     } @else {
