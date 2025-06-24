@@ -21,7 +21,7 @@ import { FieldArrayType } from '@ngx-formly/core';
     selector: 'admin-repeat-section',
     template: `
     @for (field of field.fieldGroup; track $index; let i = $index) {
-      <div class="ui:grid ui:grid-cols-12 ui:gap-4">
+      <div class="ui:grid ui:grid-cols-12 ui:gap-4 ui:mt-2">
         <div class="ui:col-span-11">
           <formly-field [field]="field"></formly-field>
         </div>
