@@ -14,6 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+import { Location } from '@angular/common';
 import { inject } from '@angular/core';
 import { UrlSegment } from '@angular/router';
 import { _ } from "@ngx-translate/core";
@@ -24,6 +25,7 @@ import { RouteToolService } from './route-tool.service';
 export class BaseRoute {
 
   protected routeToolService: RouteToolService = inject(RouteToolService);
+  protected location: Location = inject(Location);
 
   /** Disabled action */
   readonly DISABLED = (): Observable<ActionStatus> => of({

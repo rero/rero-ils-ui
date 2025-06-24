@@ -15,15 +15,15 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, inject, Input, OnInit } from '@angular/core';
+import { Component, inject, Input, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
 import { AcqOrderStatus } from '@app/admin/acquisition/classes/order';
 import { RecordPermissions } from '@app/admin/classes/permissions';
 import { RecordPermissionService } from '@app/admin/service/record-permission.service';
 import { CurrentLibraryPermissionValidator } from '@app/admin/utils/permissions';
-import { forkJoin, Observable, of, switchMap, tap } from 'rxjs';
+import { forkJoin, Observable, of, Subscription, switchMap, tap } from 'rxjs';
 import { AcqOrderApiService } from '../../../api/acq-order-api.service';
 import { AcqReceiptApiService } from '../../../api/acq-receipt-api.service';
-import { IAcqReceipt } from '../../../classes/receipt';
+import { IAcqReceipt, IAcqReceiptLine } from '../../../classes/receipt';
 import { ReceivedOrderPermissionValidator } from '../../../utils/permissions';
 
 @Component({
@@ -31,7 +31,7 @@ import { ReceivedOrderPermissionValidator } from '../../../utils/permissions';
     templateUrl: './receipt-summary.component.html',
     standalone: false
 })
-export class ReceiptSummaryComponent implements OnInit {
+export class ReceiptSummaryComponent implements OnChanges, OnInit, OnDestroy {
 
   private recordPermissionService: RecordPermissionService = inject(RecordPermissionService);
   private acqReceiptApiService: AcqReceiptApiService = inject(AcqReceiptApiService);
@@ -42,8 +42,6 @@ export class ReceiptSummaryComponent implements OnInit {
   // COMPONENT ATTRIBUTES =====================================================
   /** The receipt pid to load */
   @Input() receiptPid: string;
-  /** The receipt pid to load */
-  @Input() order;
   /** Is action button must be displayed */
   @Input() allowActions = false;
   /** Collapse detail configuration */
@@ -54,6 +52,8 @@ export class ReceiptSummaryComponent implements OnInit {
   /** Receipt object */
   receipt: IAcqReceipt = undefined;
   validStatuses = [AcqOrderStatus.ORDERED, AcqOrderStatus.PARTIALLY_RECEIVED];
+ /** all component subscription */
+  private subscriptions = new Subscription();
 
   // GETTER & SETTER ==========================================================
   /**
@@ -68,11 +68,34 @@ export class ReceiptSummaryComponent implements OnInit {
 
   /** OnInit hook */
   ngOnInit(): void {
-    if (!this.collapsable){
+    this.subscriptions.add(
+      this.acqReceiptApiService.deletedReceiptLineSubject$.subscribe(
+        (receiptLine: IAcqReceiptLine) => {
+      if(receiptLine.acq_receipt.pid === this.receiptPid) {
+        this.loadReceipt();
+      }
+    }));
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if(changes.hasOwnProperty('receiptPid') && changes.receiptPid) {
+      this.loadReceipt();
+    }
+    if(changes.hasOwnProperty('collapsable') && changes.collapsable != null && !this.collapsable) {
       this.isCollapsed = false;
     }
+  }
+
+  ngOnDestroy(): void {
+    this.subscriptions.unsubscribe();
+  }
+
+  loadReceipt() {
     this.acqReceiptApiService
       .getReceipt(this.receiptPid).pipe(
+        tap((receipt: IAcqReceipt) => {
+          receipt.receipt_lines = receipt.receipt_lines.map((line:IAcqReceiptLine) => ({...line, ...{acq_receipt:{pid: this.receiptPid}}}))
+        }),
         tap((receipt: IAcqReceipt)=> this.receipt = receipt),
         switchMap(():Observable<any> => {
           // Load permissions only if we need to display the action buttons
@@ -97,9 +120,9 @@ export class ReceiptSummaryComponent implements OnInit {
     );
   }
 
-  // COMPONENT FUNCTIONS ======================================================
   /** Delete a receipt */
   deleteReceipt(): void {
     this.acqReceiptApiService.delete(this.receipt);
   }
+
 }

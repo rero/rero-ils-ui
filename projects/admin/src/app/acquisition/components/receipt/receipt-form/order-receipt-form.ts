@@ -179,9 +179,6 @@ export class OrderReceiptForm {
       {
         key: 'reference',
         type: 'string',
-        expressions: {
-          "props.disabled": "model.pid !=null"
-        },
         props: {
           label: _('Reference'),
         },
