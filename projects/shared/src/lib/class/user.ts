@@ -23,6 +23,7 @@ export class User implements IUser {
   static readonly LOGGED_URL = '/patrons/logged_user?resolve';
 
   id: number;
+  pid?: string;
   first_name: string;
   last_name: string;
   birth_date: string;
