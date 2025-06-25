@@ -54,9 +54,8 @@ import { ReceiptSummaryComponent } from './components/receipt/receipt-summary/re
 import { VendorBriefViewComponent } from './components/vendors/vendor-brief-view.component';
 import { VendorDetailViewComponent } from './components/vendors/vendor-detail-view/vendor-detail-view.component';
 import { registerFormlyExtension } from './formly/extension';
-import { FieldDocumentBriefViewTypeComponent } from './formly/type/field-document-brief-view.type';
-import { FieldRefTypeComponent } from './formly/type/field-ref.type';
-import { RepeatTypeComponent } from './formly/type/repeat-section.type';
+import { OrderLineTypeComponent } from './formly/type/field-order-line.type';
+import { ReceiptLinesTypeComponent } from './formly/type/receipt-lines.type';
 import { InputNoLabelWrapperComponent } from './formly/wrapper/input-no-label.wrapper';
 import { AccountAvailableAmountPipe } from './pipes/account-available-amount.pipe';
 import { NegativeAmountPipe } from './pipes/negative-amount.pipe';
@@ -76,8 +75,7 @@ import { ReceiptLineComponent } from './components/receipt/receipt-line/receipt-
     AddressTypeComponent,
     BudgetDetailViewComponent,
     BudgetsBriefViewComponent,
-    FieldDocumentBriefViewTypeComponent,
-    FieldRefTypeComponent,
+    OrderLineTypeComponent,
     InputNoLabelWrapperComponent,
     NegativeAmountPipe,
     NoteBadgeColorPipe,
@@ -94,7 +92,7 @@ import { ReceiptLineComponent } from './components/receipt/receipt-line/receipt-
     ReceiptListComponent,
     ReceiptSummaryComponent,
     ReceptionDatesPipe,
-    RepeatTypeComponent,
+    ReceiptLinesTypeComponent,
     SelectAccountEditorWidgetComponent,
     VendorBriefViewComponent,
     VendorDetailViewComponent,
@@ -105,9 +103,8 @@ import { ReceiptLineComponent } from './components/receipt/receipt-line/receipt-
     CommonModule,
     FormlyModule.forChild({
       types: [
-        { name: 'repeat', component: RepeatTypeComponent },
-        { name: 'field-document-brief-view', component: FieldDocumentBriefViewTypeComponent },
-        { name: 'field-ref', component: FieldRefTypeComponent },
+        { name: 'receipt-lines', component: ReceiptLinesTypeComponent },
+        { name: 'order-line', component: OrderLineTypeComponent },
         { name: 'account-select', component: SelectAccountEditorWidgetComponent }
       ],
       wrappers: [

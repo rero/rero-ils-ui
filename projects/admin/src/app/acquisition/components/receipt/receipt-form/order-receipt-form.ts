@@ -29,8 +29,7 @@ import { orderAccountsAsTree } from '../../../utils/account';
 import { IAcqReceiptModel, OrderReceipt } from './order-receipt';
 
 /** Select/Deselect all checkbox */
-function lineAction($event: Event, action: string, fields: any): void {
-  $event.preventDefault();
+function lineAction(action: string, fields: any): void {
   fields.map((field: any) => {
     const selected = field.fieldGroup.find(line => line.key === 'selected');
     selected.formControl.setValue(action === 'select');
@@ -123,10 +122,9 @@ export class OrderReceiptForm {
             map((lines: IAcqOrderLine[]) => {
               lines.forEach((line: any) => {
                 const quantityReceived = line.received_quantity || 0;
-                this.model.receiveLines.push({
+                this.model.receiptLines.push({
                   acqOrderLineRef: this.apiService.getRefEndpoint('acq_order_lines', line.pid),
                   selected: false,
-                  document: line.document.pid,
                   quantity: line.quantity - quantityReceived,
                   quantityMax: line.quantity - quantityReceived,
                   amount: line.amount,
@@ -192,25 +190,111 @@ export class OrderReceiptForm {
           required: true
         },
         expressions: {
-          "props.disabled": "model?.receiveLines?.length < 1"
+          "props.disabled": "model?.receiptLines?.length < 1"
         },
       },
       {
-        key: 'receiveLines',
-        type: 'repeat',
+        key: 'amountAdjustments',
+        type: 'array',
+        props: {
+          label: _('Fees, discounts and other adjustments')
+        },
+        fieldArray: {
+          fieldGroupClassName: 'ui:grid ui:px-4 ui:mb-3',
+          type: 'object',
+          props: {
+            label: _('Fee, discount and other adjustment'),
+            containerCssClass: 'ui:grid ui:grid-cols-12 ui:gap-2',
+          },
+          fieldGroup: [
+            {
+              key: 'label',
+              type: 'input',
+              props: {
+                label: _('Label'),
+                required: true,
+                minLength: 3,
+                itemCssClass: "ui:col-span-12 ui:md:col-span-6"
+              }
+            },
+            {
+              key: 'amount',
+              type: 'input',
+              defaultValue: 1,
+              props: {
+                label: _('Amount'),
+                type: 'number',
+                description: _('To specify a discount, enter a negative amount'),
+                required: true,
+                itemCssClass: "ui:col-span-12 ui:md:col-span-3"
+              }
+            },
+            {
+              key: 'acqAccount',
+              type: 'account-select',
+              wrappers: ['form-field'],
+              props: {
+                placeholder: _('Select…'),
+                label: _('Account'),
+                required: true,
+                itemCssClass: "ui:col-span-12 ui:md:col-span-9",
+                options: [
+                ]
+              }
+            }
+          ]
+        }
+      },
+      {
+        key: 'notes',
+        type: 'array',
+        props: {
+          containerCssClass: 'ui:grid ui:gap-2',
+          label: _('Notes'),
+          maxItems: 1
+        },
+        fieldArray: {
+          type: "object",
+          props: {
+            label: _('Note')
+          },
+          fieldGroup: [
+            {
+              key: 'type',
+              type: 'select',
+              defaultValue: 'staff_note',
+              props: {
+                label: _('Type'),
+                alwaysHidden: true,
+                options: [
+                  { label: _('staff_note'), value: 'staff_note' }
+                ]
+              }
+            },
+            {
+              key: 'content',
+              type: 'textarea',
+              props: {
+                label: _('Note'),
+                required: true,
+                rows: 5
+              }
+            }
+          ]
+        }
+      },
+      {
+        key: 'receiptLines',
+        type: 'receipt-lines',
         expressions: {
           "props.disabled": "model.length < 1"
         },
         props: {
-          className: 'ui:font-bold',
-          label: _('Order line(s)'),
-          addButton: false,
-          trashButton: false,
           selectUnselect: lineAction,
           minLength: 0
         },
         fieldArray: {
-          fieldGroupClassName: 'ui:grid ui:grid-cols-12 ui:gap-4 ui:px-4',
+          fieldGroupClassName: 'ui:grid ui:grid-cols-12 ui:gap-4',
           validators: {
             validation: [
               { name: 'receiveQuantityMax', options: { errorPath: 'quantity' } }
@@ -218,41 +302,33 @@ export class OrderReceiptForm {
           },
           fieldGroup: [
             {
-              key: 'acqOrderLineRef',
-              type: 'input',
-              hideExpression: true
-            },
-            {
               key: 'selected',
               type: 'checkbox',
               className: 'ui:col-span-1',
               wrappers: ['input-no-label'],
               props: {
                 hideLabel: true,
+                checkbox: true,
                 headerClassName: 'ui:col-span-1',
               }
             },
             {
-              key: 'document',
-              type: 'field-document-brief-view',
-              className: 'ui:col-span-5',
+              key: 'acqOrderLineRef',
+              type: 'order-line',
               wrappers: ['input-no-label'],
+              className: 'ui:col-span-5',
               props: {
                 headerClassName: 'ui:col-span-5 ui:font-bold',
-                label: _('Document'),
-                resource: 'documents',
-                resourceKey: 'document',
-                resourceField: 'title.0._text',
-                resourceSelect: {
-                  field: 'type',
-                  value: 'bf:Title'
-                }
+                label: _('Order Line')
               }
             },
             {
               key: 'quantityMax',
               type: 'input',
-              className: 'ui:hidden'
+              className: 'ui:hidden',
+              props: {
+                className: 'ui:hidden'
+              }
             },
             {
               key: 'quantity',
@@ -301,88 +377,6 @@ export class OrderReceiptForm {
           ]
         }
       },
-      {
-        key: 'amountAdjustments',
-        type: 'repeat',
-        props: {
-          className: 'ui:pl-0 ui:my-0 ui:font-bold',
-          label: _('Fees, discounts and other adjustments'),
-          addButton: true,
-          trashButton: true
-        },
-        fieldArray: {
-          fieldGroupClassName: 'ui:grid ui:px-4 ui:mb-3',
-          fieldGroup: [
-            {
-              key: 'label',
-              type: 'input',
-              props: {
-                label: _('Label'),
-                required: true,
-                minLength: 3
-              }
-            },
-            {
-              key: 'amount',
-              type: 'input',
-              defaultValue: 1,
-              props: {
-                label: _('Amount'),
-                type: 'number',
-                description: _('To specify a discount, enter a negative amount'),
-                required: true
-              }
-            },
-            {
-              key: 'acqAccount',
-              type: 'account-select',
-              wrappers: ['form-field'],
-              props: {
-                placeholder: _('Select…'),
-                label: _('Account'),
-                required: true,
-                options: [
-                ]
-              }
-            }
-          ]
-        }
-      },
-      {
-        key: 'notes',
-        type: 'repeat',
-        props: {
-          className: 'ui:pl-0 ui:my-0 ui:font-bold',
-          label: _('Notes'),
-          addButton: true,
-          trashButton: true
-        },
-        fieldArray: {
-          fieldGroupClassName: 'ui:grid ui:px-4 ui:mb-3',
-          fieldGroup: [
-            {
-              key: 'type',
-              type: 'select',
-              defaultValue: 'staff_note',
-              props: {
-                label: _('Type'),
-                options: [
-                  { label: _('staff_note'), value: 'staff_note' }
-                ]
-              }
-            },
-            {
-              key: 'content',
-              type: 'textarea',
-              props: {
-                label: _('Note'),
-                required: true,
-                rows: 5
-              }
-            }
-          ]
-        }
-      }
     ];
   }
 }

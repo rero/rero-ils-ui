@@ -59,6 +59,7 @@ export class ReceiptLineComponent {
   }
 
   updatePermissions() {
+    console.log('line', this.line());
     if (this.line() == null || !this.allowActions()) {
       return of(null);
     }

@@ -18,7 +18,7 @@
 <form class="ui:flex ui:flex-col ui:gap-2" [formGroup]="form" (ngSubmit)="onSubmit(model)">
   <!-- FORM HEADER :: title and action buttons -->
   <section class="ui:flex ui:gap-2 ui:justify-between ui:items-center">
-    <h1 translate>Receipt of an order</h1>
+    <h1 translate>Receipt</h1>
     <div class="ui:flex ui:gap-1">
       <p-button
         outlined
@@ -38,27 +38,7 @@
     </div>
   </section>
 
-  <!-- KNOWN ORDER/RECEIPT DATA -->
-  <p-panel toggleable collapsed [header]="'Order overview' | translate">
-      <admin-order-summary [order]="orderRecord" />
-      @if (receiptRecord) {
-        <p-divider styleClass="ui:[&>.p-divider-content]:bg-transparent">
-          <span translate>Already in this receipt</span>
-        </p-divider>
-          <admin-receipt-summary
-            [receiptPid]="receiptRecord.pid"
-            [collapsable]="false"
-            [allowActions]="false"
-            class="container"
-          />
-      }
-  </p-panel>
-
   <!-- FORMLY FORM -->
-  <p-panel [header]="'Receipt new data' | translate">
-    <div class="ui:p-4">
-      <formly-form [form]="form" [fields]="fields" [model]="model" />
-    </div>
-  </p-panel>
+    <formly-form [form]="form" [fields]="fields" [model]="model" />
 </form>
 }
