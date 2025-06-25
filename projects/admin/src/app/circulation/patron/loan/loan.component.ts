@@ -20,7 +20,7 @@ import { ItemsService } from '@app/admin/service/items.service';
 import { PatronService } from '@app/admin/service/patron.service';
 import { TranslateService } from '@ngx-translate/core';
 import { CONFIG, DateTranslatePipe } from '@rero/ng-core';
-import { ItemStatus, UserService } from '@rero/shared';
+import { ItemStatus, User, UserService } from '@rero/shared';
 import { MessageService } from 'primeng/api';
 import { DynamicDialogRef } from 'primeng/dynamicdialog';
 import { SelectChangeEvent } from 'primeng/select';
@@ -50,7 +50,7 @@ export class LoanComponent implements OnInit, OnDestroy {
   /** Search text (barcode) entered in search input */
   public searchText = '';
   /** Current patron */
-  public patron: any;
+  public patron: User;
   /** List of checked out items */
   public checkedOutItems = [];
   /** List of checked in items */
@@ -428,6 +428,10 @@ export class LoanComponent implements OnInit, OnDestroy {
         sticky: true,
         closable: true,
       });
+    }
+    if(this.patron.pid) {
+      // update patron fees
+      this.circulationStatsService.updateStats(this.patron.pid);
     }
   }
 
