@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2021-2024 RERO
+ * Copyright (C) 2021-2025 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { ChangeDetectorRef, Component, inject, OnDestroy, OnInit } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit, signal, WritableSignal } from '@angular/core';
 import { FieldWrapper } from '@ngx-formly/core';
 import { TranslateService } from '@ngx-translate/core';
 import { RecordService } from '@rero/ng-core';
@@ -27,11 +27,11 @@ import { UserIdEditorComponent } from '../../custom-editor/user-id-editor/user-i
     selector: 'admin-user-id',
     template: `
     <div class="ui:flex ui:gap-2 ui:items-center ui:mb-6">
-      @if (user) {
+      @if (user()) {
         <strong>
-          {{ $any(user).metadata.last_name }}, {{ $any(user).metadata.first_name }}
-          @if (user.metadata.city) {
-            ({{ user.metadata.city }})
+          {{ user().metadata.last_name }}, {{ user().metadata.first_name }}
+          @if (user().metadata.city) {
+            ({{ user().metadata.city }})
           }
         </strong>
         <p-button size="small" [label]="'Edit' | translate" outlined (onClick)="openModal()" />
@@ -46,10 +46,9 @@ export class UserIdComponent extends FieldWrapper implements OnInit, OnDestroy {
   private dialogService: DialogService = inject(DialogService);
   private recordService: RecordService = inject(RecordService);
   private translateService: TranslateService = inject(TranslateService);
-  private changeDetectorRef: ChangeDetectorRef = inject(ChangeDetectorRef);
 
   /** current user */
-  user;
+  user: WritableSignal<any> = signal(undefined);
 
   private subscription = new Subscription();
 
@@ -59,8 +58,7 @@ export class UserIdComponent extends FieldWrapper implements OnInit, OnDestroy {
   ngOnInit(): void {
     if (this.formControl && this.formControl.value != null) {
       this.recordService.getRecord('users', this.formControl.value).subscribe((user) => {
-        this.user = user;
-        this.changeDetectorRef.detectChanges();
+        this.user.set(user);
       });
     }
   }
@@ -96,7 +94,7 @@ export class UserIdComponent extends FieldWrapper implements OnInit, OnDestroy {
         )
         .subscribe((user) => {
           if (user) {
-            this.user = user;
+            this.user.set(user);
           }
         })
     );
