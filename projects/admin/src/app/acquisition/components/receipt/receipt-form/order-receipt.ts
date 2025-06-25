@@ -35,10 +35,10 @@ export interface IAcqReceiptModel {
     acqAccount: string;
   }>;
   notes: IAcqNote[];
-  receiveLines: {
+  receiptLines: {
     acqOrderLineRef: string,
     selected: boolean,
-    document: string,
+    document?: string,
     quantityMax: number,
     quantity: number,
     amount: number,
@@ -85,7 +85,7 @@ export class OrderReceipt {
       reference: null,
       amountAdjustments: [],
       notes: [],
-      receiveLines: []
+      receiptLines: []
     };
   }
 
@@ -148,7 +148,7 @@ export class OrderReceipt {
    */
    processLines(model: IAcqReceiptModel): IAcqReceiptLine[] {
     const lines = [];
-    model.receiveLines
+    model.receiptLines
     .filter(line => line.selected === true)
     .forEach((line: any) => {
       lines.push({

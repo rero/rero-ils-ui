@@ -50,7 +50,7 @@ export class ReceiptLinesRoute extends BaseRoute implements RouteInterface {
             canAdd: () => of({ can: this.routeToolService.permissionsService.canAccess(PERMISSIONS.ACRL_CREATE) }),
             preUpdateRecord: (data: any) => this.fieldsToRemoved(data, ['is_current_budget']),
             permissions: (record: any) => this.routeToolService.permissions(record, this.recordType, true),
-            redirectUrl: (record: any) => this.location.back(),
+            redirectUrl: (record: any) => {this.location.back(); return of(null)},
             formFieldMap: (field: FormlyFieldConfig, jsonSchema: JSONSchema7): FormlyFieldConfig => {
               const formWidget = jsonSchema.widget;
               if (formWidget?.formlyConfig?.props?.fieldMap === 'amount') {
