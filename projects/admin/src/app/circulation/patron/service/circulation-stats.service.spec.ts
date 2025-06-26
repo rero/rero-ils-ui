@@ -21,6 +21,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { SharedModule } from '@rero/shared';
 import { of } from 'rxjs';
 import { CirculationStatsService } from './circulation-stats.service';
+import { HttpClient } from '@angular/common/http';
 
 describe('CirculationStatsService', () => {
   let service: CirculationStatsService;
@@ -49,6 +50,7 @@ describe('CirculationStatsService', () => {
     ill: 3
   };
 
+  const httpClientSpy = jasmine.createSpyObj('HttpClient', ['get']);
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [
@@ -56,7 +58,8 @@ describe('CirculationStatsService', () => {
         TranslateModule.forRoot()
       ],
       providers: [
-        { provide: PatronService, useValue: patronServiceSpy }
+        { provide: PatronService, useValue: patronServiceSpy },
+        { provide: HttpClient, useValue: httpClientSpy }
       ]
     });
     service = TestBed.inject(CirculationStatsService);

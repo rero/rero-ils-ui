@@ -107,7 +107,6 @@ export class LoanComponent implements OnInit, OnDestroy {
               loanedItems.forEach((data: any, index) => {
                 this.patronService.getItem(data.barcode).subscribe((item) => (loanedItems[index] = item));
               });
-
               // we need to know which items are ready to pickup to decrement the counter if a checkout
               // operation is done on one of this items.
               this.pickupItems = pickupItems;
@@ -428,10 +427,6 @@ export class LoanComponent implements OnInit, OnDestroy {
         sticky: true,
         closable: true,
       });
-    }
-    if(this.patron.pid) {
-      // update patron fees
-      this.circulationStatsService.updateStats(this.patron.pid);
     }
   }
 

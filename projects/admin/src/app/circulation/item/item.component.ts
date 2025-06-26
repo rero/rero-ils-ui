@@ -27,6 +27,7 @@ import { RecordService } from '@rero/ng-core';
 import { ItemStatus, PermissionsService, UserService } from '@rero/shared';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { CirculationStatsService } from '../patron/service/circulation-stats.service';
 
 @Component({
     selector: 'admin-item',
@@ -41,6 +42,8 @@ export class ItemComponent implements OnChanges {
   private itemService: ItemsService = inject(ItemsService);
   private permissionsService: PermissionsService = inject(PermissionsService);
   private userService: UserService = inject(UserService);
+  private circulationStatsService: CirculationStatsService = inject(CirculationStatsService);
+
 
   NOTEAPI =  ItemNoteType.API;
 
@@ -97,6 +100,10 @@ export class ItemComponent implements OnChanges {
             this.totalAmountOfFee = this.patronTransactionService.computeTotalTransactionsAmount(transactions);
             if (this.totalAmountOfFee > 0) {
               this.hasFeesEmitter.emit(true);
+              if(this.patron.pid) {
+                // update patron fees
+                this.circulationStatsService.updateFees(this.patron.pid).subscribe();
+              }
             }
           }
         );
