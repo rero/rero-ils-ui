@@ -208,21 +208,8 @@ export class ItemsService {
     return this.httpClient.post<any>(url, data, {params: queryParams}).pipe(
       map(itemData => {
         const item = new Item(itemData.metadata);
+        item.setLoan(itemData.action_applied[action]);
         item.actionDone = action;
-        let loan: any;
-        // Set the action applied corresponding to current action as the loan of the item
-        if (itemData.action_applied[ItemAction.checkin]) {
-          loan = itemData.action_applied[ItemAction.checkin];
-        }
-        if (itemData.action_applied[ItemAction.receive]) {
-          loan = itemData.action_applied[ItemAction.receive];
-        }
-        if (itemData.action_applied[ItemAction.validate]) {
-          loan = itemData.action_applied[ItemAction.validate];
-        }
-        if (loan != null) {
-          item.setLoan(loan);
-        }
         return item;
       })
     );

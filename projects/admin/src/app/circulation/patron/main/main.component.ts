@@ -36,7 +36,6 @@ export class MainComponent implements OnInit, OnDestroy {
   private router: Router = inject(Router);
   private patronService: PatronService = inject(PatronService);
   private organisationService: OrganisationService = inject(OrganisationService);
-  private patronTransactionService: PatronTransactionService = inject(PatronTransactionService);
   private hotKeysService: HotkeysService = inject(HotkeysService);
   private translateService: TranslateService = inject(TranslateService);
   private circulationStatsService: CirculationStatsService = inject(CirculationStatsService);
@@ -104,29 +103,12 @@ export class MainComponent implements OnInit, OnDestroy {
       this.patronService.getPatron(barcode)
       .pipe(
         tap((patron: any) => this.patron = patron),
+        tap(() => this.initializeTabs(this.patron.keep_history)),
         // load statistics
         switchMap((patron: any) =>
           this.circulationStatsService.getStats(patron.pid)
         ),
-        // load overdue transactions
-        switchMap(() => this.patronService.getOverduePreview(this.patron.pid)),
-        // compute the total of the overdue transactions
-        map((overdues) => {
-            let fees = 0;
-            overdues.map((fee: any) => {
-              fees += fee.fees.total;
-            });
-            this.circulationStatsService.setOverdueFees(fees, overdues);
-        }),
-        // get engaged fees patron transactions
-        tap(() => this.patronTransactionService.emitPatronTransactionByPatron(this.patron.pid, undefined, 'open')),
-        // subscribe to the engaged patron transactions
-        switchMap(() => this.patronTransactionService.patronTransactionsSubject$),
-        // set engaged fees in the shared service
-        map((transactions) => {
-          this.circulationStatsService.setFeesEngaged(this.patronTransactionService.computeTotalTransactionsAmount(transactions), transactions);
-        }),
-        tap(() => this.initializeTabs(this.patron.keep_history)),
+        switchMap(() => this.circulationStatsService.updateFees(this.patron.pid)),
         tap(() => this.initializeShortcuts(this.patron.keep_history)),
         tap(() => {
           this._unregisterShortcuts();

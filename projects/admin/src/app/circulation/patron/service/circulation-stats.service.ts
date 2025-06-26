@@ -19,7 +19,8 @@ import { Loan, LoanOverduePreview, LoanState } from '@app/admin/classes/loans';
 import { PatronTransaction } from '@app/admin/classes/patron-transaction';
 import { PatronService } from '@app/admin/service/patron.service';
 import { getSeverity } from '@app/admin/utils/utils';
-import { map, Observable } from 'rxjs';
+import { map, Observable, switchMap, tap } from 'rxjs';
+import { PatronTransactionService } from '../../services/patron-transaction.service';
 
 @Injectable({
   providedIn: 'root'
@@ -27,6 +28,8 @@ import { map, Observable } from 'rxjs';
 export class CirculationStatsService {
 
   private patronService: PatronService = inject(PatronService);
+  private patronTransactionService: PatronTransactionService = inject(PatronTransactionService);
+
 
   statistics: WritableSignal<{[key: string]: number}> = signal({
     feesEngaged: 0,
@@ -43,6 +46,28 @@ export class CirculationStatsService {
 
   updateStats(patronPid: string): void {
     this.getStats(patronPid).subscribe();
+  }
+
+  updateFees(patronPid: string): Observable<any>{
+            // load overdue transactions
+    return this.patronService.getOverduePreview(patronPid).pipe(
+      // compute the total of the overdue transactions
+      tap((overdues) => {
+          let fees = 0;
+          overdues.map((fee: any) => {
+            fees += fee.fees.total;
+          });
+          this.setOverdueFees(fees, overdues);
+      }),
+      // get engaged fees patron transactions
+      tap(() => this.patronTransactionService.emitPatronTransactionByPatron(patronPid, undefined, 'open')),
+      // subscribe to the engaged patron transactions
+      switchMap(() => this.patronTransactionService.patronTransactionsSubject$),
+      // set engaged fees in the shared service
+      tap((transactions) =>
+        this.setFeesEngaged(this.patronTransactionService.computeTotalTransactionsAmount(transactions), transactions)
+      )
+    );
   }
 
   setOverdueFees(overdueFees: number, transactions:{fees: LoanOverduePreview, loan: Loan}[]): void {
