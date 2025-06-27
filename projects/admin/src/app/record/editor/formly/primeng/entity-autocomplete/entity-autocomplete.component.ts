@@ -22,76 +22,77 @@ import { Subscription } from 'rxjs';
 import { AddEntityLocalFormComponent } from './add-entity-local-form/add-entity-local-form.component';
 
 @Component({
-    selector: 'admin-entity-autocomplete',
-    template: `
-      <div class="ui:flex ui:w-full">
-        @if (!field.formControl.value) {
-          @if (props.filters?.options) {
-            <div class="ui:flex">
-              <p-select
-                [options]="optionValues$|async"
-                [ngModel]="props.filters.selected"
-                (onChange)="changeFilter($event)"
-              >
-              <ng-template let-selected #selectedItem>
-                {{ selected.untranslatedLabel | translate }}
-              </ng-template>
-              </p-select>
-            </div>
-          }
-          <div class="ui:flex ui:ml-1 ui:w-full">
-            <p-autoComplete
-              class="ui:w-full"
-              styleClass="ui:w-full"
-              inputStyleClass="ui:w-full"
-              [scrollHeight]="props.scrollHeight"
-              [minLength]="props.minLength"
-              [maxlength]="props.maxLength"
-              [(ngModel)]="value"
-              [placeholder]="props.placeholder"
-              [group]="props.group"
-              [suggestions]="suggestions()"
-              (completeMethod)="search($event)"
-              (onSelect)="onSelect($event)"
+  selector: 'admin-entity-autocomplete',
+  template: `
+    <div class="ui:grid ui:grid-cols-12 ui:gap-2">
+      @if (!field.formControl.value) {
+        @if (props.filters?.options) {
+          <div class="ui:col-span-4">
+            <p-select
+              [fluid]="true"
+              [options]="optionValues$|async"
+              [ngModel]="props.filters.selected"
+              (onChange)="changeFilter($event)"
             >
-              <ng-template #group let-data>
-                <span class="ui:font-bold">
-                  @if (data.label === 'local' && isAuthorizedToAddLocalEntity) {
-                    {{ "link to local authority" | translate }}&nbsp;
-                    <i
-                      class="fa fa-plus-square-o ui:text-xl ui:text-blue-500 ui:hover:text-blue-700 ui:cursor-pointer"
-                      [title]="'Add local entity'|translate"
-                      aria-hidden="true"
-                      (click)="addLocalEntity($event)"
-                    ></i>
-                  } @else {
-                    {{ "link to authority {{ sourceName }}" | translate:{ sourceName: data.label } }}
-                  }
-                </span>
-              </ng-template>
-              <ng-template let-data #item>
-                <div class="ui:flex ui:gap-2 ui:items-center">
-                  <div class="ui:flex" [innerHTML]="data.label"></div>
-                  @if (data.link) {
-                    <a class="ui:ml-1 ui:text-surface-700" (click)="$event.stopPropagation()" [href]="data.link" target="_blank">
-                      <i class="fa fa-external-link"></i>
-                    </a>
-                  }
-                  @if (data.summary) {
-                    <div class="ui:italic ui:text-sm ui:text-gray-500" [innerHTML]="data.summary" [ngClass]="props.summaryClass"></div>
-                  }
-                </div>
-              </ng-template>
-            </p-autoComplete>
-          </div>
-        } @else {
-          <div class="ui:py-1 ui:flex ui:gap-1 ui:items-center">
-            <span [innerHtml]="valueSelected()"></span>
-            <p-button icon="fa fa-trash" severity="secondary" [text]="true" (onClick)="clear()" />
+            <ng-template let-selected #selectedItem>
+              {{ selected.untranslatedLabel | translate }}
+            </ng-template>
+            </p-select>
           </div>
         }
-      </div>`,
-    standalone: false
+        <div class="ui:col-span-8">
+          <p-autoComplete
+            [fluid]="true"
+            class="props.class"
+            styleClass="props.styleClass"
+            [scrollHeight]="props.scrollHeight"
+            [minLength]="props.minLength"
+            [maxlength]="props.maxLength"
+            [(ngModel)]="value"
+            [placeholder]="props.placeholder"
+            [group]="props.group"
+            [suggestions]="suggestions()"
+            (completeMethod)="search($event)"
+            (onSelect)="onSelect($event)"
+          >
+            <ng-template #group let-data>
+              <span class="ui:font-bold">
+                @if (data.label === 'local' && isAuthorizedToAddLocalEntity) {
+                  {{ "link to local authority" | translate }}&nbsp;
+                  <i
+                    class="fa fa-plus-square-o ui:text-xl ui:text-blue-500 ui:hover:text-blue-700 ui:cursor-pointer"
+                    [title]="'Add local entity'|translate"
+                    aria-hidden="true"
+                    (click)="addLocalEntity($event)"
+                  ></i>
+                } @else {
+                  {{ "link to authority {{ sourceName }}" | translate:{ sourceName: data.label } }}
+                }
+              </span>
+            </ng-template>
+            <ng-template let-data #item>
+              <div class="ui:flex ui:gap-2 ui:items-center">
+                <div class="ui:flex" [innerHTML]="data.label"></div>
+                @if (data.link) {
+                  <a class="ui:ml-1 ui:text-surface-700" (click)="$event.stopPropagation()" [href]="data.link" target="_blank">
+                    <i class="fa fa-external-link"></i>
+                  </a>
+                }
+                @if (data.summary) {
+                  <div class="ui:italic ui:text-sm ui:text-gray-500" [innerHTML]="data.summary" [ngClass]="props.summaryClass"></div>
+                }
+              </div>
+            </ng-template>
+          </p-autoComplete>
+        </div>
+      } @else {
+        <div class="ui:col-span-12">
+          <span [innerHtml]="valueSelected()"></span>
+          <p-button icon="fa fa-trash" severity="secondary" [text]="true" (onClick)="clear()" />
+        </div>
+      }
+    </div>`,
+  standalone: false
 })
 export class EntityAutocompleteComponent extends RemoteAutocomplete implements OnDestroy, AfterViewInit {
 
