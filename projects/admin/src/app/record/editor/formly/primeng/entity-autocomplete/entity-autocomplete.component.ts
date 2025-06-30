@@ -117,6 +117,7 @@ export class EntityAutocompleteComponent extends RemoteAutocomplete implements O
     event.preventDefault();
     const dialog: DynamicDialogRef = this.dialogService.open(AddEntityLocalFormComponent, {
       header: this.translateService.instant('Add local entity'),
+      focusOnShow: false,
       modal: true,
       width: '75vw',
       data: {

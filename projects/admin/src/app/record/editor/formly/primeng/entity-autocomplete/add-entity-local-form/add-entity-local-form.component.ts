@@ -40,7 +40,7 @@ export class AddEntityLocalFormComponent implements OnInit, OnDestroy {
 
   /** TODO: Find a better solution for next iteration */
   translatedTypes = {
-    'concepts-genreForm': 'bf:Topic'
+    'concepts_genreForm': 'bf:Topic'
   };
 
   /** Available types for the select menu on form */
