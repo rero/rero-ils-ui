@@ -136,7 +136,7 @@ export class Library {
       }
       return exception;
     });
-    this.exception_dates = this.exception_dates.sort((a, b) => DateTime.fromISO(a.start_date) - DateTime.fromISO(b.start_date));
+    this.exception_dates = this.exception_dates.sort((a, b) => DateTime.fromISO(b.start_date) - DateTime.fromISO(a.start_date));
   }
 
   /**

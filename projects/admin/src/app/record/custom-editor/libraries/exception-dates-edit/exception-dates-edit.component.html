@@ -22,8 +22,8 @@
     </label>
     <div class="ui:col-span-10">
       <input
-        class="ui:w-full"
         pInputText
+        fluid="true"
         formControlName="title"
         [placeholder]="'Please insert a title' | translate"
       />
@@ -49,9 +49,11 @@
       <div class="ui:col-span-10">
         <p-datepicker
           appendTo="body"
+          dateFormat="dd.mm.yy"
+          fluid="true"
+          panelStyleClass="ui:!min-w-0"
           formControlName="date"
-          [readonlyInput]="true"
-          styleClass="ui:w-full"
+          [readonlyInput]="false"
           [showIcon]="true"
         />
         @if (date.invalid && (date.dirty || date.touched)) {
@@ -73,11 +75,13 @@
       </label>
       <div class="ui:col-span-10">
         <p-datepicker
-          styleClass="ui:w-full"
+          fluid="true"
+          dateFormat="dd.mm.yy"
+          panelStyleClass="ui:!min-w-0"
+          [readonlyInput]="false"
           appendTo="body"
           formControlName="dates"
           selectionMode="range"
-          [readonlyInput]="true"
           numberOfMonths="2"
           [showIcon]="true"
         />
