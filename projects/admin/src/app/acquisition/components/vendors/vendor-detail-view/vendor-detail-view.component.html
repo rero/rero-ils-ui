@@ -39,14 +39,20 @@
           <dd>{{ record.metadata.currency }}</dd>
         }
         <!-- VAT RATE -->
-        @if (record.metadata.tva_rate) {
-          <dt translate>VAT</dt>
-          <dd>{{ record.metadata.tva_rate }}</dd>
+        @if (record.metadata.vat_rate) {
+          <dt translate>VAT rate</dt>
+          <dd>{{ record.metadata.vat_rate }}%</dd>
         }
         <!-- NOTE -->
-        @if (record.metadata.note) {
-          <dt translate>Note</dt>
-          <dd>{{ record.metadata.note }}</dd>
+        @if (record.metadata.notes) {
+          <dt translate>Notes</dt>
+          <dd>
+            @for (note of record.metadata.notes; track $index) {
+              <div>
+                <p-tag severity="secondary" [value]="note.type|translate"/>&nbsp;{{ note.content }}
+              </div>
+            }
+          </dd>
         }
       </dl>
     </section>
