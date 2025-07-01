@@ -46,14 +46,13 @@
               </div>
               <div class="ui:col-span-2" translate>Borrowed on</div>
               <div class="ui:col-span-10">{{ transaction.loan.start_date | dateTranslate :'short' }}</div>
-              <ng-container *ngVar="transaction.loan.transaction_location_pid | getRecord: 'locations' | async as location">
-                @if (location) {
-                  <div class="ui:col-span-2" translate>Borrowed at</div>
-                  <div class="ui:col-span-10">
-                    {{ location.metadata.library.pid | getRecord: 'libraries' : 'field' : 'name' | async }}: {{ location.metadata.name }}
-                  </div>
-                }
-              </ng-container>
+              @let location = transaction.loan.transaction_location_pid | getRecord: 'locations' | async;
+              @if (location) {
+                <div class="ui:col-span-2" translate>Borrowed at</div>
+                <div class="ui:col-span-10">
+                  {{ $any(location).metadata.library.pid | getRecord: 'libraries' : 'field' : 'name' | async }}: {{ $any(location).metadata.name }}
+                </div>
+              }
             </div>
           }
         </section>
