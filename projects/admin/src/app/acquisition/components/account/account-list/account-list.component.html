@@ -73,15 +73,14 @@
             {{ rowData.allocated_amount | currency: organisation.default_currency }}
           </td>
           <td class="ui:!text-right">
-            <ng-container *ngVar="rowData | accountAvailableAmount as available_amount">
-              <span [class]="{
-                'text-success': available_amount > 0,
-                ' ui:text-muted-color': available_amount === 0,
-                'text-warning': available_amount < 0
-              }">
-                {{ available_amount | currency: organisation.default_currency }}
-              </span>
-            </ng-container>
+            @let available_amount = rowData | accountAvailableAmount;
+            <span [class]="{
+              'text-success': available_amount > 0,
+              ' ui:text-muted-color': available_amount === 0,
+              'text-warning': available_amount < 0
+            }">
+              {{ available_amount | currency: organisation.default_currency }}
+            </span>
           </td>
           <td class="ui:!text-right" [class]="{
             'text-error': rowData.encumbrance_amount.self > 0,

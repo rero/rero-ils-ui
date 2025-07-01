@@ -37,9 +37,10 @@
             - {{ receptionDate | dateTranslate: 'shortDate' }}
           }
         }
-        <ng-container *ngVar="order.vendor.pid | getRecord: 'vendors': 'field': 'name' | async as vendor">
-          - {{ vendor | truncateText : 10 : '…'}}
-        </ng-container>
+        @let vendor = order.vendor.pid | getRecord: 'vendors': 'field': 'name' | async;
+        @if (vendor) {
+          - {{ $any(vendor) | truncateText : 10 : '…'}}
+        }
         ]
       </span>
     </div>

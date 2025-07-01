@@ -33,7 +33,7 @@
             <i class="fa fa-filter"></i>
           </p-inputgroup-addon>
         </p-inputgroup>
-        <small *ngVar="filteredFiles.length as total">
+        <small>
           {{ getResultsText() | async }}
         </small>
       </div>

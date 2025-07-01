@@ -16,9 +16,11 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 @if (record$ | async; as record) {
-  <h1 *ngVar="icon($any(record).metadata.type) as icon">
-    <i class="fa {{ icon.class }}" [title]="icon.title" aria-hidden="true"></i>
-    {{ $any(record).metadata.authorized_access_point }}</h1>
+  @let iconType = icon($any(record).metadata.type);
+  <h1>
+    <i class="fa {{ iconType.class }}" [title]="iconType.title" aria-hidden="true"></i>
+    {{ $any(record).metadata.authorized_access_point }}
+  </h1>
   <small>
     {{ 'Local ID' | translate }}: {{ $any(record).metadata.pid }}
   </small>
