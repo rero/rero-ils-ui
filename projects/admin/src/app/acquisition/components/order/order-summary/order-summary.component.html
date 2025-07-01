@@ -15,16 +15,26 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
+@let vendor = order.vendor.pid | getRecord : "vendors" | async;
 @if (order) {
 <section class="ui:grid ui:grid-cols-12 ui:gap-4">
   <div class="ui:md:col-span-8 ui:px-3">
     <dl class="metadata">
       <!-- VENDOR -->
-      @if (order.vendor) {
-      <dt translate>Vendor</dt>
-      <dd>
-        {{ order.vendor.pid | getRecord : "vendors" : "field" : "name" | async }}
-      </dd>
+      @if (vendor) {
+        <dt translate>Vendor</dt>
+        <dd>
+          <a [routerLink]="['/acquisition','records','vendors','detail',$any(vendor).metadata.pid]">{{ $any(vendor).metadata.name }}</a>
+          @if ($any(vendor).metadata.notes) {
+            <ul>
+            @for (note of $any(vendor).metadata.notes; track $index) {
+              <li>
+                <p-tag severity="secondary" [value]="note.type|translate"/>&nbsp;{{ note.content }}
+              </li>
+            }
+            </ul>
+          }
+        </dd>
       }
       <!-- ORDER STATUS -->
       <dt translate>Order status</dt>
