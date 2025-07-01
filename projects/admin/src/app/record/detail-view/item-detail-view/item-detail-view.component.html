@@ -52,8 +52,9 @@
         <dd>{{ record.metadata.enumerationAndChronology }}</dd>
       }
       <!-- ITEM TYPE -->
+      @let defaultItty = record.metadata.item_type.pid | getRecord:'item_types': 'field':'name' | async;
       <dt translate>Type</dt>
-      <dd *ngVar="record.metadata.item_type.pid | getRecord:'item_types': 'field':'name' | async as defaultItty">
+      <dd>
         @if (hasTemporaryItemType()) {
           <del class="text-error">{{ defaultItty }}</del>
           <span class="text-success">

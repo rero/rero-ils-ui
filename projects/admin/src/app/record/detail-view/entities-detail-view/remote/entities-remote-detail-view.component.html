@@ -1,6 +1,6 @@
 <!--
   RERO ILS UI
-  Copyright (C) 2019-2024 RERO
+  Copyright (C) 2019-2025 RERO
   Copyright (C) 2019-2023 UCLouvain
 
   This program is free software: you can redistribute it and/or modify
@@ -16,9 +16,11 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 @if (record$ | async; as record) {
-  <h1 *ngVar="icon($any(record).metadata.type) as icon">
-    <i class="fa {{ icon.class }}" [title]="icon.title" aria-hidden="true"></i>
-    {{ $any(record).metadata | extractSourceField : 'authorized_access_point' }}</h1>
+  @let iconType = icon($any(record).metadata.type);
+  <h1>
+    <i class="fa {{ iconType.class }}" [title]="iconType.title" aria-hidden="true"></i>
+    {{ $any(record).metadata | extractSourceField : 'authorized_access_point' }}
+  </h1>
   <small>
     {{ 'MEF ID' | translate }}: {{ $any(record).metadata.pid }}
   </small>
