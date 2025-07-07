@@ -67,7 +67,6 @@ export class LoansBriefViewComponent implements ResultItem, OnInit {
     // State bullet color
     this.setTagSeverity();
     // Is request is expired
-    this.record.metadata.request_expire_date = "2024-10-28T08:58:59.979434+00:00";
     if ('request_expire_date' in this.record.metadata) {
       const requestExpireDate = DateTime.fromISO(this.record.metadata.request_expire_date);
       this.isRequestExpired = DateTime.now() >= requestExpireDate;
