@@ -24,7 +24,7 @@ import { DateTime } from 'luxon';
     @if (hasTemporaryItemType()) {
       <dl class="metadata">
         <dt>
-          <span class="text-warning" translate>Temporary circulation category</span>&nbsp;
+          <span class="text-warning" translate>Temporary item type</span>&nbsp;
           <i class="fa fa-exclamation-triangle text-warning"></i>
         </dt>
         <dd>
