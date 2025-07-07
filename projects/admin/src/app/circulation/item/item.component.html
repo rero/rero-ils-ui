@@ -298,7 +298,7 @@
     }
     @if (canUseDebugMode && !isCollapsed) {
       <div class="ui:flex ui:justify-end ui:mt-2 ui:col-span-12">
-        <p-button [icon]="debugMode ? 'fa fa-toggle-on' : 'fa fa-toggle-off'" [outlined]="true" severity="danger" (onClick)="debugMode=!debugMode">
+        <p-button [icon]="debugMode ? 'fa fa-toggle-on' : 'fa fa-toggle-off'" [outlined]="true" severity="warn" (onClick)="debugMode=!debugMode">
           <i class="fa fa-bug"></i>
         </p-button>
       </div>

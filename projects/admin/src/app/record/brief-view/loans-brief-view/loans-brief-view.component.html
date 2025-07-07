@@ -23,10 +23,10 @@
       <div class="ui:flex ui:gap-1">
         <p-button icon="fa fa-history" severity="secondary" outlined size="small"  (onClick)="openTransactionHistoryDialog(record.metadata.pid)" />
         @if (canUseDebugMode) {
-          <p-button [icon]="debugMode ? 'fa fa-toggle-on' : 'fa fa-toggle-off'" severity="warning" [outlined]="!debugMode" size="small"
+          <p-button [icon]="debugMode ? 'fa fa-toggle-on' : 'fa fa-toggle-off'" severity="warn" [outlined]="!debugMode" size="small"
             (onClick)="debugMode=!debugMode"
           >
-            <i class="ui:mr-1 fa fa-bug"></i>
+            <i class="fa fa-bug"></i>
           </p-button>
         }
       </div>
