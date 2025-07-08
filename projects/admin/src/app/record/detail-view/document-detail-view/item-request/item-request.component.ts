@@ -181,12 +181,12 @@ export class ItemRequestComponent implements OnInit {
               cas_request: {
                 expression: (fc: AbstractControl) =>  {
                   return this.service.canRequest(this.recordPid, this.currentUser.currentLibrary, fc.value).pipe(
-                    catchError((error) => of({ can: false, reasons: { others: error.message } })),
+                    catchError((error) => of({ can: false, reasons: error.message })),
                     map((result: any) => {
                       if (!result.can) {
                         this.patron = null;
-                        const reasons = result.reasons.others || {'Not defined error': true};
-                        this.canRequestMessage = Object.keys(reasons)[0];
+                        const reasons = result.reasons || {'Not defined error': true};
+                        this.canRequestMessage = reasons[0];
                       }
                       fc.markAsTouched();
                       return result.can;
