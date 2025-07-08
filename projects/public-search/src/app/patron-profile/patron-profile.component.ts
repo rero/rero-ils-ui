@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2021-2024 RERO
+ * Copyright (C) 2021-2025 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -15,10 +15,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { APP_BASE_HREF, KeyValue } from '@angular/common';
-import { Component, inject, model, OnDestroy, OnInit } from '@angular/core';
+import { afterNextRender, Component, inject, model, OnDestroy, OnInit } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { Record, RecordService } from '@rero/ng-core';
 import { IPatron, UserService } from '@rero/shared';
+import JsBarcode from 'jsbarcode';
 import { forkJoin, of, Subscription } from 'rxjs';
 import { IllRequestApiService } from '../api/ill-request-api.service';
 import { LoanApiService } from '../api/loan-api.service';
@@ -170,6 +171,17 @@ export class PatronProfileComponent implements OnInit, OnDestroy {
     return this.patronProfileMenuService.currentPatron;
   }
 
+  constructor() {
+    afterNextRender(() => {
+      const patronBarcode = this.patronProfileMenuService.currentPatron.patron.barcode[0];
+      JsBarcode('#barcode', patronBarcode, {
+        format: 'CODE39',
+        margin: 0,
+        font: 'monospace',
+      });
+    });
+  }
+
   /** OnInit hook */
   ngOnInit(): void {
     const pathParts = this.baseHref.split('/');
@@ -242,6 +254,8 @@ export class PatronProfileComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.subscription.unsubscribe();
   }
+
+  afterRe
 
   /**
    * Find patron Pid with current view code

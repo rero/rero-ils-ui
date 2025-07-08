@@ -90,6 +90,7 @@
     "font-awesome": "^4.7.0",
     "issn": "^1.0.6",
     "js-generate-password": "^0.1.9",
+    "jsbarcode": "^3.12.1",
     "lodash-es": "^4.17.21",
     "luxon": "^3.5.0",
     "marked": "^15.0.0",
