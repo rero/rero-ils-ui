@@ -15,7 +15,10 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 @if (user) { @if (user.isAuthenticated && user.isPatron) {
-<h3>{{ fullname }}</h3>
+<div class="ui:flex ui:flex-col ui:sm:flex-row ui:mt-1">
+  <h3 class="ui:flex-grow">{{ fullname }}</h3>
+  <svg class="ui:w-xs ui:h-30 ui:md:w-3xs ui:md:h-20" id="barcode"></svg>
+</div>
 <section class="ui:mt-2">
   <public-search-patron-profile-menu [patronPid]="patron.pid" />
 </section>
@@ -36,7 +39,7 @@
               @if (tab.value.count != null) {
                 <p-badge [value]="tab.value.count" severity="info" />
               }
-              @if (tab.value.feeTotal != null) {
+              @if (tab.value.feeTotal != null && tab.value.feeTotal > 0) {
                 <p-badge
                   [value]="tab.value.feeTotal  | currency : patron.organisation.currency : 'symbol'"
                   severity="warn"
