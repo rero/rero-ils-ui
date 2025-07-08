@@ -19,6 +19,7 @@ import { Component, inject, Input, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, NavigationEnd, Router, UrlSegment } from '@angular/router';
 import { IRecordType } from '@rero/ng-core';
 import { filter, Subscription } from 'rxjs';
+import { UserService } from '../../service/user.service';
 import { RemoteSearchConfig } from './remote-search-config.service';
 
 @Component({
@@ -33,6 +34,7 @@ export class RemoteSearchComponent implements OnInit, OnDestroy {
   private route: ActivatedRoute = inject(ActivatedRoute);
   private remoteSearchBarConfig: RemoteSearchConfig = inject(RemoteSearchConfig);
   private document: Document = inject(DOCUMENT);
+  private userService: UserService = inject(UserService);
 
   // You must use lowercase variable names for this to work in a web component.
   // Use @Input in this case, as the web component does not work with input (signal).
@@ -79,7 +81,7 @@ export class RemoteSearchComponent implements OnInit, OnDestroy {
     if (this.internalRoutingBaseURL) {
       this.router.navigate([this.internalRoutingBaseURL], {
         queryParams: {
-          ...{ page: '1', size: '10' },
+          ...{ page: '1', size: '10', organisation: this.userService.user.currentOrganisation },
           q: query
         }
       });
