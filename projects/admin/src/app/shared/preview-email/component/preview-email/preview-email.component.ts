@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2023 RERO
+ * Copyright (C) 2023-2025 RERO
  * Copyright (C) 2023 UCLouvain
  *
  * This program is free software: you can redistribute it and/or modify
@@ -109,5 +109,13 @@ export class PreviewEmailComponent {
     }
     // Validation of all email addresses of each recipient
     return Object.keys(this.recipients).every((key: string) => this.recipients[key].every(email => Tools.validateEmail(email)));
+  }
+
+  onBlur(event: Event): void {
+    const inputElement = event.target as HTMLInputElement;
+    const inputValue = inputElement.value;
+    if(inputValue) {
+      inputElement?.dispatchEvent(new KeyboardEvent('keydown', { 'code': 'Enter' } ));
+    }
   }
 }
