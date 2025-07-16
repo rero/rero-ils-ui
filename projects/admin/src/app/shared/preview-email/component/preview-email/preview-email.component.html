@@ -70,6 +70,7 @@
             [inputId]="type"
             pDroppable="emails"
             (onDrop)="drop($event)"
+            (onBlur)="onBlur($event)"
             [(ngModel)]="recipients[type]"
           />
         </div>
