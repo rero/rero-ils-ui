@@ -123,6 +123,7 @@ export class CirculationStatsService {
     this.statistics.set({...this.statistics(), ...data});
 
     // Messages
+    this.clearMessages();
     circulations.messages.map((message: any) => {
       this.messages.set([...this.messages(), {
         severity: getSeverity(message.type),

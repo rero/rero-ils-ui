@@ -16,8 +16,8 @@
 -->
 @if (patron?.patron) {
   <div [ngClass]="{'ui:text-muted-color': !clearPatronButton}">
-    <div class="ui:grid ui:grid-cols-12 ui:gap-x-4">
-      <div class="ui:col-span-6 ui:mt-0">
+    <div class="ui:grid ui:grid-cols-12 ui:gap-x-4 ui:mt-1">
+      <div class="ui:col-span-6">
         <div class="ui:flex ui:w-full">
           <div class="ui:flex ui:mr-6 ui:items-center">
             <i class="fa fa-user fa-5x" aria-hidden="true"></i>
@@ -77,7 +77,7 @@
           </div>
         }
       </div>
-      <div class="ui:col-span-6 ui:mt-0">
+      <div class="ui:col-span-6">
         <!-- Circulation message -->
         @if (displayCirculationMessages) {
             @if (patron.circulation_information) {
