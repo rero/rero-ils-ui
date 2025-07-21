@@ -25,7 +25,7 @@
     </ng-template>
     @if (loans.length > 0) {
       <div>
-        @for (loan of loans; track $index) {
+        @for (loan of loans; track $any(loan).metadata.pid) {
           <div class="ui:odd:bg-surface-50">
             <admin-pending-item [loan]="loan" (cancelRequestEvent)="cancelRequest($event)" />
           </div>
