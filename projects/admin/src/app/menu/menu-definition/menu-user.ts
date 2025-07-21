@@ -25,6 +25,7 @@ export const MENU_USER: MenuItem[] = [
     icon: 'fa fa-info',
     id: MENU_IDS.USER.HELP,
     url: '/help',
+    target: '_blank'
   },
   {
     label: '$symbolName',

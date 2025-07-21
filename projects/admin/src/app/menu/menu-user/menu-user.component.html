@@ -42,7 +42,7 @@
         class="ui:flex ui:items-center p-menubar-item-link"
         [id]="item.id"
         [href]="item.url"
-        [target]="item.target"
+        [target]="item.target || '_self'"
       >
         @if (item.icon) {
           <span [class]="item.icon" class="p-menubar-item-icon"></span>
