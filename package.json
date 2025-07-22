@@ -1,6 +1,6 @@
 {
   "name": "@rero/rero-ils-ui",
-  "version": "19.0.0",
+  "version": "19.0.1",
   "license": "AGPL-3.0-only",
   "author": {
     "name": "RERO",
@@ -83,7 +83,7 @@
     "@ngx-loading-bar/router": "^7.0.0",
     "@ngx-translate/core": "^16.0.0",
     "@primeng/themes": "^19.0.7",
-    "@rero/ng-core": "^19.1.0",
+    "@rero/ng-core": "^19.1.1",
     "chart.js": "^4.4.7",
     "crypto-js": "^4.2.0",
     "easymde": "^2.19.0",
