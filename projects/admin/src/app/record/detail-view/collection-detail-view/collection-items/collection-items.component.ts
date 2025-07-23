@@ -26,4 +26,13 @@ export class CollectionItemsComponent {
 
   /** Items for current collection */
   @Input() items = [];
+
+    /**
+   * Allow to filter provisionActivity keeping only activities that are 'Publication'
+   * @param element: the element to check
+   * @return True if element is a 'Publication', False otherwise
+   */
+  filterPublicationProvisionActivity(element: any): boolean {
+    return ('key' in element && element.key === 'bf:Publication');
+  }
 }

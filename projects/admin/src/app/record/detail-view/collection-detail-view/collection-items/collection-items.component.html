@@ -20,44 +20,57 @@
     @for (item of items; track item.pid) {
       @let itemData = item.pid | getRecord: 'items' | async;
       @if (itemData) {
-        <li class="ui:p-2 ui:odd:bg-surface-50">
+        <li class="ui:p-2 ui:odd:bg-surface-50 ui:flex ui:gap-6">
           @if ($any(itemData).metadata.document.pid | getRecord:'documents':'object':null:{Accept: 'application/rero+json'} | async; as document) {
-            <h5>
-              <a [routerLink]="['/records','documents', 'detail', $any(itemData).metadata.document.pid]">
-                {{ $any(document).metadata.title[0]._text }}
-              </a>
-            </h5>
-            <div>
-              @if ($any(document).metadata.contribution) {
-                <shared-contribution [contributions]="$any(document).metadata.contribution"></shared-contribution>
-              }
+            <div class="ui:hidden ui:sm:block">
+              <shared-thumbnail [record]="document" />
             </div>
-            <dl class="metadata">
-              <dt translate>Publication</dt>
-              <dd>
-                {{ $any(document).metadata.provisionActivity[0]._text[0].value }}
-              </dd>
-              <dt translate>Barcode</dt>
-              <dd>
-                {{ $any(itemData).metadata.barcode }}
-              </dd>
-              @if (itemData | itemHoldingsCallNumber | async; as callNumber) {
-                @if ((callNumber.first | json) !== '{}' || (callNumber.second | json) !== '{}') {
-                  <dt translate>Call number</dt>
+            <div class="ui:grow">
+              <h5>
+                <a [routerLink]="['/records','documents', 'detail', $any(itemData).metadata.document.pid]">
+                  {{ $any(document).metadata.title[0]._text }}
+                </a>
+              </h5>
+              <div>
+                @if ($any(document).metadata.contribution) {
+                  <shared-contribution [contributions]="$any(document).metadata.contribution"></shared-contribution>
+                }
+                @let provisionActivity = $any(document).metadata.provisionActivity
+                | documentProvisionActivity
+                | keyvalue
+                | callbackArrayFilter
+                  : filterPublicationProvisionActivity;
+                @for (provision of provisionActivity; track $index) {
+                    <ul class="ui:list-none">
+                      @for (value of $any(provision).value; track $index) {
+                        <li>{{ value }}</li>
+                      }
+                    </ul>
+                }
+              </div>
+              <dl class="metadata ui:mt-2">
+                <dt translate>Barcode</dt>
+                <dd>
+                  <a [routerLink]="['/records','items','detail', item.pid]">{{ $any(itemData).metadata.barcode }}</a>
+                </dd>
+                @if (itemData | itemHoldingsCallNumber | async; as callNumber) {
+                  @if ((callNumber.first | json) !== '{}' || (callNumber.second | json) !== '{}') {
+                    <dt translate>Call number</dt>
+                    <dd>
+                      <shared-inherited-call-number [item]="itemData" />
+                    </dd>
+                  }
+                }
+                @if ($any(itemData).metadata.location.pid | getRecord:'locations' | async; as location) {
+                  <dt translate>Library</dt>
                   <dd>
-                    <shared-inherited-call-number [item]="itemData" />
+                    @if ($any(location).metadata.library.pid | getRecord: 'libraries' | async; as library) {
+                      {{ $any(library).metadata.name }} - {{ $any(location).metadata.name }}
+                    }
                   </dd>
                 }
-              }
-              @if ($any(itemData).metadata.location.pid | getRecord:'locations' | async; as location) {
-                <dt translate>Library</dt>
-                <dd>
-                  @if ($any(location).metadata.library.pid | getRecord: 'libraries' | async; as library) {
-                    {{ $any(library).metadata.name }} - {{ $any(location).metadata.name }}
-                  }
-                </dd>
-              }
-            </dl>
+              </dl>
+            </div>
           }
         </li>
       }
