@@ -84,6 +84,45 @@
           }
         </p-panel>
 
+        <!-- Request limits -->
+        <p-panel [collapsed]="!record?.metadata?.limits?.request_limits">
+          <ng-template #header>
+            <div class="ui:flex ui:items-center ui:gap-2 ui:px-2">
+              <i class="fa" [ngClass]="{
+                'fa-circle text-success': record.metadata.limits.request_limits,
+                'fa-circle-thin': !record.metadata.limits.request_limits
+              }"></i>
+              <span translate>Number of requests limit</span>
+            </div>
+          </ng-template>
+          @if (record?.metadata?.limits?.request_limits) {
+            <dl class="metadata ui:ml-7 ui:mb-4">
+              <dt translate>General limit</dt>
+              <dd>{{ record.metadata.limits.request_limits.global_limit }}</dd>
+              @if (record.metadata.limits.request_limits.library_limit) {
+                <dt translate>Library limit</dt>
+                <dd>{{ record.metadata.limits.request_limits.library_limit }}</dd>
+              }
+              @if (record.metadata.limits.request_limits.library_exceptions) {
+                <dt translate>Exceptions</dt>
+                <dd class="ui:col-span-12">
+                  <ul class="ui:list-none">
+                    @for (exception of record.metadata.limits.request_limits.library_exceptions; track $index) {
+                      <li class="ui:grid ui:grid-cols-12 ui:gap-4">
+                        <div class="ui:col-span-10">
+                          <i class="fa fa-university"></i>&nbsp;
+                          {{ exception.library.pid | getRecord: 'libraries' : 'field' : 'name' | async }}
+                        </div>
+                        <div class="ui:col-span-2">{{ exception.value }}</div>
+                      </li>
+                    }
+                  </ul>
+                </dd>
+              }
+            </dl>
+          }
+        </p-panel>
+
         <p-panel [collapsed]="!record?.metadata?.limits?.fee_amount_limits">
           <ng-template #header>
             <div class="ui:flex ui:items-center ui:gap-2 ui:px-2">
