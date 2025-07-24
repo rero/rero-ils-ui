@@ -15,6 +15,6 @@
     "@ngx-translate/core": "^16.0.0",
     "@primeng/themes": "^19.0.7",
     "primelocale": "^1.6",
-    "primeng": "^19.0.8"
+    "primeng": "^19.1.0"
   }
 }
