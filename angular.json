@@ -21,7 +21,7 @@
               "crypto-js",
               "easymde",
               "issn",
-              "js-generate-password",
+              "generate-password-lite",
               "simple-isbn"
             ],
             "preserveSymlinks": true,
@@ -145,7 +145,7 @@
               "crypto-js",
               "easymde",
               "issn",
-              "js-generate-password",
+              "generate-password-lite",
               "simple-isbn"
             ],
             "outputPath": {
@@ -260,7 +260,7 @@
               "crypto-js",
               "easymde",
               "issn",
-              "js-generate-password",
+              "generate-password-lite",
               "simple-isbn"
             ],
             "preserveSymlinks": true,
@@ -391,7 +391,7 @@
               "crypto-js",
               "easymde",
               "issn",
-              "js-generate-password",
+              "generate-password-lite",
               "simple-isbn"
             ],
             "outputPath": {
@@ -550,7 +550,7 @@
               "crypto-js",
               "easymde",
               "issn",
-              "js-generate-password",
+              "generate-password-lite",
               "simple-isbn"
             ],
             "preserveSymlinks": true,

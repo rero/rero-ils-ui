@@ -1,0 +1,12 @@
+{
+  "css.lint.unknownAtRules": "ignore",
+  "scss.lint.unknownAtRules": "ignore",
+  "eslint.enable": true,
+  "eslint.format.enable": true,
+  "eslint.validate": ["javascript", "typescript", "html"],
+  "eslint.useFlatConfig": true,
+  "eslint.workingDirectories": ["../projects/**/src"],
+  "eslint.options": {
+    "overrideConfigFile": "eslint.config.js"
+  }
+}
