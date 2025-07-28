@@ -15,9 +15,7 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 @if (user) { @if (user.isAuthenticated && user.isPatron) {
-<header>
-  <h3>{{ fullname }}</h3>
-</header>
+<h3>{{ fullname }}</h3>
 <section class="ui:mt-2">
   <public-search-patron-profile-menu [patronPid]="patron.pid" />
 </section>
