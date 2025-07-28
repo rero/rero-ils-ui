@@ -91,17 +91,14 @@
       @if ((aggregations && aggregations.length) || searchFields.length > 0 || searchFilters.length > 0) {
       <div class="ui:md:col-span-5 ui:lg:col-span-3 ui:col-span-12">
         @if (searchFields.length > 0 && q) {
-        <div class="ui:mb-4">
-          <span class="ui:mr-1" translate>Search in</span>
-          <p-select
-            class="ui:w-full"
-            placeholder="…"
-            [optionValue]="'path'"
-            [options]="searchFields"
-            [showClear]="true"
-            (onChange)="searchInField($event)"
-          />
-        </div>
+          <div class="core:mb-4">
+            @for (searchField of searchFields; track $index) {
+              <div class="core:flex core:gap-2 core:items-center">
+                <p-toggleswitch (onChange)="searchInField($event, searchField.path)" />
+                <label>{{ searchField.label | translate }}</label>
+              </div>
+            }
+          </div>
         }
 
         <ng-core-search-filters
