@@ -24,9 +24,7 @@
       [routerLink]="['/records', 'holdings', 'detail', record.metadata.holding.pid]"
       [label]="'Back to parent holding' | translate" />
   }
-  <header>
-    <h1>{{ 'Barcode' | translate }} {{ record.metadata.barcode }}</h1>
-  </header>
+  <h1>{{ 'Barcode' | translate }} {{ record.metadata.barcode }}</h1>
   <section class="ui:mt-4">
     @if (record.metadata._masked) {
       <admin-record-masked [record]="record" [withLabel]="true" />
@@ -142,9 +140,7 @@
   <!-- ISSUE DATA -->
   @if (record.metadata.type === 'issue') {
     <section class="ui:mt-4">
-      <header>
-        <h3 translate>Issue data</h3>
-      </header>
+      <h3 translate>Issue data</h3>
       <dl class="metadata">
         <!-- is regular -->
         <dt translate>Regular issue</dt>

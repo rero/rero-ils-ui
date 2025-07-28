@@ -15,10 +15,8 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 @if (record) {
-  <header>
-    <h1>{{ record.metadata.name }}</h1>
-    <span [innerHTML]="record.metadata.description | nl2br"></span>
-  </header>
+  <h1>{{ record.metadata.name }}</h1>
+  <span [innerHTML]="record.metadata.description | nl2br"></span>
   <section class="ui:mt-4">
     <dl class="metadata">
       <dt translate>Library</dt>
