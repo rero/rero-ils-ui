@@ -23,7 +23,7 @@ import { provideAnimationsAsync } from '@angular/platform-browser/animations/asy
 import { RouterLink, RouterLinkActive, RouterModule, RouterOutlet, Routes } from '@angular/router';
 import { FormlyModule } from '@ngx-formly/core';
 import { LoadingBarHttpClientModule } from '@ngx-loading-bar/http-client';
-import { TranslateLoader as BaseTranslateLoader, TranslateModule, TranslateService } from '@ngx-translate/core';
+import { _, TranslateLoader as BaseTranslateLoader, TranslateModule, TranslateService } from '@ngx-translate/core';
 import { CoreConfigService, NgCoreTranslateService, primeNGConfig, RecordModule, TranslateLoader } from '@rero/ng-core';
 import { SharedModule } from '@rero/shared';
 import { BadgeModule } from 'primeng/badge';
@@ -58,14 +58,20 @@ import { AppInitializerService } from './app-initializer.service';
 import { AppComponent } from './app.component';
 
 const routes: Routes = [
-  { path: '', component: PatronProfileComponent },
+  {
+    path: '',
+    title: _('Patron: my account'),
+    component: PatronProfileComponent
+  },
   {
     path: 'user/edit',
-    component: PatronProfilePersonalEditorComponent,
+    title: _('Patron: edit my profile'),
+    component: PatronProfilePersonalEditorComponent
   },
   {
     path: 'password/edit',
-    component: PatronProfilePasswordComponent,
+    title: _('Patron: change password'),
+    component: PatronProfilePasswordComponent
   },
 ];
 

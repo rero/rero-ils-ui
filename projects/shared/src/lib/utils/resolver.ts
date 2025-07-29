@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2019 RERO
+ * Copyright (C) 2025 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -14,16 +14,10 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-export const environment = {
-  production: true,
-  projectTitle: 'RERO ILS',
-  apiBaseUrl: "",
-  $refPrefix: "https://bib.rero.ch",
-  languages: ["fr", "de", "it", "en"],
-  globalViewName: "global",
-  translationsURLs: [
-    "/static/node_modules/@rero/rero-ils-ui/dist/public-search/browser/assets/rero-ils-ui/shared/i18n/${lang}.json",
-    "/static/node_modules/@rero/rero-ils-ui/dist/public-search/browser/assets/rero-ils-ui/public-search/i18n/${lang}.json",
-    "/api/translations/${lang}.json",
-  ],
+
+import { ResolveFn } from "@angular/router";
+import { capitalize } from "@rero/ng-core";
+
+export const typeResolver: ResolveFn<string> = (route) => {
+  return capitalize(route.params["type"]);
 };

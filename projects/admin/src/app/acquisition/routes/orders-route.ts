@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2021-2024 RERO
+ * Copyright (C) 2021-2025 RERO
  * Copyright (C) 2021-2023 UCLouvain
  *
  * This program is free software: you can redistribute it and/or modify
@@ -40,11 +40,52 @@ export class OrdersRoute extends BaseRoute implements RouteInterface {
     return {
       matcher: (url: any) => this.routeMatcher(url, this.name),
       children: [
-        { path: '', component: RecordSearchPageComponent, canActivate: [ PermissionGuard ], data: { permissions: [ PERMISSIONS.ACOR_ACCESS, PERMISSIONS.ACOR_SEARCH ], operator: PERMISSION_OPERATOR.AND } },
-        { path: 'detail/:pid', component: DetailComponent, canActivate: [ CanAccessGuard ], data: { action: CAN_ACCESS_ACTIONS.READ } },
-        { path: 'edit/:pid', component: EditorComponent, canActivate: [CanAccessGuard, AcqOrderLineGuard], canDeactivate: [ ComponentCanDeactivateGuard ], data: { action: CAN_ACCESS_ACTIONS.UPDATE, permissions: [ PERMISSIONS.ACOR_SEARCH ] } },
-        { path: 'new', component: EditorComponent, canActivate: [ PermissionGuard ], canDeactivate: [ ComponentCanDeactivateGuard ], data: { permissions: [ PERMISSIONS.ACOR_CREATE ] } },
-        { path: 'receive/:pid', component: OrderReceiptViewComponent, canActivate: [CanOrderReceiptGuard] },
+        {
+          path: '',
+          component: RecordSearchPageComponent,
+          title: _('Orders'),
+          canActivate: [ PermissionGuard ],
+          data: {
+            permissions: [ PERMISSIONS.ACOR_ACCESS, PERMISSIONS.ACOR_SEARCH ],
+            operator: PERMISSION_OPERATOR.AND
+          }
+        },
+        {
+          path: 'detail/:pid',
+          component: DetailComponent,
+          title: _('Order'),
+          canActivate: [ CanAccessGuard ],
+          data: {
+            action: CAN_ACCESS_ACTIONS.READ
+          }
+        },
+        {
+          path: 'edit/:pid',
+          component: EditorComponent,
+          title: _('Order'),
+          canActivate: [CanAccessGuard, AcqOrderLineGuard],
+          canDeactivate: [ ComponentCanDeactivateGuard ],
+          data: {
+            action: CAN_ACCESS_ACTIONS.UPDATE,
+            permissions: [ PERMISSIONS.ACOR_SEARCH ]
+          }
+        },
+        {
+          path: 'new',
+          component: EditorComponent,
+          title: _('Order'),
+          canActivate: [ PermissionGuard ],
+          canDeactivate: [ ComponentCanDeactivateGuard ],
+          data: {
+            permissions: [ PERMISSIONS.ACOR_CREATE ]
+          }
+        },
+        {
+          path: 'receive/:pid',
+          component: OrderReceiptViewComponent,
+          title: _('Order'),
+          canActivate: [CanOrderReceiptGuard]
+        },
       ],
       data: {
         types: [

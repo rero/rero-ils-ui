@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2020-2024 RERO
+ * Copyright (C) 2020-2025 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -41,10 +41,45 @@ export class LibrariesRoute extends BaseRoute implements RouteInterface {
     return {
       matcher: (url: any) => this.routeMatcher(url, this.name),
       children: [
-        { path: '', component: RecordSearchPageComponent, canActivate: [ PermissionGuard ], data: { permissions: [ PERMISSIONS.LIB_ACCESS, PERMISSIONS.LIB_SEARCH ], operator: PERMISSION_OPERATOR.AND } },
-        { path: 'detail/:pid', component: DetailComponent, canActivate: [ CanAccessGuard ], data: { action: CAN_ACCESS_ACTIONS.READ } },
-        { path: 'edit/:pid', component: LibraryComponent, canActivate: [ CanAccessGuard ], canDeactivate: [ ComponentCanDeactivateGuard], data: { action: CAN_ACCESS_ACTIONS.UPDATE } },
-        { path: 'new', component: LibraryComponent, canActivate: [ PermissionGuard ], canDeactivate: [ ComponentCanDeactivateGuard], data: { permissions: [ PERMISSIONS.LIB_CREATE ] } }
+        {
+          path: '',
+          component: RecordSearchPageComponent,
+          title: _('Libraries'),
+          canActivate: [ PermissionGuard ],
+          data: {
+            permissions: [ PERMISSIONS.LIB_ACCESS, PERMISSIONS.LIB_SEARCH ],
+            operator: PERMISSION_OPERATOR.AND
+          }
+        },
+        {
+          path: 'detail/:pid',
+          component: DetailComponent,
+          title: _('Library'),
+          canActivate: [ CanAccessGuard ],
+          data: {
+            action: CAN_ACCESS_ACTIONS.READ
+          }
+        },
+        {
+          path: 'edit/:pid',
+          component: LibraryComponent,
+          title: _('Library'),
+          canActivate: [ CanAccessGuard ],
+          canDeactivate: [ ComponentCanDeactivateGuard],
+          data: {
+            action: CAN_ACCESS_ACTIONS.UPDATE
+          }
+        },
+        {
+          path: 'new',
+          component: LibraryComponent,
+          title: _('Library'),
+          canActivate: [ PermissionGuard ],
+          canDeactivate: [ ComponentCanDeactivateGuard],
+          data: {
+            permissions: [ PERMISSIONS.LIB_CREATE ]
+          }
+        }
       ],
       data: {
         types: [

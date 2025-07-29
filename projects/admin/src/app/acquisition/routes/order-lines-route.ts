@@ -40,8 +40,26 @@ export class OrderLinesRoute extends BaseRoute implements RouteInterface {
     return {
       matcher: (url: any) => this.routeMatcher(url, this.name),
       children: [
-        { path: 'edit/:pid', component: EditorComponent, canActivate: [ CanAccessGuard, IsBudgetActiveGuard ], canDeactivate: [ ComponentCanDeactivateGuard ], data: { action: CAN_ACCESS_ACTIONS.UPDATE } },
-        { path: 'new', component: EditorComponent, canActivate: [ PermissionGuard, CanAddOrderLineGuard, AcqOrderLineGuard ], canDeactivate: [ ComponentCanDeactivateGuard ], data: { permissions: [ PERMISSIONS.ACOL_CREATE ] } }
+        {
+          path: 'edit/:pid',
+          component: EditorComponent,
+          title: _('Order line'),
+          canActivate: [ CanAccessGuard, IsBudgetActiveGuard ],
+          canDeactivate: [ ComponentCanDeactivateGuard ],
+          data: {
+            action: CAN_ACCESS_ACTIONS.UPDATE
+          }
+        },
+        {
+          path: 'new',
+          component: EditorComponent,
+          title: _('Order line'),
+          canActivate: [ PermissionGuard, CanAddOrderLineGuard, AcqOrderLineGuard ],
+          canDeactivate: [ ComponentCanDeactivateGuard ],
+          data: {
+            permissions: [ PERMISSIONS.ACOL_CREATE ]
+          }
+        }
       ],
       data: {
         types: [

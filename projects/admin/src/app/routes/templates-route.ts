@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2020-2024 RERO
+ * Copyright (C) 2020-2025 RERO
  * Copyright (C) 2020-2023 UCLouvain
  *
  * This program is free software: you can redistribute it and/or modify
@@ -41,9 +41,35 @@ export class TemplatesRoute extends BaseRoute implements RouteInterface {
     return {
       matcher: (url: any) => this.routeMatcher(url, this.name),
       children: [
-        { path: '', component: RecordSearchPageComponent, canActivate: [ PermissionGuard ], data: { permissions: [ PERMISSIONS.TMPL_ACCESS, PERMISSIONS.TMPL_SEARCH ], operator: PERMISSION_OPERATOR.AND } },
-        { path: 'detail/:pid', component: DetailComponent, canActivate: [ CanAccessGuard ], data: { action: CAN_ACCESS_ACTIONS.READ } },
-        { path: 'edit/:pid', component: EditorComponent, canActivate: [ CanAccessGuard ], canDeactivate: [ ComponentCanDeactivateGuard ], data: { action: CAN_ACCESS_ACTIONS.UPDATE } }
+        {
+          path: '',
+          component: RecordSearchPageComponent,
+          title: _('Templates'),
+          canActivate: [ PermissionGuard ],
+          data: {
+            permissions: [ PERMISSIONS.TMPL_ACCESS, PERMISSIONS.TMPL_SEARCH ],
+            operator: PERMISSION_OPERATOR.AND
+          }
+        },
+        {
+          path: 'detail/:pid',
+          component: DetailComponent,
+          title: _('Template'),
+          canActivate: [ CanAccessGuard ],
+          data: {
+            action: CAN_ACCESS_ACTIONS.READ
+          }
+        },
+        {
+          path: 'edit/:pid',
+          component: EditorComponent,
+          title: _('Template'),
+          canActivate: [ CanAccessGuard ],
+          canDeactivate: [ ComponentCanDeactivateGuard ],
+          data: {
+            action: CAN_ACCESS_ACTIONS.UPDATE
+          }
+        }
       ],
       data: {
         types: [

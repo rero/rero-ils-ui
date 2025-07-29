@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2019-2024 RERO
+ * Copyright (C) 2019-2025 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -47,11 +47,54 @@ export class ItemsRoute extends BaseRoute implements RouteInterface {
     const config = {
       matcher: (url: any) => this.routeMatcher(url, this.name),
       children: [
-        { path: '', component: RecordSearchPageComponent, canActivate: [ PermissionGuard ], data: { permissions: [ PERMISSIONS.ITEM_ACCESS, PERMISSIONS.ITEM_SEARCH ], operator: PERMISSION_OPERATOR.AND } },
-        { path: 'detail/:pid', component: ItemPageDetailComponent, canActivate: [ CanAccessGuard ], data: { action: CAN_ACCESS_ACTIONS.READ } },
-        { path: 'edit/:pid', component: EditorComponent, canActivate: [ CanAccessGuard ], canDeactivate: [ ComponentCanDeactivateGuard ], data: { action: CAN_ACCESS_ACTIONS.UPDATE } },
-        { path: 'switch_location/:pid', component: ItemSwitchLocationStandaloneComponent, canActivate: [ CanAccessGuard ], data: { action: CAN_ACCESS_ACTIONS.UPDATE } },
-        { path: 'new', component: EditorComponent, canActivate: [ PermissionGuard ], canDeactivate: [ ComponentCanDeactivateGuard ], data: { permissions: [ PERMISSIONS.HOLD_CREATE, PERMISSIONS.ITEM_CREATE ], permissionsOperator: PERMISSION_OPERATOR.AND } }
+        {
+          path: '',
+          component: RecordSearchPageComponent,
+          title: _('Items'),
+          canActivate: [ PermissionGuard ],
+          data: {
+            permissions: [ PERMISSIONS.ITEM_ACCESS, PERMISSIONS.ITEM_SEARCH ],
+            operator: PERMISSION_OPERATOR.AND
+          }
+        },
+        {
+          path: 'detail/:pid',
+          component: ItemPageDetailComponent,
+          canActivate: [ CanAccessGuard ],
+          data: {
+            action: CAN_ACCESS_ACTIONS.READ
+          }
+        },
+        {
+          path: 'edit/:pid',
+          component: EditorComponent,
+          title: _('Item'),
+          canActivate: [ CanAccessGuard ],
+          canDeactivate: [ ComponentCanDeactivateGuard ],
+          data: {
+            action: CAN_ACCESS_ACTIONS.UPDATE
+          }
+        },
+        {
+          path: 'switch_location/:pid',
+          component: ItemSwitchLocationStandaloneComponent,
+          title: _('Item'),
+          canActivate: [ CanAccessGuard ],
+          data: {
+            action: CAN_ACCESS_ACTIONS.UPDATE
+          }
+        },
+        {
+          path: 'new',
+          component: EditorComponent,
+          title: _('Item'),
+          canActivate: [ PermissionGuard ],
+          canDeactivate: [ ComponentCanDeactivateGuard ],
+          data: {
+            permissions: [ PERMISSIONS.HOLD_CREATE, PERMISSIONS.ITEM_CREATE ],
+            permissionsOperator: PERMISSION_OPERATOR.AND
+          }
+        }
       ],
       data: {
         types: [

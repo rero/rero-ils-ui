@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2019-2024 RERO
+ * Copyright (C) 2019-2025 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -16,9 +16,12 @@
  */
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { _ } from "@ngx-translate/core";
 import { PERMISSIONS } from '@rero/shared';
 import { PermissionGuard } from '../guard/permission.guard';
 import { CheckinComponent } from './checkin/checkin.component';
+import { CirculationMainComponent } from './circulation-main.component';
+import { keepHistoryGuard } from './guard/keep-history.guard';
 import { MainRequestComponent } from './main-request/main-request.component';
 import { HistoryComponent } from './patron/history/history.component';
 import { IllRequestComponent } from './patron/ill-request/ill-request.component';
@@ -28,8 +31,6 @@ import { PatronTransactionsComponent } from './patron/patron-transactions/patron
 import { PendingComponent } from './patron/pending/pending.component';
 import { PickupComponent } from './patron/pickup/pickup.component';
 import { ProfileComponent } from './patron/profile/profile.component';
-import { keepHistoryGuard } from './guard/keep-history.guard';
-import { CirculationMainComponent } from './circulation-main.component';
 
 const routes: Routes = [
   {
@@ -44,12 +45,20 @@ const routes: Routes = [
       {
         path: 'checkout',
         component: CheckinComponent,
-        canActivate: [ PermissionGuard ], data: { permissions: [ PERMISSIONS.CIRC_ADMIN ] }
+        title: _('Checkout/check-in'),
+        canActivate: [ PermissionGuard ],
+        data: {
+          permissions: [ PERMISSIONS.CIRC_ADMIN ]
+        }
       },
       {
         path: 'requests',
         component: MainRequestComponent,
-        canActivate: [ PermissionGuard ], data: { permissions: [ PERMISSIONS.CIRC_ADMIN ] }
+        title: _('Requests'),
+        canActivate: [ PermissionGuard ],
+        data: {
+          permissions: [ PERMISSIONS.CIRC_ADMIN ]
+        }
       },
       {
         path: 'patron/:barcode',
@@ -63,37 +72,65 @@ const routes: Routes = [
           {
             path: 'loan',
             component: LoanComponent,
-            canActivate: [ PermissionGuard ], data: { permissions: [ PERMISSIONS.CIRC_ADMIN ] }
+            title: _('On loan'),
+            canActivate: [ PermissionGuard ],
+            data: {
+              permissions: [ PERMISSIONS.CIRC_ADMIN ]
+            }
           },
           {
             path: 'pickup',
             component: PickupComponent,
-            canActivate: [ PermissionGuard ], data: { permissions: [ PERMISSIONS.CIRC_ADMIN ] }
+            title: _('To pick up'),
+            canActivate: [ PermissionGuard ],
+            data: {
+              permissions: [ PERMISSIONS.CIRC_ADMIN ]
+            }
           },
           {
             path: 'pending',
             component: PendingComponent,
-            canActivate: [ PermissionGuard ], data: { permissions: [ PERMISSIONS.CIRC_ADMIN ] }
+            title: _('Pending'),
+            canActivate: [ PermissionGuard ],
+            data: {
+              permissions: [ PERMISSIONS.CIRC_ADMIN ]
+            }
           },
           {
             path: 'ill',
             component: IllRequestComponent,
-            canActivate: [ PermissionGuard ], data: { permissions: [ PERMISSIONS.CIRC_ADMIN ] }
+            title: _('Interlibrary loan'),
+            canActivate: [ PermissionGuard ],
+            data: {
+              permissions: [ PERMISSIONS.CIRC_ADMIN ]
+            }
           },
           {
             path: 'profile',
             component: ProfileComponent,
-            canActivate: [ PermissionGuard ], data: { permissions: [ PERMISSIONS.CIRC_ADMIN ] }
+            title: _('Profile'),
+            canActivate: [ PermissionGuard ],
+            data: {
+              permissions: [ PERMISSIONS.CIRC_ADMIN ]
+            }
           },
           {
             path: 'fees',
             component: PatronTransactionsComponent,
-            canActivate: [ PermissionGuard ], data: { permissions: [ PERMISSIONS.CIRC_ADMIN ] }
+            title: _('Fees'),
+            canActivate: [ PermissionGuard ],
+            data: {
+              permissions: [ PERMISSIONS.CIRC_ADMIN ]
+            }
           },
           {
-            path: 'history',
+            path: 'History',
             component: HistoryComponent,
-            canActivate: [ keepHistoryGuard, PermissionGuard ], data: { permissions: [ PERMISSIONS.CIRC_ADMIN ] }
+            title: _('History'),
+            canActivate: [ keepHistoryGuard, PermissionGuard ],
+            data: {
+              permissions: [ PERMISSIONS.CIRC_ADMIN ]
+            }
           }
         ]
       },

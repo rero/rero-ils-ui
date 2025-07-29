@@ -38,6 +38,7 @@ export class AppConfigService extends CoreConfigService {
   constructor() {
     super();
     this.production = environment.production;
+    this.projectTitle = environment.projectTitle;
     this.apiBaseUrl = environment.apiBaseUrl;
     this.$refPrefix = environment.$refPrefix;
     this.languages = environment.languages;

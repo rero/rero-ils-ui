@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2020-2024 RERO
+ * Copyright (C) 2020-2025 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -17,11 +17,8 @@
 import { inject, Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { EntitiesRoute } from '@app/admin/routes/entities-route';
+import { _ } from "@ngx-translate/core";
 import { RouteCollectionService } from '@rero/ng-core';
-import { AccountsRoute as AcqAccountsRoute } from '../acquisition/routes/accounts-route';
-import { BudgetsRoute as AcqBudgetsRoute } from '../acquisition/routes/budgets-route';
-import { OrderLinesRoute as AcqOrderLinesRoute } from '../acquisition/routes/order-lines-route';
-import { OrdersRoute as AcqOrdersRoute } from '../acquisition/routes/orders-route';
 import { ErrorPageComponent } from '../error/error-page/error-page.component';
 import { CirculationPoliciesRoute } from './circulation-policies-route';
 import { CollectionsRoute } from './collections-route';
@@ -84,8 +81,16 @@ export class RouteService {
       this.router.config.push(route);
     });
     this.router.config.push(...[
-      {path: 'errors/:status_code', component: ErrorPageComponent},
-      {path: '**', component: ErrorPageComponent}
+      {
+        path: 'errors/:status_code',
+        component: ErrorPageComponent,
+        title: _('Error')
+      },
+      {
+        path: '**',
+        component: ErrorPageComponent,
+        title: _('Error')
+      }
     ]);
   }
 }

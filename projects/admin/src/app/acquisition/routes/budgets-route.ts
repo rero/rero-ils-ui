@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2021-2024 RERO
+ * Copyright (C) 2021-2025 RERO
  * Copyright (C) 2021-2022 UCLouvain
  *
  * This program is free software: you can redistribute it and/or modify
@@ -36,8 +36,25 @@ export class BudgetsRoute extends BaseRoute implements RouteInterface {
     return {
       matcher: (url: any) => this.routeMatcher(url, this.name),
       children: [
-        { path: '', component: RecordSearchPageComponent, canActivate: [ PermissionGuard ], data: { permissions: [ PERMISSIONS.BUDG_ACCESS, PERMISSIONS.BUDG_SEARCH ], operator: PERMISSION_OPERATOR.AND } },
-        { path: 'detail/:pid', component: DetailComponent, canActivate: [ CanAccessGuard ], data: { action: CAN_ACCESS_ACTIONS.READ } }
+        {
+          path: '',
+          component: RecordSearchPageComponent,
+          title: _('Budgets'),
+          canActivate: [ PermissionGuard ],
+          data: {
+            permissions: [ PERMISSIONS.BUDG_ACCESS, PERMISSIONS.BUDG_SEARCH ],
+            operator: PERMISSION_OPERATOR.AND
+          }
+        },
+        {
+          path: 'detail/:pid',
+          component: DetailComponent,
+          title: _('Budget'),
+          canActivate: [ CanAccessGuard ],
+          data: {
+            action: CAN_ACCESS_ACTIONS.READ
+          }
+        }
       ],
       data: {
         adminMode: this.DISABLED,

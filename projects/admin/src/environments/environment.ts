@@ -21,6 +21,7 @@
 
 export const environment = {
   production: false,
+  projectTitle: 'Admin',
   apiBaseUrl: '',
   $refPrefix: 'https://bib.rero.ch',
   languages: ['fr', 'de', 'it', 'en'],
