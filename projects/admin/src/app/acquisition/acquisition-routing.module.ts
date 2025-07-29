@@ -18,6 +18,7 @@
 
 import { NgModule } from '@angular/core';
 import { RouterModule, ROUTES, Routes } from '@angular/router';
+import { _ } from "@ngx-translate/core";
 import { PERMISSION_OPERATOR, PERMISSIONS } from '@rero/shared';
 import { PermissionGuard } from '../guard/permission.guard';
 import { AccountListComponent } from './components/account/account-list/account-list.component';
@@ -27,9 +28,9 @@ import { AccountsRoute } from './routes/accounts-route';
 import { BudgetsRoute } from './routes/budgets-route';
 import { OrderLinesRoute } from './routes/order-lines-route';
 import { OrdersRoute } from './routes/orders-route';
+import { ReceiptLinesRoute } from './routes/receipt-lines-route';
 import { ReceiptsRoute } from './routes/receipts-route';
 import { VendorsRoute } from './routes/vendors-route';
-import { ReceiptLinesRoute } from './routes/receipt-lines-route';
 
 const initializeRoutes = () => {
   const routes: Routes = [
@@ -37,18 +38,29 @@ const initializeRoutes = () => {
       path: '',
       component: AcquisitionMainComponent,
       children: [
-        { path: '', redirectTo: 'accounts', pathMatch: 'full' },
+        {
+          path: '',
+          redirectTo: 'accounts',
+          pathMatch: 'full'
+        },
         {
           path: 'accounts/transfer',
           component: AccountTransferComponent,
+          title: _('Accounts'),
           canActivate: [PermissionGuard],
-          data: { permissions: [PERMISSIONS.ACAC_TRANSFER] },
+          data: {
+            permissions: [PERMISSIONS.ACAC_TRANSFER]
+          },
         },
         {
           path: 'accounts',
           component: AccountListComponent,
+          title: _('Accounts'),
           canActivate: [PermissionGuard],
-          data: { permissions: [PERMISSIONS.ACAC_ACCESS, PERMISSIONS.ACAC_SEARCH], operator: PERMISSION_OPERATOR.AND },
+          data: {
+            permissions: [PERMISSIONS.ACAC_ACCESS, PERMISSIONS.ACAC_SEARCH],
+            operator: PERMISSION_OPERATOR.AND
+          },
         },
         new AccountsRoute().getConfiguration(),
         new BudgetsRoute().getConfiguration(),

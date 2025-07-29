@@ -51,7 +51,12 @@ export class CollectionsRouteService extends BaseRoute implements ResourceRouteI
       return {
         path: `${viewcode}/search/:type`,
         children: [
-          { path: '', component: RecordSearchPageComponent, canActivate: [CollectionAccessGuard] }
+          {
+            path: '',
+            title: _('Exhibitions/courses'),
+            component: RecordSearchPageComponent,
+            canActivate: [CollectionAccessGuard]
+          }
         ],
         data: {
           adminMode: () => of({

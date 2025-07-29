@@ -44,11 +44,55 @@ export class DocumentsRoute extends BaseRoute implements RouteInterface {
     const config = {
       matcher: (url: any) => this.routeMatcher(url, this.name),
       children: [
-        { path: '', component: DocumentRecordSearchComponent, canActivate: [ PermissionGuard ], data: { permissions: [ PERMISSIONS.DOC_ACCESS, PERMISSIONS.DOC_SEARCH ], operator: PERMISSION_OPERATOR.AND } },
-        { path: 'detail/:pid', component: DocumentDetailComponent, canActivate: [ CanAccessGuard ], data: { action: CAN_ACCESS_ACTIONS.READ } },
-        { path: 'edit/:pid', component: DocumentEditorComponent, canActivate: [ CanAccessGuard ], canDeactivate: [ ComponentCanDeactivateGuard ], data: { action: CAN_ACCESS_ACTIONS.UPDATE } },
-        { path: 'new', component: DocumentEditorComponent, canActivate: [ PermissionGuard ], canDeactivate: [ ComponentCanDeactivateGuard ], data: { permissions: [ PERMISSIONS.DOC_CREATE ] } },
-        { path: 'duplicate', component: DocumentEditorComponent, canActivate: [ PermissionGuard ], canDeactivate: [ ComponentCanDeactivateGuard ], data: { permissions: [ PERMISSIONS.DOC_CREATE ] } }
+        {
+          path: '',
+          component: DocumentRecordSearchComponent,
+          title: _('Documents'),
+          canActivate: [ PermissionGuard ],
+          data: {
+            permissions: [ PERMISSIONS.DOC_ACCESS, PERMISSIONS.DOC_SEARCH ],
+            operator: PERMISSION_OPERATOR.AND
+          }
+        },
+        {
+          path: 'detail/:pid',
+          component: DocumentDetailComponent,
+          title: _('Document'),
+          canActivate: [ CanAccessGuard ],
+          data: {
+            action: CAN_ACCESS_ACTIONS.READ
+          }
+        },
+        {
+          path: 'edit/:pid',
+          component: DocumentEditorComponent,
+          title: _('Document'),
+          canActivate: [ CanAccessGuard ],
+          canDeactivate: [ ComponentCanDeactivateGuard ],
+          data: {
+            action: CAN_ACCESS_ACTIONS.UPDATE
+          }
+        },
+        {
+          path: 'new',
+          component: DocumentEditorComponent,
+          title: _('Document'),
+          canActivate: [ PermissionGuard ],
+          canDeactivate: [ ComponentCanDeactivateGuard ],
+          data: {
+            permissions: [ PERMISSIONS.DOC_CREATE ]
+          }
+        },
+        {
+          path: 'duplicate',
+          component: DocumentEditorComponent,
+          title: _('Document'),
+          canActivate: [ PermissionGuard ],
+          canDeactivate: [ ComponentCanDeactivateGuard ],
+          data: {
+            permissions: [ PERMISSIONS.DOC_CREATE ]
+          }
+        }
       ],
       data: {
         types: [

@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2020-2024 RERO
+ * Copyright (C) 2020-2025 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -20,9 +20,9 @@ import { PERMISSIONS, PERMISSION_OPERATOR } from '@rero/shared';
 import { of } from 'rxjs';
 import { CAN_ACCESS_ACTIONS, CanAccessGuard } from '../../guard/can-access.guard';
 import { PermissionGuard } from '../../guard/permission.guard';
+import { BaseRoute } from '../../routes/base-route';
 import { VendorBriefViewComponent } from '../components/vendors/vendor-brief-view.component';
 import { VendorDetailViewComponent } from '../components/vendors/vendor-detail-view/vendor-detail-view.component';
-import { BaseRoute } from '../../routes/base-route';
 
 export class VendorsRoute extends BaseRoute implements RouteInterface {
 
@@ -40,10 +40,45 @@ export class VendorsRoute extends BaseRoute implements RouteInterface {
     return {
       matcher: (url: any) => this.routeMatcher(url, this.name),
       children: [
-        { path: '', component: RecordSearchPageComponent, canActivate: [ PermissionGuard ], data: { permissions: [ PERMISSIONS.VNDR_ACCESS, PERMISSIONS.VNDR_SEARCH ], operator: PERMISSION_OPERATOR.AND } },
-        { path: 'detail/:pid', component: DetailComponent, canActivate: [ CanAccessGuard ], data: { action: CAN_ACCESS_ACTIONS.READ } },
-        { path: 'edit/:pid', component: EditorComponent, canActivate: [ CanAccessGuard ], canDeactivate: [ ComponentCanDeactivateGuard ], data: { action: CAN_ACCESS_ACTIONS.UPDATE } },
-        { path: 'new', component: EditorComponent, canActivate: [ PermissionGuard ], canDeactivate: [ ComponentCanDeactivateGuard ], data: { permissions: [ PERMISSIONS.VNDR_CREATE ] } }
+        {
+          path: '',
+          component: RecordSearchPageComponent,
+          title: _('Vendors'),
+          canActivate: [ PermissionGuard ],
+          data: {
+            permissions: [ PERMISSIONS.VNDR_ACCESS, PERMISSIONS.VNDR_SEARCH ],
+            operator: PERMISSION_OPERATOR.AND
+          }
+        },
+        {
+          path: 'detail/:pid',
+          component: DetailComponent,
+          title: _('Vendor'),
+          canActivate: [ CanAccessGuard ],
+          data: {
+            action: CAN_ACCESS_ACTIONS.READ
+          }
+        },
+        {
+          path: 'edit/:pid',
+          component: EditorComponent,
+          title: _('Vendor'),
+          canActivate: [ CanAccessGuard ],
+          canDeactivate: [ ComponentCanDeactivateGuard ],
+          data: {
+            action: CAN_ACCESS_ACTIONS.UPDATE
+          }
+        },
+        {
+          path: 'new',
+          component: EditorComponent,
+          title: _('Vendor'),
+          canActivate: [ PermissionGuard ],
+          canDeactivate: [ ComponentCanDeactivateGuard ],
+          data: {
+            permissions: [ PERMISSIONS.VNDR_CREATE ]
+          }
+        }
       ],
       data: {
         types: [

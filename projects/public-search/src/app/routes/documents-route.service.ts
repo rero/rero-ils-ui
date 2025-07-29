@@ -17,7 +17,7 @@
  */
 
 import { inject, Injectable } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, ResolveFn } from '@angular/router';
 import { _ } from "@ngx-translate/core";
 import { EntityBriefViewComponent } from '@rero/shared';
 import { of } from 'rxjs';
@@ -26,6 +26,13 @@ import { DocumentBriefComponent } from '../document-brief/document-brief.compone
 import { DocumentRecordSearchComponent } from '../document-record-search/document-record-search.component';
 import { BaseRoute } from './base-route';
 import { ResourceRouteInterface } from './resource-route-interface';
+import { capitalize } from '@rero/ng-core';
+
+export const typeResolver: ResolveFn<string> = (route) => {
+  const title = route.params["type"] === 'documents' ? _('documents') : _('Authors/Subjects');
+
+  return capitalize(title);
+};
 
 @Injectable({
   providedIn: 'root'
@@ -71,7 +78,11 @@ export class DocumentsRouteService extends BaseRoute implements ResourceRouteInt
       return {
         path: `${viewcode}/search/:type`,
         children: [
-          { path: '', component: DocumentRecordSearchComponent },
+          {
+            path: '',
+            title: typeResolver,
+            component: DocumentRecordSearchComponent
+          },
         ],
         data: {
           showSearchInput: false,

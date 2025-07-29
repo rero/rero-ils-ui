@@ -16,6 +16,7 @@
  */
 export const environment = {
   production: true,
+  projectTitle: 'RERO ILS',
   apiBaseUrl: "",
   $refPrefix: "https://bib.rero.ch",
   languages: ["fr", "de", "it", "en"],

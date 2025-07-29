@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2023-2024 RERO
+ * Copyright (C) 2023-2025 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -50,8 +50,9 @@ export class StatisticsCfgRoute extends BaseRoute implements RouteInterface {
       matcher: (url: any) => this.routeMatcher(url, this.name),
       children: [
         {
-          path: "",
+          path: '',
           component: RecordSearchPageComponent,
+          title: _('Report configurations'),
           canActivate: [PermissionGuard],
           data: {
             permissions: [
@@ -64,18 +65,21 @@ export class StatisticsCfgRoute extends BaseRoute implements RouteInterface {
         {
           path: "detail/:pid",
           component: DetailComponent,
+          title: _('Report configuration'),
           canActivate: [CanAccessGuard],
           data: { action: CAN_ACCESS_ACTIONS.READ },
         },
         {
           path: "edit/:pid",
           component: EditorComponent,
+          title: _('Report configuration'),
           canActivate: [CanAccessGuard],
           data: { action: CAN_ACCESS_ACTIONS.UPDATE },
         },
         {
           path: "new",
           component: EditorComponent,
+          title: _('Report configuration'),
           canActivate: [PermissionGuard],
           data: { permissions: [PERMISSIONS.STAT_CFG_CREATE] },
         },

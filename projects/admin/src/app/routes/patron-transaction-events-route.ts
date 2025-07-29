@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2019-2024 RERO
+ * Copyright (C) 2019-2025 RERO
  * Copyright (C) 2019-2022 UCLouvain
  *
  * This program is free software: you can redistribute it and/or modify
@@ -43,15 +43,18 @@ export class PatronTransactionEventsRoute extends BaseRoute implements RouteInte
   getConfiguration() {
     return {
       matcher: (url: any) => this.routeMatcher(url, this.name),
-      children: [{
-        path: '',
-        component: PatronTransactionEventSearchViewComponent,
-        canActivate: [ PermissionGuard ],
-        data: {
-          permissions: [ PERMISSIONS.PTTR_ACCESS, PERMISSIONS.PTTR_SEARCH ],
-          operator: PERMISSION_OPERATOR.AND
+      children: [
+        {
+          path: '',
+          component: PatronTransactionEventSearchViewComponent,
+          title: _('Fees'),
+          canActivate: [ PermissionGuard ],
+          data: {
+            permissions: [ PERMISSIONS.PTTR_ACCESS, PERMISSIONS.PTTR_SEARCH ],
+            operator: PERMISSION_OPERATOR.AND
+          }
         }
-      }],
+      ],
       data: {
         adminMode: this.DISABLED,
         types: [

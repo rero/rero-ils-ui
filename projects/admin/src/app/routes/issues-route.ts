@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2020-2024 RERO
+ * Copyright (C) 2020-2025 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -14,6 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+import { _ } from '@ngx-translate/core';
 import { RecordSearchPageComponent, RouteInterface } from '@rero/ng-core';
 import { IssueItemStatus, PERMISSIONS } from '@rero/shared';
 import { of } from 'rxjs';
@@ -37,7 +38,15 @@ export class IssuesRoute extends BaseRoute implements RouteInterface {
     const config = {
       matcher: (url: any) => this.routeMatcher(url, this.name),
       children: [
-        { path: '', component: RecordSearchPageComponent, canActivate: [ PermissionGuard ], data: { permissions: [ PERMISSIONS.ISSUE_MANAGEMENT ] } }
+        {
+          path: '',
+          component: RecordSearchPageComponent,
+          title: _('Late issues'),
+          canActivate: [ PermissionGuard ],
+          data: {
+            permissions: [ PERMISSIONS.ISSUE_MANAGEMENT ]
+          }
+        }
       ],
       data: {
         adminMode: () => of({

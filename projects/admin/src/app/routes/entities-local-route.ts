@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2019-2024 RERO
+ * Copyright (C) 2019-2025 RERO
  * Copyright (C) 2019-2023 UCLouvain
  *
  * This program is free software: you can redistribute it and/or modify
@@ -41,9 +41,29 @@ export class EntitiesLocalRoute extends BaseRoute implements RouteInterface {
     return {
       matcher: (url: any) => this.routeMatcher(url, this.name),
       children: [
-        { path: 'detail/:pid', component: LocalPageDetailComponent },
-        { path: 'edit/:pid', component: EditorComponent, canActivate: [ CanAccessGuard ], data: { action: CAN_ACCESS_ACTIONS.UPDATE } },
-        { path: 'new', component: EditorComponent, canActivate: [ PermissionGuard ], data: { permissions: [ PERMISSIONS.LOCENT_CREATE ] } }
+        {
+          path: 'detail/:pid',
+          component: LocalPageDetailComponent,
+          title: _('Local entity'),
+        },
+        {
+          path: 'edit/:pid',
+          component: EditorComponent,
+          title: _('Local entity'),
+          canActivate: [ CanAccessGuard ],
+          data: {
+            action: CAN_ACCESS_ACTIONS.UPDATE
+          }
+        },
+        {
+          path: 'new',
+          component: EditorComponent,
+          title: _('Local entity'),
+          canActivate: [ PermissionGuard ],
+          data: {
+            permissions: [ PERMISSIONS.LOCENT_CREATE ]
+          }
+        }
       ],
       data: {
         types: [

@@ -65,6 +65,7 @@ export * from './lib/service/permissions.service';
 export * from './lib/service/user.service';
 export * from './lib/shared.module';
 export * from './lib/util/permissions';
+export * from './lib/utils/resolver';
 export * from './lib/utils/tools';
 export * from './lib/view/availability/availability.component';
 export * from './lib/view/brief/part-of/part-of.component';
@@ -78,4 +79,3 @@ export * from './tests/loan';
 export * from './tests/organisation';
 export * from './tests/permission';
 export * from './tests/user';
-

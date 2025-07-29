@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2020-2024 RERO
+ * Copyright (C) 2020-2025 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -15,7 +15,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { TranslateService } from '@ngx-translate/core';
+import { inject } from '@angular/core';
+import { TranslateService, _ } from '@ngx-translate/core';
 import { RecordSearchPageComponent, RouteInterface } from '@rero/ng-core';
 import { PERMISSIONS, PERMISSION_OPERATOR } from '@rero/shared';
 import { Observable, of } from 'rxjs';
@@ -26,8 +27,6 @@ import { DocumentsBriefViewComponent } from '../record/brief-view/documents-brie
 import { DocumentDetailViewComponent } from '../record/detail-view/document-detail-view/document-detail-view.component';
 import { DocumentDetailComponent } from '../record/detail-view/document-detail-view/document-detail/document-detail.component';
 import { BaseRoute } from './base-route';
-import { RouteToolService } from './route-tool.service';
-import { inject } from '@angular/core';
 
 export class ImportDocumentsRoute extends BaseRoute implements RouteInterface {
 
@@ -60,8 +59,21 @@ export class ImportDocumentsRoute extends BaseRoute implements RouteInterface {
     const config = {
       path: 'records/:type',
       children: [
-        { path: '', component: RecordSearchPageComponent, canActivate: [ PermissionGuard ], data: { permissions: [ PERMISSIONS.DOC_ACCESS, PERMISSIONS.DOC_SEARCH ], operator: PERMISSION_OPERATOR.AND } },
-        { path: 'detail/:pid', component: DocumentDetailComponent }
+        {
+          path: '',
+          component: RecordSearchPageComponent,
+          title: _('Import from the web'),
+          canActivate: [ PermissionGuard ],
+          data: {
+            permissions: [ PERMISSIONS.DOC_ACCESS, PERMISSIONS.DOC_SEARCH ],
+            operator: PERMISSION_OPERATOR.AND
+          }
+        },
+        {
+          path: 'detail/:pid',
+          component: DocumentDetailComponent,
+          title: _('Import')
+        }
       ],
       data: {
         types: []

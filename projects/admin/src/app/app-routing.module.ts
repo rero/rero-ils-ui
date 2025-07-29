@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2019-2024 RERO
+ * Copyright (C) 2019-2025 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -16,6 +16,7 @@
  */
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { _ } from "@ngx-translate/core";
 import { PERMISSIONS } from '@rero/shared';
 import { PermissionGuard } from './guard/permission.guard';
 import { PermissionDetailViewComponent } from './record/detail-view/permission-detail-view/permission-detail-view.component';
@@ -29,8 +30,10 @@ const routes: Routes = [
   },
   {
     path: '',
-    component: FrontpageComponent
-  }, {
+    component: FrontpageComponent,
+    title: _('Home')
+  },
+  {
     path: 'circulation',
     loadChildren: () => import('./circulation/circulation.module').then(m => m.CirculationModule)
   }, {
@@ -40,7 +43,11 @@ const routes: Routes = [
   {
     path: 'permissions/matrix',
     component: PermissionDetailViewComponent,
-    canActivate: [ PermissionGuard ], data: { permissions: [ PERMISSIONS.PERM_MANAGEMENT ] }
+    title: 'Permission matrix',
+    canActivate: [ PermissionGuard ],
+    data: {
+      permissions: [ PERMISSIONS.PERM_MANAGEMENT ]
+    }
   }
 ];
 
