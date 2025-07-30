@@ -43,10 +43,18 @@ export class AppInitializerService {
         this.remoteAutocompleteFactoryService.init();
         if (user.hasAdminUiAccess) {
           // Default user library
+          const { libraries } = user.patronLibrarian;
           let library = user.patronLibrarian.libraries[0];
           // If the cache exists, we retrieve the id of the selected library
           if (this.librarySwitchStorageService.has()) {
-            user.currentLibrary = this.librarySwitchStorageService.get().currentLibrary;
+            const currentLibraryCache = this.librarySwitchStorageService.get().currentLibrary;
+            const availableSelectedLibrary = libraries.filter((library: any) => library.pid === currentLibraryCache);
+            if (availableSelectedLibrary.length > 0) {
+              user.currentLibrary = currentLibraryCache;
+            } else {
+              this.librarySwitchStorageService.remove();
+              user.currentLibrary = library.pid;
+            }
           } else {
             user.currentLibrary = library.pid;
           }
