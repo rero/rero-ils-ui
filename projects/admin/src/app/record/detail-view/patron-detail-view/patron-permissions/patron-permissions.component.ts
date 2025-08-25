@@ -29,7 +29,7 @@ export class PatronPermissionsComponent implements OnChanges {
 
   // COMPONENT ATTRIBUTES =====================================================
   /** Show or hide */
-  @Input() hidden: boolean = false;
+  @Input() hidden = false;
   /** Patron pid */
   @Input() pid: string;
 

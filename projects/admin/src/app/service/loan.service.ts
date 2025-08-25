@@ -173,7 +173,7 @@ export class LoanService {
    * @param statuses - a list of loan states to filter result.
    * @returns Observable with loans corresponding to search criteria
    */
-  private loans$(itemPid: string, statuses?: Array<LoanState>): Observable<any> {
+  private loans$(itemPid: string, statuses?: LoanState[]): Observable<any> {
     let query = `item_pid.value:${itemPid}`;
     if (statuses !== undefined) {
       const states = statuses.join(' OR state:');

@@ -68,7 +68,7 @@ export class EntityLabelPipe implements PipeTransform {
    * @return the entity label
    */
   transform(entity: any, partSeparator: string = this._defaultPartSeparator): string {
-    const parts: Array<string> = []
+    const parts: string[] = []
     const currentLangKey = `${this._authorizedKey}_${this.translateService.currentLang}`;
     const fallbackLangKey = `${this._authorizedKey}_en`;
     parts.push(entity[currentLangKey] || entity[fallbackLangKey] || entity[this._authorizedKey]);

@@ -29,7 +29,7 @@ export class IllRequestItemComponent {
   /** ILL record. */
   @Input() record: any;
   /** Is detail is collapsed. */
-  isCollapsed: boolean = true;
+  isCollapsed = true;
 
   // COMPONENT FUNCTIONS ======================================================
   /** get the primeng color to apply on the request status badge */

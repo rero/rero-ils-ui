@@ -67,7 +67,7 @@ export class ItemRequestComponent implements OnInit {
   /** Dynamic message for can_request validator */
   canRequestMessage: string;
   /** On submit event */
-  onSubmit: EventEmitter<any> = new EventEmitter();
+  onSubmit = new EventEmitter<any>();
   /** Requested item(s) */
   requestedBy$: Observable<any>;
   /** Request in progress */
@@ -236,7 +236,7 @@ export class ItemRequestComponent implements OnInit {
    * Get pickup location available for the item
    * @return observable with pickup locations information (name and pid)
    */
-  private getPickupLocations(): Observable<Array<any>> {
+  private getPickupLocations(): Observable<any[]> {
     const { currentLibrary } = this.currentUser;
     return this.service.getPickupLocations(this.recordPid).pipe(
       map((locations: any) => locations.map((loc: any) => {

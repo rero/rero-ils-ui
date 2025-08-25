@@ -15,7 +15,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* tslint:disable */
 // required as json properties is not lowerCamelCase
 
 import { WeekDay } from '@angular/common';
@@ -27,13 +26,13 @@ import { DateTime } from 'luxon';
 export interface OpeningHours {
   day: string;
   is_open: boolean;
-  times: Array<Hours>;
+  times: Hours[];
 }
 
 export interface Repeat {
   interval: number;
   period: string;
-  data: Array<number>;
+  data: number[];
 }
 
 export interface Hours {
@@ -50,7 +49,7 @@ export interface ExceptionDates {
   is_open: boolean;
   start_date: string | DateTime;
   end_date?: string | DateTime;
-  times?: Array<Hours>;
+  times?: Hours[];
   repeat?: Repeat;
 }
 
@@ -94,9 +93,9 @@ export class Library {
   address: string = null;
   code: string = null;
   communication_language: string = null;
-  opening_hours: Array<OpeningHours> = [];
-  exception_dates?: Array<ExceptionDates>;
-  notification_settings?: Array<NotificationSettings>;
+  opening_hours: OpeningHours[] = [];
+  exception_dates?: ExceptionDates[];
+  notification_settings?: NotificationSettings[];
   acquisition_settings?: AcquisitionInformations;
   serial_acquisition_settings?: AcquisitionInformations;
   organisation: Organisation;
@@ -104,7 +103,7 @@ export class Library {
 
   // GETTER & SETTER ================================================
   /** Allow to get all closed days for the library */
-  get closedDays(): Array<WeekDay> {
+  get closedDays(): WeekDay[] {
     return this.opening_hours
       .filter(day => !day.is_open)
       .map(day => Library.convertDayToWeekDay(day.day))
@@ -161,7 +160,7 @@ export class Library {
    *                      If not then, only check about exception dates
    * @returns boolean is the exception is over or not.
    */
-  static isExceptionDateOver(exception: ExceptionDates, checkRepeat: boolean = true): boolean {
+  static isExceptionDateOver(exception: ExceptionDates, checkRepeat = true): boolean {
     if (exception.repeat && checkRepeat) {
       return false;
     }

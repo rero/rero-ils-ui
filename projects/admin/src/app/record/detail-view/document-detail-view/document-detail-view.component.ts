@@ -59,7 +59,7 @@ export class DocumentDetailViewComponent implements DetailRecord, OnInit, OnDest
   linkedDocumentsCount = 0;
 
   /** Enables or disables links */
-  activateLink: boolean = true;
+  activateLink = true;
 
   recordMessage: string = undefined;
 
@@ -202,7 +202,7 @@ export class DocumentDetailViewComponent implements DetailRecord, OnInit, OnDest
 
   private message(record: any): string {
     if (record.metadata?.adminMetadata?.encodingLevel !== 'Full level' || record.metadata?.adminMetadata?.note) {
-      let message = [];
+      const message = [];
       if (record.metadata?.adminMetadata?.encodingLevel) {
         message.push(this.translateService.instant('Encoding level') + ': ');
         message.push(this.translateService.instant(record.metadata.adminMetadata.encodingLevel) + '.')

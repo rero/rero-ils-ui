@@ -54,7 +54,7 @@ export class EntityLinkComponent implements OnInit, OnDestroy {
   @Input() routerLinkParams = ['/records', 'documents'];
 
   /** Make link external */
-  @Input() external: boolean = false;
+  @Input() external = false;
 
   /** Link label name */
   linkName: string;

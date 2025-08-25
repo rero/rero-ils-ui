@@ -30,7 +30,7 @@ export class RemoteSearchConfig {
   protected translateService: NgCoreTranslateService = inject(NgCoreTranslateService);
   protected appSettingsService: AppSettingsService = inject(AppSettingsService);
 
-  private isAdmin: boolean = false;
+  private isAdmin = false;
 
   private viewCode: string | undefined;
 

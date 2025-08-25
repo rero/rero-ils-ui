@@ -31,8 +31,8 @@ export class IdentifiedByLabelPipe implements PipeTransform {
    * @param separator - the glue string to use to join parts
    * @return the entity label
    */
-  transform(identifiedBy: any[], types: string[] = [], separator: string = ', '): string | null {
-    const identifiers: Array<any> = (types.length && identifiedBy?.length)
+  transform(identifiedBy: any[], types: string[] = [], separator = ', '): string | null {
+    const identifiers: any[] = (types.length && identifiedBy?.length)
       ? identifiedBy.filter(identifier => types.includes(identifier.type))
       : identifiedBy;
     return identifiers

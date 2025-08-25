@@ -16,7 +16,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* tslint:disable */
 // required as json properties is not lowerCamelCase
 import { ObjectReference } from '@rero/shared';
 
@@ -24,10 +23,10 @@ import { ObjectReference } from '@rero/shared';
 export class AcqBudget {
   $schema: string = null;
   pid: string = null;
-  name: string = '';
-  start_date: string = '';
-  end_date: string = '';
-  is_active: boolean = false;
+  name = '';
+  start_date = '';
+  end_date = '';
+  is_active = false;
   organisation: ObjectReference;
 
   /**

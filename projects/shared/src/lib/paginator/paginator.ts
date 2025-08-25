@@ -40,7 +40,7 @@ export class Paginator {
    * @param page - number (default: 1)
    * @param recordsPerPage - number (default: 10)
    */
-  constructor(private page: number = 1, private recordsPerPage: number = 10) {}
+  constructor(private page = 1, private recordsPerPage = 10) {}
 
   /**
    * Set Page

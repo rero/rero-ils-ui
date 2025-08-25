@@ -45,7 +45,7 @@ export class CardComponent implements OnChanges, OnDestroy {
   /** Link used on the patron name */
   patronLink: string;
   /** it's the birthday of the patron */
-  isBirthday: boolean = false;
+  isBirthday = false;
   /** Patron age */
   patronAge: number;
   /** circulation messages about the loaded patron if exists */

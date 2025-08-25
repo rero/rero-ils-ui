@@ -29,7 +29,7 @@ export class OrganisationService {
   // SERVICE ATTRIBUTES =======================================================
 
   /** Observable on Record Organisation */
-  private onOrganisationLoaded: Subject<any> = new Subject();
+  private onOrganisationLoaded = new Subject<any>();
   /** Organisation record */
   private record: any;
 

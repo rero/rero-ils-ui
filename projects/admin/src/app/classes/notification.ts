@@ -15,7 +15,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* tslint:disable */
 // required as json properties is not lowerCamelCase
 
 import { ObjectReference } from '../../../../shared/src/lib/class/core';
@@ -61,10 +60,10 @@ export class Notification {
     loan?: ObjectReference,
     reminder_counter?: number,
     order?: ObjectReference,
-    recipients?: Array<{
+    recipients?: {
       type: string;
       address: string;
-    }>
+    }[]
   };
 
   constructor(obj?: any) {

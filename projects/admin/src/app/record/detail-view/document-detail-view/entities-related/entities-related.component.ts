@@ -32,7 +32,7 @@ export class EntitiesRelatedComponent implements OnInit {
   @Input() record: any;
 
   /** Entities processed */
-  entities: {[key: string]: IEntityRelated[]} = {};
+  entities: Record<string, IEntityRelated[]> = {};
 
   /** OnInit hook */
   ngOnInit(): void {

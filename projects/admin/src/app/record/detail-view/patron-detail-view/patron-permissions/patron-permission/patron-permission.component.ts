@@ -29,5 +29,5 @@ export class PatronPermissionComponent {
   /** User permission */
   @Input() permission: IPatronPermission;
   /** Hide reasons */
-  isCollapsed: boolean = true;
+  isCollapsed = true;
 }

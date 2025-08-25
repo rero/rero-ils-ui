@@ -44,7 +44,7 @@ export class AcqOrderApiService extends BaseApi {
   // SERVICES ATTRIBUTES ======================================================
 
   /** Subject emitted when an order line is deleted. The order line pid will be emitted */
-  private _deletedOrderLineSubject$: Subject<IAcqOrderLine> = new Subject();
+  private _deletedOrderLineSubject$ = new Subject<IAcqOrderLine>();
 
   // GETTER AND SETTER ========================================================
   /** expose _deletedOrderLineSubject$ in 'readonly' mode */

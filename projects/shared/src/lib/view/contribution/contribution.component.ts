@@ -26,22 +26,22 @@ export class ContributionComponent implements OnInit {
 
   // COMPONENTS ATTRIBUTES ====================================================
   /** List of contributor */
-  @Input() contributions: Array<{entity: any, role: Array<string>}>;
+  @Input() contributions: {entity: any, role: string[]}[];
   /** List of contributor types to display */
   @Input() filters: string[] = ['bf:Person', 'bf:Organisation']
   /** The number of contributors to display */
   @Input() limitRecord: number | undefined;
   /** Is the role of contributor should be displayed */
-  @Input() withRoles: boolean = false;
+  @Input() withRoles = false;
   /** The view where component is displayed (viewcode | 'professional') */
-  @Input() view: string = 'professional';
+  @Input() view = 'professional';
   /** Enables or disables links */
-  @Input() activateLink: boolean = true;
+  @Input() activateLink = true;
   /** Is the link to entity detail view should be activated */
-  @Input() withEntityLink: boolean = false;
+  @Input() withEntityLink = false;
 
   /** If the limit is activated, we add 3 dots at the end of the contribution line. */
-  limit: boolean = false;
+  limit = false;
 
   /** OnInit hook */
   ngOnInit() {

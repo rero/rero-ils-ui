@@ -39,14 +39,14 @@ export class RemoteSearchComponent implements OnInit, OnDestroy {
   // You must use lowercase variable names for this to work in a web component.
   // Use @Input in this case, as the web component does not work with input (signal).
   @Input() maxlengthsuggestion: number | string = 100;
-  @Input() placeholder: string = 'search';
+  @Input() placeholder = 'search';
   @Input() viewcode: string | undefined;
   @Input() inputstyleclass: string;
   @Input() styleclass: string;
   @Input() internalRoutingBaseURL: string | undefined;
 
   admin: boolean;
-  hideSearchElement: boolean = false;
+  hideSearchElement = false;
   recordTypes: IRecordType[] = [];
   value: string | undefined;
 

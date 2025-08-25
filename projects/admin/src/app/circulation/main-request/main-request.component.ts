@@ -113,7 +113,7 @@ export class MainRequestComponent implements OnInit, OnDestroy {
    * @param items: the item list to sort
    * @return the sorted item list based on component sort criteria
    */
-  private _sortingRequestedLoans(items: Array<any>) {
+  private _sortingRequestedLoans(items: any[]) {
     this.items = items.sort((a, b) => {
       const aTime = DateTime.fromISO(a.loan.transaction_date);
       const bTime = DateTime.fromISO(b.loan.transaction_date);

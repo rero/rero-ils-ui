@@ -118,7 +118,7 @@ export class PatronProfilePasswordComponent {
   };
 
   /** Error message for password validator */
-  private validatePasswordMessage: string = '';
+  private validatePasswordMessage = '';
 
   /** Submit form */
   submit() {

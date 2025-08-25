@@ -42,7 +42,7 @@ export class LocalFieldComponent implements OnInit {
   /** Pid of the LocalField record */
   localFieldRecordPid: string;
   /** local fields */
-  localFields: Array<{name: string, value: Array<string>}> = [];
+  localFields: {name: string, value: string[]}[] = [];
   /** isLoading */
   isLoading = true;
   /** return all available permissions for current user */

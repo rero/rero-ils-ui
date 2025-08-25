@@ -38,7 +38,7 @@ export class OpenCloseButtonComponent implements OnChanges {
 
   status = output<boolean>();
 
-  internalStatus: boolean = true;
+  internalStatus = true;
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes?.collapsed) {

@@ -33,7 +33,7 @@ export class ImportSourceApiService {
    * Get the configuration entrypoint for external sources
    * @return: an Observable on external sources list
    */
-  getSources(): Observable<Array<ExternalSourceSetting>> {
+  getSources(): Observable<ExternalSourceSetting[]> {
     return this.httpClient
       .get('/api/imports/config/')
       .pipe(

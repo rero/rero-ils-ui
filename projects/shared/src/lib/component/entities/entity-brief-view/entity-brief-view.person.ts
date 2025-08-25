@@ -37,7 +37,7 @@ export class EntityBriefViewRemotePersonComponent implements OnInit {
 
   @Input() record: any;
 
-  dates: Array<string> = [];
+  dates: string[] = [];
   bibliographicInformation: string = null;
 
   ngOnInit(): void {

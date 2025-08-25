@@ -129,7 +129,7 @@ export class RecordPermissionService {
    * @param membership - Check record ownership
    * @returns permissions of current record
    */
-  membership(user: any, libraryPid: string, permission: any, membership: boolean = true): any {
+  membership(user: any, libraryPid: string, permission: any, membership = true): any {
     if (membership && user.currentLibrary !== libraryPid) {
       const membershipExcludePermission = {
         update: { can: false },

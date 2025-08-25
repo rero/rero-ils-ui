@@ -39,7 +39,7 @@ export class OperationLogsApiService extends BaseApi {
   getHistory(
     patronPid: string,
     page: number,
-    itemsPerPage: number = 10
+    itemsPerPage = 10
   ): Observable<Record | Error> {
     const date = DateTime.now().minus({ months: 6 }).toISO();
     const query = `record.type:loan AND loan.patron.pid:${patronPid} AND loan.trigger:checkin AND date:[${date} TO *]`;

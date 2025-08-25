@@ -33,7 +33,7 @@ export class PatronTransactionApiService {
    * Add fee
    * @return Observable, array of records
    */
-  addFee(model: FeeFormModel): Observable<Object> {
+  addFee(model: FeeFormModel): Observable<object> {
     return this.httpClient.post(this.apiService.getEndpointByType('patron_transactions/'), model);
   }
 

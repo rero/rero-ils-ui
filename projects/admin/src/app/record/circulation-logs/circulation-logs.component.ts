@@ -139,7 +139,7 @@ export class CirculationLogsComponent implements OnInit, OnDestroy {
    * @param period: the time period to use to compare both dates
    * @return True if dates are similar, False otherwise
    */
-  isSamePeriod(date1: any, date2: any, period: string = 'months'): boolean {
+  isSamePeriod(date1: any, date2: any, period = 'months'): boolean {
     if (date1 && date2) {
       const transDate1 = DateTime.fromISO(date1.metadata.date);
       const transDate2 = DateTime.fromISO(date2.metadata.date);

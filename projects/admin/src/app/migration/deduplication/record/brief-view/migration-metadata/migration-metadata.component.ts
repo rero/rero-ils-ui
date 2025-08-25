@@ -52,7 +52,7 @@ export class MigrationMetadataBriefComponent {
     if (value?.weight == null) {
       return `${value.value.toFixed(2)}&nbsp;|&nbsp;1.0`;
     }
-    var color = 'text-orange-500';
+    let color = 'text-orange-500';
     if (value.value < 0.6) {
       color = 'text-red-500';
     } else if (value.value > 0.8) {

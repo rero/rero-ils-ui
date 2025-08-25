@@ -34,10 +34,10 @@ export class RequestedItemsListComponent implements OnChanges {
   @Output() requestValidated = new EventEmitter();
 
   /** Is the item detail should be collapsed */
-  isCollapsed: boolean = false;
+  isCollapsed = false;
 
   /** the know item barcode list */
-  private knownItemBarcodes: Array<string> = null;
+  private knownItemBarcodes: string[] = null;
 
   // CONSTRUCTOR & HOOKS ====================================================
   /**

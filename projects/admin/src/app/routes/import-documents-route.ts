@@ -81,7 +81,7 @@ export class ImportDocumentsRoute extends BaseRoute implements RouteInterface {
     };
     this.routeToolService.injector.get(ImportSourceApiService)
       .getSources()
-      .subscribe((sources: Array<ExternalSourceSetting>) => {
+      .subscribe((sources: ExternalSourceSetting[]) => {
         sources.forEach((source: ExternalSourceSetting) => {
           const sourceConfig = this._loadConfigSource(source);
           config.data.types.push(sourceConfig);

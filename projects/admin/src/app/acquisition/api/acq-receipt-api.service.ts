@@ -45,8 +45,8 @@ export class AcqReceiptApiService {
     sort: 'receipt_date'
   };
   /** Subject emitted when an order line is deleted. The order line pid will be emitted */
-  private _deletedReceiptSubject$: Subject<IAcqReceipt> = new Subject();
-  private _deletedReceiptLineSubject$: Subject<IAcqReceiptLine> = new Subject();
+  private _deletedReceiptSubject$ = new Subject<IAcqReceipt>();
+  private _deletedReceiptLineSubject$ = new Subject<IAcqReceiptLine>();
 
   // GETTER AND SETTER ========================================================
   /** expose _deletedOrderLineSubject$ in 'readonly' mode */

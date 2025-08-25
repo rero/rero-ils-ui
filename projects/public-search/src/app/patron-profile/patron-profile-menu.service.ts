@@ -26,7 +26,7 @@ export class PatronProfileMenuService {
   private userService: UserService = inject(UserService);
 
   /** On change Observable */
-  private _onChange: Subject<IMenu> = new Subject();
+  private _onChange = new Subject<IMenu>();
 
   /** Menu */
   private _menu = [];

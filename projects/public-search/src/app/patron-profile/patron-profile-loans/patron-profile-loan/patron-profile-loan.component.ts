@@ -58,7 +58,7 @@ export class PatronProfileLoanComponent implements OnInit {
     reasons: []
   };
   /** Fees */
-  fees: number = 0;
+  fees = 0;
 
   // GETTER & SETTER ==========================================================
   /** Get organisation for current patron */

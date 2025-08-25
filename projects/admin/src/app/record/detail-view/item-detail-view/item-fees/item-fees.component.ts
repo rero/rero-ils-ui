@@ -36,7 +36,7 @@ export class ItemFeesComponent implements OnInit {
   fees: any[] = [];
 
   /** Total fees */
-  total: number = 0;
+  total = 0;
 
   /**
    * Get the current organisation

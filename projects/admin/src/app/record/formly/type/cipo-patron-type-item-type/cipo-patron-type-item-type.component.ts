@@ -135,7 +135,7 @@ export class CipoPatronTypeItemTypeComponent extends FieldArrayType implements O
   }
 
   /** Get libraries references */
-  private _getLibrariesRef(libraries: Array<any>): Array<string> {
+  private _getLibrariesRef(libraries: any[]): string[] {
     return Array.from(new Set(
       libraries.map(library => library.$ref).filter(Boolean)  // Removes `null` or `undefined` values
     ));
@@ -143,12 +143,10 @@ export class CipoPatronTypeItemTypeComponent extends FieldArrayType implements O
 }
 
 export class Setting {
-  // tslint:disable-next-line: variable-name
-  item_type: {
+   item_type: {
     $ref: string;
   };
-  // tslint:disable-next-line: variable-name
-  patron_type: {
+   patron_type: {
     $ref: string;
   };
 }

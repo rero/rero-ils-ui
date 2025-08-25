@@ -49,11 +49,11 @@ export class LocationService {
    * Get all locations related to some libraries
    * @param libraryPids: the library pids
    */
-  getLocationsByLibraries$(libraryPids: Array<string>): Observable<Array<any>> {
+  getLocationsByLibraries$(libraryPids: string[]): Observable<any[]> {
     const query = libraryPids.map(pid => `library.pid:${pid}`).join(' OR ');
     return this._query(query).pipe(
       map((data: Record) => data.hits),
-      map((hits: {hits: Array<any>, total:number}) => this.recordService.totalHits(hits.total) === 0 ? [] : hits.hits),
+      map((hits: {hits: any[], total:number}) => this.recordService.totalHits(hits.total) === 0 ? [] : hits.hits),
     );
   }
 
@@ -83,7 +83,7 @@ export class LocationService {
 export interface GetRecordsOptions {
   page?: number,
   itemsPerPage?: number,
-  aggregations?: Array<string>,
+  aggregations?: string[],
   preFilters?: object,
   sort?: string,
   headers?: {

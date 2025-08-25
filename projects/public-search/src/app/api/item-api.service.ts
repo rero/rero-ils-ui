@@ -42,7 +42,7 @@ export class ItemApiService extends BaseApi implements IAvailabilityService {
    * @return Observable<QueryResponse>
    */
   getItemsByHoldingsAndViewcode(
-    holdings: any, viewcode: string, page: number, itemsPerPage: number = 5): Observable<QueryResponse> {
+    holdings: any, viewcode: string, page: number, itemsPerPage = 5): Observable<QueryResponse> {
     const sort = (holdings.metadata.holdings_type === 'serial')
       ? '-issue_sort_date'
       : 'enumeration_chronology';

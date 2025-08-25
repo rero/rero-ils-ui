@@ -29,5 +29,5 @@ export class OtherEditionComponent {
   /** Field data */
   @Input() field: any;
 
-  @Input() inline: boolean = false;
+  @Input() inline = false;
 }

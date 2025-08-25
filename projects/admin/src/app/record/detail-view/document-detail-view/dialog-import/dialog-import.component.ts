@@ -31,7 +31,7 @@ export class DialogImportComponent implements OnInit {
   records: any[];
 
   /** Show warning message */
-  warning: boolean = false;
+  warning = false;
 
   ngOnInit(): void {
       this.records = this.dynamicDialogConfig?.data?.records || [];

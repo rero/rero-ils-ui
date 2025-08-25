@@ -39,7 +39,7 @@ export class UploadFilesComponent implements OnInit {
   // linked resource pid such as document
   @Input() pid: string;
   // List of files for the file record.
-  files: Array<any> = undefined;
+  files: any[] = undefined;
   // the maximum number of files by file record
   maxFiles = 500;
   // input text filter

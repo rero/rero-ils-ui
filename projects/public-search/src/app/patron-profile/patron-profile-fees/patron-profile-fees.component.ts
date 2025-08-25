@@ -104,7 +104,7 @@ export class PatronProfileFeesComponent implements OnInit, OnDestroy {
    * @param status - string
    * @return Observable
    */
-  private _queryFee(page: number, status: string = 'open'): Observable<Record | Error> {
+  private _queryFee(page: number, status = 'open'): Observable<Record | Error> {
     const patronPid = this.patronProfileMenuService.currentPatron.pid;
     return this.patronTransactionApiService
       .getFees(patronPid, status, page, this.paginator.getRecordsPerPage());

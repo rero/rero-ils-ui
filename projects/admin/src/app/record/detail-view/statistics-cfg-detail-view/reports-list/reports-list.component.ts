@@ -32,7 +32,7 @@ export class ReportsListComponent implements OnInit {
   @Input() pid: any;
 
   // list of the corresponding reports from elasticsearch
-  reports: Array<any>;
+  reports: any[];
 
   /**
    * Get the report item URL

@@ -146,7 +146,7 @@ export class IdentifiedbyValueComponent extends FieldWrapper implements OnInit {
    * @param identifierValues - list of formatted identifiers to search
    * @return Observable with document metadata if any identifiers matching a known document, null otherwise.
    */
-  private _queryCheck(identifierValues: Array<string>): Observable<any> {
+  private _queryCheck(identifierValues: string[]): Observable<any> {
     return this.recordService
       .getRecords('documents', undefined, 1, 1, undefined, {identifiers: identifierValues})
       .pipe(

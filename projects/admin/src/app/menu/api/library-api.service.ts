@@ -28,11 +28,11 @@ export class LibraryApiService {
   /** Resource name */
   static readonly resource = 'libraries';
 
-  findByLibrariesPidAndOrderBy$(pids: string[], order: string = 'name'): Observable<any> {
+  findByLibrariesPidAndOrderBy$(pids: string[], order = 'name'): Observable<any> {
     return this.query('pid:' + pids.join(' OR pid:'), order);
   }
 
-  private query(query: any, order: string = 'name'): Observable<any> {
+  private query(query: any, order = 'name'): Observable<any> {
     return this.recordService.getRecords(
       LibraryApiService.resource, query, 1, RecordService.MAX_REST_RESULTS_SIZE,
       undefined, undefined, undefined, order

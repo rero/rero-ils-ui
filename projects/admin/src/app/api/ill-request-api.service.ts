@@ -39,8 +39,8 @@ export class IllRequestApiService extends BaseApi {
    */
   getByPatronPid(
     patronPid: string,
-    filters?: {[key: string]: string},
-    sort: string = '-created'
+    filters?: Record<string, string>,
+    sort = '-created'
   ): Observable<Record | Error> {
     const query = `patron.pid:${patronPid}`;
     return this.recordService

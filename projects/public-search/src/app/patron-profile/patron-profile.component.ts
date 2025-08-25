@@ -66,7 +66,7 @@ export class PatronProfileComponent implements OnInit, OnDestroy {
 
 
   /** View code */
-  viewcode: string = 'global';
+  viewcode = 'global';
 
   /** Observable subscription */
   private subscription = new Subscription();

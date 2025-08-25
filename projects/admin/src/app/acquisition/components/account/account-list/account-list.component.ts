@@ -76,7 +76,7 @@ export class AccountListComponent implements OnInit {
   }
 
   private orderAccountsAsTree(accounts): TreeTableNode[] {
-    let accountsByPid = {};
+    const accountsByPid = {};
     accounts = this.processAccount(accounts);
     accounts.map((val) => {
       const key = val?.data?.parent?.pid ? val.data.parent.pid : -1;
@@ -186,7 +186,7 @@ export class AccountListComponent implements OnInit {
    * Get Export formats for the current resource given by configuration.
    * @return Array of export format to generate an `export as` button or an empty array.
    */
-  private _exportFormats(): Array<any> {
+  private _exportFormats(): any[] {
     return exportFormats.map((format) => {
       return {
         label: format.label,

@@ -39,7 +39,7 @@ export class PatronTransactionEventFormComponent implements OnInit {
   private patronTransactionService: PatronTransactionService = inject(PatronTransactionService);
 
   /** the transactions to perform with this form */
-  transactions: Array<PatronTransaction>;
+  transactions: PatronTransaction[];
 
   /** the action to do ; used as the form title : pay/dispute/resolve/... */
   action: string;

@@ -64,11 +64,11 @@ export class EntityBriefViewComponent implements ResultItem, OnInit, AfterViewIn
   /** Reference to `EntityType` enum. */
   entityIcon: string;
   /** the data used to build the detail view URL link. */
-  routerLink: Array<string> | string;
+  routerLink: string[] | string;
   /** Entity title */
   entityTitle: string;
   /** tags for this entity */
-  tags: Array<BriefViewTag> = [];
+  tags: BriefViewTag[] = [];
 
   /** The component to use to build the entity body content. */
   private contentComponent: any = null;

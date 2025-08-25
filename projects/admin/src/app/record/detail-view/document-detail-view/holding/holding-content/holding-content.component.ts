@@ -64,7 +64,7 @@ export class HoldingContentComponent implements OnInit, OnDestroy {
     );
   }
 
-  showMore(increment: number = 5) {
+  showMore(increment = 5) {
     this.displayItemsCounter += increment;
   }
 

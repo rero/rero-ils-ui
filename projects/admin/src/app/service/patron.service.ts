@@ -34,7 +34,7 @@ export class PatronService {
   private recordService: RecordService = inject(RecordService);
 
   /** Current patron */
-  private currentPatron: BehaviorSubject<User> = new BehaviorSubject(undefined);
+  private currentPatron = new BehaviorSubject<User>(undefined);
 
   /**
    * Get Current Patron
@@ -186,10 +186,10 @@ export class PatronService {
    * @param patronPid - string : the patron pid to search
    * @return Observable
    */
-  getOverduePreview(patronPid: string): Observable<Array<{fees: LoanOverduePreview, loan: Loan}>> {
+  getOverduePreview(patronPid: string): Observable<{fees: LoanOverduePreview, loan: Loan}[]> {
     const url = [this.apiService.getEndpointByType('patrons'), patronPid, 'overdues', 'preview'].join('/');
     return this.httpClient.get(url).pipe(
-      map((data: Array<any>) => data.map(record => {
+      map((data: any[]) => data.map(record => {
         return {
           fees: record.fees as LoanOverduePreview,
           loan: new Loan(record.loan)
