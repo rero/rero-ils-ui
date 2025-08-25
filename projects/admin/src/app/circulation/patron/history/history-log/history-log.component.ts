@@ -37,7 +37,7 @@ export class HistoryLogComponent {
   provisionActivityType = ProvisionActivityType;
 
   /** Checkout record operation logs */
-  checkoutLoaded: boolean = false;
+  checkoutLoaded = false;
 
   events: any[] = [];
 

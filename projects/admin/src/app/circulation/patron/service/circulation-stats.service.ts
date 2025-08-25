@@ -31,7 +31,7 @@ export class CirculationStatsService {
   private patronTransactionService: PatronTransactionService = inject(PatronTransactionService);
 
 
-  statistics: WritableSignal<{[key: string]: number}> = signal({
+  statistics: WritableSignal<Record<string, number>> = signal({
     feesEngaged: 0,
     fees: 0,
     overdueFees: 0,

@@ -14,7 +14,6 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-/* tslint:disable */
 // required as json properties is not lowerCamelCase
 
 import { DateTime } from 'luxon';
@@ -35,7 +34,7 @@ export enum LoanState {
 // INTERFACE ===================================================================
 /** Interface representing a overdue preview API response about a Loan. */
 export interface LoanOverduePreview {
-  steps: Array<any>;
+  steps: any[];
   total: number;
 }
 

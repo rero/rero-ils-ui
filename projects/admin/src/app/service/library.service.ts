@@ -59,7 +59,7 @@ export class LibraryService {
    * @param order - string, order name
    * @return Observable
    */
-  findAllOrderBy$(order: string = 'name') {
+  findAllOrderBy$(order = 'name') {
     return this._query(undefined);
   }
 
@@ -69,7 +69,7 @@ export class LibraryService {
    * @param order - string, order name
    * @return Observable
    */
-  findByLibrariesPidAndOrderBy$(pids: string[], order: string = 'name') {
+  findByLibrariesPidAndOrderBy$(pids: string[], order = 'name') {
     return this._query('pid:' + pids.join(' OR pid:'));
   }
 
@@ -78,7 +78,7 @@ export class LibraryService {
    * @param query - any
    * @param order - string, order name
    */
-  private _query(query: any, order: string = 'name') {
+  private _query(query: any, order = 'name') {
     return this.recordService.getRecords(
       LibraryService.resource, query, 1, RecordService.MAX_REST_RESULTS_SIZE,
       undefined, undefined, undefined, order

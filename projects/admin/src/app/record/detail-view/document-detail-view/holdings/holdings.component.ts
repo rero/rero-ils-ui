@@ -177,7 +177,7 @@ export class HoldingsComponent implements OnInit {
    * @returns Observable
    */
   private _holdingsCountQuery(
-    documentPid: string, organisationPid: string, isCurrentOrganisation: boolean = true): Observable<number> {
+    documentPid: string, organisationPid: string, isCurrentOrganisation = true): Observable<number> {
     return this.holdingsApiService.getHoldingsCount(documentPid, organisationPid, isCurrentOrganisation);
   }
 
@@ -191,7 +191,7 @@ export class HoldingsComponent implements OnInit {
    * @returns Observable
    */
   private _holdingsQuery(
-    documentPid: string, organisationPid: string, page: number, isCurrentOrganisation: boolean = true): Observable<any> {
+    documentPid: string, organisationPid: string, page: number, isCurrentOrganisation = true): Observable<any> {
     return this.holdingsApiService.getHoldings(
       documentPid, organisationPid, isCurrentOrganisation, page, this.holdingsApiService.ITEMS_PER_PAGE);
   }

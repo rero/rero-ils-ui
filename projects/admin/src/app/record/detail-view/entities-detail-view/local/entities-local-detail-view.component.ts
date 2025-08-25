@@ -43,7 +43,7 @@ export class EntitiesLocalDetailViewComponent implements OnInit, DetailRecord {
   entityType = EntityType;
 
   /** Is operation log enabled */
-  isEnabledOperationLog: boolean = false;
+  isEnabledOperationLog = false;
 
   /** OnInit hook */
   ngOnInit(): void {

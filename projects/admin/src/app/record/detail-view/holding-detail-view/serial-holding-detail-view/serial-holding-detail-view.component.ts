@@ -45,7 +45,7 @@ export class SerialHoldingDetailViewComponent implements OnInit {
   /** array of receive items for this holding */
   receivedItems = [];
   /** array of prediction for this holding */
-  predictionsItems: Array<PredictionIssue> = [];
+  predictionsItems: PredictionIssue[] = [];
   /** total number of received item for this holding */
   totalReceivedItems = 0;
   /** reference to IssueItemStatus */
@@ -55,7 +55,7 @@ export class SerialHoldingDetailViewComponent implements OnInit {
   /** record permissions */
   recordPermissions: RecordPermissions;
   /** flag to know if the creation issue buttons should be displayed. */
-  allowIssueCreation: boolean = false;
+  allowIssueCreation = false;
 
   /** received issue counter : number of received issue to load/display */
   private receivedIssueCounter = 5;
@@ -104,7 +104,7 @@ export class SerialHoldingDetailViewComponent implements OnInit {
    * @param type - string: the type of item to load more
    * @param increment - number: the number to data to load
    */
-  showMore(type: string, increment: number = 10) {
+  showMore(type: string, increment = 10) {
     if (type === 'received') {
       this.receivedIssueCounter += increment;
       this._loadReceivedItems();

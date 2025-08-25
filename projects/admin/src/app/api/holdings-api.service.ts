@@ -46,10 +46,10 @@ export class HoldingsApiService {
   getHoldings(
     documentPid: string,
     organisationPid: string,
-    isCurrentOrganisation: boolean = true,
-    page: number = 1,
-    itemsPerPage: number = 10,
-    order: string = 'organisation_library_location'
+    isCurrentOrganisation = true,
+    page = 1,
+    itemsPerPage = 10,
+    order = 'organisation_library_location'
   ): Observable<any> {
     const query = this._queryOrganisation(documentPid, organisationPid, isCurrentOrganisation);
     return this.recordService.getRecords(
@@ -65,7 +65,7 @@ export class HoldingsApiService {
    * @param isCurrentOrganisation - Is current Organisation
    * @returns Observable
    */
-  getHoldingsCount(documentPid: string, organisationPid: string, isCurrentOrganisation: boolean = true): Observable<number> {
+  getHoldingsCount(documentPid: string, organisationPid: string, isCurrentOrganisation = true): Observable<number> {
     const query = this._queryOrganisation(documentPid, organisationPid, isCurrentOrganisation);
     return this.recordService.getRecords(this.RESOURCE_NAME, query, 1, 1).pipe(
       map((result: Record) => this.recordService.totalHits(result.hits.total))

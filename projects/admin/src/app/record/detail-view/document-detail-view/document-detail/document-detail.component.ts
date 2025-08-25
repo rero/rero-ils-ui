@@ -37,7 +37,7 @@ export class DocumentDetailComponent extends DetailComponent implements OnInit {
   private operationLogsService: OperationLogsService = inject(OperationLogsService);
   private userService: UserService = inject(UserService);
 
-  fileTitle: string = 'files';
+  fileTitle = 'files';
   /** return all available permissions for current user */
   permissions: IPermissions = PERMISSIONS;
 

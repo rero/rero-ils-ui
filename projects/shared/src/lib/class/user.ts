@@ -293,7 +293,7 @@ export interface IPatron {
     country?: string
   };
   patron?: {
-    barcode: Array<string>;
+    barcode: string[];
     type: IPatronType;
     expiration_date: Date;
     communication_channel: string;

@@ -41,7 +41,7 @@ export class DocumentEditorComponent extends AbstractCanDeactivateComponent {
   private messageService: MessageService = inject(MessageService);
 
   /** Can deactivate from editor component */
-  canDeactivate: boolean = false;
+  canDeactivate = false;
 
   // initial editor values
   model = {};

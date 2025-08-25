@@ -300,7 +300,7 @@ export class ItemsRoute extends BaseRoute implements RouteInterface {
             .getRecords('locations', query, 1, RecordService.MAX_REST_RESULTS_SIZE, undefined, undefined, undefined, 'name')
             .pipe(
               map((result: Record) => this.routeToolService.recordService.totalHits(result.hits.total) === 0 ? [] : result.hits.hits),
-              map((hits: Array<Record>) =>
+              map((hits: Record[]) =>
                 hits.map((hit: any) => {
                   return {
                     label: hit.metadata.name,

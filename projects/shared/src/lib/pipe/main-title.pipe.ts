@@ -31,7 +31,7 @@ export class MainTitlePipe implements PipeTransform {
     if (titleMetadata == null) {
       return null;
     }
-    const mainTitles: Array<any> = titleMetadata.filter(title => title.type === 'bf:Title');
+    const mainTitles: any[] = titleMetadata.filter(title => title.type === 'bf:Title');
     return (mainTitles.length > 0)
       ? mainTitles.pop()._text
       : null;

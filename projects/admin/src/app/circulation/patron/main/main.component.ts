@@ -144,7 +144,7 @@ export class MainComponent implements OnInit, OnDestroy {
   }
 
   private initializeTabs(keepHistory: boolean): void {
-    let items = [
+    const items = [
       {
         id: 'loan',
         label: this.translateService.instant('On loan'),

@@ -45,7 +45,7 @@ export class DocumentAdvancedSearchFormComponent implements OnInit {
   private static LOCALE_STORAGE_EXPIRED_IN_SECONDS = 600;
 
   /** Configuration loaded from backend */
-  configurationLoaded: boolean = false;
+  configurationLoaded = false;
 
   /** Field data config with map */
   fieldDataConfig: IFieldsData;

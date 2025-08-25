@@ -41,7 +41,7 @@ export class HoldingsApiService extends BaseApi implements IAvailabilityService 
    * @return Observable
    */
   getHoldingsByDocumentPidAndViewcode(
-    documentPid: string, viewcode: string, page: number, itemsPerPage: number = 5): Observable<QueryResponse> {
+    documentPid: string, viewcode: string, page: number, itemsPerPage = 5): Observable<QueryResponse> {
     const query = `document.pid:${documentPid} AND ((holdings_type:standard AND public_items_count:[1 TO *]) OR holdings_type:serial) NOT _masked:true`;
     return this.recordService
     .getRecords(
@@ -57,7 +57,7 @@ export class HoldingsApiService extends BaseApi implements IAvailabilityService 
    * @return Observable
    */
     getElectronicHoldingsByDocumentPidAndViewcode(
-      documentPid: string, viewcode: string, page: number, itemsPerPage: number = 5): Observable<QueryResponse> {
+      documentPid: string, viewcode: string, page: number, itemsPerPage = 5): Observable<QueryResponse> {
       const query = `document.pid:${documentPid} AND  holdings_type:electronic NOT _masked:true`;
       return this.recordService
       .getRecords(

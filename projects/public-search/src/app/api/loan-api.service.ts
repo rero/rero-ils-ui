@@ -41,7 +41,7 @@ export class LoanApiService extends BaseApi {
    */
   getOnLoan(
     patronPid: string, page: number,
-    itemsPerPage: number = 20, headers = BaseApi.reroJsonheaders,
+    itemsPerPage = 20, headers = BaseApi.reroJsonheaders,
     sort?: string
   ): Observable<Record | Error> {
     const loanStates = ['ITEM_ON_LOAN'];
@@ -61,7 +61,7 @@ export class LoanApiService extends BaseApi {
    */
   getRequest(
     patronPid: string, page: number,
-    itemsPerPage: number = 10, headers = BaseApi.reroJsonheaders
+    itemsPerPage = 10, headers = BaseApi.reroJsonheaders
   ): Observable<Record | Error> {
     const requestStates = ['PENDING', 'ITEM_AT_DESK', 'ITEM_IN_TRANSIT_FOR_PICKUP'];
     return this.recordService.getRecords(

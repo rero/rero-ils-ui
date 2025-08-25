@@ -35,13 +35,13 @@ export class HoldingEditorComponent extends AbstractCanDeactivateComponent imple
   private editorService: EditorService = inject(EditorService);
 
   /** Can deactivate from editor component */
-  canDeactivate: boolean = false;
+  canDeactivate = false;
 
   /** Initial editor values */
   model = {};
 
   /** Current list of the serial preview examples */
-  serialPreviewExamples: Array<PredictionIssue> = [];
+  serialPreviewExamples: PredictionIssue[] = [];
 
   /** Store serial patterns template from model */
   serialPatternsTemplate = null;

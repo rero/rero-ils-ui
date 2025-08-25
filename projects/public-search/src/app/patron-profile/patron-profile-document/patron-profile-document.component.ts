@@ -44,10 +44,10 @@ export class PatronProfileDocumentComponent implements OnInit {
 
   /** Get the formatted call numbers for the related item */
   get callNumbers(): string {
-    return Array(
+    return [
       this.record.metadata.item.call_number,
       this.record.metadata.item.second_call_number
-    ).filter(Boolean).join(' | ');
+    ].filter(Boolean).join(' | ');
   }
 
   /** OnInit hook */

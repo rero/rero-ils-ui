@@ -46,7 +46,7 @@ export class ItemSwitchLocationComponent implements OnInit {
   /** Emit the item when it changes (could use two way binding on item in parent component --> [(item)]='') */
   @Output() itemChange = new EventEmitter<any>();
   /** the limit above which the filter feature will be activate on target dropdown */
-  @Input() filterLimit: number = 10;
+  @Input() filterLimit = 10;
 
   /** the transfer form group */
   form: UntypedFormGroup;
@@ -124,7 +124,7 @@ export class ItemSwitchLocationComponent implements OnInit {
    * Build the dropdown options tree based on location data.
    * @param locationHits: the location hits from API response.
    */
-  private _buildOptions(locationHits: Array<any>): void {
+  private _buildOptions(locationHits: any[]): void {
 
     function appendLibrary(item: SelectItemGroup, options: SelectItemGroup[]): void {
       if (item.value !== undefined){

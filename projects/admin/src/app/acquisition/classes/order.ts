@@ -16,7 +16,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* tslint:disable */
 // required as json properties is not lowerCamelCase
 import { extractIdOnRef } from '@rero/ng-core';
 import { IAcqBaseResource, IAcqResourceWithNotes, IObjectReference } from './common';
@@ -118,7 +117,7 @@ export class AcqOrderHistoryVersion {
   label: string = null;
   description: string = null;
   pid: string = null;
-  active: boolean = false;
+  active = false;
   created: Date = null;
   updated: Date = null;
 

@@ -44,7 +44,7 @@ export class AppInitializerService {
         if (user.hasAdminUiAccess) {
           // Default user library
           const { libraries } = user.patronLibrarian;
-          let library = user.patronLibrarian.libraries[0];
+          const library = user.patronLibrarian.libraries[0];
           // If the cache exists, we retrieve the id of the selected library
           if (this.librarySwitchStorageService.has()) {
             const currentLibraryCache = this.librarySwitchStorageService.get().currentLibrary;

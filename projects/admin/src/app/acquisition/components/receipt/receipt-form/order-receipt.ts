@@ -29,11 +29,11 @@ export interface IAcqReceiptModel {
   organisationRef: string;
   receiptDate: string;
   reference: string;
-  amountAdjustments: Array<{
+  amountAdjustments: {
     label: string;
     amount: number;
     acqAccount: string;
-  }>;
+  }[];
   notes: IAcqNote[];
   receiptLines: {
     acqOrderLineRef: string,

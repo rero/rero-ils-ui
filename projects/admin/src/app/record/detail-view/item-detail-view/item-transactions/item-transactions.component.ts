@@ -46,9 +46,9 @@ export class ItemTransactionsComponent implements OnInit, OnDestroy {
   @Output() requestEvent = new EventEmitter<any>();
 
   /** Borrowed loan */
-  borrowedBy: Array<any> = [];
+  borrowedBy: any[] = [];
   /** Requested loan(s) */
-  requestedBy: Array<any> = [];
+  requestedBy: any[] = [];
 
   /** return all permissions */
   permissions: IPermissions = PERMISSIONS;

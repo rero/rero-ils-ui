@@ -94,7 +94,7 @@ export class DocumentsRemoteService implements IRemoteAutocomplete {
   }
 
   private processHit(metadata: any, queryOptions: IQueryOptions): ISuggestionItem {
-    let summary = [];
+    const summary = [];
     const baseHref = this.baseHref.replace(/\/$/, '');
     if (metadata.contribution) {
       summary.push(this.processContribution(metadata.contribution));
@@ -127,7 +127,7 @@ export class DocumentsRemoteService implements IRemoteAutocomplete {
     return contrib.length > 0 ? contrib.join('<br>'): undefined;
   }
 
-  private processTitle(title: any, maxLengthSuggestion: number = 100): string {
+  private processTitle(title: any, maxLengthSuggestion = 100): string {
     let text = this.mainTitlePipe.transform(title);
     // Truncate text if the length of text great than maxLengthSuggestion
     if (text.length > maxLengthSuggestion) {

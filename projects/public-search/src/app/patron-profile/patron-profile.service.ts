@@ -31,7 +31,7 @@ export class PatronProfileService {
   /** Fees event */
   private loanFeesEvent = new Subject<number>();
 
-  private loanFeesTotal: number = 0;
+  private loanFeesTotal = 0;
 
   /** Get tab event observable */
   get tabsEvent$(): Observable<ITabEvent> {

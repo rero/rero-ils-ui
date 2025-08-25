@@ -43,21 +43,15 @@ export class PermissionApiService {
   }
 }
 
-export interface IRolePermission {
-  [key: string]: IPermission
-}
+export type IRolePermission = Record<string, IPermission>;
 
 export interface IPermission {
   type: string,
-  actions: {
-    [key: string]: boolean | null
-  }
+  actions: Record<string, boolean | null>
 }
 
 export interface IPatronPermission {
   name: string,
   can: boolean,
-  reasons: {
-    [key: string]: boolean | null
-  }
+  reasons: Record<string, boolean | null>
 }

@@ -150,7 +150,7 @@ export class RouteToolService {
    * @param message - string
    * @return Observable
    */
-  can(message: string = ""): Observable<ActionStatus> {
+  can(message = ""): Observable<ActionStatus> {
     return of({ can: true, message });
   }
 
@@ -159,7 +159,7 @@ export class RouteToolService {
    * @param message - string
    * @return Observable
    */
-  canNot(message: string = ""): Observable<ActionStatus> {
+  canNot(message = ""): Observable<ActionStatus> {
     return of({ can: false, message });
   }
 

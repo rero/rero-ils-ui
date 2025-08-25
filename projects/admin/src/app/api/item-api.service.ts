@@ -52,7 +52,7 @@ export class ItemApiService implements IAvailabilityService {
    * @param resolve: if $ref should be resolved.
    * @returns: an `Observable` on REST-API item metadata result
    */
-  getItem(pid: string, resolve: boolean = false): Observable<any> {
+  getItem(pid: string, resolve = false): Observable<any> {
     return this.recordService
       .getRecord(ItemApiService.RESOURCE_NAME, pid, resolve ? 1 : 0)
       .pipe(
@@ -65,7 +65,7 @@ export class ItemApiService implements IAvailabilityService {
    * @param item: the item object to update
    * @param newLocationPid: the new owning location pid
    */
-  updateLocation(item: any, newLocationPid: string): Observable<Object | Error> {
+  updateLocation(item: any, newLocationPid: string): Observable<object | Error> {
     item.location.$ref = this.apiService.getRefEndpoint('locations', newLocationPid);
     return this.recordService.update(ItemApiService.RESOURCE_NAME, item.pid, item);
   }

@@ -62,7 +62,7 @@ export class MefRemoteService implements IRemoteAutocomplete {
     const remoteUrl = `${this.remoteSearchEntrypoint}/${searchCategory}/${query}/`;
     const remoteSuggestions$ = this.httpClient.get(remoteUrl, {headers, params}).pipe(
       map((results: any) => results?.hits?.total >= 0 ? results.hits.hits : []),
-      map((hits: Array<any>) => this.buildRemoteSuggestions(hits)),
+      map((hits: any[]) => this.buildRemoteSuggestions(hits)),
       catchError(e => {
         switch (e.status) {
           case 400: return of([]);
@@ -74,7 +74,7 @@ export class MefRemoteService implements IRemoteAutocomplete {
     // Build API call to get local entity suggestions.
     const localUrl = `${this.localSearchEntrypoint}/${searchCategory}/${query}/`;
     const localSuggestions$ = this.httpClient.get(localUrl, {headers, params}).pipe(
-      map((hits: Array<any>) => this.buildLocalSuggestions(hits)),
+      map((hits: any[]) => this.buildLocalSuggestions(hits)),
       catchError(e => {
         switch (e.status) {
           case 400: return of([]);
@@ -164,7 +164,7 @@ export class MefRemoteService implements IRemoteAutocomplete {
    * @param badges: badges list to append to the entity.
    * @returns the HTML representation for the entity.
    */
-  private buildEntityResolutionResponse(entity: {label:string, type: string, uri?: string}, badges: Array<{label: string, type?: string}>): string {
+  private buildEntityResolutionResponse(entity: {label:string, type: string, uri?: string}, badges: {label: string, type?: string}[]): string {
     // Type of entity
     const icon = Entity.getIcon(entity.type);
     const title = this.translateService.instant(entity.type);
@@ -240,7 +240,7 @@ export class MefRemoteService implements IRemoteAutocomplete {
    * @param sourceName: the name of the source (idref, gnd, ...)
    * @return the corresponding URI or null if not found
    */
-  private get_source_uri(identifiers: Array<{source:string, type:string, value:string}>, sourceName: string): string|undefined {
+  private get_source_uri(identifiers: {source:string, type:string, value:string}[], sourceName: string): string|undefined {
     const identifier = identifiers.find(id => id.source.toLowerCase() == sourceName.toLowerCase() && id.type == 'uri');
     return (identifier != undefined)
       ? identifier.value

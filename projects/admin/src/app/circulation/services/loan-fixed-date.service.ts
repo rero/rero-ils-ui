@@ -29,10 +29,10 @@ export class LoanFixedDateService {
   private menuService: MenuService = inject(MenuService);
 
   /** The key to local Storage */
-  private _dueDateKey: string = 'due_date_remember';
+  private _dueDateKey = 'due_date_remember';
 
   /** Expiration 12 hours (definition in seconds) */
-  private _keyExpiration: number = 43200;
+  private _keyExpiration = 43200;
 
   constructor() {
     this.init();

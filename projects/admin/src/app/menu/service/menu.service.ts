@@ -191,7 +191,7 @@ export class MenuService {
     return menuItems;
   }
 
-  private processQueryParams(queryParams: object, library: ISwitchLibrary): Object {
+  private processQueryParams(queryParams: object, library: ISwitchLibrary): object {
     Object.keys(queryParams).forEach((key: string) => {
       if (this.libraryKeys.includes(key)) {
         queryParams[key] = library.pid;

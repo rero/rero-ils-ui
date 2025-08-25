@@ -60,7 +60,7 @@ export class CanAddLocalFieldsGuard  {
         this.userService.user.currentOrganisation
       ).pipe(map(record => {
         // False if the record metadata exists.
-        return !!!(record.metadata);
+        return !record.metadata;
       }));
     } else {
       this.router.navigate(['/errors/400'], { skipLocationChange: true });

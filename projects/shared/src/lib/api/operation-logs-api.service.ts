@@ -88,7 +88,7 @@ export class OperationLogsApiService extends BaseApi {
    * @param itemsPerPage - number
    * @return Observable
    */
-   getCheckInHistory(patronPid: string, page: number, itemsPerPage: number = 10): Observable<Record | Error> {
+   getCheckInHistory(patronPid: string, page: number, itemsPerPage = 10): Observable<Record | Error> {
     const date = DateTime.now().minus({ months: 6 }).toISO();
     const query = `_exists_:loan AND record.type:loan AND loan.patron.pid:${patronPid} AND loan.trigger:checkin AND date:[${date} TO *]`;
     return this.recordService.getRecords(
@@ -101,7 +101,7 @@ export class OperationLogsApiService extends BaseApi {
    * @param type - string
    * @returns Observable
    */
-  getHistoryByLoanPid(loanPid: string, type: string = 'checkin'): Observable<Record | Error> {
+  getHistoryByLoanPid(loanPid: string, type = 'checkin'): Observable<Record | Error> {
     const query = `_exists_:loan AND loan.pid:${loanPid} AND loan.trigger:${type} AND record.type:loan`;
     return this.recordService.getRecords('operation_logs', query, 1, 1, undefined, undefined, BaseApi.reroJsonheaders)
       .pipe(map((result: any) => {

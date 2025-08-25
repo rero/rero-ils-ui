@@ -60,6 +60,4 @@ export interface ISelectOptions {
   preferred?: boolean;
 }
 
-export interface IFieldsType {
-  [key: string]: ILabelValue[];
-}
+export type IFieldsType = Record<string, ILabelValue[]>;

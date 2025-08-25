@@ -47,7 +47,7 @@ export class GetTranslatedLabelPipe implements PipeTransform {
    *                  the current used interface language will be used.
    * @return: the best possible label.
    */
-  transform(entries: Array<{language: string, label: string}>, language?: string): string | null {
+  transform(entries: {language: string, label: string}[], language?: string): string | null {
     if (!Array.isArray(entries)) {
       return null;
     }

@@ -57,7 +57,7 @@ export class PaymentDataPieComponent implements OnInit {
         tooltip: {
           callbacks: {
             label: (context) => {
-              let label = context.formattedValue || '';
+              const label = context.formattedValue || '';
               return ` ${label} ${this.organisationService.organisation.default_currency}`;
             },
           },

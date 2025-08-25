@@ -9,7 +9,7 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [18.x, 20.x]
+        node-version: [18.19.x, 20.11.x, 22.x]
 
     steps:
     - uses: actions/checkout@v4
@@ -19,7 +19,7 @@ jobs:
         node-version: ${{ matrix.node-version }}
     - name: install package
       run: |
-        npm install -g @angular/cli@17
+        npm install -g @angular/cli@19
         npm ci
     - name: run tests
       run: |

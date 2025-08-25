@@ -140,6 +140,4 @@ export enum PERMISSION_OPERATOR {
   OR = 'or'
 }
 
-export interface IPermissions {
-  [key: string]: string;
-}
+export type IPermissions = Record<string, string>;

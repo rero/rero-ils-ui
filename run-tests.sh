@@ -31,7 +31,7 @@ display_success_message () {
 set -e
 
 display_success_message "Linting the projects..."
-npm run lint
+ng lint
 
 display_success_message "Build shared library"
 npm run build-shared

@@ -294,7 +294,7 @@ export class CheckinComponent implements OnInit {
    * @param noteType: the note type to display
    */
   private displayCirculationInformation(item: Item, noteType: ItemNoteType): void {
-    let message = [];
+    const message = [];
     const note = item.getNote(noteType);
     if (note != null) {
       message.push(note.content);
@@ -357,7 +357,7 @@ export class CheckinComponent implements OnInit {
   }
 
   private displayCollectionsAndTemporaryLocation(item: Item): string {
-    let message = [];
+    const message = [];
     if (item.collections && item.collections.length > 0) {
       message.push(`${this.translate.instant('This item is in exhibition/course')} "${item.collections[0]}"`);
       if (item.collections.length > 1) {

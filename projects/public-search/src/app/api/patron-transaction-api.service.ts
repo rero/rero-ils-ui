@@ -38,7 +38,7 @@ export class PatronTransactionApiService extends BaseApi {
    */
   getFees(
     patronPid: string, status: string, page: number,
-    itemsPerPage: number = 10, headers = BaseApi.reroJsonheaders
+    itemsPerPage = 10, headers = BaseApi.reroJsonheaders
   ): Observable<Record | Error> {
     const query = `patron.pid:${patronPid} AND status:${status}`;
     return this.recordService.getRecords(

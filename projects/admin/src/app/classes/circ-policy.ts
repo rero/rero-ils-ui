@@ -15,7 +15,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* tslint:disable */
 // required as json properties is not lowerCamelCase
 
 import { ObjectReference } from '@rero/shared';
@@ -29,28 +28,28 @@ export interface CircPolicy {
   checkout_duration?: number;
   allow_requests: boolean;
   pickup_hold_duration?: number;
-  reminders?: Array<{
+  reminders?: {
     type: string,
     days_delay: number,
     fee_amount?: number,
     communication_channel: string,
     template: string
-  }>;
+  }[];
   overdue_fees?: {
-    intervals: Array<{
+    intervals: {
       from: number,
       to?: number,
       fee_amount: number
-    }>,
+    }[],
     maximum_total_amount?: number
   };
   number_renewals?: number;
   renewal_duration?: number;
   is_default: boolean;
   policy_library_level: boolean;
-  libraries?: Array<ObjectReference>;
-  settings?: Array<{
+  libraries?: ObjectReference[];
+  settings?: {
     patron_type: ObjectReference,
     item_type: ObjectReference,
-  }>;
+  }[];
 }

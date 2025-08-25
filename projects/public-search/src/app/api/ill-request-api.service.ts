@@ -38,7 +38,7 @@ export class IllRequestApiService extends BaseApi {
   getIllRequest(
     patronPid: string,
     page: number,
-    itemsPerPage: number = 10,
+    itemsPerPage = 10,
     headers = BaseApi.reroJsonheaders
   ): Observable<Record | Error> {
     const query = `patron.pid:${patronPid}`;
@@ -56,10 +56,10 @@ export class IllRequestApiService extends BaseApi {
   getPublicIllRequest(
     patronPid: string,
     page: number,
-    itemsPerPage: number = 10,
+    itemsPerPage = 10,
     headers = BaseApi.reroJsonheaders,
-    sort: string = '-created',
-    filters?: {[key: string]: string}
+    sort = '-created',
+    filters?: Record<string, string>
   ): Observable<Record | Error> {
     const query = `patron.pid:${patronPid}`;
     return this.recordService.getRecords('ill_requests', query, page, itemsPerPage, undefined, filters, headers, sort);

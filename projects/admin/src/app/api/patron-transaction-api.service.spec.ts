@@ -99,7 +99,7 @@ describe('PatronTransactionApiService', () => {
 
   it('should return the fee object', () => {
     httpClientSpy.post.and.returnValue(of(fee));
-    service.addFee(fee).subscribe((result: Object) => expect(result).toEqual(fee))
+    service.addFee(fee).subscribe((result: object) => expect(result).toEqual(fee))
   });
 
   it('should return a list of fees on an item', () => {

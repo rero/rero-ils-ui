@@ -48,7 +48,7 @@ export class SelectAccountEditorWidgetComponent extends FieldType implements OnI
   /** the selected account */
   selectedAccount: IAcqAccount = null;
   // loading wheels
-  loading: boolean = false;
+  loading = false;
   // currency
   defaultCurrency: string;
 
@@ -62,8 +62,8 @@ export class SelectAccountEditorWidgetComponent extends FieldType implements OnI
         // filter me and my children to avoid backend recursion errors
         const accountPid = this.field.props?.editorConfig?.pid;
         if(this.field.props?.filterChildren && accountPid) {
-          let newAccounts = [];
-          let removed = [];
+          const newAccounts = [];
+          const removed = [];
           accounts.map(account => {
             if (account.pid !== accountPid && !removed.some(removedAccountPid => removedAccountPid === account?.parent?.pid)) {
               newAccounts.push(account);

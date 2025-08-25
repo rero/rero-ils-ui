@@ -41,9 +41,9 @@ export class PatronTransactionService {
   private messageService: MessageService = inject(MessageService);
 
   /** subject containing current loaded PatronTransactions */
-  patronTransactionsSubject$: BehaviorSubject<Array<PatronTransaction>> = new BehaviorSubject([]);
+  patronTransactionsSubject$ = new BehaviorSubject<PatronTransaction[]>([]);
   /** subject emitting accounting transaction about patron fees */
-  patronFeesOperationSubject$: Subject<number> = new Subject();
+  patronFeesOperationSubject$ = new Subject<number>();
 
   /**
    * Allow to build the query to send through the API to retrieve desired data
@@ -54,7 +54,7 @@ export class PatronTransactionService {
    * @returns string representing the query to used based on function arguments
    */
   private _buildQuery(patronPid?: string, loanPid?: string, type?: string, status?: string): string {
-    const params: Array<string> = [];
+    const params: string[] = [];
     if (patronPid !== undefined) {
       params.push(`patron.pid:${patronPid}`);
     }
@@ -76,7 +76,7 @@ export class PatronTransactionService {
    * @param sort - The field used to sort the `PatronTransaction`
    * @returns an observable of `PatronTransaction` corresponding to criteria
    */
-  private _loadPatronTransactions(query: string, sort: string = '-creation_date'): Observable<Array<PatronTransaction>> {
+  private _loadPatronTransactions(query: string, sort = '-creation_date'): Observable<PatronTransaction[]> {
     return this.recordService.getRecords(
       'patron_transactions',
       query,
@@ -100,7 +100,7 @@ export class PatronTransactionService {
    * @param status - the patron transactions status to retrieve
    * @returns an observable of `PatronTransaction` corresponding to criteria
    */
-  patronTransactionsByLoan$(loanPid: string, type?: string, status?: string): Observable<Array<PatronTransaction>> {
+  patronTransactionsByLoan$(loanPid: string, type?: string, status?: string): Observable<PatronTransaction[]> {
     const query = this._buildQuery(undefined, loanPid, type, status);
     return this.recordService.getRecords('patron_transactions', query, 1, RecordService.MAX_REST_RESULTS_SIZE).pipe(
       map((data: Record) => data.hits),
@@ -116,7 +116,7 @@ export class PatronTransactionService {
    * @param status - the patron transactions status to retrieve
    * @returns an observable of `PatronTransaction` corresponding to criteria
    */
-  patronTransactionsByPatron$(patronPid: string, type?: string, status?: string): Observable<Array<PatronTransaction>> {
+  patronTransactionsByPatron$(patronPid: string, type?: string, status?: string): Observable<PatronTransaction[]> {
     const query = this._buildQuery(patronPid, undefined, type, status);
     return this._loadPatronTransactions(query);
   }
@@ -152,7 +152,7 @@ export class PatronTransactionService {
    * @param transactions - the transactions to process
    * @returns total amount of open transactions
    */
-  computeTotalTransactionsAmount(transactions: Array<any>): number {
+  computeTotalTransactionsAmount(transactions: any[]): number {
     return transactions.reduce((accumulator, transaction) => {
       return (transaction.status === PatronTransactionStatus.OPEN)
         ? parseFloat((accumulator + transaction.total_amount).toFixed(2))

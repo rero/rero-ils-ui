@@ -32,7 +32,7 @@ export class BriefViewComponent implements AfterContentInit {
 
   @Input() link: any;
   @Input() title: any;
-  @Input() tags: Array<BriefViewTag>;
+  @Input() tags: BriefViewTag[];
 
   @ContentChildren(ReroTemplateDirective) templates: QueryList<ReroTemplateDirective> | null;
 

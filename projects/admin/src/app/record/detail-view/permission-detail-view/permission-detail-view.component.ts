@@ -35,7 +35,7 @@ export class PermissionDetailViewComponent implements OnInit {
   /** Filtered permissions */
   filteredPermissionNames: string[];
   /** All permissions regrouped by roles */
-  globalPermissions: { [key: string]: any };
+  globalPermissions: Record<string, any>;
 
   /** OnInit hook */
   ngOnInit(): void {

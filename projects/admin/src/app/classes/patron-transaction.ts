@@ -15,7 +15,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* tslint:disable */
 // required as json properties is not lowerCamelCase
 
 import { DateTime } from 'luxon';
@@ -37,8 +36,8 @@ export class PatronTransaction {
   creation_date: string;
   type: string;
   status: PatronTransactionStatus = PatronTransactionStatus.OPEN;
-  total_amount: number = 0;
-  events: Array<PatronTransactionEvent> = [];
+  total_amount = 0;
+  events: PatronTransactionEvent[] = [];
   note?: string = null;
   document?: any = null;
   library?: any = null;
@@ -52,7 +51,7 @@ export class PatronTransaction {
   /** Get events linked to the transaction sorted by creation date
    *  @return Array<PatronTransactionEvent>
    */
-  get_events(): Array<PatronTransactionEvent> {
+  get_events(): PatronTransactionEvent[] {
     return this.events.sort((e1, e2) => {
       const e1_date = DateTime.fromISO(e1.creation_date);
       const e2_date = DateTime.fromISO(e2.creation_date);
@@ -66,14 +65,14 @@ export class PatronTransactionEvent {
 
   pid?: string;
   creation_date: string = null;
-  amount: number = 0;
+  amount = 0;
   type: PatronTransactionEventType;
   subtype?: string;
   note?: string;
   library?: any;
   operator: any;
   parent: PatronTransaction;
-  steps?: Array<{timestamp: string, amount: string}>;
+  steps?: {timestamp: string, amount: string}[];
 
   constructor(obj?: any){
     Object.assign(this, obj);

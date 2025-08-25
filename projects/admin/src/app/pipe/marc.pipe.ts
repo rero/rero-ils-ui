@@ -26,7 +26,7 @@ export class MarcPipe implements PipeTransform {
     const values: any = {};
 
     const field: string = value[0];
-    const subFields: string|Array<any> = value[1];
+    const subFields: string|any[] = value[1];
     let subFieldsStr = subFields;
     if (field.length === 6 && field !== 'leader') {
       const f = field.substring(0, 3);

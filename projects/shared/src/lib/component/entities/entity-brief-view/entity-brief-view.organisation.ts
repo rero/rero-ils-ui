@@ -34,7 +34,7 @@ export class EntityBriefViewRemoteOrganisationComponent implements OnInit {
 
   @Input() record: any;
 
-  dates: Array<string> = [];
+  dates: string[] = [];
 
   ngOnInit(): void {
     this.dates = [

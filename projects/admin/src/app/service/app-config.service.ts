@@ -24,7 +24,7 @@ import { environment } from '../../environments/environment';
 })
 export class AppConfigService extends CoreConfigService {
 
-  public adminRoles: Array<string>;
+  public adminRoles: string[];
 
   public librarySwitchCheckParamsUrl: string[];
 

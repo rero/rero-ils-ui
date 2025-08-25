@@ -67,7 +67,7 @@ export class LibraryComponent extends AbstractCanDeactivateComponent implements 
   countryIsoCodesOptions = [];
 
   /** Can deactivate guard */
-  public canDeactivate: boolean = false;
+  public canDeactivate = false;
 
   /** Form build event subscription to release the memory. */
   private eventForm: Subscription;

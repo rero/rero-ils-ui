@@ -44,7 +44,7 @@ export class DocumentAdvancedSearchComponent implements OnInit, OnDestroy {
   private translateService: TranslateService = inject(TranslateService);
 
   /** Simple search */
-  simple: boolean = true;
+  simple = true;
 
   /** Query event */
   @Output() queryString = new EventEmitter<string>();
