@@ -22,7 +22,7 @@ import { IAcqBaseResource, IAcqResourceWithNotes, IObjectReference } from './com
 
 // ORDER ======================================================================
 /** Interface for order recipient */
-export interface AcqAddressRecipient {
+export type AcqAddressRecipient = {
   type: string;
   address: string;
 }
@@ -37,13 +37,13 @@ export enum AcqOrderStatus {
 }
 
 /** interface to describe an accounting information section for an AcqOrder */
-export interface IAcqOrderAccountingInformation {
+export type IAcqOrderAccountingInformation = {
   total_amount: number;
   quantity: number;
 }
 
 /** interface to describe an AcqOrder */
-export interface IAcqOrder extends IAcqBaseResource, IAcqResourceWithNotes {
+export type IAcqOrder = {
   reference: string;
   priority: number;
   status: AcqOrderStatus;
@@ -56,7 +56,7 @@ export interface IAcqOrder extends IAcqBaseResource, IAcqResourceWithNotes {
   order_lines?: {}[];
   vendor: IObjectReference;
   is_current_budget: boolean;
-}
+} & IAcqBaseResource & IAcqResourceWithNotes
 
 /** Default values */
 export const orderDefaultData = {
@@ -76,7 +76,7 @@ export enum AcqOrderLineStatus {
 }
 
 /** Interface to describe an OrderLine */
-export interface IAcqOrderLine extends IAcqBaseResource, IAcqResourceWithNotes {
+export type IAcqOrderLine = {
   status: AcqOrderLineStatus;
   priority: number;
   quantity: number;
@@ -91,7 +91,7 @@ export interface IAcqOrderLine extends IAcqBaseResource, IAcqResourceWithNotes {
     title: string,
     identifiers: string[],
   };
-}
+} & IAcqBaseResource & IAcqResourceWithNotes
 
 /** Default values */
 export const orderLineDefaultData = {
@@ -105,7 +105,7 @@ export const orderLineDefaultData = {
 };
 
 // ORDER HISTORY ==============================================================
-export interface AcqOrderHistoryVersionResponseInterface {
+export type AcqOrderHistoryVersionResponseInterface = {
   $ref: string;
   label: string;
   description: string;

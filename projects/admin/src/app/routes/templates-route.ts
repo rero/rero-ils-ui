@@ -158,7 +158,7 @@ export class TemplatesRoute extends BaseRoute implements RouteInterface {
    */
   private _addDefaultValuesForTemplate(data: any) {
     const { user } = this.routeToolService.userService;
-    if (!data.hasOwnProperty('visibility')) {
+    if (!Object.hasOwn(data, 'visibility')) {
       data.visibility = 'private';
     }
     data.organisation = {

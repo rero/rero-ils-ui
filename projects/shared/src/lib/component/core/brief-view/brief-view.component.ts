@@ -18,7 +18,7 @@
 import { AfterContentInit, Component, ContentChildren, Input, QueryList, TemplateRef } from '@angular/core';
 import { ReroTemplateDirective } from '../../../directive/rero-template.directive';
 
-export interface BriefViewTag {
+export type BriefViewTag = {
   label: string
   [key:string]: any;
 }

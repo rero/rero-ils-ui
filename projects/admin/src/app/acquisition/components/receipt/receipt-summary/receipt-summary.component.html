@@ -24,7 +24,7 @@
             <shared-open-close-button (status)="isCollapsed = $event" />
           }
           <div class="ui:grow ui:flex ui:gap-2 ui:items-center">
-          <label>
+          <span>
             {{ receipt.reference }}
             @if (receipt | receptionDates; as reception_dates) {
               @if (reception_dates.length > 0) {
@@ -33,7 +33,7 @@
                 </span>
               }
             }
-          </label>
+          </span>
           @if (receipt.notes.length > 0 && isCollapsed) {
             <span class="ui:flex ui:gap-1">
               @for (note of receipt.notes; track $index) {

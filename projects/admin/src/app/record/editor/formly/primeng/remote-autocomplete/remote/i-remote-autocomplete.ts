@@ -17,7 +17,7 @@
 import { IQueryOptions, ISuggestionItem } from "@rero/prime/remote-autocomplete/remote-autocomplete.interface";
 import { Observable } from "rxjs";
 
-export interface IRemoteAutocomplete {
+export type IRemoteAutocomplete = {
   getName(): string;
 
   getSuggestions(query: string, queryOptions: IQueryOptions, currentPid: string): Observable<ISuggestionItem[]>;

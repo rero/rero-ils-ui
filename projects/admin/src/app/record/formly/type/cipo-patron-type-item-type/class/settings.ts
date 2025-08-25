@@ -98,7 +98,7 @@ export class Settings {
         //   * Check if `policy` applied on libraries ?
         //   * If yes, if some `policyLibraries` exists into `appliedToLibraries`
         //   * If no --> skip this policy
-        if (policy.metadata.hasOwnProperty('libraries')) {
+        if (Object.hasOwn(policy.metadata, 'libraries')) {
           const policyLibraryPids = policy.metadata.libraries.map(lib => lib.pid);
           if (!policyLibraryPids.some(pid => appliedToLibraries.includes(pid))) {
             return;  // Skip the policy

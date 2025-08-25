@@ -78,10 +78,10 @@ export class ReceiptSummaryComponent implements OnChanges, OnInit, OnDestroy {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if(changes.hasOwnProperty('receiptPid') && changes.receiptPid) {
+    if(Object.hasOwn(changes, 'receiptPid') && changes.receiptPid) {
       this.loadReceipt();
     }
-    if(changes.hasOwnProperty('collapsable') && changes.collapsable != null && !this.collapsable) {
+    if(Object.hasOwn(changes, 'collapsable') && changes.collapsable != null && !this.collapsable) {
       this.isCollapsed = false;
     }
   }

@@ -276,7 +276,7 @@ export class LibraryFormService {
     if (acquisitionSettings != null) {
       const fieldNames = ['shipping_informations', 'billing_informations'];
       fieldNames.forEach((fieldName) => {
-        if (acquisitionSettings.hasOwnProperty(fieldName)) {
+        if (Object.hasOwn(acquisitionSettings, fieldName)) {
           this._setAcquisitionInformation(blockName, fieldName, acquisitionSettings[fieldName]);
         }
       });

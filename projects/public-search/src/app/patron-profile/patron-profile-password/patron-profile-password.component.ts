@@ -193,7 +193,7 @@ export class PatronProfilePasswordComponent {
   }
 }
 
-interface IPasswordResponse {
+type IPasswordResponse = {
   success?: boolean;
   message: string;
   error?: { field: string, message: string };

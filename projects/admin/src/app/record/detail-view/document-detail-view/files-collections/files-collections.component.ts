@@ -88,6 +88,7 @@ export class FilesCollectionsComponent implements OnInit, OnDestroy {
 
   /** Is the submit action is disabled? */
   disabled(): void {
+    // eslint-disable-next-line @typescript-eslint/no-unused-expressions
     this.formGroup.touched;
   }
 

@@ -28,7 +28,7 @@ export class AcqReceiptAmountAdjustment {
 }
 
 /** Wrapping class to describe an AcqReceipt */
-export interface IAcqReceipt extends IAcqBaseResource, IAcqResourceWithNotes {
+export type IAcqReceipt = {
   acq_order: IObjectReference;
   reference?: string;
   amount_adjustments: AcqReceiptAmountAdjustment[];
@@ -36,10 +36,10 @@ export interface IAcqReceipt extends IAcqBaseResource, IAcqResourceWithNotes {
   quantity?: number;
   total_amount?: number;
   receipt_lines?: IAcqReceiptLine[];
-}
+} & IAcqBaseResource & IAcqResourceWithNotes
 
 // ACQ RECEIPT LINE ===========================================================
-export interface IAcqReceiptLine extends IAcqBaseResource, IAcqResourceWithNotes {
+export type IAcqReceiptLine = {
   acq_receipt: IObjectReference;
   acq_order_line: IObjectReference;
   quantity: number;
@@ -52,7 +52,7 @@ export interface IAcqReceiptLine extends IAcqBaseResource, IAcqResourceWithNotes
     title_text: string,
     identifiers?: string[]
   }
-}
+} & IAcqBaseResource & IAcqResourceWithNotes
 
 /** Default value for an AcqReceipt */
 export const receiptDefaultData = {

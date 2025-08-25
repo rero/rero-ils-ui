@@ -17,13 +17,13 @@
  */
 
 /** Interface to describe payments relative to patron transaction events */
-export interface PaymentData {
+export type PaymentData = {
   total: number,
   subtypes: PaymentDataSubtype[]
 }
 
 /** Interface to describe a part of a paymentData */
-export interface PaymentDataSubtype {
+export type PaymentDataSubtype = {
   name: string;
   total: number;
 }

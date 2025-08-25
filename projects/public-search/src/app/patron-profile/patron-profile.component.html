@@ -36,10 +36,10 @@
           <p-tab [value]="tab.key">
             <div class="ui:flex ui:gap-1">
               <div>{{ tab.value.title }}</div>
-              @if (tab.value.count != null) {
+              @if (tab.value.count >= 0) {
                 <p-badge [value]="tab.value.count" severity="info" />
               }
-              @if (tab.value.feeTotal != null && tab.value.feeTotal > 0) {
+              @if (tab.value.feeTotal > 0) {
                 <p-badge
                   [value]="tab.value.feeTotal  | currency : patron.organisation.currency : 'symbol'"
                   severity="warn"

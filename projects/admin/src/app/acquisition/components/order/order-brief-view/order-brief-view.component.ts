@@ -46,7 +46,7 @@ export class OrderBriefViewComponent implements ResultItem, OnInit {
   /** get reception date (based on receiptLine reception date) */
   get receptionDate(): string | null {
     return this.record.metadata.receipts
-      .filter(line => line.hasOwnProperty('receipt_date') && Array.isArray(line.receipt_date) && line.receipt_date.length > 0)
+      .filter(line => Object.hasOwn(line, 'receipt_date') && Array.isArray(line.receipt_date) && line.receipt_date.length > 0)
       .map(line => line.receipt_date[0])
       .shift();
   }

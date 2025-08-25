@@ -23,28 +23,28 @@ import { WeekDays } from './week-days';
 import { DateTime } from 'luxon';
 
 
-export interface OpeningHours {
+export type OpeningHours = {
   day: string;
   is_open: boolean;
   times: Hours[];
 }
 
-export interface Repeat {
+export type Repeat = {
   interval: number;
   period: string;
   data: number[];
 }
 
-export interface Hours {
+export type Hours = {
   start_time: string;
   end_time: string;
 }
 
-export interface Organisation {
+export type Organisation = {
   $ref: string;
 }
 
-export interface ExceptionDates {
+export type ExceptionDates = {
   title: string;
   is_open: boolean;
   start_date: string | DateTime;
@@ -53,18 +53,18 @@ export interface ExceptionDates {
   repeat?: Repeat;
 }
 
-export interface NotificationSettings {
+export type NotificationSettings = {
   type: NotificationType;
   email: string;
   delay?: number;
 }
 
-export interface AcquisitionInformations {
+export type AcquisitionInformations = {
   shipping_informations: AcquisitionInformationDetail;
   billing_informations?: AcquisitionInformationDetail;
 }
 
-export interface AcquisitionInformationDetail {
+export type AcquisitionInformationDetail = {
   name: string;
   email?: string;
   phone?: string;
@@ -72,14 +72,14 @@ export interface AcquisitionInformationDetail {
   address: Address;
 }
 
-export interface Address {
+export type Address = {
   street: string;
   zip_code: string;
   city: string;
   country: string;
 }
 
-export interface RolloverSettings {
+export type RolloverSettings = {
   account_transfer: string
 }
 
@@ -216,7 +216,7 @@ export class Library {
       throw new Error('Unable to increment not repeatable exception date.');
     }
     const jsUnitMapper = {daily: 'days', weekly: 'weeks', monthly: 'months', yearly: 'years'};
-    const unity = (jsUnitMapper.hasOwnProperty(exception.repeat.period))
+    const unity = (Object.hasOwn(jsUnitMapper, exception.repeat.period))
       ? jsUnitMapper[exception.repeat.period]
       : 'days';
     if (typeof exception.start_date === 'string') {

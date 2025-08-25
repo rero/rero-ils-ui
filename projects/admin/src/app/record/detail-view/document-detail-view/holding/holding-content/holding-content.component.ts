@@ -79,7 +79,7 @@ export class HoldingContentComponent implements OnInit, OnDestroy {
         plural: '{{ counter }} hidden items'
       }
     };
-    const message = messages.hasOwnProperty(itemType) ? messages[itemType] : messages.default;
+    const message = Object.hasOwn(messages, itemType) ? messages[itemType] : messages.default;
     const additionalItemCounter = this.totalItemsCounter - this.displayItemsCounter;
     return this.translateService.instant(
       (additionalItemCounter === 1) ? message.singular : message.plural,

@@ -70,7 +70,7 @@ export class PatronProfileService {
 }
 
 /** Tab event interface */
-export interface ITabEvent {
+export type ITabEvent = {
   name: string;
   count: number;
 }

@@ -270,7 +270,7 @@ export class ItemRequestComponent implements OnInit {
 /**
  * Interface to define fields on form
  */
-interface FormModel {
+type FormModel = {
   patronBarcode: string;
   pickup: string;
   description?: string;

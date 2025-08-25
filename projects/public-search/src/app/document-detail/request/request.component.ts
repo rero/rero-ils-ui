@@ -43,7 +43,7 @@ export class RequestComponent implements OnInit {
   @Input() holdingsItemsCount: number;
 
   /** Item Can request with reason(s) */
-  canRequest: {
+  canRequest = {
     can: false,
     reasons: []
   };

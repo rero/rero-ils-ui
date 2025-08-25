@@ -259,7 +259,7 @@ export class User implements IUser {
 }
 
 /** Interface for user */
-export interface IUser {
+export type IUser = {
   id: number;
   first_name: string;
   last_name: string;
@@ -282,7 +282,7 @@ export interface IUser {
 }
 
 /** Interface for patron */
-export interface IPatron {
+export type IPatron = {
   pid: string;
   source?: string;
   local_code?: string;
@@ -320,7 +320,7 @@ export interface IPatron {
 }
 
 /** Interface for organisation */
-export interface IOrganisation {
+export type IOrganisation = {
   pid: string;
   code?: string;
   name?: string;
@@ -329,13 +329,13 @@ export interface IOrganisation {
 }
 
 /** Interface for library */
-export interface ILibrary {
+export type ILibrary = {
   pid: string;
   organisation: IOrganisation;
 }
 
 /** Interface for patron type */
-export interface IPatronType {
+export type IPatronType = {
   pid: string;
   type?: string;
 }

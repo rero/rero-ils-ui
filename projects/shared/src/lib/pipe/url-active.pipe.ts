@@ -24,7 +24,7 @@ export class UrlActivePipe implements PipeTransform {
 
   transform(text: string, target = '_self'): any {
     let output = text;
-    const re = new RegExp(/(https?:\/\/[\w|.|\-|\/]+)/, 'gm');
+    const re = new RegExp(/(https?:\/\/[\w|.|\-|/]+)/, 'gm');
     let match: RegExpExecArray;
        while ((match = re.exec(text)) !== null) {
       const url = match[0];

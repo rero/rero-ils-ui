@@ -33,7 +33,7 @@ export enum LoanState {
 
 // INTERFACE ===================================================================
 /** Interface representing a overdue preview API response about a Loan. */
-export interface LoanOverduePreview {
+export type LoanOverduePreview = {
   steps: any[];
   total: number;
 }

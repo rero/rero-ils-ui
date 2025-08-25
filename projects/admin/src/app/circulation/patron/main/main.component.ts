@@ -71,7 +71,7 @@ export class MainComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     /** load patron if the barcode changes */
     this.subscription.add(this.route.params.subscribe((data: any) => {
-      if (data.hasOwnProperty('barcode') && (this.barcode !== data.barcode)) {
+      if (Object.hasOwn(data, 'barcode') && (this.barcode !== data.barcode)) {
         this.load(data.barcode);
       }
     }));

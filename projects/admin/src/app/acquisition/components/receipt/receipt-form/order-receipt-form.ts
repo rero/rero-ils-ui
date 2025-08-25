@@ -148,7 +148,7 @@ export class OrderReceiptForm {
     record = (!record)
       ? this.orderReceipt.processBaseRecord(model)
       : record;
-    if (!record.hasOwnProperty('amount_adjustments')) {
+    if (!Object.hasOwn(record, 'amount_adjustments')) {
       record.amount_adjustments = [];
     } else {
       // we received the resolved `acq_account` with pid, but we need the `$ref` field to send the form.
@@ -156,7 +156,7 @@ export class OrderReceiptForm {
         (adjustment: any) => adjustment.acq_account = {$ref: this.apiService.getRefEndpoint('acq_accounts', adjustment.acq_account.pid)}
       );
     }
-    if (!record.hasOwnProperty('notes')) {
+    if (!Object.hasOwn(record, 'notes')) {
       record.notes = [];
     }
     // Update the record with model data

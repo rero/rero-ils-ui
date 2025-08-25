@@ -17,7 +17,7 @@
 import { Injectable, inject } from '@angular/core';
 import { LocalStorageService } from '@rero/ng-core';
 
-export interface ILibrarySwitchDataStorage {
+export type ILibrarySwitchDataStorage = {
   userId: number;
   currentLibrary: string;
   libraryName: string;

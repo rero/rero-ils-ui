@@ -157,7 +157,7 @@ export class DocumentAdvancedSearchFormComponent implements OnInit {
       field.props.sortOrder = "asc";
       field.props.class = "ui:w-full";
       field.props.styleClass = "ui:w-full";
-      field.props.filter = true,
+      field.props.filter = true;
       field.props.required = true;
       field.type = 'select';
       field.props.options.next(this.fieldDataConfig[fieldParentKey]);

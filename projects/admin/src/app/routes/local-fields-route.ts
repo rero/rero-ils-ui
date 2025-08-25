@@ -104,7 +104,7 @@ export class LocalFieldsRoute extends BaseRoute implements RouteInterface {
    */
   private getUrl(record: any) {
     if ('$ref' in record.metadata.parent) {
-      const pidRegExp = new RegExp('.*\/(.*)/(.*)$');
+      const pidRegExp = new RegExp('.*/(.*)/(.*)$');
       const regExpResult = pidRegExp.exec(record.metadata.parent.$ref);
       const type = regExpResult[1];
       const pid = regExpResult[2];

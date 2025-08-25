@@ -24,16 +24,16 @@
         <div class="ui:ml-4 ui:mb-2">
           @if (transaction.note) {
             <div class="ui:grid ui:grid-cols-12 ui:gap-4">
-              <label class="ui:col-span-4" translate>Note</label>
+              <span class="ui:col-span-4" translate>Note</span>
               <span class="ui:col-span-8">{{ transaction.note }}</span>
             </div>
           }
           <div class="ui:grid ui:grid-cols-12 ui:gap-4">
-            <label class="ui:col-span-4" translate>Creation date</label>
+            <span class="ui:col-span-4" translate>Creation date</span>
             <span class="ui:col-span-8">{{ transaction.creation_date | dateTranslate: 'shortDate' }}</span>
           </div>
           <div class="ui:grid ui:grid-cols-12 ui:gap-4">
-            <label class="ui:col-span-4" translate>Total amount</label>
+            <span class="ui:col-span-4" translate>Total amount</span>
             <span class="ui:col-span-8">{{ transaction.total_amount | currency: organisation.default_currency }}</span>
           </div>
         </div>

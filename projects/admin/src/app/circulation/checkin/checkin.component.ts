@@ -327,7 +327,7 @@ export class CheckinComponent implements OnInit {
    */
   private _checkinErrorManagement(error: any, item: Item) {
     // get the error message from the raised error. This will be the Toast message core.
-    let message = (error.hasOwnProperty('error') && error.error.hasOwnProperty('status'))
+    let message = (Object.hasOwn(error, 'error') && Object.hasOwn(error.error, 'status'))
       ? this.processErrorMessage(error.error.status)
       : error.message;
     message = this.translate.instant(message);

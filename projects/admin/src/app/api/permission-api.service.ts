@@ -45,12 +45,12 @@ export class PermissionApiService {
 
 export type IRolePermission = Record<string, IPermission>;
 
-export interface IPermission {
+export type IPermission = {
   type: string,
   actions: Record<string, boolean | null>
 }
 
-export interface IPatronPermission {
+export type IPatronPermission = {
   name: string,
   can: boolean,
   reasons: Record<string, boolean | null>

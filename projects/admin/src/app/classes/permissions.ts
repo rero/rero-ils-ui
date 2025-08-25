@@ -27,7 +27,7 @@ export class RecordPermission {
   };
 }
 
-export interface RecordPermissions {
+export type RecordPermissions = {
   create: RecordPermission;
   delete?: RecordPermission;
   list: RecordPermission;

@@ -22,14 +22,14 @@
  * Interface to describe an internal resource reference
  * Either the `pid` and `type` is available, either the `$ref`.
  * TODO :: It should be possible to compute $ref from pid/type and reversely */
-export interface ObjectReference {
+export type ObjectReference = {
   pid?: string;
   type?: string;
   $ref?: string;
 }
 
 /** Interface to describe an `Organisation` resource */
-export interface Organisation {
+export type Organisation = {
   $schema: string;
   pid: string;
   name: string;

@@ -23,7 +23,7 @@ import { Pipe, PipeTransform } from '@angular/core';
 export class KeyExistsPipe implements PipeTransform {
 
   transform(data: object, field: string): boolean {
-    return data.hasOwnProperty(field);
+    return Object.hasOwn(data, field);
   }
 
 }
