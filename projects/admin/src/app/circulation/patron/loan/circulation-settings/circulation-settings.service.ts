@@ -17,7 +17,7 @@
 import { inject, Injectable } from '@angular/core';
 import { LoanFixedDateService } from '@app/admin/circulation/services/loan-fixed-date.service';
 
-export interface ICirculationSetting {
+export type ICirculationSetting = {
   key: string;    /** the setting internal key */
   label: string;  /** the setting label to display to user */
   value: any;     /** the setting value */

@@ -242,7 +242,7 @@ export class ResourcesFilesService {
   }
 }
 
-export interface parentRecord {
+export type parentRecord = {
   hits: {
     hits: any[];
     total: number;

@@ -139,7 +139,7 @@ export class LoanApiService extends BaseApi {
   }
 }
 
-export interface CanExtend {
+export type CanExtend = {
   can: boolean;
   reasons: string[];
 }

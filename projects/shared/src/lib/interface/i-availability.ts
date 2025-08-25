@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-export interface IAvailability {
+export type IAvailability = {
   available: boolean;
   status?: string;
   circulation_message?: ICirculationMessage[];
@@ -23,7 +23,7 @@ export interface IAvailability {
   due_date?: string;
 }
 
-export interface ICirculationMessage {
+export type ICirculationMessage = {
   label: string;
   language: string;
 }

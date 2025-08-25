@@ -19,7 +19,7 @@
 
 import { ObjectReference } from '@rero/shared';
 
-export interface CircPolicy {
+export type CircPolicy = {
 
   $schema: string;
   pid: string;

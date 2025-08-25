@@ -25,7 +25,7 @@ import { DialogService } from 'primeng/dynamicdialog';
 import { Observable, Subscription, forkJoin, map, of, switchMap, tap } from 'rxjs';
 
 // file interface
-export interface File {
+export type File = {
   // thumbnail URL
   thumbnail?: string;
   // download URL

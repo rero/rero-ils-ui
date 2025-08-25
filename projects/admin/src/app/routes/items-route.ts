@@ -143,7 +143,7 @@ export class ItemsRoute extends BaseRoute implements RouteInterface {
             },
             preUpdateRecord: (data: any) => {
               // remove dynamic field
-              if (data.hasOwnProperty('available')) {
+              if (Object.hasOwn(data, 'available')) {
                 delete data.available;
               }
               return data;
@@ -164,7 +164,7 @@ export class ItemsRoute extends BaseRoute implements RouteInterface {
                 delete record.notes;
               }
               // If we save an item with 'new_acquisition' flag set to false, ensure than we don't send any acquisition_date
-              if (!record.hasOwnProperty('acquisition_date') && record.acquisition_date == null) {
+              if (!Object.hasOwn(record, 'acquisition_date') && record.acquisition_date == null) {
                 delete record.acquisition_date;
               }
               return record;

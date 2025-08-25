@@ -15,12 +15,12 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-export interface IAdvancedSearchConfig {
+export type IAdvancedSearchConfig = {
   fieldsConfig: ILabelValueField[];
   fieldsData: IFieldsData
 }
 
-export interface IFieldsData {
+export type IFieldsData = {
   canton: ILabelValue[],
   country: ILabelValue[],
   rdaCarrierType: ILabelValue[],
@@ -28,33 +28,33 @@ export interface IFieldsData {
   rdaMediaType: ILabelValue[],
 }
 
-export interface ILabelValueField extends ILabelValue {
+export type ILabelValueField = {
   field: string
   options: {
     search_type: ILabelValue[];
   }
-}
+} & ILabelValue
 
-export interface ILabelValue {
+export type ILabelValue = {
   label: string;
   value: string;
 }
 
-export interface ISearch {
+export type ISearch = {
   field: string;
   term?: string;
   operator: string;
   searchType: string;
 }
 
-export interface ISearchModel {
+export type ISearchModel = {
   field: string;
   term: string;
   searchType: string;
   search: ISearch[]
 }
 
-export interface ISelectOptions {
+export type ISelectOptions = {
   label: string;
   value: string;
   preferred?: boolean;

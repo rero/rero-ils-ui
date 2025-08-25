@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-export interface AddressType {
+export type AddressType = {
   contact_person: string;
   street: string;
   postal_code: string;

@@ -220,7 +220,7 @@ export class AccountListComponent implements OnInit {
    */
   canExport(format: any): boolean {
     const totalResults = this.rootAccounts.length;
-    return format.hasOwnProperty('disableMaxRestResultsSize') && format.disableMaxRestResultsSize
+    return Object.hasOwn(format, 'disableMaxRestResultsSize') && format.disableMaxRestResultsSize
       ? totalResults > 0
       : totalResults > 0 && totalResults < RecordService.MAX_REST_RESULTS_SIZE;
   }

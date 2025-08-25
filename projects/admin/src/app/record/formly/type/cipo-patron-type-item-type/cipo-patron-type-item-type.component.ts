@@ -78,7 +78,7 @@ export class CipoPatronTypeItemTypeComponent extends FieldArrayType implements O
     // Detect form changes : If user choose to create a "library level" cipo, then we need
     // to rebuild the settings table according to selected libraries.
     this.form.valueChanges.subscribe((changes) => {
-      const formLibraries = changes.hasOwnProperty('libraries') ? this._getLibrariesRef(changes.libraries) : [];
+      const formLibraries = Object.hasOwn(changes, 'libraries') ? this._getLibrariesRef(changes.libraries) : [];
       if (JSON.stringify(formLibraries) !== JSON.stringify(this.prevSelectedLibraries)) {
         this.prevSelectedLibraries = formLibraries;
         this._loadSettings(); // Rebuild the settings

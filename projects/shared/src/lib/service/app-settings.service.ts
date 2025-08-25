@@ -133,7 +133,7 @@ export class AppSettingsService {
 }
 
 /** Interface for settings */
-export interface ISettings {
+export type ISettings = {
   baseUrl: string;
   agentSources: string[];
   agentAgentTypes: any;

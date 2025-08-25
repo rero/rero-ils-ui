@@ -244,7 +244,7 @@ export class PatronTransactionService {
         });
       },
       error: (error) => {
-        const errorMessage = (error.hasOwnProperty('message') && error.message().hasOwnProperty('message'))
+        const errorMessage = (Object.hasOwn(error, 'message') && Object.hasOwn(error.message(), 'message'))
           ? error.message.message
           : 'Server error :: ' + (error.title || error.toString());
         const message = '[' + error.status + ' - ' + error.statusText + '] ' + errorMessage;

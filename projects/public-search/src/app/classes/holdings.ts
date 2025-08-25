@@ -14,13 +14,13 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-export interface HoldingCanRequest {
+export type HoldingCanRequest = {
   holdingPid: string;
   libraryPid: string;
   patronBarcode: string;
 }
 
-export interface HoldingPatronRequest {
+export type HoldingPatronRequest = {
   holding_pid: string;
   pickup_location_pid: string;
   description: string;

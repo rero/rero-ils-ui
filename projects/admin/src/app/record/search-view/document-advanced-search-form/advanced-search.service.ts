@@ -171,7 +171,7 @@ export class AdvancedSearchService {
      */
     private protectTerm(term: string, searchType: string): string {
       if (searchType === AdvancedSearchService.SEARCH_TYPE_CONTAINS_PHRASE) {
-        return `"${term.replace(/\"/g, '\\"')}"`;
+        return `"${term.replace(/"/g, '\\"')}"`;
       }
 
       return `(${term.replace(/\(/g, '\\(').replace(/\)/g, '\\)')})`;

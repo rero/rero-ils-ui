@@ -24,7 +24,7 @@ import { catchError, map } from 'rxjs/operators';
 /**
  * Prediction issue structure
  */
-export interface PredictionIssue {
+export type PredictionIssue = {
   issue: string;
   expected_date: string;
 }

@@ -15,22 +15,22 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-export interface ITypeEmail {
+export type ITypeEmail = {
   type: string;
   address: string;
 }
 
-export interface IRecipientSuggestion {
+export type IRecipientSuggestion = {
   address: string;
   type?: string[];
 }
 
-export interface ISuggestions {
+export type ISuggestions = {
   emails: string[];
   recipients: ITypeEmail[];
 }
 
-export interface IPreview {
+export type IPreview = {
   preview: string;
   recipient_suggestions: IRecipientSuggestion[];
   message?: {

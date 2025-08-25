@@ -56,7 +56,7 @@ export class CircPolicyDetailViewComponent implements OnInit, OnDestroy {
 
   /** checkout is allowed ? */
   get checkoutIsAllowed() {
-    return this.record && this.record.metadata.hasOwnProperty('checkout_duration');
+    return this.record && Object.hasOwn(this.record.metadata, 'checkout_duration');
   }
 
   /** On init hook */

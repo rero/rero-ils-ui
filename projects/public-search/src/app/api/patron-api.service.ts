@@ -36,7 +36,7 @@ export class PatronApiService extends BaseApi {
 }
 
 /** Message envelop */
-export interface Message {
+export type Message = {
   type: string;
   content: string;
 }

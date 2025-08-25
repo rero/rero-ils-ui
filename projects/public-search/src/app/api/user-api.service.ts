@@ -44,7 +44,7 @@ export class UserApiService {
   }
 }
 
-interface IPassword {
+type IPassword = {
   password: string;
   new_password: string;
   new_password_confirm: string;

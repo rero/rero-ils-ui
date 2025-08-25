@@ -87,7 +87,6 @@ describe('MenuService', () => {
             permissions: 'disabled'
           }
         },
-        ,
         {
           label: 'Menu 1 - line 3',
           untranslatedLabel: 'Menu 1 - line 3',

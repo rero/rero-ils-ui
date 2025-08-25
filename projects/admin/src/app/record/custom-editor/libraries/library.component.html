@@ -311,6 +311,7 @@
               @if ($any(setting).controls.type.value | notificationType:'patron') {
                 <i class="text-info fa fa-info"></i>
               }
+              <!-- eslint-disable-next-line @angular-eslint/template/label-has-associated-control -->
               <label class="ui:font-bold">
                 {{ $any(setting).controls.type.value | translate | ucfirst }}
               </label>

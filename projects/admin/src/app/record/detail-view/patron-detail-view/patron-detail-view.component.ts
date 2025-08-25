@@ -21,7 +21,7 @@ import { IPermissions, PERMISSIONS, PermissionsService } from '@rero/shared';
 import { Observable, Subscription } from 'rxjs';
 import { roleTagSeverity } from '../../../utils/roles';
 
-interface PatronPhone {
+type PatronPhone = {
   value: string;
   type?: string;
   weight: number;

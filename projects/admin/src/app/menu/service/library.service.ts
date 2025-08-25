@@ -19,7 +19,7 @@ import { UserService } from '@rero/shared';
 import { Observable } from 'rxjs';
 import { LibrarySwitchStorageService } from './library-switch-storage.service';
 
-export interface ISwitchLibrary {
+export type ISwitchLibrary = {
   pid: string;
   code: string;
   name : string;

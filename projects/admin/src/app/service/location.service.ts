@@ -80,7 +80,7 @@ export class LocationService {
 
 
 /** Options available to search records */
-export interface GetRecordsOptions {
+export type GetRecordsOptions = {
   page?: number,
   itemsPerPage?: number,
   aggregations?: string[],

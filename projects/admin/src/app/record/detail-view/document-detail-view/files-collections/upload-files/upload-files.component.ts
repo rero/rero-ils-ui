@@ -219,7 +219,7 @@ export class UploadFilesComponent implements OnInit {
    */
   onSelect(event, _) {
     const existingFileNames = [];
-    for (let i = 0; i < event.files.length; i++) {
+    for (const i of event.files) {
       const fileName = event.files[i].name;
       if (this.files.some((v) => v.key == fileName)) {
         existingFileNames.push(fileName);

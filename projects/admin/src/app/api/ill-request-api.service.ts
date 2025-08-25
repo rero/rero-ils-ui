@@ -39,7 +39,8 @@ export class IllRequestApiService extends BaseApi {
    */
   getByPatronPid(
     patronPid: string,
-    filters?: Record<string, string>,
+    // eslint-disable-next-line @typescript-eslint/consistent-indexed-object-style
+    filters?: {[key: string]: string},
     sort = '-created'
   ): Observable<Record | Error> {
     const query = `patron.pid:${patronPid}`;

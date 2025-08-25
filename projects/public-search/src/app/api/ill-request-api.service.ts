@@ -59,7 +59,8 @@ export class IllRequestApiService extends BaseApi {
     itemsPerPage = 10,
     headers = BaseApi.reroJsonheaders,
     sort = '-created',
-    filters?: Record<string, string>
+    // eslint-disable-next-line @typescript-eslint/consistent-indexed-object-style
+    filters?: {[key: string]: string}
   ): Observable<Record | Error> {
     const query = `patron.pid:${patronPid}`;
     return this.recordService.getRecords('ill_requests', query, page, itemsPerPage, undefined, filters, headers, sort);

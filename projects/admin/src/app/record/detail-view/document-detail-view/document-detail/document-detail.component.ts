@@ -146,7 +146,7 @@ export class DocumentDetailComponent extends DetailComponent implements OnInit {
       );
       if (titles.length > 0) {
         // We clean the text string by deleting some characters
-        const regex = /["\[\]]/gi;
+        const regex = /["[\]]/gi;
         queryParams.push(`title._text:"${titles[0]._text.replace(regex, '')}"`);
       }
     }

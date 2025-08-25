@@ -34,11 +34,11 @@ export enum ItemNoteType {
   API = 'api' // Only used to return the api message (component item)
 }
 
-export interface Organisation {
+export type Organisation = {
   pid: string
 }
 
-export interface Document {
+export type Document = {
   pid: string;
   title: string;
 }

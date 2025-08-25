@@ -129,14 +129,14 @@ export class MainRequestComponent implements OnInit, OnDestroy {
             : 1;
         case 'location':
         case '-location':
-          const locA = a.library.name + ' ' + a.location.name;
+          { const locA = a.library.name + ' ' + a.location.name;
           const locB = b.library.name + ' ' + b.location.name;
           return (this.sortCriteria === 'location')
             ? locA.localeCompare(locB)
-            : locB.localeCompare(locA);
+            : locB.localeCompare(locA); }
         case 'pickuplocation':
         case '-pickuplocation':
-          const pickA = (a.loan.pickup_location.pickup_name)
+          { const pickA = (a.loan.pickup_location.pickup_name)
             ? a.loan.pickup_location.pickup_name
             : a.loan.pickup_location.library_name + ' ' + a.loan.pickup_location.name;
           const pickB = (a.loan.pickup_location.pickup_name)
@@ -144,7 +144,7 @@ export class MainRequestComponent implements OnInit, OnDestroy {
             : b.loan.pickup_location.library_name + ' ' + b.loan.pickup_location.name;
           return (this.sortCriteria === 'pickuplocation')
             ? pickA.localeCompare(pickB)
-            : pickB.localeCompare(pickA);
+            : pickB.localeCompare(pickA); }
         default: return aTime.diff(bTime);
       }
     });

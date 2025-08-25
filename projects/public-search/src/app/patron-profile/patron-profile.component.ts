@@ -28,7 +28,7 @@ import { PatronTransactionApiService } from '../api/patron-transaction-api.servi
 import { IMenu, PatronProfileMenuService } from './patron-profile-menu.service';
 import { PatronProfileService } from './patron-profile.service';
 
-interface Tab {
+type Tab = {
   loaded?: boolean;
   count?: number;
   feeTotal?: number | null;
@@ -38,7 +38,7 @@ interface Tab {
   display: boolean;
 }
 
-interface Tabs {
+type Tabs = {
   loan: Tab;
   request: Tab;
   fee: Tab;

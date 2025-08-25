@@ -173,7 +173,7 @@ export class PatronFeeComponent implements OnInit {
 }
 
 /** Interface to define fields on form */
-export interface FeeFormModel {
+export type FeeFormModel = {
   type: {
     label: string,
     value: string,

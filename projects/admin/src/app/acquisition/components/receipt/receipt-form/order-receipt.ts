@@ -22,7 +22,7 @@ import { AcqReceiptAmountAdjustment, IAcqReceipt, IAcqReceiptLine } from '../../
 import { DateTime } from 'luxon';
 
 /** Interface for Receipt data */
-export interface IAcqReceiptModel {
+export type IAcqReceiptModel = {
   pid?: string;
   acqOrderRef: string;
   libraryRef: string;
@@ -46,6 +46,7 @@ export interface IAcqReceiptModel {
   }[];
 }
 
+// eslint-disable-next-line @typescript-eslint/consistent-type-definitions
 export interface IResponseReceiptLine {
   data: object;
   status: string;
@@ -53,6 +54,7 @@ export interface IResponseReceiptLine {
   error_message?: string;
 }
 
+// eslint-disable-next-line @typescript-eslint/consistent-type-definitions
 export interface IResponseReceiptLine {
   response: IResponseReceiptLine[];
 }
@@ -62,7 +64,7 @@ export enum AcqResponseReceiptLineStatus {
   FAILURE = 'failure'
 }
 
-export interface ICreateLineMessage {
+export type ICreateLineMessage = {
   success: boolean;
   messages?: string[];
 }
@@ -172,7 +174,7 @@ export class OrderReceipt {
   cleanData(record: any): any {
     const fieldsToRemovedIfEmpty = ['amount_adjustments', 'notes'];
     fieldsToRemovedIfEmpty.forEach((key: string) => {
-      if (record.hasOwnProperty(key) && record[key].length === 0) {
+      if (Object.hasOwn(record, key) && record[key].length === 0) {
         delete record[key];
       }
     });

@@ -50,7 +50,7 @@ export class HighlightJsonPipe implements PipeTransform {
       .replace(/( )/g, '&ensp;');
 
     json = json.replace(
-      /("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g,
+      /("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+-]?\d+)?)/g,
       (match: any) => {
         let cls = 'ui:text-gray-600';
         if (/^"/.test(match)) {

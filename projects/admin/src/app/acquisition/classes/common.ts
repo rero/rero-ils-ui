@@ -19,19 +19,19 @@
 // required as json properties is not lowerCamelCase
 
 /** Base class for Acquisition resource */
-export interface IAcqBaseResource {
+export type IAcqBaseResource = {
   $schema?: string;
   pid?: string;
   organisation: IObjectReference;
   library?: IObjectReference;
 }
 
-export interface IAcqResourceWithNotes {
+export type IAcqResourceWithNotes = {
   notes: IAcqNote[];
 }
 
 /** Interface to describe an order note */
-export interface IAcqNote {
+export type IAcqNote = {
   type: AcqNoteType;
   content: string;
 }
@@ -43,7 +43,7 @@ export enum AcqNoteType {
   RECEIPT_NOTE = 'receipt_note',
 }
 
-export interface IObjectReference {
+export type IObjectReference = {
   $ref?: string;
   pid?: string;
   type?: string;

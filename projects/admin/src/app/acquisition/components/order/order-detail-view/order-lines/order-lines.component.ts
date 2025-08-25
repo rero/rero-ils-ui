@@ -67,7 +67,7 @@ export class OrderLinesComponent implements OnInit, OnChanges, OnDestroy {
 
   /** OnChanges hook */
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes.hasOwnProperty('order')) {
+    if (Object.hasOwn(changes, 'order')) {
       this.loadOrderLines();
     }
   }

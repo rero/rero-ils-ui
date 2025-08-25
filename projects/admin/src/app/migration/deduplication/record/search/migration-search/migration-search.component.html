@@ -95,6 +95,7 @@
             @for (searchField of searchFields; track $index) {
               <div class="core:flex core:gap-2 core:items-center">
                 <p-toggleswitch (onChange)="searchInField($event, searchField.path)" />
+                <!-- eslint-disable-next-line @angular-eslint/template/label-has-associated-control -->
                 <label>{{ searchField.label | translate }}</label>
               </div>
             }

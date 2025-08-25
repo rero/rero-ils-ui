@@ -102,7 +102,7 @@ export class PatronProfileMenuService {
   }
 }
 
-export interface IMenu {
+export type IMenu = {
   value: string;
   name: string;
   selected?: boolean;

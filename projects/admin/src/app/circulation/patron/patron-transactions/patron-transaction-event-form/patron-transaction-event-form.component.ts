@@ -220,7 +220,7 @@ export class PatronTransactionEventFormComponent implements OnInit {
 /**
  * Interface to define fields on form
  */
-interface FormModel {
+type FormModel = {
   amount?: number;
   method?: string;
   comment?: string;

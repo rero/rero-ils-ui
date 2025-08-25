@@ -34,7 +34,7 @@ export class IAccountingAmount {
 }
 
 /** Wrapping class to describe an AcqAccount */
-export interface IAcqAccount extends IAcqBaseResource {
+export type IAcqAccount = {
   name: string;
   number: string;
   depth: number;
@@ -49,7 +49,7 @@ export interface IAcqAccount extends IAcqBaseResource {
   budget: IObjectReference;
   parent: IObjectReference;
   number_of_children?: number;
-}
+} & IAcqBaseResource
 
 
 /** Default values */

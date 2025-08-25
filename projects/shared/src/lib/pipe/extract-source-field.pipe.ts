@@ -42,8 +42,8 @@ export class ExtractSourceFieldPipe implements PipeTransform {
       : contributionsLabel[contributionsLabel.fallback];
     for (const source of agentLabelOrder) {
       if (
-        metadata.hasOwnProperty(source)
-        && metadata[source].hasOwnProperty(field)
+        Object.hasOwn(metadata, source)
+        && Object.hasOwn(metadata[source], field)
       ) {
         return metadata[source][field];
       }

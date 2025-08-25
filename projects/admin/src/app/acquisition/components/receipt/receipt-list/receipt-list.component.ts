@@ -71,7 +71,7 @@ export class ReceiptListComponent implements OnChanges, OnDestroy {
 
   /** OnChanges hook */
   ngOnChanges(changes: SimpleChanges) {
-    if (changes.hasOwnProperty('order')) {
+    if (Object.hasOwn(changes, 'order')) {
       this.loadPermissions();
       this._loadReceipts();
     }

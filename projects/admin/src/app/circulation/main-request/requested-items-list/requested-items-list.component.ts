@@ -45,7 +45,7 @@ export class RequestedItemsListComponent implements OnChanges {
    * @param changes: the changed properties.
    */
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes.hasOwnProperty('items') && !changes.items.firstChange && changes.items.previousValue) {
+    if (Object.hasOwn(changes, 'items') && !changes.items.firstChange && changes.items.previousValue) {
       this.knownItemBarcodes = changes.items.previousValue.map((item) => item.barcode);
     }
   }

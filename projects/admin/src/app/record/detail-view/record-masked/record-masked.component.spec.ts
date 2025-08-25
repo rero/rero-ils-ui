@@ -116,7 +116,7 @@ describe('MaskedComponent', () => {
     component.record = recordMasked;
     component.withLabel = true;
     fixture.detectChanges();
-    const label = fixture.nativeElement.querySelector('label');
+    const label = fixture.nativeElement.querySelector('span');
     expect(label.textContent).toContain('Masked');
   });
 
@@ -124,7 +124,7 @@ describe('MaskedComponent', () => {
     component.record = recordNoMaskedNoFlag;
     component.withLabel = true;
     fixture.detectChanges();
-    const label = fixture.nativeElement.querySelector('label');
+    const label = fixture.nativeElement.querySelector('span');
     expect(label.textContent).toContain('No masked');
   });
 });

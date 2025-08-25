@@ -18,7 +18,7 @@
 // required as json properties is not lowerCamelCase
 
 /** Interface to describe an `Organisation` resource */
-export interface Organisation {
+export type Organisation = {
   $schema: string;
   pid: string;
   name: string;
