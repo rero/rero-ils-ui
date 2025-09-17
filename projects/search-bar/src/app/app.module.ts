@@ -23,8 +23,8 @@ import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { RouterModule } from '@angular/router';
-import { TranslateLoader as BaseTranslateLoader, TranslateModule } from '@ngx-translate/core';
-import { CoreConfigService, primeNGConfig, TranslateLoader, TruncateTextPipe } from '@rero/ng-core';
+import { TranslateLoader as BaseTranslateLoader, TranslateModule, TranslateService } from '@ngx-translate/core';
+import { CoreConfigService, NgCoreTranslateService, primeNGConfig, TranslateLoader, TruncateTextPipe } from '@rero/ng-core';
 import { MainTitlePipe, RemoteSearchComponent, SharedModule } from '@rero/shared';
 import { providePrimeNG } from 'primeng/config';
 import { AppInitializerService } from './app-initializer.service';
@@ -47,7 +47,10 @@ import { AppInitializerService } from './app-initializer.service';
     SharedModule,
   ],
   providers: [
+    { provide: TranslateService, useClass: NgCoreTranslateService },
     provideAppInitializer(() => {
+      const translateService = inject(NgCoreTranslateService);
+      translateService.initialize();
       const appInitializerService = inject(AppInitializerService);
       return appInitializerService.load();
     }),
