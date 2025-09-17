@@ -21,6 +21,7 @@ import { IRecordType } from '@rero/ng-core';
 import { filter, Subscription } from 'rxjs';
 import { UserService } from '../../service/user.service';
 import { RemoteSearchConfig } from './remote-search-config.service';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
     selector: 'shared-remote-search',
@@ -35,12 +36,14 @@ export class RemoteSearchComponent implements OnInit, OnDestroy {
   private remoteSearchBarConfig: RemoteSearchConfig = inject(RemoteSearchConfig);
   private document: Document = inject(DOCUMENT);
   private userService: UserService = inject(UserService);
+  private translateService: TranslateService = inject(TranslateService);
 
   // You must use lowercase variable names for this to work in a web component.
   // Use @Input in this case, as the web component does not work with input (signal).
   @Input() maxlengthsuggestion: number | string = 100;
   @Input() placeholder = 'search';
   @Input() viewcode: string | undefined;
+  @Input() language;
   @Input() inputstyleclass: string;
   @Input() styleclass: string;
   @Input() internalRoutingBaseURL: string | undefined;
@@ -56,6 +59,9 @@ export class RemoteSearchComponent implements OnInit, OnDestroy {
   private subscription: Subscription = new Subscription();
 
   ngOnInit(): void {
+    if (this.language) {
+      this.translateService.use(this.language);
+    }
     this.admin = Boolean(this.internalRoutingBaseURL);
     this.subscription.add(this.route.queryParamMap.subscribe((params: any) => {this.value = params.get('q')}));
     this.recordTypes = this.remoteSearchBarConfig.getConfig(
