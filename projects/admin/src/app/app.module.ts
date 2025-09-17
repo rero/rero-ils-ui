@@ -187,6 +187,7 @@ import { HoldingContentComponent } from './record/detail-view/document-detail-vi
 import { HoldingHeaderComponent } from './record/detail-view/document-detail-view/holding/holding-header/holding-header.component';
 import { EntityAutocompleteComponent } from './record/editor/formly/primeng/entity-autocomplete/entity-autocomplete.component';
 import { RemoteAutocompleteService as UiRemoteAutocompleteService } from './record/editor/formly/primeng/remote-autocomplete/remote-autocomplete.service';
+import { ImportRecordSearchComponent } from './record/search-view/import-record-search/import-record-search.component';
 
 @NgModule({
   declarations: [
@@ -313,7 +314,8 @@ import { RemoteAutocompleteService as UiRemoteAutocompleteService } from './reco
     MenuUserComponent,
     EntityAutocompleteComponent,
     HoldingHeaderComponent,
-    HoldingContentComponent
+    HoldingContentComponent,
+    ImportRecordSearchComponent
   ],
   bootstrap: [AppComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],

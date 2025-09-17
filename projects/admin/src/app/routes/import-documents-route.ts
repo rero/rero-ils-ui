@@ -17,7 +17,7 @@
 
 import { inject } from '@angular/core';
 import { TranslateService, _ } from '@ngx-translate/core';
-import { RecordSearchPageComponent, RouteInterface } from '@rero/ng-core';
+import { RouteInterface } from '@rero/ng-core';
 import { PERMISSIONS, PERMISSION_OPERATOR } from '@rero/shared';
 import { Observable, of } from 'rxjs';
 import { ImportSourceApiService } from '../api/import-source-api.service';
@@ -26,6 +26,7 @@ import { PermissionGuard } from '../guard/permission.guard';
 import { DocumentsBriefViewComponent } from '../record/brief-view/documents-brief-view/documents-brief-view.component';
 import { DocumentDetailViewComponent } from '../record/detail-view/document-detail-view/document-detail-view.component';
 import { DocumentDetailComponent } from '../record/detail-view/document-detail-view/document-detail/document-detail.component';
+import { ImportRecordSearchComponent } from '../record/search-view/import-record-search/import-record-search.component';
 import { BaseRoute } from './base-route';
 
 export class ImportDocumentsRoute extends BaseRoute implements RouteInterface {
@@ -61,7 +62,7 @@ export class ImportDocumentsRoute extends BaseRoute implements RouteInterface {
       children: [
         {
           path: '',
-          component: RecordSearchPageComponent,
+          component: ImportRecordSearchComponent,
           title: _('Import from the web'),
           canActivate: [ PermissionGuard ],
           data: {
