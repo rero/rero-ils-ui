@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2021-2024 RERO
+ * Copyright (C) 2021-2025 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -14,25 +14,24 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, inject, Input, OnDestroy, OnInit } from '@angular/core';
-import { _ } from "@ngx-translate/core";
-import { Error, Record } from '@rero/ng-core';
-import { Paginator } from '@rero/shared';
-import { Observable, Subscription } from 'rxjs';
+import { Component, inject, Input, OnInit } from '@angular/core';
+import { Record, RecordService } from '@rero/ng-core';
+import { forkJoin } from 'rxjs';
+import { PatronApiService } from '../../api/patron-api.service';
 import { PatronTransactionApiService } from '../../api/patron-transaction-api.service';
 import { PatronProfileMenuService } from '../patron-profile-menu.service';
-import { ITabEvent, PatronProfileService } from '../patron-profile.service';
+import { fee, overdueFee } from './types';
 
 @Component({
     selector: 'public-search-patron-profile-fees',
     templateUrl: './patron-profile-fees.component.html',
     standalone: false
 })
-export class PatronProfileFeesComponent implements OnInit, OnDestroy {
+export class PatronProfileFeesComponent implements OnInit {
 
   private patronTransactionApiService: PatronTransactionApiService = inject(PatronTransactionApiService);
-  private patronProfileService: PatronProfileService = inject(PatronProfileService);
   private patronProfileMenuService: PatronProfileMenuService = inject(PatronProfileMenuService);
+  private patronApiService: PatronApiService = inject(PatronApiService);
 
   /** Total of fees */
   @Input() feesTotal: number;
@@ -43,70 +42,69 @@ export class PatronProfileFeesComponent implements OnInit, OnDestroy {
   /** requests records */
   records = [];
 
-  /** Records paginator */
-  paginator: Paginator;
-
-  /** Observable subscription */
-  private subscription = new Subscription();
-
   get currency() {
     return this.patronProfileMenuService.currentPatron.organisation.currency;
   }
 
   /** OnInit hook */
   ngOnInit(): void {
-    this.paginator = new Paginator();
-    this.paginator
-      .setHiddenInfo(
-        _('({{ count }} hidden fee)'),
-        _('({{ count }} hidden fees)')
-      );
-    this.subscription.add(
-      this.paginator.more$.subscribe((page: number) => {
-        this._queryFee(page).subscribe((response: Record) => {
-          this.records = this.records.concat(response.hits.hits);
-        });
-      })
-    );
-    this.subscription.add(
-      this.patronProfileService.tabsEvent$.subscribe((event: ITabEvent) => {
-        if (event.name === 'fee') {
-          if (event.count === 0) {
-            this.loaded = true;
-          } else {
-            this._queryFee(1).subscribe((response: Record) => {
-              this.paginator.setRecordsCount(response.hits.total.value);
-              this.records = response.hits.hits;
-              this.loaded = true;
-            });
-          }
-        }
-      })
-    );
-    /** Cleaning up after the change of organization */
-    this.subscription.add(
-      this.patronProfileMenuService.onChange$.subscribe(() => {
-        this.paginator.setRecordsCount(0);
-        this.records = [];
-        this.loaded = false;
-      })
-    );
-  }
-
-  /** OnDestroy hook */
-  ngOnDestroy(): void {
-    this.subscription.unsubscribe();
-  }
-
-  /**
-   * Query fee
-   * @param page - number
-   * @param status - string
-   * @return Observable
-   */
-  private _queryFee(page: number, status = 'open'): Observable<Record | Error> {
     const patronPid = this.patronProfileMenuService.currentPatron.pid;
-    return this.patronTransactionApiService
-      .getFees(patronPid, status, page, this.paginator.getRecordsPerPage());
+    const queryFees = this.patronTransactionApiService.getFees(patronPid, 'open', 1, RecordService.MAX_REST_RESULTS_SIZE);
+    const queryOverdue = this.patronApiService.getOverduePreviewByPatronPid(patronPid);
+
+    forkJoin([queryFees, queryOverdue]).subscribe({
+      next: ([feesResponse, overdueResponse]: [Record, overdueFee[]]) => {
+        feesResponse.hits.hits.map(record => {
+          if (record.metadata?.loan) {
+            const result = this.records.filter((fee: fee) => record.metadata?.loan?.pid === fee.loan?.pid);
+            if (result.length === 1) {
+              if (record.metadata.note) {
+                result[0].notes.push(record.metadata.note);
+              }
+              result[0].totalAmount += record.metadata.total_amount;
+              result[0].transactions.push(record);
+            } else {
+              this.createFee(record);
+            }
+          } else {
+            this.createFee(record);
+          }
+        });
+        overdueResponse.map((overdue: overdueFee) => {
+          const result = this.records.filter((record: fee) => record.loan?.pid === overdue.loan.pid);
+          if (result.length === 1) {
+            result[0].totalAmount += overdue.fees.total;
+            result[0].overdue = overdue.fees.total;
+          } else {
+            const overdueRecord = {
+              type: 'overdue',
+              createdAt: new Date(),
+              loan: overdue.loan,
+              totalAmount: overdue.fees.total,
+              overdue: overdue.fees.total
+            }
+            this.records.push(overdueRecord);
+          }
+        });
+        this.records.sort((a, b) => a.createdAt - b.createdAt);
+        this.loaded = true;
+      }});
+  }
+
+  private createFee(record): void {
+    const fee: fee = {
+      type: record.metadata.type,
+      notes: [],
+      createdAt: new Date(record.metadata.creation_date),
+      totalAmount: record.metadata.total_amount,
+      transactions: [record]
+    };
+    if (record.metadata.note) {
+      fee.notes.push(record.metadata.note);
+    }
+    if (record.metadata.loan) {
+      fee.loan = record.metadata.loan;
+    }
+    this.records.push(fee);
   }
 }

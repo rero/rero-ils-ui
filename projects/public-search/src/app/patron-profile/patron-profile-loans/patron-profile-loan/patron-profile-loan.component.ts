@@ -15,7 +15,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { Component, inject, Input, OnInit } from '@angular/core';
-import { LoanOverduePreview } from '@app/admin/classes/loans';
 import { TranslateService } from '@ngx-translate/core';
 import { CONFIG } from '@rero/ng-core';
 import { IOrganisation } from '@rero/shared';
@@ -79,18 +78,9 @@ export class PatronProfileLoanComponent implements OnInit {
 
   /** OnInit hook */
   ngOnInit(): void {
-    this.patronProfileService.resetLoanFeesTotal();
     this.loanApiService
       .canExtend(this.record.metadata.pid)
       .subscribe((response: CanExtend) => this.canExtend = response);
-    if (this.record.metadata.overdue) {
-      this.loanApiService
-        .getPreviewOverdue(this.record.metadata.pid)
-        .subscribe((response: LoanOverduePreview) => {
-          this.fees = +response.total.toFixed(2);
-          this.patronProfileService.loanFees(this.fees);
-        });
-    }
   }
 
   // COMPONENTS FUNCTIONS =====================================================
@@ -113,7 +103,6 @@ export class PatronProfileLoanComponent implements OnInit {
         if ('overdue' in this.record.metadata) {
           delete this.record.metadata.overdue;
         }
-        this.patronProfileService.loanFees(-this.fees);
         this.messageService.add({
           severity: 'success',
           summary: this.translateService.instant('Success'),

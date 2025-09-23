@@ -29,7 +29,7 @@
 
 <section class="ui:mt-4">
   @let tabsOrder = tabs|keyvalue: sortTabs;
-  <p-tabs [(value)]="activeTab">
+  <p-tabs [(value)]="activeTab" scrollable>
     <p-tablist>
       @for (tab of tabsOrder; track $index) {
         @if (tab.value.display) {
