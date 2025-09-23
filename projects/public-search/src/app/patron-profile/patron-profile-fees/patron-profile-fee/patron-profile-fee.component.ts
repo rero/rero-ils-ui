@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2021-2024 RERO
+ * Copyright (C) 2021-2025 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -14,10 +14,10 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, inject, Input } from '@angular/core';
-import { Record } from '@rero/ng-core';
+import { Component, inject, Input, OnDestroy, OnInit } from '@angular/core';
+import { RecordService } from '@rero/ng-core';
 import { IOrganisation } from '@rero/shared/public-api';
-import { PatronTransactionEventApiService } from '../../../api/patron-transaction-event-api.service';
+import { Observable, Subscription } from 'rxjs';
 import { PatronProfileMenuService } from '../../patron-profile-menu.service';
 
 @Component({
@@ -26,13 +26,13 @@ import { PatronProfileMenuService } from '../../patron-profile-menu.service';
     styleUrl: './patron-profile-fee.component.scss',
     standalone: false
 })
-export class PatronProfileFeeComponent {
+export class PatronProfileFeeComponent<T> implements OnInit, OnDestroy {
 
-  private patronTransactionEventApiService: PatronTransactionEventApiService = inject(PatronTransactionEventApiService);
   private patronProfileMenuService: PatronProfileMenuService = inject(PatronProfileMenuService);
+  private recordService: RecordService = inject(RecordService);
 
   /** Fee record */
-  @Input() record: any;
+  @Input() record;
 
   /** Detail collapsed */
   isCollapsed = true;
@@ -40,24 +40,28 @@ export class PatronProfileFeeComponent {
   /** Array of event records */
   events = [];
 
-  /** loaded */
-  private loaded = false;
+  document = null;
+
+  subscription = new Subscription();
 
   get organisation(): IOrganisation {
     return this.patronProfileMenuService.currentPatron.organisation;
   }
 
-  /**
-   * Expanded
-   * @param feePid - string
-   */
-  expanded(feePid: string): void {
-    if (!this.loaded) {
-      this.patronTransactionEventApiService
-        .getEvents(feePid).subscribe((response: Record) => {
-          this.loaded = true;
-          this.events = response.hits.hits;
-        });
+  ngOnInit(): void {
+    if (this.record.loan) {
+      this.subscription.add(
+        this.recordService.getRecord('documents', this.record.loan.document_pid)
+          .subscribe(document => this.document = document)
+      );
     }
+  }
+
+  ngOnDestroy(): void {
+    this.subscription.unsubscribe();
+  }
+
+  getPatronTransaction(pid: string): Observable<T> {
+    return this.recordService.getRecord('patron_transactions', pid, 1);
   }
 }

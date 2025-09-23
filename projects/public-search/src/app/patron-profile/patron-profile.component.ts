@@ -27,6 +27,8 @@ import { OperationLogsApiService } from '../api/operation-logs-api.service';
 import { PatronTransactionApiService } from '../api/patron-transaction-api.service';
 import { IMenu, PatronProfileMenuService } from './patron-profile-menu.service';
 import { PatronProfileService } from './patron-profile.service';
+import { PatronApiService } from '../api/patron-api.service';
+import { overdueFee } from './patron-profile-fees/types';
 
 type Tab = {
   loaded?: boolean;
@@ -62,6 +64,7 @@ export class PatronProfileComponent implements OnInit, OnDestroy {
   private patronProfileMenuService: PatronProfileMenuService = inject(PatronProfileMenuService);
   private operationLogsApiService: OperationLogsApiService = inject(OperationLogsApiService);
   private translateService: TranslateService = inject(TranslateService);
+  private patronApiService: PatronApiService = inject(PatronApiService);
   private baseHref = inject(APP_BASE_HREF);
 
 
@@ -81,7 +84,6 @@ export class PatronProfileComponent implements OnInit, OnDestroy {
     loan: {
       loaded: false,
       count: 0,
-      feeTotal: 0,
       title: this.translateService.instant('Loans'),
       order: 0,
       tooltip: this.translateService.instant('Fees to date'),
@@ -192,9 +194,6 @@ export class PatronProfileComponent implements OnInit, OnDestroy {
       this.tabs[tabSelected].loaded = true;
       this.patronProfileService.changeTab({ name: tabSelected, count: this.tabs[tabSelected].count });
     });
-    this.subscription.add(
-      this.patronProfileService.loanFeesEvent$.subscribe((fees: number) => (this.tabs.loan.feeTotal = +fees.toFixed(2)))
-    );
     this.user = this.userService.user;
     if (this.user.isAuthenticated && this.user.isPatron) {
       const keepHistory = this.user.keep_history === undefined ? false : this.user.keep_history;
@@ -205,15 +204,17 @@ export class PatronProfileComponent implements OnInit, OnDestroy {
           const loanQuery = this.loanApiService.getOnLoan(this._patronPid, 1, 1, undefined);
           const requestQuery = this.loanApiService.getRequest(this._patronPid, 1, 1, undefined);
           const feeQuery = this.patronTransactionApiService.getFees(this._patronPid, 'open', 1, 1, undefined);
+          const overdueQuery = this.patronApiService.getOverduePreviewByPatronPid(this._patronPid);
           const historyQuery = keepHistory ? this.operationLogsApiService.getHistory(this._patronPid, 1, 1) : of(undefined);
           const illRequestQuery = this.illRequestApiService.getPublicIllRequest(this._patronPid, 1, 1, undefined, '', {
             remove_archived: '1',
           });
-          forkJoin([loanQuery, requestQuery, feeQuery, historyQuery, illRequestQuery]).subscribe(
-            ([loanResponse, requestResponse, feeResponse, historyResponse, illRequestResponse]: [
+          forkJoin([loanQuery, requestQuery, feeQuery, overdueQuery, historyQuery, illRequestQuery]).subscribe(
+            ([loanResponse, requestResponse, feeResponse, overdueResponse, historyResponse, illRequestResponse]: [
               Record,
               Record,
               Record,
+              overdueFee[],
               Record,
               Record
             ]) => {
@@ -221,6 +222,7 @@ export class PatronProfileComponent implements OnInit, OnDestroy {
               Object.values(this.tabs).map(tab => tab.loaded = false);
               this.tabs.loan.count = this.recordService.totalHits(loanResponse.hits.total);
               this.tabs.fee.feeTotal = feeResponse.aggregations.total.value;
+              overdueResponse.map((fee: overdueFee) => this.tabs.fee.feeTotal += +fee.fees.total);
               this.tabs.request.count = this.recordService.totalHits(requestResponse.hits.total);
               this.tabs.illRequest.count = this.recordService.totalHits(illRequestResponse.hits.total);
               if (historyResponse?.hits?.total) {

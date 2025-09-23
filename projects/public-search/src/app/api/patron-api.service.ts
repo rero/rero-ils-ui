@@ -33,6 +33,10 @@ export class PatronApiService extends BaseApi {
   getMessages(patronPid: string): Observable<Message[]> {
     return this.httpClient.get<Message[]>(`/api/patrons/${patronPid}/messages`);
   }
+
+  getOverduePreviewByPatronPid(patronPid: string): Observable<any> {
+    return this.httpClient.get(`/api/patrons/${patronPid}/overdues/preview`);
+  }
 }
 
 /** Message envelop */

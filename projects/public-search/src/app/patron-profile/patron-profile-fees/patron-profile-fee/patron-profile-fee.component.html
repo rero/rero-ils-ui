@@ -18,99 +18,105 @@
 @if (record) {
   <div class="ui:grid ui:grid-cols-12 ui:gap-4 ui:p-2 ui:pl-1">
     <div class="ui:col-span-1">
-      <shared-open-close-button (status)="isCollapsed = $event; expanded(record.metadata.pid)" />
+      <shared-open-close-button (status)="isCollapsed = $event" />
     </div>
-    <div class="ui:col-span-2">{{ record.metadata.creation_date | dateTranslate: 'short' }}</div>
-    <div class="ui:col-span-6">{{ record.metadata.type | translate }}</div>
-    <div class="ui:col-span-3 ui:flex ui:justify-end">{{ record.metadata.total_amount | currency:organisation.currency:'symbol' }}</div>
+    <div class="ui:col-span-11 ui:md:grid ui:md:grid-cols-12 ui:flex-col ui:ml-5 ui:md:ml-0">
+      <div class="ui:col-span-2">{{ record.createdAt | dateTranslate: 'short' }}</div>
+      <div class="ui:col-span-7">
+        <div class="ui:flex ui:flex-col">
+          @if (isCollapsed && document) {
+            <a href="/{{ organisation.code }}/documents/{{ document.metadata.pid }}">{{ document.metadata.title | mainTitle }}</a>
+          }
+          <div>
+            {{ record.type | translate }}
+          </div>
+        </div>
+      </div>
+      <div class="ui:col-span-3 ui:flex ui:justify-start ui:md:justify-end ui:mr-3 ui:font-bold">
+        {{ record.totalAmount | currency:organisation.currency:'symbol' }}
+      </div>
+    </div>
+
     <!-- FEE DETAILS & EVENTS =========================================== -->
     @if (!isCollapsed) {
-      <div id="fee-event-{{ record.metadata.pid }}" class="ui:col-span-11 ui:col-start-2">
+      <div class="ui:col-span-11 ui:col-start-2">
           <!-- NOTE -->
-          @if (record.metadata.note) {
-            <p-panel styleClass="ui:mb-2 ui:bg-transparent" [header]="'Note' | translate">
-              {{ record.metadata.note }}
+          @if (record.notes?.length > 0) {
+            @let headerTitle = record.notes.length > 1 ? 'Notes' : 'Note';
+            <p-panel styleClass="ui:mb-2 ui:pb-2 ui:bg-transparent" [header]="headerTitle | translate">
+              <div class="ui:mx-5">
+                <ul>
+                  @for (note of record.notes; track $index) {
+                    <li>{{ note }}</li>
+                  }
+                </ul>
+              </div>
             </p-panel>
           }
           <!-- DOCUMENT METADATA -->
-          @if (record.metadata.document; as document) {
-            <p-panel styleClass="ui:mb-2 ui:bg-transparent" [header]="'Document' | translate" id="fee-{{ record.metadata.pid }}-document">
-              <dl class="metadata">
+          @if (document) {
+            <p-panel styleClass="ui:mb-2 ui:pb-2 ui:bg-transparent" [header]="'Document' | translate" id="fee-{{ document.metadata.pid }}-document">
+              <dl class="metadata ui:mx-5">
                 <!-- TITLE -->
                 <dt translate>Title</dt>
                 <dd>
-                  <a href="/{{ organisation.code }}/documents/{{ document.pid }}">{{ document.title | mainTitle }}</a>
+                  <a href="/{{ organisation.code }}/documents/{{ document.metadata.pid }}">{{ document.metadata.title | mainTitle }}</a>
                 </dd>
                 <!-- CALL NUMBER -->
-                @if (record.metadata.loan.item.call_number) {
+                @if (record.loan.item?.call_number) {
                   <dt translate>Call number</dt>
-                  <dd>{{ record.metadata.loan.item.call_number }}</dd>
+                  <dd>{{ record.loan.item.call_number }}</dd>
                 }
                 <!-- LOAN DATE -->
                 <dt translate>Loan started at</dt>
-                <dd>{{ record.metadata.loan.transaction_date | dateTranslate: 'short' }}</dd>
+                <dd>{{ record.loan.start_date | dateTranslate: 'short' }}</dd>
               </dl>
             </p-panel>
           }
 
           <!-- TRANSACTIONS HISTORY -->
-          <p-panel styleClass="ui:bg-transparent time-line-30" [header]="'Transactions history' | translate" id="fee-{{ record.metadata.pid }}-transaction">
+          <p-panel styleClass="ui:bg-transparent  ui:pb-2 time-line-30" [header]="'Transactions history' | translate">
 
-            <p-timeline [value]="events">
-              <ng-template #content let-event>
-                  <div class="ui:grid ui:grid-cols-12 ui:gap-4" [ngClass]="{ 'event-highlight': (event.metadata.type === 'dispute'), '': !(event.metadata.type === 'dispute') }">
-                    <div class="ui:col-span-10">
-                      {{ event.metadata.type | translate }}
-                      @if (event.metadata.subtype) {
-                        [{{ event.metadata.subtype | translate }}]
-                      }
+          <public-search-patron-profile-fee-events [events]="record.transactions" />
+
+          @if (record.overdue > 0) {
+            <p-timeline [value]="[record]" class="ui:mt-2">
+                <ng-template #content let-event>
+                    <div class="ui:md:flex">
+                      <div class="ui:flex-grow" translate>
+                        expected fees
+                      </div>
+                      <div>
+                      <p-tag class="ui:pr-1" severity="danger">
+                        {{ event.overdue | currency:organisation.currency:'symbol' }}
+                      </p-tag>
+                      </div>
                     </div>
-                    <div class="ui:col-span-2 ui:flex ui:justify-end">
-                      @if (event.metadata.amount) {
-                        <p-tag [severity]="event.metadata.type === 'payment'? 'success' : 'danger'">
-                          {{ event.metadata.amount | currency:organisation.currency:'symbol' }}
-                        </p-tag>
-                      }
+                </ng-template>
+                <ng-template #opposite  let-event>
+                  <div class="ui:text-muted-color ui:text-sm ui:justify-items-end">
+                    <div class="ui:md:flex ui:md:flex-row ui:flex-col ui:justify-items-end">
+                      <div class="ui:flex ui:gap-1 ui:items-center">
+                        <i class="fa fa-calendar-o"></i>
+                        {{ event.createdAt | dateTranslate: 'shortDate' }}
+                      </div>
+                      <div class="ui:flex ui:gap-1 ui:items-center">
+                        <i class="fa fa-clock-o ui:pl-1"></i>
+                        {{ event.createdAt | dateTranslate: 'HH:mm' }}
+                      </div>
                     </div>
                   </div>
-                    @if (event.metadata.note) {
-                      <dl class="ui:grid ui:grid-cols-4">
-                        <dt class="ui:font-bold ui:mr-2">
-                          <i class="fa fa-comment-o ui:pr-1" [title]="'Note' | translate"></i>
-                          {{ 'Note' | translate }}
-                        </dt>
-                        <dd class="ui:col-span-3">{{ event.metadata.note }}</dd>
-                      </dl>
-                    }
-                    @if (event.metadata.library) {
-                      <dl class="ui:grid ui:grid-cols-4">
-                        <dt class="ui:font-bold ui:mr-2">
-                          <i class="fa fa-map-marker ui:pr-1" [title]="'Library' | translate"></i>
-                          {{ 'Library' | translate }}
-                        </dt>
-                        <dd class="ui:col-span-3">
-                          {{ event.metadata.library.name }}
-                        </dd>
-                      </dl>
-                    }
-              </ng-template>
-              <ng-template #opposite let-event>
-                <div class="ui:text-muted-color ui:text-sm">
-                  <i class="fa fa-calendar-o"></i>
-                  {{ event.metadata.creation_date | dateTranslate: 'shortDate' }}
-                  <i class="fa fa-clock-o ui:pl-1"></i>
-                  {{ event.metadata.creation_date | dateTranslate: 'HH:mm' }}
-                </div>
-              </ng-template>
-              <ng-template #marker let-event>
-                <span
-                class="ui:flex ui:items-center ui:justify-center ui:text-white ui:rounded-full ui:z-10 ui:shadow-sm"
-                [ngClass]="event.metadata.type === 'dispute'? 'ui:bg-yellow-500': event.metadata.type === 'payment'? 'ui:bg-green-500': 'ui:bg-red-500'"
-                [style]="{'width': '1.3rem', 'height': '1.3rem'  }">
-                  <i class="fa" [ngClass]="event.metadata.type === 'dispute'? 'fa-exclamation' : 'fa-check' "></i>
-                </span>
-              </ng-template>
-          </p-timeline>
+                </ng-template>
+                <ng-template #marker>
+                  <span
+                    class="ui:flex ui:items-center ui:justify-center ui:text-white ui:rounded-full ui:z-10 ui:shadow-sm ui:bg-red-500 ui:w-[1.3rem] ui:h-[1.3rem]"
+                  >
+                    <i class="fa fa-check"></i>
+                  </span>
+                </ng-template>
+            </p-timeline>
+          }
+
           </p-panel>
       </div>
     }

@@ -32,11 +32,11 @@ export class PatronTransactionEventApiService extends BaseApi {
    * @param feePid - string
    * @return Observable
    */
-  getEvents(feePid: string): Observable<Record | Error> {
+  getEvents(feePid: string, sort = 'created'): Observable<Record | Error> {
     return this.recordService.getRecords(
       'patron_transaction_events', `parent.pid:${feePid}`,
       1, RecordService.MAX_REST_RESULTS_SIZE,
-      undefined, undefined, BaseApi.reroJsonheaders
+      undefined, undefined, BaseApi.reroJsonheaders, sort
     );
   }
 }

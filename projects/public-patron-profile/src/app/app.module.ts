@@ -33,6 +33,8 @@ import { MessageModule } from 'primeng/message';
 import { TabsModule } from 'primeng/tabs';
 import { TimelineModule } from 'primeng/timeline';
 import { PatronProfileDocumentComponent } from 'projects/public-search/src/app/patron-profile/patron-profile-document/patron-profile-document.component';
+import { PatronProfileFeeEventComponent } from 'projects/public-search/src/app/patron-profile/patron-profile-fees/patron-profile-fee-events/patron-profile-fee-event/patron-profile-fee-event.component';
+import { PatronProfileFeeEventsComponent } from 'projects/public-search/src/app/patron-profile/patron-profile-fees/patron-profile-fee-events/patron-profile-fee-events.component';
 import { PatronProfileFeeComponent } from 'projects/public-search/src/app/patron-profile/patron-profile-fees/patron-profile-fee/patron-profile-fee.component';
 import { PatronProfileFeesComponent } from 'projects/public-search/src/app/patron-profile/patron-profile-fees/patron-profile-fees.component';
 import { PatronProfileHistoriesComponent } from 'projects/public-search/src/app/patron-profile/patron-profile-histories/patron-profile-histories.component';
@@ -87,6 +89,8 @@ const routes: Routes = [
     PatronProfileRequestComponent,
     PatronProfileFeesComponent,
     PatronProfileFeeComponent,
+    PatronProfileFeeEventsComponent,
+    PatronProfileFeeEventComponent,
     PatronProfileHistoriesComponent,
     PatronProfileIllRequestsComponent,
     PatronProfilePersonalEditorComponent,

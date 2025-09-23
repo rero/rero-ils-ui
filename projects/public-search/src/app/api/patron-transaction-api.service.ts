@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2021-2024 RERO
+ * Copyright (C) 2021-2025 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -38,12 +38,13 @@ export class PatronTransactionApiService extends BaseApi {
    */
   getFees(
     patronPid: string, status: string, page: number,
-    itemsPerPage = 10, headers = BaseApi.reroJsonheaders
+    itemsPerPage = 10, headers = BaseApi.reroJsonheaders,
+    sort = 'creation_date'
   ): Observable<Record | Error> {
     const query = `patron.pid:${patronPid} AND status:${status}`;
     return this.recordService.getRecords(
       'patron_transactions', query, page, itemsPerPage,
-      undefined, undefined, headers, undefined, ['total']
+      undefined, undefined, headers, sort, ['total']
     );
   }
 }

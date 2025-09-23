@@ -1,6 +1,6 @@
 <!--
   RERO ILS UI
-  Copyright (C) 2021-2024 RERO
+  Copyright (C) 2021-2025 RERO
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published by
@@ -19,9 +19,7 @@
   <p-panel>
     <ng-template #header>
       <div class="ui:hidden ui:w-full ui:md:grid ui:grid-cols-12 ui:gap-4 ui:text-lg ui:font-bold ui:items-center">
-          <div class="ui:col-span-3" translate>Date</div>
-          <div class="ui:col-span-6" translate>Category</div>
-          <div class="ui:col-span-3 ui:flex ui:justify-end">
+          <div class="ui:col-span-12 ui:flex ui:justify-end">
             {{ 'Total amount' | translate }}:
             {{ feesTotal | currency:currency:'symbol' }}
           </div>
@@ -29,13 +27,12 @@
     </ng-template>
 
     @defer (when loaded) {
-      @if (paginator.getRecordsCount() > 0) {
+      @if (records.length > 0) {
         @for (record of records; track $index) {
           <div class="ui:odd:bg-surface-50 ui:my-1">
-            <public-search-patron-profile-fee [record]="record" id="fee-{{ record.metadata.pid }}" />
+            <public-search-patron-profile-fee [record]="record" />
           </div>
         }
-        <shared-search-show-more-pager id="show-more-fees" [paginator]="paginator" />
       } @else {
         <div class="ui:font-bold ui:mx-2 ui:my-6" translate>No fee</div>
       }

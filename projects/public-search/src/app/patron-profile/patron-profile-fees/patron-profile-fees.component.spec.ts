@@ -98,7 +98,7 @@ describe('PatronProfileFeeComponent', () => {
   });
 
   it('should display the total amount', () => {
-    const div = fixture.nativeElement.querySelector('div > div > div > div:nth-child(3)');
+    const div = fixture.nativeElement.querySelector('div > div > div > div:nth-child(1)');
     expect(div.textContent).toContain(12.50);
   });
 });
