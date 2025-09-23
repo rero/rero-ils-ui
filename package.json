@@ -122,6 +122,7 @@
     "karma-jasmine": "~5.1.0",
     "karma-jasmine-html-reporter": "~2.1.0",
     "karma-spec-reporter": "0.0.36",
+    "katex": "^0.16.22",
     "ng-packagr": "^19.2",
     "postcss": "^8.5.3",
     "tailwindcss": "^4.1.0",
