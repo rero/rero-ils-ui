@@ -76,7 +76,7 @@ describe('RecordPermissionService', () => {
       'You cannot operate the record for the following reasons:',
       '- 2 acquisition orders attached.',
       '- The record has been harvested.'
-    ].join('\n');
+    ].join('<br>');
     expect(service.generateTooltipMessage(reasons, 'create')).toEqual(message);
   });
 
@@ -89,7 +89,7 @@ describe('RecordPermissionService', () => {
     const message = [
       'You cannot delete the record for the following reason:',
       '- 3 acquisition orders attached.'
-    ].join('\n');
+    ].join('<br>');
     expect(service.generateTooltipMessage(reasons, 'delete')).toEqual(message);
   });
 
@@ -106,5 +106,5 @@ describe('RecordPermissionService', () => {
     expect(service.membership(user, '2', permissions)).toEqual(membershipPermissions);
     // the user's library is the same as the current Library
     expect(service.membership(user, '1', permissions)).toEqual(permissions);
-  })
+  });
 });

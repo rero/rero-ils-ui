@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2020-2024 RERO
+ * Copyright (C) 2020-2025 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -74,7 +74,7 @@ export class RecordPermissionService {
     if (reasons) {
       // Links
       if ('links' in reasons) {
-        const pluralDict = this.plurialLinksMessages();
+        const pluralDict = this.pluralLinksMessages();
         Object.keys(reasons.links).forEach(link => {
           const message = (link in pluralDict)
             ? translatePlural.transform(reasons.links[link], pluralDict[link], this.translateService.currentLang)
@@ -118,7 +118,7 @@ export class RecordPermissionService {
           );
       }
     }
-    return messages.join('\n');
+    return messages.join('<br>');
   }
 
   /**
@@ -141,10 +141,10 @@ export class RecordPermissionService {
   }
 
   /**
-   * Plurial links messages
+   * Plural links messages
    * @return array
    */
-  private plurialLinksMessages() {
+  private pluralLinksMessages() {
     return {
       acq_order_lines: {
         "=1": this.translateService.instant("1 acquisition order line attached."),
@@ -202,6 +202,10 @@ export class RecordPermissionService {
         "=1": this.translateService.instant("1 item attached."),
         other: this.translateService.instant("# items attached."),
       },
+      items_with_loans_or_fees: {
+        "=1": this.translateService.instant("1 item with active loans/fees attached."),
+        other: this.translateService.instant("# items with active loans/fees attached."),
+      },
       libraries: {
         "=1": this.translateService.instant("1 library attached."),
         other: this.translateService.instant("# libraries attached."),
@@ -255,7 +259,10 @@ export class RecordPermissionService {
       harvested: this.translateService.instant('The record has been harvested.'),
       regular_issue_cannot_be_deleted: this.translateService.instant('A regular issue cannot be deleted.'),
       record_not_in_current_library: this.translateService.instant('The record does not belong to the current library.'),
-      order_fully_received: this.translateService.instant('The order is fully received.')
+      order_fully_received: this.translateService.instant('The order is fully received.'),
+      order_already_sent: this.translateService.instant('Order already sent.'),
+      order_has_active_status: this.translateService.instant('Order has an active status.'),
+      order_not_in_reception: this.translateService.instant('Order not in reception.'),
     };
   }
 }
