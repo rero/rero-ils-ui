@@ -43,6 +43,16 @@ describe('RecordPermissionService', () => {
 
     service = TestBed.inject(RecordPermissionService);
     translateService = TestBed.inject(TranslateService);
+    translateService.setTranslation('en', {
+      'Order status is {{status}}': 'Order status is {{status}}'
+    });
+    translateService.setTranslation('fr', {
+      'You cannot delete the record for the following reasons:': 'Vous ne pouvez pas supprimer l\'enregistrement pour les raisons suivantes:',
+      'Order status is {{status}}': 'Le statut de la commande est {{status}}',
+      'has {{value}} items with {{name}} attached': 'contient {{value}} exemplaires avec {{name}} attaché',
+      'ordered': 'commandé',
+      'fees': 'frais'
+    });
     translateService.use('en');
   });
 
@@ -76,7 +86,7 @@ describe('RecordPermissionService', () => {
       'You cannot operate the record for the following reasons:',
       '- 2 acquisition orders attached.',
       '- The record has been harvested.'
-    ].join('\n');
+    ].join('<br>');
     expect(service.generateTooltipMessage(reasons, 'create')).toEqual(message);
   });
 
@@ -89,7 +99,7 @@ describe('RecordPermissionService', () => {
     const message = [
       'You cannot delete the record for the following reason:',
       '- 3 acquisition orders attached.'
-    ].join('\n');
+    ].join('<br>');
     expect(service.generateTooltipMessage(reasons, 'delete')).toEqual(message);
   });
 
@@ -106,5 +116,48 @@ describe('RecordPermissionService', () => {
     expect(service.membership(user, '2', permissions)).toEqual(membershipPermissions);
     // the user's library is the same as the current Library
     expect(service.membership(user, '1', permissions)).toEqual(permissions);
-  })
+  });
+
+  it('should translate the message object with dynamic data', () => {
+    const reasons = {
+      others: {
+        message: 'Order status is {{status}}',
+        data: {
+          status: 'ordered'
+        }
+      }
+    };
+    const message = [
+      'You cannot delete the record for the following reason:',
+      '- Order status is ordered'
+    ].join('<br>');
+    expect(service.generateTooltipMessage(reasons, 'delete')).toEqual(message);
+  });
+
+  it('should translate the message object with dynamic data', () => {
+    translateService.use('fr');
+    const reasons = {
+      others: [
+        {
+          message: 'Order status is {{status}}',
+          data: {
+            status: 'ordered'
+          }
+        },
+        {
+          message: 'has {{value}} items with {{name}} attached',
+          data: {
+            value: 3,
+            name: 'fees'
+          }
+        }
+      ]
+    };
+    const message = [
+      'Vous ne pouvez pas supprimer l\'enregistrement pour les raisons suivantes:',
+      '- Le statut de la commande est commandé',
+      '- contient 3 exemplaires avec frais attaché'
+    ].join('<br>');
+    expect(service.generateTooltipMessage(reasons, 'delete')).toEqual(message);
+  });
 });

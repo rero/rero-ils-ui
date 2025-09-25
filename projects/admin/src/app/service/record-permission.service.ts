@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2020-2024 RERO
+ * Copyright (C) 2020-2025 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -21,6 +21,12 @@ import { inject, Injectable } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { Observable } from 'rxjs';
 import { RecordPermissions } from '../classes/permissions';
+import { cloneDeep } from 'lodash-es';
+
+export type reasonMessage = {
+  message: string;
+  data: Record<string, string>
+};
 
 @Injectable({
   providedIn: 'root'
@@ -74,7 +80,7 @@ export class RecordPermissionService {
     if (reasons) {
       // Links
       if ('links' in reasons) {
-        const pluralDict = this.plurialLinksMessages();
+        const pluralDict = this.pluralLinksMessages();
         Object.keys(reasons.links).forEach(link => {
           const message = (link in pluralDict)
             ? translatePlural.transform(reasons.links[link], pluralDict[link], this.translateService.currentLang)
@@ -84,13 +90,23 @@ export class RecordPermissionService {
       }
       // Others
       if ('others' in reasons) {
-        const pluralDict = this.othersMessages();
-        Object.keys(reasons.others).forEach(other => {
-          const message = (other in pluralDict)
-            ? pluralDict[other]
-            : other;
-          messages.push('- ' + message);
-        });
+        if (Array.isArray(reasons['others'])) {
+          reasons['others'].map(other => {
+            if ('message' in other && 'data' in other) {
+              messages.push('- ' + this.translateMessage(other));
+            }
+          });
+        } else if ('message' in reasons['others'] && 'data' in reasons['others']) {
+          messages.push('- ' + this.translateMessage(reasons['others']));
+        } else {
+          const pluralDict = this.othersMessages();
+          Object.keys(reasons.others).forEach(other => {
+            const message = (other in pluralDict)
+              ? pluralDict[other]
+              : other;
+            messages.push('- ' + message);
+          });
+        }
       }
     }
 
@@ -118,7 +134,15 @@ export class RecordPermissionService {
           );
       }
     }
-    return messages.join('\n');
+    return messages.join('<br>');
+  }
+
+  translateMessage(reason: reasonMessage): string {
+    const reasonClone = cloneDeep(reason);
+    Object.keys(reasonClone.data).map((key: string) => {
+      reasonClone.data[key] = this.translateService.instant(String(reasonClone.data[key]))
+    });
+    return this.translateService.instant(reasonClone.message, reasonClone.data);
   }
 
   /**
@@ -141,10 +165,10 @@ export class RecordPermissionService {
   }
 
   /**
-   * Plurial links messages
+   * Plural links messages
    * @return array
    */
-  private plurialLinksMessages() {
+  private pluralLinksMessages() {
     return {
       acq_order_lines: {
         "=1": this.translateService.instant("1 acquisition order line attached."),
