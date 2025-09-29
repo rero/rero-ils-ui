@@ -87,7 +87,7 @@ export class UploadFilesComponent implements OnInit {
       return;
     }
     this.fileService
-      .updateMetadata(this.parentRecord.id, file.key, { ...file.metadata, label:label })
+      .updateMetadata(this.parentRecord.id, file.key, { ...file.metadata, metadata: { label:label }})
       .subscribe((res) => {
         const newLabel = res.metadata.label;
         file.label = newLabel;
