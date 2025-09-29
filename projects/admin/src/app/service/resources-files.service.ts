@@ -159,7 +159,7 @@ export class ResourcesFilesService {
     fileKey = fileKey.replaceAll('%', '');
     // create the bucket
     return this.httpService
-      .post(`${this.baseUrl}/${parentRecordId}/files`, [{ key: fileKey, label: fileData.label }])
+      .post(`${this.baseUrl}/${parentRecordId}/files`, [{ key: fileKey, metadata: { label: fileData.label }}])
       .pipe(
         switchMap((res: any) =>
           // set the file content
