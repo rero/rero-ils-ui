@@ -124,7 +124,11 @@ export class ReceivedIssueComponent implements OnInit, OnDestroy {
    */
   deleteIssue(issue) {
     this.recordUiService.deleteRecord('items', issue.metadata.pid).subscribe(
-      () => this.delete.emit(issue)
+      (confirm: boolean) => {
+        if (confirm) {
+          this.delete.emit(issue);
+        }
+      }
     );
   }
 
