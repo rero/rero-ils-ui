@@ -124,7 +124,7 @@ const routes: Routes = [
             }
           },
           {
-            path: 'History',
+            path: 'history',
             component: HistoryComponent,
             title: _('History'),
             canActivate: [ keepHistoryGuard, PermissionGuard ],
