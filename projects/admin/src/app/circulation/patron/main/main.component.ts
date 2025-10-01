@@ -21,8 +21,7 @@ import { PatronService } from '@app/admin/service/patron.service';
 import { HotkeysService } from '@ngneat/hotkeys';
 import { TranslateService } from '@ngx-translate/core';
 import { MenuItem } from 'primeng/api';
-import { map, Subscription, switchMap, tap } from 'rxjs';
-import { PatronTransactionService } from '../../services/patron-transaction.service';
+import { Subscription, switchMap, tap } from 'rxjs';
 import { CirculationStatsService } from '../service/circulation-stats.service';
 
 @Component({
