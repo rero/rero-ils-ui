@@ -129,21 +129,15 @@ export class SerialHoldingDetailViewComponent implements OnInit {
    */
   quickIssueReceive() {
     this.holdingService.quickReceivedIssue(this.holding).subscribe({
-      next: (result) => {
+      next: () => {
         this.messageService.add({
           severity: 'success',
           summary: this.translateService.instant('Issue'),
           detail: this.translateService.instant('New issue created.'),
           life: CONFIG.MESSAGE_LIFE
         });
-        // change item structure to have same structure as received items
-        const item = {
-          id: result.issue.pid,
-          metadata: result.issue,
-          new_issue: true  // Used to flag this issue as new received issue ; allowing to display a visual badge for user
-        };
-        this.receivedItems.unshift(item);
         this._loadPrediction(); // as we received a predicted issue, we need to reload predictions
+        this._loadReceivedItems(true);
       },
       error: (error) => {
         this.messageService.add({
@@ -178,7 +172,7 @@ export class SerialHoldingDetailViewComponent implements OnInit {
   }
 
   /** Load received items corresponding to the holding. */
-  private _loadReceivedItems() {
+  private _loadReceivedItems(markedAsNew = false) {
     this.recordService
       .getRecords(
         'items',
@@ -190,6 +184,9 @@ export class SerialHoldingDetailViewComponent implements OnInit {
       ).subscribe((result: Record) => {
         this.totalReceivedItems = this.recordService.totalHits(result.hits.total);
         this.receivedItems = result.hits.hits;
+        if (markedAsNew) {
+          this.receivedItems[0].new_issue = true;
+        }
       });
   }
 }
