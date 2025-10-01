@@ -183,6 +183,7 @@ import { provideAnimationsAsync } from "@angular/platform-browser/animations/asy
 import { HotkeysShortcutPipe } from '@ngneat/hotkeys';
 import { providePrimeNG } from "primeng/config";
 import { CirculationLogsDialogComponent } from './record/circulation-logs/circulation-logs-dialog.component';
+import { CirculationLogRecordTypePipe } from './record/circulation-logs/pipe/circulation-log-record-type.pipe';
 import { HoldingContentComponent } from './record/detail-view/document-detail-view/holding/holding-content/holding-content.component';
 import { HoldingHeaderComponent } from './record/detail-view/document-detail-view/holding/holding-header/holding-header.component';
 import { EntityAutocompleteComponent } from './record/editor/formly/primeng/entity-autocomplete/entity-autocomplete.component';
@@ -315,7 +316,8 @@ import { ImportRecordSearchComponent } from './record/search-view/import-record-
     EntityAutocompleteComponent,
     HoldingHeaderComponent,
     HoldingContentComponent,
-    ImportRecordSearchComponent
+    ImportRecordSearchComponent,
+    CirculationLogRecordTypePipe
   ],
   bootstrap: [AppComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
