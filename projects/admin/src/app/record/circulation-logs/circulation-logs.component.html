@@ -1,6 +1,6 @@
 <!--
   RERO ILS UI
-  Copyright (C) 2021-2024 RERO
+  Copyright (C) 2021-2025 RERO
   Copyright (C) 2021-2023 UCLouvain
 
   This program is free software: you can redistribute it and/or modify
@@ -20,30 +20,30 @@
     <admin-circulation-stats [itemPid]="this.resourcePid" />
   }
   <form [formGroup]="formGroup">
-    <div class="ui:flex ui:gap-2 ui:py-2">
-      <span class="ui:font-bold">{{ 'Filter' | translate}}:</span>
+    <div class="ui:flex ui:gap-2 ui:py-4">
+      <span class="ui:font-bold">{{ 'Filter' | translate }}:</span>
         @for (filter of filterTypes; track $index) {
-            <p-toggleswitch [inputId]="filter" [formControlName]="filter" />
-            <label [for]="filter">{{ ('op_filter_' + filter) | translate }}</label>
+          <p-toggleswitch [inputId]="filter" [formControlName]="filter" />
+          <label [for]="filter">{{ ('op_filter_' + filter) | translate }}</label>
         }
     </div>
   </form>
   @defer {
-    @if (recordTotals > 0) {
-      @for (record of records; track record.metadata.pid; let isFirst = $first; let idx = $index) {
-        @if (isFirst || !isSamePeriod(record, records[idx-1])) {
+    @if (recordsTotal() > 0) {
+      @for (record of records(); track $index; let isFirst = $first; let idx = $index) {
+        @if (isFirst || !isSamePeriod(record, records()[idx-1])) {
           <div class="ui:bg-surface-100 ui:p-2 ui:border-surface ui:border-y">
             <i class="fa fa-calendar"></i>&nbsp;
             {{ record.metadata.date | dateTranslate :'MMMM Y' | titlecase }}
           </div>
         }
-        @switch (getRecordType(record)) {
+        @switch (record.metadata.record.type | circulationLogRecordType) {
           @case('notification') {
             <admin-circulation-log-notification
               [record]="record"
               [isHighlight]="record.metadata.loan.pid === highlightedLoanPid"
-              [separator]="!isSamePeriod(record, records[idx-1], 'days')"
-              (mouseenter)="mouseEventTransaction(record, $event)"
+              [separator]="!isSamePeriod(record, records()[idx-1], 'days')"
+              (mouseenter)="mouseEventTransaction(record)"
               (mouseleave)="highlightedLoanPid=null"
             />
           }
@@ -51,9 +51,9 @@
             <admin-circulation-log-loan
               [record]="record"
               [isHighlight]="record.metadata.loan.pid === highlightedLoanPid"
-              [separator]="!isSamePeriod(record, records[idx-1], 'days')"
+              [separator]="!isSamePeriod(record, records()[idx-1], 'days')"
               (closeDialogEvent)="closeDialog()"
-              (mouseenter)="mouseEventTransaction(record, $event)"
+              (mouseenter)="mouseEventTransaction(record)"
               (mouseleave)="highlightedLoanPid=null"
             ></admin-circulation-log-loan>
           }
@@ -67,7 +67,7 @@
   }
 </div>
 <div class="ui:py-1 ui:justify-start">
-  @if (loadedRecord && isLinkShowMore) {
+  @if (loadedRecord() && isLinkShowMore()) {
     <p-button
       id="show-more-items-{{ resourcePid }}"
       icon="fa fa-arrow-circle-o-down"
@@ -75,8 +75,8 @@
       [text]="true"
       (onClick)="showMore()"
     />
-    @if (isLinkShowMore) {
-      <small>({{ hiddenTransactionLabel }})</small>
+    @if (isLinkShowMore()) {
+      <small>({{ hiddenTransactionLabel() }})</small>
     }
   }
 </div>

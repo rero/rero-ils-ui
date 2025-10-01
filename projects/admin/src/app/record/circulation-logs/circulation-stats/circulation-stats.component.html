@@ -1,6 +1,6 @@
 <!--
   RERO ILS UI
-  Copyright (C) 2021-2024 RERO
+  Copyright (C) 2021-2025 RERO
   Copyright (C) 2021-2023 UCLouvain
 
   This program is free software: you can redistribute it and/or modify
@@ -16,20 +16,22 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 @if (stats) {
-  <div class="ui:grid ui:grid-cols-12 ui:gap-4 ui:mb-4">
-    <div class="ui:col-span-6">
-      <span class="ui:font-bold" translate>Past year (last 365 days)</span>
-      <ul class="ui:list-none">
-        <li>{{ 'checkout' | translate | ucfirst }}: {{ stats.total_year.checkout | default: 0 }}</li>
-        <li>{{ 'renewal' | translate | ucfirst }}: {{ stats.total_year.extend | default: 0 }}</li>
-      </ul>
+  <div class="ui:flex ui:gap-2">
+    <div class="ui:w-50 ui:flex-auto">
+      <p-panel [header]="'Past year (last 365 days)'|translate" class="ui:bg-white">
+        <ul class="ui:mx-5 ui:mb-4">
+          <li>{{ 'checkout' | translate | ucfirst }}: {{ stats.total_year.checkout | default: 0 }}</li>
+          <li>{{ 'renewal' | translate | ucfirst }}: {{ stats.total_year.extend | default: 0 }}</li>
+        </ul>
+      </p-panel>
     </div>
-    <div class="ui:col-span-6">
-      <span class="ui:font-bold" translate>Total</span>
-      <ul class="ui:list-none">
-        <li>{{ 'checkout' | translate | ucfirst }}: {{ stats.total.checkout | default: 0 }}</li>
-        <li>{{ 'renewal' | translate| ucfirst }}: {{ stats.total.extend | default: 0 }}</li>
-      </ul>
+    <div class="ui:w-50 ui:flex-auto">
+      <p-panel [header]="'Total'|translate">
+        <ul class="ui:mx-5 ui:mb-4">
+          <li>{{ 'checkout' | translate | ucfirst }}: {{ stats.total.checkout | default: 0 }}</li>
+          <li>{{ 'renewal' | translate| ucfirst }}: {{ stats.total.extend | default: 0 }}</li>
+        </ul>
+      </p-panel>
     </div>
   </div>
 }

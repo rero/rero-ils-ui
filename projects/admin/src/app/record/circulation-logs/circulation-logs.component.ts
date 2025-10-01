@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2021-2024 RERO
+ * Copyright (C) 2021-2025 RERO
  * Copyright (C) 2023 UCLouvain
  *
  * This program is free software: you can redistribute it and/or modify
@@ -15,16 +15,15 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, inject, OnDestroy, OnInit } from '@angular/core';
+import { Component, computed, inject, OnDestroy, OnInit, signal } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
-import { _ } from "@ngx-translate/core";
-import { TranslateService } from '@ngx-translate/core';
+import { _, TranslateService } from "@ngx-translate/core";
 import { Record } from '@rero/ng-core';
+import { OperationLogsApiService } from '@rero/shared';
 import { DateTime } from 'luxon';
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { Observable, Subscription } from 'rxjs';
-import { map, switchMap } from 'rxjs/operators';
-import { OperationLogsApiService } from '@rero/shared';
+import { switchMap } from 'rxjs/operators';
 
 @Component({
     selector: 'admin-circulation-logs',
@@ -38,23 +37,32 @@ export class CirculationLogsComponent implements OnInit, OnDestroy {
   private operationLogsApiService: OperationLogsApiService = inject(OperationLogsApiService);
   private translateService: TranslateService = inject(TranslateService);
 
-  // COMPONENT ATTRIBUTES =====================================================
   /** Resource pid */
   resourcePid: string;
   /** Resource type */
   resourceType: string;
   /** Current page */
-  page = 1;
+  page = signal<number>(1);
   /** items per pages */
   itemsPerPage = 10;
   /** Total of records */
-  recordTotals = 0;
+  recordsTotal = signal<number>(0);
   /** Current highlighted loan */
   highlightedLoanPid: string = null;
   /** Array of records */
-  records = [];
+  records = signal<any[]>([]);
   /** first loaded record */
-  loadedRecord = false;
+  loadedRecord = signal<boolean>(false);
+
+  isLinkShowMore = computed(() => this.recordsTotal() !== this.records().length);
+
+  hiddenTransactionLabel = computed(() => {
+    const count = this.recordsTotal() - this.records().length;
+    const linkText = (count > 1)
+      ? _('{{ counter }} hidden circulations logs')
+      : _('{{ counter }} hidden circulations log');
+    return this.translateService.instant(linkText, { counter: count });
+  });
 
   formGroup: FormGroup | undefined;
 
@@ -63,30 +71,6 @@ export class CirculationLogsComponent implements OnInit, OnDestroy {
   /** all component subscription */
   private subscriptions = new Subscription();
 
-  // GETTER & SETTER ==========================================================
-  /**
-   * Is the "show more" link should be visible
-   * @return True if the link must be visible, False otherwise
-   */
-  get isLinkShowMore(): boolean {
-    return this.recordTotals > 0
-      && ((this.page * this.itemsPerPage) < this.recordTotals);
-  }
-
-  /**
-   * Get the label to use for the hidden transaction logs string.
-   * @return the translated string to display
-   */
-  get hiddenTransactionLabel(): string {
-    let count = this.recordTotals - (this.page * this.itemsPerPage);
-    count = (count < 0) ? 0 : count;
-    const linkText = (count > 1)
-      ? _('{{ counter }} hidden circulations logs')
-      : _('{{ counter }} hidden circulations log');
-    return this.translateService.instant(linkText, { counter: count });
-  }
-
-  // HOOKS ======================================================
   /** OnInit hook */
   ngOnInit(): void {
     const { data } = this.dynamicDialogConfig;
@@ -99,13 +83,15 @@ export class CirculationLogsComponent implements OnInit, OnDestroy {
     );
     this.resourceType = data.resourceType || 'item';
     this.subscriptions.add(
-    this.formGroup.valueChanges.pipe(
-      switchMap(res => this.circulationLogsQuery(1))
-    ).subscribe((response: any) => {
-      this.recordTotals = response.total.value;
-      this.records = response.hits;
-      this.loadedRecord = true;
-    }));
+      this.formGroup.valueChanges.pipe(
+        switchMap(() => this.circulationLogsQuery(1))
+      ).subscribe((response: Record) => {
+        this.page.set(1);
+        this.recordsTotal.set(response.hits.total.value);
+        this.records.set(response.hits.hits);
+        this.loadedRecord.set(true);
+      })
+    );
 
     this.formGroup.setValue(this.filterTypes.reduce((acc, elem) => {
       acc[elem] = true
@@ -117,7 +103,6 @@ export class CirculationLogsComponent implements OnInit, OnDestroy {
     this.subscriptions.unsubscribe();
   }
 
-  // PUBLIC FUNCTIONS =========================================================
   /** Close operation log dialog */
   closeDialog(): void {
     this.dynamicDialogRef.close();
@@ -125,24 +110,24 @@ export class CirculationLogsComponent implements OnInit, OnDestroy {
 
   /** show more */
   showMore(): void {
-    this.page++;
-    this.circulationLogsQuery(this.page)
-      .subscribe((response: any) => {
-        this.records = this.records.concat(response.hits);
+    this.page.update(page => page + 1);
+    this.circulationLogsQuery(this.page())
+      .subscribe((response: Record) => {
+        this.records.update(records => records.concat(response.hits.hits));
       });
   }
 
   /**
    * This function will check if two date are in the same time period
-   * @param date1: the first date to check.
-   * @param date2: the second date to check.
+   * @param record1: the first record to check.
+   * @param record2: the second record to check.
    * @param period: the time period to use to compare both dates
    * @return True if dates are similar, False otherwise
    */
-  isSamePeriod(date1: any, date2: any, period = 'months'): boolean {
-    if (date1 && date2) {
-      const transDate1 = DateTime.fromISO(date1.metadata.date);
-      const transDate2 = DateTime.fromISO(date2.metadata.date);
+  isSamePeriod(record1: any, record2: any, period = 'months'): boolean {
+    if (record1 && record2) {
+      const transDate1 = DateTime.fromISO(record1.metadata.date);
+      const transDate2 = DateTime.fromISO(record2.metadata.date);
       return transDate1.hasSame(transDate2, period);
     }
     return true;
@@ -151,40 +136,19 @@ export class CirculationLogsComponent implements OnInit, OnDestroy {
   /**
    * Handler for mouse event
    * @param record: the record on which the event is triggered.
-   * @param event: the triggered event.
    */
-  mouseEventTransaction(record: any, event: Event): void {
-    if (record.metadata
-        && record.metadata.loan
-        && record.metadata.loan.pid
-        && record.metadata.loan.pid !== this.highlightedLoanPid) {
+  mouseEventTransaction(record: any): void {
+    if (record?.metadata?.loan?.pid !== this.highlightedLoanPid) {
       this.highlightedLoanPid = record.metadata.loan.pid;
     }
   }
 
   /**
-   * Get Record Type
-   * @param record - the record to determine the type
-   * @returns string, the record type
-   */
-  getRecordType(record: any): string {
-    switch(record.metadata.record.type) {
-      case 'notif':
-        return 'notification';
-      default:
-        return 'circulation';
-    }
-  }
-
-  // PRIVATE FUNCTIONS ========================================================
-  /**
    * Circulation logs query
    * @param page - number
-   * @return Observable
    */
   private circulationLogsQuery(page: number): Observable<any> {
     return this.operationLogsApiService
-      .getCirculationLogs(this.resourceType, this.resourcePid, page, this.itemsPerPage, this.formGroup.value)
-      .pipe(map((response: Record) =>  response.hits));
+      .getCirculationLogs(this.resourceType, this.resourcePid, page, this.itemsPerPage, this.formGroup.value);
   }
 }
