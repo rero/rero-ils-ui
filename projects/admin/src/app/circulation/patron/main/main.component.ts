@@ -68,6 +68,7 @@ export class MainComponent implements OnInit, OnDestroy {
 
   /** OnInit hook */
   ngOnInit(): void {
+    this.circulationStatsService.clearStats();
     /** load patron if the barcode changes */
     this.subscription.add(this.route.params.subscribe((data: any) => {
       if (Object.hasOwn(data, 'barcode') && (this.barcode !== data.barcode)) {
@@ -120,6 +121,7 @@ export class MainComponent implements OnInit, OnDestroy {
 
   /** reset the patron currently viewed */
   clearPatron(): void {
+    this.circulationStatsService.clearStats();
     this.router.navigate(['/circulation']);
   }
 

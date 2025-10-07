@@ -30,8 +30,7 @@ export class CirculationStatsService {
   private patronService: PatronService = inject(PatronService);
   private patronTransactionService: PatronTransactionService = inject(PatronTransactionService);
 
-
-  statistics: WritableSignal<Record<string, number>> = signal({
+  private defaultStats = {
     feesEngaged: 0,
     fees: 0,
     overdueFees: 0,
@@ -39,13 +38,22 @@ export class CirculationStatsService {
     pickup: 0,
     loan: 0,
     ill: 0
-  });
+  };
+
+  statistics: WritableSignal<Record<string, number>> = signal(this.defaultStats);
   messages: WritableSignal<{severity: string, detail: string}[]> = signal([]);
   overdueTransactions: WritableSignal<{fees: LoanOverduePreview, loan: Loan}[]> = signal([]);
   engagedTransactions: WritableSignal<PatronTransaction[]> = signal([]);
 
   updateStats(patronPid: string): void {
     this.getStats(patronPid).subscribe();
+  }
+
+  clearStats(): void {
+    this.statistics.set(this.defaultStats);
+    this.messages.set([]);
+    this.overdueTransactions.set([]);
+    this.engagedTransactions.set([]);
   }
 
   updateFees(patronPid: string): Observable<any>{
