@@ -45,7 +45,7 @@ const routes: Routes = [
       {
         path: 'checkout',
         component: CheckinComponent,
-        title: _('Checkout/check-in'),
+        title: _('Checkout/checkin'),
         canActivate: [ PermissionGuard ],
         data: {
           permissions: [ PERMISSIONS.CIRC_ADMIN ]
