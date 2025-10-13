@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2024 RERO
+ * Copyright (C) 2024-2025 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -48,9 +48,13 @@ export class ItemsRemoteService implements IRemoteAutocomplete {
       );
     };
 
+    let queryString = `autocomplete_barcode:${query}`;
+    if (queryOptions.filter) {
+      queryString += ` AND ${queryOptions.filter}`;
+    }
     return this.recordService.getRecords(
       queryOptions.type,
-      `autocomplete_barcode:${query}`,
+      queryString,
       1,
       queryOptions.maxOfResult
     ).pipe(

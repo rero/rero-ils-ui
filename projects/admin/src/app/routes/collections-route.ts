@@ -30,6 +30,13 @@ import { CollectionBriefViewComponent } from '../record/brief-view/collection-br
 import { CollectionDetailViewComponent } from '../record/detail-view/collection-detail-view/collection-detail-view.component';
 import { BaseRoute } from './base-route';
 
+export interface JSONSchema7Items extends JSONSchema7 {
+  items: {
+    properties: any;
+    [key: string]: any;
+  }
+}
+
 export class CollectionsRoute extends BaseRoute implements RouteInterface {
 
   /** Route name */
@@ -123,8 +130,12 @@ export class CollectionsRoute extends BaseRoute implements RouteInterface {
               };
               return data;
             },
-            formFieldMap: (field: FormlyFieldConfig, jsonSchema: JSONSchema7): FormlyFieldConfig => {
+            formFieldMap: (field: FormlyFieldConfig, jsonSchema: JSONSchema7Items): FormlyFieldConfig => {
               const formWidget = jsonSchema.widget;
+              const queryOptions = jsonSchema?.items?.properties?.$ref?.widget?.formlyConfig?.props?.queryOptions;
+              if (queryOptions && queryOptions.type === 'items')  {
+                queryOptions.filter = "library.pid:" + this.routeToolService.userService.user.currentLibrary;
+              }
               if (formWidget?.formlyConfig?.props?.fieldMap) {
                 switch (formWidget.formlyConfig.props.fieldMap) {
                   case 'library':

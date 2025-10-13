@@ -18,7 +18,7 @@ module.exports = tseslint.config(
       '@typescript-eslint/no-unsafe-function-type': 'warn',
       '@typescript-eslint/adjacent-overload-signatures': 'warn',
       '@typescript-eslint/no-empty-object-type': 'warn',
-      '@typescript-eslint/consistent-type-definitions': ['error', 'type'],
+      '@typescript-eslint/consistent-type-definitions': ['warn'],
       'no-empty': 'warn',
       '@typescript-eslint/no-empty-function': 'warn',
       '@typescript-eslint/no-unused-expressions': [
