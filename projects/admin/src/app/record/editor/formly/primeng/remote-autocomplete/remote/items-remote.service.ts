@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2024 RERO
+ * Copyright (C) 2024-2025 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -19,8 +19,10 @@ import { TranslateService } from '@ngx-translate/core';
 import { ApiService, RecordService, TruncateTextPipe } from '@rero/ng-core';
 import { IQueryOptions, ISuggestionItem } from '@rero/prime/remote-autocomplete/remote-autocomplete.interface';
 import { MainTitlePipe } from '@rero/shared';
-import { catchError, from, map, mergeMap, Observable, of, switchMap, tap, toArray } from 'rxjs';
+import { catchError, forkJoin, from, map, mergeMap, Observable, of, switchMap, toArray } from 'rxjs';
 import { IRemoteAutocomplete } from './i-remote-autocomplete';
+
+/* eslint-disable  @typescript-eslint/no-explicit-any */
 
 @Injectable({
   providedIn: 'root'
@@ -37,38 +39,47 @@ export class ItemsRemoteService implements IRemoteAutocomplete {
     return 'items';
   }
 
-  getSuggestions(query: string, queryOptions: IQueryOptions, currentPid: string): Observable<ISuggestionItem[]> {
+  documentObs = (pid: string) => this.recordService.getRecord('documents', pid)
+  .pipe(map(record => record.metadata));
+
+  libraryObs = (pid: string) => this.recordService.getRecord('libraries', pid)
+  .pipe(map(record => record.metadata));
+
+  getSuggestions(query: string, queryOptions: IQueryOptions): Observable<ISuggestionItem[]> {
     if (!query) {
       return of([]);
     }
 
-    const documentObs = (documentPid: string) => {
-      return this.recordService.getRecord('documents', documentPid).pipe(
-        map((doc: any) => doc.metadata)
-      );
-    };
+    let queryString = `autocomplete_barcode:${query}`;
+    if(queryOptions.filter) {
+      queryString += ` ${queryOptions.filter}`;
+    }
 
     return this.recordService.getRecords(
       queryOptions.type,
-      `autocomplete_barcode:${query}`,
+      queryString,
       1,
       queryOptions.maxOfResult
     ).pipe(
-      mergeMap((result: any) => {
+      switchMap((result: any) => {
         return from(result.hits.hits).pipe(
-          mergeMap((item: any) =>
-            documentObs(item.metadata.document.pid).pipe(
-              map(doc => {
-                return {
-                  label: this.truncateTextPipe.transform(
-                      this.mainTitlePipe.transform(doc.title),
-                      10,
-                      '…'
-                    ),
-                  value: this.apiService.getRefEndpoint('items', item.metadata.pid),
-                  summary: item.metadata.barcode
-                };
-              }),
+          mergeMap((item: any) => forkJoin([
+            this.documentObs(item.metadata.document.pid),
+            this.libraryObs(item.metadata.library.pid)
+          ])
+          .pipe(
+            map(([document, library]) => {
+              const title = this.truncateTextPipe.transform(
+                this.mainTitlePipe.transform(document.title),
+                10,
+                '…'
+              );
+              return {
+                label: `${title}<br>${library.name}`,
+                value: this.apiService.getRefEndpoint('items', item.metadata.pid),
+                summary: item.metadata.barcode
+              }
+            })
             )
           ),
           toArray()
@@ -87,21 +98,26 @@ export class ItemsRemoteService implements IRemoteAutocomplete {
 
   getValueAsHTML(queryOptions: IQueryOptions, item: ISuggestionItem): Observable<string> {
     const url = item.value.split('/');
-    const pid = url.pop();
 
-    return this.recordService.getRecord(queryOptions.type, pid, 1)
-    .pipe(
-      switchMap((record: any) => {
-        return this.recordService.getRecord('documents', record.metadata.document. pid)
-        .pipe(
-          map((document: any | Error) =>
-            `<div class="ui:pt-0">
-              <div class="ui:font-bold">${this.mainTitlePipe.transform(document.metadata.title)}</div>
-              <span class="ui:font-bold">${this.translateService.instant('Barcode')}</span>: ${record.metadata.barcode}
-             </div>`
-          )
-        );
-      })
+    return this.recordService.getRecord(queryOptions.type, url.pop(), 1).pipe(
+      switchMap(record => forkJoin({
+        record: of(record),
+        library: this.libraryObs(record.metadata.library.pid),
+        document: this.documentObs(record.metadata.document.pid),
+      })),
+      map(({ record, library, document }) => `
+        <div class="flex ui:pt-0">
+          <div>
+            ${this.mainTitlePipe.transform(document.title)}
+          </div>
+          <div>
+            <span class="ui:font-bold">${this.translateService.instant('Library')}</span>: ${library.name}
+          </div>
+          <div>
+            <span class="ui:font-bold">${this.translateService.instant('Barcode')}</span>: ${record.metadata.barcode}
+          </div>
+        </div>
+      `)
     );
   }
 }

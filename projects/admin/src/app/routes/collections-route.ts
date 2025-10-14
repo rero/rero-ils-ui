@@ -30,6 +30,13 @@ import { CollectionBriefViewComponent } from '../record/brief-view/collection-br
 import { CollectionDetailViewComponent } from '../record/detail-view/collection-detail-view/collection-detail-view.component';
 import { BaseRoute } from './base-route';
 
+/* eslint-disable @typescript-eslint/consistent-type-definitions */
+export interface JSONSchema7Items extends JSONSchema7 {
+  items: {
+    properties: any;
+  }
+}
+
 export class CollectionsRoute extends BaseRoute implements RouteInterface {
 
   /** Route name */
@@ -123,10 +130,19 @@ export class CollectionsRoute extends BaseRoute implements RouteInterface {
               };
               return data;
             },
-            formFieldMap: (field: FormlyFieldConfig, jsonSchema: JSONSchema7): FormlyFieldConfig => {
+            formFieldMap: (field: FormlyFieldConfig, jsonSchema: JSONSchema7Items): FormlyFieldConfig => {
               const formWidget = jsonSchema.widget;
               if (formWidget?.formlyConfig?.props?.fieldMap) {
                 switch (formWidget.formlyConfig.props.fieldMap) {
+                  case 'items': {
+                    // filter the linked items by the organisation of the current logged user
+                    const queryOptions = jsonSchema?.items?.properties?.$ref?.widget?.formlyConfig?.props?.queryOptions;
+                    if (queryOptions) {
+                      const { currentOrganisation } = this.routeToolService.userService.user;
+                      queryOptions.filter = `AND organisation.pid:${currentOrganisation}`;
+                    }
+                  }
+                    break;
                   case 'library':
                     return this.populateLibrariesByCurrentUser(field);
                 }
