@@ -1,5 +1,49 @@
 # Changelog
 
+## [v19.1.0](https://github.com/rero/rero-ils-ui/tree/v19.1.0) (2025-10-20)
+
+[Full Changelog](https://github.com/rero/rero-ils-ui/compare/v19.0.1...v19.1.0)
+
+**New features:**
+
+- refactor(profile): improved layout of the patron folder [#1359](https://github.com/rero/rero-ils-ui/pull/1359) (by @Garfield-fr)
+- feat: display barcode on public patron profile [#1333](https://github.com/rero/rero-ils-ui/pull/1333) (by @Garfield-fr)
+- feat(circulation): add number of requests limits [#1334](https://github.com/rero/rero-ils-ui/pull/1334) (by @PascalRepond)
+- feat: add page title [#1346](https://github.com/rero/rero-ils-ui/pull/1346) (by @Garfield-fr)
+
+**Enhancements:**
+
+- feat(collection): add item filter for current organisation [#1375](https://github.com/rero/rero-ils-ui/pull/1375) (by @Garfield-fr)
+- feat(collections): enhance detailed view [#1336](https://github.com/rero/rero-ils-ui/pull/1336) (by @PascalRepond)
+
+**Fixes:**
+
+- fix(libraries): remove confusing info about notifications [#1384](https://github.com/rero/rero-ils-ui/pull/1384) (by @PascalRepond)
+- fix: move public-patron-profile routes to the public-search app [#1385](https://github.com/rero/rero-ils-ui/pull/1385) (by @PascalRepond)
+- fix(public): always hide request button when an item cannot be requested [#1382](https://github.com/rero/rero-ils-ui/pull/1382) (by @PascalRepond)
+- chore(record): improve messages translation [#1368](https://github.com/rero/rero-ils-ui/pull/1368) (by @PascalRepond)
+- fix(circulation): fix expected fees [#1367](https://github.com/rero/rero-ils-ui/pull/1367) (by @Garfield-fr)
+- fix(circulation): hide/show the show more link [#1366](https://github.com/rero/rero-ils-ui/pull/1366) (by @Garfield-fr)
+- fix(circulation): update the name of the history route [#1365](https://github.com/rero/rero-ils-ui/pull/1365) (by @Garfield-fr)
+- fix(serial): after quick receipt, the actions are deactivated [#1364](https://github.com/rero/rero-ils-ui/pull/1364) (by @Garfield-fr)
+- fix(serial): cancelling an item delete hides the item [#1363](https://github.com/rero/rero-ils-ui/pull/1363) (by @Garfield-fr)
+- fix(files): upload, label change [#1361](https://github.com/rero/rero-ils-ui/pull/1361) (by @rerowep)
+- fix(translate): add logic to translate messages [#1357](https://github.com/rero/rero-ils-ui/pull/1357) (by @Garfield-fr)
+- feat(import): add number of displayed results [#1356](https://github.com/rero/rero-ils-ui/pull/1356) (by @Garfield-fr)
+- fix(patron detail): add missing `<dd>` tag [#1348](https://github.com/rero/rero-ils-ui/pull/1348) (by @PascalRepond)
+- fix(menu): fix cache library selection [#1347](https://github.com/rero/rero-ils-ui/pull/1347) (by @Garfield-fr)
+- fix(editor): new syntax for search field [#1345](https://github.com/rero/rero-ils-ui/pull/1345) (by @Garfield-fr)
+- fix: remove multiple headers hidden for printing [#1344](https://github.com/rero/rero-ils-ui/pull/1344) (by @PascalRepond)
+
+**Other changes:**
+
+- chore(actions): auto-assign PR author [#1373](https://github.com/rero/rero-ils-ui/pull/1373) (by @PascalRepond)
+- chore: add katex library on dev dependencies [#1358](https://github.com/rero/rero-ils-ui/pull/1358) (by @Garfield-fr)
+- chore: update dependencies [#1355](https://github.com/rero/rero-ils-ui/pull/1355) (by @PascalRepond)
+- chore(dev): update eslint settings [#1349](https://github.com/rero/rero-ils-ui/pull/1349) (by @PascalRepond)
+- chore: update dependencies [#1343](https://github.com/rero/rero-ils-ui/pull/1343) (by @PascalRepond)
+- chore: remove ngVar directive [#1322](https://github.com/rero/rero-ils-ui/pull/1322) (by @Garfield-fr)
+
 ## [v19.0.1](https://github.com/rero/rero-ils-ui/tree/v19.0.1) (2025-07-22)
 
 [Full Changelog](https://github.com/rero/rero-ils-ui/compare/v19.0.0...v19.0.1)
