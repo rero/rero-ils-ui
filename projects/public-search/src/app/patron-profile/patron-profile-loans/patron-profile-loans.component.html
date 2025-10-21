@@ -15,7 +15,7 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <!-- Due date dropdown menu -->
-@if (paginator.getRecordsCount() > 0) {
+@if (records.length > 0) {
   <section class="ui:flex ui:justify-end">
     <ng-core-menu-sort
       [config]="[
@@ -38,13 +38,12 @@
       </div>
     </ng-template>
   @defer (when loaded) {
-    @if (paginator.getRecordsCount() > 0) {
+    @if (records.length > 0) {
       @for (loan of records; track $index) {
         <div class="ui:odd:bg-surface-50 ui:my-1">
           <public-search-patron-profile-loan [record]="loan" id="loan-{{ loan.metadata.pid }}" />
         </div>
       }
-      <shared-search-show-more-pager id="show-more-loans" [paginator]="paginator" />
     } @else {
         <div class="ui:font-bold ui:mx-2 ui:my-6" translate>No loan</div>
     }
