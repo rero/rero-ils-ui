@@ -1,6 +1,6 @@
 <!--
   RERO ILS UI
-  Copyright (C) 2021-2024 RERO
+  Copyright (C) 2021-2025 RERO
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published by
@@ -43,7 +43,7 @@
     <public-search-pickup-location
       [record]="record"
       [itemCount]="holdingsItemsCount"
-      recordType="{{ recordType }}"
+      [recordType]="recordType"
       [viewcode]="viewcode"
       (closeEvent)="closeDialog()"
       class="ui:w-full"

@@ -14,8 +14,24 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-@if (holdings.length > 0) {
-  @if (!userIsAuthenticated) {
+@let isAuthenticated = userService.user.isAuthenticated;
+
+@if(store.filter().length > 1) {
+<div class="ui:mb-3">
+  <p-multiselect
+    [options]="store.filter()"
+    optionLabel="name"
+    optionValue="pid"
+    [fluid]="true"
+    [maxSelectedLabels]="2"
+    [placeholder]="'Filter by library'|translate"
+    (onChange)="store.setLibraryFilter($event)"
+  />
+</div>
+}
+
+@if (store.filteredHoldings().length > 0) {
+  @if (!isAuthenticated) {
     <div class="ui:mb-4">
       <p-message
         [text]="'Log in to see request options' | translate"
@@ -24,17 +40,17 @@
       />
     </div>
   }
-  <p-accordion [multiple]="true" [value]="holdingsTotal === 1 ? [0] : []">
-    @for (holding of holdings; track $index; let idx = $index) {
-      <p-accordion-panel [value]="idx" class="ui:mb-2">
+  <p-accordion [multiple]="true" [value]="store.filteredHoldings().length === 1 ? [0] : []">
+    @for (holding of store.filteredHoldings(); track holding.metadata.pid; let idx = $index) {
+      <p-accordion-panel #panel [value]="idx" class="ui:mb-2">
         <p-accordion-header>
           <div class="ui:w-full">
-            <div class="ui:grid ui:grid-cols-12 ui:gap-4 ui:mb-4">
-              <div id="holding-location-{{ holding.metadata.pid }}" class="ui:col-span-12 ui:md:col-span-5">
+            <div class="ui:grid ui:grid-cols-12 ui:md:gap-4 ui:gap-1 ui:mb-4">
+              <div class="ui:col-span-12 ui:md:col-span-5">
                 {{ holding.metadata.library.name }}:&nbsp;{{ holding.metadata.location.name }}
               </div>
-              <div id="holding-category-name-{{ holding.metadata.pid }}" class="ui:col-span-12 ui:md:col-span-2">
-                {{ holding.metadata.circulation_category.circulation_information | getTranslatedLabel : language }}
+              <div class="ui:col-span-12 ui:md:col-span-2">
+                {{ holding.metadata.circulation_category.circulation_information | getTranslatedLabel : translateService.currentLang }}
               </div>
               <div class="ui:col-span-12 ui:md:col-span-2">
                 @if (holding.metadata.public_items_count > 0) {
@@ -42,7 +58,7 @@
                   {{ holding.metadata.public_items_count | i18nPlural: { '=0': 'item', '=1': 'item', 'other': 'items' } | translate }}
               }
               </div>
-              <div id="holding-available-{{ holding.metadata.pid }}" class="ui:col-span-12 ui:md:col-span-3">
+              <div class="ui:col-span-12 ui:md:col-span-3">
                 @if (holding.metadata.holdings_type === 'serial') {
                     <i class="fa fa-circle text-warning"></i>
                     {{ 'see collections and items' | translate }}
@@ -50,89 +66,94 @@
                   <shared-availability recordType="holding" [record]="holding" [apiService]="holdingsApiService" />
                 }
               </div>
-          </div>
+            </div>
           <!-- SERIAL HOLDING INFORMATION'S -->
           @if (holding.metadata.holdings_type === 'serial') {
-            <dl class="metadata">
-              <!-- CALL NUMBER -->
-              @if (holding.metadata.call_number) {
-                <dt translate>Call number</dt>
-                <dd id="holding-call-number-{{ holding.metadata.pid }}">
-                  {{ holding.metadata.call_number }}
+            <!-- CALL NUMBER -->
+            @if (holding.metadata.call_number) {
+              <shared-description-zone>
+                <ng-container label translate>Call number</ng-container>
+                <ng-container content>
+                  <span class="ui:font-normal">
+                    {{ holding.metadata.call_number }}
                   @if (holding.metadata.second_call_number) {
                     | {{ holding.metadata.second_call_number }}
                   }
-                </dd>
+                  </span>
+                </ng-container>
+              </shared-description-zone>
+            }
+            <!-- ENUMERATION AND CHRONOLOGY -->
+            @if (holding.metadata.enumerationAndChronology) {
+              <shared-description-zone>
+                <ng-container label translate>Available collection</ng-container>
+                <ng-container content>
+                  <span class="ui:font-normal" [innerHTML]="holding.metadata.enumerationAndChronology | nl2br"></span>
+                </ng-container>
+              </shared-description-zone>
+            }
+            <!-- SUPPLEMENTARY CONTENT -->
+            @if (holding.metadata.supplementaryContent) {
+              <shared-description-zone>
+                <ng-container label translate>Supplementary content</ng-container>
+                <ng-container content>
+                  <span class="ui:font-normal">{{ holding.metadata.supplementaryContent }}</span>
+                </ng-container>
+              </shared-description-zone>
+            }
+            <!-- INDEX -->
+            @if (holding.metadata.index) {
+              <shared-description-zone>
+                <ng-container label translate>Indexes</ng-container>
+                <ng-container content>
+                  <span class="ui:font-normal">{{ holding.metadata.index }}</span>
+                </ng-container>
+              </shared-description-zone>
+            }
+            <!-- MISSING ISSUES -->
+            @if (holding.metadata.missing_issues) {
+              <shared-description-zone>
+                <ng-container label translate>Missing issues</ng-container>
+                <ng-container content>
+                  <span class="ui:font-normal">{{ holding.metadata.missing_issues }}</span>
+                </ng-container>
+              </shared-description-zone>
+            }
+            <!-- NOTE -->
+            @if (holding.metadata.notes) {
+              @for (note of holding.metadata.notes | notesFilter : noteAuthorizedTypes; track $index) {
+                <shared-description-zone>
+                  <ng-container label translate>{{ note.type }}</ng-container>
+                  <ng-container content>
+                    <span class="ui:font-normal" [innerHTML]="note.content | nl2br"></span>
+                  </ng-container>
+                </shared-description-zone>
               }
-              <!-- ENUMERATION AND CHRONOLOGY -->
-              @if (holding.metadata.enumerationAndChronology) {
-                <dt translate>Available collection</dt>
-                <dd
-                  id="holding-enum-chro-{{ holding.metadata.pid }}"
-                  [innerHTML]="holding.metadata.enumerationAndChronology | nl2br"
-                ></dd>
-              }
-              <!-- SUPPLEMENTARY CONTENT -->
-              @if (holding.metadata.supplementaryContent) {
-                <dt translate>Supplementary content</dt>
-                <dd id="holding-sup-content-{{ holding.metadata.pid }}">
-                  {{ holding.metadata.supplementaryContent }}
-                </dd>
-              }
-              <!-- INDEX -->
-              @if (holding.metadata.index) {
-                <dt translate>Indexes</dt>
-                <dd id="holding-index-{{ holding.metadata.pid }}">
-                  {{ holding.metadata.index }}
-                </dd>
-              }
-              <!-- MISSING ISSUES -->
-              @if (holding.metadata.missing_issues) {
-                <dt translate>Missing issues</dt>
-                <dd id="holding-missing-issues-{{ holding.metadata.pid }}">
-                  {{ holding.metadata.missing_issues }}
-                </dd>
-              }
-              <!-- NOTE -->
-              @if (holding.metadata.notes) {
-                @for (note of holding.metadata.notes | notesFilter : noteAuthorizedTypes; track $index) {
-                  <dt>
-                    <i class="fa fa-sticky-note-o ui:pr-2"></i>
-                    {{ note.type | translate }}
-                  </dt>
-                  <dd [innerHTML]="note.content | nl2br"></dd>
-                }
-              }
-            </dl>
+            }
           }
         </div>
         </p-accordion-header>
         <p-accordion-content>
-          @if (holding.metadata.public_items_count > 0) {
-            <public-search-items [holding]="holding" [viewcode]="viewcode" />
+          @if (panel.active()) {
+            @if (holding.metadata.public_items_count > 0) {
+              <public-search-items [holding]="holding" [viewcode]="viewcode" />
+            }
+            <public-search-request
+              [record]="holding"
+              recordType="holding"
+              [viewcode]="viewcode"
+              [holdingsItemsCount]="holding.metadata.public_items_count"
+              class="ui:w-full"
+              [ngClass]="{'ui:mt-2': holding.metadata.public_items_count === 0}"
+            />
           }
-          <public-search-request
-            [record]="holding"
-            recordType="holding"
-            [viewcode]="viewcode"
-            [holdingsItemsCount]="holding.metadata.public_items_count"
-            class="ui:w-full"
-            [ngClass]="{'ui:mt-2': holding.metadata.public_items_count === 0}"
-          />
         </p-accordion-content>
       </p-accordion-panel>
     }
   </p-accordion>
 
   <div class="ui:mt-2">
-    @if (isLinkShowMore) {
-    <p-button severity="secondary" [text]="true" (onClick)="showMore($event)">
-      <div>
-        <i class="fa fa-plus-square-o"></i>&nbsp;{{ "Show more" | translate }}&nbsp;<small>({{ hiddenHoldings }})</small>
-      </div>
-    </p-button>
-    }
-    @if(userIsAuthenticated && userIsPatron && viewcode === 'global') {
+    @if(isAuthenticated && userService.user.hasRoles(['patron']) && viewcode === 'global') {
       <div>
         <a
           pButton
