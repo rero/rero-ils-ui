@@ -1,0 +1,73 @@
+<!--
+  RERO ILS UI
+  Copyright (C) 2021-2025 RERO
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published by
+  the Free Software Foundation, version 3 of the License.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+<admin-circulation-log
+  [record]="record"
+  [isHighlight]="isHighlight"
+  [separator]="separator"
+>
+  <p-tag badge translate>Scan Item</p-tag>
+  <div collapsedContent class="ui:grid ui:grid-cols-12 ui:gap-4">
+    <div class="ui:col-span-8">
+      <i class="fa fa-globe"></i>&nbsp;
+      @if (record.metadata.scan.transaction_location) {
+        @if (record.metadata.scan.transaction_location.pid | getRecord : 'locations' | async; as location) {
+          {{ $any(location).metadata.library.pid | getRecord : 'libraries' : 'field' : 'name' | async }}
+        }
+      } @else {
+        ---
+      }
+    </div>
+  </div>
+  <div expandedContent>
+    <!-- Library -->
+    <div class="ui:grid ui:grid-cols-12 ui:gap-x-2">
+      <div class="ui:col-span-3 ui:font-bold" translate>
+        <i class="fa fa-globe"></i>&nbsp;{{ 'Library' | translate }}
+      </div>
+      <div class="ui:col-span-9">
+        @if (record.metadata.scan.transaction_location) {
+          @if (record.metadata.scan.transaction_location.pid | getRecord : 'locations' | async; as location) {
+            {{ $any(location).metadata.library.pid | getRecord : 'libraries' : 'field' : 'name' | async }}
+          }
+        } @else {
+          ---
+        }
+      </div>
+    </div>
+    <!-- Operator -->
+    <div class="ui:grid ui:grid-cols-12 ui:gap-x-2">
+      <div class="ui:col-span-3 ui:font-bold" translate>
+        <i class="fa fa-user-circle-o"></i>&nbsp;{{ 'Operator' | translate }}
+      </div>
+      <div class="ui:col-span-9">
+        {{ record.metadata.user_name }}
+      </div>
+    </div>
+    <!-- Note -->
+     @if (record.metadata.scan.note) {
+      <div class="ui:grid ui:grid-cols-12 ui:gap-x-2">
+        <div class="ui:col-span-3 ui:font-bold" translate>
+          <i class="fa fa-comment-o"></i>&nbsp;{{ 'Note' | translate }}
+        </div>
+        <div class="ui:col-span-9">
+          {{ record.metadata.scan.note }}
+        </div>
+      </div>
+    }
+  </div>
+</admin-circulation-log>
+
