@@ -66,7 +66,7 @@ export class CirculationLogsComponent implements OnInit, OnDestroy {
 
   formGroup: FormGroup | undefined;
 
-  filterTypes = ['loan', 'notif'];
+  filterTypes = ['loan', 'notif', 'scan_item'];
 
   /** all component subscription */
   private subscriptions = new Subscription();
