@@ -15,15 +15,22 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import { AsyncPipe, NgClass } from '@angular/common';
 import { Component, inject, Input, OnInit } from '@angular/core';
-import { TranslateService } from '@ngx-translate/core';
-import { AppSettingsService } from '@rero/shared';
+import { LoadingBarModule } from '@ngx-loading-bar/core';
+import { TranslateDirective, TranslateService } from '@ngx-translate/core';
+import { RecordModule } from '@rero/ng-core';
+import { AppSettingsService, SharedModule } from '@rero/shared';
 import { MenuItem } from 'primeng/api';
+import { Ripple } from 'primeng/ripple';
+import { Tab, TabList, TabPanel, TabPanels, Tabs } from 'primeng/tabs';
+import { HoldingsComponent } from '../holdings/holdings.component';
+import { ElectronicHoldingsComponent } from './holdings/electronic-holdings/electronic-holdings.component';
 
 @Component({
     selector: 'public-search-document-detail-vew',
     templateUrl: './document-detail-view.component.html',
-    standalone: false
+    imports: [LoadingBarModule, Tabs, TabList, Ripple, Tab, TranslateDirective, TabPanels, TabPanel, SharedModule, HoldingsComponent, ElectronicHoldingsComponent, NgClass, AsyncPipe, RecordModule]
 })
 export class DocumentDetailViewComponent implements OnInit {
   private appSettingsService: AppSettingsService = inject(AppSettingsService);

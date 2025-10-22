@@ -55,7 +55,6 @@ describe('PickupLocationComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-    declarations: [PickupLocationComponent],
     schemas: [
         CUSTOM_ELEMENTS_SCHEMA
     ],

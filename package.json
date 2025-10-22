@@ -76,6 +76,7 @@
     "@angular/platform-browser-dynamic": "^19.2.0",
     "@angular/router": "^19.2.0",
     "@ngneat/hotkeys": "^4.0.0",
+    "@ngrx/signals": "^19.2.1",
     "@ngx-formly/core": "^7.0.0",
     "@ngx-formly/primeng": "^7.0.0",
     "@ngx-loading-bar/core": "^7.0.0",

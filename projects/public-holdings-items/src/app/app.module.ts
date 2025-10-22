@@ -53,57 +53,57 @@ import { PickupLocationComponent } from 'projects/public-search/src/app/document
 import { RequestComponent } from 'projects/public-search/src/app/document-detail/request/request.component';
 import { AppConfigService } from './app-config-service.service';
 import { AppInitializerService } from './app-initializer.service';
+import { ItemRequestComponent } from 'projects/public-search/src/app/document-detail/item/item-request.component';
 
 @NgModule({
-  declarations: [
-    HoldingsComponent,
-    ItemComponent,
-    ItemsComponent,
-    PickupLocationComponent,
-    RequestComponent,
-    DocumentDetailViewComponent,
-    ElectronicHoldingsComponent,
-  ],
-  schemas: [CUSTOM_ELEMENTS_SCHEMA],
-  imports: [
-    AccordionModule,
-    TabsModule,
-    CardModule,
-    MessageModule,
-    MenubarModule,
-    BrowserModule,
-    BrowserAnimationsModule,
-    DividerModule,
-    RouterModule.forRoot([]),
-    FormsModule,
-    FormlyModule.forRoot(),
-    FormlyPrimeNGModule,
-    CoreModule,
-    RecordModule,
-    ReactiveFormsModule,
-    TranslateModule.forRoot({
-      loader: {
-        provide: BaseTranslateLoader,
-        useClass: TranslateLoader,
-        deps: [CoreConfigService, HttpClient],
-      },
-      isolate: false,
-    }),
-    SharedModule,
-    LoadingBarHttpClientModule,
-    LoadingBarModule,
-  ],
-  providers: [
-    provideAppInitializer(() => {
-      const appInitializerService = inject(AppInitializerService);
-      return appInitializerService.load();
-    }),
-    { provide: TranslateService, useClass: NgCoreTranslateService },
-    { provide: CoreConfigService, useClass: AppConfigService },
-    provideHttpClient(withInterceptorsFromDi()),
-    provideAnimationsAsync(),
-    providePrimeNG(primeNGConfig),
-  ],
+    schemas: [CUSTOM_ELEMENTS_SCHEMA],
+    imports: [
+        AccordionModule,
+        TabsModule,
+        CardModule,
+        MessageModule,
+        MenubarModule,
+        BrowserModule,
+        BrowserAnimationsModule,
+        DividerModule,
+        RouterModule.forRoot([]),
+        FormsModule,
+        FormlyModule.forRoot(),
+        FormlyPrimeNGModule,
+        CoreModule,
+        RecordModule,
+        ReactiveFormsModule,
+        TranslateModule.forRoot({
+            loader: {
+                provide: BaseTranslateLoader,
+                useClass: TranslateLoader,
+                deps: [CoreConfigService, HttpClient],
+            },
+            isolate: false,
+        }),
+        SharedModule,
+        LoadingBarHttpClientModule,
+        LoadingBarModule,
+        HoldingsComponent,
+        ItemComponent,
+        ItemsComponent,
+        PickupLocationComponent,
+        RequestComponent,
+        DocumentDetailViewComponent,
+        ElectronicHoldingsComponent,
+        ItemRequestComponent
+    ],
+    providers: [
+        provideAppInitializer(() => {
+            const appInitializerService = inject(AppInitializerService);
+            return appInitializerService.load();
+        }),
+        { provide: TranslateService, useClass: NgCoreTranslateService },
+        { provide: CoreConfigService, useClass: AppConfigService },
+        provideHttpClient(withInterceptorsFromDi()),
+        provideAnimationsAsync(),
+        providePrimeNG(primeNGConfig),
+    ],
 })
 export class AppModule implements DoBootstrap {
   private injector: Injector = inject(Injector);

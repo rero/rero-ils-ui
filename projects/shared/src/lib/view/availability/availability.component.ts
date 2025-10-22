@@ -41,6 +41,8 @@ export class AvailabilityComponent implements OnInit, OnChanges {
   /** View code */
   @Input() viewcode?: string = null;
 
+  @Input() class = 'ui:justify-top';
+
   /** Availability data */
   availability: IAvailability;
 

@@ -1,6 +1,6 @@
 <!--
   RERO ILS UI
-  Copyright (C) 2021-2024 RERO
+  Copyright (C) 2021-2025 RERO
   Copyright (C) 2019-2023 UCLouvain
 
   This program is free software: you can redistribute it and/or modify
@@ -15,82 +15,111 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-  <dl class="metadata ui:p-2 ui:mb-2">
+<div class="ui:grid ui:grid-cols-12 ui:m-3">
+  <div class="ui:col-span-9">
+    <!-- ENUMERATION AND CHRONOLOGY -->
+    @if (item.metadata.enumerationAndChronology) {
+      <div class="ui:flex ui:mb-2">
+        {{ item.metadata.enumerationAndChronology }}
+      </div>
+    }
     <!-- LIBRARY AND LOCATION -->
     @if (context === 'book') {
-      <dt translate>Location</dt>
-      <dd [attr.id]="item.metadata.pid | idAttribute : {prefix: 'item-location'}">
-        {{ item.metadata.library.name }}: {{ item.metadata.location.name }}
-      </dd>
+      <div class="ui:flex ui:flex-col ui:md:flex-row">
+        <div class="ui:font-bold ui:md:w-[30%] ui:w-[100%]" translate>Location</div>
+        <div>
+          {{item.metadata.library.name}}: {{item.metadata.location.name}}
+        </div>
+      </div>
     }
     <!-- CALL NUMBER -->
     @if (item.metadata.call_number) {
-      <dt translate>Call number</dt>
-      <dd [attr.id]="item.metadata.pid | idAttribute : {prefix: 'item-call-number'}">
-        {{ item.metadata.call_number }}
+      <div class="ui:flex ui:flex-col ui:md:flex-row">
+        <div class="ui:font-bold ui:md:w-[30%] ui:w-[100%]" translate>Call number</div>
+        <div>
+          {{ item.metadata.call_number }}
         @if (item.metadata.second_call_number) {
           | {{ item.metadata.second_call_number }}
         }
-      </dd>
+        </div>
+      </div>
     }
     <!-- ITEM IN COLLECTION -->
     @if (item.metadata.in_collection) {
-      <dt translate>Temporary location</dt>
-      <dd [attr.id]="item.metadata.pid | idAttribute : {prefix: 'item-location-temporary'}">
-        @for (collection of item.metadata.in_collection; track $index; let last = $last) {
-          <a href="/{{ collection.viewcode }}/collections/{{ collection.pid }}">{{ collection.title }}</a>
-          {{ last ? '' : '; ' }}
-        }
-      </dd>
+      <div class="ui:flex ui:flex-col ui:md:flex-row">
+        <div class="ui:font-bold ui:md:w-[30%] ui:w-[100%]" translate>Temporary location</div>
+        <div>
+          @for (collection of item.metadata.in_collection; track $index; let last = $last) {
+            <a href="/{{ collection.viewcode }}/collections/{{ collection.pid }}">{{ collection.title }}</a>
+            {{ last ? '' : '; ' }}
+          }
+        </div>
+      </div>
     } @else {
       @if (item.metadata.temporary_location) {
-        <dt translate>Temporary location</dt>
-        <dd>
-          <i class="fa fa-exclamation-triangle text-warning" aria-hidden="true"></i>
-          {{ item.metadata.temporary_location.name }}
-        </dd>
+        <div class="ui:flex ui:flex-col ui:md:flex-row">
+          <div class="ui:font-bold ui:md:w-[30%] ui:w-[100%]" translate>Temporary location</div>
+          <div>
+            <i class="fa fa-exclamation-triangle text-warning" aria-hidden="true"></i>
+            {{ item.metadata.temporary_location.name }}
+          </div>
+        </div>
       }
     }
-    <!-- ITEM CIRCULATION INFORMATION -->
-    @if (circulationInformation) {
-      <dt translate>Circulation information</dt>
-      <dd>
-        <i class="fa fa-exclamation-triangle text-warning" aria-hidden="true"></i>
-        {{ circulationInformation }}
-      </dd>
-    }
-    <!-- ENUMERATION AND CHRONOLOGY -->
-    @if (item.metadata.enumerationAndChronology) {
-      <dt translate>Unit</dt>
-      <dd [attr.id]="item.metadata.pid | idAttribute : {prefix: 'item-enum-chrono'}">
-        {{ item.metadata.enumerationAndChronology }}
-      </dd>
-    }
     <!-- BARCODE -->
-    <dt translate>Barcode</dt>
-    <dd [attr.id]="item.metadata.pid | idAttribute : {prefix: 'item-barcode'}">
-      {{ item.metadata.barcode }}
-    </dd>
+    <div class="ui:flex ui:flex-col ui:md:flex-row">
+      <div class="ui:font-bold ui:md:w-[30%] ui:w-[100%]" translate>Barcode</div>
+      <div>
+        {{ item.metadata.barcode }}
+      </div>
+    </div>
     <!-- NOTES -->
     @if (item.metadata.notes && item.metadata.notes.length > 0) {
       @for (note of item.metadata.notes | notesFilter : noteAuthorizedTypes; track $index) {
-        <dt>{{ note.type | translate }}</dt>
-        <dd [innerHTML]="note.content | nl2br"></dd>
-      }
+        <div class="ui:flex ui:flex-col ui:md:flex-row">
+          <div class="ui:font-bold ui:md:w-[30%] ui:w-[100%]">{{ note.type | translate }}</div>
+          <div [innerHTML]="note.content | nl2br"></div>
+        </div>
+        }
     }
     <!-- URL -->
     @if (item.metadata.url) {
-      <dt translate>URL</dt>
-      <dd>
-        <a target="_blank" [href]="item.metadata.url | safeUrl">{{ item.metadata.url }}</a>
-      </dd>
+      <div class="ui:flex ui:flex-col ui:md:flex-row">
+        <div class="ui:font-bold ui:md:w-[30%] ui:w-[100%]" translate>URL</div>
+        <div>
+          <a target="_blank" [href]="item.metadata.url | safeUrl">{{ item.metadata.url }}</a>
+        </div>
+      </div>
     }
-    <!-- STATUS -->
-    <dt translate>Status</dt>
-    <dd [attr.id]="item.metadata.pid | idAttribute : {prefix: 'item-status'}">
-      <shared-availability recordType="item" [record]="item" [apiService]="itemApiService" />
-    </dd>
-  </dl>
+  </div>
 
-  <!-- REQUEST DIALOG -->
-  <public-search-request [record]="item" recordType="item" [viewcode]="viewcode" class="ui:w-full ui:mb-2" />
+  <div class="ui:col-span-3 ui:flex ui:flex-col ui:gap-b-2 ui:items-end">
+    @if (!showRequestDialog) {
+      @if (circulationInformation) {
+        <div class="ui:text-right">
+          <i class="fa fa-exclamation-triangle text-warning" aria-hidden="true"></i>
+          {{ circulationInformation }}
+        </div>
+      }
+      <shared-availability class="ui:justify-top ui:text-right" recordType="item" [record]="item" [apiService]="itemApiService" />
+      @if(userService.user.isPatron) {
+        <div class="ui:my-2">
+          <public-search-item-request [record]="item" (request)="showRequestDialog = !showRequestDialog" />
+        </div>
+      }
+    }
+  </div>
+</div>
+
+@if(userService.user.isPatron) {
+  <div class="ui:mb-2" [hidden]="!showRequestDialog">
+    <public-search-pickup-location
+      [record]="item"
+      recordType="item"
+      [viewcode]="viewcode"
+      (closeEvent)="showRequestDialog = !showRequestDialog"
+      class="ui:w-full"
+    />
+  </div>
+}
+

@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2021-2024 RERO
+ * Copyright (C) 2021-2025 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -15,14 +15,18 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { Component, EventEmitter, inject, Input, OnInit, Output } from '@angular/core';
-import { IPatron, UserService } from '@rero/shared';
+import { IPatron, UserService, SharedModule } from '@rero/shared';
 import { ItemApiService } from '../../api/item-api.service';
 import { HoldingsApiService } from '../../api/holdings-api.service';
+import { Button } from 'primeng/button';
+import { Tooltip } from 'primeng/tooltip';
+import { PickupLocationComponent } from './pickup-location/pickup-location.component';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
     selector: 'public-search-request',
     templateUrl: './request.component.html',
-    standalone: false
+    imports: [Button, Tooltip, PickupLocationComponent, TranslatePipe, SharedModule]
 })
 export class RequestComponent implements OnInit {
 
@@ -52,7 +56,7 @@ export class RequestComponent implements OnInit {
   requestDialog = false;
 
   /** Request dialog event */
-  @Output() requestDialogEvent = new EventEmitter<any>();
+  @Output() requestDialogEvent = new EventEmitter<boolean>();
 
   /** current patron */
   private _patron: IPatron;

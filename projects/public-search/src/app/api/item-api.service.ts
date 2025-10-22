@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2019-2024 RERO
+ * Copyright (C) 2019-2025 RERO
  * Copyright (C) 2019-2023 UCLouvain
  *
  * This program is free software: you can redistribute it and/or modify
@@ -18,11 +18,11 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { Record, RecordService } from '@rero/ng-core';
-import { BaseApi, IAvailability, IAvailabilityService, IssueItemStatus } from '@rero/shared';
-import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { BaseApi, EsRecord, EsResult, esResultInitialState, IAvailability, IAvailabilityService, IssueItemStatus } from '@rero/shared';
+import { Observable, of } from 'rxjs';
+import { catchError, map } from 'rxjs/operators';
 import { AppConfigService } from '../app-config.service';
-import { QueryResponse } from '../record';
+import { canRequest } from '../document-detail/model/can-request-model';
 
 @Injectable({
   providedIn: 'root'
@@ -42,16 +42,22 @@ export class ItemApiService extends BaseApi implements IAvailabilityService {
    * @return Observable<QueryResponse>
    */
   getItemsByHoldingsAndViewcode(
-    holdings: any, viewcode: string, page: number, itemsPerPage = 5): Observable<QueryResponse> {
+    holdings: Partial<EsRecord>, viewcode: string, page: number, itemsPerPage = 9999, filter = ''): Observable<EsResult> {
     const sort = (holdings.metadata.holdings_type === 'serial')
       ? '-issue_sort_date'
       : 'enumeration_chronology';
-    const query = (holdings.metadata.holdings_type === 'serial')
+    let query = (holdings.metadata.holdings_type === 'serial')
       ? `holding.pid:${holdings.metadata.pid} AND issue.status:${IssueItemStatus.RECEIVED}`
       : `holding.pid:${holdings.metadata.pid}`;
+    if (filter !== '') {
+      query += ` AND (enumerationAndChronology.analyzed:"${filter}" OR call_numbers:(*${filter}*) OR barcode:(*${filter}*))`;
+    }
     return this.recordService
       .getRecords('items', query, page, itemsPerPage, undefined, { view: viewcode }, BaseApi.reroJsonheaders, sort)
-      .pipe(map((response: Record) => response.hits));
+      .pipe(
+        catchError(() => of(esResultInitialState)),
+        map((response: Record) => response)
+      );
   }
 
   /**
@@ -61,9 +67,9 @@ export class ItemApiService extends BaseApi implements IAvailabilityService {
    * @param patronBarcode - string
    * @return Observable
    */
-  canRequest(itemPid: string, libraryPid: string, patronBarcode: string): Observable<any> {
+  canRequest(itemPid: string, libraryPid: string, patronBarcode: string): Observable<canRequest> {
     return this.httpClient
-      .get<any>(
+      .get<canRequest>(
         `${this.appConfigService.apiEndpointPrefix}/item/${itemPid}/can_request?library_pid=${libraryPid}&patron_barcode=${patronBarcode}`
       );
   }
