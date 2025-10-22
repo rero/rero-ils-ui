@@ -18,7 +18,7 @@
 import { HttpClient } from '@angular/common/http';
 import { TestBed } from '@angular/core/testing';
 import { RecordService } from '@rero/ng-core';
-import { IAvailability } from '@rero/shared';
+import { EsRecord, EsResult, IAvailability } from '@rero/shared';
 import { of } from 'rxjs';
 import { QueryResponse } from '../record';
 import { ItemApiService } from './item-api.service';
@@ -27,11 +27,17 @@ import { ItemApiService } from './item-api.service';
 describe('ItemService', () => {
   let service: ItemApiService;
 
-  const record = {
-    medatadata: {
+  const record: EsRecord = {
+    created: "",
+    id: "1",
+    links: {
+      self: ''
+    },
+    metadata: {
       pid: '1',
       name: 'item name'
-    }
+    },
+    updated: ""
   };
 
   const apiResponse = {
@@ -45,7 +51,9 @@ describe('ItemService', () => {
         record
       ]
     },
-    links: {}
+    links: {
+      self: ''
+    }
   };
 
   const canRequest = {
@@ -91,8 +99,8 @@ describe('ItemService', () => {
         holdings_type: 'regular'
       }
     };
-    service.getItemsByHoldingsAndViewcode(holdings, 'global', 1).subscribe((result: QueryResponse) => {
-      expect(result.hits[0]).toEqual(record);
+    service.getItemsByHoldingsAndViewcode(holdings, 'global', 1).subscribe((result: EsResult) => {
+      expect(result).toEqual(apiResponse);
     });
   });
 

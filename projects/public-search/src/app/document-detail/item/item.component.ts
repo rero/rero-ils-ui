@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2019-2024 RERO
+ * Copyright (C) 2019-2025 RERO
  * Copyright (C) 2019-2023 UCLouvain
  *
  * This program is free software: you can redistribute it and/or modify
@@ -16,18 +16,23 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { Component, inject, Input } from '@angular/core';
-import { TranslateService } from '@ngx-translate/core';
+import { TranslateDirective, TranslatePipe, TranslateService } from '@ngx-translate/core';
+import { CoreModule } from '@rero/ng-core';
+import { SharedModule, UserService } from '@rero/shared';
 import { ItemApiService } from '../../api/item-api.service';
+import { ItemRequestComponent } from './item-request.component';
+import { PickupLocationComponent } from '../request/pickup-location/pickup-location.component';
 
 @Component({
     selector: 'public-search-item',
     templateUrl: './item.component.html',
-    standalone: false
+    imports: [TranslateDirective, SharedModule, TranslatePipe, CoreModule, ItemRequestComponent, PickupLocationComponent]
 })
 export class ItemComponent {
 
-  private translateService: TranslateService = inject(TranslateService);
-  public itemApiService: ItemApiService = inject(ItemApiService);
+  private translateService = inject(TranslateService);
+  public itemApiService = inject(ItemApiService);
+  public userService = inject(UserService);
 
   /** Item record */
   private _item: any;
@@ -61,6 +66,8 @@ export class ItemComponent {
     'patrimonial_note',
     'provenance_note'
   ];
+
+  showRequestDialog = false;
 
   /** Current interface language */
   get language() {

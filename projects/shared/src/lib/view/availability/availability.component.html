@@ -1,6 +1,6 @@
 <!--
   RERO ILS UI
-  Copyright (C) 2019-2024 RERO
+  Copyright (C) 2019-2025 RERO
   Copyright (C) 2019-2023 UCLouvain
 
   This program is free software: you can redistribute it and/or modify
@@ -16,8 +16,9 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 @defer (when availability) {
+  <div [class]="class">
     <i
-      class="ui:mr-1 fa fa-circle"
+      class="fa fa-circle ui:mr-1"
       [ngClass]="{'text-success': availability.available, 'text-error': !availability.available}"
     ></i>
     @switch (recordType) {
@@ -39,6 +40,9 @@
         {{ (availability.available ? 'available' : 'not available') | translate }}
       }
     }
+  </div>
 } @loading {
-  <i class="fa fa-spinner"></i>
+  <div class="ui:flex ui:my-2">
+    <i class="fa fa-spinner"></i>
+  </div>
 }

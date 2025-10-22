@@ -117,6 +117,7 @@ import { ThumbnailComponent } from './view/thumbnail/thumbnail.component';
     AvailabilityComponent,
     CommonModule,
     ContributionComponent,
+    DescriptionZoneComponent,
     DocumentBriefViewComponent,
     DocumentDescriptionComponent,
     DocumentProvisionActivityPipe,

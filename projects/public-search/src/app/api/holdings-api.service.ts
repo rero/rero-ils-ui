@@ -18,7 +18,7 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { Record, RecordService } from '@rero/ng-core';
-import { BaseApi, IAvailability, IAvailabilityService } from '@rero/shared';
+import { BaseApi, EsResult, IAvailability, IAvailabilityService } from '@rero/shared';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { AppConfigService } from '../app-config.service';
@@ -41,13 +41,13 @@ export class HoldingsApiService extends BaseApi implements IAvailabilityService 
    * @return Observable
    */
   getHoldingsByDocumentPidAndViewcode(
-    documentPid: string, viewcode: string, page: number, itemsPerPage = 5): Observable<QueryResponse> {
+    documentPid: string, viewcode: string): Observable<EsResult> {
     const query = `document.pid:${documentPid} AND ((holdings_type:standard AND public_items_count:[1 TO *]) OR holdings_type:serial) NOT _masked:true`;
     return this.recordService
     .getRecords(
-      'holdings', query, page, itemsPerPage, undefined, { view: viewcode },
+      'holdings', query, 1, 9999, undefined, { view: viewcode },
       BaseApi.reroJsonheaders, 'organisation_library_location'
-    ).pipe(map((response: Record) => response.hits));
+    ).pipe(map((response: Record) => response));
   }
 
   /**
