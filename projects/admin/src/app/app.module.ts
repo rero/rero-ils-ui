@@ -182,6 +182,7 @@ import { FrontpageComponent } from './widgets/frontpage/frontpage.component';
 import { provideAnimationsAsync } from "@angular/platform-browser/animations/async";
 import { HotkeysShortcutPipe } from '@ngneat/hotkeys';
 import { providePrimeNG } from "primeng/config";
+import { CirculationItemScanComponent } from './record/circulation-logs/circulation-log/circulation-item-scan/circulation-item-scan.component';
 import { CirculationLogsDialogComponent } from './record/circulation-logs/circulation-logs-dialog.component';
 import { CirculationLogRecordTypePipe } from './record/circulation-logs/pipe/circulation-log-record-type.pipe';
 import { HoldingContentComponent } from './record/detail-view/document-detail-view/holding/holding-content/holding-content.component';
@@ -317,7 +318,8 @@ import { ImportRecordSearchComponent } from './record/search-view/import-record-
     HoldingHeaderComponent,
     HoldingContentComponent,
     ImportRecordSearchComponent,
-    CirculationLogRecordTypePipe
+    CirculationLogRecordTypePipe,
+    CirculationItemScanComponent
   ],
   bootstrap: [AppComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
