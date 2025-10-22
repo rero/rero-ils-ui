@@ -17,11 +17,14 @@
 
 import { Component, inject, Input, OnInit } from '@angular/core';
 import { HoldingsApiService } from 'projects/public-search/src/app/api/holdings-api.service';
+import { Card } from 'primeng/card';
+import { TranslateDirective } from '@ngx-translate/core';
+import { ButtonDirective } from 'primeng/button';
 
 @Component({
     selector: 'public-search-electronic-holdings',
     templateUrl: './electronic-holdings.component.html',
-    standalone: false
+    imports: [Card, TranslateDirective, ButtonDirective]
 })
 export class ElectronicHoldingsComponent implements OnInit{
 

@@ -14,19 +14,32 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-@if (items.length > 0) {
-  @for (item of items; track $index) {
-    <div class="ui:odd:bg-surface-50">
-      <public-search-item context="holding" [item]="item" [viewcode]="viewcode" />
-    </div>
-  }
-  @if (isLinkShowMore) {
-    <p-button severity="secondary" [text]="true" (onClick)="showMore()">
-      <div>
-        <i class="fa fa-plus-square-o"></i>&nbsp;{{'Show more' | translate}}&nbsp;<small>({{ hiddenItems }})</small>
-      </div>
-    </p-button>
-  }
-} @else {
-  <div translate>No item received.</div>
+@if (store.isFilterEnabled()) {
+  <div class="my-2">
+    <p-inputgroup>
+      <input pInputText [(ngModel)]="filter" [placeholder]="'Filter' | translate" />
+      <p-inputgroup-addon><i class="fa fa-filter"></i></p-inputgroup-addon>
+    </p-inputgroup>
+    @if (store.total() > 0) {
+      <small class="ui:ml-2">
+        @if (store.filterTotal() <= 1) {
+          {{ "{{ total }} result of {{ remoteTotal }}" | translate: { total: store.filterTotal(), remoteTotal: store.total() } }}
+        } @else {
+          {{ "{{ total }} results of {{ remoteTotal }}" | translate: { total: store.filterTotal(), remoteTotal: store.total() } }}
+        }
+      </small>
+    }
+  </div>
+}
+
+@for (item of store.items(); track item.metadata.pid) {
+  <div class="ui:odd:bg-surface-50">
+    <public-search-item context="holding" [item]="item" [viewcode]="store.viewCode()" />
+  </div>
+} @empty {
+  <div class="ui:my-3 ui:font-bold" translate>No item found.</div>
+}
+
+@if (store.isPaginatorEnabled()) {
+  <shared-paginator [paginatorState]="paginatorConfig()" (pageChange)="store.setPaginator($event)" />
 }

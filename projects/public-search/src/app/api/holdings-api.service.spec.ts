@@ -18,7 +18,7 @@
 import { HttpClient } from '@angular/common/http';
 import { TestBed } from '@angular/core/testing';
 import { RecordService } from '@rero/ng-core';
-import { IAvailability } from '@rero/shared';
+import { EsRecord, EsResult, IAvailability } from '@rero/shared';
 import { of } from 'rxjs';
 import { QueryResponse } from '../record';
 import { HoldingsApiService } from './holdings-api.service';
@@ -29,11 +29,17 @@ describe('HoldingsService', () => {
 
   let service: HoldingsApiService;
 
-  const record = {
+  const record: EsRecord = {
+    created: "",
+    id: "1",
+    links: {
+      self: ''
+    },
     metadata: {
       pid: '1',
       name: 'holding name'
-    }
+    },
+    updated: ""
   };
 
   const apiResponse = {
@@ -47,7 +53,9 @@ describe('HoldingsService', () => {
         record
       ]
     },
-    links: {}
+    links: {
+      self: ''
+    }
   };
 
   const availability: IAvailability = {
@@ -87,8 +95,8 @@ describe('HoldingsService', () => {
   });
 
   it('should return a set of Holdings', () => {
-    service.getHoldingsByDocumentPidAndViewcode('1', 'global', 1)
-      .subscribe((result: QueryResponse) => expect(result.hits[0]).toEqual(record));
+    service.getHoldingsByDocumentPidAndViewcode('1', 'global')
+      .subscribe((result: EsResult) => expect(result.hits.hits[0]).toEqual(record));
   });
 
   it('should return a set of Electronics Holdings', () => {

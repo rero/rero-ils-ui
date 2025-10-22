@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2021-2024 RERO
+ * Copyright (C) 2021-2025 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -15,18 +15,20 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { Component, EventEmitter, inject, Input, OnInit, Output } from '@angular/core';
-import { UntypedFormGroup } from '@angular/forms';
-import { FormlyFieldConfig } from '@ngx-formly/core';
-import { TranslateService } from '@ngx-translate/core';
+import { UntypedFormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormlyFieldConfig, FormlyModule } from '@ngx-formly/core';
+import { TranslateService, TranslatePipe } from '@ngx-translate/core';
 import { tap } from 'rxjs/operators';
 import { HoldingsApiService } from '../../../api/holdings-api.service';
 import { ItemApiService } from '../../../api/item-api.service';
 import { LocationApiService } from '../../../api/location-api.service';
+import { Message } from 'primeng/message';
+import { Button } from 'primeng/button';
 
 @Component({
     selector: 'public-search-pickup-location',
     templateUrl: './pickup-location.component.html',
-    standalone: false
+    imports: [Message, FormsModule, ReactiveFormsModule, FormlyModule, Button, TranslatePipe]
 })
 export class PickupLocationComponent implements OnInit {
 
@@ -131,12 +133,14 @@ export class PickupLocationComponent implements OnInit {
       });
     }
 
-    this.apiRequest.pipe(tap(() => {
-      this.showForm = false;
-      this.requestInProgress = false;
-      this.requested = true;
-    }))
-    .subscribe(
+    this.apiRequest.pipe(
+      tap(() => {
+        this.showForm = false;
+        this.requestInProgress = false;
+        this.requested = true;
+      }),
+      tap(() => this.closeDialog()),
+    ).subscribe(
       () => {
         this.requestMessage = {
           success: true,
