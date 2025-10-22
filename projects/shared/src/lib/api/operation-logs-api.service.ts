@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2021-2024 RERO
+ * Copyright (C) 2021-2025 RERO
  * Copyright (C) 2021-2023 UCLouvain
  *
  * This program is free software: you can redistribute it and/or modify
@@ -63,7 +63,12 @@ export class OperationLogsApiService extends BaseApi {
     const queryField = (resourceType === 'loan')
       ? 'loan.pid'
       : 'loan.item.pid';
-    query.push(`${queryField}:${resourcePid}`);
+    let fieldQuery = `${queryField}:${resourcePid}`;
+    if (resourceType === 'item') {
+      fieldQuery += ` OR scan.item.pid:${resourcePid}`;
+      fieldQuery = `(${fieldQuery})`;
+    }
+    query.push(fieldQuery);
     // Extraction of filter keys
     const filterKeys = Object.keys(filters);
     // If one of the filters is false, we add the filter to the query

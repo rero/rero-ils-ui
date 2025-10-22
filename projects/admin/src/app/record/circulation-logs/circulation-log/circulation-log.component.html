@@ -36,16 +36,20 @@
         @if (isCollapsed) {
           <ng-content select="[collapsedContent]" />
         } @else {
-          <div class="ui:flex ui:gap-2 ui:pr-2">
-          <ng-content class="ui:grow" select="[expandedContent]" />
-          <!-- debug mode button -->
-          @if (canUseDebugMode) {
-            <p-button [icon]="debugMode ? 'fa fa-toggle-on' : 'fa fa-toggle-off'" severity="warn" [outlined]="!debugMode" size="small"
-            (onClick)="debugMode=!debugMode"
-            >
-              <i class="fa fa-bug"></i>
-            </p-button>
-          }
+          <div class="ui:grid ui:grid-cols-12 ui:w-full">
+            <div class="ui:col-span-11">
+              <ng-content select="[expandedContent]" />
+            </div>
+            <!-- debug mode button -->
+            @if (canUseDebugMode) {
+              <div class="ui:col-span-1 ui:flex ui:justify-end">
+                <p-button [icon]="debugMode ? 'fa fa-toggle-on' : 'fa fa-toggle-off'" severity="warn" [outlined]="!debugMode" size="small"
+                (onClick)="debugMode=!debugMode"
+                >
+                  <i class="fa fa-bug"></i>
+                </p-button>
+              </div>
+            }
           </div>
         }
       </div>

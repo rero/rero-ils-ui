@@ -47,6 +47,9 @@
               (mouseleave)="highlightedLoanPid=null"
             />
           }
+          @case ('scan') {
+            <admin-circulation-item-scan [record]="record" />
+          }
           @case('circulation') {
             <admin-circulation-log-loan
               [record]="record"
@@ -55,7 +58,7 @@
               (closeDialogEvent)="closeDialog()"
               (mouseenter)="mouseEventTransaction(record)"
               (mouseleave)="highlightedLoanPid=null"
-            ></admin-circulation-log-loan>
+            />
           }
         }
       }

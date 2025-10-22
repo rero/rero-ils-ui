@@ -14,22 +14,19 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Pipe, PipeTransform } from '@angular/core';
+import { Component, Input } from '@angular/core';
 
-@Pipe({
-  name: 'circulationLogRecordType',
+@Component({
+  selector: 'admin-circulation-item-scan',
+  templateUrl: './circulation-item-scan.component.html',
   standalone: false
 })
-export class CirculationLogRecordTypePipe implements PipeTransform {
+export class CirculationItemScanComponent {
 
-  transform(recordType: string): unknown {
-    switch(recordType) {
-      case 'notif':
-        return 'notification';
-      case 'scan_item':
-        return 'scan';
-      default:
-        return 'circulation';
-    }
-  }
+  /** Operation log record */
+  @Input() record: any;
+  /** Is the log should be highlighted */
+  @Input() isHighlight = false;
+  /** Is the transaction must be separated from sibling elements */
+  @Input() separator = false;
 }
