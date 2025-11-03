@@ -47,6 +47,8 @@
   <!-- ACTION BUTTONS COLUMN -->
   <div class="ui:md:col-span-2 ui:col-span-12 ui:flex ui:justify-end">
     <p-button
+      severity="secondary"
+      [outlined]="true"
       size="small"
       class="ui:pointer-events-auto"
       [pTooltip]="canExtend.reasons | arrayTranslate | join:' / '"
@@ -54,8 +56,8 @@
       [tooltipDisabled]="canExtend.can"
       (onClick)="renew()"
       [disabled]="renewInProgress || actionDone || !canExtend.can"
-      [label]="'Renew' | translate"
-      [icon]="renewInProgress? 'fa fa-spin fa-spinner': 'fa fa-refresh'"
+      [label]="actionSuccess ? ('Renewed' | translate) : ('Renew' | translate)"
+      [icon]="renewInProgress? 'fa fa-spin fa-spinner': actionSuccess ? 'fa fa-refresh text-success': 'fa fa-refresh'"
     />
   </div>
 </div>
