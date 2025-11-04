@@ -18,7 +18,7 @@ import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { TranslateModule } from '@ngx-translate/core';
-import { testUserPatronWithSettings, UserApiService, UserService, JoinPipe, ArrayTranslatePipe } from '@rero/shared';
+import { testUserPatronWithSettings, UserApiService, UserService } from '@rero/shared';
 import { cloneDeep } from 'lodash-es';
 import { of } from 'rxjs';
 import { ItemApiService } from '../../api/item-api.service';
@@ -50,7 +50,7 @@ describe('RequestComponentItem', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-    declarations: [RequestComponent, JoinPipe, ArrayTranslatePipe],
+    declarations: [RequestComponent],
     schemas: [
         CUSTOM_ELEMENTS_SCHEMA
     ],
@@ -111,7 +111,7 @@ describe('RequestComponentHolding', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-    declarations: [RequestComponent, JoinPipe, ArrayTranslatePipe],
+    declarations: [RequestComponent],
     schemas: [
         CUSTOM_ELEMENTS_SCHEMA
     ],

@@ -22,11 +22,7 @@
       id="record-{{ record.metadata.pid }}-request-button"
       outlined
       (onClick)="showRequestDialog()"
-      [hidden]="!canRequest?.can && recordType !== 'item'"
-      [disabled]="!canRequest?.can"
-      [tooltipDisabled]="canRequest?.can"
-      [pTooltip]="canRequest?.reasons | arrayTranslate | join:'\n\n'"
-      tooltipPosition="top"
+      [hidden]="!canRequest?.can"
     >
       <i class="fa fa-cart-arrow-down ui:mr-2"></i>
       @if (recordType === 'item') {
