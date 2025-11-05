@@ -141,7 +141,7 @@
           tooltipPosition="top"
           [disabled]="!permissions.delete?.can"
           [tooltipDisabled]="permissions.delete?.can"
-          (onClick)="delete(item.metadata.pid)"
+          (onClick)="delete()"
         />
         <ng-template #tooltipContent>
           <span [innerHTML]="deleteInfoMessage | nl2br"></span>

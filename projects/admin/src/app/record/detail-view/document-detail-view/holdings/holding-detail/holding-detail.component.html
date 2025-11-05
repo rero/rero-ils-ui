@@ -23,20 +23,20 @@
     <!-- MISSING ISSUES -->
     @if (holding.metadata.missing_issues) {
       <dt translate>Missing issues</dt>
-      <dd>{{ holding.metadata.missing_issues }}</dd>
+      <dd class="ui:font-normal">{{ holding.metadata.missing_issues }}</dd>
     }
 
     <!-- NOTES -->
     @for (note of holding.metadata.notes | notesFilter: noteAuthorizedTypes; track $index) {
       <dt translate>{{ note.type }}</dt>
-      <dd [innerHtml]="note.content | nl2br"></dd>
+      <dd class="ui:font-normal" [innerHtml]="note.content | nl2br"></dd>
     }
 
     @if (context === 'holdings') {
       <!-- VENDOR -->
       @if (holding.metadata.vendor) {
         <dt translate>Vendor</dt>
-        <dd>
+        <dd class="ui:font-normal">
           {{ holding.metadata.vendor.pid | getRecord: 'vendors' : 'field' : 'name' | async }}
         </dd>
       }
@@ -44,25 +44,25 @@
       <!-- ISSUE BINDING -->
       @if (holding.metadata.issue_binding) {
         <dt translate>Issue binding</dt>
-        <dd>{{ holding.metadata.issue_binding }}</dd>
+        <dd class="ui:font-normal">{{ holding.metadata.issue_binding }}</dd>
       }
 
       <!-- ACQUISITION STATUS -->
       @if (holding.metadata.acquisition_status) {
         <dt translate>Acquisition status</dt>
-        <dd>{{ holding.metadata.acquisition_status | translate }}</dd>
+        <dd class="ui:font-normal">{{ holding.metadata.acquisition_status | translate }}</dd>
       }
 
       <!-- ACQUISITION METHOD -->
       @if (holding.metadata.acquisition_method) {
         <dt translate>Acquisition method</dt>
-        <dd>{{ holding.metadata.acquisition_method | translate }}</dd>
+        <dd class="ui:font-normal">{{ holding.metadata.acquisition_method | translate }}</dd>
       }
 
       <!-- ACQUISITION EXPECTED END DATE -->
       @if (holding.metadata.acquisition_expected_end_date) {
         <dt translate>Acquisition expected end date</dt>
-        <dd>
+        <dd class="ui:font-normal">
           {{ holding.metadata.acquisition_expected_end_date | dateTranslate :'shortDate' }}
         </dd>
       }
@@ -70,19 +70,19 @@
       <!-- GENERAL RETENTION POLICY -->
       @if (holding.metadata.general_retention_policy) {
         <dt translate>General retention policy</dt>
-        <dd>{{ holding.metadata.general_retention_policy | translate }}</dd>
+        <dd class="ui:font-normal">{{ holding.metadata.general_retention_policy | translate }}</dd>
       }
 
       <!-- COMPLETENESS -->
       @if (holding.metadata.completeness) {
         <dt translate>Completeness</dt>
-        <dd>{{ holding.metadata.completeness | translate }}</dd>
+        <dd class="ui:font-normal">{{ holding.metadata.completeness | translate }}</dd>
       }
 
       <!-- COMPOSITE COPY REPORT -->
       @if (holding.metadata.composite_copy_report) {
         <dt translate>Composite copy report</dt>
-        <dd>{{ holding.metadata.composite_copy_report | translate }}</dd>
+        <dd class="ui:font-normal">{{ holding.metadata.composite_copy_report | translate }}</dd>
       }
     }
   </dl>
