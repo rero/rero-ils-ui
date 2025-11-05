@@ -32,6 +32,7 @@ import { InputGroupModule } from 'primeng/inputgroup';
 import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
 import { InputNumberModule } from 'primeng/inputnumber';
 import { InputTextModule } from 'primeng/inputtext';
+import { MultiSelectModule } from 'primeng/multiselect';
 import { PanelModule } from 'primeng/panel';
 import { RadioButtonModule } from 'primeng/radiobutton';
 import { RippleModule } from 'primeng/ripple';
@@ -71,6 +72,7 @@ import { TreeTableModule } from 'primeng/treetable';
     ToggleSwitchModule,
     TooltipModule,
     TreeTableModule,
+    MultiSelectModule
   ]
 })
 export class PrimengImportModule { }

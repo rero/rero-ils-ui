@@ -116,8 +116,8 @@ export class DefaultHoldingItemComponent implements OnInit {
    * Delete item
    * @param itemPid - Item pid
    */
-  delete(itemPid: string): void {
-    this.deleteItem.emit(itemPid);
+  delete(): void {
+    this.deleteItem.emit(this.item);
   }
 
   // PRIVATE COMPONENT FUNCTIONS ==============================================
