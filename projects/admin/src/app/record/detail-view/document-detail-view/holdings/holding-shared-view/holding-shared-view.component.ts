@@ -14,23 +14,16 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, inject, input, OnInit } from '@angular/core';
-import { EsRecord } from 'projects/shared/src/public-api';
-import { HoldingsStore } from './store/holdings-store';
+import { Component, Input } from '@angular/core';
 
 @Component({
-    selector: 'admin-holdings',
-    templateUrl: './holdings.component.html',
-    providers: [HoldingsStore],
-    standalone: false
+    selector: 'admin-holding-shared-view',
+    templateUrl: './holding-shared-view.component.html',
+    standalone: false,
+    styles: ['dl.metadata > dd { font-weight: normal; }']
 })
-export class HoldingsComponent implements OnInit {
+export class HoldingSharedViewComponent {
 
-  protected store = inject(HoldingsStore);
-
-  protected document = input.required<EsRecord>();
-
-  ngOnInit(): void {
-    this.store.setDocument(this.document());
-  }
+  /** the holding record */
+  @Input() holding: any;
 }

@@ -17,12 +17,13 @@
  */
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
-import { ApiService, Error, RecordService } from '@rero/ng-core';
-import { IAvailability, IAvailabilityService } from '@rero/shared';
+import { ApiService, Error, Record, RecordService } from '@rero/ng-core';
+import { BaseApi, EsResult, esResultInitialState, IAvailability, IAvailabilityService } from '@rero/shared';
 import { Observable, of } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { AppConfigService } from '../service/app-config.service';
 import { ITypeEmail } from '../shared/preview-email/IPreviewInterface';
+import { EsRecord } from 'projects/shared/src/public-api';
 
 @Injectable({
   providedIn: 'root'
@@ -44,6 +45,36 @@ export class ItemApiService implements IAvailabilityService {
       'Content-Type':  'application/json'
     })
   };
+
+  getItemsByHoldings(holdings: Partial<EsRecord>, page: number, itemsPerPage = 10, filter = ''): Observable<EsResult> {
+    let query = `holding.pid:${holdings.metadata.pid}`;
+    let sort = '';
+    switch (holdings.metadata.holdings_type) {
+      case 'serial':
+        query += ' AND -issue.status:(claimed OR deleted OR late)';
+        sort = '-issue_sort_date';
+        break;
+      case 'standard':
+        sort = 'enumeration_chronology';
+        break;
+    }
+    if (filter !== '') {
+      query += ` AND (enumerationAndChronology.analyzed:"${filter}" OR call_numbers:(*${filter}*) OR barcode:(*${filter}*))`;
+    }
+    return this.recordService.getRecords(
+      ItemApiService.RESOURCE_NAME,
+      query,
+      page,
+      itemsPerPage,
+      undefined,
+      undefined,
+      BaseApi.reroJsonheaders,
+      sort
+    ).pipe(
+      catchError(() => of(esResultInitialState)),
+      map((response: Record) => response)
+    );
+  }
 
   // SERVICE FUNCTIONS ========================================================
   /**
