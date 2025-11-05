@@ -16,7 +16,7 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 @if (item && ((item.metadata.issue && item.metadata.issue.status !== itemIssueStatus.DELETED) || item.metadata.type === 'provisional')) {
-    <div class="ui:grid ui:grid-cols-12 ui:gap-1 ui:px-1 ui:grow ui:items-center">
+    <div class="ui:grid ui:grid-cols-12 ui:gap-x-4 ui:py-1 ui:px-1 ui:grow ui:items-center">
       <div class="ui:col-span-3 ui:flex">
         @if (item.metadata._masked) {
           <admin-record-masked [record]="item" />
@@ -80,7 +80,7 @@
               tooltipPosition="top"
               [disabled]="!permissions.delete?.can"
               [tooltipDisabled]="permissions.delete?.can"
-              (onClick)="delete(item.metadata.pid)"
+              (onClick)="delete()"
             />
             <ng-template #deleteTooltipContent>
               <span [innerHTML]="deleteInfoMessage | nl2br"></span>

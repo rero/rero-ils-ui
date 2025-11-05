@@ -14,8 +14,25 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-@let record = holding();
-@switch (holdingType) {
+@let record = store.holdings();
+@if (store.isFilterEnabled()) {
+  <div class="ui:my-2">
+    <p-inputgroup>
+      <input pInputText [(ngModel)]="filter" [placeholder]="'Filter' | translate" />
+      <p-inputgroup-addon><i class="fa fa-filter"></i></p-inputgroup-addon>
+    </p-inputgroup>
+    @if (store.total() > 0) {
+      <small class="ui:ml-2">
+        @if (store.filterTotal() <= 1) {
+          {{ "{{ total }} result of {{ remoteTotal }}" | translate: { total: store.filterTotal(), remoteTotal: store.total() } }}
+        } @else {
+          {{ "{{ total }} results of {{ remoteTotal }}" | translate: { total: store.filterTotal(), remoteTotal: store.total() } }}
+        }
+      </small>
+    }
+  </div>
+}
+@switch (store.holdingType()) {
   @case ('electronic') {
     <div class="ui:flex ui:flex-col">
       @for (elocation of record.metadata.electronic_location; track $index) {
@@ -24,7 +41,7 @@
     </div>
   }
   @case ('serial') {
-    @if (items) {
+    @if (store.total() > 0) {
       <div class="ui:grid ui:grid-cols-12 ui:gap-4 ui:py-2 ui:px-1 ui:font-bold">
         <div class="ui:col-span-3" translate>Barcode</div>
         <div class="ui:col-span-3" translate>Status</div>
@@ -32,53 +49,36 @@
         <div class="ui:col-span-3" translate>Call number</div>
       </div>
       <div>
-      @for (item of items | slice:0: displayItemsCounter; track $any(item).metadata.pid) {
+      @for (item of store.items(); track item.metadata.pid) {
         <div class="ui:odd:bg-surface-50 ui:pb-2 ui:px-1">
           <admin-serial-holding-item
-            [holding]="holding"
+            [holding]="store.holdings()"
             [item]="item"
             [isCurrentOrganisation]="isCurrentOrganisation()"
-            (deleteItem)="deleteItem($event)"
-            [attr.id]="$any(item).metadata.barcode | idAttribute:{prefix: 'item'}"
+            (deleteItem)="store.delete($event)"
           />
         </div>
       }
       </div>
-      @if (displayItemsCounter < totalItemsCounter) {
-        <div class="ui:flex ui:items-center">
-          <p-button [link]="true" (onClick)="showMore(5)" [attr.id]="record.metadata.pid | idAttribute:{prefix: 'holding', suffix: 'show-more-button'}">
-            <i class="fa fa-arrow-circle-o-down" aria-hidden="true"></i>
-            {{ 'Show more' | translate }}&nbsp;…
-          </p-button>
-          <small class="ui:pl-2 ui:pt-1 ui:text-muted-color">({{ showMoreItemsCounter('issue') }})</small>
-        </div>
-      }
     } @else {
       <div class="ui:font-bold" translate>No item received.</div>
     }
   }
   @default {
-    @if (items && items.length > 0) {
-      @for (item of items | slice:0: displayItemsCounter; track $any(item).metadata.pid; let last = $last) {
+    @if (store.total() > 0) {
+      @for (item of store.items(); track item.metadata.pid; let last = $last) {
         <div class="ui:odd:bg-surface-50 ui:pb-2 ui:px-1">
           <admin-default-holding-item
             [holding]="holding"
             [item]="item"
             [isCurrentOrganisation]="isCurrentOrganisation()"
-            (deleteItem)="deleteItem($event)"
-            [attr.id]="$any(item).metadata.barcode | idAttribute:{prefix: 'item'}"
+            (deleteItem)="store.delete($event)"
           />
-        </div>
-      }
-      @if (displayItemsCounter < totalItemsCounter) {
-        <div class="ui:flex ui:items-center">
-          <p-button (onClick)="showMore(5)" [attr.id]="record.metadata.pid | idAttribute:{prefix: 'holding', suffix: 'show-more-button'}">
-            <i class="fa fa-arrow-circle-o-down" aria-hidden="true"></i>
-            {{ 'Show more' | translate }}&nbsp;…
-          </p-button>
-          <small class="ui:pl-2 ui:pt-1 ui:text-muted-color">({{ showMoreItemsCounter('item') }})</small>
         </div>
       }
     }
   }
+}
+@if (store.isPaginatorEnabled()) {
+  <shared-paginator [paginatorState]="paginatorConfig()" (pageChange)="store.setPaginator($event)" />
 }

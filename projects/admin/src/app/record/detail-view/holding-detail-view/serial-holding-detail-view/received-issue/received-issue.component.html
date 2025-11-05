@@ -16,7 +16,7 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 @defer(when issue) {
-  <div class="ui:grid ui:grid-cols-12 ui:gap-4 ui:p-1 ui:border ui:border-surface" [ngClass]="{'text-error': issue.metadata.issue.status === 'deleted'}">
+  <div class="ui:grid ui:grid-cols-12 ui:gap-4 ui:p-1 ui:mb-1 ui:border ui:rounded-md ui:border-surface" [ngClass]="{'text-error': issue.metadata.issue.status === 'deleted'}">
     <div class="ui:col-span-10">
       <div class="ui:grid ui:grid-cols-12 ui:gap-4 ui:p-2 ui:items-center">
         <div class="ui:col-span-1 ui:flex ui:items-center">
@@ -32,7 +32,7 @@
             {{ issue.metadata.enumerationAndChronology }}
           </a>
           @if (issue.new_issue) {
-            <p-tag severtity="info" [value]="'New' | translate" />
+            <p-tag severity="info" [value]="'New' | translate" />
           }
           @if (issue.metadata.notes) {
             <i class="fa fa-sticky-note-o text-warning"></i>
@@ -109,7 +109,7 @@
           [title]="'Edit'|translate"
           outlined
           [routerLink]="['/records', 'items', 'edit', issue.metadata.pid]"
-          [queryParams]="{'redirectTo': 'records/holdings/detail/' + holding.id }"
+          [queryParams]="{'redirectTo': 'records/holdings/detail/' + holding.metadata.pid }"
         />
       }
 
@@ -125,10 +125,10 @@
         tooltipPosition="top"
         [disabled]="!recordPermissions.delete?.can"
         [tooltipDisabled]="recordPermissions.delete?.can"
-        (onClick)="deleteIssue(issue)"
+        (onClick)="store.deleteItem(issue)"
       />
       <ng-template #tooltipContent>
-        <span [innerHTML]="deleteInfoMessage(issue)"></span>
+        <span [innerHTML]="deleteInfoMessage()"></span>
       </ng-template>
     </div>
   </div>

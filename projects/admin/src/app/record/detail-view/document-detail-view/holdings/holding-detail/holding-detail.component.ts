@@ -21,7 +21,8 @@ import { HoldingsNoteType } from '@rero/shared';
 @Component({
     selector: 'admin-holding-detail',
     templateUrl: './holding-detail.component.html',
-    standalone: false
+    standalone: false,
+    styles: ['dl.metadata > dd { font-weight: normal; }']
 })
 export class HoldingDetailComponent {
 

@@ -1,6 +1,6 @@
 <!--
   RERO ILS UI
-  Copyright (C) 2021-2024 RERO
+  Copyright (C) 2021-2025 RERO
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published by
@@ -19,7 +19,7 @@
   @if (holding.metadata.call_number || holding.metadata.second_call_number) {
     <dl class="metadata">
       <dt translate>Call number</dt>
-      <dd id="holding-call-number-{{ holding.metadata.pid }}">
+      <dd>
         @if (holding.metadata.call_number) {
           {{ holding.metadata.call_number }}
         }
@@ -38,7 +38,7 @@
     <dl class="metadata">
       <dt translate>Available collection</dt>
       <dd
-        id="holding-enum-chrono-{{ holding.metadata.pid }}"
+
         [innerHTML]="holding.metadata.enumerationAndChronology | nl2br">
       </dd>
     </dl>
@@ -48,7 +48,7 @@
   @if (holding.metadata.supplementaryContent) {
     <dl class="metadata">
       <dt translate>Supplementary content</dt>
-      <dt id="holding-sup-content-{{ holding.metadata.pid }}">
+      <dt>
         {{ holding.metadata.supplementaryContent }}
       </dt>
     </dl>
@@ -58,7 +58,7 @@
   @if (holding.metadata.index) {
     <dl class="metadata">
       <dt translate>Indexes</dt>
-      <dd id="holding-index-{{ holding.metadata.pid }}">
+      <dd>
         {{ holding.metadata.index }}
       </dd>
     </dl>

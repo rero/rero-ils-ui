@@ -208,7 +208,7 @@
       @if (record.metadata.genreForm) {
         <div class="ui:flex ui:gap-1 ui:flex-wrap">
           @for (genre of record.metadata.genreForm; track $index) {
-            <span>
+            <span class="ui:flex ui:gap-1 ui:items-center">
               <i class="fa fa-tag"></i>
               <shared-entity-link resourceName="genreForm" [entity]="genre.entity" />
             </span>
@@ -291,7 +291,7 @@
             <shared-doc-files [documentPid]="record.metadata.pid" />
           }
         </div>
-        <admin-holding-organisation [document]="record" />
+        <admin-holdings [document]="record" />
       </p-tabpanel>
       <p-tabpanel value="description">
         <shared-document-description [record]="record" />

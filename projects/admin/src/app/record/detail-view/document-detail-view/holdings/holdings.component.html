@@ -1,6 +1,6 @@
 <!--
   RERO ILS UI
-  Copyright (C) 2019-2025 RERO
+  Copyright (C) 2021-2025 RERO
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published by
@@ -14,46 +14,59 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-@if (canAdd) {
-  <div class="ui:flex ui:justify-end" [permissions]="[permissions.HOLD_CREATE, permissions.ITEM_CREATE]">
-    <p-menu #menu [model]="options" [popup]="true" />
-    <p-button icon="fa fa-caret-down" iconPos="right" outlined (onClick)="menu.toggle($event)" [label]="'Add'|translate"/>
+@if(!store.isDocumentHarvested()) {
+  <admin-menu-actions [document]="store.document()" />
+}
+
+@if(store.filter().length > 1) {
+  <div class="ui:my-3">
+    <p-multiselect
+      [options]="store.filter()"
+      optionLabel="name"
+      optionValue="pid"
+      [fluid]="true"
+      [maxSelectedLabels]="2"
+      [placeholder]="'Filter by library'|translate"
+      (onChange)="store.setLibraryFilter($event)"
+    />
   </div>
 }
 
-@if (holdings) {
-  <div class="ui:mt-2">
-    <p-accordion [multiple]="true" [(value)]="activePanels">
-      @for (holding of holdings; track holding.metadata.pid; let i = $index) {
+@if (store.holdingsCurrentOrganisation().length > 0) {
+  <div class="ui:my-2">
+    <p-accordion [multiple]="true" [value]="store.holdingsCurrentOrganisation().length === 1 ? 0 : null">
+      @for(record of store.holdingsCurrentOrganisation(); track record.metadata.pid; let i = $index) {
         <p-accordion-panel [value]="i" class="ui:mb-2">
           <p-accordion-header>
-            <admin-holding-header
-              class="ui:w-full"
-              [holding]="holding"
-              [isCurrentOrganisation]="isCurrentOrganisation"
-              (deleteHolding)="deleteHolding($event)"
-            />
+            <admin-holding-header class="ui:w-full" [holding]="record" [isCurrentOrganisation]="true" (deleteHolding)="store.delete(record)" />
           </p-accordion-header>
-          <p-accordion-content>
-            @if(activePanels()?.indexOf(i) >= 0) {
-            <admin-holding-content
-              class="ui:w-full"
-              [holding]="holding"
-              [isCurrentOrganisation]="isCurrentOrganisation"
-            />
-          }
+          <p-accordion-content #content>
+            @if (content.active()) {
+              <admin-holding-content [holding]="record" [isCurrentOrganisation]="true" />
+            }
           </p-accordion-content>
         </p-accordion-panel>
       }
     </p-accordion>
-    @if (isLinkShowMore) {
-      <p-button severity="secondary" [text]="true" (onClick)="showMore()">
-        <div>
-          <i class="fa fa-plus-square-o"></i>&nbsp;{{
-            "Show more" | translate
-          }}&nbsp;<small>({{ hiddenHoldings }})</small>
-        </div>
-      </p-button>
-    }
+  </div>
+}
+
+@if (store.holdingsOtherOrganisation().length > 0) {
+  <div class="ui:mt-4">
+    <h5 translate>Other organisations</h5>
+    <p-accordion [multiple]="true">
+      @for(record of store.holdingsOtherOrganisation(); track record.metadata.pid; let i = $index) {
+        <p-accordion-panel [value]="i" class="ui:mb-2">
+          <p-accordion-header>
+            <admin-holding-header class="ui:w-full" [holding]="record" [isCurrentOrganisation]="false" />
+          </p-accordion-header>
+          <p-accordion-content #content>
+            @if (content.active()) {
+              <admin-holding-content [holding]="record" [isCurrentOrganisation]="false" />
+            }
+          </p-accordion-content>
+        </p-accordion-panel>
+      }
+    </p-accordion>
   </div>
 }

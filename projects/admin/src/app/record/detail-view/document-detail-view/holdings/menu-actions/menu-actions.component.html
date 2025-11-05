@@ -1,6 +1,6 @@
 <!--
   RERO ILS UI
-  Copyright (C) 2021-2024 RERO
+  Copyright (C) 2025 RERO
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published by
@@ -14,18 +14,9 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-@defer (when ready) {
-  <!-- current organisation -->
-  <admin-holdings [holdingType]="holdingType" [document]="document" />
-
-  <!-- other organisations -->
-  @if (otherOrganisationCount > 0) {
-    <div class="ui:mt-4">
-      <h5 translate>Other organisations</h5>
-      <admin-holdings [holdingType]="holdingType" [document]="document" [isCurrentOrganisation]="false" />
-    </div>
-  }
-} @loading {
-  <span class="fa fa-spin fa-spinner" role="status"></span>
-  <span class="ui:ml-1" translate>Loading in progress…</span>
+@if (canAdd() && options().length > 0) {
+  <div class="ui:flex ui:justify-end" [permissions]="[perms.HOLD_CREATE, perms.ITEM_CREATE]">
+    <p-menu #menu [model]="options()" [popup]="true" />
+    <p-button icon="fa fa-caret-down" iconPos="right" outlined (onClick)="menu.toggle($event)" [label]="'Add'|translate"/>
+  </div>
 }

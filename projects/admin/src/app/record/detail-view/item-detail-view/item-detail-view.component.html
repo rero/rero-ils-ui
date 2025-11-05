@@ -204,10 +204,12 @@
           <i class="fa fa-exchange"></i>&nbsp;
           {{ 'Circulation' | translate }}
         </p-tab>
-        <p-tab value="field">
-          <i class="fa fa-list-ul ui:mr-1"></i>&nbsp;
-          {{ 'Local fields' | translate }}
-        </p-tab>
+        @if (isDisplayLocalFieldsTab) {
+          <p-tab value="field">
+            <i class="fa fa-list-ul ui:mr-1"></i>&nbsp;
+            {{ 'Local fields' | translate }}
+          </p-tab>
+        }
         @if (record.metadata?.issue?.claims) {
           <p-tab value="claim">
             <i class="fa fa-gavel"></i>&nbsp;
@@ -242,9 +244,11 @@
             }
           </div>
         </p-tabpanel>
-        <p-tabpanel value="field">
-          <admin-local-field [resourceType]="'items'" [resourcePid]="record.metadata.pid" />
-        </p-tabpanel>
+        @if (isDisplayLocalFieldsTab) {
+          <p-tabpanel value="field">
+            <admin-local-field [resourceType]="'items'" [resourcePid]="record.metadata.pid" />
+          </p-tabpanel>
+        }
         @if (record.metadata?.issue?.claims) {
           <p-tabpanel value="claim">
             <ul class="ui:list-none">
