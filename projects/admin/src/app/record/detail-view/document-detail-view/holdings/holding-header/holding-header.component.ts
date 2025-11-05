@@ -18,7 +18,7 @@ import { Component, inject, input, OnInit, output } from '@angular/core';
 import { HoldingsService } from '@app/admin/service/holdings.service';
 import { RecordPermissionService } from '@app/admin/service/record-permission.service';
 import { TranslateService } from '@ngx-translate/core';
-import { UserService } from '@rero/shared';
+import { EsRecord, UserService } from '@rero/shared';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { forkJoin } from 'rxjs';
 import { ItemRequestComponent } from '../../item-request/item-request.component';
@@ -35,10 +35,10 @@ export class HoldingHeaderComponent implements OnInit {
   private translateService: TranslateService = inject(TranslateService);
   private dialogService: DialogService = inject(DialogService);
 
-  holding:any = input.required<any>();
+  holding = input.required<EsRecord>();
   isCurrentOrganisation = input.required<boolean>();
 
-  deleteHolding = output();
+  deleteHolding = output<EsRecord>();
 
   /** shortcut for holding type */
   holdingType: 'electronic' | 'serial' | 'standard';
@@ -83,12 +83,8 @@ export class HoldingHeaderComponent implements OnInit {
     });
   }
 
-  delete(callBackend?: boolean) {
-    const params: any = { holding: this.holding() };
-    if (callBackend !== undefined) {
-      params.callBackend = callBackend;
-    }
-    this.deleteHolding.emit(params);
+  delete() {
+    this.deleteHolding.emit(this.holding());
   }
 
   private _getPermissions(): void {

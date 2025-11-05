@@ -23,6 +23,7 @@ export type EsRecord = {
   links: Links
   metadata: any,
   updated: string;
+  [key: string]: any;
 };
 
 export type EsResult = {

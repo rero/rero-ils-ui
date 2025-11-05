@@ -1,6 +1,6 @@
 <!--
   RERO ILS UI
-  Copyright (C) 2019-2024 RERO
+  Copyright (C) 2019-2025 RERO
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published by
@@ -16,10 +16,10 @@
 -->
 <h1 translate>Holdings</h1>
 <div class="ui:mb-4">
-  @if (holding.metadata._masked) {
-    <admin-record-masked [record]="holding" [withLabel]="true"></admin-record-masked>
+  @if (holding().metadata._masked) {
+    <admin-record-masked [record]="holding()" [withLabel]="true"></admin-record-masked>
   }
-  @if (holding.metadata.document.pid | getRecord:'documents' | async; as document) {
+  @if (holding().metadata.document.pid | getRecord:'documents' | async; as document) {
       <div class="ui:border ui:rounded-border ui:border-surface ui:p-6">
         <admin-documents-brief-view
             [record]="document"
@@ -30,9 +30,9 @@
         />
       </div>
   }
-  @if (holding) {
+  @if (holding()) {
     <div class="ui:mt-3">
-      <admin-holding-shared-view [holding]="holding" />
+      <admin-holding-shared-view [holding]="holding()" />
     </div>
   }
 </div>
@@ -45,92 +45,105 @@
     <p-tab value="detail">
       <i class="fa fa-list-ul"></i>&nbsp;{{ 'Details' | translate }}
     </p-tab>
-    <p-tab value="local">
-      <i class="fa fa-list-ul"></i>&nbsp;{{ 'Local fields' | translate }}
-    </p-tab>
+    @if (store.isDisplayLocalFieldsTab()) {
+      <p-tab value="local">
+        <i class="fa fa-list-ul"></i>&nbsp;{{ 'Local fields' | translate }}
+      </p-tab>
+    }
   </p-tablist>
   <p-tabpanels>
     <p-tabpanel value="issue">
-      <div class="ui:flex ui:flex-col ui:gap-2">
-        <div class="ui:flex ui:gap-x-1">
-          <p-button
-            class="ui:grow"
-            [outlined]="true"
-            (onClick)="showMore('prediction', 3)"
-            icon="fa fa-arrow-circle-o-up"
-            size="small"
-            label="{{ 'Show more' | translate }} &hellip;"
-          />
-          @if (allowIssueCreation) {
-            <p-button size="small" outlined
-              [routerLink]="['/records', 'items', 'new']"
-              [queryParams]="{
-                'holding': holding.id,
-                'irregular': true,
-                'redirectTo': 'records/holdings/detail/' + holding.id
-              }"
-              icon="fa fa-plus-square-o"
-              label="{{ 'Add irregular issue' | translate }} &hellip;"
-            />
+      @if (holding().metadata.patterns) {
+        <div class="ui:flex ui:flex-col ui:gap-2">
+          <div class="ui:flex">
+            <h4 translate>Prediction</h4>
+            <div class="ui:flex ui:flex-1 ui:justify-end">
+              <p-button
+                icon="fa fa-arrow-circle-o-up"
+                size="small"
+                label="{{ 'Show more' | translate }} &hellip;"
+                [outlined]="true"
+                (onClick)="store.moreIssues(3)"
+              />
+            </div>
+          </div>
+
+          <div class="ui:flex ui:flex-col">
+            @for (prediction of store.issues(); track $index; let last = $last) {
+              <admin-expected-issue [issue]="prediction">
+                @if (last) {
+                  <ng-container actions>
+                    @if (store.isAllowIssueCreation()) {
+                      <p-button
+                        icon="fa fa-check-circle"
+                        size="small"
+                        [title]="'Quick receive'|translate"
+                        [outlined]="true"
+                        (onClick)="store.quickIssueReceive()"
+                        [disabled]="store.quickReceiveDisableButton()"
+                      />
+                    }
+                  </ng-container>
+                }
+              </admin-expected-issue>
+            }
+          </div>
+        </div>
+      }
+
+      <div class="ui:flex ui:flex-col ui:gap-2" [class]="{ 'ui:mt-6': holding().metadata.patterns}">
+        <div class="ui:flex">
+          <h4 translate>Issues</h4>
+          @if (store.isAllowIssueCreation()) {
+            <div class="ui:flex ui:flex-1 ui:justify-end">
+              <p-button size="small" outlined
+                [routerLink]="['/records', 'items', 'new']"
+                [queryParams]="{
+                  'holding': holding().metadata.pid,
+                  'irregular': true,
+                  'redirectTo': 'records/holdings/detail/' + holding().metadata.pid
+                }"
+                icon="fa fa-plus-square-o"
+                label="{{ 'Add irregular issue' | translate }} &hellip;"
+              />
+            </div>
           }
         </div>
+
         <div class="ui:flex ui:flex-col">
-          @for (prediction of predictionsItems; track $index; let last = $last) {
-            <admin-expected-issue [issue]="prediction">
-              @if (last) {
-                <ng-container actions>
-                  @if (allowIssueCreation) {
-                    <p-button
-                      icon="fa fa-check-circle"
-                      size="small"
-                      [title]="'Quick receive'|translate"
-                      outlined
-                      (onClick)="quickIssueReceive()"
-                    />
+          @if (store.isFilterEnabled()) {
+            <div class="ui:my-2">
+              <p-inputgroup>
+                <input pInputText [(ngModel)]="filter" [placeholder]="'Filter' | translate" />
+                <p-inputgroup-addon><i class="fa fa-filter"></i></p-inputgroup-addon>
+              </p-inputgroup>
+              @if (store.receivedItemsCount() > 0) {
+                <small class="ui:ml-2">
+                  @if (store.filterTotal() <= 1) {
+                    {{ "{{ total }} result of {{ remoteTotal }}" | translate: { total: store.filterTotal(), remoteTotal: store.receivedItemsCount() } }}
+                  } @else {
+                    {{ "{{ total }} results of {{ remoteTotal }}" | translate: { total: store.filterTotal(), remoteTotal: store.receivedItemsCount() } }}
                   }
-                  @if (allowIssueCreation) {
-                    <p-button
-                      icon="fa fa-plus"
-                      size="small"
-                      [title]="'Receive and edit this issue'|translate"
-                      outlined
-                      [routerLink]="['/records', 'items', 'new']"
-                      [queryParams]="{
-                        'holding': holding.id,
-                        'redirectTo': 'records/holdings/detail/' + holding.id,
-                        'enumerationAndChronology': prediction.issue,
-                        'expected_date': prediction.expected_date
-                      }"
-                      styleClass="ui:ml-1"
-                    />
-                  }
-                </ng-container>
+                </small>
               }
-            </admin-expected-issue>
+            </div>
           }
-          @for (item of receivedItems; track item.metadata.pid; let last = $last) {
-            <admin-received-issue [issue]="item" [holding]="holding" (delete)="deleteIssue($event)" />
+          @for (item of store.receivedItems(); track item.metadata.pid; let last = $last) {
+            <admin-received-issue [issue]="item" [holding]="holding()" />
+          }
+          @if (store.isPaginatorEnabled()) {
+            <shared-paginator class="ui:mt-4" [paginatorState]="paginatorConfig()" (pageChange)="store.setPaginator($event)" />
           }
         </div>
-        @if (receivedItems.length < totalReceivedItems) {
-          <div class="ui:flex ui:items-center ui:gap-2">
-          <p-button
-            [outlined]="true"
-            size="small"
-            (onClick)="showMore('received', 5)"
-            icon="fa fa-arrow-circle-o-down"
-            label="{{ 'Show more' | translate }} &hellip;"
-            />
-          <small class=" ui:text-muted-color">({{ showMoreIssuesCounter }})</small>
-        </div>
-        }
       </div>
     </p-tabpanel>
     <p-tabpanel value="detail">
-      <admin-holding-detail context="holdings" [holding]="holding"></admin-holding-detail>
+      <admin-holding-detail context="holdings" [holding]="holding()"></admin-holding-detail>
     </p-tabpanel>
-    <p-tabpanel value="local">
-      <admin-local-field [resourceType]="'holdings'" [resourcePid]="holding.metadata.pid"></admin-local-field>
-    </p-tabpanel>
+    @if (store.isDisplayLocalFieldsTab()) {
+      <p-tabpanel value="local">
+        <admin-local-field [resourceType]="'holdings'" [resourcePid]="holding().metadata.pid"></admin-local-field>
+      </p-tabpanel>
+    }
   </p-tabpanels>
 </p-tabs>

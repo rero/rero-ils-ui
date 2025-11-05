@@ -20,7 +20,7 @@ import { ItemApiService } from '@app/admin/api/item-api.service';
 import { IssueService } from '@app/admin/service/issue.service';
 import { RecordService } from '@rero/ng-core';
 import { DetailRecord } from '@rero/ng-core/lib/record/detail/view/detail-record';
-import { IPermissions, IssueItemStatus, PERMISSION_OPERATOR, PERMISSIONS } from '@rero/shared';
+import { IPermissions, IssueItemStatus, PERMISSION_OPERATOR, PERMISSIONS, UserService } from '@rero/shared';
 import { DateTime } from 'luxon';
 import { Observable, Subscription } from 'rxjs';
 import { Item, ItemNote } from '../../../classes/items';
@@ -42,6 +42,7 @@ export class ItemDetailViewComponent implements OnChanges, OnDestroy {
   private holdingService: HoldingsService = inject(HoldingsService);
   private operationLogsService: OperationLogsService= inject(OperationLogsService);
   private organisationService: OrganisationService = inject(OrganisationService);
+  private userService: UserService = inject(UserService);
 
   /** Document record */
   @Input() record: any;
@@ -68,6 +69,10 @@ export class ItemDetailViewComponent implements OnChanges, OnDestroy {
    */
   get isEnabledOperationLog(): boolean {
     return this.operationLogsService.isLogVisible('items');
+  }
+
+  get isDisplayLocalFieldsTab(): boolean {
+    return this.userService.user.currentLibrary === this.record.metadata.library.pid;
   }
 
   /**

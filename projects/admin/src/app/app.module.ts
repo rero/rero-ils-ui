@@ -36,7 +36,7 @@ import {
   RecordModule, RemoteAutocompleteService,
   TranslateLoader, TruncateTextPipe
 } from '@rero/ng-core';
-import { ItemHoldingsCallNumberPipe, MainTitlePipe, SharedModule } from '@rero/shared';
+import { ItemHoldingsCallNumberPipe, MainTitlePipe, Paginator, PaginatorComponent, SharedModule } from '@rero/shared';
 import { FileUploadModule } from 'primeng/fileupload';
 import { MenubarModule } from 'primeng/menubar';
 import { TableModule } from "primeng/table";
@@ -93,19 +93,16 @@ import { DocumentDetailComponent } from './record/detail-view/document-detail-vi
 import { EntitiesRelatedComponent } from './record/detail-view/document-detail-view/entities-related/entities-related.component';
 import { FilesCollectionsComponent } from './record/detail-view/document-detail-view/files-collections/files-collections.component';
 import { UploadFilesComponent } from './record/detail-view/document-detail-view/files-collections/upload-files/upload-files.component';
-import { HoldingDetailComponent } from './record/detail-view/document-detail-view/holding-detail/holding-detail.component';
-import {
-  HoldingOrganisationComponent
-} from './record/detail-view/document-detail-view/holding-organisation/holding-organisation.component';
-import { HoldingSharedViewComponent } from './record/detail-view/document-detail-view/holding-shared-view/holding-shared-view.component';
+import { HoldingDetailComponent } from './record/detail-view/document-detail-view/holdings/holding-detail/holding-detail.component';
+import { HoldingSharedViewComponent } from './record/detail-view/document-detail-view/holdings/holding-shared-view/holding-shared-view.component';
 import {
   DefaultHoldingItemComponent
-} from './record/detail-view/document-detail-view/holding/default-holding-item/default-holding-item.component';
-import { HoldingItemNoteComponent } from './record/detail-view/document-detail-view/holding/holding-item-note/holding-item-note.component';
-import { HoldingItemTemporaryItemTypeComponent } from './record/detail-view/document-detail-view/holding/holding-item-temporary-item-type/holding-item-temporary-item-type.component';
+} from './record/detail-view/document-detail-view/holdings/default-holding-item/default-holding-item.component';
+import { HoldingItemNoteComponent } from './record/detail-view/document-detail-view/holdings/holding-item-note/holding-item-note.component';
+import { HoldingItemTemporaryItemTypeComponent } from './record/detail-view/document-detail-view/holdings/holding-item-temporary-item-type/holding-item-temporary-item-type.component';
 import {
   SerialHoldingItemComponent
-} from './record/detail-view/document-detail-view/holding/serial-holding-item/serial-holding-item.component';
+} from './record/detail-view/document-detail-view/holdings/serial-holding-item/serial-holding-item.component';
 import { HoldingsComponent } from './record/detail-view/document-detail-view/holdings/holdings.component';
 import { ItemRequestComponent } from './record/detail-view/document-detail-view/item-request/item-request.component';
 import { RelatedResourceComponent } from './record/detail-view/document-detail-view/related-resource/related-resource.component';
@@ -185,8 +182,9 @@ import { providePrimeNG } from "primeng/config";
 import { CirculationItemScanComponent } from './record/circulation-logs/circulation-log/circulation-item-scan/circulation-item-scan.component';
 import { CirculationLogsDialogComponent } from './record/circulation-logs/circulation-logs-dialog.component';
 import { CirculationLogRecordTypePipe } from './record/circulation-logs/pipe/circulation-log-record-type.pipe';
-import { HoldingContentComponent } from './record/detail-view/document-detail-view/holding/holding-content/holding-content.component';
-import { HoldingHeaderComponent } from './record/detail-view/document-detail-view/holding/holding-header/holding-header.component';
+import { HoldingContentComponent } from './record/detail-view/document-detail-view/holdings/holding-content/holding-content.component';
+import { HoldingHeaderComponent } from './record/detail-view/document-detail-view/holdings/holding-header/holding-header.component';
+import { MenuActionsComponent } from './record/detail-view/document-detail-view/holdings/menu-actions/menu-actions.component';
 import { EntityAutocompleteComponent } from './record/editor/formly/primeng/entity-autocomplete/entity-autocomplete.component';
 import { RemoteAutocompleteService as UiRemoteAutocompleteService } from './record/editor/formly/primeng/remote-autocomplete/remote-autocomplete.service';
 import { ImportRecordSearchComponent } from './record/search-view/import-record-search/import-record-search.component';
@@ -263,7 +261,6 @@ import { ImportRecordSearchComponent } from './record/search-view/import-record-
     CirculationLogComponent,
     ItemInCollectionPipe,
     CountryCodeTranslatePipe,
-    HoldingOrganisationComponent,
     ExpectedIssueComponent,
     ReceivedIssueComponent,
     LoansBriefViewComponent,
@@ -319,7 +316,8 @@ import { ImportRecordSearchComponent } from './record/search-view/import-record-
     HoldingContentComponent,
     ImportRecordSearchComponent,
     CirculationLogRecordTypePipe,
-    CirculationItemScanComponent
+    CirculationItemScanComponent,
+    MenuActionsComponent
   ],
   bootstrap: [AppComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
@@ -357,7 +355,8 @@ import { ImportRecordSearchComponent } from './record/search-view/import-record-
     PrimengImportModule,
     PreviewEmailModule,
     FileUploadModule,
-    MenubarModule
+    MenubarModule,
+    PaginatorComponent
   ],
   providers: [
     provideAppInitializer(() => {

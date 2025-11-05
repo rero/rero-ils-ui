@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2021-2024 RERO
+ * Copyright (C) 2021-2025 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { inject, Injectable } from '@angular/core';
-import { Record, RecordService } from '@rero/ng-core';
+import { Error, Record, RecordService, RecordUiService } from '@rero/ng-core';
 import { BaseApi } from '@rero/shared';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
@@ -25,13 +25,44 @@ import { map } from 'rxjs/operators';
 })
 export class HoldingsApiService {
 
-  private recordService: RecordService = inject(RecordService);
+  private recordService = inject(RecordService);
+  private recordUiService = inject(RecordUiService);
 
   /** Resource name */
   readonly RESOURCE_NAME = 'holdings';
 
-  /** Items per page */
-  readonly ITEMS_PER_PAGE = 10;
+  getHoldingsByDocumentPid(documentPid: string): Observable<Record | Error> {
+    const query = `document.pid: ${documentPid} AND ((holdings_type:standard AND items_count:[1 TO *]) OR holdings_type:serial OR holdings_type:electronic)`;
+    return this.recordService.getRecords(
+      this.RESOURCE_NAME,
+      query,
+      1,
+      RecordService.MAX_REST_RESULTS_SIZE,
+      undefined,
+      undefined,
+      BaseApi.reroJsonheaders,
+      'organisation_library_location'
+    );
+  }
+
+  getIssuesByHoldings(holdingsPid: string, page: number, size: number, markedAsNew: boolean, filter?: string) {
+    let query = `holding.pid:${holdingsPid} AND NOT type:provisional`;
+    if (filter) {
+      query += ` AND (enumerationAndChronology.analyzed:"${filter}" OR call_numbers:(*${filter}*) OR barcode:(*${filter}*))`;
+    }
+    return this.recordService.getRecords('items', query, page, size, [], {}, null,'-issue_sort_date').pipe(
+      map((result: Record) => {
+        if (markedAsNew) {
+          result.hits.hits[0].new_issue = true;
+        }
+        return result;
+      })
+    );
+  }
+
+  delete(holdingsPid: string): Observable<boolean> {
+    return this.recordUiService.deleteRecord(this.RESOURCE_NAME, holdingsPid);
+  }
 
   /**
    *

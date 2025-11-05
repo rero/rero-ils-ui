@@ -18,7 +18,7 @@ import { computed, inject } from "@angular/core";
 import { toObservable } from "@angular/core/rxjs-interop";
 import { patchState, signalMethod, signalStore, withComputed, withHooks, withMethods, withState } from "@ngrx/signals";
 import { rxMethod } from "@ngrx/signals/rxjs-interop";
-import { EsRecord, paginatorInitialState, withPaginator } from "@rero/shared";
+import { EsRecord, nonNullable, paginatorInitialState, withPaginator } from "@rero/shared";
 import { PaginatorState } from "primeng/paginator";
 import { withViewCode } from "projects/shared/src/lib/store/viewcode-feature";
 import { EsResult } from "projects/shared/src/public-api";
@@ -29,7 +29,7 @@ type Items = {
   items: EsRecord[],
   total: number;
   holdings: Partial<EsRecord>;
-  filter: string;
+  filter: string | undefined;
   filterTotal: number;
 }
 
@@ -37,7 +37,7 @@ const itemsInitialState: Items = {
   items: [],
   total: 0,
   holdings: {},
-  filter: "",
+  filter: undefined,
   filterTotal: 0
 }
 
@@ -85,7 +85,7 @@ export const ItemsStore = signalStore(
   })),
   withHooks((store) => ({
     onInit: () => {
-      toObservable(store.filter).subscribe(() => store.load());
+      toObservable(store.filter).pipe(nonNullable()).subscribe(() => store.load());
       toObservable(store.paginator).subscribe(() => store.load())
     }
   }))
