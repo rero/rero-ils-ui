@@ -20,10 +20,10 @@ import { CUSTOM_ELEMENTS_SCHEMA, inject, NgModule, provideAppInitializer } from 
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
-import { RouterLink, RouterLinkActive, RouterModule, RouterOutlet, Routes } from '@angular/router';
+import { RouterLink, RouterLinkActive, RouterModule, RouterOutlet } from '@angular/router';
 import { FormlyModule } from '@ngx-formly/core';
 import { LoadingBarHttpClientModule } from '@ngx-loading-bar/http-client';
-import { _, TranslateLoader as BaseTranslateLoader, TranslateModule, TranslateService } from '@ngx-translate/core';
+import { TranslateLoader as BaseTranslateLoader, TranslateModule, TranslateService } from '@ngx-translate/core';
 import { CoreConfigService, NgCoreTranslateService, primeNGConfig, RecordModule, TranslateLoader } from '@rero/ng-core';
 import { SharedModule } from '@rero/shared';
 import { BadgeModule } from 'primeng/badge';
@@ -58,24 +58,7 @@ import { LoanStatusBadgePipe } from 'projects/public-search/src/app/pipe/loan-st
 import { AppConfigService } from './app-config-service.service';
 import { AppInitializerService } from './app-initializer.service';
 import { AppComponent } from './app.component';
-
-const routes: Routes = [
-  {
-    path: '',
-    title: _('Patron: my account'),
-    component: PatronProfileComponent
-  },
-  {
-    path: 'user/edit',
-    title: _('Patron: edit my profile'),
-    component: PatronProfilePersonalEditorComponent
-  },
-  {
-    path: 'password/edit',
-    title: _('Patron: change password'),
-    component: PatronProfilePasswordComponent
-  },
-];
+import { patronProfileRoutes } from 'projects/public-search/src/app/routes/patron-profile-routes'
 
 @NgModule({
   declarations: [
@@ -110,7 +93,7 @@ const routes: Routes = [
     RecordModule,
     RouterLink,
     RouterLinkActive,
-    RouterModule.forRoot(routes),
+    RouterModule.forRoot(patronProfileRoutes),
     TranslateModule.forRoot({
       loader: {
         provide: BaseTranslateLoader,
