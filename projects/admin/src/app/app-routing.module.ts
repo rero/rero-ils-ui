@@ -43,7 +43,7 @@ const routes: Routes = [
   {
     path: 'permissions/matrix',
     component: PermissionDetailViewComponent,
-    title: 'Permission matrix',
+    title: _('Permissions matrix'),
     canActivate: [ PermissionGuard ],
     data: {
       permissions: [ PERMISSIONS.PERM_MANAGEMENT ]
