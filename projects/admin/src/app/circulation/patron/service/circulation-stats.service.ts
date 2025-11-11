@@ -18,7 +18,7 @@ import { inject, Injectable, signal, WritableSignal } from '@angular/core';
 import { Loan, LoanOverduePreview, LoanState } from '@app/admin/classes/loans';
 import { PatronTransaction } from '@app/admin/classes/patron-transaction';
 import { PatronService } from '@app/admin/service/patron.service';
-import { getSeverity } from '@app/admin/utils/utils';
+import { getSeverity } from '@rero/shared';
 import { map, Observable, switchMap, tap } from 'rxjs';
 import { PatronTransactionService } from '../../services/patron-transaction.service';
 

@@ -18,17 +18,18 @@ import { APP_BASE_HREF, KeyValue } from '@angular/common';
 import { afterNextRender, Component, inject, model, OnDestroy, OnInit } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { Record, RecordService } from '@rero/ng-core';
-import { IPatron, UserService } from '@rero/shared';
+import { getSeverity, IPatron, UserService } from '@rero/shared';
 import JsBarcode from 'jsbarcode';
 import { forkJoin, of, Subscription } from 'rxjs';
 import { IllRequestApiService } from '../api/ill-request-api.service';
 import { LoanApiService } from '../api/loan-api.service';
 import { OperationLogsApiService } from '../api/operation-logs-api.service';
 import { PatronTransactionApiService } from '../api/patron-transaction-api.service';
-import { IMenu, PatronProfileMenuService } from './patron-profile-menu.service';
-import { PatronProfileService } from './patron-profile.service';
+import { IMenu, PatronProfileMenuService } from './service/patron-profile-menu.service';
+import { PatronProfileService } from './service/patron-profile.service';
 import { PatronApiService } from '../api/patron-api.service';
 import { overdueFee } from './patron-profile-fees/types';
+import { MessageService } from 'primeng/api';
 
 type Tab = {
   loaded?: boolean;
@@ -66,6 +67,7 @@ export class PatronProfileComponent implements OnInit, OnDestroy {
   private translateService: TranslateService = inject(TranslateService);
   private patronApiService: PatronApiService = inject(PatronApiService);
   private baseHref = inject(APP_BASE_HREF);
+  private messageService: MessageService = inject(MessageService);
 
 
   /** View code */
@@ -209,16 +211,27 @@ export class PatronProfileComponent implements OnInit, OnDestroy {
           const illRequestQuery = this.illRequestApiService.getPublicIllRequest(this._patronPid, 1, 1, undefined, '', {
             remove_archived: '1',
           });
-          forkJoin([loanQuery, requestQuery, feeQuery, overdueQuery, historyQuery, illRequestQuery]).subscribe(
-            ([loanResponse, requestResponse, feeResponse, overdueResponse, historyResponse, illRequestResponse]: [
+          const circulationInformation = this.patronApiService.getCirculationInformations(this._patronPid);
+          forkJoin([loanQuery, requestQuery, feeQuery, overdueQuery, historyQuery, illRequestQuery, circulationInformation]).subscribe(
+            ([loanResponse, requestResponse, feeResponse, overdueResponse, historyResponse, illRequestResponse, circulationResponse]: [
               Record,
               Record,
               Record,
               overdueFee[],
               Record,
-              Record
+              Record,
+              any
             ]) => {
               this.activeTab.set('loan');
+              circulationResponse?.messages.forEach(message => {
+                this.messageService.add({
+                  severity: getSeverity(message.type),
+                  summary: this.translateService.instant(message.type),
+                  detail: this.translateService.instant(message.content),
+                  sticky: true,
+                  closable: true
+                });
+              });
               Object.values(this.tabs).map(tab => tab.loaded = false);
               this.tabs.loan.count = this.recordService.totalHits(loanResponse.hits.total);
               this.tabs.fee.feeTotal = feeResponse.aggregations.total.value;
@@ -268,4 +281,5 @@ export class PatronProfileComponent implements OnInit, OnDestroy {
     const currentPatron = this.user.patrons.find((patron: any) => patron.organisation.code === viewcode);
     return currentPatron ? currentPatron.pid : this.user.patrons[0].pid;
   }
+
 }

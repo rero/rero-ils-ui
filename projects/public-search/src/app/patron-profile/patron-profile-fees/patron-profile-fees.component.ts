@@ -19,7 +19,7 @@ import { Record, RecordService } from '@rero/ng-core';
 import { forkJoin } from 'rxjs';
 import { PatronApiService } from '../../api/patron-api.service';
 import { PatronTransactionApiService } from '../../api/patron-transaction-api.service';
-import { PatronProfileMenuService } from '../patron-profile-menu.service';
+import { PatronProfileMenuService } from '../service/patron-profile-menu.service';
 import { fee, overdueFee } from './types';
 
 @Component({

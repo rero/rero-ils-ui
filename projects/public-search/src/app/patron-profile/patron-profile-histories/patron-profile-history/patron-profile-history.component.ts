@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { Component, inject, Input } from '@angular/core';
-import { PatronProfileMenuService } from '../../patron-profile-menu.service';
+import { PatronProfileMenuService } from '../../service/patron-profile-menu.service';
 
 @Component({
     selector: 'public-search-patron-profile-history',

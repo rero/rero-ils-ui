@@ -18,7 +18,7 @@ import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { ToastMessageOptions } from 'primeng/api/toastmessage';
 import { Subscription } from 'rxjs';
 import { Message, PatronApiService } from '../../api/patron-api.service';
-import { PatronProfileMenuService } from '../patron-profile-menu.service';
+import { PatronProfileMenuService } from '../service/patron-profile-menu.service';
 
 @Component({
     selector: 'public-search-patron-profile-message',

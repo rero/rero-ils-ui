@@ -19,7 +19,7 @@ import { inject, Injectable } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { AppSettingsService, UserService } from '@rero/shared';
 import { AppConfigService } from 'projects/admin/src/app/service/app-config.service';
-import { PatronProfileMenuService } from 'projects/public-search/src/app/patron-profile/patron-profile-menu.service';
+import { PatronProfileMenuService } from 'projects/public-search/src/app/patron-profile/service/patron-profile-menu.service';
 import { Observable } from 'rxjs';
 import { switchMap, tap } from 'rxjs/operators';
 

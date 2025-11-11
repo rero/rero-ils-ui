@@ -22,7 +22,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { SharedModule, testUserPatronWithSettings, UserApiService, UserService } from '@rero/shared';
 import { cloneDeep } from 'lodash-es';
 import { of } from 'rxjs';
-import { PatronProfileMenuService } from '../../patron-profile-menu.service';
+import { PatronProfileMenuService } from '../../service/patron-profile-menu.service';
 import { PatronProfileRequestComponent } from './patron-profile-request.component';
 
 describe('PatronProfileRequestComponent', () => {

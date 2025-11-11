@@ -15,59 +15,30 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { Component, inject, OnInit } from '@angular/core';
-import { Error, Record } from '@rero/ng-core';
-import { Observable } from 'rxjs';
-import { LoanApiService } from '../../api/loan-api.service';
-import { PatronProfileMenuService } from '../patron-profile-menu.service';
+import { LoansStore } from '../store/loans-store';
 
 @Component({
-    selector: 'public-search-patron-profile-loans',
-    templateUrl: './patron-profile-loans.component.html',
-    standalone: false
+  selector: 'public-search-patron-profile-loans',
+  templateUrl: './patron-profile-loans.component.html',
+  standalone: false,
+  providers: [LoansStore]
 })
 export class PatronProfileLoansComponent implements OnInit {
 
-  private loanApiService: LoanApiService = inject(LoanApiService);
-  private patronProfileMenuService: PatronProfileMenuService = inject(PatronProfileMenuService);
-
-
-  /** First get record */
-  loaded = false;
-
-  /** loans records */
-  records = [];
+  /** data is loaded */
+  protected store = inject(LoansStore);
 
   /** sort criteria */
   sortCriteria = 'duedate';
 
   /** OnInit hook */
   ngOnInit(): void {
-    this.selectingSortCriteria(this.sortCriteria);
+    this.store.loadLoans(this.sortCriteria);
   }
 
-  /**
-   * Loan query
-   * @param page - number
-   * @return Observable
-   */
-  private _loanQuery(): Observable<Record | Error> {
-    const patronPid = this.patronProfileMenuService.currentPatron.pid;
-    return this.loanApiService
-      .getOnLoan(patronPid, 1, 9999, undefined, this.sortCriteria);
+  selectionChange(value) {
+    this.sortCriteria = value;
+    this.store.loadLoans(this.sortCriteria);
+
   }
-
-
-   /**
-    * Allow to sort loans list using a sort criteria
-    * @param sortCriteria: the sort criteria to use for sorting the list
-    */
-  selectingSortCriteria(sortCriteria: string) {
-    this.sortCriteria = sortCriteria;
-   
-    this._loanQuery().subscribe((response: Record) => {
-      this.records = response.hits.hits;
-      this.loaded = true;
-    });
-  }
-
 }

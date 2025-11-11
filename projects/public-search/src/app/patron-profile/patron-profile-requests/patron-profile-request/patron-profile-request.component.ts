@@ -19,8 +19,8 @@ import { TranslateService } from '@ngx-translate/core';
 import { CONFIG } from '@rero/ng-core';
 import { MessageService } from 'primeng/api';
 import { LoanApiService } from '../../../api/loan-api.service';
-import { PatronProfileMenuService } from '../../patron-profile-menu.service';
-import { PatronProfileService } from '../../patron-profile.service';
+import { PatronProfileMenuService } from '../../service/patron-profile-menu.service';
+import { PatronProfileService } from '../../service/patron-profile.service';
 
 @Component({
     selector: 'public-search-patron-profile-request',

@@ -72,10 +72,12 @@ export { paginatorInitialState, withPaginator } from './lib/store/paginator-feat
 export * from './lib/util/permissions';
 export * from './lib/utils/resolver';
 export * from './lib/utils/tools';
+export * from './lib/utils/utils';
 export * from './lib/view/availability/availability.component';
 export * from './lib/view/brief/part-of/part-of.component';
 export * from './lib/view/contribution/contribution.component';
 export * from './lib/view/entity-link.component';
+export * from './lib/types/entity';
 export * from './lib/view/inherited-call-number/inherited-call-number.component';
 export * from './lib/view/thumbnail/thumbnail.component';
 export * from './tests/api';

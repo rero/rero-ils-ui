@@ -16,7 +16,7 @@
  */
 import { Component, inject, Input, OnDestroy, OnInit } from '@angular/core';
 import { PatronTransactionEventApiService } from '../../../../api/patron-transaction-event-api.service';
-import { PatronProfileMenuService } from '../../../patron-profile-menu.service';
+import { PatronProfileMenuService } from '../../../service/patron-profile-menu.service';
 import { Subscription } from 'rxjs';
 import { IOrganisation } from '@rero/shared';
 import { Record } from '@rero/ng-core';

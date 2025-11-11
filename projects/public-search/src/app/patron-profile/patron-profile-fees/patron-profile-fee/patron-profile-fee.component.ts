@@ -18,7 +18,7 @@ import { Component, inject, Input, OnDestroy, OnInit } from '@angular/core';
 import { RecordService } from '@rero/ng-core';
 import { IOrganisation } from '@rero/shared/public-api';
 import { Observable, Subscription } from 'rxjs';
-import { PatronProfileMenuService } from '../../patron-profile-menu.service';
+import { PatronProfileMenuService } from '../../service/patron-profile-menu.service';
 
 @Component({
     selector: 'public-search-patron-profile-fee',

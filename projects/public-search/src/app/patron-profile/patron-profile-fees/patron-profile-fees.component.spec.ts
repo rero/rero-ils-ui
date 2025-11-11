@@ -23,8 +23,8 @@ import { SharedModule, testUserPatronWithSettings, UserApiService, UserService }
 import { cloneDeep } from 'lodash-es';
 import { of } from 'rxjs';
 import { PatronTransactionApiService } from '../../api/patron-transaction-api.service';
-import { PatronProfileMenuService } from '../patron-profile-menu.service';
-import { PatronProfileService } from '../patron-profile.service';
+import { PatronProfileMenuService } from '../service/patron-profile-menu.service';
+import { PatronProfileService } from '../service/patron-profile.service';
 import { PatronProfileFeesComponent } from './patron-profile-fees.component';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';

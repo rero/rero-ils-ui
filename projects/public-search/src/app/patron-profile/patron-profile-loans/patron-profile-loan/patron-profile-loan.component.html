@@ -15,66 +15,68 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 
-<div class="ui:grid ui:grid-cols-12 ui:gap-4 ui:p-2 ui:pl-1" [ngClass]="{'callout callout-warning':record.metadata.is_late}">
-  <!-- DOCUMENT & ADDITIONAL DATA -->
-  <div class="ui:md:col-span-8 ui:col-span-12 ui:flex ui:gap-2">
-    <shared-open-close-button (status)="isCollapsed = $event" />
-    <div class="ui:w-full">
-      <public-search-patron-profile-document [record]="record" [showAdditionalInformation]="!isCollapsed" [isAnimated]="true" >
-      <dl class="ui:md:grid ui:grid-cols-4" additional-metadata>
-        <dt class="ui:font-bold ui:mr-2" translate>Library</dt>
-        <dd class="ui:col-span-3">{{ record.metadata.library.name }}</dd>
-      </dl>
-      </public-search-patron-profile-document>
-      <dl class="ui:md:hidden">
-        <dt translate>Due date</dt>
-        <dd [ngClass]="{ 'ui:font-bold text-success': actionSuccess}">{{ record.metadata.end_date | dateTranslate :'shortDate' }}</dd>
-      </dl>
-      <div class="ui:md:hidden">
-        <ng-container [ngTemplateOutlet]="tags" />
+@if(loan()) {
+  <div class="ui:grid ui:grid-cols-12 ui:gap-4 ui:p-2 ui:pl-1" [ngClass]="{'callout callout-warning': loan().metadata.is_late}">
+    <!-- DOCUMENT & ADDITIONAL DATA -->
+    <div class="ui:md:col-span-8 ui:col-span-12 ui:flex ui:gap-2">
+      <shared-open-close-button (status)="isCollapsed = $event" />
+      <div class="ui:w-full">
+        <public-search-patron-profile-document [loan]="loan()" [showAdditionalInformation]="!isCollapsed" >
+        <dl class="ui:md:grid ui:grid-cols-4" additional-metadata>
+          <dt class="ui:font-bold ui:mr-2" translate>Library</dt>
+          <dd class="ui:col-span-3">{{ loan().metadata.library.name }}</dd>
+        </dl>
+        </public-search-patron-profile-document>
+        <dl class="ui:md:hidden">
+          <dt translate>Due date</dt>
+          <dd [ngClass]="{ 'ui:font-bold text-success': loan()?.actionSuccess}">{{ loan().metadata.end_date | dateTranslate :'shortDate' }}</dd>
+        </dl>
+        <div class="ui:md:hidden">
+          <ng-container [ngTemplateOutlet]="tags" />
+        </div>
       </div>
     </div>
-  </div>
-  <!-- DUE DATE & BADGES -->
-  <div class="ui:md:col-span-2 ui:col-span-12 ui:hidden ui:md:block">
-    <div>
-      <span [ngClass]="{ 'ui:font-bold text-success': actionSuccess}">
-        {{ record.metadata.end_date | dateTranslate :'shortDate' }}
-      </span>
+    <!-- DUE DATE & BADGES -->
+    <div class="ui:md:col-span-2 ui:col-span-12 ui:hidden ui:md:block">
+      <div>
+        <span [ngClass]="{ 'ui:font-bold text-success': loan()?.actionSuccess}">
+          {{ loan().metadata.end_date | dateTranslate :'shortDate' }}
+        </span>
+      </div>
+      <ng-container [ngTemplateOutlet]="tags" />
     </div>
-    <ng-container [ngTemplateOutlet]="tags" />
+    <!-- ACTION BUTTONS COLUMN -->
+    <div class="ui:md:col-span-2 ui:col-span-12 ui:flex ui:justify-end">
+      <p-button
+        severity="secondary"
+        [outlined]="true"
+        size="small"
+        class="ui:pointer-events-auto"
+        [pTooltip]="loan().canExtend?.reasons | arrayTranslate | join:' / '"
+        tooltipPosition="top"
+        [tooltipDisabled]="loan().canExtend?.can"
+        (onClick)="store.renewLoan(loan())"
+        [disabled]="store.renewInProgress() || loan()?.actionSuccess || !loan().canExtend?.can"
+        [label]="loan()?.actionSuccess ? ('Renewed' | translate) : ('Renew' | translate)"
+        [icon]="store.renewInProgress()? 'fa fa-spin fa-spinner': loan()?.actionSuccess ? 'fa fa-refresh text-success': 'fa fa-refresh'"
+      />
+    </div>
   </div>
-  <!-- ACTION BUTTONS COLUMN -->
-  <div class="ui:md:col-span-2 ui:col-span-12 ui:flex ui:justify-end">
-    <p-button
-      severity="secondary"
-      [outlined]="true"
-      size="small"
-      class="ui:pointer-events-auto"
-      [pTooltip]="canExtend.reasons | arrayTranslate | join:' / '"
-      tooltipPosition="top"
-      [tooltipDisabled]="canExtend.can"
-      (onClick)="renew()"
-      [disabled]="renewInProgress || actionDone || !canExtend.can"
-      [label]="actionSuccess ? ('Renewed' | translate) : ('Renew' | translate)"
-      [icon]="renewInProgress? 'fa fa-spin fa-spinner': actionSuccess ? 'fa fa-refresh text-success': 'fa fa-refresh'"
-    />
-  </div>
-</div>
+}
 
 <ng-template #tags>
-  @if (record.metadata.extension_count && record.metadata.extension_count > 0) {
+  @if (loan().metadata.extension_count && loan().metadata.extension_count > 0) {
     <p-tag  styleClass="ui:mt-1" severity="secondary">
-      {{ record.metadata.extension_count }}
-      {{ record.metadata.extension_count | i18nPlural: {'=1': 'renewal', 'other': 'renewals'} | translate }}
+      {{ loan().metadata.extension_count }}
+      {{ loan().metadata.extension_count | i18nPlural: {'=1': 'renewal', 'other': 'renewals'} | translate }}
     </p-tag>
   }
-  @if (record.metadata.overdue) {
+  @if (loan().metadata.overdue) {
     <div class="ui:mt-1">
       <p-tag severity="warn" translate>overdue</p-tag>
     </div>
   }
-  @if (isDueSoon) {
+  @if (isDueSoon()) {
     <p-tag styleClass="ui:mt-1" severity="info" translate>approaching due date</p-tag>
   }
 </ng-template>

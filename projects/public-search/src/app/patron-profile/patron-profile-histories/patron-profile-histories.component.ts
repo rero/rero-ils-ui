@@ -20,8 +20,8 @@ import { Error, Record } from '@rero/ng-core';
 import { Paginator } from '@rero/shared';
 import { Observable, Subscription } from 'rxjs';
 import { OperationLogsApiService } from '../../api/operation-logs-api.service';
-import { PatronProfileMenuService } from '../patron-profile-menu.service';
-import { ITabEvent, PatronProfileService } from '../patron-profile.service';
+import { PatronProfileMenuService } from '../service/patron-profile-menu.service';
+import { ITabEvent, PatronProfileService } from '../service/patron-profile.service';
 @Component({
     selector: 'public-search-patron-profile-histories',
     templateUrl: './patron-profile-histories.component.html',
