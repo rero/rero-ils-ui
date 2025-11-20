@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2022-2024 RERO
+ * Copyright (C) 2022-2025 RERO
  * Copyright (C) 2022-2023 UCLouvain
  *
  * This program is free software: you can redistribute it and/or modify
@@ -20,10 +20,10 @@ import { HoldingsService } from '@app/admin/service/holdings.service';
 import { IssueService } from '@app/admin/service/issue.service';
 import { RecordPermissionService } from '@app/admin/service/record-permission.service';
 import { TranslateService } from '@ngx-translate/core';
-import { RecordUiService } from '@rero/ng-core';
 import { IssueItemStatus, UserService } from '@rero/shared';
 import { DynamicDialogRef } from 'primeng/dynamicdialog';
 import { Subscription } from 'rxjs';
+import { HoldingsSerialStore } from '../../holdings-serial-store';
 
 @Component({
     selector: 'admin-received-issue',
@@ -33,10 +33,11 @@ import { Subscription } from 'rxjs';
 })
 export class ReceivedIssueComponent implements OnInit, OnDestroy {
 
+  protected store = inject(HoldingsSerialStore);
+
   private holdingService: HoldingsService = inject(HoldingsService);
   private translateService: TranslateService = inject(TranslateService);
   private recordPermissionService: RecordPermissionService = inject(RecordPermissionService);
-  private recordUiService: RecordUiService = inject(RecordUiService);
   private issueService: IssueService = inject(IssueService);
   private userService: UserService = inject(UserService);
 
@@ -46,8 +47,6 @@ export class ReceivedIssueComponent implements OnInit, OnDestroy {
 
   /** the parent holding */
   @Input() holding;
-  /** Emitter when an issue is deleted */
-  @Output() delete = new EventEmitter();
 
   /** Allow claims */
   isClaimAllowed = false;
@@ -112,24 +111,10 @@ export class ReceivedIssueComponent implements OnInit, OnDestroy {
    * @param issue: The corresponding item (with permissions properties)
    * @return the delete info message use hover the delete button
    */
-  deleteInfoMessage(issue: any): string {
+  deleteInfoMessage(): string {
     return (this.recordPermissions?.delete?.reasons)
       ? this.recordPermissionService.generateTooltipMessage(this.recordPermissions.delete.reasons, 'delete')
       : '';
-  }
-
-  /**
-   * Delete an holding issue and emit the deleted issue.
-   * @param issue: The issue item to delete
-   */
-  deleteIssue(issue) {
-    this.recordUiService.deleteRecord('items', issue.metadata.pid).subscribe(
-      (confirm: boolean) => {
-        if (confirm) {
-          this.delete.emit(issue);
-        }
-      }
-    );
   }
 
   /** Open claim dialog */

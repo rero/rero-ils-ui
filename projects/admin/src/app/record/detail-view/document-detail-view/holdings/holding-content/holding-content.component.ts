@@ -1,7 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2019-2025 RERO
- * Copyright (C) 2019-2023 UCLouvain
+ * Copyright (C) 2025 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -18,32 +17,33 @@
 import { Component, inject, input, model, OnInit, Signal } from '@angular/core';
 import { deepComputed } from '@ngrx/signals';
 import { EsRecord, PaginatorConfig } from '@rero/shared';
-import { HoldingsSerialStore } from '../holdings-serial-store';
+import { ItemsStore } from '../store/items-store';
 
 @Component({
-    selector: 'admin-serial-holding-detail-view',
-    templateUrl: './serial-holding-detail-view.component.html',
-    providers: [HoldingsSerialStore],
-    standalone: false
+  selector: 'admin-holding-content',
+  providers: [ItemsStore],
+  standalone: false,
+  templateUrl: './holding-content.component.html'
 })
-export class SerialHoldingDetailViewComponent implements OnInit {
+export class HoldingContentComponent implements OnInit {
 
-  protected store = inject(HoldingsSerialStore);
+  protected store = inject(ItemsStore);
 
   holding = input.required<EsRecord>();
+  isCurrentOrganisation = input.required<boolean>();
 
   protected filter = model<string>('');
 
   protected paginatorConfig: Signal<PaginatorConfig> = deepComputed(() => ({
     first: this.store.paginator.first(),
     rows: this.store.paginator.rows(),
-    total: this.store.receivedItemsCount()
+    total: this.store.total()
   }));
 
-  /** OnInit hook */
   ngOnInit(): void {
-    this.store.setHoldings(this.holding);
-    this.store.setFilter(this.filter);
+    if (this.holding().metadata.holdings_type !== 'electronic') {
+      this.store.setFilter(this.filter);
+      this.store.setHoldings(this.holding());
+    }
   }
 }
-
