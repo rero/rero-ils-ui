@@ -22,14 +22,14 @@ import { TranslateModule } from '@ngx-translate/core';
 import { SharedModule, testUserPatronWithSettings, UserApiService, UserService } from '@rero/shared';
 import { cloneDeep } from 'lodash-es';
 import { of } from 'rxjs';
-import { PatronProfileMenuService } from '../../service/patron-profile-menu.service';
+import { PatronProfileMenuStore } from '../../store/patron-profile-menu-store';
 import { PatronProfileRequestComponent } from './patron-profile-request.component';
 
 describe('PatronProfileRequestComponent', () => {
   let component: PatronProfileRequestComponent;
   let fixture: ComponentFixture<PatronProfileRequestComponent>;
   let userService: UserService;
-  let patronProfileMenuService: PatronProfileMenuService;
+  let patronProfileMenuStore: InstanceType<typeof PatronProfileMenuStore>;
 
   const record = {
     metadata: {
@@ -57,7 +57,8 @@ describe('PatronProfileRequestComponent', () => {
       providers: [
         { provide: UserApiService, useValue: userApiServiceSpy },
         provideHttpClient(withInterceptorsFromDi()),
-        provideHttpClientTesting()
+        provideHttpClientTesting(),
+        PatronProfileMenuStore
       ]
     }).compileComponents();
   });
@@ -68,8 +69,7 @@ describe('PatronProfileRequestComponent', () => {
     userApiServiceSpy.getLoggedUser.and.returnValue(of(cloneDeep(testUserPatronWithSettings)));
     userService = TestBed.inject(UserService);
     userService.load().subscribe();
-    patronProfileMenuService = TestBed.inject(PatronProfileMenuService);
-    patronProfileMenuService.init();
+    patronProfileMenuStore = TestBed.inject(PatronProfileMenuStore);
     fixture.detectChanges();
   });
 

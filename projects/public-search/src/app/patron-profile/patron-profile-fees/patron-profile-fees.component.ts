@@ -14,23 +14,23 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, inject, Input, OnInit } from '@angular/core';
+import { Component, effect, inject, Input } from '@angular/core';
 import { Record, RecordService } from '@rero/ng-core';
 import { forkJoin } from 'rxjs';
 import { PatronApiService } from '../../api/patron-api.service';
 import { PatronTransactionApiService } from '../../api/patron-transaction-api.service';
-import { PatronProfileMenuService } from '../service/patron-profile-menu.service';
+import { PatronProfileMenuStore } from '../store/patron-profile-menu-store';
 import { fee, overdueFee } from './types';
 
 @Component({
-    selector: 'public-search-patron-profile-fees',
-    templateUrl: './patron-profile-fees.component.html',
-    standalone: false
+  selector: 'public-search-patron-profile-fees',
+  templateUrl: './patron-profile-fees.component.html',
+  standalone: false
 })
-export class PatronProfileFeesComponent implements OnInit {
+export class PatronProfileFeesComponent {
 
   private patronTransactionApiService: PatronTransactionApiService = inject(PatronTransactionApiService);
-  private patronProfileMenuService: PatronProfileMenuService = inject(PatronProfileMenuService);
+  private patronProfileMenuStore = inject(PatronProfileMenuStore);
   private patronApiService: PatronApiService = inject(PatronApiService);
 
   /** Total of fees */
@@ -43,12 +43,22 @@ export class PatronProfileFeesComponent implements OnInit {
   records = [];
 
   get currency() {
-    return this.patronProfileMenuService.currentPatron.organisation.currency;
+    const patron = this.patronProfileMenuStore.currentPatron();
+    return patron ? patron.organisation.currency : '';
   }
 
-  /** OnInit hook */
-  ngOnInit(): void {
-    const patronPid = this.patronProfileMenuService.currentPatron.pid;
+  constructor() {
+    effect(() => {
+      const patron = this.patronProfileMenuStore.currentPatron();
+      if (patron) {
+        this.records = [];
+        this.loaded = false;
+        this.loadFees(patron.pid);
+      }
+    });
+  }
+
+  private loadFees(patronPid: string): void {
     const queryFees = this.patronTransactionApiService.getFees(patronPid, 'open', 1, RecordService.MAX_REST_RESULTS_SIZE);
     const queryOverdue = this.patronApiService.getOverduePreviewByPatronPid(patronPid);
 
@@ -88,7 +98,8 @@ export class PatronProfileFeesComponent implements OnInit {
         });
         this.records.sort((a, b) => a.createdAt - b.createdAt);
         this.loaded = true;
-      }});
+      }
+    });
   }
 
   private createFee(record): void {

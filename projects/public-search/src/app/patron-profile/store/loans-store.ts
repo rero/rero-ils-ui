@@ -15,13 +15,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { computed, inject } from '@angular/core';
+import { computed, inject, effect } from '@angular/core';
 import { patchState, signalStore, withComputed, withHooks, withMethods, withProps, withState } from '@ngrx/signals';
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
 import { Record } from '@rero/ng-core';
 import { concatMap, forkJoin, from, map, of, pipe, switchMap, tap, toArray } from 'rxjs';
 import { LoanApiService } from '../../api/loan-api.service';
-import { PatronProfileMenuService } from '../service/patron-profile-menu.service';
+import { PatronProfileMenuStore } from './patron-profile-menu-store';
 import { MessageService } from 'primeng/api';
 import { TranslateService } from '@ngx-translate/core';
 import { CONFIG } from '@rero/ng-core';
@@ -48,9 +48,9 @@ export const LoansStore = signalStore(
   withProps(() => ({
     translateService: inject(TranslateService),
     messageService: inject(MessageService),
-  })),  withMethods((store, loanApi = inject(LoanApiService)) => {
+  })), withMethods((store, loanApi = inject(LoanApiService)) => {
 
-    const updateLoan = (loan, renewData) => {
+    const updateLoan = (loan: any, renewData: any) => {
       ['end_date', 'extension_count', 'is_late', 'due_soon_date'].map(
         (field) => (loan.metadata[field] = renewData[field])
       );
@@ -63,12 +63,12 @@ export const LoansStore = signalStore(
     const updateLoanPermissions = rxMethod<void>(
       pipe(
         switchMap(() => {
-          const loanPids = store.loans().map((loan) => loan.metadata.pid);
+          const loanPids = store.loans().map((loan: any) => loan.metadata.pid);
           return forkJoin(loanPids.map((pid: string) => loanApi.canExtend(pid)));
         }),
         tap((canExtendResponses) => {
           patchState(store, {
-            loans: store.loans().map((loan, i) => ({
+            loans: store.loans().map((loan: any, i) => ({
               ...loan,
               canExtend: canExtendResponses[i],
             })),
@@ -111,9 +111,9 @@ export const LoansStore = signalStore(
         tap((extendLoan) => {
           const loans = store.loans();
           if (extendLoan !== undefined) {
-            const currentLoan = loans.find((l) => l.metadata.pid === extendLoan.pid);
+            const currentLoan = loans.find((l: any) => l.metadata.pid === extendLoan.pid);
             updateLoan(currentLoan, extendLoan);
-            patchState(store, {loans})
+            patchState(store, { loans })
             updateLoanPermissions();
             store.messageService.add({
               severity: 'success',
@@ -138,7 +138,7 @@ export const LoansStore = signalStore(
         tap(() => patchState(store, { renewInProgress: true })),
         switchMap(() =>
           from(
-            store.renewableLoans().map((loan) =>
+            store.renewableLoans().map((loan: any) =>
               loanApi.renew({
                 pid: loan.metadata.pid,
                 item_pid: loan.metadata.item.pid,
@@ -156,13 +156,13 @@ export const LoansStore = signalStore(
           const loans = store.loans();
           newLoans.map((loan) => {
             if (loan) {
-              const currentLoan = loans.find((l) => l.metadata.pid === loan.pid);
+              const currentLoan = loans.find((l: any) => l.metadata.pid === loan.pid);
               updateLoan(currentLoan, loan);
             } else {
               reloadPermsission = true;
             }
           });
-          patchState(store, {loans});
+          patchState(store, { loans });
           if (reloadPermsission) {
             updateLoanPermissions();
           }
@@ -177,9 +177,22 @@ export const LoansStore = signalStore(
       renewLoan,
     };
   }),
-  withHooks((store, api = inject(PatronProfileMenuService)) => ({
+  withHooks((store, menuStore = inject(PatronProfileMenuStore)) => ({
     onInit: () => {
-      patchState(store, { currentPatronPid: api.currentPatron.pid });
+      const patron = menuStore.currentPatron();
+      if (patron) {
+        patchState(store, { currentPatronPid: patron.pid });
+        // initial load with default sort criteria
+        store.loadLoans('duedate');
+      }
     },
+    // React to any patron change after init
+    __patronEffect: effect(() => {
+      const p = menuStore.currentPatron();
+      if (p) {
+        patchState(store, { currentPatronPid: p.pid });
+        store.loadLoans('duedate');
+      }
+    })
   }))
 );

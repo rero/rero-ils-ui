@@ -39,6 +39,5 @@ export class PatronProfileLoansComponent implements OnInit {
   selectionChange(value) {
     this.sortCriteria = value;
     this.store.loadLoans(this.sortCriteria);
-
   }
 }

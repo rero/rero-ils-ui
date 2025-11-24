@@ -18,7 +18,7 @@ import { Component, computed, inject, input, Signal } from '@angular/core';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { RecordService } from '@rero/ng-core';
 import { catchError, map, of, switchMap } from 'rxjs';
-import { PatronProfileMenuService } from '../service/patron-profile-menu.service';
+import { PatronProfileMenuStore } from '../store/patron-profile-menu-store';
 import { DocumentMetadata, LoanRecord as LoanRecordType } from '../types';
 
 @Component({
@@ -27,7 +27,7 @@ import { DocumentMetadata, LoanRecord as LoanRecordType } from '../types';
   standalone: false,
 })
 export class PatronProfileDocumentComponent {
-  private patronProfileMenuService: PatronProfileMenuService = inject(PatronProfileMenuService);
+  private patronProfileMenuStore = inject(PatronProfileMenuStore);
   private recordService: RecordService = inject(RecordService);
 
   // COMPONENT ATTRIBUTES =====================================================
@@ -43,28 +43,27 @@ export class PatronProfileDocumentComponent {
     [this.loan().metadata.item.call_number, this.loan().metadata.item.second_call_number].filter(Boolean).join(' | ')
   );
 
+  constructor() {
+    const patron = this.patronProfileMenuStore.currentPatron();
+    this.viewcode = patron ? patron.organisation.code : '';
 
+    this.document = toSignal(this.getDocumentSignal(), {
+      initialValue: undefined,
+    });
+  }
 
-constructor() {
-  this.viewcode = this.patronProfileMenuService.currentPatron.organisation.code;
-
-  this.document = toSignal(this.getDocumentSignal(), {
-    initialValue: undefined,
-  });
-}
-
-/** Récupère le document lié au prêt, avec gestion d'erreur et validation */
-private getDocumentSignal() {
-  return toObservable(this.loan).pipe(
-    switchMap((loan) => {
-      const pid = loan?.metadata?.document?.pid;
-      if (!pid) return of(undefined);
-      return this.recordService.getRecord('documents', pid, 1, {
-        Accept: 'application/rero+json, application/json',
-      });
-    }),
-  map((hit: { metadata?: DocumentMetadata } | undefined) => hit?.metadata),
-    catchError(() => of(undefined))
-  );
-}
+  /** Récupère le document lié au prêt, avec gestion d'erreur et validation */
+  private getDocumentSignal() {
+    return toObservable(this.loan).pipe(
+      switchMap((loan) => {
+        const pid = loan?.metadata?.document?.pid;
+        if (!pid) return of(undefined);
+        return this.recordService.getRecord('documents', pid, 1, {
+          Accept: 'application/rero+json, application/json',
+        });
+      }),
+      map((hit: { metadata?: DocumentMetadata } | undefined) => hit?.metadata),
+      catchError(() => of(undefined))
+    );
+  }
 }

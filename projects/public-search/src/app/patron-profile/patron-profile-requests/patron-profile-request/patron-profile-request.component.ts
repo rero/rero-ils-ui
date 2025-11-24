@@ -19,20 +19,20 @@ import { TranslateService } from '@ngx-translate/core';
 import { CONFIG } from '@rero/ng-core';
 import { MessageService } from 'primeng/api';
 import { LoanApiService } from '../../../api/loan-api.service';
-import { PatronProfileMenuService } from '../../service/patron-profile-menu.service';
+import { PatronProfileMenuStore } from '../../store/patron-profile-menu-store';
 import { PatronProfileService } from '../../service/patron-profile.service';
 
 @Component({
-    selector: 'public-search-patron-profile-request',
-    templateUrl: './patron-profile-request.component.html',
-    standalone: false
+  selector: 'public-search-patron-profile-request',
+  templateUrl: './patron-profile-request.component.html',
+  standalone: false
 })
 export class PatronProfileRequestComponent {
 
   private loanApiService: LoanApiService = inject(LoanApiService);
   private translateService: TranslateService = inject(TranslateService);
   private patronProfileService: PatronProfileService = inject(PatronProfileService);
-  private patronProfileMenuService: PatronProfileMenuService = inject(PatronProfileMenuService);
+  private patronProfileMenuStore = inject(PatronProfileMenuStore);
   private messageService: MessageService = inject(MessageService);
 
   /** Request record */
@@ -52,12 +52,14 @@ export class PatronProfileRequestComponent {
 
   /** Get current viewcode */
   get viewcode(): string {
-    return this.patronProfileMenuService.currentPatron.organisation.code;
+    const patron = this.patronProfileMenuStore.currentPatron();
+    return patron ? patron.organisation.code : '';
   }
 
   /** Cancel a request */
   cancel(): void {
-    const patronPid = this.patronProfileMenuService.currentPatron.pid;
+    const patron = this.patronProfileMenuStore.currentPatron();
+    const patronPid = patron ? patron.pid : '';
     this.cancelInProgress = true;
     this.loanApiService.cancel({
       pid: this.record.metadata.pid,

@@ -14,25 +14,25 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, inject, OnDestroy, OnInit } from '@angular/core';
+import { Component, effect, inject, OnDestroy, OnInit } from '@angular/core';
 import { _ } from "@ngx-translate/core";
 import { Error, Record } from '@rero/ng-core';
 import { Paginator } from '@rero/shared';
 import { Observable, Subscription } from 'rxjs';
 import { LoanApiService } from '../../api/loan-api.service';
-import { PatronProfileMenuService } from '../service/patron-profile-menu.service';
+import { PatronProfileMenuStore } from '../store/patron-profile-menu-store';
 import { ITabEvent, PatronProfileService } from '../service/patron-profile.service';
 
 @Component({
-    selector: 'public-search-patron-profile-requests',
-    templateUrl: './patron-profile-requests.component.html',
-    standalone: false
+  selector: 'public-search-patron-profile-requests',
+  templateUrl: './patron-profile-requests.component.html',
+  standalone: false
 })
 export class PatronProfileRequestsComponent implements OnInit, OnDestroy {
 
   private loanApiService: LoanApiService = inject(LoanApiService);
   private patronProfileService: PatronProfileService = inject(PatronProfileService);
-  private patronProfileMenuService: PatronProfileMenuService = inject(PatronProfileMenuService);
+  private patronProfileMenuStore = inject(PatronProfileMenuStore);
 
   /** First call of get record */
   loaded = false;
@@ -46,14 +46,26 @@ export class PatronProfileRequestsComponent implements OnInit, OnDestroy {
   /** Observable subscription */
   private subscription = new Subscription();
 
-  /** OnInit hook */
-  ngOnInit(): void {
+  constructor() {
     this.paginator = new Paginator();
     this.paginator
       .setHiddenInfo(
         _('({{ count }} hidden request)'),
         _('({{ count }} hidden requests)')
       );
+
+    effect(() => {
+      const patron = this.patronProfileMenuStore.currentPatron();
+      if (patron) {
+        this.paginator.setRecordsCount(0);
+        this.records = [];
+        this.loaded = false;
+      }
+    });
+  }
+
+  /** OnInit hook */
+  ngOnInit(): void {
     this.subscription.add(
       this.paginator.more$.subscribe((page: number) => {
         this._requestQuery(page).subscribe((response: Record) => {
@@ -82,14 +94,6 @@ export class PatronProfileRequestsComponent implements OnInit, OnDestroy {
         this.paginator.setRecordsCount(this.records.length);
       })
     );
-    /** Cleaning up after the change of organization */
-    this.subscription.add(
-      this.patronProfileMenuService.onChange$.subscribe(() => {
-        this.paginator.setRecordsCount(0);
-        this.records = [];
-        this.loaded = false;
-      })
-    );
   }
 
   /** OnDestroy hook */
@@ -103,7 +107,8 @@ export class PatronProfileRequestsComponent implements OnInit, OnDestroy {
    * @return Observable
    */
   private _requestQuery(page: number): Observable<Record | Error> {
-    const patronPid = this.patronProfileMenuService.currentPatron.pid;
+    const patron = this.patronProfileMenuStore.currentPatron();
+    const patronPid = patron ? patron.pid : '';
     return this.loanApiService
       .getRequest(patronPid, page, this.paginator.getRecordsPerPage());
   }

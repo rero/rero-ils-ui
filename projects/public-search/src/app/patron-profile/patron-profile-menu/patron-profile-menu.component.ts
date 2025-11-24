@@ -15,16 +15,17 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { Component, inject, Input } from '@angular/core';
-import { IMenu, PatronProfileMenuService } from '../service/patron-profile-menu.service';
+import { IMenu } from '../types';
+import { PatronProfileMenuStore } from '../store/patron-profile-menu-store';
 
 @Component({
-    selector: 'public-search-patron-profile-menu',
-    templateUrl: './patron-profile-menu.component.html',
-    standalone: false
+  selector: 'public-search-patron-profile-menu',
+  templateUrl: './patron-profile-menu.component.html',
+  standalone: false
 })
 export class PatronProfileMenuComponent {
 
-  private patronProfileMenuService: PatronProfileMenuService = inject(PatronProfileMenuService);
+  private patronProfileMenuStore = inject(PatronProfileMenuStore);
 
   @Input() patronPid: string;
 
@@ -35,7 +36,7 @@ export class PatronProfileMenuComponent {
    * @return boolean
    */
   get isVisible(): boolean {
-    return this.patronProfileMenuService.isMultiOrganisation;
+    return this.patronProfileMenuStore.isMultiOrganisation();
   }
 
   /**
@@ -43,16 +44,17 @@ export class PatronProfileMenuComponent {
    * @return array
    */
   get organisations(): IMenu[] {
-    const menuSelected = this.patronProfileMenuService.menu
+    const menu = this.patronProfileMenuStore.menu();
+    const menuSelected = menu
       .find((menu: any) => menu.value === this.patronPid);
     if (menuSelected) {
       this.selectedOrganisation = menuSelected;
     }
-    return this.patronProfileMenuService.menu;
+    return menu;
   }
 
   /** on change */
   onChange(patronPid: string): void {
-    this.patronProfileMenuService.change(patronPid);
+    this.patronProfileMenuStore.changePatron(patronPid);
   }
 }

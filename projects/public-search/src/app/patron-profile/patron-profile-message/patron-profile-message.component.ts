@@ -14,15 +14,15 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, inject, OnDestroy, OnInit } from '@angular/core';
+import { Component, effect, inject, OnDestroy } from '@angular/core';
 import { ToastMessageOptions } from 'primeng/api/toastmessage';
 import { Subscription } from 'rxjs';
 import { Message, PatronApiService } from '../../api/patron-api.service';
-import { PatronProfileMenuService } from '../service/patron-profile-menu.service';
+import { PatronProfileMenuStore } from '../store/patron-profile-menu-store';
 
 @Component({
-    selector: 'public-search-patron-profile-message',
-    template: `
+  selector: 'public-search-patron-profile-message',
+  template: `
     @for (message of messages; track $index) {
       <p-message
         styleClass="ui:mb-2"
@@ -32,11 +32,11 @@ import { PatronProfileMenuService } from '../service/patron-profile-menu.service
       />
     }
   `,
-    standalone: false
+  standalone: false
 })
-export class PatronProfileMessageComponent implements OnInit, OnDestroy {
+export class PatronProfileMessageComponent implements OnDestroy {
   private patronApiService: PatronApiService = inject(PatronApiService);
-  private patronProfileMenuService: PatronProfileMenuService = inject(PatronProfileMenuService);
+  private patronProfileMenuStore = inject(PatronProfileMenuStore);
 
   /** Observable subscription */
   private _subscription = new Subscription();
@@ -44,14 +44,13 @@ export class PatronProfileMessageComponent implements OnInit, OnDestroy {
   /** patron messages */
   messages: ToastMessageOptions[] = [];
 
-  /** OnInit hook */
-  ngOnInit(): void {
-    this._loanMessage();
-    this._subscription.add(
-      this.patronProfileMenuService.onChange$.subscribe(() => {
-        this._loanMessage();
-      })
-    );
+  constructor() {
+    effect(() => {
+      const patron = this.patronProfileMenuStore.currentPatron();
+      if (patron) {
+        this._loanMessage(patron.pid);
+      }
+    });
   }
 
   /** OnDestroy hook */
@@ -60,13 +59,12 @@ export class PatronProfileMessageComponent implements OnInit, OnDestroy {
   }
 
   /** load message */
-  private _loanMessage(): void {
-    const patronPid = this.patronProfileMenuService.currentPatron.pid;
+  private _loanMessage(patronPid: string): void {
     this.patronApiService.getMessages(patronPid).subscribe(
       (messages: Message[]) =>
-        (this.messages = messages.map((message:Message): ToastMessageOptions => {
-          return { text: message.content, severity: message.type };
-        }))
+      (this.messages = messages.map((message: Message): ToastMessageOptions => {
+        return { text: message.content, severity: message.type };
+      }))
     );
   }
 }

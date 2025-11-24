@@ -23,7 +23,7 @@ import { SharedModule, testUserPatronWithSettings, UserApiService, UserService }
 import { cloneDeep } from 'lodash-es';
 import { of } from 'rxjs';
 import { PatronTransactionApiService } from '../../api/patron-transaction-api.service';
-import { PatronProfileMenuService } from '../service/patron-profile-menu.service';
+import { PatronProfileMenuStore } from '../store/patron-profile-menu-store';
 import { PatronProfileService } from '../service/patron-profile.service';
 import { PatronProfileFeesComponent } from './patron-profile-fees.component';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
@@ -33,7 +33,7 @@ describe('PatronProfileFeeComponent', () => {
   let component: PatronProfileFeesComponent;
   let fixture: ComponentFixture<PatronProfileFeesComponent>;
   let patronProfileService: PatronProfileService;
-  let patronProfileMenuService: PatronProfileMenuService;
+  let patronProfileMenuStore: InstanceType<typeof PatronProfileMenuStore>;
   let userService: UserService;
 
   const apiResponse = {
@@ -62,22 +62,23 @@ describe('PatronProfileFeeComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-    declarations: [PatronProfileFeesComponent],
-    schemas: [NO_ERRORS_SCHEMA],
-    imports: [
-      TranslateModule.forRoot(),
-      SharedModule,
-      CoreModule
-    ],
-    providers: [
+      declarations: [PatronProfileFeesComponent],
+      schemas: [NO_ERRORS_SCHEMA],
+      imports: [
+        TranslateModule.forRoot(),
+        SharedModule,
+        CoreModule
+      ],
+      providers: [
         { provide: UserApiService, useValue: userApiServiceSpy },
         { provide: PatronTransactionApiService, useValue: patronTransactionApiServiceSpy },
         provideHttpClient(withInterceptorsFromDi()),
         provideHttpClientTesting(),
-        provideNoopAnimations()
-    ]
-})
-    .compileComponents();
+        provideNoopAnimations(),
+        PatronProfileMenuStore
+      ]
+    })
+      .compileComponents();
   });
 
   beforeEach(() => {
@@ -88,8 +89,7 @@ describe('PatronProfileFeeComponent', () => {
     userApiServiceSpy.getLoggedUser.and.returnValue(of(cloneDeep(testUserPatronWithSettings)));
     userService = TestBed.inject(UserService);
     userService.load().subscribe();
-    patronProfileMenuService = TestBed.inject(PatronProfileMenuService);
-    patronProfileMenuService.init();
+    patronProfileMenuStore = TestBed.inject(PatronProfileMenuStore);
     fixture.detectChanges();
   });
 

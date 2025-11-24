@@ -19,9 +19,9 @@ import { DateTime } from 'luxon';
 import { LoansStore } from '../../store/loans-store';
 
 @Component({
-    selector: 'public-search-patron-profile-loan',
-    templateUrl: './patron-profile-loan.component.html',
-    standalone: false
+  selector: 'public-search-patron-profile-loan',
+  templateUrl: './patron-profile-loan.component.html',
+  standalone: false
 })
 export class PatronProfileLoanComponent {
 
@@ -39,7 +39,5 @@ export class PatronProfileLoanComponent {
 
   /** Document section is collapsed */
   isCollapsed = true;
-  /** Renew action success */
-  actionSuccess = false;
 
 }

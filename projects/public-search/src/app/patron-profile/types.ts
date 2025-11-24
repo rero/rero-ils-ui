@@ -37,3 +37,10 @@ export type LoanRecord = {
   };
 };
 
+export type IMenu = {
+  value: string;
+  name: string;
+  selected?: boolean;
+};
+
+

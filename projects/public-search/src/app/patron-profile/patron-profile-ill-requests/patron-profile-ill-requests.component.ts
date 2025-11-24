@@ -14,25 +14,25 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, inject, OnDestroy, OnInit } from '@angular/core';
+import { Component, effect, inject, OnDestroy, OnInit } from '@angular/core';
 import { _ } from "@ngx-translate/core";
 import { Error, Record } from '@rero/ng-core';
 import { BaseApi, Paginator } from '@rero/shared';
 import { Observable, Subscription } from 'rxjs';
 import { IllRequestApiService } from '../../api/ill-request-api.service';
-import { PatronProfileMenuService } from '../service/patron-profile-menu.service';
+import { PatronProfileMenuStore } from '../store/patron-profile-menu-store';
 import { ITabEvent, PatronProfileService } from '../service/patron-profile.service';
 
 @Component({
-    selector: 'public-search-patron-profile-ill-requests',
-    templateUrl: './patron-profile-ill-requests.component.html',
-    standalone: false
+  selector: 'public-search-patron-profile-ill-requests',
+  templateUrl: './patron-profile-ill-requests.component.html',
+  standalone: false
 })
 export class PatronProfileIllRequestsComponent implements OnInit, OnDestroy {
 
   private illRequestApiService: IllRequestApiService = inject(IllRequestApiService);
   private patronProfileService: PatronProfileService = inject(PatronProfileService);
-  private patronProfileMenuService: PatronProfileMenuService = inject(PatronProfileMenuService);
+  private patronProfileMenuStore = inject(PatronProfileMenuStore);
 
   /** First call of get record */
   loaded = false;
@@ -46,14 +46,26 @@ export class PatronProfileIllRequestsComponent implements OnInit, OnDestroy {
   /** Observable subscription */
   private _subscription = new Subscription();
 
-  /** OnInit hook */
-  ngOnInit(): void {
+  constructor() {
     this.paginator = new Paginator();
     this.paginator
       .setHiddenInfo(
         _('({{ count }} hidden ill request)'),
         _('({{ count }} hidden ill requests)')
       );
+
+    effect(() => {
+      const patron = this.patronProfileMenuStore.currentPatron();
+      if (patron) {
+        this.paginator.setRecordsCount(0);
+        this.records = [];
+        this.loaded = false;
+      }
+    });
+  }
+
+  /** OnInit hook */
+  ngOnInit(): void {
     this._subscription.add(
       this.paginator.more$.subscribe((page: number) => {
         this._illRequestQuery(page).subscribe((response: Record) => {
@@ -76,14 +88,6 @@ export class PatronProfileIllRequestsComponent implements OnInit, OnDestroy {
         }
       })
     );
-    /** Cleaning up after the change of organization */
-    this._subscription.add(
-      this.patronProfileMenuService.onChange$.subscribe(() => {
-        this.paginator.setRecordsCount(0);
-        this.records = [];
-        this.loaded = false;
-      })
-    );
   }
 
   /** OnDestroy hook */
@@ -97,11 +101,12 @@ export class PatronProfileIllRequestsComponent implements OnInit, OnDestroy {
    * @return Observable
    */
   private _illRequestQuery(page: number): Observable<Record | Error> {
-    const patronPid = this.patronProfileMenuService.currentPatron.pid;
+    const patron = this.patronProfileMenuStore.currentPatron();
+    const patronPid = patron ? patron.pid : '';
     return this.illRequestApiService
       .getPublicIllRequest(
         patronPid, page, this.paginator.getRecordsPerPage(),
-        BaseApi.reroJsonheaders, '-created', {remove_archived: '1'}
+        BaseApi.reroJsonheaders, '-created', { remove_archived: '1' }
       );
   }
 }

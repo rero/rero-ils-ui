@@ -16,7 +16,7 @@
  */
 import { Component, inject, Input, OnDestroy, OnInit } from '@angular/core';
 import { PatronTransactionEventApiService } from '../../../../api/patron-transaction-event-api.service';
-import { PatronProfileMenuService } from '../../../service/patron-profile-menu.service';
+import { PatronProfileMenuStore } from '../../../store/patron-profile-menu-store';
 import { Subscription } from 'rxjs';
 import { IOrganisation } from '@rero/shared';
 import { Record } from '@rero/ng-core';
@@ -27,27 +27,28 @@ import { Record } from '@rero/ng-core';
   standalone: false
 })
 export class PatronProfileFeeEventComponent implements OnInit, OnDestroy {
-    private patronTransactionEventApiService: PatronTransactionEventApiService = inject(PatronTransactionEventApiService);
-    private patronProfileMenuService: PatronProfileMenuService = inject(PatronProfileMenuService);
+  private patronTransactionEventApiService: PatronTransactionEventApiService = inject(PatronTransactionEventApiService);
+  private patronProfileMenuStore = inject(PatronProfileMenuStore);
 
-    @Input() event;
+  @Input() event;
 
-    transactionEvents;
+  transactionEvents;
 
-    private subscription = new Subscription();
+  private subscription = new Subscription();
 
-    get organisation(): IOrganisation {
-      return this.patronProfileMenuService.currentPatron.organisation;
-    }
+  get organisation(): IOrganisation {
+    const patron = this.patronProfileMenuStore.currentPatron();
+    return patron ? patron.organisation : {} as IOrganisation;
+  }
 
-    ngOnInit(): void {
-      this.subscription.add(
-        this.patronTransactionEventApiService.getEvents(this.event.metadata.pid).subscribe((response: Record) =>
+  ngOnInit(): void {
+    this.subscription.add(
+      this.patronTransactionEventApiService.getEvents(this.event.metadata.pid).subscribe((response: Record) =>
         this.transactionEvents = response.hits.hits
       ));
-    }
+  }
 
-    ngOnDestroy(): void {
-      this.subscription.unsubscribe();
-    }
+  ngOnDestroy(): void {
+    this.subscription.unsubscribe();
+  }
 }
