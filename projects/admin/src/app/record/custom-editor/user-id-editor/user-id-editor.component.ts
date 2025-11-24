@@ -81,8 +81,9 @@ export class UserIdEditorComponent implements OnInit {
                 map: (field: FormlyFieldConfig, jsonSchema: JSONSchema7) => {
                   // If 'format' is defined into the jsonSchema, use it as props to try a validation on this field.
                   // See: `email.validator.ts` file
-                  if (jsonSchema.format) {
-                    field.props.type = jsonSchema.format;
+                  const format = (jsonSchema as any).format;
+                  if (format) {
+                    field.props.type = format;
                     if (field.asyncValidators == null) {
                       field.asyncValidators = {};
                     }

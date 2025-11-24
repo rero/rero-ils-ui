@@ -75,6 +75,7 @@
     "@angular/platform-browser": "^19.2.0",
     "@angular/platform-browser-dynamic": "^19.2.0",
     "@angular/router": "^19.2.0",
+    "@kurkle/color": "^0.4.0",
     "@ngneat/hotkeys": "^4.0.0",
     "@ngx-formly/core": "^7.0.0",
     "@ngx-formly/primeng": "^7.0.0",
@@ -109,12 +110,17 @@
     "@angular/compiler-cli": "^19.2.0",
     "@angular/language-service": "^19.2.0",
     "@ngx-formly/schematics": "^7.0.0",
+    "@primeuix/styled": "^0.7.4",
+    "@primeuix/utils": "^0.6.3",
     "@tailwindcss/postcss": "^4.1.0",
     "@types/jasmine": "^5.1.4",
+    "@types/node": "^24.10.1",
     "@vendure/ngx-translate-extract": "^9.4.0",
     "angular-eslint": "^19.8.1",
     "bootstrap": "^5.3.7",
+    "codemirror-spell-checker": "^1.1.2",
     "eslint": "^9.28.0",
+    "glob": "^13.0.0",
     "jasmine-core": "^5.6.0",
     "jasmine-spec-reporter": "~7.0.0",
     "karma": "~6.4.2",
@@ -127,8 +133,9 @@
     "postcss": "^8.5.3",
     "tailwindcss": "^4.1.0",
     "tailwindcss-primeui": "^0.6.1",
-    "typescript": "^5.8.3",
-    "typescript-eslint": "8.33.1"
+    "typescript": "5.8.3",
+    "typescript-eslint": "8.33.1",
+    "yargs": "^17.7.2"
   },
   "files": [
     "dist"

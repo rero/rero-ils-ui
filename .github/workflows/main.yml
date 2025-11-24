@@ -17,10 +17,12 @@ jobs:
       uses: actions/setup-node@v4
       with:
         node-version: ${{ matrix.node-version }}
-    - name: install package
-      run: |
-        npm install -g @angular/cli@19
-        npm ci
+    - name: Install pnpm
+      uses: pnpm/action-setup@v4
+      with:
+        version: 10
+    - name: Install dependencies
+      run: pnpm install
     - name: run tests
       run: |
         ./run-tests.sh
