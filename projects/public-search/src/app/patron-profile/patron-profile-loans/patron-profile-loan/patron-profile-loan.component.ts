@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, computed, inject, input } from '@angular/core';
+import { Component, computed, inject, input, signal } from '@angular/core';
 import { DateTime } from 'luxon';
 import { LoansStore } from '../../store/loans-store';
 
@@ -38,6 +38,6 @@ export class PatronProfileLoanComponent {
   });
 
   /** Document section is collapsed */
-  isCollapsed = true;
+  isCollapsed = signal(true)  ;
 
 }

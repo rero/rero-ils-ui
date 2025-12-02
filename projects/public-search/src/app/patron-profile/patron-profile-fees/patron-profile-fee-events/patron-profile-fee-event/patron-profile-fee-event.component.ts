@@ -14,41 +14,55 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, inject, Input, OnDestroy, OnInit } from '@angular/core';
+import { Component, computed, inject, input, Input, OnDestroy, OnInit, Signal } from '@angular/core';
 import { PatronTransactionEventApiService } from '../../../../api/patron-transaction-event-api.service';
 import { PatronProfileMenuStore } from '../../../store/patron-profile-menu-store';
-import { Subscription } from 'rxjs';
-import { IOrganisation } from '@rero/shared';
+import { map, Subscription, switchMap } from 'rxjs';
+import { EsResult, IOrganisation } from '@rero/shared';
 import { Record } from '@rero/ng-core';
+import { toObservable, toSignal } from '@angular/core/rxjs-interop';
+import { EsRecord } from 'projects/shared/src/public-api';
+
+export interface PatronTransactionEvent {
+  metadata: {
+    pid: string;
+    type: string;
+    subtype?: string;
+    amount?: number;
+    note?: string;
+    creation_date: string | Date;
+    library?: {
+      name: string;
+    };
+  };
+}
 
 @Component({
   selector: 'public-search-patron-profile-fee-event',
   templateUrl: './patron-profile-fee-event.component.html',
   standalone: false
 })
-export class PatronProfileFeeEventComponent implements OnInit, OnDestroy {
-  private patronTransactionEventApiService: PatronTransactionEventApiService = inject(PatronTransactionEventApiService);
-  private patronProfileMenuStore = inject(PatronProfileMenuStore);
+export class PatronProfileFeeEventComponent {
+  private api = inject(PatronTransactionEventApiService);
+  private menuStore = inject(PatronProfileMenuStore);
 
-  @Input() event;
+  // Input signal
+  event = input<PatronTransactionEvent>();
 
-  transactionEvents;
-
-  private subscription = new Subscription();
-
-  get organisation(): IOrganisation {
-    const patron = this.patronProfileMenuStore.currentPatron();
+  // Organisation du patron
+  organisation = computed<IOrganisation>(() => {
+    const patron = this.menuStore.currentPatron();
     return patron ? patron.organisation : {} as IOrganisation;
-  }
+  });
 
-  ngOnInit(): void {
-    this.subscription.add(
-      this.patronTransactionEventApiService.getEvents(this.event.metadata.pid).subscribe((response: Record) =>
-        this.transactionEvents = response.hits.hits
-      ));
-  }
+  // Récupération des events liés
+  transactionEvents: Signal<any[]>= toSignal(
+    toObservable(this.event).pipe(
+      map(event => event.metadata.pid),
+      switchMap((pid: string) => this.api.getEvents(pid)),
+      map((response: EsResult) => response.hits.hits as PatronTransactionEvent[])
+    ),
+    { initialValue: [] }
+  );
 
-  ngOnDestroy(): void {
-    this.subscription.unsubscribe();
-  }
 }

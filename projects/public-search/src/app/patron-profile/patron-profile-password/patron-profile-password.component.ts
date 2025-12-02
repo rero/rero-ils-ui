@@ -27,6 +27,12 @@ import { of } from 'rxjs';
 import { catchError, debounceTime, map } from 'rxjs/operators';
 import { UserApiService } from '../../api/user-api.service';
 
+type IPasswordResponse = {
+  success?: boolean;
+  message: string;
+  error?: { field: string, message: string };
+}
+
 export function fieldPasswordMatchValidator(control: AbstractControl) {
   const { newPassword, confirmPassword } = control.value;
 
@@ -54,9 +60,6 @@ export class PatronProfilePasswordComponent {
   private userApiService: UserApiService = inject(UserApiService);
   private el: ElementRef = inject(ElementRef);
   private messageService: MessageService = inject(MessageService);
-
-  /** Request referer */
-  @Input() referer: string | null;
 
   /** angular form group for ngx-formly */
   form: UntypedFormGroup = new UntypedFormGroup({});
@@ -193,8 +196,3 @@ export class PatronProfilePasswordComponent {
   }
 }
 
-type IPasswordResponse = {
-  success?: boolean;
-  message: string;
-  error?: { field: string, message: string };
-}

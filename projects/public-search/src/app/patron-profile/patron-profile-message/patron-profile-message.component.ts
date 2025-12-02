@@ -14,16 +14,13 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, effect, inject, OnDestroy } from '@angular/core';
-import { ToastMessageOptions } from 'primeng/api/toastmessage';
-import { Subscription } from 'rxjs';
-import { Message, PatronApiService } from '../../api/patron-api.service';
-import { PatronProfileMenuStore } from '../store/patron-profile-menu-store';
+import { Component, inject } from '@angular/core';
+import { MessagesStore } from '../store/messages-store';
 
 @Component({
   selector: 'public-search-patron-profile-message',
   template: `
-    @for (message of messages; track $index) {
+    @for (message of messagesStore.displayMessages(); track $index) {
       <p-message
         styleClass="ui:mb-2"
         [text]="message.text"
@@ -34,37 +31,6 @@ import { PatronProfileMenuStore } from '../store/patron-profile-menu-store';
   `,
   standalone: false
 })
-export class PatronProfileMessageComponent implements OnDestroy {
-  private patronApiService: PatronApiService = inject(PatronApiService);
-  private patronProfileMenuStore = inject(PatronProfileMenuStore);
-
-  /** Observable subscription */
-  private _subscription = new Subscription();
-
-  /** patron messages */
-  messages: ToastMessageOptions[] = [];
-
-  constructor() {
-    effect(() => {
-      const patron = this.patronProfileMenuStore.currentPatron();
-      if (patron) {
-        this._loanMessage(patron.pid);
-      }
-    });
-  }
-
-  /** OnDestroy hook */
-  ngOnDestroy(): void {
-    this._subscription.unsubscribe();
-  }
-
-  /** load message */
-  private _loanMessage(patronPid: string): void {
-    this.patronApiService.getMessages(patronPid).subscribe(
-      (messages: Message[]) =>
-      (this.messages = messages.map((message: Message): ToastMessageOptions => {
-        return { text: message.content, severity: message.type };
-      }))
-    );
-  }
+export class PatronProfileMessageComponent {
+  messagesStore = inject(MessagesStore);
 }

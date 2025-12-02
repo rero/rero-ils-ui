@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, inject, Input } from '@angular/core';
+import { Component, computed, inject, input, Input, Signal } from '@angular/core';
 import { IMenu } from '../types';
 import { PatronProfileMenuStore } from '../store/patron-profile-menu-store';
 
@@ -25,36 +25,13 @@ import { PatronProfileMenuStore } from '../store/patron-profile-menu-store';
 })
 export class PatronProfileMenuComponent {
 
-  private patronProfileMenuStore = inject(PatronProfileMenuStore);
+  patronProfileMenuStore = inject(PatronProfileMenuStore);
 
-  @Input() patronPid: string;
+  patronPid = input<string>();
 
-  selectedOrganisation: IMenu;
-
-  /**
-   * Is menu visible
-   * @return boolean
-   */
-  get isVisible(): boolean {
-    return this.patronProfileMenuStore.isMultiOrganisation();
-  }
-
-  /**
-   * Get menu lines (organisation)
-   * @return array
-   */
-  get organisations(): IMenu[] {
+  selectedOrganisation = computed<IMenu | null>(() => {
     const menu = this.patronProfileMenuStore.menu();
-    const menuSelected = menu
-      .find((menu: any) => menu.value === this.patronPid);
-    if (menuSelected) {
-      this.selectedOrganisation = menuSelected;
-    }
-    return menu;
-  }
+    return menu.find((menu: IMenu) => menu.value === this.patronPid()) || null;
+  });
 
-  /** on change */
-  onChange(patronPid: string): void {
-    this.patronProfileMenuStore.changePatron(patronPid);
-  }
 }

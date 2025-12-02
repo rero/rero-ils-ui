@@ -16,13 +16,14 @@
  */
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
-import { NO_ERRORS_SCHEMA } from '@angular/core';
+import { NO_ERRORS_SCHEMA, signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { TranslateModule } from '@ngx-translate/core';
 import { SharedModule, testUserPatronWithSettings, UserApiService, UserService } from '@rero/shared';
 import { cloneDeep } from 'lodash-es';
 import { of } from 'rxjs';
 import { PatronProfileMenuStore } from '../../store/patron-profile-menu-store';
+import { RequestsStore } from '../../store/requests-store';
 import { PatronProfileRequestComponent } from './patron-profile-request.component';
 
 describe('PatronProfileRequestComponent', () => {
@@ -38,6 +39,9 @@ describe('PatronProfileRequestComponent', () => {
         pid: '1',
         title: [{ type: 'bf:Title', _text: 'Document title' }]
       },
+      item: {
+        location: { pid: 'loc1' }
+      },
       pickup_name: 'Pickup name',
       state: 'ITEM_AT_DESK',
       rank: 3
@@ -45,6 +49,14 @@ describe('PatronProfileRequestComponent', () => {
   };
 
   const userApiServiceSpy = jasmine.createSpyObj('UserApiService', ['getLoggedUser']);
+  const requestsStoreMock = {
+    cancelInProgress: signal(false),
+    cancelRequest: jasmine.createSpy('cancelRequest')
+  };
+
+  const patronProfileMenuStoreMock = {
+    currentPatron: signal({ pid: 'patron1', organisation: { code: 'RERO' } })
+  };
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -56,9 +68,10 @@ describe('PatronProfileRequestComponent', () => {
       ],
       providers: [
         { provide: UserApiService, useValue: userApiServiceSpy },
+        { provide: RequestsStore, useValue: requestsStoreMock },
+        { provide: PatronProfileMenuStore, useValue: patronProfileMenuStoreMock },
         provideHttpClient(withInterceptorsFromDi()),
-        provideHttpClientTesting(),
-        PatronProfileMenuStore
+        provideHttpClientTesting()
       ]
     }).compileComponents();
   });
@@ -103,5 +116,14 @@ describe('PatronProfileRequestComponent', () => {
     expect(div.textContent).toContain('(position {{ rank }} in waiting list)');
     const button = fixture.nativeElement.querySelector('.p-button-label');
     expect(button.textContent).toContain('Cancel');
+  });
+
+  it('should call cancelRequest on cancel button click', () => {
+    record.metadata.state = 'PENDING';
+    component.record = record;
+    fixture.detectChanges();
+
+    component.cancel();
+    expect(requestsStoreMock.cancelRequest).toHaveBeenCalled();
   });
 });

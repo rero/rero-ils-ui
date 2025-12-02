@@ -14,27 +14,40 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
+
 @if (document()) {
-  <a href="/{{ viewcode }}/document()s/{{ loan().metadata.document.pid }}" >
+  <a href="/{{ viewcode }}/documents()/{{ loan().metadata.document.pid }}">
     {{ document().title | mainTitle }}
   </a>
-  @if (loan().metadata.item.enumerationAndChronology && !showAdditionalInformation) {
-    <p-tag [value]="loan().metadata.item.enumerationAndChronology" severity="info" />
+  @if (
+    loan().metadata.item.enumerationAndChronology &&
+    !showAdditionalInformation()
+  ) {
+    <p-tag
+      [value]="loan().metadata.item.enumerationAndChronology"
+      severity="info"
+    />
   }
-  <shared-contribution [contributions]="document()?.contribution" [view]="viewcode" [limitRecord]="3" />
-  @if (loan().metadata && showAdditionalInformation) {
-      <dl class="ui:md:grid ui:grid-cols-4">
-        <!-- CALL NUMBER -->
-        @if (callNumbers; as formattedCallNumbers) {
-          <dt class="ui:font-bold ui:mr-2" translate>Call number</dt>
-          <dd class="ui:col-span-3">{{ formattedCallNumbers }}</dd>
-        }
-        <!-- ENUMERATION AND CHRONOLOGY -->
-        @if (loan().metadata.item.enumerationAndChronology) {
-          <dt class="ui:font-bold ui:mr-2" translate>Unit</dt>
-          <dd class="ui:col-span-3">{{ loan().metadata.item.enumerationAndChronology }}</dd>
-        }
-      </dl>
-      <ng-content select="[additional-metadata]" />
+  <shared-contribution
+    [contributions]="document()?.contribution"
+    [view]="viewcode"
+    [limitRecord]="3"
+  />
+  @if (loan().metadata && showAdditionalInformation()) {
+    <dl class="ui:md:grid ui:grid-cols-4">
+      <!-- CALL NUMBER -->
+      @if (callNumbers; as formattedCallNumbers) {
+        <dt class="ui:font-bold ui:mr-2" translate>Call number</dt>
+        <dd class="ui:col-span-3">{{ formattedCallNumbers }}</dd>
+      }
+      <!-- ENUMERATION AND CHRONOLOGY -->
+      @if (loan().metadata.item.enumerationAndChronology) {
+        <dt class="ui:font-bold ui:mr-2" translate>Unit</dt>
+        <dd class="ui:col-span-3">
+          {{ loan().metadata.item.enumerationAndChronology }}
+        </dd>
+      }
+    </dl>
+    <ng-content select="[additional-metadata]" />
   }
 }

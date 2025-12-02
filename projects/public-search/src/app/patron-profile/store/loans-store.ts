@@ -19,7 +19,7 @@ import { computed, inject, effect } from '@angular/core';
 import { patchState, signalStore, withComputed, withHooks, withMethods, withProps, withState } from '@ngrx/signals';
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
 import { Record } from '@rero/ng-core';
-import { concatMap, forkJoin, from, map, of, pipe, switchMap, tap, toArray } from 'rxjs';
+import { concatMap, debounceTime, forkJoin, from, map, of, pipe, switchMap, tap, toArray } from 'rxjs';
 import { LoanApiService } from '../../api/loan-api.service';
 import { PatronProfileMenuStore } from './patron-profile-menu-store';
 import { MessageService } from 'primeng/api';
@@ -48,7 +48,9 @@ export const LoansStore = signalStore(
   withProps(() => ({
     translateService: inject(TranslateService),
     messageService: inject(MessageService),
-  })), withMethods((store, loanApi = inject(LoanApiService)) => {
+    loanApi: inject(LoanApiService),
+  })),
+  withMethods((store) => {
 
     const updateLoan = (loan: any, renewData: any) => {
       ['end_date', 'extension_count', 'is_late', 'due_soon_date'].map(
@@ -64,7 +66,7 @@ export const LoansStore = signalStore(
       pipe(
         switchMap(() => {
           const loanPids = store.loans().map((loan: any) => loan.metadata.pid);
-          return forkJoin(loanPids.map((pid: string) => loanApi.canExtend(pid)));
+          return forkJoin(loanPids.map((pid: string) => store.loanApi.canExtend(pid)));
         }),
         tap((canExtendResponses) => {
           patchState(store, {
@@ -79,10 +81,10 @@ export const LoansStore = signalStore(
 
     const loadLoans = rxMethod<string /*loanSortCriteria*/>(
       pipe(
-        // debounceTime(500),
+        debounceTime(500),
         tap(() => patchState(store, { loansLoading: true })),
         switchMap((loanSortCriteria: string) =>
-          loanApi.getOnLoan(store.currentPatronPid(), 1, 9999, undefined, loanSortCriteria)
+          store.loanApi.getOnLoan(store.currentPatronPid(), 1, 9999, undefined, loanSortCriteria)
         ),
         map((response: Record) => {
           if (response.hits.total.value === 0) {
@@ -101,7 +103,7 @@ export const LoansStore = signalStore(
         tap(() => patchState(store, { renewInProgress: true })),
         tap((loan) => console.log(loan)),
         switchMap((loan) =>
-          loanApi.renew({
+          store.loanApi.renew({
             pid: loan.metadata.pid,
             item_pid: loan.metadata.item.pid,
             transaction_location_pid: loan.metadata.item.location.pid,
@@ -139,7 +141,7 @@ export const LoansStore = signalStore(
         switchMap(() =>
           from(
             store.renewableLoans().map((loan: any) =>
-              loanApi.renew({
+              store.loanApi.renew({
                 pid: loan.metadata.pid,
                 item_pid: loan.metadata.item.pid,
                 transaction_location_pid: loan.metadata.item.location.pid,

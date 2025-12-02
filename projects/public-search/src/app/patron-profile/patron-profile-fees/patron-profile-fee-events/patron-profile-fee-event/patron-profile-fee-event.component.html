@@ -14,7 +14,7 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<p-timeline [value]="transactionEvents">
+<p-timeline [value]="transactionEvents()">
   <ng-template #content let-event>
     <div class="ui:md:flex" [ngClass]="{ 'event-highlight': (event.metadata.type === 'dispute'), '': !(event.metadata.type === 'dispute') }">
       <div class="ui:flex-grow">
@@ -26,7 +26,7 @@
       <div>
         @if (event.metadata.amount) {
           <p-tag class="ui:pr-1" [severity]="event.metadata.type === 'payment'? 'success' : 'danger'">
-            {{ event.metadata.amount | currency:organisation.currency:'symbol' }}
+            {{ event.metadata.amount | currency:organisation().currency:'symbol' }}
           </p-tag>
         }
       </div>

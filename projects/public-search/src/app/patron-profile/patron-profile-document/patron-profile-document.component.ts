@@ -14,12 +14,11 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, computed, inject, input, Signal } from '@angular/core';
-import { toObservable, toSignal } from '@angular/core/rxjs-interop';
+import { Component, computed, inject, input, resource } from '@angular/core';
 import { RecordService } from '@rero/ng-core';
-import { catchError, map, of, switchMap } from 'rxjs';
 import { PatronProfileMenuStore } from '../store/patron-profile-menu-store';
 import { DocumentMetadata, LoanRecord as LoanRecordType } from '../types';
+import { catchError, firstValueFrom, map, of } from 'rxjs';
 
 @Component({
   selector: 'public-search-patron-profile-document',
@@ -34,7 +33,25 @@ export class PatronProfileDocumentComponent {
   showAdditionalInformation = input<boolean>(false);
   loan = input.required<LoanRecordType>();
 
-  document: Signal<DocumentMetadata>;
+  // document attached to the loan
+  document = computed(() => this.documentResource.value());
+
+  // get the document record
+  documentResource = resource({
+    request: () => this.loan()?.metadata?.document?.pid ?? null,
+    loader: ({ request: pid }) => {
+
+      if (!pid) return undefined;
+
+      return firstValueFrom(this.recordService
+        .getRecord('documents', pid, 1, {
+          Accept: 'application/rero+json, application/json',
+        }).pipe(
+          map((hit: { metadata?: DocumentMetadata } | undefined) => hit?.metadata),
+          catchError(() => of(undefined))
+        ));
+    },
+  });
 
   viewcode: string;
 
@@ -45,25 +62,8 @@ export class PatronProfileDocumentComponent {
 
   constructor() {
     const patron = this.patronProfileMenuStore.currentPatron();
-    this.viewcode = patron ? patron.organisation.code : '';
+    this.viewcode = patron ? patron.organisation.code : undefined;
 
-    this.document = toSignal(this.getDocumentSignal(), {
-      initialValue: undefined,
-    });
   }
 
-  /** Récupère le document lié au prêt, avec gestion d'erreur et validation */
-  private getDocumentSignal() {
-    return toObservable(this.loan).pipe(
-      switchMap((loan) => {
-        const pid = loan?.metadata?.document?.pid;
-        if (!pid) return of(undefined);
-        return this.recordService.getRecord('documents', pid, 1, {
-          Accept: 'application/rero+json, application/json',
-        });
-      }),
-      map((hit: { metadata?: DocumentMetadata } | undefined) => hit?.metadata),
-      catchError(() => of(undefined))
-    );
-  }
 }

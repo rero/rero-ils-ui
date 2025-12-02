@@ -19,25 +19,25 @@
   <p-panel>
     <ng-template #header>
       <div class="ui:hidden ui:w-full ui:md:grid ui:grid-cols-12 ui:gap-4 ui:text-lg ui:font-bold ui:items-center">
-          <div class="ui:col-span-12 ui:flex ui:justify-end">
-            {{ 'Total amount' | translate }}:
-            {{ feesTotal | currency:currency:'symbol' }}
-          </div>
+        <div class="ui:col-span-12 ui:flex ui:justify-end">
+          {{ 'Total amount' | translate }}:
+          {{ feesTotal | currency:currency:'symbol' }}
         </div>
+      </div>
     </ng-template>
 
-    @defer (when loaded) {
-      @if (records.length > 0) {
-        @for (record of records; track $index) {
-          <div class="ui:odd:bg-surface-50 ui:my-1">
-            <public-search-patron-profile-fee [record]="record" />
-          </div>
-        }
-      } @else {
-        <div class="ui:font-bold ui:mx-2 ui:my-6" translate>No fee</div>
-      }
-    } @placeholder {
-      <div class="ui:font-bold ui:mx-2 ui:my-6" translate>Loading in progress</div>
+    @if (!loading() || records().length > 0) {
+    @if (records().length > 0) {
+    @for (record of records(); track $index) {
+    <div class="ui:odd:bg-surface-50 ui:my-1">
+      <public-search-patron-profile-fee [record]="record" />
+    </div>
+    }
+    } @else {
+    <div class="ui:font-bold ui:mx-2 ui:my-6" translate>No fee</div>
+    }
+    } @else {
+    <div class="ui:font-bold ui:mx-2 ui:my-6" translate>Loading in progress</div>
     }
   </p-panel>
 </section>

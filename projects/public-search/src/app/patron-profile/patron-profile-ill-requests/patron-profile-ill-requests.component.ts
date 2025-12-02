@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2021-2024 RERO
+ * Copyright (C) 2021-2025 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -14,99 +14,29 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, effect, inject, OnDestroy, OnInit } from '@angular/core';
-import { _ } from "@ngx-translate/core";
-import { Error, Record } from '@rero/ng-core';
-import { BaseApi, Paginator } from '@rero/shared';
-import { Observable, Subscription } from 'rxjs';
-import { IllRequestApiService } from '../../api/ill-request-api.service';
-import { PatronProfileMenuStore } from '../store/patron-profile-menu-store';
-import { ITabEvent, PatronProfileService } from '../service/patron-profile.service';
+import { Component, inject } from '@angular/core';
+import { IllRequestsStore } from '../store/ill-requests-store';
 
 @Component({
   selector: 'public-search-patron-profile-ill-requests',
   templateUrl: './patron-profile-ill-requests.component.html',
   standalone: false
 })
-export class PatronProfileIllRequestsComponent implements OnInit, OnDestroy {
+export class PatronProfileIllRequestsComponent {
 
-  private illRequestApiService: IllRequestApiService = inject(IllRequestApiService);
-  private patronProfileService: PatronProfileService = inject(PatronProfileService);
-  private patronProfileMenuStore = inject(PatronProfileMenuStore);
-
-  /** First call of get record */
-  loaded = false;
+  private illRequestsStore = inject(IllRequestsStore);
 
   /** requests records */
-  records = [];
+  records = this.illRequestsStore.illRequests;
 
-  /** Records paginator */
-  paginator: Paginator;
+  /** loading state */
+  loading = this.illRequestsStore.illRequestsLoading;
 
-  /** Observable subscription */
-  private _subscription = new Subscription();
+  /** has more records */
+  hasMore = this.illRequestsStore.hasMore;
 
-  constructor() {
-    this.paginator = new Paginator();
-    this.paginator
-      .setHiddenInfo(
-        _('({{ count }} hidden ill request)'),
-        _('({{ count }} hidden ill requests)')
-      );
-
-    effect(() => {
-      const patron = this.patronProfileMenuStore.currentPatron();
-      if (patron) {
-        this.paginator.setRecordsCount(0);
-        this.records = [];
-        this.loaded = false;
-      }
-    });
-  }
-
-  /** OnInit hook */
-  ngOnInit(): void {
-    this._subscription.add(
-      this.paginator.more$.subscribe((page: number) => {
-        this._illRequestQuery(page).subscribe((response: Record) => {
-          this.records = this.records.concat(response.hits.hits);
-        });
-      })
-    );
-    this._subscription.add(
-      this.patronProfileService.tabsEvent$.subscribe((event: ITabEvent) => {
-        if (event.name === 'illRequest') {
-          if (event.count === 0) {
-            this.loaded = true;
-          } else {
-            this._illRequestQuery(1).subscribe((response: Record) => {
-              this.paginator.setRecordsCount(response.hits.total.value);
-              this.records = response.hits.hits;
-              this.loaded = true;
-            });
-          }
-        }
-      })
-    );
-  }
-
-  /** OnDestroy hook */
-  ngOnDestroy(): void {
-    this._subscription.unsubscribe();
-  }
-
-  /**
-   * Ill request query
-   * @param page - number
-   * @return Observable
-   */
-  private _illRequestQuery(page: number): Observable<Record | Error> {
-    const patron = this.patronProfileMenuStore.currentPatron();
-    const patronPid = patron ? patron.pid : '';
-    return this.illRequestApiService
-      .getPublicIllRequest(
-        patronPid, page, this.paginator.getRecordsPerPage(),
-        BaseApi.reroJsonheaders, '-created', { remove_archived: '1' }
-      );
+  /** Load more requests */
+  loadMore(): void {
+    this.illRequestsStore.loadMore();
   }
 }

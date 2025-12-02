@@ -277,8 +277,6 @@ export class PatronProfileComponent implements OnInit, OnDestroy {
     this.subscription.unsubscribe();
   }
 
-  afterRe
-
   /**
    * Find patron Pid with current view code
    * @param viewcode - current view code
