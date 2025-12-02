@@ -18,7 +18,7 @@ import { computed, inject } from "@angular/core";
 import { toObservable } from "@angular/core/rxjs-interop";
 import { patchState, signalMethod, signalStore, withComputed, withHooks, withMethods, withState } from "@ngrx/signals";
 import { rxMethod } from "@ngrx/signals/rxjs-interop";
-import { EsRecord, nonNullable, paginatorInitialState, withPaginator } from "@rero/shared";
+import { EsRecord, nonNullable, Pager, withPaginator } from "@rero/shared";
 import { PaginatorState } from "primeng/paginator";
 import { withViewCode } from "projects/shared/src/lib/store/viewcode-feature";
 import { EsResult } from "projects/shared/src/public-api";
@@ -41,20 +41,27 @@ const itemsInitialState: Items = {
   filterTotal: 0
 }
 
+const initialPagerConfig: Pager = {
+  page: 1,
+  first: 1,
+  rows: 10,
+  rowsPerPageOptions: [10, 20, 50]
+}
+
 export const ItemsStore = signalStore(
   withState(itemsInitialState),
-  withPaginator(),
+  withPaginator(initialPagerConfig),
   withViewCode(),
   withComputed((store) => ({
     isFilterEnabled: computed(() => store.total() > 11 || '' !== store.filter()),
-    isPaginatorEnabled: computed(() => store.paginator.rows() < store.filterTotal()),
+    isPaginatorEnabled: computed(() => store.pager.rows() < store.filterTotal()),
   })),
   withMethods((store, itemApiService = inject(ItemApiService)) => ({
     setHoldingsAndViewCode(holdings: EsRecord, viewCode: string) {
       patchState(store, { holdings, viewCode })
     },
     setFilter: signalMethod<string>((filter: string) => {
-      patchState(store, { filter, paginator: paginatorInitialState.paginator });
+      patchState(store, { filter, pager: initialPagerConfig });
     }),
     setPaginator(paginator: PaginatorState) {
       store.changePage(paginator);
@@ -65,8 +72,8 @@ export const ItemsStore = signalStore(
         switchMap(() => itemApiService.getItemsByHoldingsAndViewcode(
           store.holdings(),
           store.viewCode(),
-          store.paginator.page(),
-          store.paginator.rows(),
+          store.pager.page(),
+          store.pager.rows(),
           store.filter()
         )),
         tap((result: EsResult) => {
@@ -86,7 +93,7 @@ export const ItemsStore = signalStore(
   withHooks((store) => ({
     onInit: () => {
       toObservable(store.filter).pipe(nonNullable()).subscribe(() => store.load());
-      toObservable(store.paginator).subscribe(() => store.load())
+      toObservable(store.pager).subscribe(() => store.load())
     }
   }))
 );

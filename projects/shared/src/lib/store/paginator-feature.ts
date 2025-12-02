@@ -16,35 +16,25 @@
  */
 import { patchState, signalMethod, signalStoreFeature, withMethods, withState } from "@ngrx/signals";
 import { PaginatorState } from "primeng/paginator";
+import { Pager, Paginator } from "../component/paginator/model/paginator-model";
 
-type Paginator = {
-  paginator: PaginatorState
-}
-
-const rows = 10;
-
-export const paginatorInitialState: Paginator = {
-  paginator: {
-    page: 1,
-    first: 1,
-    rows: rows
-  }
-};
-
-export function withPaginator() {
+export function withPaginator(pager: Pager) {
   return signalStoreFeature(
-    withState<Paginator>(paginatorInitialState),
+    withState<Paginator>({
+      pager: pager
+    }),
     withMethods(store => ({
       changePage: signalMethod<PaginatorState>(event => {
-        if (event.rows !== store.paginator.rows()) {
+        if ((event.rows || pager.rows) !== store.pager.rows()) {
           event.page = 0;
           event.first = 1;
         }
         patchState(store, {
-          paginator: {
+          pager: {
             page: event.page + 1,
-            first: event.page * (event.rows || rows) + 1,
-            rows: (event.rows || rows)
+            first: event.page * (event.rows || pager.rows) + 1,
+            rows: (event.rows || pager.rows),
+            rowsPerPageOptions: store.pager().rowsPerPageOptions
           }
         });
       })

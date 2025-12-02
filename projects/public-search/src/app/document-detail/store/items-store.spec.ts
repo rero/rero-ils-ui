@@ -35,7 +35,7 @@ describe('ItemsStore', () => {
   });
 
   it('should return the holdings Pid and view code', (store = TestBed.inject(ItemsStore)) => {
-    store.setHoldingsAndViewCode(holdings,"global");
+    store.setHoldingsAndViewCode(holdings, "global");
     expect(store.holdings()).toBe(holdings);
     expect(store.viewCode()).toBe("global");
   });
@@ -59,27 +59,27 @@ describe('ItemsStore', () => {
     expect(store.filterTotal()).toEqual(1);
   }));
 
-   it('should reset the paginator after setting a filter.', fakeAsync((store = TestBed.inject(ItemsStore)) => {
-    store.setPaginator({page: 1, first: 11, rows: 10});
-    expect(store.paginator.page()).toEqual(2);
+  it('should reset the paginator after setting a filter.', fakeAsync((store = TestBed.inject(ItemsStore)) => {
+    store.setPaginator({ page: 1, first: 11, rows: 10 });
+    expect(store.pager.page()).toEqual(2);
     store.setFilter('f-0');
 
     tick(500);
-    expect(store.paginator.page()).toEqual(1);
+    expect(store.pager.page()).toEqual(1);
     console.log(store.isFilterEnabled());
     expect(store.isFilterEnabled()).toBeTrue();
-   }));
+  }));
 
-   it('should return the status of the paginator display.', fakeAsync((store = TestBed.inject(ItemsStore)) => {
-    store.setPaginator({page: 0, first: 1, rows: 10});
+  it('should return the status of the paginator display.', fakeAsync((store = TestBed.inject(ItemsStore)) => {
+    store.setPaginator({ page: 0, first: 1, rows: 10 });
     store.setHoldingsAndViewCode(holdings, "global");
     store.load();
 
     tick(500);
     expect(store.isPaginatorEnabled()).toBeTrue();
-    store.setPaginator({page: 0, first: 1, rows: 20});
+    store.setPaginator({ page: 0, first: 1, rows: 20 });
     expect(store.isPaginatorEnabled()).toBeFalse();
-   }));
+  }));
 });
 
 const holdings: EsRecord = {
@@ -92,9 +92,9 @@ const holdings: EsRecord = {
     $schema: "https://bib.rero.ch/schemas/holdings/holding-v0.0.1.json",
     pid: "641",
     library: {
-        name: "Bibliothèque du Lycée de la Vallée d'Aoste",
-        pid: "4",
-        type: "lib"
+      name: "Bibliothèque du Lycée de la Vallée d'Aoste",
+      pid: "4",
+      type: "lib"
     },
   },
   updated: "2025-10-23T05:30:43.803060+00:00"
@@ -109,17 +109,17 @@ class ItemApiServiceMock {
         created: "2025-10-22T11:59:23.738167+00:00",
         id: `${i}`,
         links: {
-            self: `https://localhost:5000/api/items/${i}`
+          self: `https://localhost:5000/api/items/${i}`
         },
         metadata: {
-            $schema: "https://bib.rero.ch/schemas/items/item-v0.0.1.json",
-            barcode: `f-${i}`,
-            pid: `${i}`,
-            holding: {
-              pid: "641",
-              type: "hold"
-            },
-            status: "on_shelf"
+          $schema: "https://bib.rero.ch/schemas/items/item-v0.0.1.json",
+          barcode: `f-${i}`,
+          pid: `${i}`,
+          holding: {
+            pid: "641",
+            type: "hold"
+          },
+          status: "on_shelf"
         }
       });
     }

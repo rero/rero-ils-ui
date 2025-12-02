@@ -41,5 +41,5 @@
 }
 
 @if (store.isPaginatorEnabled()) {
-  <shared-paginator [paginatorState]="paginatorConfig()" (pageChange)="store.setPaginator($event)" />
+  <shared-paginator [pager]="store.pager()" [total]="store.total()" (pageChange)="store.setPaginator($event)" />
 }

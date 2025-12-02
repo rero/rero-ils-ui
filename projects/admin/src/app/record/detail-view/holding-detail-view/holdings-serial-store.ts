@@ -23,7 +23,7 @@ import { patchState, signalMethod, signalStore, withComputed, withHooks, withMet
 import { rxMethod } from "@ngrx/signals/rxjs-interop";
 import { TranslateService } from "@ngx-translate/core";
 import { CONFIG, RecordUiService } from "@rero/ng-core";
-import { EsRecord, EsResult, nonNullable, paginatorInitialState, PERMISSIONS, PermissionsService, UserService, withPaginator } from "@rero/shared";
+import { EsRecord, EsResult, nonNullable, Pager, PERMISSIONS, PermissionsService, UserService, withPaginator } from "@rero/shared";
 import { MessageService } from "primeng/api";
 import { PaginatorState } from "primeng/paginator";
 import { numberGreatThan } from "projects/shared/src/public-api";
@@ -62,9 +62,16 @@ export const localFieldsPermissions = [
   PERMISSIONS.LOFI_CREATE
 ];
 
+const initialPagerConfig: Pager = {
+  page: 1,
+  first: 1,
+  rows: 10,
+  rowsPerPageOptions: [10, 20, 50]
+}
+
 export const HoldingsSerialStore = signalStore(
   withState(initialState),
-  withPaginator(),
+  withPaginator(initialPagerConfig),
   withProps(() => ({
     holdingsService: inject(HoldingsService),
     holdingsApiService: inject(HoldingsApiService),
@@ -76,7 +83,7 @@ export const HoldingsSerialStore = signalStore(
   })),
   withComputed((store) => ({
     isFilterEnabled: computed(() => store.receivedItemsCount() >= 11 || '' !== store.filter()),
-    isPaginatorEnabled: computed(() => store.paginator.rows() < store.filterTotal()),
+    isPaginatorEnabled: computed(() => store.pager.rows() < store.filterTotal()),
     isAllowIssueCreation: computed(() => store.userService.user.currentLibrary === store.holdings().metadata.library.pid),
     isDisplayLocalFieldsTab: computed(() =>
       store.permissionsService.canAccess(localFieldsPermissions)
@@ -88,7 +95,7 @@ export const HoldingsSerialStore = signalStore(
       patchState(store, { holdings });
     }),
     setFilter: signalMethod<string>((filter: string) => {
-      patchState(store, { filter, paginator: paginatorInitialState.paginator });
+      patchState(store, { filter, pager: initialPagerConfig });
     }),
     setPaginator(paginator: PaginatorState) {
       store.changePage(paginator);
@@ -98,8 +105,8 @@ export const HoldingsSerialStore = signalStore(
         debounceTime(400),
         switchMap(() => store.holdingsApiService.getIssuesByHoldings(
           store.holdings().metadata.pid,
-          store.paginator.page(),
-          store.paginator.rows(),
+          store.pager.page(),
+          store.pager.rows(),
           store.quickReceive(),
           store.filter()
         )),
@@ -121,7 +128,7 @@ export const HoldingsSerialStore = signalStore(
         switchMap((item: EsRecord) => store.recordUiService.deleteRecord('items', item.metadata.pid)),
         tap((success: boolean) => {
           if (success) {
-            patchState(store, { reload: true, filter: undefined, paginator: paginatorInitialState.paginator });
+            patchState(store, { reload: true, filter: undefined, pager: initialPagerConfig });
           }
         })
       )
@@ -140,7 +147,7 @@ export const HoldingsSerialStore = signalStore(
         catchError(() => undefined),
         tap((result) => {
           if (result) {
-            patchState(store, { quickReceive: true, paginator: paginatorInitialState.paginator });
+            patchState(store, { quickReceive: true, pager: initialPagerConfig });
           } else {
             store.messageService.add({
               severity: 'error',
@@ -174,7 +181,7 @@ export const HoldingsSerialStore = signalStore(
       });
       toObservable(store.issuesCount).pipe(numberGreatThan(3)).subscribe(() => store.loadIssues());
       toObservable(store.filter).pipe(nonNullable()).subscribe(() => store.loadItems());
-      toObservable(store.paginator).pipe(nonNullable()).subscribe(() => store.loadItems());
+      toObservable(store.pager).pipe(nonNullable()).subscribe(() => store.loadItems());
       toObservable(store.reload).subscribe(reload => {
         if (reload) {
           store.loadItems();

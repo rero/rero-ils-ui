@@ -15,9 +15,8 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, inject, input, model, OnInit, Signal } from '@angular/core';
-import { deepComputed } from '@ngrx/signals';
-import { EsRecord, PaginatorConfig } from '@rero/shared';
+import { Component, inject, input, model, OnInit } from '@angular/core';
+import { EsRecord } from '@rero/shared';
 import { HoldingsSerialStore } from '../holdings-serial-store';
 
 @Component({
@@ -33,12 +32,6 @@ export class SerialHoldingDetailViewComponent implements OnInit {
   holding = input.required<EsRecord>();
 
   protected filter = model<string>('');
-
-  protected paginatorConfig: Signal<PaginatorConfig> = deepComputed(() => ({
-    first: this.store.paginator.first(),
-    rows: this.store.paginator.rows(),
-    total: this.store.receivedItemsCount()
-  }));
 
   /** OnInit hook */
   ngOnInit(): void {
