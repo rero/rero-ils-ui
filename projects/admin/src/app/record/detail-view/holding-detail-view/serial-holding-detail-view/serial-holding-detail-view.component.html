@@ -132,7 +132,7 @@
             <admin-received-issue [issue]="item" [holding]="holding()" />
           }
           @if (store.isPaginatorEnabled()) {
-            <shared-paginator class="ui:mt-4" [paginatorState]="paginatorConfig()" (pageChange)="store.setPaginator($event)" />
+            <shared-paginator class="ui:mt-4" [pager]="store.pager()" [total]="store.receivedItemsCount()" (pageChange)="store.setPaginator($event)" />
           }
         </div>
       </div>
