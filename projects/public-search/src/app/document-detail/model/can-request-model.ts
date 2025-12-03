@@ -16,5 +16,5 @@
  */
 export type canRequest = {
   can: boolean;
-  reasons?: string[];
+  reasons?: Record<string, string>;
 }

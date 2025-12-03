@@ -58,7 +58,7 @@ describe('ItemService', () => {
 
   const canRequest = {
     can: true,
-    reasons: []
+    reasons: {}
   };
 
   const request = {

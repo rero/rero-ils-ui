@@ -54,7 +54,7 @@ export class PatronProfileLoanComponent implements OnInit {
   /** Loan can extend */
   canExtend = {
     can: false,
-    reasons: []
+    reasons: {}
   };
   /** Fees */
   fees = 0;
@@ -74,6 +74,11 @@ export class PatronProfileLoanComponent implements OnInit {
     return (this.record.metadata.is_late)
       ? false
       : DateTime.fromISO(this.record.metadata.due_soon_date) <= DateTime.now();
+  }
+
+    /** Get the cannot extend reasons messages as an array for template pipes */
+  get reasons(): string[] {
+    return Object.values(this.canExtend?.reasons || {});
   }
 
   /** OnInit hook */

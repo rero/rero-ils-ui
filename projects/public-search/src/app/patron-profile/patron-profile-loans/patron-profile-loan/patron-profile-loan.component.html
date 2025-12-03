@@ -49,7 +49,7 @@
     <p-button
       size="small"
       class="ui:pointer-events-auto"
-      [pTooltip]="canExtend.reasons | arrayTranslate | join:' / '"
+      [pTooltip]="reasons | arrayTranslate | join:' / '"
       tooltipPosition="top"
       [tooltipDisabled]="canExtend.can"
       (onClick)="renew()"

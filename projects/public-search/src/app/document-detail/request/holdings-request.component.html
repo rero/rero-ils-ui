@@ -22,17 +22,17 @@
       id="record-{{ record.metadata.pid }}-request-button"
       outlined
       (onClick)="showRequestDialog()"
-      [hidden]="!canRequest?.can"
+      [hidden]="!hiddenRequestButton()"
+      [disabled]="!canRequest().can"
+      [tooltipDisabled]="canRequest().can"
+      [pTooltip]="tooltip()"
+      tooltipPosition="top"
     >
       <i class="fa fa-cart-arrow-down ui:mr-2"></i>
-      @if (recordType === 'item') {
-        {{ 'Request' | translate }}
+      @if (holdingsItemsCount > 0) {
+        {{ 'Request another issue' | translate }}
       } @else {
-        @if (holdingsItemsCount > 0) {
-          {{ 'Request another issue' | translate }}
-        } @else {
-          {{ 'Request an issue' | translate }}
-        }
+        {{ 'Request an issue' | translate }}
       }
       </p-button>
   } @else {

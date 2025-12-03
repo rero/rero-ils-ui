@@ -50,7 +50,7 @@ import { HoldingsComponent } from 'projects/public-search/src/app/document-detai
 import { ItemsComponent } from 'projects/public-search/src/app/document-detail/holdings/items/items.component';
 import { ItemComponent } from 'projects/public-search/src/app/document-detail/item/item.component';
 import { PickupLocationComponent } from 'projects/public-search/src/app/document-detail/request/pickup-location/pickup-location.component';
-import { RequestComponent } from 'projects/public-search/src/app/document-detail/request/request.component';
+import { HoldingsRequestComponent } from 'projects/public-search/src/app/document-detail/request/holdings-request.component';
 import { AppConfigService } from './app-config-service.service';
 import { AppInitializerService } from './app-initializer.service';
 import { ItemRequestComponent } from 'projects/public-search/src/app/document-detail/item/item-request.component';
@@ -88,7 +88,7 @@ import { ItemRequestComponent } from 'projects/public-search/src/app/document-de
         ItemComponent,
         ItemsComponent,
         PickupLocationComponent,
-        RequestComponent,
+        HoldingsRequestComponent,
         DocumentDetailViewComponent,
         ElectronicHoldingsComponent,
         ItemRequestComponent
