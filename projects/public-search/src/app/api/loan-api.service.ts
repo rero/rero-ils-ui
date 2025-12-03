@@ -17,7 +17,7 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { LoanOverduePreview } from '@app/admin/classes/loans';
-import { ApiService, Error, Record, RecordService } from '@rero/ng-core';
+import { ApiService, Error, Record as EsRecord, RecordService } from '@rero/ng-core';
 import { BaseApi } from '@rero/shared';
 import { Observable, of } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
@@ -43,7 +43,7 @@ export class LoanApiService extends BaseApi {
     patronPid: string, page: number,
     itemsPerPage = 20, headers = BaseApi.reroJsonheaders,
     sort?: string
-  ): Observable<Record | Error> {
+  ): Observable<EsRecord | Error> {
     const loanStates = ['ITEM_ON_LOAN'];
     return this.recordService.getRecords(
       'loans', this._patronStateQuery(patronPid, loanStates), page, itemsPerPage,
@@ -62,7 +62,7 @@ export class LoanApiService extends BaseApi {
   getRequest(
     patronPid: string, page: number,
     itemsPerPage = 10, headers = BaseApi.reroJsonheaders
-  ): Observable<Record | Error> {
+  ): Observable<EsRecord | Error> {
     const requestStates = ['PENDING', 'ITEM_AT_DESK', 'ITEM_IN_TRANSIT_FOR_PICKUP'];
     return this.recordService.getRecords(
       'loans', this._patronStateQuery(patronPid, requestStates), page, itemsPerPage,
@@ -141,5 +141,5 @@ export class LoanApiService extends BaseApi {
 
 export type CanExtend = {
   can: boolean;
-  reasons: string[];
+  reasons: Record<string, string>;
 }

@@ -24,7 +24,7 @@ import { ButtonDirective } from 'primeng/button';
 import { Message } from 'primeng/message';
 import { Ripple } from 'primeng/ripple';
 import { HoldingsApiService } from '../../api/holdings-api.service';
-import { RequestComponent } from '../request/request.component';
+import { HoldingsRequestComponent } from '../request/holdings-request.component';
 import { HoldingsStore } from '../store/holdings-store';
 import { ItemsComponent } from './items/items.component';
 import { MultiSelect } from 'primeng/multiselect';
@@ -32,7 +32,7 @@ import { MultiSelect } from 'primeng/multiselect';
 @Component({
     selector: 'public-search-holdings',
     templateUrl: './holdings.component.html',
-    imports: [Message, Accordion, AccordionPanel, Ripple, AccordionHeader, SharedModule, TranslateDirective, AccordionContent, ItemsComponent, RequestComponent, NgClass, ButtonDirective, I18nPluralPipe, TranslatePipe, CoreModule, MultiSelect],
+    imports: [Message, Accordion, AccordionPanel, Ripple, AccordionHeader, SharedModule, TranslateDirective, AccordionContent, ItemsComponent, HoldingsRequestComponent, NgClass, ButtonDirective, I18nPluralPipe, TranslatePipe, CoreModule, MultiSelect],
     providers: [HoldingsStore]
 })
 export class HoldingsComponent implements OnInit {

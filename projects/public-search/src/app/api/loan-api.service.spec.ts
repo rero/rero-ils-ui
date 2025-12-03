@@ -51,7 +51,7 @@ describe('LoanApiService', () => {
 
   const canExtend = {
     can: true,
-    reasons: []
+    reasons: {}
   };
 
   const renew = {

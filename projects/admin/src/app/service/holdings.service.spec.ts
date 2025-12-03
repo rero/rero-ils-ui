@@ -68,8 +68,8 @@ describe('HoldingsService', () => {
   });
 
   it('should return true on the possibility of making a request', () => {
-    httpClientSpy.get.and.returnValue(of(true));
-    service.canRequest('pid').subscribe((result: any) => expect(result).toBeTrue());
+    httpClientSpy.get.and.returnValue(of({ can: true, reasons: {} }));
+    service.canRequest('pid').subscribe((result: any) => expect(result.can).toBeTrue());
   });
 
   it('should return a list of pickup locations', () => {

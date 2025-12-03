@@ -29,7 +29,7 @@ import { canRequest } from '../model/can-request-model';
   <p-button
     class="ui:pointer-events-auto"
     outlined
-    [hidden]="!canRequest().can"
+    [hidden]="!hiddenRequestButton()"
     [disabled]="!canRequest().can"
     [tooltipDisabled]="canRequest().can"
     [pTooltip]="tooltip()"
@@ -52,9 +52,23 @@ export class ItemRequestComponent implements OnInit {
 
   canRequest = signal<canRequest>({ can: false });
 
-  tooltip = computed(() => this.canRequest().reasons?.map(
-    (reason: string) => this.translateService.instant(reason)
-  ).join('\n\n'));
+    reasonsToDisplay = [
+      "patron_type_overdue_items_limit",
+      "patron_type_fee_amount_limit",
+      "patron_type_unpaid_subscription",
+      "patron_type_request_limits"
+    ]
+
+  allReasonsDisplayable = computed(() =>
+    this.canRequest().reasons &&
+    Object.keys(this.canRequest().reasons).every(key => this.reasonsToDisplay.includes(key))
+  );
+
+  hiddenRequestButton = computed(() => this.canRequest().can || this.allReasonsDisplayable());
+
+  tooltip = computed(() => Object.values(this.canRequest().reasons || {}).map(
+    (reason: string) => "- " + this.translateService.instant(reason)
+  ).join('\n'));
 
   private _patron: IPatron;
 

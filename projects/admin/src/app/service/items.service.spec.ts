@@ -203,8 +203,8 @@ describe('ItemsService', () => {
   });
 
   it('canRequest', () => {
-    httpClientSpy.get.and.returnValue(of(true));
-    service.canRequest('1').subscribe((result: boolean) => expect(result).toBeTrue());
+    httpClientSpy.get.and.returnValue(of({ can: true, reasons: {} }));
+    service.canRequest('1').subscribe((result: any) => expect(result.can).toBeTrue());
   });
 
   it('needCallout', () => {
