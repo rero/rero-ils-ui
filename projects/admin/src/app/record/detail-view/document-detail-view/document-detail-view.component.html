@@ -288,7 +288,7 @@
       <p-tabpanel #tabGet value="get">
         <div class="ui:mb-2">
           @if (tabGet.active()) {
-            <shared-doc-files [documentPid]="record.metadata.pid" />
+            <shared-doc-files [documentPid]="record.metadata.pid" [routerPath]="['/','records', 'documents']" />
           }
         </div>
         <admin-holdings [document]="record" />

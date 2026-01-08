@@ -18,6 +18,7 @@
 <h5 translate>Digital collections</h5>
   <form [formGroup]="formGroup">
     <p-autocomplete
+      #autocomplete
       multiple
       [typeahead]="false"
       [pTooltip]="'Comma-separated list of digital collection names. Digital collections allow the searching/grouping of related documents containing files.'|translate"
@@ -25,8 +26,12 @@
       formControlName="collections"
       [allowDuplicate]="false"
     >
-      <ng-template let-collection #item>
-        <a [href]="getCollectionLink(collection)">{{ collection }}&nbsp;<i class="fa fa-external-link"></i></a>
+      <ng-template let-collection pTemplate="selectedItem">
+          <p-chip styleClass="p-autocomplete-chip" [removable]="true" (onRemove)="autocomplete.removeOption($event, getIndex(collection))">
+            <span class="p-autocomplete-chip-icon">
+              <a target="_blank" [href]="getCollectionLink(collection)">{{ collection }}&nbsp;<i class="fa fa-external-link"></i></a>
+            </span>
+        </p-chip>
      </ng-template>
     </p-autocomplete>
 </form>

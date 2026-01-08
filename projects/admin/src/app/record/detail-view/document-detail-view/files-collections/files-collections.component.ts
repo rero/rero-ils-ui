@@ -92,11 +92,19 @@ export class FilesCollectionsComponent implements OnInit, OnDestroy {
     this.formGroup.touched;
   }
 
+  getIndex(collection: string): number {
+    const value = this.formGroup.get('collections')?.value?.indexOf(collection);
+    if (value != null) {
+      return -1;
+    }
+    return value;
+  }
+
   /**
    * Save the form and put the new value on the backend.
    */
   save(): void {
-    const coll = this.formGroup.get('collections').value;
+    const coll = Array.from(new Set(this.formGroup.get('collections').value));
     const metadata = this.record.metadata;
     if (coll) {
       metadata.collections = coll;

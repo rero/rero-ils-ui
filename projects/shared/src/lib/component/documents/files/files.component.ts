@@ -54,6 +54,8 @@ export class FilesComponent implements OnInit, OnDestroy {
 
   // input document pid
   @Input() documentPid: string;
+  @Input({ required: true }) routerPath: string[];
+  @Input() useHref = false;
 
   // list of files
   files: File[] = [];
@@ -66,6 +68,7 @@ export class FilesComponent implements OnInit, OnDestroy {
   // current page for the carousel
   page = 0;
   loading = false;
+  collections: string[] = [];
 
   // file to preview
   previewFile: {
@@ -87,6 +90,14 @@ export class FilesComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.subscriptions.unsubscribe();
   }
+
+  getQueryParams(collection:string): {q: string, simple:string} {
+    const escapedCollection = collection.replace(/[+\-&|!(){}[\]^"~*?:\\/]/g, '\\$&');
+    return {
+      q: `files.collections.raw:(${escapedCollection})`,
+      simple: '0'
+    };
+  };
 
   /**
    * Changes the number of items in the carousel.
@@ -128,6 +139,15 @@ export class FilesComponent implements OnInit, OnDestroy {
       .get(`${baseUrl}?q=${query}`)
       .pipe(
         map((result: Record) => (this.recordService.totalHits(result.hits.total) === 0 ? [] : result.hits.hits)),
+        tap(hits => {
+          const colls: string[] = [];
+          hits.forEach(hit => {
+            if (Array.isArray(hit.metadata.collections)) {
+              colls.push(...hit.metadata.collections);
+            }
+          });
+          this.collections = Array.from(new Set(colls));
+        }),
         map((hits: any[]) => hits.map((hit: any) => hit.id)),
         // get all files attached to the given records
         switchMap((ids: any[]) => {
@@ -189,6 +209,16 @@ export class FilesComponent implements OnInit, OnDestroy {
     } else {
       this.filteredFiles = this.files;
     }
+  }
+
+  getHref(collection: string): string {
+    const params = this.getQueryParams(collection);
+    const queryString = new URLSearchParams(params).toString();
+    const routerPath = [...this.routerPath];
+    if (routerPath[0] === '/') {
+      routerPath[0] = '';
+    }
+    return `${routerPath.join('/')}?${queryString}`;
   }
 
   /**
