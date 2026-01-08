@@ -29,7 +29,7 @@
     <p-tabpanels>
       <p-tabpanel value="get">
         <div class="ui:mb-2">
-          <shared-doc-files [documentPid]="$any(document).metadata.pid" />
+          <shared-doc-files [documentPid]="$any(document).metadata.pid" [routerPath]="['/', viewcode, 'search', 'documents']" [useHref]="true"/>
         </div>
         <public-search-holdings [viewcode]="viewcode" [documentPid]="$any(document).metadata.pid" />
         <public-search-electronic-holdings [viewcode]="viewcode" [documentPid]="$any(document).metadata.pid" />

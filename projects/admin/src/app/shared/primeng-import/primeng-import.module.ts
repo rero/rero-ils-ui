@@ -72,7 +72,8 @@ import { TreeTableModule } from 'primeng/treetable';
     ToggleSwitchModule,
     TooltipModule,
     TreeTableModule,
-    MultiSelectModule
+    MultiSelectModule,
+    ChipModule
   ]
 })
 export class PrimengImportModule { }
