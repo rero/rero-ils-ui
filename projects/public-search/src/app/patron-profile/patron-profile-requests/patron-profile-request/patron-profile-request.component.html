@@ -16,69 +16,59 @@
 -->
 
 @if (record) {
-  <div class="ui:grid ui:grid-cols-12 ui:gap-4 ui:p-2 ui:pl-1" [ngClass]="{'callout callout-success':record.metadata.state === 'ITEM_AT_DESK'}">
+<div class="ui:grid ui:grid-cols-12 ui:gap-4 ui:p-2 ui:pl-1"
+  [ngClass]="{'callout callout-success':record.metadata.state === 'ITEM_AT_DESK'}">
 
-    <div class="ui:md:col-span-8 ui:col-span-12 ui:flex ui:gap-2">
-      <shared-open-close-button (status)="isCollapsed = $event" />
-      <div class="ui:w-full">
-        <!-- DOCUMENT & ADDITIONAL DATA ===================================== -->
-        <public-search-patron-profile-document
-          [record]="record"
-          [showAdditionalInformation]="!isCollapsed"
-          [isAnimated]="true"
-        />
-        <dl class="ui:grid ui:grid-cols-4">
-          <dt class="ui:hidden ui:md:block ui:font-bold ui:mr-2" translate>Pickup location</dt>
-          <dd class="ui:col-span-3">{{ record.metadata.pickup_name }}</dd>
-        </dl>
-        <dl class="ui:md:hidden ui:grid ui:grid-cols-4">
-          <dt class="ui:hidden" translate>Status</dt>
-          <dd class="ui:col-span-3">
-            <ng-container [ngTemplateOutlet]="status" />
-          </dd>
-        </dl>
-      </div>
-    </div>
-        <!-- STATUS ========================================================= -->
-    <div class="ui:md:col-span-2 ui:col-span-12 ui:hidden ui:md:block">
-      <ng-container [ngTemplateOutlet]="status" />
-    </div>
-    <!-- ACTION BUTTONS ================================================= -->
-    <div class="ui:md:col-span-2 ui:col-span-12 ui:flex ui:justify-end">
-      @if (['PENDING', 'ITEM_IN_TRANSIT_FOR_PICKUP'].includes(record.metadata.state)) {
-        <p-button
-          size="small"
-          id="request-cancel-{{ record.metadata.pid }}"
-          (onClick)="cancel()"
-          [disabled]="cancelInProgress"
-          [label]="'Cancel' | translate"
-          outlined
-          severity="danger"
-          [icon]="!(!cancelInProgress || actionDone)? 'fa fa-spinner': 'fa fa-trash'"
-        />
-      }
+  <div class="ui:md:col-span-8 ui:col-span-12 ui:flex ui:gap-2">
+    <shared-open-close-button (status)="isCollapsed = $event" />
+    <div class="ui:w-full">
+      <!-- DOCUMENT & ADDITIONAL DATA ===================================== -->
+      <public-search-patron-profile-document [loan]="record" [showAdditionalInformation]="!isCollapsed" />
+      <dl class="ui:grid ui:grid-cols-4">
+        <dt class="ui:hidden ui:md:block ui:font-bold ui:mr-2" translate>Pickup location</dt>
+        <dd class="ui:col-span-3">{{ record.metadata.pickup_name }}</dd>
+      </dl>
+      <dl class="ui:md:hidden ui:grid ui:grid-cols-4">
+        <dt class="ui:hidden" translate>Status</dt>
+        <dd class="ui:col-span-3">
+          <ng-container [ngTemplateOutlet]="status" />
+        </dd>
+      </dl>
     </div>
   </div>
+  <!-- STATUS ========================================================= -->
+  <div class="ui:md:col-span-2 ui:col-span-12 ui:hidden ui:md:block">
+    <ng-container [ngTemplateOutlet]="status" />
+  </div>
+  <!-- ACTION BUTTONS ================================================= -->
+  <div class="ui:md:col-span-2 ui:col-span-12 ui:flex ui:justify-end">
+    @if (['PENDING', 'ITEM_IN_TRANSIT_FOR_PICKUP'].includes(record.metadata.state)) {
+    <p-button size="small" id="request-cancel-{{ record.metadata.pid }}" (onClick)="cancel()"
+      [disabled]="cancelInProgress()" [label]="'Cancel' | translate" outlined severity="danger"
+      [icon]="cancelInProgress() ? 'fa fa-spinner': 'fa fa-trash'" />
+    }
+  </div>
+</div>
 }
 
 <ng-template #status>
   <!-- ITEM AT DESK -->
   @if (record.metadata.state === 'ITEM_AT_DESK') {
-    <i class="fa fa-check text-success"  title="{{ 'item at desk' | translate }}" aria-hidden="true"></i>
-    {{ 'to pick up' | translate }}
-    @if (record.metadata.request_expire_date) {
-      {{ 'until' | translate }} {{ record.metadata.request_expire_date | dateTranslate: 'shortDate'}}
-    }
+  <i class="fa fa-check text-success" title="{{ 'item at desk' | translate }}" aria-hidden="true"></i>
+  {{ 'to pick up' | translate }}
+  @if (record.metadata.request_expire_date) {
+  {{ 'until' | translate }} {{ record.metadata.request_expire_date | dateTranslate: 'shortDate'}}
+  }
   }
   <!-- PENDING OR ITEM IN TRANSIT FOR PICKUP -->
   @if (['PENDING', 'ITEM_IN_TRANSIT_FOR_PICKUP'].includes(record.metadata.state)) {
-    <i class="fa fa-ellipsis-h ui:pr-1"  title="{{ 'pending' | translate }}" aria-hidden="true"></i>
-    <!-- TODO: Add expired date and remove "waiting" text
+  <i class="fa fa-ellipsis-h ui:pr-1" title="{{ 'pending' | translate }}" aria-hidden="true"></i>
+  <!-- TODO: Add expired date and remove "waiting" text
     expected availability 00.00.0000  -->
-    {{ 'waiting' | translate }}
+  {{ 'waiting' | translate }}
   }
   <!-- PENDING -->
   @if (record.metadata.state === 'PENDING' && record.metadata.rank && record.metadata.rank > 0) {
-    <div [translate]="'(position {{ rank }} in waiting list)'" [translateParams]="{ rank: record.metadata.rank }"></div>
+  <div [translate]="'(position {{ rank }} in waiting list)'" [translateParams]="{ rank: record.metadata.rank }"></div>
   }
 </ng-template>

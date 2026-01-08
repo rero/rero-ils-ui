@@ -16,7 +16,7 @@
  */
 import { Component, EventEmitter, inject, Input, OnChanges, OnDestroy, Output, signal, SimpleChanges, WritableSignal } from '@angular/core';
 import { DateTime } from 'luxon';
-import { getSeverity } from '../../../utils/utils';
+import { getSeverity } from '@rero/shared';
 import { CirculationStatsService } from '../service/circulation-stats.service';
 
 @Component({

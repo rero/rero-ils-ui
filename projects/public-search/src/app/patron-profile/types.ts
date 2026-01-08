@@ -14,23 +14,33 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, inject } from '@angular/core';
-import { MessagesStore } from '../store/messages-store';
 
-@Component({
-  selector: 'public-search-patron-profile-message',
-  template: `
-    @for (message of messagesStore.displayMessages(); track $index) {
-      <p-message
-        styleClass="ui:mb-2"
-        [text]="message.text"
-        [severity]="message.severity"
-        showTransitionOptions="0ms"
-      />
-    }
-  `,
-  standalone: false
-})
-export class PatronProfileMessageComponent {
-  messagesStore = inject(MessagesStore);
-}
+import { EntityShape as SharedEntity } from '@rero/shared';
+
+export type DocumentMetadata = {
+  title: { type: string, _text: string }[];
+  /** Entity used in contribution entries (authors, organisations...) */
+  contribution?: { entity: SharedEntity; role?: string[] }[];
+  [key: string]: unknown;
+};
+
+export type LoanRecord = {
+  metadata: {
+    item: {
+      call_number?: string;
+      second_call_number?: string;
+      enumerationAndChronology?: string;
+    };
+    document?: {
+      pid?: string;
+    };
+  };
+};
+
+export type IMenu = {
+  value: string;
+  name: string;
+  selected?: boolean;
+};
+
+

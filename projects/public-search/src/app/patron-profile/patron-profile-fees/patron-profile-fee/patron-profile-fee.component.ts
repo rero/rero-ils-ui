@@ -18,17 +18,17 @@ import { Component, inject, Input, OnDestroy, OnInit } from '@angular/core';
 import { RecordService } from '@rero/ng-core';
 import { IOrganisation } from '@rero/shared/public-api';
 import { Observable, Subscription } from 'rxjs';
-import { PatronProfileMenuService } from '../../patron-profile-menu.service';
+import { PatronProfileMenuStore } from '../../store/patron-profile-menu-store';
 
 @Component({
-    selector: 'public-search-patron-profile-fee',
-    templateUrl: './patron-profile-fee.component.html',
-    styleUrl: './patron-profile-fee.component.scss',
-    standalone: false
+  selector: 'public-search-patron-profile-fee',
+  templateUrl: './patron-profile-fee.component.html',
+  styleUrl: './patron-profile-fee.component.scss',
+  standalone: false
 })
 export class PatronProfileFeeComponent<T> implements OnInit, OnDestroy {
 
-  private patronProfileMenuService: PatronProfileMenuService = inject(PatronProfileMenuService);
+  private patronProfileMenuStore = inject(PatronProfileMenuStore);
   private recordService: RecordService = inject(RecordService);
 
   /** Fee record */
@@ -45,7 +45,8 @@ export class PatronProfileFeeComponent<T> implements OnInit, OnDestroy {
   subscription = new Subscription();
 
   get organisation(): IOrganisation {
-    return this.patronProfileMenuService.currentPatron.organisation;
+    const patron = this.patronProfileMenuStore.currentPatron();
+    return patron ? patron.organisation : {} as IOrganisation;
   }
 
   ngOnInit(): void {

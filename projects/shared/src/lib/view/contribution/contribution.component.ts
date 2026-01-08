@@ -16,6 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { Component, Input, OnInit } from '@angular/core';
+import { EntityShape } from '../../types/entity';
 
 @Component({
     selector: 'shared-contribution',
@@ -26,9 +27,10 @@ export class ContributionComponent implements OnInit {
 
   // COMPONENTS ATTRIBUTES ====================================================
   /** List of contributor */
-  @Input() contributions: {entity: any, role: string[]}[];
+
+  @Input() contributions: {entity: EntityShape, role?: string[]}[];
   /** List of contributor types to display */
-  @Input() filters: string[] = ['bf:Person', 'bf:Organisation']
+  @Input() filters: string[] = ['bf:Person', 'bf:Organisation'];
   /** The number of contributors to display */
   @Input() limitRecord: number | undefined;
   /** Is the role of contributor should be displayed */

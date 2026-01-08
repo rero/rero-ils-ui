@@ -14,46 +14,56 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, inject, Input, OnInit } from '@angular/core';
+import { Component, computed, inject, input, resource } from '@angular/core';
 import { RecordService } from '@rero/ng-core';
-import { PatronProfileMenuService } from '../patron-profile-menu.service';
+import { PatronProfileMenuStore } from '../store/patron-profile-menu-store';
+import { DocumentMetadata, LoanRecord as LoanRecordType } from '../types';
+import { catchError, firstValueFrom, map, of } from 'rxjs';
 
 @Component({
-    selector: 'public-search-patron-profile-document',
-    templateUrl: './patron-profile-document.component.html',
-    standalone: false
+  selector: 'public-search-patron-profile-document',
+  templateUrl: './patron-profile-document.component.html',
+  standalone: false,
 })
-export class PatronProfileDocumentComponent implements OnInit {
-
-  private patronProfileMenuService: PatronProfileMenuService = inject(PatronProfileMenuService);
+export class PatronProfileDocumentComponent {
+  private patronProfileMenuStore = inject(PatronProfileMenuStore);
   private recordService: RecordService = inject(RecordService);
 
   // COMPONENT ATTRIBUTES =====================================================
-  @Input() record: any;
-  @Input() showAdditionalInformation = false;
-  @Input() isAnimated = true;
+  showAdditionalInformation = input<boolean>(false);
+  loan = input.required<LoanRecordType>();
 
-  /** related document */
-  document = undefined;
+  // document attached to the loan
+  document = computed(() => this.documentResource.value());
 
-  // GETTER & SETTER ==========================================================
-  /** Get current viewcode */
-  get viewcode(): string {
-    return this.patronProfileMenuService.currentPatron.organisation.code;
-  }
+  // get the document record
+  documentResource = resource({
+    request: () => this.loan()?.metadata?.document?.pid ?? null,
+    loader: ({ request: pid }) => {
+
+      if (!pid) return undefined;
+
+      return firstValueFrom(this.recordService
+        .getRecord('documents', pid, 1, {
+          Accept: 'application/rero+json, application/json',
+        }).pipe(
+          map((hit: { metadata?: DocumentMetadata } | undefined) => hit?.metadata),
+          catchError(() => of(undefined))
+        ));
+    },
+  });
+
+  viewcode: string;
 
   /** Get the formatted call numbers for the related item */
-  get callNumbers(): string {
-    return [
-      this.record.metadata.item.call_number,
-      this.record.metadata.item.second_call_number
-    ].filter(Boolean).join(' | ');
+  callNumbers = computed(() =>
+    [this.loan().metadata.item.call_number, this.loan().metadata.item.second_call_number].filter(Boolean).join(' | ')
+  );
+
+  constructor() {
+    const patron = this.patronProfileMenuStore.currentPatron();
+    this.viewcode = patron ? patron.organisation.code : undefined;
+
   }
 
-  /** OnInit hook */
-  ngOnInit(): void {
-    this.recordService
-      .getRecord('documents', this.record.metadata.document.pid, 1, {Accept: 'application/rero+json, application/json'})
-      .subscribe(document => this.document = document.metadata);
-  }
 }

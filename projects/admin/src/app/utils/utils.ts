@@ -19,24 +19,6 @@
 import { ILLRequestStatus } from "../classes/ill-request";
 import { LoanState } from "../classes/loans";
 
-/**
- * Convert a level string to primeng level
- * @param level - string: the level string to convert
- * @return the severity of message (info by default)
- */
-export function getSeverity(level: string) {
-  switch (level) {
-    case 'error':
-      return 'error';
-    case 'warning':
-      return 'warn';
-    case 'debug':
-      return 'secondary';
-    default:
-      return 'info';
-  }
-}
-
 export function getTagSeverityFromStatus(status: string): string {
   switch (status) {
     case ILLRequestStatus.PENDING:

@@ -14,11 +14,11 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-@defer (when isVisible) {
+@defer (when patronProfileMenuStore.isMultiOrganisation()) {
   <p-select
-    [options]="organisations"
+    [options]="patronProfileMenuStore.menu()"
     optionLabel="name"
-    [ngModel]="selectedOrganisation"
-    (onChange)="onChange($event.value.value)"
+    [ngModel]="selectedOrganisation()"
+    (onChange)="patronProfileMenuStore.changePatron($event.value.value)"
   />
 }

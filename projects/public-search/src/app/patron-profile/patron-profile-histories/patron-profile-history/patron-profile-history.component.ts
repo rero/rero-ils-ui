@@ -15,16 +15,16 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { Component, inject, Input } from '@angular/core';
-import { PatronProfileMenuService } from '../../patron-profile-menu.service';
+import { PatronProfileMenuStore } from '../../store/patron-profile-menu-store';
 
 @Component({
-    selector: 'public-search-patron-profile-history',
-    templateUrl: './patron-profile-history.component.html',
-    standalone: false
+  selector: 'public-search-patron-profile-history',
+  templateUrl: './patron-profile-history.component.html',
+  standalone: false
 })
 export class PatronProfileHistoryComponent {
 
-  private patronProfileMenuService: PatronProfileMenuService = inject(PatronProfileMenuService);
+  private patronProfileMenuStore = inject(PatronProfileMenuStore);
 
   /** Loan record */
   @Input() record: any;
@@ -34,6 +34,7 @@ export class PatronProfileHistoryComponent {
 
   /** Get current viewcode */
   get viewcode(): string {
-    return this.patronProfileMenuService.currentPatron.organisation.code;
+    const patron = this.patronProfileMenuStore.currentPatron();
+    return patron ? patron.organisation.code : '';
   }
 }

@@ -15,31 +15,31 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <section id="ill-request-section" class="ui:mt-2">
-    <p-panel>
-      <ng-template #header>
-        <div class="ui:hidden ui:w-full ui:md:grid ui:grid-cols-12 ui:gap-4 ui:text-lg ui:font-bold ui:items-center">
-          <div class="ui:col-span-10" translate>Document</div>
-          <div class="ui:col-span-2 ui:text-end ui:mr-3"><span translate>Status</span></div>
-        </div>
-      </ng-template>
+  <p-panel>
+    <ng-template #header>
+      <div class="ui:hidden ui:w-full ui:md:grid ui:grid-cols-12 ui:gap-4 ui:text-lg ui:font-bold ui:items-center">
+        <div class="ui:col-span-10" translate>Document</div>
+        <div class="ui:col-span-2 ui:text-end ui:mr-3"><span translate>Status</span></div>
+      </div>
+    </ng-template>
 
-    @defer (when loaded) {
-      @if (paginator.getRecordsCount() > 0) {
-        @for (record of records; track $index) {
-          <div class="ui:odd:bg-surface-50">
-            <public-search-patron-profile-ill-request
-              [record]="record"
-              id="ill-request-{{ record.metadata.pid }}"
-            />
-          </div>
-        }
-        <shared-search-show-more-pager id="show-more-ill-requests" [paginator]="paginator" />
-      } @else {
-        <div class="ui:font-bold ui:mx-2 ui:my-6" translate>No ill request</div>
-      }
+    @if (!loading() || records().length > 0) {
+    @if (records().length > 0) {
+    @for (record of records(); track $index) {
+    <div class="ui:odd:bg-surface-50">
+      <public-search-patron-profile-ill-request [record]="record" id="ill-request-{{ record.metadata.pid }}" />
+    </div>
     }
-    @placeholder {
-      <div class="ui:font-bold ui:mx-2 ui:my-6" translate>Loading in progress</div>
+    @if (hasMore()) {
+    <div class="ui:text-center ui:my-4">
+      <p-button [label]="'Show more' | translate" (onClick)="loadMore()" [loading]="loading()" outlined />
+    </div>
+    }
+    } @else {
+    <div class="ui:font-bold ui:mx-2 ui:my-6" translate>No ill request</div>
+    }
+    } @else {
+    <div class="ui:font-bold ui:mx-2 ui:my-6" translate>Loading in progress</div>
     }
   </p-panel>
 </section>

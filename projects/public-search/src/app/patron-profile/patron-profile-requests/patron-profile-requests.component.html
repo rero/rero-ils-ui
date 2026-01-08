@@ -23,19 +23,23 @@
       </div>
     </ng-template>
 
-  @defer (when loaded) {
-    @if (paginator.getRecordsCount() > 0) {
-      @for (request of records; track $index) {
-        <div class="ui:odd:bg-surface-50 ui:my-1">
-          <public-search-patron-profile-request [record]="request" id="request-{{ request.metadata.pid }}" />
-        </div>
-      }
-      <shared-search-show-more-pager id="show-more-requests" [paginator]="paginator" />
-    } @else {
-        <div class="ui:font-bold ui:mx-2 ui:my-6" translate>No request</div>
+    @if (!loading() || records().length > 0) {
+    @if (records().length > 0) {
+    @for (request of records(); track $index) {
+    <div class="ui:odd:bg-surface-50 ui:my-1">
+      <public-search-patron-profile-request [record]="request" id="request-{{ request.metadata.pid }}" />
+    </div>
     }
-  } @placeholder {
-      <div class="ui:font-bold ui:mx-2 ui:my-6" translate>Loading in progress</div>
-  }
+    @if (hasMore()) {
+    <div class="ui:text-center ui:my-4">
+      <p-button [label]="'Show more' | translate" (onClick)="loadMore()" [loading]="loading()" outlined />
+    </div>
+    }
+    } @else {
+    <div class="ui:font-bold ui:mx-2 ui:my-6" translate>No request</div>
+    }
+    } @else {
+    <div class="ui:font-bold ui:mx-2 ui:my-6" translate>Loading in progress</div>
+    }
   </p-panel>
 </section>

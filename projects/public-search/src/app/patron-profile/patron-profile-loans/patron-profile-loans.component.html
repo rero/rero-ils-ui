@@ -15,18 +15,17 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <!-- Due date dropdown menu -->
-@if (records.length > 0) {
-  <section class="ui:flex ui:justify-end">
-    <ng-core-menu-sort
-      [config]="[
-        {value:'duedate', label:'Due date (earliest)' | translate, icon:'fa fa-sort-numeric-asc'},
-        {value:'-duedate', label:'Due date (latest)' | translate, icon:'fa fa-sort-numeric-desc'}
-      ]"
-      selectedValue="duedate"
-      (onChange)="selectingSortCriteria($event)">
-    </ng-core-menu-sort>
-  </section>
-}
+<section class="ui:flex ui:justify-end">
+  <ng-core-menu-sort
+    [config]="[
+      {value:'duedate', label:'Due date (earliest)' | translate, icon:'fa fa-sort-numeric-asc'},
+      {value:'-duedate', label:'Due date (latest)' | translate, icon:'fa fa-sort-numeric-desc'}
+    ]"
+    [selectedValue]="sortCriteria"
+    [disabled]="store.loans().length === 0"
+    (onChange)="selectionChange($event)">
+  </ng-core-menu-sort>
+</section>
 
 <!-- header -->
 <section id="loans-section" class="ui:mt-4">
@@ -35,13 +34,21 @@
       <div class="ui:hidden ui:w-full ui:md:grid ui:grid-cols-12 ui:gap-4 ui:text-lg ui:font-bold ui:items-center">
         <div class="ui:col-span-8" translate>Document</div>
         <div class="ui:col-span-2" translate>Due date</div>
+        <div class="ui:col-span-2 ui:flex ui:justify-end">
+              <p-button
+                id="renew-all-button"
+                [label]="'Renew all'|translate"
+                [disabled]="store.renewableLoans()?.length < 1"
+                (onClick)="store.renewLoans()"
+              />
+          </div>
       </div>
     </ng-template>
-  @defer (when loaded) {
-    @if (records.length > 0) {
-      @for (loan of records; track $index) {
+  @defer (when !store.loansLoading()) {
+    @if (store.loans().length > 0) {
+      @for (loan of store.loans(); track $index) {
         <div class="ui:odd:bg-surface-50 ui:my-1">
-          <public-search-patron-profile-loan [record]="loan" id="loan-{{ loan.metadata.pid }}" />
+          <public-search-patron-profile-loan [loan]="loan" id="loan-{{ loan.metadata.pid }}" />
         </div>
       }
     } @else {

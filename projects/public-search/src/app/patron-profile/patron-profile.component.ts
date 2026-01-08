@@ -15,20 +15,22 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { APP_BASE_HREF, KeyValue } from '@angular/common';
-import { afterNextRender, Component, inject, model, OnDestroy, OnInit } from '@angular/core';
+import { Component, effect, inject, model, OnDestroy, OnInit } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { Record, RecordService } from '@rero/ng-core';
-import { IPatron, UserService } from '@rero/shared';
+import { getSeverity, IPatron, UserService } from '@rero/shared';
 import JsBarcode from 'jsbarcode';
 import { forkJoin, of, Subscription } from 'rxjs';
 import { IllRequestApiService } from '../api/ill-request-api.service';
 import { LoanApiService } from '../api/loan-api.service';
 import { OperationLogsApiService } from '../api/operation-logs-api.service';
 import { PatronTransactionApiService } from '../api/patron-transaction-api.service';
-import { IMenu, PatronProfileMenuService } from './patron-profile-menu.service';
-import { PatronProfileService } from './patron-profile.service';
+import { PatronProfileMenuStore } from './store/patron-profile-menu-store';
+import { IMenu } from './types';
+import { PatronProfileService } from './service/patron-profile.service';
 import { PatronApiService } from '../api/patron-api.service';
 import { overdueFee } from './patron-profile-fees/types';
+import { MessageService } from 'primeng/api';
 
 type Tab = {
   loaded?: boolean;
@@ -50,9 +52,9 @@ type Tabs = {
 }
 
 @Component({
-    selector: 'public-search-patron-profile',
-    templateUrl: './patron-profile.component.html',
-    standalone: false
+  selector: 'public-search-patron-profile',
+  templateUrl: './patron-profile.component.html',
+  standalone: false
 })
 export class PatronProfileComponent implements OnInit, OnDestroy {
   private patronTransactionApiService: PatronTransactionApiService = inject(PatronTransactionApiService);
@@ -61,11 +63,12 @@ export class PatronProfileComponent implements OnInit, OnDestroy {
   private illRequestApiService: IllRequestApiService = inject(IllRequestApiService);
   private patronProfileService: PatronProfileService = inject(PatronProfileService);
   private userService: UserService = inject(UserService);
-  private patronProfileMenuService: PatronProfileMenuService = inject(PatronProfileMenuService);
+  private patronProfileMenuStore = inject(PatronProfileMenuStore);
   private operationLogsApiService: OperationLogsApiService = inject(OperationLogsApiService);
   private translateService: TranslateService = inject(TranslateService);
   private patronApiService: PatronApiService = inject(PatronApiService);
   private baseHref = inject(APP_BASE_HREF);
+  private messageService: MessageService = inject(MessageService);
 
 
   /** View code */
@@ -77,7 +80,7 @@ export class PatronProfileComponent implements OnInit, OnDestroy {
   /** Current logged user */
   user: any;
 
-  activeTab = model<undefined | string >(undefined);
+  activeTab = model<undefined | string>(undefined);
 
   /** Tabs */
   tabs: Tabs = {
@@ -170,24 +173,74 @@ export class PatronProfileComponent implements OnInit, OnDestroy {
    * @return IPatron
    */
   get patron(): IPatron {
-    return this.patronProfileMenuService.currentPatron;
+    return this.patronProfileMenuStore.currentPatron();
   }
 
   constructor() {
-    afterNextRender(() => {
-      const patronBarcode = this.patronProfileMenuService.currentPatron.patron.barcode[0];
-      JsBarcode('#barcode', patronBarcode, {
-        format: 'CODE39',
-        margin: 0,
-        font: 'monospace',
-      });
+    effect(() => {
+      const patron = this.patronProfileMenuStore.currentPatron();
+      if (patron) {
+        const patronBarcode = patron.patron.barcode[0];
+        setTimeout(() => {
+          JsBarcode('#barcode', patronBarcode, {
+            format: 'CODE39',
+            margin: 0,
+            font: 'monospace',
+          });
+        }, 0);
+
+        this._patronPid = patron.pid;
+        const keepHistory = this.user?.keep_history === undefined ? false : this.user.keep_history;
+
+        const loanQuery = this.loanApiService.getOnLoan(this._patronPid, 1, 1, undefined);
+        const requestQuery = this.loanApiService.getRequest(this._patronPid, 1, 1, undefined);
+        const feeQuery = this.patronTransactionApiService.getFees(this._patronPid, 'open', 1, 1, undefined);
+        const overdueQuery = this.patronApiService.getOverduePreviewByPatronPid(this._patronPid);
+        const historyQuery = keepHistory ? this.operationLogsApiService.getHistory(this._patronPid, 1, 1) : of(undefined);
+        const illRequestQuery = this.illRequestApiService.getPublicIllRequest(this._patronPid, 1, 1, undefined, '', {
+          remove_archived: '1',
+        });
+        const circulationInformation = this.patronApiService.getCirculationInformations(this._patronPid);
+
+        forkJoin([loanQuery, requestQuery, feeQuery, overdueQuery, historyQuery, illRequestQuery, circulationInformation]).subscribe(
+          ([loanResponse, requestResponse, feeResponse, overdueResponse, historyResponse, illRequestResponse, circulationResponse]: [
+            Record,
+            Record,
+            Record,
+            overdueFee[],
+            Record,
+            Record,
+            any
+          ]) => {
+            this.activeTab.set('loan');
+            circulationResponse?.messages.forEach(message => {
+              this.messageService.add({
+                severity: getSeverity(message.type),
+                summary: this.translateService.instant(message.type),
+                detail: this.translateService.instant(message.content),
+                sticky: true,
+                closable: true
+              });
+            });
+            Object.values(this.tabs).map(tab => tab.loaded = false);
+            this.tabs.loan.count = this.recordService.totalHits(loanResponse.hits.total);
+            this.tabs.fee.feeTotal = feeResponse.aggregations.total.value;
+            overdueResponse.map((fee: overdueFee) => this.tabs.fee.feeTotal += +fee.fees.total);
+            this.tabs.request.count = this.recordService.totalHits(requestResponse.hits.total);
+            this.tabs.illRequest.count = this.recordService.totalHits(illRequestResponse.hits.total);
+            if (historyResponse?.hits?.total) {
+              this.tabs.history.count = this.recordService.totalHits(historyResponse.hits.total);
+            }
+          }
+        );
+      }
     });
   }
 
   /** OnInit hook */
   ngOnInit(): void {
     const pathParts = this.baseHref.split('/');
-    if( pathParts.length > 1) {
+    if (pathParts.length > 1) {
       this.viewcode = pathParts[1];
     }
     this.activeTab.subscribe((tabSelected: string) => {
@@ -198,40 +251,7 @@ export class PatronProfileComponent implements OnInit, OnDestroy {
     if (this.user.isAuthenticated && this.user.isPatron) {
       const keepHistory = this.user.keep_history === undefined ? false : this.user.keep_history;
       this.tabs.history.display = keepHistory;
-      this.subscription.add(
-        this.patronProfileMenuService.onChange$.subscribe((menu: IMenu) => {
-          this._patronPid = menu.value;
-          const loanQuery = this.loanApiService.getOnLoan(this._patronPid, 1, 1, undefined);
-          const requestQuery = this.loanApiService.getRequest(this._patronPid, 1, 1, undefined);
-          const feeQuery = this.patronTransactionApiService.getFees(this._patronPid, 'open', 1, 1, undefined);
-          const overdueQuery = this.patronApiService.getOverduePreviewByPatronPid(this._patronPid);
-          const historyQuery = keepHistory ? this.operationLogsApiService.getHistory(this._patronPid, 1, 1) : of(undefined);
-          const illRequestQuery = this.illRequestApiService.getPublicIllRequest(this._patronPid, 1, 1, undefined, '', {
-            remove_archived: '1',
-          });
-          forkJoin([loanQuery, requestQuery, feeQuery, overdueQuery, historyQuery, illRequestQuery]).subscribe(
-            ([loanResponse, requestResponse, feeResponse, overdueResponse, historyResponse, illRequestResponse]: [
-              Record,
-              Record,
-              Record,
-              overdueFee[],
-              Record,
-              Record
-            ]) => {
-              this.activeTab.set('loan');
-              Object.values(this.tabs).map(tab => tab.loaded = false);
-              this.tabs.loan.count = this.recordService.totalHits(loanResponse.hits.total);
-              this.tabs.fee.feeTotal = feeResponse.aggregations.total.value;
-              overdueResponse.map((fee: overdueFee) => this.tabs.fee.feeTotal += +fee.fees.total);
-              this.tabs.request.count = this.recordService.totalHits(requestResponse.hits.total);
-              this.tabs.illRequest.count = this.recordService.totalHits(illRequestResponse.hits.total);
-              if (historyResponse?.hits?.total) {
-                this.tabs.history.count = this.recordService.totalHits(historyResponse.hits.total);
-              }
-            }
-          );
-        })
-      );
+
       /** Update tab history if cancel a request */
       this.subscription.add(
         this.patronProfileService.cancelRequestEvent$.subscribe(() => {
@@ -248,7 +268,7 @@ export class PatronProfileComponent implements OnInit, OnDestroy {
           }
         })
       );
-      this.patronProfileMenuService.change(this._currentPatronPid(this.viewcode));
+      this.patronProfileMenuStore.changePatron(this._currentPatronPid(this.viewcode));
     }
   }
 
@@ -256,8 +276,6 @@ export class PatronProfileComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.subscription.unsubscribe();
   }
-
-  afterRe
 
   /**
    * Find patron Pid with current view code
@@ -268,4 +286,5 @@ export class PatronProfileComponent implements OnInit, OnDestroy {
     const currentPatron = this.user.patrons.find((patron: any) => patron.organisation.code === viewcode);
     return currentPatron ? currentPatron.pid : this.user.patrons[0].pid;
   }
+
 }

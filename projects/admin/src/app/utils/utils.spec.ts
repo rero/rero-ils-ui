@@ -17,16 +17,9 @@
 
 import { ILLRequestStatus } from "../classes/ill-request";
 import { LoanState } from "../classes/loans";
-import { getSeverity, getTagSeverityFromStatus } from "./utils";
+import { getTagSeverityFromStatus } from "./utils";
 
 describe('Utils', () => {
-
-  it('should return the severity according to the level', () => {
-    expect(getSeverity('error')).toEqual('error');
-    expect(getSeverity('warning')).toEqual('warn');
-    expect(getSeverity('debug')).toEqual('secondary');
-    expect(getSeverity('not_severity')).toEqual('info');
-  });
 
   it('should return the severity of the tag according to the status', () => {
     expect(getTagSeverityFromStatus(ILLRequestStatus.PENDING)).toEqual('warn');

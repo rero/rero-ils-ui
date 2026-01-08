@@ -18,6 +18,7 @@ import { inject, Injectable } from '@angular/core';
 import { Record, RecordService } from '@rero/ng-core';
 import { Error } from '@rero/ng-core/lib/error/error';
 import { BaseApi } from '@rero/shared';
+import { EsRecord } from 'projects/shared/src/public-api';
 import { Observable } from 'rxjs';
 
 @Injectable({

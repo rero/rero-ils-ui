@@ -19,7 +19,7 @@ import { inject, Injectable } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { AppSettingsService, UserService } from '@rero/shared';
 import { AppConfigService } from 'projects/admin/src/app/service/app-config.service';
-import { PatronProfileMenuService } from 'projects/public-search/src/app/patron-profile/patron-profile-menu.service';
+import { PatronProfileMenuStore } from 'projects/public-search/src/app/patron-profile/store/patron-profile-menu-store';
 import { Observable } from 'rxjs';
 import { switchMap, tap } from 'rxjs/operators';
 
@@ -29,7 +29,7 @@ import { switchMap, tap } from 'rxjs/operators';
 export class AppInitializerService {
 
   private userService: UserService = inject(UserService);
-  private patronProfileMenuService: PatronProfileMenuService = inject(PatronProfileMenuService);
+  private patronProfileMenuStore = inject(PatronProfileMenuStore);
   private translateService: TranslateService = inject(TranslateService);
   private appSettingsService: AppSettingsService = inject(AppSettingsService);
   private appConfigService: AppConfigService = inject(AppConfigService);
@@ -37,14 +37,14 @@ export class AppInitializerService {
   load(): Observable<any> {
     return this.userService.load().pipe(
       tap(() => {
-        this.patronProfileMenuService.init();
+        this.patronProfileMenuStore.init();
       }),
       switchMap(() => this.initTranslateService())
     );
   }
 
   private initTranslateService(): Observable<any> {
-    let {language} = this.appSettingsService.settings;
+    let { language } = this.appSettingsService.settings;
     if (language == null) {
       const browserLang = this.translateService.getBrowserLang();
       language = browserLang.match(this.appConfigService.languages.join('|')) ?
