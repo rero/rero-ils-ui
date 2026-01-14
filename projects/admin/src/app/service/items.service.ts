@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2019-2024 RERO
+ * Copyright (C) 2019-2026 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -84,6 +84,10 @@ export class ItemsService {
       map(data => {
         const itemData = data.metadata;
         itemData.loan = data.action_applied.validate;
+        // Propagate removed temporary item type info if present
+        if (data.removed_temporary_item_type) {
+          itemData.removed_temporary_item_type = data.removed_temporary_item_type;
+        }
         return itemData;
       })
     );
@@ -134,26 +138,23 @@ export class ItemsService {
     }).pipe(
       map(data => {
         const item = new Item(data.metadata);
-        const actions = Object.keys(data.action_applied);
         let loan: any;
-
         item.action_applied = data.action_applied;
-        actions.forEach(action => {
-          if (action === 'checkin' || action === 'receive') {
-            item.actionDone =  ItemAction[action];
+        // Set actionDone with priority order: checkin > receive > validate
+        const actionPriority = [ItemAction.checkin, ItemAction.receive, ItemAction.validate];
+        for (const action of actionPriority) {
+          if (data.action_applied[action]) {
+            item.actionDone = action;
+            loan = data.action_applied[action];
+            break;
           }
-        });
-        if (data.action_applied[ItemAction.checkin]) {
-          loan = data.action_applied[ItemAction.checkin];
-        }
-        if (data.action_applied[ItemAction.receive]) {
-          loan = data.action_applied[ItemAction.receive];
-        }
-        if (data.action_applied[ItemAction.validate]) {
-          loan = data.action_applied[ItemAction.validate];
         }
         if (loan != null) {
           item.setLoan(loan);
+        }
+        // Propagate removed temporary item type info if present
+        if (data.removed_temporary_item_type) {
+          item.removed_temporary_item_type = data.removed_temporary_item_type;
         }
         return item;
       }),
@@ -210,6 +211,10 @@ export class ItemsService {
         const item = new Item(itemData.metadata);
         item.setLoan(itemData.action_applied[action]);
         item.actionDone = action;
+        // Propagate removed temporary item type info if present
+        if (itemData.removed_temporary_item_type) {
+          item.removed_temporary_item_type = itemData.removed_temporary_item_type;
+        }
         return item;
       })
     );
