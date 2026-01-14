@@ -65,6 +65,10 @@
                   ({{ 'Assigned on' | translate }} {{ issue.metadata.issue.status_date | dateTranslate }})
                 </span>
               </dd>
+              @if (issue.metadata.issue.sort_date) {
+                <dt translate>Sorting date</dt>
+                <dd>{{ issue.metadata.issue.sort_date | dateTranslate }}</dd>
+              }
               <dt translate>Expected date</dt>
               <dd>{{ issue.metadata.issue.expected_date | dateTranslate }}</dd>
               @if (issue.metadata.issue.status === issueItemStatusRef.RECEIVED) {
