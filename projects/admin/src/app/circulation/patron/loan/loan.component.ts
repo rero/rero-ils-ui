@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2019-2025 RERO
+ * Copyright (C) 2019-2026 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -251,7 +251,19 @@ export class LoanComponent implements OnInit, OnDestroy {
     forkJoin(observables)
       .pipe(
         tap((newItems: any[]) =>
-          newItems.map((newItem: Item) => {
+          newItems.forEach((newItem: Item) => {
+            // Add note to item for display if temporary item type was removed
+            if (newItem.removed_temporary_item_type) {
+              if (!newItem.notes) {
+                newItem.notes = [];
+              }
+              newItem.notes.push({
+                content: this.translateService.instant('Temporary item type removed: {{ name }}', {
+                  name: newItem.removed_temporary_item_type.name,
+                }),
+                type: ItemNoteType.API
+              });
+            }
             switch (newItem.actionDone) {
               case ItemAction.checkin: {
                 this.displayCirculationInformation(ItemAction.checkin, newItem, ItemNoteType.CHECKIN);
@@ -301,7 +313,8 @@ export class LoanComponent implements OnInit, OnDestroy {
           if (err && err.error && err.error.message) {
             errorMessage = err.error.message;
           }
-          if (err.error.status === 403) {
+          // Check HTTP status code for 403 errors (circulation policy denials)
+          if (err.status === 403) {
             let message =
               this.translateService.instant(errorMessage) ||
               this.translateService.instant('Checkout is not allowed by circulation policy');
@@ -312,6 +325,12 @@ export class LoanComponent implements OnInit, OnDestroy {
               message = splittedData[1].trim();
               message = message.charAt(0).toUpperCase() + message.slice(1);
             }
+            // Add removed temporary item type message if applicable
+            if (err.error && err.error.removed_temporary_item_type) {
+              message += `<br/>${this.translateService.instant('Temporary item type removed: {{ name }}', {
+                name: err.error.removed_temporary_item_type.name,
+              })}`;
+            }
             this.messageService.add({
               severity: 'error',
               summary: title,
@@ -320,10 +339,17 @@ export class LoanComponent implements OnInit, OnDestroy {
               closable: true,
             });
           } else {
+            let message = this.translateService.instant('An error occurred on the server: ') + errorMessage;
+            // Add removed temporary item type message if applicable
+            if (err.error && err.error.removed_temporary_item_type) {
+              message += `<br/>${this.translateService.instant('Temporary item type removed: {{ name }}', {
+                name: err.error.removed_temporary_item_type.name,
+              })}`;
+            }
             this.messageService.add({
               severity: 'error',
               summary: this.translateService.instant('Circulation'),
-              detail: this.translateService.instant('An error occurred on the server: ') + errorMessage,
+              detail: message,
               sticky: true,
               closable: true,
             });
@@ -345,12 +371,21 @@ export class LoanComponent implements OnInit, OnDestroy {
     if (note != null) {
       message.push(note.content);
     }
+    // Add removed temporary item type message if applicable
+    if (item.removed_temporary_item_type) {
+      if (message.length > 0) {
+        message.push('<br/>');
+      }
+      message.push(this.translateService.instant('Temporary item type removed: {{ name }}', {
+        name: item.removed_temporary_item_type.name,
+      }));
+    }
     // Show additional message only for the owning library
     if (action === ItemAction.checkin && item.library.pid === this.userService.user.currentLibrary) {
       const additionalMessage = this.displayCollectionsAndTemporaryLocation(item);
       if (additionalMessage.length > 0) {
         if (message.length > 0) {
-          message.push('<br />');
+          message.push('<br/>');
         }
         message.push(additionalMessage);
       }
@@ -358,8 +393,8 @@ export class LoanComponent implements OnInit, OnDestroy {
     if (message.length > 0) {
       this.messageService.add({
         severity: 'warn',
-        summary: this.translateService.instant('Checkin'),
-        detail: message.join(),
+        summary: this.translateService.instant(action === ItemAction.checkout ? 'Checkout' : 'Checkin'),
+        detail: message.join(''),
         life: CONFIG.MESSAGE_LIFE,
       });
     }

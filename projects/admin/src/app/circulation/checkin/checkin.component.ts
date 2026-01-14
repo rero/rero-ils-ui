@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2019-2024 RERO
+ * Copyright (C) 2019-2026 RERO
  * Copyright (C) 2019-2023 UCLouvain
  *
  * This program is free software: you can redistribute it and/or modify
@@ -106,6 +106,18 @@ export class CheckinComponent implements OnInit {
           this._resetSearchInput();
           return;
         }
+        // Add note to item for display if temporary item type was removed
+        if (item.removed_temporary_item_type) {
+          if (!item.notes) {
+            item.notes = [];
+          }
+          item.notes.push({
+            content: this.translate.instant('Temporary item type removed: {{ name }}', {
+              name: item.removed_temporary_item_type.name,
+            }),
+            type: ItemNoteType.API
+          });
+        }
         if (item.hasRequests) {
           this.messageService.add({
             severity: 'warn',
@@ -138,6 +150,13 @@ export class CheckinComponent implements OnInit {
               });
             }
             break;
+          case ItemAction.validate:
+            // Display circulation information (checkin note, temporary item type removal, etc.)
+            this.displayCirculationInformation(item, ItemNoteType.CHECKIN);
+            if (item.action_applied && item.action_applied.validate) {
+              this.getPatronInfo(item.action_applied.validate.patron.barcode);
+            }
+            break;
           case ItemAction.receive:
             if (item.library.pid === this.userService.user.currentLibrary) {
               this.displayCirculationInformation(item, ItemNoteType.CHECKIN);
@@ -159,6 +178,15 @@ export class CheckinComponent implements OnInit {
               content: this.processErrorMessage(error.error.status),
               type: ItemNoteType.API
             });
+            // Add note about removed temporary item type if applicable
+            if (error.error && error.error.removed_temporary_item_type) {
+              item.notes.push({
+                content: this.translate.instant('Temporary item type removed: {{ name }}', {
+                  name: error.error.removed_temporary_item_type.name,
+                }),
+                type: ItemNoteType.API
+              });
+            }
             this.items.unshift(item);
             // If no action could be done by the '/item/checkin' api, an error will be raised.
             // catch this error to display it as a Toast message.
@@ -299,12 +327,21 @@ export class CheckinComponent implements OnInit {
     if (note != null) {
       message.push(note.content);
     }
+    // Add removed temporary item type message if applicable
+    if (item.removed_temporary_item_type) {
+      if (message.length > 0) {
+        message.push('<br/>');
+      }
+      message.push(this.translate.instant('Temporary item type removed: {{ name }}', {
+        name: item.removed_temporary_item_type.name,
+      }));
+    }
     // Show additional message only for the owning library
     if (item.library.pid === this.userService.user.currentLibrary) {
       const additionalMessage = this.displayCollectionsAndTemporaryLocation(item);
       if (additionalMessage.length > 0) {
         if (message.length > 0) {
-          message.push('<br />');
+          message.push('<br/>');
         }
         message.push(additionalMessage);
       }
@@ -313,7 +350,7 @@ export class CheckinComponent implements OnInit {
       this.messageService.add({
         severity: 'warn',
         summary: this.translate.instant('Checkin'),
-        detail: message.join(),
+        detail: message.join(''),
         life: CONFIG.MESSAGE_LIFE
       });
     }
@@ -327,8 +364,8 @@ export class CheckinComponent implements OnInit {
    */
   private _checkinErrorManagement(error: any, item: Item) {
     // get the error message from the raised error. This will be the Toast message core.
-    let message = (Object.hasOwn(error, 'error') && Object.hasOwn(error.error, 'status'))
-      ? this.processErrorMessage(error.error.status)
+    let message = (Object.hasOwn(error, 'error') && Object.hasOwn(error.error, 'message'))
+      ? error.error.message
       : error.message;
     message = this.translate.instant(message);
     message += `<br/>${this.translate.instant('Status')}: ${this.translate.instant(item.status.toString())}`;
@@ -340,11 +377,17 @@ export class CheckinComponent implements OnInit {
     if (checkinNote) {
       message += `<br/>${this.translate.instant('Note')}: ${checkinNote.content}`
     }
+    // Add removed temporary item type message if applicable
+    if (error.error && error.error.removed_temporary_item_type) {
+      message += `<br/>${this.translate.instant('Temporary item type removed: {{ name }}', {
+        name: error.error.removed_temporary_item_type.name,
+      })}`;
+    }
     // Show additional message only for the owning library
     if (item.library.pid === this.userService.user.currentLibrary) {
       const additionalMessage = this.displayCollectionsAndTemporaryLocation(item);
       if (additionalMessage.length > 0) {
-        message += `<br />${additionalMessage}`;
+        message += `<br/>${additionalMessage}`;
       }
     }
     this.messageService.add({
