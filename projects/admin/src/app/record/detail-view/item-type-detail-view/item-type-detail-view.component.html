@@ -1,6 +1,6 @@
 <!--
   RERO ILS UI
-  Copyright (C) 2019-2025 RERO
+  Copyright (C) 2019-2026 RERO
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published by
@@ -31,6 +31,14 @@
       <i class="fa" aria-hidden="true" [ngClass]="{
         'fa-check text-success': !record.metadata.negative_availability,
         'fa-times text-error': record.metadata.negative_availability
+      }"></i>
+    </dd>
+    <!-- REMOVE TEMPORARY ITEM TYPE ON SCAN -->
+    <dt translate>Remove temporary item type on scan</dt>
+    <dd>
+      <i class="fa" aria-hidden="true" [ngClass]="{
+        'fa-check text-success': record.metadata.remove_temporary_item_type_on_scan,
+        'fa-times text-error': !record.metadata.remove_temporary_item_type_on_scan
       }"></i>
     </dd>
   </dl>

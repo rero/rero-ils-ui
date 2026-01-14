@@ -152,6 +152,10 @@
           >
           </i>
         </dd>
+        @if (record.metadata.issue.sort_date) {
+          <dt translate>Sorting date</dt>
+          <dd>{{ record.metadata.issue.sort_date | dateTranslate }}</dd>
+        }
         <!-- expected date -->
         <dt translate>Expected date</dt>
         <dd>{{ record.metadata.issue.expected_date | dateTranslate }}</dd>
