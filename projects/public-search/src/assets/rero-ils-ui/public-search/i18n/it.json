@@ -45,7 +45,7 @@
   "Fees to date": "Tasse ad oggi",
   "Fiction statement": "Formulazione di narrativa",
   "Filter": "Filter",
-  "Filter by library": "Filter by library",
+  "Filter by library": "Filtra per biblioteca",
   "For any information please contact system administrator.": "Per qualsiasi informazione, contattare l'amministratore di sistema.",
   "Found in": "Trovato in",
   "Gender": "Genere",
@@ -74,7 +74,7 @@
   "New password": "Nuova password",
   "No fee": "Nessuna tassa",
   "No ill request": "Nessuna richiesta di prestito interbibliotecario",
-  "No item found.": "No item found.",
+  "No item found.": "Nessun esemplare trovato.",
   "No loan": "Nessun prestito",
   "No request": "Nessuna richiesta",
   "Note": "Nota",
@@ -168,6 +168,6 @@
   "until": "fino a",
   "waiting": "in attesa",
   "year": "anno",
-  "{{ total }} result of {{ remoteTotal }}": "{{ total }} result of {{ remoteTotal }}",
-  "{{ total }} results of {{ remoteTotal }}": "{{ total }} results of {{ remoteTotal }}"
+  "{{ total }} result of {{ remoteTotal }}": "{{ total }} risultato di {{ remoteTotal }}",
+  "{{ total }} results of {{ remoteTotal }}": "{{ total }} risultati su {{ remoteTotal }}"
 }
