@@ -45,7 +45,7 @@
   "Fees to date": "Bisherige Gebühren",
   "Fiction statement": "Fiktionangabe",
   "Filter": "Filter",
-  "Filter by library": "Filter by library",
+  "Filter by library": "Nach Bibliothek filtern",
   "For any information please contact system administrator.": "Für weitere Informationen wenden Sie sich bitte an den Systemadministrator.",
   "Found in": "Gefunden in",
   "Gender": "Geschlecht",
@@ -74,7 +74,7 @@
   "New password": "Neues Passwort",
   "No fee": "Keine Gebühren",
   "No ill request": "Keine Fernleihbestellung",
-  "No item found.": "No item found.",
+  "No item found.": "Kein Exemplar gefunden.",
   "No loan": "Keine Ausleihe",
   "No request": "Keine Bestellung",
   "Note": "Anmerkung",
@@ -168,6 +168,6 @@
   "until": "bis",
   "waiting": "ausstehend",
   "year": "Jahr",
-  "{{ total }} result of {{ remoteTotal }}": "{{ total }} result of {{ remoteTotal }}",
-  "{{ total }} results of {{ remoteTotal }}": "{{ total }} results of {{ remoteTotal }}"
+  "{{ total }} result of {{ remoteTotal }}": "{{ total }} Ergebnis von {{ remoteTotal }}",
+  "{{ total }} results of {{ remoteTotal }}": "{{ total }} Ergebnisse von {{ remoteTotal }}"
 }
