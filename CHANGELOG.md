@@ -1,5 +1,32 @@
 # Changelog
 
+## [v19.2.0](https://github.com/rero/rero-ils-ui/tree/v19.2.0) (2026-01-20)
+
+[Full Changelog](https://github.com/rero/rero-ils-ui/compare/v19.1.0...v19.2.0)
+
+**New features:**
+
+- feat: enhance public holdings-items view [#1379](https://github.com/rero/rero-ils-ui/pull/1379) (by @Garfield-fr)
+- feat: enhance professional holdings-items view [#1383](https://github.com/rero/rero-ils-ui/pull/1383) (by @Garfield-fr)
+- feat(item): add new scan item on circulation log [#1394](https://github.com/rero/rero-ils-ui/pull/1394) (by @Garfield-fr)
+
+**Fixes:**
+
+- fix(dialog-import): restore warning parameter from dialog configuration [#1420](https://github.com/rero/rero-ils-ui/pull/1420) (by @PascalRepond)
+- fix(other-edition): fix table layout and public URLs [#1419](https://github.com/rero/rero-ils-ui/pull/1419) (by @PascalRepond)
+- fix: wrong items displayed in the document detailed view [#1418](https://github.com/rero/rero-ils-ui/pull/1418) (by @PascalRepond)
+- fix(holdings): restore the "receive and edit" button [#1412](https://github.com/rero/rero-ils-ui/pull/1412) (by @PascalRepond)
+- files: display a link to the collections (search) in the document detailed view [#1401](https://github.com/rero/rero-ils-ui/pull/1401) (by @jma)
+- feat(public-search): display disabled request button with tooltip [#1399](https://github.com/rero/rero-ils-ui/pull/1399) (by @PascalRepond)
+- fix(admin): fix patron loading error in item request dialog [#1417](https://github.com/rero/rero-ils-ui/pull/1417) (by @PascalRepond)
+
+**Other changes:**
+
+- chore: update dependencies [#1404](https://github.com/rero/rero-ils-ui/pull/1404) (by @PascalRepond)
+- feat(paginator): add configuration [#1398](https://github.com/rero/rero-ils-ui/pull/1398) (by @Garfield-fr)
+- chore: update dependencies [#1396](https://github.com/rero/rero-ils-ui/pull/1396) (by @PascalRepond)
+- chore: remove useless condition for irregular frequency [#1387](https://github.com/rero/rero-ils-ui/pull/1387) (by @PascalRepond)
+
 ## [v19.1.0](https://github.com/rero/rero-ils-ui/tree/v19.1.0) (2025-10-20)
 
 [Full Changelog](https://github.com/rero/rero-ils-ui/compare/v19.0.1...v19.1.0)
@@ -50,19 +77,19 @@
 
 **Fixes:**
 
-* fix(menu): open signout link in a new tab [\#1339](https://github.com/rero/rero-ils-ui/pull/1339) (by @jma)
-* fix(circulation): wrong request disappears when deleted [\#1340](https://github.com/rero/rero-ils-ui/pull/1340) (by @jma)
-* fix(circulation): patron message [\#1338](https://github.com/rero/rero-ils-ui/pull/1338) (by @Garfield-fr)
-* fix(preview email): add email manually on input [\#1335](https://github.com/rero/rero-ils-ui/pull/1335) (by @Garfield-fr)
-* fix: global document search not filtered [\#1332](https://github.com/rero/rero-ils-ui/pull/1332) (by @Garfield-fr)
-* fix(loan): make expire_request_date correct [\#1327](https://github.com/rero/rero-ils-ui/pull/1327) (by @PascalRepond)
-* fix(item): request list pickup location [\#1331](https://github.com/rero/rero-ils-ui/pull/1331) (by @Garfield-fr)
-* fix: missing notification info in circulation history [\#1330](https://github.com/rero/rero-ils-ui/pull/1330) (by @Garfield-fr)
-* style(library): enhance exception dates [\#1320](https://github.com/rero/rero-ils-ui/pull/1320) (by @PascalRepond)
-* feat(acquisition): display vendor notes [\#1323](https://github.com/rero/rero-ils-ui/pull/1323) (by @PascalRepond)
-* fix: fix bad key for local entity genre-form [\#1321](https://github.com/rero/rero-ils-ui/pull/1321) (by @Garfield-fr)
-* fix: rename temporary circulation category [\#1326](https://github.com/rero/rero-ils-ui/pull/1326) (by @PascalRepond)
-* style(debug): harmonise debug button colour and margins [\#1328](https://github.com/rero/rero-ils-ui/pull/1328) (by @PascalRepond)
+- fix(menu): open signout link in a new tab [\#1339](https://github.com/rero/rero-ils-ui/pull/1339) (by @jma)
+- fix(circulation): wrong request disappears when deleted [\#1340](https://github.com/rero/rero-ils-ui/pull/1340) (by @jma)
+- fix(circulation): patron message [\#1338](https://github.com/rero/rero-ils-ui/pull/1338) (by @Garfield-fr)
+- fix(preview email): add email manually on input [\#1335](https://github.com/rero/rero-ils-ui/pull/1335) (by @Garfield-fr)
+- fix: global document search not filtered [\#1332](https://github.com/rero/rero-ils-ui/pull/1332) (by @Garfield-fr)
+- fix(loan): make expire_request_date correct [\#1327](https://github.com/rero/rero-ils-ui/pull/1327) (by @PascalRepond)
+- fix(item): request list pickup location [\#1331](https://github.com/rero/rero-ils-ui/pull/1331) (by @Garfield-fr)
+- fix: missing notification info in circulation history [\#1330](https://github.com/rero/rero-ils-ui/pull/1330) (by @Garfield-fr)
+- style(library): enhance exception dates [\#1320](https://github.com/rero/rero-ils-ui/pull/1320) (by @PascalRepond)
+- feat(acquisition): display vendor notes [\#1323](https://github.com/rero/rero-ils-ui/pull/1323) (by @PascalRepond)
+- fix: fix bad key for local entity genre-form [\#1321](https://github.com/rero/rero-ils-ui/pull/1321) (by @Garfield-fr)
+- fix: rename temporary circulation category [\#1326](https://github.com/rero/rero-ils-ui/pull/1326) (by @PascalRepond)
+- style(debug): harmonise debug button colour and margins [\#1328](https://github.com/rero/rero-ils-ui/pull/1328) (by @PascalRepond)
 
 ## [v19.0.0](https://github.com/rero/rero-ils-ui/tree/v19.0.0) (2025-06-27)
 

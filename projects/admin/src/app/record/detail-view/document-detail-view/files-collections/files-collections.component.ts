@@ -94,7 +94,7 @@ export class FilesCollectionsComponent implements OnInit, OnDestroy {
 
   getIndex(collection: string): number {
     const value = this.formGroup.get('collections')?.value?.indexOf(collection);
-    if (value != null) {
+    if (value == null) {
       return -1;
     }
     return value;
