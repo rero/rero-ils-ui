@@ -82,6 +82,20 @@
                         (onClick)="store.quickIssueReceive()"
                         [disabled]="store.quickReceiveDisableButton()"
                       />
+                      <p-button
+                        icon="fa fa-plus"
+                        size="small"
+                        [title]="'Receive and edit this issue'|translate"
+                        [outlined]="true"
+                        [routerLink]="['/records', 'items', 'new']"
+                        [queryParams]="{
+                          'holding': holding().metadata.pid,
+                          'redirectTo': 'records/holdings/detail/' + holding().metadata.pid,
+                          'enumerationAndChronology': prediction.issue,
+                          'expected_date': prediction.expected_date
+                        }"
+                        styleClass="ui:ml-1"
+                      />
                     }
                   </ng-container>
                 }
