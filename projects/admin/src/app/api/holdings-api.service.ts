@@ -32,7 +32,7 @@ export class HoldingsApiService {
   readonly RESOURCE_NAME = 'holdings';
 
   getHoldingsByDocumentPid(documentPid: string): Observable<Record | Error> {
-    const query = `document.pid: ${documentPid} AND ((holdings_type:standard AND items_count:[1 TO *]) OR holdings_type:serial OR holdings_type:electronic)`;
+    const query = `document.pid:${documentPid} AND ((holdings_type:standard AND items_count:[1 TO *]) OR holdings_type:serial OR holdings_type:electronic)`;
     return this.recordService.getRecords(
       this.RESOURCE_NAME,
       query,
