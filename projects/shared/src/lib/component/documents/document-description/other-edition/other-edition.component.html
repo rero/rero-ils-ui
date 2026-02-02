@@ -14,24 +14,56 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<dl [ngClass]="{'metadata': !inline }">
-  <dt [ngClass]="{'ui:inline ui:font-bold ui:mr-1': inline}">
-    {{ fieldLabel }} @if(inline) {: }
-  </dt>
-  <dd [ngClass]="{'ui:inline': inline}">
-    <ul class="ui:list-none" [ngClass]="{'ui:inline': inline}">
-      @for (edition of field; track $index; let last=$last) {
-        <li class="ui:inline">
-          @if (edition.label) {
-            {{ edition.label }}
-          } @else {
-            @if (edition.pid | getRecord : 'documents' : 'field' : 'title' | async; as documentTitle) {
-              <a [routerLink]="['/records', 'documents', 'detail', edition.pid]">{{ $any(documentTitle) | mainTitleRelation }}</a>
+@if (inline) {
+  <dl>
+    <dt class="ui:inline ui:font-bold ui:mr-1">
+      {{ fieldLabel }}:
+    </dt>
+    <dd class="ui:inline">
+      <ul class="ui:list-none ui:inline">
+        @for (edition of field; track $index; let last=$last) {
+          <li class="ui:inline">
+            @if (edition.label) {
+              {{ edition.label }}
+            } @else {
+              @if (edition.pid | getRecord : 'documents' : 'field' : 'title' | async; as documentTitle) {
+                @if (isPublicView) {
+                  <a href="/{{ viewcode }}/documents/{{ edition.pid }}">{{ $any(documentTitle) | mainTitleRelation }}</a>
+                } @else {
+                  <a [routerLink]="['/records', 'documents', 'detail', edition.pid]">{{ $any(documentTitle) | mainTitleRelation }}</a>
+                }
+              }
             }
-          }
-          @if(!last){ ; }
-        </li>
-      }
-    </ul>
-  </dd>
-</dl>
+            @if(!last){ ; }
+          </li>
+        }
+      </ul>
+    </dd>
+  </dl>
+} @else {
+  <div class="ui:flex ui:flex-col ui:md:flex-row">
+    <div class="ui:font-bold ui:md:w-[30%] ui:w-[100%]">
+      {{ fieldLabel }}
+    </div>
+    <div>
+      <ul class="ui:list-none">
+        @for (edition of field; track $index; let last=$last) {
+          <li class="ui:inline">
+            @if (edition.label) {
+              {{ edition.label }}
+            } @else {
+              @if (edition.pid | getRecord : 'documents' : 'field' : 'title' | async; as documentTitle) {
+                @if (isPublicView) {
+                  <a href="/{{ viewcode }}/documents/{{ edition.pid }}">{{ $any(documentTitle) | mainTitleRelation }}</a>
+                } @else {
+                  <a [routerLink]="['/records', 'documents', 'detail', edition.pid]">{{ $any(documentTitle) | mainTitleRelation }}</a>
+                }
+              }
+            }
+            @if(!last){ ; }
+          </li>
+        }
+      </ul>
+    </div>
+  </div>
+}

@@ -35,7 +35,7 @@
         <public-search-electronic-holdings [viewcode]="viewcode" [documentPid]="$any(document).metadata.pid" />
       </p-tabpanel>
       <p-tabpanel value="description">
-        <shared-document-description [record]="document" />
+        <shared-document-description [record]="document" [viewcode]="viewcode" [isPublicView]="true" />
       </p-tabpanel>
       @if (showinfo !== 'false') {
         <p-tabpanel value="more" class="ui:[&_more-info]:!block">

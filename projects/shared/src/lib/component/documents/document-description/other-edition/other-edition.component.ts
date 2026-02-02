@@ -29,5 +29,12 @@ export class OtherEditionComponent {
   /** Field data */
   @Input() field: any;
 
+  /** Inline display mode */
   @Input() inline = false;
+
+  /** View code for public URL */
+  @Input() viewcode: string = null;
+
+  /** Is public view */
+  @Input() isPublicView = false;
 }

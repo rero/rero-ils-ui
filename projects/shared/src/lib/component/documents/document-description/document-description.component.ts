@@ -29,6 +29,12 @@ export class DocumentDescriptionComponent implements OnInit {
 
   /** Document record */
   @Input() record: any;
+
+  /** View code for public URL */
+  @Input() viewcode: string = null;
+
+  /** Is public view */
+  @Input() isPublicView = false;
   /** Cartographic attributes */
   cartographicAttributes: any[] = [];
   /** Edition statement */
