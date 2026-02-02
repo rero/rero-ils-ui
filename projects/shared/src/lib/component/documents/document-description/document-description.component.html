@@ -28,10 +28,10 @@
   <!-- -------------- WORK / EXPRESSION -------------- -->
   <!-- SUPPLEMENT, RELATED TO -->
   @if (record.metadata.supplement) {
-    <shared-other-edition [fieldLabel]="'Supplement' | translate" [field]="record.metadata.supplement" />
+    <shared-other-edition [fieldLabel]="'Supplement' | translate" [field]="record.metadata.supplement" [viewcode]="viewcode" [isPublicView]="isPublicView" />
   }
   @if (record.metadata.relatedTo) {
-    <shared-other-edition [fieldLabel]="'Related to' | translate" [field]="record.metadata.relatedTo" />
+    <shared-other-edition [fieldLabel]="'Related to' | translate" [field]="record.metadata.relatedTo" [viewcode]="viewcode" [isPublicView]="isPublicView" />
   }
 
   <!-- NOTE (TYPE GENERAL) -->
@@ -262,13 +262,13 @@
 
   <!-- OTHER EDITION, OTHER PHYSICAL FORMAT, HAS REPRODUCTION -->
   @if (record.metadata.otherEdition) {
-    <shared-other-edition [fieldLabel]="'Other edition' | translate" [field]="record.metadata.otherEdition" />
+    <shared-other-edition [fieldLabel]="'Other edition' | translate" [field]="record.metadata.otherEdition" [viewcode]="viewcode" [isPublicView]="isPublicView" />
   }
   @if (record.metadata.otherPhysicalFormat) {
-    <shared-other-edition [fieldLabel]="'Also issued as' | translate" [field]="record.metadata.otherPhysicalFormat" />
+    <shared-other-edition [fieldLabel]="'Also issued as' | translate" [field]="record.metadata.otherPhysicalFormat" [viewcode]="viewcode" [isPublicView]="isPublicView" />
   }
   @if (record.metadata.hasReproduction) {
-    <shared-other-edition [fieldLabel]="'Reproduced as' | translate" [field]="record.metadata.hasReproduction" />
+    <shared-other-edition [fieldLabel]="'Reproduced as' | translate" [field]="record.metadata.hasReproduction" [viewcode]="viewcode" [isPublicView]="isPublicView" />
   }
 
   <!-- TITLE (KEY TITLE, ABBREVIATED TITLE, VARIANT TITLE)-->
