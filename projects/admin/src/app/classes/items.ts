@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2019-2024 RERO
+ * Copyright (C) 2019-2026 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -100,6 +100,7 @@ export class Item {
   acquisition_date: DateTime;
   enumerationAndChronology: string;
   temporary_location?: any;
+  removed_temporary_item_type?: { name: string };
 
 
   constructor(obj?: any) {

@@ -154,18 +154,23 @@ export class ItemComponent implements OnChanges {
    */
   getCirculationNoteForAction(): ItemNote[] {
     if (this.item.actionDone) {
+      const notes: ItemNote[] = [];
       const checkinNote = this.item.getNote(ItemNoteType.CHECKIN)
       if (checkinNote && (
         (this.item.actionDone === this.itemAction.checkin) || (
           (((this.item.actionDone === this.itemAction.receive) && this.item.library.pid === this.userService.user.currentLibrary))
         )
       )) {
-        return [checkinNote];
+        notes.push(checkinNote);
       }
       const checkoutNote = this.item.getNote(ItemNoteType.CHECKOUT)
       if (checkoutNote && this.item.actionDone === this.itemAction.checkout) {
-        return [checkoutNote];
+        notes.push(checkoutNote);
       }
+      // Also include API notes (like temporary item type removal)
+      const apiNotes = this.item?.notes?.filter(i => i.type === ItemNoteType.API) || [];
+      notes.push(...apiNotes);
+      return notes;
     } else if (this.item.notes) {
       // Notes for item without loan.
       // This api note is pushed on error exception.
