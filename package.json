@@ -92,7 +92,7 @@
     "generate-password-lite": "^1.0.2",
     "issn": "^1.0.6",
     "jsbarcode": "^3.12.1",
-    "lodash-es": "^4.17.21",
+    "lodash-es": "^4.17.23",
     "luxon": "^3.6.0",
     "marked": "^16.0.0",
     "ngx-spinner": "^19.0.0",
