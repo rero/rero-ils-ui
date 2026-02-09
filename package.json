@@ -1,6 +1,6 @@
 {
   "name": "@rero/rero-ils-ui",
-  "version": "19.2.0",
+  "version": "19.2.1",
   "license": "AGPL-3.0-only",
   "author": {
     "name": "RERO",
@@ -77,8 +77,8 @@
     "@angular/router": "^19.2.0",
     "@ngneat/hotkeys": "^4.0.0",
     "@ngrx/signals": "^19.2.1",
-    "@ngx-formly/core": "^7.0.0",
-    "@ngx-formly/primeng": "^7.0.0",
+    "@ngx-formly/core": "7.0.0",
+    "@ngx-formly/primeng": "7.0.0",
     "@ngx-loading-bar/core": "^7.0.0",
     "@ngx-loading-bar/http-client": "^7.0.0",
     "@ngx-loading-bar/router": "^7.0.0",
@@ -109,7 +109,7 @@
     "@angular/cli": "^19.2.0",
     "@angular/compiler-cli": "^19.2.0",
     "@angular/language-service": "^19.2.0",
-    "@ngx-formly/schematics": "^7.0.0",
+    "@ngx-formly/schematics": "7.0.0",
     "@tailwindcss/postcss": "^4.1.0",
     "@types/jasmine": "^5.1.4",
     "@vendure/ngx-translate-extract": "^9.4.0",
