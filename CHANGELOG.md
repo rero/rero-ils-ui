@@ -1,5 +1,14 @@
 # Changelog
 
+## [v19.2.1](https://github.com/rero/rero-ils-ui/tree/v19.2.1) (2026-02-09)
+
+[Full Changelog](https://github.com/rero/rero-ils-ui/compare/v19.2.0...v19.2.1)
+
+**Fixes:**
+
+- fix: force ngx-formly version to 7.0.0 to prevent an editor error with arrays (by @PascalRepond)
+- fix: expand browser compatibility for public apps (by @PascalRepond)
+
 ## [v19.2.0](https://github.com/rero/rero-ils-ui/tree/v19.2.0) (2026-01-20)
 
 [Full Changelog](https://github.com/rero/rero-ils-ui/compare/v19.1.0...v19.2.0)
