@@ -1,16 +1,22 @@
 # [RERO ILS UI][1]
 
-[![Travis (.org)](https://img.shields.io/travis/rero/rero-ils-ui)](https://travis-ci.org/github/rero/rero-ils-ui)
-[![Coverall.io](https://img.shields.io/coveralls/rero/rero-ils.svg)](https://coveralls.io/r/rero/rero-ils)
-[![GitHub Release](https://img.shields.io/github/tag/rero/rero-ils-ui.svg?style=flat)](https://github.com/rero/rero-ils-ui/releases/latest)
-[![AGPL License](https://img.shields.io/badge/license-AGPL-blue.svg)](http://www.gnu.org/licenses/agpl-3.0)
-[![Gitter](https://img.shields.io/gitter/room/rero/reroils)](https://gitter.im/rero/reroils)
+[![Github actions
+status](https://github.com/rero/rero-ils-ui/actions/workflows/main.yml/badge.svg)](https://github.com/rero/rero-ils-ui/actions/workflows/main.yml)
+[![image](https://img.shields.io/coveralls/rero/rero-ils-ui.svg)](https://coveralls.io/r/rero/rero-ils-ui)
+[![Release
+Number](https://img.shields.io/github/tag/rero/rero-ils-ui.svg)](https://github.com/rero/rero-ils-ui/releases/latest)
+[![License](https://img.shields.io/badge/License-AGPL%20v3-blue.svg)](http://www.gnu.org/licenses/agpl-3.0.html)
+[![Gitter
+room](https://img.shields.io/gitter/room/rero/reroils.svg)](https://app.gitter.im/#/room/#rero_reroils:gitter.im)
 
 Public search: \
 [![Translation status](https://hosted.weblate.org/widgets/rero_plus/-/rero-ils-public-search/svg-badge.svg)](https://hosted.weblate.org/engage/rero_plus/?utm_source=widget)
 
 Professional interface (admin): \
 [![Translation status](https://hosted.weblate.org/widgets/rero_plus/-/rero-ils-admin/svg-badge.svg)](https://hosted.weblate.org/engage/rero_plus/?utm_source=widget)
+
+Shared: \
+[![Translation status](https://hosted.weblate.org/widgets/rero_plus/-/rero-ils-shared/svg-badge.svg)](https://hosted.weblate.org/engage/rero_plus/?utm_source=widget)
 
 *Copyright (C) 2020 RERO*
 *Copyright (C) 2020 UCLouvain*
@@ -25,13 +31,7 @@ It's a Web UI (User Interface) of [rero-ils](https://ils.test.rero.ch/) for libr
 
 This interface aims to be simple and clear. It's made with [Angular CLI](https://github.com/angular/angular-cli).
 
-It's composed of 3 applications:
-
-1. admin: UI for librarians
-2. public-search: search bar for non-logged users. Used in RERO-ils homepage
-3. search-bar: logged user search bar (integrated in RERO-ils banner)
-
-# Requirements
+## Requirements
 
 We strongly recommend the use of [nvm](https://github.com/nvm-sh/nvm).
 
@@ -84,7 +84,7 @@ nvm uninstall 10.16.3
 
 Run the `rero-ils` dev server on `https://localhost:5000` and run `npm run start-admin-proxy` or `npm run start-public-search-proxy` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
 
-# Production mode
+## Production mode
 
 To run all applications in production, just do:
 
@@ -94,7 +94,7 @@ npm run build
 
 It generates all needed files in **dist** directory.
 
-# Running unit tests
+## Running unit tests
 
 Run `./run-tests.sh` to execute linting and the unit tests via [Karma](https://karma-runner.github.io).
 
@@ -129,19 +129,6 @@ CHROME_BIN=`which chromium` ./run-tests.sh
 To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI README](https://github.com/angular/angular-cli/blob/master/README.md).
 
 ## Translations
-
-As we use [Transifex for rero-ils-ui](https://www.transifex.com/rero/rero-ils-ui/) you need to extract new string.
-
-Transifex is now integrated into git workflow the following way:
-
-When a PR is merged into dev branch, Transifex pulls the new or updated strings.
-When a language is 100% reviewed, Transifex creates a branch and a PR (one per language) to merge translations to dev branch.
-
-Don't use tx pull or push command, as the synchronization is done automatically, but extract the strings before each PR, as described below:
-
-Choose the command regarding the application you work on:
-* Use extract command first to put the strings in source file.
-* Then use update command to add the strings in the translations files. This allows the strings to be displayed in any language even if not yet translated.
 
 Commands:
 
