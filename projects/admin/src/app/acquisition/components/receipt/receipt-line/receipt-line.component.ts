@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2021-2025 RERO
+ * Copyright (C) 2021-2026 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -23,7 +23,8 @@ import { IAcqReceipt, IAcqReceiptLine } from '@app/admin/acquisition/classes/rec
 import { RecordPermissions } from '@app/admin/classes/permissions';
 import { RecordPermissionService } from '@app/admin/service/record-permission.service';
 import { CurrentLibraryPermissionValidator } from '@app/admin/utils/permissions';
-import { map, of, switchMap } from 'rxjs';
+import { RecordService } from '@rero/ng-core';
+import { catchError, map, of, switchMap } from 'rxjs';
 
 @Component({
   selector: 'admin-receipt-line',
@@ -36,6 +37,7 @@ export class ReceiptLineComponent {
     CurrentLibraryPermissionValidator
   );
   private acqReceiptApiService: AcqReceiptApiService = inject(AcqReceiptApiService);
+  private recordService: RecordService = inject(RecordService);
 
   line = input<IAcqReceiptLine>();
   receipt = input<IAcqReceipt>();
@@ -43,6 +45,22 @@ export class ReceiptLineComponent {
 
   /** Record permissions */
   permissions = toSignal<RecordPermissions>(toObservable(this.line).pipe(switchMap(() => this.updatePermissions())));
+
+  /** Document state: the record when found, or a notFound flag when the linked document no longer exists */
+  document = toSignal(
+    toObservable(this.line).pipe(
+      switchMap((line) => {
+        if (!line?.document?.pid) {
+          return of({ record: null, notFound: false });
+        }
+        return this.recordService.getRecord('documents', line.document.pid).pipe(
+          map((record) => ({ record, notFound: false })),
+          catchError(() => of({ record: null, notFound: true }))
+        );
+      })
+    ),
+    { initialValue: { record: null as any, notFound: false } }
+  );
 
   // GETTER & SETTER ==========================================================
   /**
@@ -59,7 +77,6 @@ export class ReceiptLineComponent {
   }
 
   updatePermissions() {
-    console.log('line', this.line());
     if (this.line() == null || !this.allowActions()) {
       return of(null);
     }
