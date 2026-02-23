@@ -1,6 +1,6 @@
 <!--
   RERO ILS UI
-  Copyright (C) 2021-2024 RERO
+  Copyright (C) 2021-2026 RERO
   Copyright (C) 2021-2023 UCLouvain
 
   This program is free software: you can redistribute it and/or modify
@@ -33,8 +33,10 @@
         <div class="ui:flex ui:items-start ui:flex-col ui:w-full">
           <div class="ui:flex ui:w-full ui:justify-between">
             <div class="ui:flex">
-              @if (orderLine.document.pid | getRecord: 'documents' | async; as document) {
-                <shared-document-brief-view [record]="$any(document).metadata" />
+              @if (document) {
+                <shared-document-brief-view [record]="document.metadata" />
+              } @else if (document === null) {
+                <span class="ui:text-muted-color"><i class="fa fa-exclamation-triangle"></i>&nbsp;{{ "Unknown document" | translate }} (pid {{ orderLine.document.pid }})</span>
               }
             </div>
             <div class="ui:flex ui:pt-2 ui:gap-2">

@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2021-2025 RERO
+ * Copyright (C) 2021-2026 RERO
  * Copyright (C) 2021 UCLouvain
  *
  * This program is free software: you can redistribute it and/or modify
@@ -20,8 +20,8 @@ import { RecordPermissions } from '@app/admin/classes/permissions';
 import { RecordPermissionService } from '@app/admin/service/record-permission.service';
 import { CurrentLibraryPermissionValidator } from '@app/admin/utils/permissions';
 import { RecordService } from '@rero/ng-core';
-import { forkJoin, Subscription } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { forkJoin, of, Subscription } from 'rxjs';
+import { catchError, map } from 'rxjs/operators';
 import { AcqOrderApiService } from '../../../../api/acq-order-api.service';
 import { AcqOrderLineStatus, IAcqOrderLine } from '../../../../classes/order';
 
@@ -42,8 +42,10 @@ export class OrderLineComponent implements OnInit, OnDestroy {
   /** parent order */
   @Input() order: any;
 
-  /** order line relate account */
+  /** order line related account */
   account: any;
+  /** order line related document record */
+  document: any;
   /** Is the line is collapsed */
   isCollapsed = true;
   /** reference to AcqOrderLineStatus */
@@ -70,9 +72,13 @@ export class OrderLineComponent implements OnInit, OnDestroy {
     const permissions$ = this.recordPermissionService
       .getPermission('acq_order_lines', this.orderLine.pid)
       .pipe(map((permissions) => this.permissionValidator.validate(permissions, this.order.library.pid)));
-    forkJoin([permissions$, account$]).subscribe(([permissions, account]) => {
+    const document$ = this.recordService.getRecord('documents', this.orderLine.document.pid).pipe(
+      catchError(() => of(null))
+    );
+    forkJoin([permissions$, account$, document$]).subscribe(([permissions, account, document]) => {
       this.recordPermissions = permissions;
       this.account = account;
+      this.document = document;
     });
   }
 

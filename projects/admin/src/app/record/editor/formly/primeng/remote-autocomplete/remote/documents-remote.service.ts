@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2024-2025 RERO
+ * Copyright (C) 2024-2026 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -89,7 +89,10 @@ export class DocumentsRemoteService implements IRemoteAutocomplete {
       .pipe(
         map((data: any) =>
           `<span class="ui:p-2"><strong>${this.mainTitlePipe.transform(data.metadata.title)}</strong></span>`
-        )
+        ),
+        catchError(() => of(
+          `<span class="ui:text-muted-color"><i class="fa fa-exclamation-triangle"></i>&nbsp;${this.translateService.instant('Unknown document')} (pid ${pid})</span>`
+        ))
       );
   }
 

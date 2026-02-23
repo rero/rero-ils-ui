@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2019-2024 RERO
+ * Copyright (C) 2019-2026 RERO
  * Copyright (C) 2019-2023 UCLouvain
  *
  * This program is free software: you can redistribute it and/or modify
@@ -19,25 +19,29 @@
 import { ChangeDetectorRef, Component, inject, OnInit } from '@angular/core';
 import { FieldType } from '@ngx-formly/core';
 import { extractIdOnRef, RecordService } from '@rero/ng-core';
-import { map, switchMap, tap } from 'rxjs';
+import { catchError, map, of, switchMap, tap } from 'rxjs';
 
 @Component({
   selector: 'admin-formly-order-line-type',
   template: `
-    @if (document) {
-    <div class="ui:flex ui:gap-2">
-      <div class="ui:grow-1">
-        <shared-document-brief-view [record]="document" />
-        <admin-notes class="ui:text-sm" [notes]="orderLine.notes"/>
-      </div>
-      @if(orderLine.priority) {
-        <div class="ui:flex">
-          <p-overlaybadge [value]="orderLine.priority" [severity]="severity(this.orderLine.priority)">
-            <i class="fa fa-tachometer" style="font-size: 1.2rem"></i>
-          </p-overlaybadge>
+    @if (orderLine) {
+      <div class="ui:flex ui:gap-2">
+        <div class="ui:grow-1">
+          @if (document) {
+            <shared-document-brief-view [record]="document" />
+          } @else if (document === null) {
+            <span class="ui:text-muted-color"><i class="fa fa-exclamation-triangle"></i>&nbsp;{{ "Unknown document" | translate }} (pid {{ documentPid }})</span>
+          }
+          <admin-notes class="ui:text-sm" [notes]="orderLine.notes"/>
         </div>
-      }
-    </div>
+        @if(orderLine.priority) {
+          <div class="ui:flex">
+            <p-overlaybadge [value]="orderLine.priority" [severity]="severity(orderLine.priority)">
+              <i class="fa fa-tachometer" style="font-size: 1.2rem"></i>
+            </p-overlaybadge>
+          </div>
+        }
+      </div>
     }
   `,
   standalone: false,
@@ -50,6 +54,10 @@ export class OrderLineTypeComponent extends FieldType implements OnInit {
   orderLine: any;
   document: any;
 
+  get documentPid(): string | null {
+    return this.orderLine ? extractIdOnRef(this.orderLine.document.$ref) : null;
+  }
+
   /** OnInit hook */
   ngOnInit(): void {
     const pid = extractIdOnRef(this.model.acqOrderLineRef);
@@ -58,8 +66,12 @@ export class OrderLineTypeComponent extends FieldType implements OnInit {
       .pipe(
         tap((line) => (this.orderLine = line.metadata)),
         map(() => extractIdOnRef(this.orderLine.document.$ref)),
-        switchMap((pid) => this.recordService.getRecord('documents', pid)),
-        tap((document) => (this.document = document.metadata)),
+        switchMap((pid) =>
+          this.recordService.getRecord('documents', pid).pipe(
+            catchError(() => of(null))
+          )
+        ),
+        tap((document) => (this.document = document?.metadata ?? null)),
         tap(() => this.changeDetectorRef.detectChanges())
       )
       .subscribe();
