@@ -22,6 +22,9 @@
         <admin-record-masked [record]="record"></admin-record-masked>
       }
       <span>{{ record.metadata.library.name }}: {{ record.metadata.location.name }}</span>
+      @if (record.metadata.location.public_note) {
+        <div class="ui:text-sm ui:text-gray-500">{{ record.metadata.location.public_note | getTranslatedLabel : language }}</div>
+      }
     </div>
 
     <div class="ui:col-span-4">
