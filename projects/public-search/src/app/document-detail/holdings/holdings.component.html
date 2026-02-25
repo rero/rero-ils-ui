@@ -48,6 +48,9 @@
             <div class="ui:grid ui:grid-cols-12 ui:md:gap-4 ui:gap-1 ui:mb-4">
               <div class="ui:col-span-12 ui:md:col-span-5">
                 {{ holding.metadata.library.name }}:&nbsp;{{ holding.metadata.location.name }}
+                @if (holding.metadata.location.public_note) {
+                  <div class="ui:text-sm ui:text-gray-500">{{ holding.metadata.location.public_note | getTranslatedLabel : translateService.currentLang }}</div>
+                }
               </div>
               <div class="ui:col-span-12 ui:md:col-span-2">
                 {{ holding.metadata.circulation_category.circulation_information | getTranslatedLabel : translateService.currentLang }}

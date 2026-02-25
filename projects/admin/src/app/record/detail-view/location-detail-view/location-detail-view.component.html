@@ -36,6 +36,24 @@
               <dt class="ui:col-span-3" translate>Code</dt>
               <dd class="ui:col-span-7 ui:mb-0">{{ data.code }}</dd>
           </dl>
+          <!-- PUBLIC NOTE -->
+          @if (data.public_note) {
+            <dl class="ui:grid ui:grid-cols-12 ui:gap-4 ui:mb-1">
+              <dt class="ui:col-span-3" translate>Public note</dt>
+              <dd class="ui:col-span-7 ui:mb-0">
+                <ul class="ui:list-none">
+                  @for (note of data.public_note; track $index) {
+                    <li>
+                      <div class="ui:font-bold ui:w-20 ui:inline-block">
+                        <i class="fa fa-language" aria-hidden="true"></i>&nbsp;({{ note.language }})
+                      </div>
+                      {{ note.label }}
+                    </li>
+                  }
+                </ul>
+              </dd>
+            </dl>
+          }
           <!-- IS ONLINE -->
           <dl class="ui:grid ui:grid-cols-12 ui:gap-4 ui:mb-1">
             <dt class="ui:col-span-3" translate>Is online</dt>
