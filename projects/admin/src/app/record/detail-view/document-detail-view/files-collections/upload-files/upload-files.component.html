@@ -105,7 +105,7 @@
             tooltipPosition="top"
             title="download"
             [href]="toRelative(file.links.content)"
-            download
+            [download]="file.key"
             >{{ file.key }} <i class="fa fa-download"></i
           ></a>
         </div>

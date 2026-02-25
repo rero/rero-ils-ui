@@ -72,7 +72,7 @@
                   </a>
                 }
                 @if (file.download) {
-                  <a [href]="file.download" download>
+                  <a [href]="file.download" [download]="file.key">
                     <i class="fa fa-download ui:text-muted-color ui:mx-1"></i>
                   </a>
                 }

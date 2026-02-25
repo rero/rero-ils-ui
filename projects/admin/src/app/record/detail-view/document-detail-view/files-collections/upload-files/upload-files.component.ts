@@ -45,7 +45,7 @@ export class UploadFilesComponent implements OnInit {
   // input text filter
   filterText = '';
   // filtered array of files
-  filteredFiles = [];
+  filteredFiles: any[] = [];
   // A file record as used by rero-invenio-files.
   parentRecord: Record = null;
 

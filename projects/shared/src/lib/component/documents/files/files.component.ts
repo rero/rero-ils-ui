@@ -30,6 +30,8 @@ export type File = {
   thumbnail?: string;
   // download URL
   download: string;
+  // actual filename (used as download attribute value for browser save dialog)
+  key: string;
   // thumbnail legend
   label: string;
   // preview URL
@@ -177,6 +179,7 @@ export class FilesComponent implements OnInit, OnDestroy {
             // main file (such as pdf)
             if (!['thumbnail', 'fulltext'].includes(entry?.metadata?.type)) {
               const dataFile: any = {
+                key: entry.key,
                 label: entry?.metadata?.label ? entry.metadata.label : entry.key,
                 mimetype: entry.mimetype,
                 download: new URL(entry.links.content).pathname,
