@@ -112,6 +112,12 @@ export class PatronsRoute extends BaseRoute implements RouteInterface {
                     showIfQuery: true
                   },
                   {
+                    label: _('Not expired'),
+                    filter: 'not_expired',
+                    value: 'true',
+                    showIfQuery: true
+                  },
+                  {
                     label: _('Blocked'),
                     filter: 'blocked',
                     value: 'true',
