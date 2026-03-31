@@ -1,5 +1,31 @@
 # Changelog
 
+## [v19.3.0](https://github.com/rero/rero-ils-ui/tree/v19.3.0) (2026-04-23)
+
+[Full Changelog](https://github.com/rero/rero-ils-ui/compare/v19.2.1...v19.3.0)
+
+**New features:**
+
+- feat: display location public note in holdings views [#1433](https://github.com/rero/rero-ils-ui/pull/1433) (by @PascalRepond)
+- feat(patrons): add "Not expired" filter to patrons [#1435](https://github.com/rero/rero-ils-ui/pull/1435) (by @PascalRepond)
+- feat: handle deleted documents linked to acq lines [#1431](https://github.com/rero/rero-ils-ui/pull/1431) (by @PascalRepond)
+- feat(circulation): remove temporary item type on scan [#1408](https://github.com/rero/rero-ils-ui/pull/1408) (by @PascalRepond)
+- feat: display issue sort_date [#1427](https://github.com/rero/rero-ils-ui/pull/1427) (by @PascalRepond)
+
+**Fixes:**
+
+- fix(patron-profile): fix stale contributors when switching organisations [#1441](https://github.com/rero/rero-ils-ui/pull/1441) (by @PascalRepond)
+- fix: fix column alignment in document description [#1432](https://github.com/rero/rero-ils-ui/pull/1432) (by @PascalRepond)
+- docs(user): fix loan history description to reflect the new policy [#1458](https://github.com/rero/rero-ils-ui/pull/1458) (by @PascalRepond)
+- docs: update "remove temp item type" hint [#1457](https://github.com/rero/rero-ils-ui/pull/1457) (by @PascalRepond)
+
+**Other changes:**
+
+- build: update dependencies [#1430](https://github.com/rero/rero-ils-ui/pull/1430) (by @PascalRepond)
+- build: add workflow to publish releases to npm [#1428](https://github.com/rero/rero-ils-ui/pull/1428) (by @PascalRepond)
+- docs: update readme and remove unused github workflows [#1429](https://github.com/rero/rero-ils-ui/pull/1429) (by @PascalRepond)
+- refactor: remove dynamic thumbnail resolution [#1450](https://github.com/rero/rero-ils-ui/pull/1450) (by @PascalRepond)
+
 ## [v19.2.1](https://github.com/rero/rero-ils-ui/tree/v19.2.1) (2026-02-09)
 
 [Full Changelog](https://github.com/rero/rero-ils-ui/compare/v19.2.0...v19.2.1)
