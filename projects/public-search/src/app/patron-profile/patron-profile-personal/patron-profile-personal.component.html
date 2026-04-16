@@ -97,9 +97,9 @@
     <dd>
       <i class="fa fa-circle" [ngClass]="{'text-success': user.keep_history, 'text-danger': !user.keep_history}"></i>
       @if (user.keep_history) {
-        {{ 'The loan history is saved for a maximum of six months. It is visible to you and the library staff.' | translate }}
+        {{ 'The loan history is visible in your patron account.' | translate }}
       } @else {
-        {{ 'The loan history is not saved.' | translate }}
+        {{ 'The loan history is hidden.' | translate }}
       }
     </dd>
   </dl>
