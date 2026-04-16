@@ -100,14 +100,14 @@ describe('PatronProfilePersonalComponent', () => {
     expect(dd[7].textContent).toContain('2010023488');
     expect(dd[8].textContent).toContain('01/01/2024');
     expect(dd[9].textContent).toContain(
-      'The loan history is saved for a maximum of six months. It is visible to you and the library staff.'
+      'The loan history is visible in your patron account.'
     );
 
     const user = cloneDeep(testUserPatronWithSettings);
     user.keep_history = false;
     component.user = user;
     fixture.detectChanges();
-    expect(dd[9].textContent).toContain('The loan history is not saved.');
+    expect(dd[9].textContent).toContain('The loan history is hidden.');
 
     const button = fixture.nativeElement.querySelector('#profile-edit');
     expect(button).toBeDefined();

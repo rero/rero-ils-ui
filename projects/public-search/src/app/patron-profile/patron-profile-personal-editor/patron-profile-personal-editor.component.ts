@@ -65,7 +65,7 @@ export class PatronProfilePersonalEditorComponent implements OnInit, OnDestroy {
   /** Description for some fields defined as key */
   private _fieldDescription = {
     username: _('Username must start with a letter or a number, be at least three characters long and only contain alphanumeric characters, dashes and underscores.'),
-    keep_history: _('If enabled the loan history is saved for a maximum of six months. It is visible to you and the library staff.')
+    keep_history: _('If enabled, the loan history is visible in your patron account. Loan data is always anonymised after a certain period.')
   };
 
   /** Init hook */
