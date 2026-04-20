@@ -626,7 +626,7 @@
   "Remote": "Externe",
   "Remote entities": "Entités externes",
   "Remote entity": "Entité externe",
-  "Remove temporary item type on scan": "Retirer le type d'exemplaire temporaire au scan",
+  "Remove temporary item type on check-in/checkout": "Retirer le type d'exemplaire temporaire lors du prêt/retour",
   "Renew": "Prolonger",
   "Renew all": "Tout prolonger",
   "Renewal": "Prolongation",
