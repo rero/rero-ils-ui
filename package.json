@@ -125,7 +125,7 @@
     "karma-spec-reporter": "0.0.36",
     "katex": "^0.16.22",
     "ng-packagr": "^19.2",
-    "postcss": "^8.5.3",
+    "postcss": "^8.5.10",
     "tailwindcss": "^4.1.0",
     "tailwindcss-primeui": "^0.6.1",
     "typescript": "^5.8.3",
