@@ -17,44 +17,44 @@
 -->
 <dl class="metadata">
 <!-- AUTHORIZED ACCESS POINT -->
-@if (record.authorized_access_point) {
+@if (record().authorized_access_point) {
   <dt translate>Authorized access point</dt>
-  <dd>{{ record.authorized_access_point }}</dd>
+  <dd>{{ record().authorized_access_point }}</dd>
 }
 
 <!-- DATE OF ESTABLISHMENT -->
-@if (record.date_of_establishment) {
+@if (record().date_of_establishment) {
   <dt translate>Date of establishment</dt>
-  <dd>{{ record.date_of_establishment }}</dd>
+  <dd>{{ record().date_of_establishment }}</dd>
 }
 <!-- DATE OF TERMINATION -->
-@if (record.date_of_termination) {
+@if (record().date_of_termination) {
   <dt translate>Date of termination</dt>
-  <dd>{{ record.date_of_termination }}</dd>
+  <dd>{{ record().date_of_termination }}</dd>
 }
   <!-- LANGUAGE -->
-@if (record.language) {
+@if (record().language) {
   <dt translate>Language</dt>
   <dd>
     <ul class="ui:list-none">
-      @for (language of record.language; track $index) {
+      @for (language of record().language; track $index) {
         <li>{{ ('lang_' + language) | translate }}</li>
       }
     </ul>
   </dd>
 }
 <!-- COUNTRY ASSOCIATED -->
-@if (record.country_associated) {
+@if (record().country_associated) {
   <dt translate>Country associated</dt>
-  <dd>{{ 'country_' + record.country_associated | translate }}</dd>
+  <dd>{{ 'country_' + record().country_associated | translate }}</dd>
 }
 
 <!-- VARIANT NAME -->
-@if (record.variant_access_point) {
+@if (record().variant_access_point) {
   <dt translate>Variant name</dt>
   <dd>
     <ul class="ui:list-none">
-      @for (variant_name of record.variant_access_point; track $index) {
+      @for (variant_name of record().variant_access_point; track $index) {
         <li>{{ variant_name }}</li>
       }
     </ul>

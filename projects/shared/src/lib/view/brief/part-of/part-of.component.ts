@@ -14,29 +14,32 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, inject, Input } from '@angular/core';
+import { Component, inject, input, ChangeDetectionStrategy} from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
+import { RouterLink } from '@angular/router';
+import { RecordData } from '@rero/ng-core';
 
 @Component({
     selector: 'shared-part-of',
     templateUrl: './part-of.component.html',
-    standalone: false
+    imports: [RouterLink],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class PartOfComponent {
 
   protected translateService: TranslateService = inject(TranslateService);
 
   /** Document */
-  @Input() record: any;
+  readonly record = input<RecordData>();
 
   /** View code */
-  @Input() viewcode: string = null;
+  readonly viewcode = input<string>(null);
 
   /** is public view */
-  @Input() isPublicView = false;
+  readonly isPublicView = input(false);
 
   /** Is it brief or detailed view? */
-  @Input() isBrief = true;
+  readonly isBrief = input(true);
 
   /** Css class for dd in template */
   ddCssClass = 'col-sm-6 col-md-8 mb-0';

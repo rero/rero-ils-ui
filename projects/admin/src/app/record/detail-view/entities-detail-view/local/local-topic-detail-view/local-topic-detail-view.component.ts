@@ -15,14 +15,18 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, Input } from '@angular/core';
+import { Component, input, ChangeDetectionStrategy} from '@angular/core';
+import { EntitiesLocalGlobalComponent } from '../entities-local-global.component';
+import { TranslateDirective } from '@ngx-translate/core';
+import { NgClass } from '@angular/common';
 
 @Component({
     selector: 'admin-local-topic-detail-view',
     templateUrl: './local-topic-detail-view.component.html',
-    standalone: false
+    imports: [EntitiesLocalGlobalComponent, TranslateDirective, NgClass],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class LocalTopicDetailViewComponent {
   /** the current record */
-  @Input() record: any;
+  record = input<any>();
 }

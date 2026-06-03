@@ -15,15 +15,15 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<div class="ui:p-2 ui:border-surface ui:hover:bg-surface-100" [class.ui:border-top-1]="separator">
+<div class="ui:p-2 ui:border-surface ui:hover:bg-surface-100" [class.ui:border-top-1]="separator()">
     <div class="ui:grid ui:grid-cols-12 ui:gap-4">
       <!-- transaction date -->
       <div class="ui:col-span-2 ui:text-sm">
         <div class="ui:flex ui:gap-2">
         <shared-open-close-button [styleClass]="isHighlight? 'ui:bg-blue-100': 'ui:bg-white'" (status)="isCollapsed = $event; toggleCollapsed()" />
         <div>
-        <div><i class="fa fa-calendar-o"></i>&nbsp;{{ record.metadata.date | dateTranslate :'shortDate' }}</div>
-        <div><i class="fa fa-clock-o"></i>&nbsp;{{ record.metadata.date | dateTranslate :'mediumTime' }}</div>
+        <div><i class="fa fa-calendar-o"></i>&nbsp;{{ record().metadata.date | dateTranslate :'shortDate' }}</div>
+        <div><i class="fa fa-clock-o"></i>&nbsp;{{ record().metadata.date | dateTranslate :'mediumTime' }}</div>
       </div>
       </div>
       </div>
@@ -57,8 +57,8 @@
     <!-- debug information -->
     <div class="ui:col-span-12" [hidden]="!debugMode || isCollapsed">
       <h5 class="text-error"><i class="fa fa-bug"></i>&nbsp;{{ 'Debug' | translate }}</h5>
-      <p-scrollPanel styleClass="ui:w-full" [style]="{ height: '300px' }">
-        <pre class="ui:text-sm">{{ record | json }}</pre>
+      <p-scrollPanel class="ui:w-full" [style]="{ height: '300px' }">
+        <pre class="ui:text-sm">{{ record() | json }}</pre>
       </p-scrollPanel>
     </div>
 </div>

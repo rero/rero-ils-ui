@@ -14,11 +14,11 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-@if (record) {
+@if (record()) {
   <div class="ui:self-start ui:flex">
-    <figure class="ui:m-0" [ngClass]="styleClass">
-      <img class="ui:w-full ui:h-auto ui:border ui:border-surface ui:rounded-border ui:p-2" [alt]="'Cover' | translate" [src]="coverUrl" />
-      @for (type of record.metadata.type; track $index) {
+    <figure class="ui:m-0" [ngClass]="styleClass()">
+      <img class="ui:w-full ui:h-auto ui:border ui:border-surface ui:rounded-border ui:p-2" [alt]="'Cover' | translate" [src]="coverUrl()" />
+      @for (type of record().metadata.type; track $index) {
         <figcaption class="ui:text-center ui:font-bold ui:text-sm ui:text-muted-color">
           {{ type.subtype? (type.subtype | translate): (type.main_type | translate) }}
         </figcaption>

@@ -15,10 +15,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { inject, Injectable } from '@angular/core';
+import { inject, Injectable, signal } from '@angular/core';
 import { AbstractControl, UntypedFormArray, UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { RecordService, TimeValidator } from '@rero/ng-core';
-import { forkJoin, Subject } from 'rxjs';
+import { forkJoin, Observable } from 'rxjs';
+import { map, tap } from 'rxjs/operators';
 import { AcquisitionInformations, Library, RolloverSettings } from '../../../classes/library';
 import { NotificationType } from '../../../classes/notification';
 import { WeekDays } from '../../../classes/week-days';
@@ -36,17 +37,15 @@ export class LibraryFormService {
   public form;
 
   /** RERO-ILS notification types */
-  private notificationTypes = [];
+  private notificationTypes: NotificationType[] = [];
   /** RERO-ILS communication languages */
-  private availableCommunicationLanguages = [];
+  private readonly _availableCommunicationLanguages = signal<string[]>([]);
   /** RERO-ILS countries */
-  private countryList = [];
-  /** Observable for build event */
-  private buildEvent = new Subject();
+  private readonly _countryList = signal<string[]>([]);
   /** Rollover account transfer */
-  private rolloverAccountTransferOptions = [];
+  private readonly _rolloverAccountTransferOptions = signal<string[]>([]);
   /** Default account transfer */
-  private accountDefaultTransferOption = 'rollover_no_transfer';
+  private readonly accountDefaultTransferOption = 'rollover_no_transfer';
 
   // GETTER & SETTER ==========================================================
   get name(): AbstractControl { return this.form.get('name'); }
@@ -56,10 +55,10 @@ export class LibraryFormService {
   get opening_hours(): UntypedFormArray { return this.form.get('opening_hours') as UntypedFormArray; }
   get notification_settings(): UntypedFormArray { return this.form.get('notification_settings') as UntypedFormArray; }
   get communication_language(): AbstractControl { return this.form.get('communication_language'); }
-  get available_communication_languages() { return this.availableCommunicationLanguages; }
-  get countries_iso_codes() { return this.countryList; }
+  get available_communication_languages() { return this._availableCommunicationLanguages(); }
+  get countries_iso_codes() { return this._countryList(); }
   get rollover_settings(): AbstractControl { return this.form.get('rollover_settings'); }
-  get account_transfer_options() { return this.rolloverAccountTransferOptions; }
+  get account_transfer_options() { return this._rolloverAccountTransferOptions(); }
 
   // SERVICE FUNCTIONS ========================================================
   /** Build the form structure */
@@ -89,37 +88,40 @@ export class LibraryFormService {
     this._initializeNotificationSettings();
   }
 
-  /** Get build event */
-  getBuildEvent() {
-    return this.buildEvent.asObservable();
-  }
-
-  /** Method to create the form and get default available values */
-  create() {
+  /**
+   * Create the form and load default available values.
+   * Returns an Observable that emits once when the form is ready.
+   */
+  create(): Observable<boolean> {
     const notificationSchema$ = this.recordService.getSchemaForm('notifications');
     const librarySchema$ = this.recordService.getSchemaForm('libraries');
-    forkJoin([librarySchema$, notificationSchema$]).subscribe(([libSchema, notifSchema]) => {
-      this.availableCommunicationLanguages = libSchema.schema.properties.communication_language.enum;
-      this.countryList = libSchema.schema.properties.acquisition_settings.properties.shipping_informations.
-        properties.address.properties.country.enum;
-      this.rolloverAccountTransferOptions = libSchema.schema.properties.rollover_settings.properties.
-        account_transfer.enum;
-
-      // DEV NOTES :: Why remove `acquisition_order` an `claim_issue`
-      //   `this.notificationTypes` is used to build the notification setting form ;
-      //   but we need to remove `acquisition_order` and `claim_issue` from this list because the email
-      //   used to send this kind of notification is selected by manager when it confirms
-      //   and order. Then the email used is either :
-      //      - related vendor email
-      //      - library (serial) acquisition setting email
-      //      - custom email
-      this.notificationTypes = notifSchema.schema.properties.notification_type.enum
-        .filter(type => type != NotificationType.ACQUISITION_ORDER)
-        .filter(type => type != NotificationType.CLAIM_ISSUE);
-
-      this.build();
-      this.buildEvent.next(true);
-    });
+    return forkJoin([librarySchema$, notificationSchema$]).pipe(
+      tap(([libSchema, notifSchema]) => {
+        this._availableCommunicationLanguages.set(
+          (libSchema as any).schema.properties.communication_language.enum
+        );
+        this._countryList.set(
+          (libSchema as any).schema.properties.acquisition_settings.properties.shipping_informations
+            .properties.address.properties.country.enum
+        );
+        this._rolloverAccountTransferOptions.set(
+          (libSchema as any).schema.properties.rollover_settings.properties.account_transfer.enum
+        );
+        // DEV NOTES :: Why remove `acquisition_order` an `claim_issue`
+        //   `this.notificationTypes` is used to build the notification setting form ;
+        //   but we need to remove `acquisition_order` and `claim_issue` from this list because the email
+        //   used to send this kind of notification is selected by manager when it confirms
+        //   and order. Then the email used is either :
+        //      - related vendor email
+        //      - library (serial) acquisition setting email
+        //      - custom email
+        this.notificationTypes = ((notifSchema as any).schema.properties.notification_type.enum as NotificationType[])
+          .filter(type => type !== NotificationType.ACQUISITION_ORDER)
+          .filter(type => type !== NotificationType.CLAIM_ISSUE);
+        this.build();
+      }),
+      map(() => true)
+    );
   }
 
   /**

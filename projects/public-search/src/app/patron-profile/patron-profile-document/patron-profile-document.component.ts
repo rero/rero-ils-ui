@@ -14,22 +14,25 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, computed, inject, input } from '@angular/core';
+import { Component, computed, inject, input, ChangeDetectionStrategy} from '@angular/core';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
+import { TranslateDirective } from '@ngx-translate/core';
 import { RecordService } from '@rero/ng-core';
-import { EsRecord } from '@rero/shared';
+import { ContributionComponent, EsRecord, MainTitlePipe } from '@rero/shared';
+import { TagModule } from 'primeng/tag';
 import { catchError, map, of, switchMap } from 'rxjs';
-import { PatronProfileMenuService } from '../patron-profile-menu.service';
+import { PatronProfileStore } from '../store/patron-profile.store';
 
 @Component({
     selector: 'public-search-patron-profile-document',
     templateUrl: './patron-profile-document.component.html',
-    standalone: false
+    imports: [TranslateDirective, ContributionComponent, MainTitlePipe, TagModule],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class PatronProfileDocumentComponent {
 
-  private patronProfileMenuService: PatronProfileMenuService = inject(PatronProfileMenuService);
-  private recordService: RecordService = inject(RecordService);
+  private store = inject(PatronProfileStore);
+  private recordService = inject(RecordService);
 
   // COMPONENT ATTRIBUTES =====================================================
   record = input.required<EsRecord>();
@@ -40,7 +43,7 @@ export class PatronProfileDocumentComponent {
   document = toSignal(
     toObservable(this.record).pipe(
       switchMap(record => this.recordService
-        .getRecord('documents', record.metadata.document.pid, 1, { Accept: 'application/rero+json, application/json' })
+        .getRecord('documents', record.metadata.document.pid, { resolve: 1, headers: { Accept: 'application/rero+json, application/json' } })
         .pipe(
           catchError(() => of({ metadata: {} })),
           map(doc => doc.metadata)
@@ -52,7 +55,7 @@ export class PatronProfileDocumentComponent {
   // GETTER & SETTER ==========================================================
   /** Get current viewcode */
   get viewcode(): string {
-    return this.patronProfileMenuService.currentPatron.organisation.code;
+    return this.store.currentPatron()?.organisation.code ?? '';
   }
 
   /** Get the formatted call numbers for the related item */

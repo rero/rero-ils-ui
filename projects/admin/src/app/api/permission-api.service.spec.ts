@@ -53,14 +53,14 @@ describe('PermissionService', () => {
   });
 
   it('should return a list of all available permissions', () => {
-    spyOn(client, 'get').and.returnValue(of(responseRolesPermissions))
+    vi.spyOn(client, 'get').mockReturnValue(of(responseRolesPermissions))
     service.getAllPermissionsByRole().subscribe((result: IRolePermission) => {
       expect(result).toEqual(responseRolesPermissions);
     });
   });
 
   it('should return the list of user permissions', () => {
-    spyOn(client, 'get').and.returnValue(of(responseUserPermissions))
+    vi.spyOn(client, 'get').mockReturnValue(of(responseUserPermissions))
     service.getUserPermissions('1').subscribe((result: any) => {
       expect(result).toEqual(responseUserPermissions);
     });

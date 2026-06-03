@@ -34,8 +34,7 @@ export class LibraryApiService {
 
   private query(query: any, order = 'name'): Observable<any> {
     return this.recordService.getRecords(
-      LibraryApiService.resource, query, 1, RecordService.MAX_REST_RESULTS_SIZE,
-      undefined, undefined, undefined, order
+      LibraryApiService.resource, { query, page: 1, itemsPerPage: RecordService.MAX_REST_RESULTS_SIZE, sort: order }
     );
   }
 }

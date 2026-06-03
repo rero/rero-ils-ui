@@ -38,13 +38,11 @@ describe('IssueService', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-    declarations: [
-        IssueEmailComponent
-    ],
     imports: [
-      TranslateModule.forRoot(),
-      DynamicDialogModule,
-      MessageModule
+        TranslateModule.forRoot(),
+        DynamicDialogModule,
+        MessageModule,
+        IssueEmailComponent
     ],
     providers: [
         IssueService,
@@ -64,9 +62,9 @@ describe('IssueService', () => {
 
   it('should return if claim is authorized or not', () => {
     [IssueItemStatus.DELETED, IssueItemStatus.RECEIVED]
-      .forEach(element => expect(service.isClaimAllowed(element)).toBeFalse());
+      .forEach(element => expect(service.isClaimAllowed(element)).toBe(false));
     [IssueItemStatus.EXPECTED, IssueItemStatus.LATE]
-      .forEach(element => expect(service.isClaimAllowed(element)).toBeTrue());
+      .forEach(element => expect(service.isClaimAllowed(element)).toBe(true));
   });
 
   it('should return the modal reference', () => {

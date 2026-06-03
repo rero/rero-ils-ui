@@ -23,10 +23,7 @@ export enum ProvisionActivityType {
   DISTRIBUTION = 'bf:Distribution'
 }
 
-@Pipe({
-    name: 'provisionActivity',
-    standalone: false
-})
+@Pipe({ name: 'provisionActivity' })
 export class ProvisionActivityPipe implements PipeTransform {
 
   /**

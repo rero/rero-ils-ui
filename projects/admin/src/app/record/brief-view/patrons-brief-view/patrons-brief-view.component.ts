@@ -15,33 +15,40 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { Component, inject, Input } from '@angular/core';
-import { ResultItem } from '@rero/ng-core';
-import { PERMISSIONS, PermissionsService } from '@rero/shared';
+import { Component, inject, input, ChangeDetectionStrategy} from '@angular/core';
+import { Router, RouterLink } from '@angular/router';
+import { AppStore, PERMISSIONS } from '@rero/shared';
 import { roleTagSeverity } from '../../../utils/roles';
+import { Bind } from 'primeng/bind';
+import { Button } from 'primeng/button';
+import { Tag } from 'primeng/tag';
+import { TranslatePipe } from '@ngx-translate/core';
+import { DateTranslatePipe } from '@rero/ng-core';
 
 @Component({
     selector: 'admin-patrons-brief-view',
     templateUrl: './patrons-brief-view.component.html',
-    standalone: false
+    imports: [RouterLink, Bind, Button, Tag, TranslatePipe, DateTranslatePipe],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class PatronsBriefViewComponent implements ResultItem {
+export class PatronsBriefViewComponent {
 
-  private permissionsService: PermissionsService = inject(PermissionsService);
+  private appStore = inject(AppStore);
+  private router = inject(Router);
 
   /** the record to display */
-  @Input() record: any;
+  record = input<any>();
   /** the record type */
-  @Input() type: string;
+  type = input<string>();
   /** the url to access detail view */
-  @Input() detailUrl: { link: string, external: boolean };
+  detailUrl = input<{ link: string, external: boolean }>();
 
   /**
    * Circulation access check
    * @return true if the circulation permission is allowed
    */
    get circulationAccess(): boolean {
-    return this.permissionsService.canAccess(PERMISSIONS.CIRC_ADMIN);
+    return this.appStore.canAccess(PERMISSIONS.CIRC_ADMIN);
   }
 
   /**
@@ -51,5 +58,9 @@ export class PatronsBriefViewComponent implements ResultItem {
    */
   getRoleTagSeverity(role: string): string {
     return roleTagSeverity(role);
+  }
+
+  goToCirculation(barcode: string): void {
+    this.router.navigate(['/circulation', 'patron', barcode, 'loan']);
   }
 }

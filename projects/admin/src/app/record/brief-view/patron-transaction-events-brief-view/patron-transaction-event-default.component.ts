@@ -16,17 +16,22 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { Component, Input } from '@angular/core';
+import { Component, input, ChangeDetectionStrategy} from '@angular/core';
 import { PatronTransaction, PatronTransactionEvent } from '../../../classes/patron-transaction';
+import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
+import { RouterLink } from '@angular/router';
+import { AsyncPipe } from '@angular/common';
+import { PatronNamePipe } from '../../../pipe/patron-name.pipe';
 
 @Component({
     selector: 'admin-patron-transaction-event-default',
     templateUrl: './patron-transaction-event-default.component.html',
-    standalone: false
+    imports: [TranslateDirective, RouterLink, AsyncPipe, TranslatePipe, PatronNamePipe],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class PatronTransactionEventDefaultComponent {
 
-  @Input() event: PatronTransactionEvent;
-  @Input() parent: PatronTransaction;
+  event = input<PatronTransactionEvent>();
+  parent = input<PatronTransaction>();
 
 }

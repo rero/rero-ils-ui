@@ -24,7 +24,7 @@ import { DocumentApiService } from './document-api.service';
 describe('DocumentApiService', () => {
   let service: DocumentApiService;
 
-  const httpClientSpy = jasmine.createSpyObj('HttpClient', ['get']);
+  const httpClientSpy = { get: vi.fn() };
 
   const availability: IAvailability = {
     available: true
@@ -48,13 +48,13 @@ describe('DocumentApiService', () => {
   });
 
   it('should return the availability of the document', () => {
-    httpClientSpy.get.and.returnValue(of(availability));
+    httpClientSpy.get.mockReturnValue(of(availability));
     service.getAvailability('1')
       .subscribe((response: IAvailability) => expect(response).toEqual(availability));
   });
 
   it('should return the availability of the document from current view', () => {
-    httpClientSpy.get.and.returnValue(of(availabilityView));
+    httpClientSpy.get.mockReturnValue(of(availabilityView));
     service.getAvailability('1', 'aoste')
       .subscribe((response: IAvailability) => expect(response).toEqual(availabilityView));
   });

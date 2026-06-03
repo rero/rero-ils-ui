@@ -24,8 +24,8 @@ describe('InheritedCallNumberComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ InheritedCallNumberComponent ]
-    })
+    imports: [InheritedCallNumberComponent]
+})
     .compileComponents();
   });
 

@@ -15,17 +15,21 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { Component, Input } from '@angular/core';
-import { ResultItem } from '@rero/ng-core';
+import { Component, input, ChangeDetectionStrategy} from '@angular/core';
+import { RouterLink } from '@angular/router';
+import { Bind } from 'primeng/bind';
+import { Tag } from 'primeng/tag';
+import { TranslatePipe } from '@ngx-translate/core';
+import { Nl2brPipe } from '@rero/ng-core';
 
 @Component({
     selector: 'admin-circ-policies-brief-view',
     template: `
   <h5>
     <div class="ui:flex ui:gap-2">
-      <a [routerLink]="[detailUrl.link]">{{ record.metadata.name }}</a>
+      <a [routerLink]="[detailUrl().link]">{{ record().metadata.name }}</a>
       <p-tag class="ui:align-bottom" severity="secondary">
-        @if (record.metadata.policy_library_level) {
+        @if (record().metadata.policy_library_level) {
           {{ 'Library' | translate }}
         } @else {
           {{ 'Organisation' | translate }}
@@ -33,17 +37,18 @@ import { ResultItem } from '@rero/ng-core';
       </p-tag>
     </div>
   </h5>
-  @if (record.metadata.description) {
-    <span [innerHtml]="record.metadata.description | nl2br"></span>
+  @if (record().metadata.description) {
+    <span [innerHtml]="record().metadata.description | nl2br"></span>
   }
   `,
-    standalone: false
+    imports: [RouterLink, Bind, Tag, TranslatePipe, Nl2brPipe],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class CircPoliciesBriefViewComponent implements ResultItem {
+export class CircPoliciesBriefViewComponent {
 
-  @Input() record: any;
+  record = input<any>();
 
-  @Input() type: string;
+  type = input<string>();
 
-  @Input() detailUrl: { link: string, external: boolean };
+  detailUrl = input<{ link: string, external: boolean }>();
 }

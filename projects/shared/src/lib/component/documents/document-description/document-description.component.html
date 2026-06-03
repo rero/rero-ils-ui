@@ -16,22 +16,22 @@
 -->
 <div class="ui:*:odd:bg-surface-50 ui:*:block">
   <!-- FICTION STATEMENT -->
-  @if (record.metadata.fiction_statement) {
+  @if (record().metadata.fiction_statement) {
     <shared-description-zone>
       <ng-container label>{{ 'Fiction statement' | translate }}</ng-container>
       <ng-container content>
-        {{ record.metadata.fiction_statement | translate }}
+        {{ $any(record().metadata).fiction_statement | translate }}
       </ng-container>
     </shared-description-zone>
   }
 
   <!-- -------------- WORK / EXPRESSION -------------- -->
   <!-- SUPPLEMENT, RELATED TO -->
-  @if (record.metadata.supplement) {
-    <shared-other-edition [fieldLabel]="'Supplement' | translate" [field]="record.metadata.supplement" [viewcode]="viewcode" [isPublicView]="isPublicView" />
+  @if (record().metadata.supplement) {
+    <shared-other-edition [fieldLabel]="'Supplement' | translate" [field]="record().metadata.supplement" [viewcode]="viewcode()" [isPublicView]="isPublicView()" />
   }
-  @if (record.metadata.relatedTo) {
-    <shared-other-edition [fieldLabel]="'Related to' | translate" [field]="record.metadata.relatedTo" [viewcode]="viewcode" [isPublicView]="isPublicView" />
+  @if (record().metadata.relatedTo) {
+    <shared-other-edition [fieldLabel]="'Related to' | translate" [field]="record().metadata.relatedTo" [viewcode]="viewcode()" [isPublicView]="isPublicView()" />
   }
 
   <!-- NOTE (TYPE GENERAL) -->
@@ -51,12 +51,12 @@
   }
 
   <!--CREDITS -->
-  @if (record.metadata.credits) {
+  @if (record().metadata.credits) {
     <shared-description-zone>
       <ng-container label>{{ 'Other responsibilities' | translate }}</ng-container>
       <ng-container content>
         <ul class="ui:list-none">
-          @for (credit of record.metadata.credits; track $index) {
+          @for (credit of $any(record().metadata).credits; track $index) {
             <li>{{ credit }}</li>
           }
         </ul>
@@ -65,11 +65,11 @@
   }
 
   <!-- LANGUAGE -->
-  @if (record.metadata.language && record.metadata.language.length > 0) {
+  @if (record().metadata.language && $any(record().metadata.language).length > 0) {
     <shared-description-zone>
       <ng-container label>{{ 'Language' | translate }}</ng-container>
       <ng-container content>
-        @for (lang of record.metadata.language; track $index; let isLast = $last) {
+        @for (lang of $any(record().metadata.language); track $index; let isLast = $last) {
           {{ lang.value | translateLanguage: currentLanguage }}
           @if (!isLast) {, }
         }
@@ -78,11 +78,11 @@
   }
 
   <!-- ORIGINAL LANGUAGE -->
-  @if (record.metadata.originalLanguage) {
+  @if (record().metadata.originalLanguage) {
     <shared-description-zone>
       <ng-container label>{{ 'Original language' | translate }}</ng-container>
       <ng-container content>
-        @for (lang of record.metadata.originalLanguage; track $index; let isLast = $last) {
+        @for (lang of $any(record().metadata.originalLanguage); track $index; let isLast = $last) {
             {{ lang | translateLanguage: currentLanguage }}
             @if (!isLast) {, }
         }
@@ -91,12 +91,12 @@
   }
 
   <!-- ORIGINAL TITLE -->
-  @if (record.metadata.originalTitle) {
+  @if (record().metadata.originalTitle) {
     <shared-description-zone>
       <ng-container label>{{ 'Original title' | translate }}</ng-container>
       <ng-container content>
         <ul class="ui:list-none">
-          @for (title of record.metadata.originalTitle; track $index) {
+          @for (title of $any(record().metadata.originalTitle); track $index) {
             <li>{{ title }}</li>
           }
         </ul>
@@ -121,12 +121,12 @@
   }
 
   <!-- TABLE OF CONTENTS -->
-  @if (record.metadata.tableOfContents) {
+  @if (record().metadata.tableOfContents) {
     <shared-description-zone>
       <ng-container label>{{ 'Contents' | translate }}</ng-container>
       <ng-container content>
         <ul class="ui:list-none">
-          @for (table of record.metadata.tableOfContents; track $index) {
+          @for (table of $any(record().metadata.tableOfContents); track $index) {
             <li>{{ table }}</li>
           }
         </ul>
@@ -135,12 +135,12 @@
   }
 
   <!-- DISSERTATION -->
-  @if (record.metadata.dissertation) {
+  @if (record().metadata.dissertation) {
     <shared-description-zone>
       <ng-container label>{{ 'Thesis' | translate }}</ng-container>
       <ng-container content>
         <ul class="ui:list-none">
-          @for (dissertation of record.metadata.dissertation; track $index) {
+          @for (dissertation of $any(record().metadata.dissertation); track $index) {
             @for (label of dissertation.label; track $index) {
               <li>{{ label.value }}</li>
             }
@@ -151,11 +151,11 @@
   }
 
   <!-- INTENDED AUDIENCE -->
-  @if (record.metadata.intendedAudience) {
+  @if (record().metadata.intendedAudience) {
     <shared-description-zone>
       <ng-container label>{{ 'Intended audience' | translate }}</ng-container>
       <ng-container content>
-        @for (audience of record.metadata.intendedAudience; track $index; let isLast = $last) {
+        @for (audience of $any(record().metadata.intendedAudience); track $index; let isLast = $last) {
           {{ audience.value | translate }}
           @if (!isLast) {, }
         }
@@ -164,21 +164,21 @@
   }
 
   <!-- ILLUSTRATIVE CONTENT -->
-  @if (record.metadata.illustrativeContent) {
+  @if (record().metadata.illustrativeContent) {
     <shared-description-zone>
       <ng-container label>{{ 'Illustrations' | translate }}</ng-container>
       <ng-container content>
-        {{ record.metadata.illustrativeContent.join(', ') }}
+        {{ $any(record().metadata.illustrativeContent).join(', ') }}
       </ng-container>
     </shared-description-zone>
   }
 
   <!-- COLOR CONTENT -->
-  @if (record.metadata.colorContent) {
+  @if (record().metadata.colorContent) {
     <shared-description-zone>
       <ng-container label>{{ 'Colors' | translate }}</ng-container>
       <ng-container content>
-        @for (color of record.metadata.colorContent; track $index; let isLast = $last) {
+        @for (color of $any(record().metadata.colorContent); track $index; let isLast = $last) {
           {{ color | translate }}
           @if (!isLast) {, }
         }
@@ -187,12 +187,12 @@
   }
 
   <!-- SCALE -->
-  @if (record.metadata.scale) {
+  @if (record().metadata.scale) {
     <shared-description-zone>
       <ng-container label>{{ 'Scale' | translate }}</ng-container>
       <ng-container content>
         <ul class="ui:list-none">
-          @for (scale of record.metadata.scale; track $index) {
+          @for (scale of $any(record().metadata.scale); track $index) {
             <li>{{ scale.label }}</li>
           }
         </ul>
@@ -225,12 +225,12 @@
   }
 
   <!-- CLASSIFICATION -->
-  @if (record.metadata.classification) {
+  @if (record().metadata.classification) {
     <shared-description-zone>
       <ng-container label>{{ 'Classification' | translate }}</ng-container>
       <ng-container content>
         <ul class="ui:list-none">
-          @for (classification of record.metadata.classification; track $index) {
+          @for (classification of $any(record().metadata.classification); track $index) {
             <li>
               {{ classification.classificationPortion }}
               @if (classification.subdivision) {
@@ -247,12 +247,12 @@
   <!-- -------------- MANIFESTATION -------------- -->
 
   <!-- USAGE AND ACCESS POLICY -->
-  @if (record.metadata.usageAndAccessPolicy) {
+  @if (record().metadata.usageAndAccessPolicy) {
     <shared-description-zone>
       <ng-container label>{{ 'Use and access condition' | translate }}</ng-container>
       <ng-container content>
         <ul class="ui:list-none">
-          @for (usage of record.metadata.usageAndAccessPolicy; track $index) {
+          @for (usage of $any(record().metadata.usageAndAccessPolicy); track $index) {
             <li>{{ usage.label }}</li>
           }
         </ul>
@@ -261,14 +261,14 @@
   }
 
   <!-- OTHER EDITION, OTHER PHYSICAL FORMAT, HAS REPRODUCTION -->
-  @if (record.metadata.otherEdition) {
-    <shared-other-edition [fieldLabel]="'Other edition' | translate" [field]="record.metadata.otherEdition" [viewcode]="viewcode" [isPublicView]="isPublicView" />
+  @if (record().metadata.otherEdition) {
+    <shared-other-edition [fieldLabel]="'Other edition' | translate" [field]="record().metadata.otherEdition" [viewcode]="viewcode()" [isPublicView]="isPublicView()" />
   }
-  @if (record.metadata.otherPhysicalFormat) {
-    <shared-other-edition [fieldLabel]="'Also issued as' | translate" [field]="record.metadata.otherPhysicalFormat" [viewcode]="viewcode" [isPublicView]="isPublicView" />
+  @if (record().metadata.otherPhysicalFormat) {
+    <shared-other-edition [fieldLabel]="'Also issued as' | translate" [field]="record().metadata.otherPhysicalFormat" [viewcode]="viewcode()" [isPublicView]="isPublicView()" />
   }
-  @if (record.metadata.hasReproduction) {
-    <shared-other-edition [fieldLabel]="'Reproduced as' | translate" [field]="record.metadata.hasReproduction" [viewcode]="viewcode" [isPublicView]="isPublicView" />
+  @if (record().metadata.hasReproduction) {
+    <shared-other-edition [fieldLabel]="'Reproduced as' | translate" [field]="record().metadata.hasReproduction" [viewcode]="viewcode()" [isPublicView]="isPublicView()" />
   }
 
   <!-- TITLE (KEY TITLE, ABBREVIATED TITLE, VARIANT TITLE)-->
@@ -288,12 +288,12 @@
   }
 
   <!-- RESPONSIBILITY STATEMENT -->
-  @if (record.metadata.ui_responsibilities) {
+  @if (record().metadata.ui_responsibilities) {
     <shared-description-zone>
       <ng-container label>{{ 'Statement of responsibility' | translate }}</ng-container>
       <ng-container content>
         <ul class="ui:list-none">
-          @for (responsibility of record.metadata.ui_responsibilities; track $index) {
+          @for (responsibility of $any(record().metadata.ui_responsibilities); track $index) {
             <li>{{ responsibility }}</li>
           }
         </ul>
@@ -302,7 +302,7 @@
   }
 
   <!-- SERIES STATEMENT -->
-  @if (record.metadata.seriesStatement) {
+  @if (record().metadata.seriesStatement) {
     <shared-description-zone>
       <ng-container label>{{ 'Series statement' | translate }}</ng-container>
       <ng-container content>
@@ -316,7 +316,7 @@
   }
 
   <!-- PROVISION ACTIVITY STATEMENT (TYPES PRODUCTION, DIFFUSION/DISTRIBUTION, FABRICATION) -->
-  @if (record.metadata.provisionActivity | documentProvisionActivity | keyvalue | callbackArrayFilter: filterNotPublicationProvisionActivity;as provisionActivity) {
+  @if (record().metadata.provisionActivity | documentProvisionActivity | keyvalue | callbackArrayFilter: filterNotPublicationProvisionActivity;as provisionActivity) {
     @for (provision of provisionActivity; track $index) {
       <shared-description-zone>
         <ng-container label>{{ provision.key | translate }}</ng-container>
@@ -344,51 +344,51 @@
   }
 
   <!-- COPYRIGHT DATE -->
-  @if (record.metadata.copyrightDate) {
+  @if (record().metadata.copyrightDate) {
     <shared-description-zone>
       <ng-container label>{{ 'Copyright date' | translate }}</ng-container>
       <ng-container content>
-        {{ record.metadata.copyrightDate.join(", ") }}
+        {{ $any(record().metadata.copyrightDate).join(", ") }}
       </ng-container>
     </shared-description-zone>
   }
 
   <!-- SEQUENCE NUMBERING -->
-  @if (record.metadata.sequence_numbering) {
+  @if (record().metadata.sequence_numbering) {
     <shared-description-zone>
       <ng-container label>{{ 'Numbering' | translate }}</ng-container>
       <ng-container content>
-        {{ record.metadata.sequence_numbering }}
+        {{ record().metadata.sequence_numbering }}
       </ng-container>
     </shared-description-zone>
   }
 
   <!-- DIMENSIONS -->
-  @if (record.metadata.dimensions) {
+  @if (record().metadata.dimensions) {
     <shared-description-zone>
       <ng-container label>{{ 'Dimensions' | translate }}</ng-container>
       <ng-container content>
-        {{ record.metadata.dimensions.join(", ") }}
+        {{ $any(record().metadata.dimensions).join(", ") }}
       </ng-container>
     </shared-description-zone>
   }
 
   <!-- BOOK FORMAT -->
-  @if (record.metadata.bookFormat) {
+  @if (record().metadata.bookFormat) {
     <shared-description-zone>
       <ng-container label>{{ 'Format' | translate }}</ng-container>
       <ng-container content>
-        {{ record.metadata.bookFormat.join(", ") }}
+        {{ $any(record().metadata.bookFormat).join(", ") }}
       </ng-container>
     </shared-description-zone>
   }
 
   <!-- PRODUCTION METHOD -->
-  @if (record.metadata.productionMethod) {
+  @if (record().metadata.productionMethod) {
     <shared-description-zone>
       <ng-container label>{{ 'Production method' | translate }}</ng-container>
       <ng-container content>
-        @for (method of record.metadata.productionMethod; track $index; let isLast = $last) {
+        @for (method of $any(record().metadata.productionMethod); track $index; let isLast = $last) {
           {{ method | translate }}@if (!isLast) {, }
         }
       </ng-container>
@@ -412,12 +412,12 @@
   }
 
   <!-- SUPPLEMENTARY CONTENT -->
-  @if (record.metadata.supplementaryContent) {
+  @if (record().metadata.supplementaryContent) {
     <shared-description-zone>
       <ng-container label>{{ 'Supplementary content' | translate }}</ng-container>
       <ng-container content>
         <ul class="ui:list-none">
-          @for (sup of record.metadata.supplementaryContent; track $index) {
+          @for (sup of $any(record().metadata.supplementaryContent); track $index) {
             <li>{{ sup }}</li>
           }
         </ul>
@@ -426,12 +426,12 @@
   }
 
   <!-- ACQUISITION TERMS -->
-  @if (record.metadata.acquisitionTerms) {
+  @if (record().metadata.acquisitionTerms) {
     <shared-description-zone>
       <ng-container label>{{ 'Terms of availability' | translate }}</ng-container>
       <ng-container content>
         <ul class="ui:list-none">
-          @for (term of record.metadata.acquisitionTerms; track $index) {
+          @for (term of $any(record().metadata.acquisitionTerms); track $index) {
             <li>{{ term }}</li>
           }
         </ul>
@@ -466,11 +466,11 @@
   <!-- -------------- TYPOLOGY -------------- -->
 
   <!-- CONTENT MEDIA CARRIER -->
-  @if (record.metadata.contentMediaCarrier) {
+  @if (record().metadata.contentMediaCarrier) {
     <shared-description-zone>
       <ng-container label>{{ 'Carrier and content type' | translate }}</ng-container>
       <ng-container content>
-        @for (content of record.metadata.contentMediaCarrier; track $index; let isLastL1 = $last) {
+        @for (content of $any(record().metadata.contentMediaCarrier); track $index; let isLastL1 = $last) {
             {{ content.carrierType | translate }}
             @if (content.contentType) {
               (@for (type of content.contentType; track $index; let isLast = $last) {
@@ -484,11 +484,11 @@
   }
 
   <!-- ISSUANCE -->
-  @if (record.metadata.issuance) {
+  @if (record().metadata.issuance) {
     <shared-description-zone>
       <ng-container label>{{ 'Mode of issuance' | translate }}</ng-container>
       <ng-container content>
-        {{ record.metadata.issuance.main_type | translate }} / {{ record.metadata.issuance.subtype | translate }}
+        {{ $any(record().metadata.issuance).main_type | translate }} / {{ $any(record().metadata.issuance).subtype | translate }}
       </ng-container>
     </shared-description-zone>
   }

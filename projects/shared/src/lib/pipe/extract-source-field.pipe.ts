@@ -16,16 +16,15 @@
  */
 import { inject, Pipe, PipeTransform } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-import { AppSettingsService } from '../service/app-settings.service';
+import { AppStore } from '../store/app.store';
 
 @Pipe({
     name: 'extractSourceField',
-    pure: false,
-    standalone: false
+    pure: false
 })
 export class ExtractSourceFieldPipe implements PipeTransform {
 
-  protected appSettingsService: AppSettingsService = inject(AppSettingsService);
+  protected appStore = inject(AppStore);
   protected translateService: TranslateService = inject(TranslateService);
 
   /**
@@ -35,8 +34,13 @@ export class ExtractSourceFieldPipe implements PipeTransform {
    * @return the requested field from metadata for the best possible source.
    */
   transform(metadata: any, field: string): any {
-    const contributionsLabel: any = this.appSettingsService.agentLabelOrder;
-    const language = this.translateService.currentLang;
+    let contributionsLabel: any;
+    try {
+      contributionsLabel = this.appStore.settings()?.agentLabelOrder;
+    } catch {
+      return null;
+    }
+    const language = this.translateService.getCurrentLang();
     const agentLabelOrder = (language in contributionsLabel)
       ? contributionsLabel[language]
       : contributionsLabel[contributionsLabel.fallback];

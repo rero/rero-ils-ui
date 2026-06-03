@@ -14,7 +14,7 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-@if (record$ | async; as record) {
+@if (record(); as record) {
   <h1>{{ record.metadata.name }}</h1>
   <dl class="metadata ui:mt-4">
     <!-- DESCRIPTION -->

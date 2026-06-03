@@ -15,24 +15,25 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-@if (response) {
+@if (response(); as data) {
   <admin-preview-email
-    [emails]="suggestions.emails"
+    [emails]="suggestions().emails"
     [emailTypes]="emailTypes"
     [mandatoryEmailTypes]="mandatoryEmailTypes"
-    [preview]="response.preview"
+    [preview]="data.preview"
     [previewPosition]="'bottom'"
-    [prePopulateRecipients]="suggestions.recipients"
+    [prePopulateRecipients]="suggestions().recipients"
     (closeDialog)="closeDialog()"
     (data)="confirmIssue($event)"
   >
     <ng-container headerMessage>
       <p-message
         class="ui:my-1"
-        [text]="'You\'re about to send the claim.'|translate"
         severity="warn"
         showTransitionOptions="0ms"
-      />
+      >
+        {{ 'You\'re about to send the claim.' | translate }}
+      </p-message>
     </ng-container>
     <ng-container previewBottomMessage>
       <p translate>Below you can find the preview message that will be sent.</p>

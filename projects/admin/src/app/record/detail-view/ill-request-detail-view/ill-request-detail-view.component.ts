@@ -14,44 +14,42 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, computed, inject, input, ChangeDetectionStrategy } from '@angular/core';
+import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { getTagSeverityFromStatus } from '@app/admin/utils/utils';
-import { RecordService } from '@rero/ng-core';
-import { DetailRecord } from '@rero/ng-core/lib/record/detail/view/detail-record';
-import { Observable } from 'rxjs';
+import { RecordService, TruncateTextPipe, DateTranslatePipe, GetRecordPipe, Nl2brPipe } from '@rero/ng-core';
+import { map, of, switchMap } from 'rxjs';
+import { Bind } from 'primeng/bind';
+import { Panel } from 'primeng/panel';
+import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
+import { RouterLink } from '@angular/router';
+import { Tag } from 'primeng/tag';
+import { AsyncPipe } from '@angular/common';
 
 @Component({
     selector: 'admin-ill-request-detail-view',
     templateUrl: './ill-request-detail-view.component.html',
-    standalone: false
+    imports: [Bind, Panel, TranslateDirective, RouterLink, Tag, AsyncPipe, TruncateTextPipe, TranslatePipe, DateTranslatePipe, GetRecordPipe, Nl2brPipe],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class IllRequestDetailViewComponent implements DetailRecord, OnInit {
+export class IllRequestDetailViewComponent {
 
   private recordService: RecordService = inject(RecordService);
 
-  // COMPONENT ATTRIBUTES =======================================================
-  /** The observable resolving record data */
-  record$: Observable<any>;
-  /** The resource type */
-  type: string;
-  /** The record */
-  record: any;
+  readonly record = input<any>();
+  readonly type = input<string>('');
 
-  /** the requester of the ILL request */
-  requester = null;
+  readonly tagSeverity = computed(() => getTagSeverityFromStatus(this.record()?.metadata?.status));
+  readonly loanTagSeverity = computed(() => getTagSeverityFromStatus(this.record()?.metadata?.loan_status));
 
-  tagSeverity: string;
-  loanTagSeverity: string;
-
-  /** OnInit hook */
-  ngOnInit(): void {
-    this.record$.subscribe((record) => {
-      this.record = record;
-      this.tagSeverity = getTagSeverityFromStatus(record.metadata.status);
-      this.loanTagSeverity = getTagSeverityFromStatus(record.metadata.loan_status);
-      this.recordService.getRecord('patrons', this.record.metadata.patron.pid).subscribe(
-        (patron) => this.requester = patron.metadata
-      );
-    });
-  }
+  readonly requester = toSignal(
+    toObservable(this.record).pipe(
+      switchMap(r => {
+        const pid = r?.metadata?.patron?.pid;
+        if (!pid) return of(null);
+        return this.recordService.getRecord('patrons', pid).pipe(map((p: any) => p.metadata));
+      })
+    ),
+    { initialValue: null }
+  );
 }

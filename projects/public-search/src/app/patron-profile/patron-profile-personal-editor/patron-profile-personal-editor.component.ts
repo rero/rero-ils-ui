@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2022-2025 RERO
+ * Copyright (C) 2022-2026 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -15,22 +15,25 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { Location } from '@angular/common';
-import { Component, Input, OnDestroy, OnInit, inject } from '@angular/core';
-import { UntypedFormControl, UntypedFormGroup } from '@angular/forms';
-import { _ } from "@ngx-translate/core";
-import { FormlyFieldConfig } from '@ngx-formly/core';
+import { ChangeDetectionStrategy, Component, OnDestroy, OnInit, inject, input, signal } from '@angular/core';
+import { ReactiveFormsModule, UntypedFormControl, UntypedFormGroup } from '@angular/forms';
+import { FormlyFieldConfig, FormlyModule } from '@ngx-formly/core';
 import { FormlyJsonschema } from '@ngx-formly/core/json-schema';
-import { TranslateService } from '@ngx-translate/core';
+import { LoadingBarModule } from '@ngx-loading-bar/core';
+import { TranslatePipe, TranslateService, _ } from "@ngx-translate/core";
 import { CONFIG, RecordService, processJsonSchema, removeEmptyValues, resolve$ref } from '@rero/ng-core';
-import { AppSettingsService, User, UserService } from '@rero/shared';
+import { AppStore } from '@rero/shared';
 import { MessageService } from 'primeng/api';
+import { Button } from 'primeng/button';
+import { Toast } from 'primeng/toast';
 import { Subscription, forkJoin, of } from 'rxjs';
 import { debounceTime, map, switchMap, tap } from 'rxjs/operators';
 
 @Component({
     selector: 'public-search-patron-profile-personal-editor',
     templateUrl: './patron-profile-personal-editor.component.html',
-    standalone: false
+    imports: [ReactiveFormsModule, FormlyModule, TranslatePipe, LoadingBarModule, Button, Toast],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class PatronProfilePersonalEditorComponent implements OnInit, OnDestroy {
 
@@ -38,20 +41,19 @@ export class PatronProfilePersonalEditorComponent implements OnInit, OnDestroy {
   private recordService: RecordService = inject(RecordService);
   private formlyJsonschema: FormlyJsonschema = inject(FormlyJsonschema);
   private translateService: TranslateService = inject(TranslateService);
-  private appSettingsService: AppSettingsService = inject(AppSettingsService);
-  private userService: UserService = inject(UserService);
+  private appStore = inject(AppStore);
   private messageService: MessageService = inject(MessageService);
 
   // COMPONENT ATTRIBUTES =====================================================
   /** Request referer */
-  @Input() referer: string | null;
+  referer = input<string | null>();
 
   /** Form submission error */
   formError: string | null = null;
   /** Formly fields configuration populate by the JSONSchema */
-  fields: FormlyFieldConfig[];
+  fields: FormlyFieldConfig[] = [];
   /** form initial values */
-  model: any = {};
+  readonly model = signal<any>(null);
   /** angular form group for ngx-formly */
   form: UntypedFormGroup = new UntypedFormGroup({});
 
@@ -59,22 +61,16 @@ export class PatronProfilePersonalEditorComponent implements OnInit, OnDestroy {
   private _subscriptions = new Subscription();
   /** Additional style for a field */
   private _cssConfig = {
-    keep_history: 'col-span-12 pl-0',
-    default: 'col-span-12 md:col-span-6 pl-0'
+    keep_history: 'ui:col-span-12 ui:pl-0',
+    default: 'ui:col-span-12 ui:md:col-span-6 ui:pl-0'
   };
-  /** Description for some fields defined as key */
-  private _fieldDescription = {
-    username: _('Username must start with a letter or a number, be at least three characters long and only contain alphanumeric characters, dashes and underscores.'),
-    keep_history: _('If enabled, the loan history is visible in your patron account. Loan data is always anonymised after a certain period.')
-  };
-
   /** Init hook */
   ngOnInit(): void {
     const schemaForm = this.recordService.getSchemaForm('users').pipe(
-      tap(schema => {
+      tap((schema: any) => {
         if (schema) {
-          const disabledFields = this.appSettingsService.settings.userProfile.readOnlyFields;
-          this.fields = [
+          const disabledFields = this.appStore.settings().userProfile.readOnlyFields;
+          const fields = [
             this.formlyJsonschema.toFieldConfig(processJsonSchema(resolve$ref(schema.schema, schema.schema.properties)), {
 
               // post process JSONSchema7 to FormlyFieldConfig conversion
@@ -82,35 +78,36 @@ export class PatronProfilePersonalEditorComponent implements OnInit, OnDestroy {
                 // If 'format' is defined into the jsonSchema, use it as props to try a validation on this field.
                 // See: `email.validator.ts` file
                 if (jsonSchema.format) {
-                  field.props.type = jsonSchema.format;
+                  field.props!.type = jsonSchema.format;
                 }
                 // Add the "row" class to the main object
                 if (field.key == null) {
-                  field.props.containerCssClass = 'grid grid-cols-12 gap-4';
+                  field.type = 'formly-group';
+                  field.props!.containerCssClass = 'ui:grid ui:grid-cols-12 ui:gap-4';
                 }
                 const fkey = String(field.key);
                 // Add a class on each field
-                field.props.itemCssClass = (fkey in this._cssConfig)
+                field.props!.itemCssClass = (fkey in this._cssConfig)
                   ? this._cssConfig[fkey]
                   : this._cssConfig.default;
                 // Deactivation of the fields if we have a patron record
-                if ((this.userService.user.roles.length > 0) && (field.key !== undefined && disabledFields.includes(fkey))) {
-                  field.props.disabled = true;
+                if ((this.appStore.user()?.roles.length > 0) && (field.key !== undefined && disabledFields.includes(fkey))) {
+                  field.props!.disabled = true;
                 }
                 // Hide password field
                 if (fkey === 'password') {
-                  field.props.readonly = true;
+                  field.props!.readonly = true;
                   field.hide = true;
                 }
                 if (fkey === 'country') {
-                  field.props.options.forEach((option: any) => {
+                  field.props!.options?.forEach((option: any) => {
                     option.label = this.translateService.instant('country_' + option.value);
                   });
                 }
                 // Translate validator message
-                if ('validation' in field  && 'messages' in field.validation) {
+                if ('validation' in field  && 'messages' in field.validation!) {
                   Object.keys(jsonSchema.widget.formlyConfig.validation.messages).forEach((key: string) => {
-                    field.validation.messages[key] = this.translateService.instant(String(field.validation.messages[key]));
+                    field.validation!.messages![key] = this.translateService.instant(String(field.validation!.messages![key]));
                   });
                 }
 
@@ -136,13 +133,13 @@ export class PatronProfilePersonalEditorComponent implements OnInit, OnDestroy {
                 }
                 // remove Message suffix to the message validation key
                 // (required for backend  translations)
-                if (field.validation) {
-                  Object.keys(field.validation.messages).map(msg => {
+                if (field.validation && 'messages' in field.validation) {
+                  Object.keys(field.validation.messages!).map(msg => {
                     if (msg.endsWith('Message')) {
-                      const val = field.validation.messages[msg];
-                      delete (field.validation.messages[msg]);
+                      const val = field.validation!.messages![msg];
+                      delete (field.validation!.messages![msg]);
                       const newMsg = msg.replace(/Message$/, '');
-                      field.validation.messages[newMsg] = val;
+                      field.validation!.messages![newMsg] = val;
                     }
                   });
                 }
@@ -150,15 +147,25 @@ export class PatronProfilePersonalEditorComponent implements OnInit, OnDestroy {
               }
             })
           ];
+
+          // mark the root field
+          if (!fields[0]?.wrappers) {
+            fields[0].wrappers = ['card'];
+          }
+          else if (!fields[0].wrappers.includes('card') && !fields[0].wrappers.includes('hide')) {
+            fields[0].wrappers.unshift('card');
+          }
+
+          this.fields = fields;
         }
       })
     );
 
-    const userQuery = this.recordService.getRecord('users', this.userService.user.id.toString());
+    const userQuery = this.recordService.getRecord('users', this.appStore.user()?.id.toString());
 
     this._subscriptions.add(
-      forkJoin([schemaForm, userQuery]).subscribe(([schema, user]: [any, any]) => {
-        this.model = user.metadata;
+      forkJoin([schemaForm, userQuery]).subscribe(([_schema, user]: [any, any]) => {
+        this.model.set(user.metadata);
       })
     );
   }
@@ -181,11 +188,11 @@ export class PatronProfilePersonalEditorComponent implements OnInit, OnDestroy {
       });
       return;
     }
-    const data = removeEmptyValues(this.model);
+    const data = removeEmptyValues(this.model());
     // Update user record and reload logged user
     this.recordService
-      .update('users', this.userService.user.id.toString(), data)
-      .pipe(switchMap(() => this.userService.load()))
+      .update('users', this.appStore.user()?.id.toString(), data)
+      .pipe(switchMap(() => this.appStore.load()))
       .subscribe({
         next: () => {
           this.messageService.add({
@@ -231,11 +238,11 @@ export class PatronProfilePersonalEditorComponent implements OnInit, OnDestroy {
         const { value } = control;
         return (value == null || value.length === 0)
           ? of(true)
-          : this.recordService.getRecords('users', `${fieldName}:${value}`).pipe(
+          : this.recordService.getRecords('users', { query: `${fieldName}:${value}` }).pipe(
               debounceTime(1000),
               map((res: any) => {
                 return (res.hits.hits.length === 0) ||
-                  (res.hits.hits.length === 1 && res.hits.hits[0].id === this.userService.user.id);
+                  (res.hits.hits.length === 1 && res.hits.hits[0].id === this.appStore.user()?.id);
               })
             );
       },

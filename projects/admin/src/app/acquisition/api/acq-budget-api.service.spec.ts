@@ -19,7 +19,7 @@ import { provideHttpClient, withInterceptorsFromDi } from "@angular/common/http"
 import { provideHttpClientTesting } from "@angular/common/http/testing";
 import { TestBed } from "@angular/core/testing";
 import { RecordService } from "@rero/ng-core";
-import { apiResponse } from "projects/shared/src/tests/api";
+import { apiResponse } from "@rero/shared";
 import { of } from "rxjs";
 import { accountDefaultData, IAcqAccount } from "../classes/account";
 import { AcqBudget } from "../classes/budget";
@@ -95,8 +95,8 @@ describe('AcqBudgetApiService', () => {
       }
     };
 
-  const recordServiceSpy = jasmine.createSpyObj('RecordService', ['getRecords', 'totalHits']);
-  recordServiceSpy.totalHits.and.returnValue(2);
+  const recordServiceSpy = { getRecords: vi.fn(), totalHits: vi.fn() };
+  recordServiceSpy.totalHits.mockReturnValue(2);
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -118,7 +118,7 @@ describe('AcqBudgetApiService', () => {
 
   it('should return a budget list', () => {
     apiResponse.hits.hits = [{metadata: budgetRecord}]
-    recordServiceSpy.getRecords.and.returnValue(of(apiResponse));
+    recordServiceSpy.getRecords.mockReturnValue(of(apiResponse));
     service.getBudgets().subscribe((result: any[]) => {
       expect(result[0]).toBeInstanceOf(AcqBudget);
       expect(result[0].name).toEqual('Budget 1');
@@ -130,7 +130,7 @@ describe('AcqBudgetApiService', () => {
       {metadata: {...accountDefaultData, ...accountRecord}},
       {metadata: {...accountDefaultData, ...accountRecord2}}
     ];
-    recordServiceSpy.getRecords.and.returnValue(of(apiResponse));
+    recordServiceSpy.getRecords.mockReturnValue(of(apiResponse));
     service.getBudgetTotalAmount('1').subscribe((result: number) => expect(result).toEqual(62600));
   });
 });

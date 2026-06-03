@@ -15,8 +15,8 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 
-@if (data && data.length > 0) {
-  <p-table stripedRows [value]="data" [tableStyle]="{ 'min-width': '50rem' }" size="small">
+@if (data() && data().length > 0) {
+  <p-table stripedRows [value]="data()" [tableStyle]="{ 'min-width': '50rem' }" size="small">
     <ng-template #body let-line>
       <tr>
         @for (value of line; track $index) {

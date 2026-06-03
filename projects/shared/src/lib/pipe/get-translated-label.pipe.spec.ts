@@ -50,25 +50,25 @@ describe('GetTranslatedLabelPipe', () => {
 
 
   it('found french label', () => {
-    translateService.currentLang = 'fr';
+    vi.spyOn(translateService, 'currentLang', 'get').mockReturnValue('fr');
     expect(
       getTranslatedLabelPipe.transform(entries)
     ).toEqual('mon étiquette');
   });
   it('found english label', () => {
-    translateService.currentLang = 'fr';
+    vi.spyOn(translateService, 'currentLang', 'get').mockReturnValue('fr');
     expect(
       getTranslatedLabelPipe.transform(entries, 'en')
     ).toEqual('my label');
   });
   it('found german label', () => {
-    translateService.currentLang = 'de';
+    vi.spyOn(translateService, 'currentLang', 'get').mockReturnValue('de');
     expect(
       getTranslatedLabelPipe.transform(entries)
     ).toEqual('mon étiquette');
   });
   it('found unknown label', () => {
-    translateService.currentLang = 'fr';
+    vi.spyOn(translateService, 'currentLang', 'get').mockReturnValue('fr');
     expect(
       getTranslatedLabelPipe.transform(undefined)
     ).toEqual(null);

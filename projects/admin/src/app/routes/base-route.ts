@@ -24,8 +24,8 @@ import { RouteToolService } from './route-tool.service';
 
 export class BaseRoute {
 
-  protected routeToolService: RouteToolService = inject(RouteToolService);
-  protected location: Location = inject(Location);
+  protected routeToolService = inject(RouteToolService);
+  protected location = inject(Location);
 
   /** Disabled action */
   readonly DISABLED = (): Observable<ActionStatus> => of({
@@ -38,7 +38,7 @@ export class BaseRoute {
    * @param url - any
    * @param type - string
    */
-  routeMatcher(url: any, type: string) {
+  routeMatcher(url: UrlSegment[], type: string) {
     if (url[0].path === 'records' && url[1].path === type) {
       return this.matchedUrl(url);
     }
@@ -140,8 +140,7 @@ export class BaseRoute {
    * @returns Observable boolean
    */
   protected canRead(record: any) {
-    const organisationPid = this.routeToolService.userService.user
-      .currentOrganisation;
+    const organisationPid = this.routeToolService.appStore.currentOrganisationPid();
     const recordOrganisationPid = ('organisation' in record.metadata)
       ? record.metadata.organisation.pid
       : false;
@@ -159,8 +158,8 @@ export class BaseRoute {
       // TODO: Add other paths
     };
     const availableLanguages = Object.keys(searchPaths);
-    return (this.routeToolService.translateService.currentLang in availableLanguages)
-      ? searchPaths[this.routeToolService.translateService.currentLang]
+    return (this.routeToolService.translateService.getCurrentLang() in availableLanguages)
+      ? searchPaths[this.routeToolService.translateService.getCurrentLang()]
       : defaultPath;
     }
  }

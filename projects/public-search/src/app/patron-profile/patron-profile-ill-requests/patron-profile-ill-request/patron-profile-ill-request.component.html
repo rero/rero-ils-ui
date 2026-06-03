@@ -20,15 +20,15 @@
     <shared-open-close-button (status)="isCollapsed = $event" />
     <!-- ILL DOCUMENT & STATUS -->
     <div class="ui:w-full">
-      <div>{{ record.metadata.document.title }}</div>
-      <div class="ui:text-sm">{{ record.metadata.document.authors }}</div>
+      <div>{{ $any(record()?.metadata.document).title }}</div>
+      <div class="ui:text-sm">{{ $any(record()?.metadata.document).authors }}</div>
 
     </div>
   </div>
   <div class="ui:md:col-span-2 ui:col-span-12 ui:text-end">
-    @if (record.metadata.loan_status) {
-      <p-tag [severity]="record.metadata.loan_status | loanStatusBadge">
-        {{ record.metadata.loan_status | translate }}
+    @if (record()?.metadata.loan_status) {
+      <p-tag [severity]="$any($any(record()?.metadata.loan_status) | loanStatusBadge)">
+        {{ $any(record()?.metadata.loan_status) | translate }}
       </p-tag>
     }
   </div>
@@ -38,67 +38,67 @@
   <div class="ui:col-span-12 ui:pl-12 ui:mb-3">
     <dl class="metadata ui:pt-4">
       <!-- PUBLISHER -->
-      @if (record.metadata.document.publisher) {
+      @if ($any(record()?.metadata.document).publisher) {
         <dt translate>Publisher</dt>
-        <dd>{{ record.metadata.document.publisher }}</dd>
+        <dd>{{ $any(record()?.metadata.document).publisher }}</dd>
       }
       <!-- YEAR -->
-      @if (record.metadata.document.year) {
+      @if ($any(record()?.metadata.document).year) {
         <dt translate>Year</dt>
-        <dd>{{ record.metadata.document.year }}</dd>
+        <dd>{{ $any(record()?.metadata.document).year }}</dd>
       }
       <!-- IDENTIFIER -->
-      @if (record.metadata.document.identifier) {
+      @if ($any(record()?.metadata.document).identifier) {
         <dt translate>Identifier</dt>
-        <dd>{{ record.metadata.document.identifier }}</dd>
+        <dd>{{ $any(record()?.metadata.document).identifier }}</dd>
       }
       <!-- SOURCE -->
-      @if (record.metadata.document.source) {
+      @if ($any(record()?.metadata.document).source) {
         <dt translate>Source</dt>
         <dd>
-          @if (record.metadata.document.source.volume || record.metadata.document.source.number) {
-            {{ record.metadata.document.source | journalVolume }}
+          @if ($any(record()?.metadata.document).source.volume || $any(record()?.metadata.document).source.number) {
+            {{ $any(record()?.metadata.document).source | journalVolume }}
           }
         </dd>
       }
       <!-- PICKUP LOCATION -->
       <dt translate>Pickup location</dt>
-      <dd>{{ record.metadata.pickup_location.name }}</dd>
+      <dd>{{ $any(record()?.metadata.pickup_location).name }}</dd>
       <!-- SCOPE -->
       <dt translate>Scope</dt>
       <dd>
-        @if (record.metadata.copy) {
+        @if (record()?.metadata.copy) {
           {{ 'Copy' | translate }}
         } @else {
           {{ 'Loan' | translate }}
         }
       </dd>
       <!-- PAGES -->
-      @if (record.metadata.copy && record.metadata.pages) {
+      @if (record()?.metadata.copy && record()?.metadata.pages) {
         <dt translate>Pages</dt>
-        <dd >{{ record.metadata.pages }}</dd>
+        <dd >{{ record()?.metadata.pages }}</dd>
       }
       <!-- FOUND IN -->
-      @if (record.metadata.found_in) {
+      @if (record()?.metadata.found_in) {
         <dt translate>Found in</dt>
         <dd class="ui:flex ui:gap-2 ui:items-start">
-          @if(record.metadata?.found_in.url) {
+          @if($any(record()?.metadata?.found_in).url) {
             <a
-              [title]="record.metadata.found_in.url"
-              href="{{ record.metadata.found_in.url }}"
+              [title]="$any(record()?.metadata.found_in).url"
+              href="{{ $any(record()?.metadata.found_in).url }}"
             >
-              {{ record.metadata.found_in.url | truncateText: 80 : '…' : 'char' }}
+              {{ $any(record()?.metadata.found_in).url | truncateText: 80 : '…' : 'char' }}
             </a>
           }
-          <p-tag severity="secondary">{{ record.metadata.found_in.source }}</p-tag>
+          <p-tag severity="secondary">{{ $any(record()?.metadata.found_in).source }}</p-tag>
         </dd>
       }
       <!-- NOTES -->
-      @if (record.metadata.notes && record.metadata.notes.length > 0) {
+      @if (record()?.metadata.notes && $any(record()?.metadata.notes).length > 0) {
         <dt translate>Note</dt>
         <dd>
           <ul class="ui:list-none">
-            @for (note of record.metadata.notes | notesFilter:['public_note']; track $index) {
+            @for (note of $any(record()?.metadata.notes) | notesFilter:['public_note']; track $index) {
               <li [innerHTML]="note.content | nl2br"></li>
             }
           </ul>

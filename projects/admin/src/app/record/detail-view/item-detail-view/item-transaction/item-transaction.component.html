@@ -15,8 +15,9 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 
-@if (transaction) {
-  @if (transaction.metadata.patron_pid | getRecord:'patrons' | async; as patron) {
+<p-confirmDialog />
+@if (transaction()) {
+  @if (transaction().metadata.patron_pid | getRecord:'patrons' | async; as patron) {
     <div id="{{ $any(patron).metadata.patron.barcode[0] }}" class="ui:grid ui:grid-cols-12 ui:gap-4 ui:py-2 ui:px-4 ui:items-center ui:odd:bg-surface-50">
       <div class="ui:col-span-4">
         <a name="loans" [routerLink]="['/circulation', 'patron', $any(patron).metadata.patron.barcode[0]]">
@@ -24,35 +25,36 @@
         </a>
       </div>
       <!-- LOANS (BORROW) -->
-      @if (type === 'loan_borrow') {
+      @if (type() === 'loan_borrow') {
         <div class="ui:col-span-4">
-          {{ transaction.metadata.extension_count ?  transaction.metadata.extension_count : '-' }}
+          {{ transaction().metadata.extension_count ?  transaction().metadata.extension_count : '-' }}
         </div>
         <div class="ui:col-span-3">
-          {{ transaction.metadata.end_date | dateTranslate:'longDate' }}
+          {{ transaction().metadata.end_date | dateTranslate:'longDate' }}
         </div>
       }
       <!-- REQUESTS -->
-      @if (type === 'loan_request' && pickupLocations && pickupLocations.length > 0) {
+      @if (type() === 'loan_request' && pickupLocations().length > 0) {
         @if (canUpdateRequestPickupLocation()) {
           <p-select
           class="ui:col-span-4"
           optionLabel="label"
-          [options]="pickupLocations"
-          [(ngModel)]="currentPickupLocation"
+          [options]="pickupLocations()"
+          [ngModel]="currentPickupLocation()"
+          (ngModelChange)="currentPickupLocation.set($event)"
           (onChange)="emitUpdatePickupLocation($event)"/>
 
         } @else {
           <div class="ui:col-span-4" [title]="'The pickup location cannot be modified' | translate">
-            {{ transaction.metadata.pickup_location_pid | getRecord:'locations':'field':'pickup_name' | async }}
+            {{ transaction().metadata.pickup_location_pid | getRecord:'locations':'field':'pickup_name' | async }}
           </div>
         }
         <div class="ui:col-span-3">
-          {{ transaction.created | dateTranslate:'medium' }}
+          {{ transaction().created | dateTranslate:'medium' }}
         </div>
         <div class="ui:col-span-1 ui:text-right">
             <p-button outlined severity="danger" size="small"
-              (onClick)="showCancelRequestDialog($event)"
+              (onClick)="showCancelRequestDialog()"
               class="ui:pointer-events-auto"
               icon="fa fa-trash-o"
               [disabled]="!canCancelRequest()"

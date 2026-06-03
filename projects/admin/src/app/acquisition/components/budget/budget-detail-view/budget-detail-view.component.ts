@@ -15,49 +15,44 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, inject, OnDestroy, OnInit } from '@angular/core';
-import { OrganisationService } from '@app/admin/service/organisation.service';
-import { DetailRecord } from '@rero/ng-core/lib/record/detail/view/detail-record';
-import { Observable, Subscription } from 'rxjs';
-import { switchMap } from 'rxjs/operators';
+import { Component, inject, input, ChangeDetectionStrategy} from '@angular/core';
+import { toObservable, toSignal } from '@angular/core/rxjs-interop';
+import { filter, switchMap } from 'rxjs';
+import { AppStore } from '@rero/shared';
 import { AcqBudgetApiService } from '../../../api/acq-budget-api.service';
+import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
+import { CurrencyPipe } from '@angular/common';
+import { MessageModule } from 'primeng/message';
 
 @Component({
     selector: 'admin-budget-detail-view',
     templateUrl: './budget-detail-view.component.html',
-    standalone: false
+    imports: [TranslateDirective, CurrencyPipe, TranslatePipe, MessageModule],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class BudgetDetailViewComponent implements DetailRecord, OnInit, OnDestroy {
+export class BudgetDetailViewComponent {
 
   private budgetApiService: AcqBudgetApiService = inject(AcqBudgetApiService);
-  private organisationService: OrganisationService = inject(OrganisationService);
+  private appStore = inject(AppStore);
 
   // COMPONENT ATTRIBUTES =====================================================
-  /** Record observable */
-  record$: Observable<any>;
+  /** Record data */
+  readonly record = input<any>();
   /** Record type */
-  type: string;
-  /** Budget total allocated amount */
-  totalAmount = 0;
+  readonly type = input<string>('');
 
-  /** all component subscription */
-  private _subscriptions = new Subscription();
+  /** Budget total allocated amount */
+  readonly totalAmount = toSignal(
+    toObservable(this.record).pipe(
+      filter((record: any) => !!record?.metadata?.pid),
+      switchMap((record: any) => this.budgetApiService.getBudgetTotalAmount(record.metadata.pid))
+    ),
+    { initialValue: 0 }
+  );
 
   // GETTER & SETTER ==========================================================
   /** Get the currency code used for the current loaded organisation */
-  get currencyCode(): string {
-    return this.organisationService.organisation.default_currency;
-  }
-
-  /** OnInit hook */
-  ngOnInit() {
-    this._subscriptions.add(
-      this.record$
-        .pipe(switchMap((record: any) => this.budgetApiService.getBudgetTotalAmount(record.metadata.pid)))
-        .subscribe(total => this.totalAmount = total));
-  }
-
-  ngOnDestroy(): void {
-      this._subscriptions.unsubscribe();
+  get currencyCode(): string | undefined {
+    return this.appStore.organisation()?.default_currency;
   }
 }

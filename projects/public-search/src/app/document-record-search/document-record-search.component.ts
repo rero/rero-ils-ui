@@ -16,69 +16,28 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { Component, inject, OnInit } from '@angular/core';
-import { UrlSerializer } from '@angular/router';
-import { RecordSearchPageComponent, RecordService, SearchResult } from '@rero/ng-core';
+import { Component, inject, OnInit, ChangeDetectionStrategy} from '@angular/core';
+import { ActivatedRoute, Router, UrlSerializer } from '@angular/router';
 import { AppConfigService } from '../app-config.service';
+import { RecordSearchPageComponent } from '@rero/ng-core';
 
 @Component({
     selector: 'public-search-document-record-search',
     templateUrl: './document-record-search.component.html',
-    standalone: false
+    imports: [RecordSearchPageComponent],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class DocumentRecordSearchComponent extends RecordSearchPageComponent implements OnInit {
+export class DocumentRecordSearchComponent implements OnInit {
 
-  private recordService: RecordService = inject(RecordService);
   private appConfigService: AppConfigService = inject(AppConfigService);
   private urlSerializer: UrlSerializer = inject(UrlSerializer);
+  private route: ActivatedRoute = inject(ActivatedRoute);
+  private router: Router = inject(Router);
 
   uriGlobalView: string;
 
-  /** View code */
-  private _viewCode: string;
-
-  /** Result of Elasticsearch */
-  private _searchResult: SearchResult;
-
-  /** Resource type */
-  private _documentType = 'documents';
-
-  /**
-   * Show link for no result
-   * @return boolean
-   */
-  get showLink(): boolean {
-    return this.total === 0
-      && (this.appConfigService.globalViewName !== this._viewCode);
-  }
-
-  /**
-   * Total number of records
-   * @return null or number
-   */
-  get total(): null | number {
-    if (this._searchResult) {
-      return this.recordService.totalHits(
-        this._searchResult.records.hits.total
-      );
-    }
-    return null;
-  }
-
-  /** Init */
   ngOnInit() {
-    super.ngOnInit();
     this.uriGlobalView = this._convertUrlForGlobalView();
-  }
-
-  /**
-   * Result of search with type and records (Elasticsearch)
-   * @param event - SearchResult
-   */
-  recordsSearched(event: SearchResult) {
-    if (event && event.type === this._documentType) {
-      this._searchResult = event;
-    }
   }
 
   /** Convert url for global view redirect */
@@ -86,7 +45,6 @@ export class DocumentRecordSearchComponent extends RecordSearchPageComponent imp
     const { queryParams } = this.route.snapshot;
     const segments = this.router.parseUrl(this.router.url)
       .root.children.primary.segments.map(it => it.path);
-    this._viewCode = segments[0];
     segments[0] = this.appConfigService.globalViewName;
     const baseUri = '/' + segments.join('/');
     const tree = this.router.createUrlTree([baseUri], { queryParams });

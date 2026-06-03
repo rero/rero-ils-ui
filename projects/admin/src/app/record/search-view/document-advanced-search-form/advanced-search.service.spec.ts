@@ -34,8 +34,7 @@ describe('AdvancedSearchService', () => {
           search_type: [
             { label: "contains", value: AdvancedSearchService.SEARCH_TYPE_CONTAINS },
             { label: "exact", value: AdvancedSearchService.SEARCH_TYPE_CONTAINS_PHRASE },
-          ]},
-        },
+          ]} },
       {
         field: "provisionActivity.place.country",
         label: "Country",
@@ -44,8 +43,7 @@ describe('AdvancedSearchService', () => {
           search_type: [
             { label: "exact", value: AdvancedSearchService.SEARCH_TYPE_CONTAINS_PHRASE },
           ]
-        },
-      }
+        } }
     ],
     fieldsData: {
       canton: [
@@ -62,8 +60,8 @@ describe('AdvancedSearchService', () => {
     }
   };
 
-  const documentApiServiceSpy = jasmine.createSpyObj('DocumentApiService', ['getAdvancedSearchConfig']);
-  documentApiServiceSpy.getAdvancedSearchConfig.and.returnValue(of(cloneDeep(apiResponse)));
+  const documentApiServiceSpy = { getAdvancedSearchConfig: vi.fn() };
+  documentApiServiceSpy.getAdvancedSearchConfig.mockReturnValue(of(cloneDeep(apiResponse)));
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -89,15 +87,13 @@ describe('AdvancedSearchService', () => {
       { label: "Title", value: "title" },
       { label: "Country", value: "country" },
     ];
-    service.load().subscribe(() => {
-      expect(service.getFieldsConfig()).toEqual(response);
-    });
+    service.load().subscribe();
+    expect(service.getFieldsConfig()).toEqual(response);
   });
 
   it('should return the fields data', () => {
-    service.load().subscribe(() => {
-      expect(service.getFieldsData()).toEqual(apiResponse.fieldsData);
-    });
+    service.load().subscribe();
+    expect(service.getFieldsData()).toEqual(apiResponse.fieldsData);
   });
 
   it('should return the fields search type data', () => {
@@ -110,9 +106,8 @@ describe('AdvancedSearchService', () => {
         { label: "exact", value: AdvancedSearchService.SEARCH_TYPE_CONTAINS_PHRASE },
       ]
     };
-    service.load().subscribe(() => {
-      expect(service.getFieldsSearchType()).toEqual(response);
-    });
+    service.load().subscribe();
+    expect(service.getFieldsSearchType()).toEqual(response);
   });
 
   it('should return the operators', () => {
@@ -121,108 +116,98 @@ describe('AdvancedSearchService', () => {
       { label: 'or', value: AdvancedSearchService.OPERATOR_OR },
       { label: 'and not', value: AdvancedSearchService.OPERATOR_NOT }
     ];
-    service.load().subscribe(() => {
-      expect(service.getOperators()).toEqual(response);
-    });
+    service.load().subscribe();
+    expect(service.getOperators()).toEqual(response);
   });
 
   it('should return the mapping', () => {
-    service.load().subscribe(() => {
-      expect(service.fieldMapping('title')).toEqual('title.*');
-    });
+    service.load().subscribe();
+    expect(service.fieldMapping('title')).toEqual('title.*');
   });
 
   it('Should return an error if the field does not exist', () => {
-    service.load().subscribe(() => {
-      expect(function() { service.fieldMapping('foo') })
-      .toThrowError(SyntaxError, 'Field mapping does not exist (foo)');
-    });
+    service.load().subscribe();
+    expect(() => service.fieldMapping('foo')).toThrowError('Field mapping does not exist (foo)');
   });
 
   it('should return a search string', () => {
-    service.load().subscribe((loaded: boolean) => {
-      // CONTAINS
-      let searchString = 'title.\\*:(flamand)';
-      let model = {
+    service.load().subscribe();
+    // CONTAINS
+    let searchString = 'title.\\*:(flamand)';
+    let model = {
+      field: 'title',
+      term: 'flamand',
+      searchType: AdvancedSearchService.SEARCH_TYPE_CONTAINS,
+      search: [{
+        operator: AdvancedSearchService.OPERATOR_AND,
         field: 'title',
-        term: 'flamand',
-        searchType: AdvancedSearchService.SEARCH_TYPE_CONTAINS,
-        search: [{
+        term: '',
+        searchType: AdvancedSearchService.SEARCH_TYPE_CONTAINS
+      }] };
+    expect(service.generateQueryByModel(model)).toEqual(searchString);
+
+    // CONTAINS: Test protect ( and )
+    searchString = 'title.\\*:(\\(flamand\\))';
+    model = {
+      field: 'title',
+      term: '(flamand)',
+      searchType: AdvancedSearchService.SEARCH_TYPE_CONTAINS,
+      search: [{
+        operator: AdvancedSearchService.OPERATOR_AND,
+        field: 'title',
+        term: '',
+        searchType: AdvancedSearchService.SEARCH_TYPE_CONTAINS
+      }] };
+    expect(service.generateQueryByModel(model)).toEqual(searchString);
+
+    // PHRASE
+    searchString = 'title.\\*:"flamand"';
+    model = {
+      field: 'title',
+      term: 'flamand',
+      searchType: AdvancedSearchService.SEARCH_TYPE_CONTAINS_PHRASE,
+      search: [{
+        operator: AdvancedSearchService.OPERATOR_AND,
+        field: 'title',
+        term: '',
+        searchType: AdvancedSearchService.SEARCH_TYPE_CONTAINS
+      }] };
+    expect(service.generateQueryByModel(model)).toEqual(searchString);
+
+    // PHRASE: Test protect "
+    searchString = 'title.\\*:"\\"flamand\\""';
+    model = {
+      field: 'title',
+      term: '"flamand"',
+      searchType: AdvancedSearchService.SEARCH_TYPE_CONTAINS_PHRASE,
+      search: [{
+        operator: AdvancedSearchService.OPERATOR_AND,
+        field: 'title',
+        term: '',
+        searchType: AdvancedSearchService.SEARCH_TYPE_CONTAINS
+      }] };
+    expect(service.generateQueryByModel(model)).toEqual(searchString);
+
+    // MULTIPLE SEARCH
+    searchString = 'title.\\*:(flamand) AND title.\\*:"primitif" OR provisionActivity.place.country:"abc"';
+    model = {
+      field: 'title',
+      term: 'flamand',
+      searchType: AdvancedSearchService.SEARCH_TYPE_CONTAINS,
+      search: [
+        {
           operator: AdvancedSearchService.OPERATOR_AND,
           field: 'title',
-          term: '',
-          searchType: AdvancedSearchService.SEARCH_TYPE_CONTAINS
-        }],
-      }
-      expect(service.generateQueryByModel(model)).toEqual(searchString);
-
-      // CONTAINS: Test protect ( and )
-      searchString = 'title.\\*:(\\(flamand\\))';
-      model = {
-        field: 'title',
-        term: '(flamand)',
-        searchType: AdvancedSearchService.SEARCH_TYPE_CONTAINS,
-        search: [{
-          operator: AdvancedSearchService.OPERATOR_AND,
-          field: 'title',
-          term: '',
-          searchType: AdvancedSearchService.SEARCH_TYPE_CONTAINS
-        }],
-      }
-      expect(service.generateQueryByModel(model)).toEqual(searchString);
-
-      // PHRASE
-      searchString = 'title.\\*:"flamand"';
-      model = {
-        field: 'title',
-        term: 'flamand',
-        searchType: AdvancedSearchService.SEARCH_TYPE_CONTAINS_PHRASE,
-        search: [{
-          operator: AdvancedSearchService.OPERATOR_AND,
-          field: 'title',
-          term: '',
-          searchType: AdvancedSearchService.SEARCH_TYPE_CONTAINS
-        }],
-      }
-      expect(service.generateQueryByModel(model)).toEqual(searchString);
-
-      // PHRASE: Test protect "
-      searchString = 'title.\\*:"\\"flamand\\""';
-      model = {
-        field: 'title',
-        term: '"flamand"',
-        searchType: AdvancedSearchService.SEARCH_TYPE_CONTAINS_PHRASE,
-        search: [{
-          operator: AdvancedSearchService.OPERATOR_AND,
-          field: 'title',
-          term: '',
-          searchType: AdvancedSearchService.SEARCH_TYPE_CONTAINS
-        }],
-      }
-      expect(service.generateQueryByModel(model)).toEqual(searchString);
-
-      // MULTIPLE SEARCH
-      searchString = 'title.\\*:(flamand) AND title.\\*:"primitif" OR provisionActivity.place.country:"abc"';
-      model = {
-        field: 'title',
-        term: 'flamand',
-        searchType: AdvancedSearchService.SEARCH_TYPE_CONTAINS,
-        search: [
-          {
-            operator: AdvancedSearchService.OPERATOR_AND,
-            field: 'title',
-            term: 'primitif',
-            searchType: AdvancedSearchService.SEARCH_TYPE_CONTAINS_PHRASE
-          },
-          {
-            operator: AdvancedSearchService.OPERATOR_OR,
-            field: 'country',
-            term: 'abc',
-            searchType: AdvancedSearchService.SEARCH_TYPE_CONTAINS_PHRASE
-          }
-        ],
-      }
-      expect(service.generateQueryByModel(model)).toEqual(searchString);
-    })
+          term: 'primitif',
+          searchType: AdvancedSearchService.SEARCH_TYPE_CONTAINS_PHRASE
+        },
+        {
+          operator: AdvancedSearchService.OPERATOR_OR,
+          field: 'country',
+          term: 'abc',
+          searchType: AdvancedSearchService.SEARCH_TYPE_CONTAINS_PHRASE
+        }
+      ] };
+    expect(service.generateQueryByModel(model)).toEqual(searchString);
   });
 });

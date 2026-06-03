@@ -14,12 +14,12 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-@if (settings) {
-    <p-table stripedRows [value]="settings" size="small">
+@if (settings().length) {
+    <p-table stripedRows [value]="settings()" size="small">
       <ng-template #header>
         <tr>
             <th>&nbsp;</th>
-            @for (patronType of patronTypes; track $index) {
+            @for (patronType of patronTypes(); track $index) {
               <th class="ui:text-center">
                 {{ patronType.metadata.name }}
               </th>
@@ -36,7 +36,7 @@
                   [checked]="patronType.checked"
                   [disabled]="patronType.disabled"
                   [indeterminate]="patronType.disabled"
-                  (click)="onClick($event.target.checked, itemType.pid, patronType.pid)"
+                  (change)="onClick($any($event.target).checked, itemType.pid, patronType.pid)"
                 >
               </td>
             }

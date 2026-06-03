@@ -17,7 +17,7 @@
 
 import { TestBed } from "@angular/core/testing";
 import { PatronTypeApiService } from "./patron-type-api.service";
-import { RecordModule, RecordService } from "@rero/ng-core";
+import { RecordService } from "@rero/ng-core";
 import { TranslateModule } from "@ngx-translate/core";
 import { of } from "rxjs";
 
@@ -44,14 +44,13 @@ describe('PatronTypeApiService', () => {
     links: {}
   };
 
-  const recordServiceSpy = jasmine.createSpyObj('RecordService', ['getRecords']);
-  recordServiceSpy.getRecords.and.returnValue(of(response));
+  const recordServiceSpy = { getRecords: vi.fn() };
+  recordServiceSpy.getRecords.mockReturnValue(of(response));
 
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [
-        TranslateModule.forRoot(),
-        RecordModule
+        TranslateModule.forRoot()
       ],
       providers: [
         PatronTypeApiService,

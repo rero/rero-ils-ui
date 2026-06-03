@@ -21,14 +21,14 @@
       <div class="ui:hidden ui:w-full ui:md:grid ui:grid-cols-12 ui:gap-4 ui:text-lg ui:font-bold ui:items-center">
           <div class="ui:col-span-12 ui:flex ui:justify-end">
             {{ 'Total amount' | translate }}:
-            {{ feesTotal | currency:currency:'symbol' }}
+            {{ feesTotal() | currency:currency:'symbol' }}
           </div>
         </div>
     </ng-template>
 
-    @defer (when loaded) {
-      @if (records.length > 0) {
-        @for (record of records; track $index) {
+    @defer (when loaded()) {
+      @if (records().length > 0) {
+        @for (record of records(); track $index) {
           <div class="ui:odd:bg-surface-50 ui:my-1">
             <public-search-patron-profile-fee [record]="record" />
           </div>

@@ -18,14 +18,13 @@
 import { HttpClient } from "@angular/common/http";
 import { TestBed } from "@angular/core/testing";
 import { TranslateModule } from "@ngx-translate/core";
-import { RecordService } from "@rero/ng-core";
+import { ApiService, RecordService } from "@rero/ng-core";
 import { of } from "rxjs";
 import { PatronService } from "../service/patron.service";
 import { PatronNamePipe } from "./patron-name.pipe";
 
 describe('PatronNamePipe', () => {
   let pipe: PatronNamePipe;
-  let recordService: RecordService;
 
   const patron = {
     metadata: {
@@ -35,10 +34,10 @@ describe('PatronNamePipe', () => {
     }
   };
 
-  const recordServiceSpy = jasmine.createSpyObj('RecordService', ['getRecord']);
-  recordServiceSpy.getRecord.and.returnValue(of(patron));
+  const recordServiceSpy = { getRecord: vi.fn() };
+  recordServiceSpy.getRecord.mockReturnValue(of(patron));
 
-  const httpClientSpy = jasmine.createSpyObj('HttpClient', ['']);
+  const httpClientSpy = { } as any;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -49,12 +48,12 @@ describe('PatronNamePipe', () => {
         PatronNamePipe,
         PatronService,
         { provide: RecordService, useValue: recordServiceSpy },
-        { provide: HttpClient, useValue: httpClientSpy }
+        { provide: HttpClient, useValue: httpClientSpy },
+        { provide: ApiService, useValue: {} }
       ]
     });
 
     pipe = TestBed.inject(PatronNamePipe);
-    recordService = TestBed.inject(RecordService);
   });
 
   it('should be created', () => {

@@ -15,22 +15,23 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-@if (data.total > 0) {
+@if (data()?.total > 0) {
   <p-fieldset>
     <ng-template #header>
       <div class="ui:flex ui:items-center">
         <span translate>Amount received</span>
-        <p-button severity="secondary" text size="small" [icon]="mode === 'pie'? 'fa fa-list': 'fa fa-pie-chart'" (onClick)="updateMode($event)" />
+        <p-button severity="secondary" text size="small" [icon]="mode() === 'pie'? 'fa fa-list': 'fa fa-pie-chart'" (onClick)="updateMode($event)" />
       </div>
     </ng-template>
-    @switch (mode) {
+    @switch (mode()) {
       @case ('table') {
-        <admin-payments-data-table [data]="data" />
+        <admin-payments-data-table [data]="data()" />
       }
       @case ('pie') {
-        <admin-payments-data-pie [data]="data" />
+        <admin-payments-data-pie [data]="data()" />
       }
     }
   </p-fieldset>
 }
+
 

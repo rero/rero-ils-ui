@@ -17,54 +17,54 @@
 -->
 <dl class="metadata">
 <!-- AUTHORIZED ACCESS POINT(S) -->
-@if (record.authorized_access_point) {
+@if (record().authorized_access_point) {
   <dt translate>Authorized access point</dt>
-  <dd>{{ record.authorized_access_point }}</dd>
+  <dd>{{ record().authorized_access_point }}</dd>
 }
 <!-- BNF TYPE -->
-@if (record.bnf_type) {
+@if (record().bnf_type) {
   <dt translate>Type</dt>
-  <dd>{{ record.bnf_type }}</dd>
+  <dd>{{ record().bnf_type }}</dd>
 }
 <!-- VARIANT ACCESS POINT(S) -->
-@if (record.variant_access_point) {
+@if (record().variant_access_point) {
   <dt translate>Variant access point</dt>
   <dd>
     <ul class="ui:list-none">
-      @for (variant_access_point of record.variant_access_point; track $index) {
+      @for (variant_access_point of record().variant_access_point; track $index) {
         <li>{{ variant_access_point }}</li>
       }
     </ul>
   </dd>
 }
 <!-- BROADER -->
-@if (record.broader) {
+@if (record().broader) {
   <dt translate>Broader</dt>
   <dd>
     <ul class="ui:list-none">
-      @for (broader of record.broader; track $index) {
+      @for (broader of record().broader; track $index) {
         <li>{{ broader.authorized_access_point }}</li>
       }
     </ul>
   </dd>
 }
 <!-- NARROWER -->
-@if (record.narrower) {
+@if (record().narrower) {
   <dt translate>Narrower</dt>
   <dd>
     <ul class="ui:list-none">
-      @for (narrower of record.narrower; track $index) {
+      @for (narrower of record().narrower; track $index) {
         <li>{{ narrower.authorized_access_point }}</li>
       }
     </ul>
   </dd>
 }
 <!-- RELATED -->
-@if (record.related) {
+@if (record().related) {
   <dt translate>Related</dt>
   <dd>
     <ul class="ui:list-none">
-      @for (related of record.related; track $index) {
+      @for (related of record().related; track $index) {
         <li>{{ related.authorized_access_point }}</li>
       }
     </ul>
@@ -72,11 +72,11 @@
 }
 
 <!-- CLASSIFICATION(S) -->
-@if (record.classification) {
+@if (record().classification) {
   <dt translate>Classification</dt>
   <dd>
     <ul class="ui:list-none">
-      @for (classification of record.classification; track $index) {
+      @for (classification of record().classification; track $index) {
         <li class="ui:mb-1 ui:flex ui:gap-1 ui:items-center">
           @if (classification.classificationPortion) {
             <span>{{ classification.classificationPortion }}</span>
@@ -93,14 +93,14 @@
   </dd>
 }
 <!-- EXACT MATCH -->
-@if (record.exactMatch) {
+@if (record().exactMatch) {
   <ng-container
     [ngTemplateOutlet]="match"
     [ngTemplateOutletContext]="{ item: {match: exactMatch, title: 'Exact match' | translate } }"
   ></ng-container>
 }
 <!-- CLOSE MATCH -->
-@if (record.closeMatch) {
+@if (record().closeMatch) {
   <ng-container
     [ngTemplateOutlet]="match"
     [ngTemplateOutletContext]="{ item: {match: closeMatch, title: 'Close match' | translate } }"

@@ -14,60 +14,60 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-@if (document) {
-  <div class="ui:grid ui:grid-cols-12 ui:gap-4 ui:p-2" [ngClass]="getCallout()" id="request-{{ item.barcode }}">
+@if (document()) {
+  <div class="ui:grid ui:grid-cols-12 ui:gap-4 ui:p-2" [ngClass]="getCallout()" id="request-{{ item().barcode }}">
     <div class="ui:col-span-3">
       <div class="ui:flex ui:items-start ui:gap-2">
-        <shared-open-close-button [collapsed]="isCollapsed" (status)="isCollapsed = $event" />
-        <a [routerLink]="['/records','items','detail', item.pid]">{{ item.barcode }}</a>
+        <shared-open-close-button [collapsed]="isCollapsed()" (status)="isCollapsed.set($event)" />
+        <a [routerLink]="['/records','items','detail', item().pid]">{{ item().barcode }}</a>
       </div>
     </div>
     <div name="title" class="ui:col-span-4">
-      @if (document.title | mainTitle; as title) {
-        <a [routerLink]="['/records','documents','detail', document.pid]">
+      @if (document().title | mainTitle; as title) {
+        <a [routerLink]="['/records','documents','detail', document().pid]">
           {{ title }}
         </a><br/>
       }
-      <shared-contribution [contributions]="document?.contribution" />
+      <shared-contribution [contributions]="$any(document()?.contribution)" />
     </div>
     <div class="ui:col-span-2">
-      <shared-inherited-call-number [item]="item" />
+      <shared-inherited-call-number [item]="item()" />
     </div>
-    <div class="ui:col-span-2">{{ item.loan.creation_date | dateTranslate :'medium' }}</div>
+    <div class="ui:col-span-2">{{ item().loan.creation_date | dateTranslate :'medium' }}</div>
     <div class="ui:col-span-1 ui:flex ui:justify-end">
-      @if (item.loan.state === LoanState.PENDING) {
+      @if (item().loan.state === LoanState.PENDING) {
         <p-button
           icon="fa fa-check"
           [label]="'Validate'|translate"
-          [id]="item.barcode | idAttribute:{prefix: 'item', suffix: 'validate-button'}"
+          [id]="item().barcode | idAttribute:{prefix: 'item', suffix: 'validate-button'}"
           outlined
           (onClick)="validateRequest()"
         />
       }
     </div>
-  @if (!isCollapsed) {
+  @if (!isCollapsed()) {
     <div class="ui:col-start-4 ui:col-span-8">
       <dl class="metadata ui:ml-1">
         <!-- Unit -->
-        @if (item.enumerationAndChronology) {
+        @if (item().enumerationAndChronology) {
           <dt translate>Unit</dt>
-          <dd>{{ item.enumerationAndChronology }}</dd>
+          <dd>{{ item().enumerationAndChronology }}</dd>
         }
         <!-- Patron information -->
         <dt translate>Requested by</dt>
         <dd>
-          <a name="patron-name" [routerLink]="['/circulation', 'patron', item.loan.patron.barcode]">
-            {{ item.loan.patron.name }}
+          <a name="patron-name" [routerLink]="['/circulation', 'patron', item().loan.patron.barcode]">
+            {{ item().loan.patron.name }}
           </a>
         </dd>
         <!-- item shelf location + destination -->
         <dt translate>Location</dt>
         <dd>
-          {{ item.library.name }} -
-          @if (item.temporary_location?.name) {
-            {{ item.temporary_location.name }}
+          {{ item().library.name }} -
+          @if (item().temporary_location?.name) {
+            {{ item().temporary_location.name }}
           } @else {
-            {{ item.location.name }}
+            {{ item().location.name }}
           }
 
         </dd>
@@ -75,10 +75,10 @@
         <dd class="ui:flex ui:gap-1">
           <i class="fa fa-truck fa-flip-horizontal"></i>
           <i class="fa fa-long-arrow-right"></i>
-          @if (item.loan.pickup_location.pickup_name) {
-            {{ item.loan.pickup_location.pickup_name }}
+          @if (item().loan.pickup_location.pickup_name) {
+            {{ item().loan.pickup_location.pickup_name }}
           } @else {
-            {{ item.loan.pickup_location.library_name }}: {{ item.loan.pickup_location.name }}
+            {{ item().loan.pickup_location.library_name }}: {{ item().loan.pickup_location.name }}
           }
         </dd>
       </dl>

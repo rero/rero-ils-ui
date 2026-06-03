@@ -94,9 +94,9 @@ describe('AcqAccountApiService', () => {
     links: {}
   };
 
-  const httpClientSpy = jasmine.createSpyObj('HttpClient', ['get']);
-  const recordServiceSpy = jasmine.createSpyObj('RecordService', ['getRecords', 'totalHits', 'delete']);
-  recordServiceSpy.totalHits.and.returnValue(2);
+  const httpClientSpy = { get: vi.fn() };
+  const recordServiceSpy = { getRecords: vi.fn(), totalHits: vi.fn(), delete: vi.fn() };
+  recordServiceSpy.totalHits.mockReturnValue(2);
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -115,13 +115,13 @@ describe('AcqAccountApiService', () => {
   });
 
   it('should return an acquisition account with default value', () => {
-    recordServiceSpy.getRecords.and.returnValue(of(response));
+    recordServiceSpy.getRecords.mockReturnValue(of(response));
     const data = {...accountDefaultData, ...record};
     service.getAccount('1').subscribe((result: any) => expect(result).toEqual(data))
   });
 
   it('should return a list of acquisition accounts', () => {
-    recordServiceSpy.getRecords.and.returnValue(of(response));
+    recordServiceSpy.getRecords.mockReturnValue(of(response));
     const data = [
       {...accountDefaultData, ...record},
       {...accountDefaultData, ...record2},
@@ -130,12 +130,12 @@ describe('AcqAccountApiService', () => {
   });
 
   it('should delete an account', () => {
-    recordServiceSpy.delete.and.returnValue(of(undefined));
+    recordServiceSpy.delete.mockReturnValue(of(undefined));
     service.delete('1').subscribe((result: any) => expect(result).toBeUndefined());
   });
 
   it('should transfer an amount between 2 accounts', () => {
-    httpClientSpy.get.and.returnValue(of({}));
+    httpClientSpy.get.mockReturnValue(of({}));
     service.transferFunds('1', '2', 10000).subscribe((result: any) => expect(result).toEqual({}));
   });
 });

@@ -16,30 +16,25 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { Injectable } from '@angular/core';
 import { IAcqOrder, AcqOrderStatus } from '../classes/order';
 import { RecordPermissions } from '../../classes/permissions';
 
-@Injectable()
-export class ReceivedOrderPermissionValidator {
-
-  /**
-   * Update the permissions analyzing an order. If an order is fully received, none
-   * receipt can be created on it anymore.
-   * @param permissions: the permissions related to the object.
-   * @param order: the order to analyze.
-   */
-  validate(permissions: RecordPermissions, order: IAcqOrder): RecordPermissions {
-    if (order.status === AcqOrderStatus.RECEIVED) {
-      permissions.create = {
-        can: false,
-        reasons: {
-          others: {
-            order_fully_received: ''
-          }
+/**
+ * Update the permissions analyzing an order. If an order is fully received, none
+ * receipt can be created on it anymore.
+ * @param permissions - the permissions related to the object.
+ * @param order - the order to analyze.
+ */
+export function validateReceivedOrderPermissions(permissions: RecordPermissions, order: IAcqOrder): RecordPermissions {
+  if (order.status === AcqOrderStatus.RECEIVED) {
+    permissions.create = {
+      can: false,
+      reasons: {
+        others: {
+          order_fully_received: ''
         }
-      };
-    }
-    return permissions;
+      }
+    };
   }
+  return permissions;
 }

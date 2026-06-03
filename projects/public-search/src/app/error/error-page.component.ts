@@ -14,9 +14,10 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, signal, ChangeDetectionStrategy} from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { _ as marker } from "@ngx-translate/core";
+import { _ as marker, TranslateDirective } from "@ngx-translate/core";
+import { MessageModule } from 'primeng/message';
 import { map } from 'rxjs/operators';
 
 export function _(str: string) {
@@ -26,8 +27,8 @@ export function _(str: string) {
 @Component({
     selector: 'public-search-error-page',
     template: `
-    <p-message [severity]="messages[statusCode].severity" showTransitionOptions="0ms">
-      @let msg = messages[statusCode];
+    <p-message [severity]="messages[statusCode()].severity" showTransitionOptions="0ms">
+      @let msg = messages[statusCode()];
       <div class="ui:w-full">
         <h3>{{ msg.summary }}</h3>
         <p>{{ msg.detail }}</p>
@@ -35,7 +36,8 @@ export function _(str: string) {
       </div>
     </p-message>
   `,
-    standalone: false
+    imports: [TranslateDirective, MessageModule],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 
 export class ErrorPageComponent implements OnInit {
@@ -43,7 +45,7 @@ export class ErrorPageComponent implements OnInit {
   private route: ActivatedRoute = inject(ActivatedRoute);
 
   /** the status code to display. By default 404 : Page not found */
-  statusCode = 404;
+  readonly statusCode = signal(404);
   /** All messages alt to be managed by this component. Available for each error are :
    *   - title : the error title
    *   - description : A human readable description of this error as Array<string>. Each array
@@ -86,6 +88,6 @@ export class ErrorPageComponent implements OnInit {
       map(params => params.status_code || 404),  // check for status_code parameter from ActivatedRoute
       map(code => /^\d+$/.test(code) ? parseInt(code, 10) : 404),  // try to parse status code to integer
       map(code => code in this.messages ? code : 404)  // check if http code definition exists
-    ).subscribe(code => this.statusCode = code );
+    ).subscribe(code => this.statusCode.set(code));
   }
 }

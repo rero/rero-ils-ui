@@ -1,6 +1,6 @@
 <!--
   RERO ILS UI
-  Copyright (C) 2019-2024 RERO
+  Copyright (C) 2019-2026 RERO
   Copyright (C) 2019-2023 UCLouvain
 
   This program is free software: you can redistribute it and/or modify
@@ -15,45 +15,43 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-@if (record) {
-  <article class="ui:flex ui:gap-6">
-    <div class="ui:hidden ui:md:block">
-      <shared-thumbnail [record]="record" />
-    </div>
-    <div class="ui:grow">
-      <!-- document title -->
-      <h4 class="ui:mb-1">
-        <a target="_self" [href]="detailUrl.link | safeUrl">{{ record.metadata.title | mainTitle }}</a>
-      </h4>
-      <!-- contributions -->
-      <shared-contribution [contributions]="record.metadata?.contribution" [view]="viewcode" />
-      <!-- provision activity publications -->
-      @if (provisionActivityPublications.length > 0) {
-        <ul class="ui:list-none">
-          @for (publication of provisionActivityPublications; track $index) {
-            <li>{{ publication.value }}</li>
-          }
-        </ul>
-      }
-      <!-- part of -->
-      <shared-part-of [record]="record" [viewcode]="viewcode" [isPublicView]="true" />
-      <!-- edition statement -->
-      @if (record.metadata.editionStatement) {
-        <ul class="ui:list-none">
-          @for (edition of record.metadata.editionStatement; track $index) {
-            <li>{{ edition._text[0].value }}</li>
-          }
-        </ul>
-      }
-      <!-- availability -->
-      @if (record.metadata.type !== 'ebook') {
-        <shared-availability
-          recordType="document"
-          [record]="record"
-          [apiService]="documentApiService"
-          [viewcode]="viewcode"
-        />
-      }
-    </div>
-  </article>
-}
+<article class="ui:flex ui:gap-6">
+  <div class="ui:hidden ui:md:block">
+    <shared-thumbnail [record]="$any(record())" />
+  </div>
+  <div class="ui:grow">
+    <!-- document title -->
+    <h4 class="ui:mb-1">
+      <a target="_self" [href]="recordDetailUrl() | safeUrl">{{ record().metadata.title | mainTitle }}</a>
+    </h4>
+    <!-- contributions -->
+    <shared-contribution [contributions]="$any(record().metadata?.contribution)" [view]="viewcode()" />
+    <!-- provision activity publications -->
+    @if (provisionActivityPublications.length > 0) {
+      <ul class="ui:list-none">
+        @for (publication of provisionActivityPublications; track $index) {
+          <li>{{ publication.value }}</li>
+        }
+      </ul>
+    }
+    <!-- part of -->
+    <shared-part-of [record]="record()" [viewcode]="viewcode()" [isPublicView]="true" />
+    <!-- edition statement -->
+    @if (record().metadata.editionStatement) {
+      <ul class="ui:list-none">
+        @for (edition of $any(record().metadata.editionStatement); track $index) {
+          <li>{{ edition._text[0].value }}</li>
+        }
+      </ul>
+    }
+    <!-- availability -->
+    @if (record().metadata.type !== 'ebook') {
+      <shared-availability
+        recordType="document"
+        [record]="record()"
+        [apiService]="documentApiService"
+        [viewcode]="viewcode()"
+      />
+    }
+  </div>
+</article>

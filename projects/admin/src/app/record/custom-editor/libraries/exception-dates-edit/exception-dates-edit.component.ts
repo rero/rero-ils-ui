@@ -14,16 +14,25 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, inject, OnDestroy, OnInit } from '@angular/core';
-import { UntypedFormArray, UntypedFormGroup, Validators } from '@angular/forms';
+import { Component, inject, OnDestroy, OnInit, ChangeDetectionStrategy} from '@angular/core';
+import { UntypedFormArray, UntypedFormGroup, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { LibraryExceptionFormService } from '../library-exception-form.service';
-import { TranslateService } from '@ngx-translate/core';
+import { TranslateService, TranslateDirective, TranslatePipe } from '@ngx-translate/core';
+import { Bind } from 'primeng/bind';
+import { InputText } from 'primeng/inputtext';
+import { Button } from 'primeng/button';
+import { ToggleSwitch } from 'primeng/toggleswitch';
+import { InputNumber } from 'primeng/inputnumber';
+import { Select } from 'primeng/select';
+import { TitleCasePipe } from '@angular/common';
+import { DatePicker } from 'primeng/datepicker';
 
 @Component({
     selector: 'admin-libraries-exception-dates-edit',
     templateUrl: './exception-dates-edit.component.html',
-    standalone: false
+    imports: [FormsModule, ReactiveFormsModule, Bind, InputText, TranslateDirective, Button, ToggleSwitch, InputNumber, Select, TitleCasePipe, TranslatePipe, DatePicker],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ExceptionDatesEditComponent implements OnInit, OnDestroy {
 

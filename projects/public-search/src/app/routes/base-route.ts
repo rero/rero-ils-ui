@@ -17,49 +17,8 @@
 
 import { inject } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-import { Observable, Subscriber } from 'rxjs';
 
 export class BaseRoute {
 
   protected translateService: TranslateService = inject(TranslateService);
-
-  /**
-   * Filter aggregations
-   *
-   * @return Observable
-   */
-  protected aggFilter(aggregations: object): Observable<any> {
-    const obs = new Observable((observer: Subscriber<any>): void => {
-      observer.next(this.aggregationFilter(aggregations));
-      this.translateService.onLangChange.subscribe(() => {
-        observer.next(this.aggregationFilter(aggregations));
-      });
-    });
-    return obs;
-  }
-
-  /**
-   * Aggregation filter
-   *
-   * @param aggregations, object
-   * @return array of value
-   */
-  private aggregationFilter(aggregations: object) {
-    /*
-      TODO: replace organisation facet by library facet
-      when the viewcode is not global (needs backend adaptation)
-    */
-    const aggs = {};
-    Object.keys(aggregations).forEach(aggregation => {
-      if (aggregation.indexOf('__') > -1) {
-        const splitted = aggregation.split('__');
-        if (this.translateService.currentLang === splitted[1]) {
-          aggs[aggregation] = aggregations[aggregation];
-        }
-      } else {
-        aggs[aggregation] = aggregations[aggregation];
-      }
-    });
-    return aggs;
-  }
 }

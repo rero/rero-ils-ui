@@ -15,42 +15,33 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, Input, OnInit } from '@angular/core';
+import { NgClass } from '@angular/common';
+import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
+import { TranslatePipe } from '@ngx-translate/core';
 
 
 @Component({
     selector: 'shared-thumbnail',
     templateUrl: './thumbnail.component.html',
-    standalone: false
+    imports: [NgClass, TranslatePipe],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class ThumbnailComponent implements OnInit {
-
-  /** Cover url */
-  coverUrl: string;
-
-  /** is a svg image */
-  svgImage = true;
+export class ThumbnailComponent {
 
   /** Record to display */
-  @Input() record: any;
+  readonly record = input<{ metadata: { type: { main_type: string; subtype?: string }[]; electronicLocator?: { content?: string; type: string; url: string }[] } }>();
 
   /** Style for image container */
-  @Input() styleClass = 'ui:w-24';
+  readonly styleClass = input('ui:w-24');
 
-  /**
-   * On init hook
-   * Set default cover image, or get cover image if exists.
-   */
-  ngOnInit() {
-    if (this.record && this.record.metadata) {
-      this.coverUrl = `/static/images/icon_${this.record.metadata.type[0].main_type}.svg`;
-      const cover = this.record.metadata.electronicLocator?.find(
-        (e: { content?: string; type: string; url: string }) => e.content === 'coverImage' && e.type === 'relatedResource'
-      );
-      if (cover) {
-        this.coverUrl = cover.url;
-        this.svgImage = false;
-      }
-    }
-  }
+  readonly coverUrl = computed(() => {
+    const record = this.record();
+    if (!record?.metadata) return undefined;
+    const cover = record.metadata.electronicLocator?.find(
+      (e: { content?: string; type: string; url: string }) =>
+        e.content === 'coverImage' && e.type === 'relatedResource'
+    );
+    return cover?.url ?? `/static/images/icon_${record.metadata.type[0].main_type}.svg`;
+  });
+
 }

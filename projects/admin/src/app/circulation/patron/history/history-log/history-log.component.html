@@ -14,7 +14,7 @@
  You should have received a copy of the GNU Affero General Public License
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-@let document = log.metadata.loan.item.document.pid | getRecord:'documents':'object':'':{ Accept:'application/rero+json' } | async;
+@let document = log().metadata.loan.item.document.pid | getRecord:'documents':'object':'':{ Accept:'application/rero+json' } | async;
 
 @if(document) {
 <div>
@@ -25,15 +25,15 @@
       <div class="ui:flex ui:flex-col">
         @if (document) {
           <div class="ui:flex ui:gap-2">
-            <a [routerLink]="['/records','documents','detail', log.metadata.loan.item.document.pid]">
-              {{ log.metadata.loan.item.document.title }}
+            <a [routerLink]="['/records','documents','detail', log().metadata.loan.item.document.pid]">
+              {{ log().metadata.loan.item.document.title }}
             </a>
-            @if (log.metadata.loan.item.enumerationAndChronology) {
-              <p-tag severity="info" [value]="log.metadata.loan.item.enumerationAndChronology" />
+            @if (log().metadata.loan.item.enumerationAndChronology) {
+              <p-tag severity="info" [value]="log().metadata.loan.item.enumerationAndChronology" />
             }
         </div>
         } @else {
-          {{ log.metadata.loan.item.document.title }}
+          {{ log().metadata.loan.item.document.title }}
         }
         @if ($any(document)?.metadata?.contribution && $any(document).metadata.contribution.length > 0) {
           <shared-contribution [contributions]="$any(document).metadata.contribution" [limitRecord]="3" />
@@ -42,13 +42,13 @@
       </div>
     </div>
     <div class="ui:col-span-2">
-      {{ log.metadata.date | dateTranslate: 'short' }}
+      {{ log().metadata.date | dateTranslate: 'short' }}
     </div>
   </div>
   <!-- Transaction history check-in / checkout -->
   @if (!isCollapsed) {
     <div class="ui:m-4 ui:pb-4">
-      @if (log.metadata.loan.item.pid | getRecord:'items' | async; as item) {
+      @if (log().metadata.loan.item.pid | getRecord:'items' | async; as item) {
         <div class="ui:grid ui:grid-cols-12">
           <div class="ui:col-span-2 ui:font-bold" translate>Item</div>
           <div class="ui:col-span-10">

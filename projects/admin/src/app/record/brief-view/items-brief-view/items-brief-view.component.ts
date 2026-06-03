@@ -15,22 +15,27 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { Component, Input } from '@angular/core';
-import { ResultItem } from '@rero/ng-core';
+import { Component, input, ChangeDetectionStrategy} from '@angular/core';
+import { RouterLink } from '@angular/router';
+import { TranslateDirective } from '@ngx-translate/core';
+import { InheritedCallNumberComponent, ItemHoldingsCallNumberPipe } from '@rero/shared';
+import { AsyncPipe, JsonPipe } from '@angular/common';
+
 
 @Component({
     selector: 'admin-inventory-brief-view',
     templateUrl: './items-brief-view.component.html',
-    standalone: false
+    imports: [RouterLink, TranslateDirective, InheritedCallNumberComponent, AsyncPipe, JsonPipe, ItemHoldingsCallNumberPipe],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class ItemsBriefViewComponent implements ResultItem {
+export class ItemsBriefViewComponent {
 
   /** Record */
-  @Input() record: any;
+  record = input<any>();
 
   /** Type of record */
-  @Input() type: string;
+  type = input<string>();
 
   /** Detail Url */
-  @Input() detailUrl: { link: string, external: boolean };
+  detailUrl = input<{ link: string, external: boolean }>();
 }

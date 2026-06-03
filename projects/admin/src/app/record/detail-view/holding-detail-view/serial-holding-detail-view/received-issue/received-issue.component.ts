@@ -15,13 +15,20 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, EventEmitter, inject, Input, OnDestroy, OnInit, Output } from '@angular/core';
+import { NgClass, NgPlural, NgPluralCase } from '@angular/common';
+import { ChangeDetectionStrategy, Component, inject, input, OnDestroy, OnInit, signal } from '@angular/core';
+import { RouterLink } from '@angular/router';
 import { HoldingsService } from '@app/admin/service/holdings.service';
 import { IssueService } from '@app/admin/service/issue.service';
 import { RecordPermissionService } from '@app/admin/service/record-permission.service';
-import { TranslateService } from '@ngx-translate/core';
-import { IssueItemStatus, UserService } from '@rero/shared';
+import { TranslateDirective, TranslatePipe, TranslateService } from '@ngx-translate/core';
+import { DateTranslatePipe } from '@rero/ng-core';
+import { AppStore, EsRecord, InheritedCallNumberComponent, IssueItemStatus, OpenCloseButtonComponent } from '@rero/shared';
+import { Bind } from 'primeng/bind';
+import { Button } from 'primeng/button';
 import { DynamicDialogRef } from 'primeng/dynamicdialog';
+import { Tag } from 'primeng/tag';
+import { Tooltip } from 'primeng/tooltip';
 import { Subscription } from 'rxjs';
 import { HoldingsSerialStore } from '../../holdings-serial-store';
 
@@ -29,7 +36,8 @@ import { HoldingsSerialStore } from '../../holdings-serial-store';
     selector: 'admin-received-issue',
     templateUrl: './received-issue.component.html',
     providers: [IssueService],
-    standalone: false
+    imports: [NgClass, OpenCloseButtonComponent, RouterLink, Bind, Tag, InheritedCallNumberComponent, TranslateDirective, NgPlural, NgPluralCase, Button, Tooltip, TranslatePipe, DateTranslatePipe],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ReceivedIssueComponent implements OnInit, OnDestroy {
 
@@ -39,14 +47,14 @@ export class ReceivedIssueComponent implements OnInit, OnDestroy {
   private translateService: TranslateService = inject(TranslateService);
   private recordPermissionService: RecordPermissionService = inject(RecordPermissionService);
   private issueService: IssueService = inject(IssueService);
-  private userService: UserService = inject(UserService);
+  private appStore = inject(AppStore);
 
   // COMPONENT ATTRIBUTES =====================================================
   /** the issue to display */
-  @Input() issue: any;
+  issue = input<any>();
 
   /** the parent holding */
-  @Input() holding;
+  holding = input<any>();
 
   /** Allow claims */
   isClaimAllowed = false;
@@ -55,7 +63,7 @@ export class ReceivedIssueComponent implements OnInit, OnDestroy {
   /** IssueItemStatus reference */
   issueItemStatusRef = IssueItemStatus;
   /** Record permissions */
-  recordPermissions: any = {};
+  readonly recordPermissions = signal<any>({});
 
   private subscription = new Subscription();
 
@@ -66,14 +74,14 @@ export class ReceivedIssueComponent implements OnInit, OnDestroy {
    * @return the string to use into the HTML title attribute
    */
   get iconTitle(): string {
-    return (this.issue.metadata._masked)
+    return (this.issue().metadata._masked)
       ? this.translateService.instant('Masked')
-      : this.translateService.instant(this.issue.metadata.issue.status);
+      : this.translateService.instant(this.issue().metadata.issue.status);
   }
 
   /** @return last claim date */
   get claimLastDate(): string {
-    return this.issue.metadata.issue.claims.dates
+    return this.issue().metadata.issue.claims.dates
       .sort((a: string, b: string) => new Date(b).getTime() - new Date(a).getTime())[0];
   }
 
@@ -82,13 +90,13 @@ export class ReceivedIssueComponent implements OnInit, OnDestroy {
   /** OnInit hook */
   ngOnInit(): void {
     this.recordPermissionService
-      .getPermission('items', this.issue.metadata.pid)
-      .subscribe(permission => this.recordPermissions =  this.recordPermissionService.membership(
-        this.userService.user,
-        this.issue.metadata.library.pid,
+      .getPermission('items', this.issue().metadata.pid)
+      .subscribe(permission => this.recordPermissions.set(this.recordPermissionService.membership(
+        this.appStore.currentLibraryPid(),
+        this.issue().metadata.library.pid,
         permission
-      ));
-    this.isClaimAllowed = this.issueService.isClaimAllowed(this.issue.metadata.issue.status);
+      )));
+    this.isClaimAllowed = this.issueService.isClaimAllowed(this.issue().metadata.issue.status);
   }
 
   ngOnDestroy(): void {
@@ -101,9 +109,9 @@ export class ReceivedIssueComponent implements OnInit, OnDestroy {
    * @return: a string representing the classes to use to render the icon
    */
   getIcon(realState = false): string {
-    return (this.issue.metadata._masked && !realState)
+    return (this.issue().metadata._masked && !realState)
       ? 'fa-eye-slash text-error'
-      : this.holdingService.getIcon(this.issue.metadata.issue.status);
+      : this.holdingService.getIcon(this.issue().metadata.issue.status);
   }
 
   /**
@@ -112,18 +120,18 @@ export class ReceivedIssueComponent implements OnInit, OnDestroy {
    * @return the delete info message use hover the delete button
    */
   deleteInfoMessage(): string {
-    return (this.recordPermissions?.delete?.reasons)
-      ? this.recordPermissionService.generateTooltipMessage(this.recordPermissions.delete.reasons, 'delete')
+    return (this.recordPermissions()?.delete?.reasons)
+      ? this.recordPermissionService.generateTooltipMessage(this.recordPermissions().delete.reasons, 'delete')
       : '';
   }
 
   /** Open claim dialog */
   openClaimEmailDialog(): void {
-    const ref: DynamicDialogRef = this.issueService.openClaimEmailDialog(this.issue);
+    const ref: DynamicDialogRef = this.issueService.openClaimEmailDialog(this.issue());
     this.subscription.add(
-      ref.onClose.subscribe((record: any) => {
-        if(record) {
-          this.issue = record;
+      ref.onClose.subscribe((record: EsRecord) => {
+        if (record) {
+          this.store.updateItem(record);
         }
       })
     );

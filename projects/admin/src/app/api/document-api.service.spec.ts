@@ -17,7 +17,8 @@
 import { HttpClient } from '@angular/common/http';
 import { TestBed } from '@angular/core/testing';
 import { TranslateModule } from '@ngx-translate/core';
-import { RecordModule, RecordService } from '@rero/ng-core';
+import { RecordService } from '@rero/ng-core';
+import { AppConfigService } from '../service/app-config.service';
 import { IAvailability } from '@rero/shared';
 import { of } from 'rxjs';
 import { IAdvancedSearchConfig } from '../record/search-view/document-advanced-search-form/i-advanced-search-config-interface';
@@ -59,20 +60,20 @@ describe('DocumentApiService', () => {
       country: [],
       rdaCarrierType: [],
       rdaContentType: [],
-      rdaMediaType: [],
-    }
+      rdaMediaType: [] }
   };
 
-  const httpClientSpy = jasmine.createSpyObj('HttpClient', ['get']);
+  const httpClientSpy = { get: vi.fn() };
 
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [
-        RecordModule,
         TranslateModule.forRoot()
       ],
       providers: [
-        { provide: HttpClient, useValue: httpClientSpy }
+        { provide: HttpClient, useValue: httpClientSpy },
+        { provide: RecordService, useValue: { getRecords: vi.fn(), totalHits: vi.fn() } },
+        { provide: AppConfigService, useValue: {} }
       ]
     });
     service = TestBed.inject(DocumentApiService);
@@ -84,20 +85,20 @@ describe('DocumentApiService', () => {
   });
 
   it('should return the number of linked documents', () => {
-    spyOn(recordService, 'getRecords').and.returnValue(of(response));
+    vi.spyOn(recordService, 'getRecords').mockReturnValue(of(response));
     service.getLinkedDocumentsCount('1').subscribe((result: any) => {
       expect(result).toEqual(2);
     });
   });
 
   it('should return the availability of the document', () => {
-    httpClientSpy.get.and.returnValue(of(availability));
+    httpClientSpy.get.mockReturnValue(of(availability));
     service.getAvailability('1')
       .subscribe((response: IAvailability) => expect(response).toEqual(availability));
   });
 
   it('should return the advanced search configuration ', () => {
-    httpClientSpy.get.and.returnValue(of(advancedSearchConfig));
+    httpClientSpy.get.mockReturnValue(of(advancedSearchConfig));
     service.getAdvancedSearchConfig()
       .subscribe((config: IAdvancedSearchConfig) => expect(config).toEqual(advancedSearchConfig));
   });

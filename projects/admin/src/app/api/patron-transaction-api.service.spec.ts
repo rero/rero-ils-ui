@@ -18,7 +18,7 @@
 import { TestBed } from "@angular/core/testing";
 import { PatronTransactionApiService } from "./patron-transaction-api.service";
 import { HttpClient } from "@angular/common/http";
-import { RecordModule, RecordService } from "@rero/ng-core";
+import { ApiService, RecordService } from "@rero/ng-core";
 import { TranslateModule } from "@ngx-translate/core";
 import { FeeFormModel } from "../circulation/patron/patron-transactions/patron-fee/patron-fee.component";
 import { of } from "rxjs";
@@ -73,20 +73,20 @@ describe('PatronTransactionApiService', () => {
     links: {}
   };
 
-  const httpClientSpy = jasmine.createSpyObj('HttpClient', ['post']);
+  const httpClientSpy = { post: vi.fn() };
 
-  const recordServiceSpy = jasmine.createSpyObj('RecordService', ['getRecords']);
+  const recordServiceSpy = { getRecords: vi.fn() };
 
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [
-        TranslateModule.forRoot(),
-        RecordModule
+        TranslateModule.forRoot()
       ],
       providers: [
         PatronTransactionApiService,
         { provide: HttpClient, useValue: httpClientSpy },
-        { provide: RecordService, useValue: recordServiceSpy }
+        { provide: RecordService, useValue: recordServiceSpy },
+        { provide: ApiService, useValue: { getEndpointByType: vi.fn().mockReturnValue('/api/patron_transactions/') } }
       ]
     });
 
@@ -98,12 +98,12 @@ describe('PatronTransactionApiService', () => {
   });
 
   it('should return the fee object', () => {
-    httpClientSpy.post.and.returnValue(of(fee));
+    httpClientSpy.post.mockReturnValue(of(fee));
     service.addFee(fee).subscribe((result: object) => expect(result).toEqual(fee))
   });
 
   it('should return a list of fees on an item', () => {
-    recordServiceSpy.getRecords.and.returnValue(of(response));
+    recordServiceSpy.getRecords.mockReturnValue(of(response));
     service.getActiveFeesByItemPid('1')
       .subscribe((result: any) => expect(result).toEqual(response.hits.hits))
   });

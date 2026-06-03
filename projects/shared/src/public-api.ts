@@ -15,13 +15,14 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 export * from './lib/api/base-api';
+export * from './lib/classes/permissions';
 export * from './lib/api/operation-logs-api.service';
 export * from './lib/api/user-api.service';
-export * from './lib/class/core';
-export * from './lib/class/entity';
-export * from './lib/class/holdings';
-export * from './lib/class/item-status';
-export * from './lib/class/user';
+export * from './lib/classes/core';
+export * from './lib/classes/entity';
+export * from './lib/classes/holdings';
+export * from './lib/classes/item-status';
+export * from './lib/classes/user';
 export * from './lib/component/action-button/action-button.component';
 export * from './lib/component/core/brief-view/brief-view.component';
 export * from './lib/component/documents/document-brief-view/document-brief-view.component';
@@ -41,7 +42,7 @@ export * from './lib/directive/permissions.directive';
 export * from './lib/directive/rero-template.directive';
 export * from './lib/interface/i-availability';
 export * from './lib/model/es-result-model';
-export * from './lib/modules/prime-ng-import/prime-ng-import.module';
+
 export { Paginator } from './lib/paginator/paginator';
 export * from './lib/paginator/show-more-pager/show-more-pager.component';
 export * from './lib/pipe/array-translate.pipe';
@@ -62,12 +63,10 @@ export * from './lib/pipe/patron-blocked-message.pipe';
 export * from './lib/pipe/provision-activity.pipe';
 export * from './lib/pipe/safe-url.pipe';
 export * from './lib/pipe/url-active.pipe';
-export * from './lib/service/app-settings.service';
 export * from './lib/service/i-availability.service';
 export * from './lib/service/operation-logs.service';
-export * from './lib/service/permissions.service';
-export * from './lib/service/user.service';
-export * from './lib/shared.module';
+
+export * from './lib/store/app.store';
 export * from './lib/store/paginator-feature';
 export * from './lib/store/request-status-feature';
 export * from './lib/store/viewcode-feature';

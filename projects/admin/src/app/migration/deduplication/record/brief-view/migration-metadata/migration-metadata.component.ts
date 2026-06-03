@@ -15,14 +15,18 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { Component, computed, inject, input } from '@angular/core';
-import { TranslateService } from '@ngx-translate/core';
+import { Component, computed, inject, input, ChangeDetectionStrategy} from '@angular/core';
+import { TranslateService, TranslateDirective, TranslatePipe } from '@ngx-translate/core';
 import { MainTitlePipe } from '@rero/shared';
+import { Bind } from 'primeng/bind';
+import { TableModule } from 'primeng/table';
+import { RouterLink } from '@angular/router';
 
 @Component({
     selector: 'admin-migration-metadata',
     templateUrl: './migration-metadata.component.html',
-    standalone: false
+    imports: [Bind, TableModule, TranslateDirective, RouterLink, TranslatePipe],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class MigrationMetadataBriefComponent {
   // services
@@ -30,8 +34,11 @@ export class MigrationMetadataBriefComponent {
   // pipes
   protected mainTitlePipe: MainTitlePipe = inject(MainTitlePipe);
 
-  // current record
   record = input<any>();
+
+  type = input<string>();
+
+  detailUrl = input<{ link: string; external: boolean }>();
 
   // current candidate
   candidate = input<any>();

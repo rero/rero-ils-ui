@@ -20,21 +20,21 @@
   <div class="ui:flex ui:flex-col ui:gap-4">
     <ng-core-search-input
       [placeholder]="placeholder | translate"
-      [searchText]="searchText"
-      [focus]="searchInputFocus"
-      [disabled]="searchInputDisabled"
-      (search)="searchValueUpdated($event)"
+      [searchText]="searchText()"
+      [focus]="searchInputFocus()"
+      [disabled]="searchInputDisabled()"
+      (searchQuery)="searchValueUpdated($event)"
     />
-    @if(patronInfo) {
+    @if(patronInfo()) {
       <admin-circulation-patron-detailed
-        [patron]="patronInfo"
-        [barcode]="barcode"
+        [patron]="patronInfo()"
+        [barcode]="barcode()"
         [linkMode]="'circulation'"
         [clearPatronButton]="false"
       />
     }
     <admin-circulation-items-list
-      [checkedInItems]="items"
+      [checkedInItems]="items()"
       (hasFeesEmitter)="hasFees($event)"
     />
   </div>

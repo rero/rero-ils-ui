@@ -16,7 +16,7 @@
  */
 import { Injectable } from '@angular/core';
 import { IRemoteAutocomplete } from './remote/i-remote-autocomplete';
-import { IQueryOptions, ISuggestionItem, IRemoteAutocomplete as NgCoreIRemoteAutocomplete } from '@rero/prime/remote-autocomplete/remote-autocomplete.interface';
+import { IQueryOptions, ISuggestionItem, IRemoteAutocomplete as NgCoreIRemoteAutocomplete } from '@rero/ng-core';
 import { Observable } from 'rxjs';
 
 export class IRemotes {

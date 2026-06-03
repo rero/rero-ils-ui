@@ -15,14 +15,14 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 
-@if (patron) {
+@if (patron(); as p) {
   <div class="ui:py-2">
   <!-- BLOCKED OR NOT? -->
-  @if (patron.patron && patron.patron.blocked) {
+  @if (p.patron && p.patron.blocked) {
     <div class="ui:my-4">
       <p-message severity="error" showTransitionOptions="0ms">
         {{ 'This patron is currently blocked' | translate }}<br>
-        {{ patron.patron.blocked_note }}
+        {{ p.patron.blocked_note }}
       </p-message>
     </div>
   }
@@ -35,15 +35,15 @@
         </div>
       <div class="ui:grow">
         <div class="ui:flex ui:items-center ui:gap-4 ui:mb-2">
-          <span class=" ui:text-4xl">{{ patron.last_name }} {{ patron.first_name }}</span>
+          <span class=" ui:text-4xl">{{ p.last_name }} {{ p.first_name }}</span>
 
-          @if (patron.patron) {
+          @if (p.patron) {
             <a
               pButton
               outlined
               size="small"
               [permissions]="permissions.CIRC_ADMIN"
-              [routerLink]="['/circulation', 'patron', patron.patron.barcode[0]]"
+              [routerLink]="['/circulation', 'patron', p.patron.barcode[0]]"
             >
               <i class="fa fa-exchange"></i>&nbsp;{{ 'Circulation' | translate }}
             </a>
@@ -53,14 +53,14 @@
           <dt>
             <i class="fa fa-calendar-o"></i>&nbsp;{{ 'Date of birth' | translate }}
           </dt>
-          <dd>{{ patron.birth_date | dateTranslate:'mediumDate' }}</dd>
-          @if (patron.email) {
+          <dd>{{ p.birth_date | dateTranslate:'mediumDate' }}</dd>
+          @if (p.email) {
               <dt>
                 <i class="fa fa-envelope"></i>&nbsp;{{ 'Email' | translate }}
               </dt>
-              <dd>{{ patron.email }}</dd>
+              <dd>{{ p.email }}</dd>
           }
-          @if (phones; as patronPhones) {
+          @if (phones(); as patronPhones) {
             @if (patronPhones.length > 0) {
               <dt>
                 <i class="fa fa-phone"></i>&nbsp;
@@ -78,20 +78,20 @@
               </dd>
             }
           }
-          @if (patron.street || patron.postal_code || patron.city || patron.country) {
+          @if (p.street || p.postal_code || p.city || p.country) {
             <dt>
               <i class="fa fa-home"></i>&nbsp;
               {{ 'Address' | translate }}
             </dt>
             <dd>
-              @if (patron.street) {
-                {{ patron.street }}<br/>
+              @if (p.street) {
+                {{ p.street }}<br/>
               }
-              @if (patron.postal_code || patron.city) {
-                {{ patron.postal_code }} {{ patron.city }}<br/>
+              @if (p.postal_code || p.city) {
+                {{ p.postal_code }} {{ p.city }}<br/>
               }
-              @if (patron.country) {
-                {{ 'country_' + patron.country | translate }}
+              @if (p.country) {
+                {{ 'country_' + p.country | translate }}
               }
             </dd>
           }
@@ -102,15 +102,15 @@
     <div class="ui:flex ui:gap-6 ui:mt-6">
     <p-accordion [multiple]="true" class="ui:grow" [value]="['0', '1']">
       <!-- NOTES ================================================================= -->
-      @if (patron.notes && patron.notes.length > 0) {
+      @if (p.notes && p.notes.length > 0) {
       <p-accordion-panel value="0">
         <p-accordion-header>
           <span class="ui:text-bold ui:text-xl">
-            {{ patron.notes.length | i18nPlural: {'=1': 'Note', 'other': 'Notes'} | translate }}
+            {{ p.notes.length | i18nPlural: {'=1': 'Note', 'other': 'Notes'} | translate }}
           </span>
         </p-accordion-header>
         <p-accordion-content>
-          @for (note of patron.notes; track $index) {
+          @for (note of p.notes; track $index) {
             <div class="ui:mt-2">
               <dl class="metadata">
                 <dt translate>
@@ -135,29 +135,29 @@
                   <i class="fa fa-user"></i>&nbsp;
                   {{ 'Username' | translate }}
                 </dt>
-                <dd>{{ patron.username }}</dd>
+                <dd>{{ p.username }}</dd>
                 <dt>
                   <i class="fa fa-history"></i>&nbsp;
                   {{ 'Keep history' }}
                 </dt>
                 <dd>
-                  <i class="fa" [ngClass]="patron.keep_history ? 'fa-check text-success' : 'fa-times text-error'"></i>
+                  <i class="fa" [ngClass]="p.keep_history ? 'fa-check text-success' : 'fa-times text-error'"></i>
                 </dd>
-                <dt translate>{{ patron.roles | i18nPlural: {'=1': 'Role', 'other': 'Roles'} }}</dt>
+                <dt translate>{{ p.roles | i18nPlural: {'=1': 'Role', 'other': 'Roles'} }}</dt>
                 <dd class="ui:flex ui:gap-1 ui:flex-wrap">
-                  @for (role of patron.roles; track $index) {
-                    <p-tag [severity]="getRoleTagSeverity(role)" [value]="role | translate" />
+                  @for (role of p.roles; track $index) {
+                    <p-tag [severity]="$any(getRoleTagSeverity(role))" [value]="role | translate" />
                   }
                 </dd>
                 <dt translate>Creation date</dt>
-                <dd>{{ record.created | dateTranslate: 'mediumDate' }}</dd>
+                <dd>{{ record().created | dateTranslate: 'mediumDate' }}</dd>
               </dl>
             </div>
           </p-accordion-content>
         </p-accordion-panel>
 
     <!-- PATRON INFORMATION'S SECTION =========================================== -->
-    @if (patron.patron) {
+    @if (p.patron) {
     <p-accordion-panel value="3">
       <p-accordion-header>
         <span class="ui:text-bold ui:text-xl" translate>Patron information</span>
@@ -170,24 +170,24 @@
               {{ 'Barcode' | translate }}
             </dt>
             <dd>
-              <a [routerLink]="['/circulation', 'patron', patron.patron.barcode[0]]" [linkPermissions]="permissions.CIRC_ADMIN">{{ patron.patron.barcode | join: ', ' }}</a>
+              <a [routerLink]="['/circulation', 'patron', p.patron.barcode[0]]" [linkPermissions]="permissions.CIRC_ADMIN">{{ p.patron.barcode | join: ', ' }}</a>
             </dd>
             <dt translate>Type</dt>
             <dd>
-              {{ patron.patron.type.pid | getRecord: 'patron_types' : 'field' : 'name' | async }}
+              {{ p.patron.type.pid | getRecord: 'patron_types' : 'field' : 'name' | async }}
             </dd>
             <dt translate>Account expiration</dt>
             <dd>
-              {{ patron.patron.expiration_date | dateTranslate:'mediumDate' }}
+              {{ p.patron.expiration_date | dateTranslate:'mediumDate' }}
             </dd>
-            @if (patron.patron.libraries && patron.patron.libraries.length > 0) {
+            @if (p.patron.libraries && p.patron.libraries.length > 0) {
               <dt>
                 <i class="fa fa-university"></i>&nbsp;
                 {{ 'Affiliation libraries' | translate }}
               </dt>
               <dd>
                 <ul class="ui:list-none">
-                  @for (library of patron.patron.libraries; track $index) {
+                  @for (library of p.patron.libraries; track $index) {
                     <li>
                       {{ library.pid | getRecord: 'libraries' : 'field' : 'name' | async }}
                     </li>
@@ -195,28 +195,28 @@
                 </ul>
               </dd>
             }
-            @if (patron.source) {
+            @if (p.source) {
               <dt translate>Source</dt>
-              <dd>{{ patron.source }}</dd>
+              <dd>{{ p.source }}</dd>
             }
-            @if (patron.local_codes) {
+            @if (p.local_codes) {
               <dt translate>Local code</dt>
-              <dd>{{ patron.local_codes | join: ', ' }}</dd>
+              <dd>{{ p.local_codes | join: ', ' }}</dd>
             }
-            @if (patron.second_address) {
+            @if (p.second_address) {
               <dt>
                 <i class="fa fa-home"></i>&nbsp;
                 {{ 'Second address' | translate }}
               </dt>
               <dd>
-                @if (patron.second_address.street) {
-                  {{ patron.second_address.street }}<br/>
+                @if (p.second_address.street) {
+                  {{ p.second_address.street }}<br/>
                 }
-                @if (patron.second_address.postal_code || patron.second_address.city) {
-                  {{ patron.second_address.postal_code }} {{ patron.second_address.city }}<br/>
+                @if (p.second_address.postal_code || p.second_address.city) {
+                  {{ p.second_address.postal_code }} {{ p.second_address.city }}<br/>
                 }
-                @if (patron.second_address.country) {
-                  {{ 'country_' + patron.second_address.country | translate }}
+                @if (p.second_address.country) {
+                  {{ 'country_' + p.second_address.country | translate }}
                 }
               </dd>
             }
@@ -227,7 +227,7 @@
   }
     <!-- LIBRARIAN INFORMATION'S SECTION ======================================== -->
 
-    @if (patron.libraries?.length > 0) {
+    @if (p.libraries?.length > 0) {
       <p-accordion-panel value="4">
         <p-accordion-header>
           <span class="ui:text-bold ui:text-xl" translate>Librarian information</span>
@@ -237,11 +237,11 @@
             <dl class="metadata">
               <dt>
                 <i class="fa fa-university"></i>&nbsp;
-                {{ patron.libraries.length | i18nPlural: {'=1': 'Library' | translate, 'other': 'Libraries' | translate} }}
+                {{ p.libraries.length | i18nPlural: {'=1': 'Library' | translate, 'other': 'Libraries' | translate} }}
               </dt>
               <dd>
                 <ul class="ui:list-none">
-                  @for (library of patron.libraries; track $index) {
+                  @for (library of p.libraries; track $index) {
                     <li>
                       {{ library.pid | getRecord: 'libraries' : 'field' : 'name' | async }}
                     </li>
@@ -255,14 +255,14 @@
     }
 
     <!-- PERMISSIONS ======================================== -->
-    @if (canAccessDisplayPermissions) {
+    @if (canAccessDisplayPermissions()) {
       <p-accordion-panel value="5">
         <p-accordion-header>
           <span class="ui:text-bold ui:text-xl" translate>Permissions</span>
         </p-accordion-header>
         <p-accordion-content>
           <div class="ui:mt-2">
-            <admin-patron-permissions [hidden]="false" [pid]="patron.pid"></admin-patron-permissions>
+            <admin-patron-permissions [hidden]="false" [pid]="p.pid"></admin-patron-permissions>
           </div>
         </p-accordion-content>
       </p-accordion-panel>

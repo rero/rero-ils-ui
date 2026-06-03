@@ -16,20 +16,24 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { Component, Input } from '@angular/core';
+import { Component, input, ChangeDetectionStrategy} from '@angular/core';
+import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
+import { Nl2brPipe } from '@rero/ng-core';
+import { UrlActivePipe } from '@rero/shared';
 
 @Component({
     selector: 'admin-remote-entities-person-detail-view',
     templateUrl: './remote-entities-person-detail-view.component.html',
-    standalone: false
+    imports: [TranslateDirective, TranslatePipe, Nl2brPipe, UrlActivePipe],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class RemoteEntitiesPersonDetailViewComponent {
 
   /** record metadata */
-  @Input() record: any;
+  record = input<any>();
 
   /** record source */
-  @Input() source: string;
+  source = input<string>();
 
   /** Disabled source link */
   disabledSourceLink = ['rero'];

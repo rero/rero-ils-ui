@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2022-2024 RERO
+ * Copyright (C) 2022-2025 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -14,28 +14,22 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Injectable } from '@angular/core';
-import { ActivatedRouteSnapshot } from '@angular/router';
+import { inject } from '@angular/core';
+import { ActivatedRouteSnapshot, CanActivateFn, Router } from '@angular/router';
 import { Observable, of } from 'rxjs';
-import { AbstractCanAddGuard } from './abstract-can-add.guard';
+import { canAdd } from './abstract-can-add.guard';
 
-@Injectable({
-  providedIn: 'root'
-})
-export class CanAddOrderLineGuard extends AbstractCanAddGuard  {
+/**
+ * Guard that allows adding an order line only when the `order` query param
+ * is present and the order belongs to the current fiscal year.
+ */
+export const canAddOrderLineGuard: CanActivateFn = (route: ActivatedRouteSnapshot): Observable<boolean> => {
+  const router = inject(Router);
 
-  /**
-   * Allow the loading if the order pid is present and check
-   * if the record is in current fiscal year
-   * @param route - ActivatedRouteSnapshot
-   * @returns Observable boolean
-   */
-  canActivate(route: ActivatedRouteSnapshot): Observable<boolean> {
-    const orderPid = route.queryParams.order;
-    if (!orderPid) {
-      this.router.navigate(['/errors/400'], { skipLocationChange: true });
-      return of(false);
-    }
-    return this.canAdd('acq_orders', orderPid);
+  const orderPid = route.queryParams.order;
+  if (!orderPid) {
+    router.navigate(['/errors/400'], { skipLocationChange: true });
+    return of(false);
   }
-}
+  return canAdd('acq_orders', orderPid);
+};

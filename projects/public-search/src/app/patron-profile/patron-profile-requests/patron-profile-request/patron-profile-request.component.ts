@@ -14,59 +14,63 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, inject, Input } from '@angular/core';
-import { TranslateService } from '@ngx-translate/core';
-import { CONFIG } from '@rero/ng-core';
+import { NgClass, NgTemplateOutlet } from '@angular/common';
+import { Component, inject, input, signal, ChangeDetectionStrategy} from '@angular/core';
+import { TranslateDirective, TranslatePipe, TranslateService } from '@ngx-translate/core';
+import { CONFIG, DateTranslatePipe, RecordData } from '@rero/ng-core';
+import { OpenCloseButtonComponent } from '@rero/shared';
 import { MessageService } from 'primeng/api';
+import { ButtonModule } from 'primeng/button';
 import { LoanApiService } from '../../../api/loan-api.service';
-import { PatronProfileMenuService } from '../../patron-profile-menu.service';
-import { PatronProfileService } from '../../patron-profile.service';
+import { PatronProfileStore } from '../../store/patron-profile.store';
+import { PatronProfileDocumentComponent } from '../../patron-profile-document/patron-profile-document.component';
 
 @Component({
     selector: 'public-search-patron-profile-request',
     templateUrl: './patron-profile-request.component.html',
-    standalone: false
+    imports: [NgClass, NgTemplateOutlet, TranslateDirective, TranslatePipe, DateTranslatePipe, OpenCloseButtonComponent, ButtonModule, PatronProfileDocumentComponent],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class PatronProfileRequestComponent {
 
-  private loanApiService: LoanApiService = inject(LoanApiService);
-  private translateService: TranslateService = inject(TranslateService);
-  private patronProfileService: PatronProfileService = inject(PatronProfileService);
-  private patronProfileMenuService: PatronProfileMenuService = inject(PatronProfileMenuService);
-  private messageService: MessageService = inject(MessageService);
+  private loanApiService = inject(LoanApiService);
+  private translateService = inject(TranslateService);
+  private store = inject(PatronProfileStore);
+  private messageService = inject(MessageService);
 
   /** Request record */
-  @Input() record: any;
+  record = input<RecordData>();
 
   /** Document section is collapsed */
   isCollapsed = true;
 
   /** Renew action done */
-  actionDone = false;
+  readonly actionDone = signal(false);
 
   /** Cancel action success */
-  actionSuccess = false;
+  readonly actionSuccess = signal(false);
 
   /** Cancel in progress */
-  cancelInProgress = false;
+  readonly cancelInProgress = signal(false);
 
   /** Get current viewcode */
   get viewcode(): string {
-    return this.patronProfileMenuService.currentPatron.organisation.code;
+    return this.store.currentPatron()?.organisation.code ?? '';
   }
 
   /** Cancel a request */
   cancel(): void {
-    const patronPid = this.patronProfileMenuService.currentPatron.pid;
-    this.cancelInProgress = true;
+    const patronPid = this.store.currentPatron()!.pid;
+    this.cancelInProgress.set(true);
+    const metadata = this.record()?.metadata as any;
     this.loanApiService.cancel({
-      pid: this.record.metadata.pid,
-      transaction_location_pid: this.record.metadata.item.location.pid,
+      pid: metadata?.pid,
+      transaction_location_pid: metadata?.item.location.pid,
       transaction_user_pid: patronPid
     }).subscribe((cancelLoan: any) => {
       if (cancelLoan !== undefined) {
-        this.patronProfileService.cancelRequest(this.record.metadata.pid);
-        this.actionDone = true;
+        this.store.cancelRequest(metadata?.pid);
+        this.actionDone.set(true);
         this.messageService.add({
           severity: 'success',
           summary: this.translateService.instant('Success'),
@@ -74,7 +78,7 @@ export class PatronProfileRequestComponent {
           life: CONFIG.MESSAGE_LIFE
         });
       } else {
-        this.cancelInProgress = false;
+        this.cancelInProgress.set(false);
         this.messageService.add({
           severity: 'error',
           summary: this.translateService.instant('Error'),

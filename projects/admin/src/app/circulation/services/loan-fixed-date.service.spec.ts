@@ -15,29 +15,37 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import { signal } from "@angular/core";
 import { TestBed } from "@angular/core/testing";
 import { LoanFixedDateService } from "./loan-fixed-date.service";
 import { LocalStorageService } from "@rero/ng-core";
-import { of } from "rxjs";
-import { LibraryService } from "@app/admin/menu/service/library.service";
-import { MenuService } from "@app/admin/menu/service/menu.service";
+import { MenuStore } from "@app/admin/menu/store/menu.store";
+import { vi } from "vitest";
 
 describe('LoanFixedDateService', () => {
   let service: LoanFixedDateService;
 
-  const libraryServiceSpy = jasmine.createSpyObj('LibraryService', ['']);
-  libraryServiceSpy.switch$ = of({});
+  const menuStoreSpy = { } as any;
+  menuStoreSpy.selectedLibrary = signal(null);
+  menuStoreSpy.logoutCounter = signal(0);
 
-  const menuServiceSpy = jasmine.createSpyObj('MenuService', ['']);
-  menuServiceSpy.logout$ = of({});
+  const localStorageMock = {
+    has: vi.fn().mockReturnValue(false),
+    isExpired: vi.fn().mockReturnValue(false),
+    get: vi.fn().mockReturnValue(null),
+    set: vi.fn(),
+    remove: vi.fn(),
+  };
 
   beforeEach(() => {
+    vi.clearAllMocks();
+    localStorageMock.has.mockReturnValue(false);
+
     TestBed.configureTestingModule({
       providers: [
         LoanFixedDateService,
-        LocalStorageService,
-        { provide: LibraryService, useValue: libraryServiceSpy },
-        { provide: MenuService, useValue: menuServiceSpy }
+        { provide: LocalStorageService, useValue: localStorageMock },
+        { provide: MenuStore, useValue: menuStoreSpy }
       ]
     });
 
@@ -49,7 +57,7 @@ describe('LoanFixedDateService', () => {
   });
 
   it('should return the date as a string', () => {
-    expect(service.hasValue()).toBeFalse();
+    expect(service.hasValue()).toBe(false);
 
     const dateString = new Date().toISOString();
     service.set(dateString);
@@ -61,7 +69,7 @@ describe('LoanFixedDateService', () => {
     const d = new Date();
     d.setDate(d.getDate() - 5);
     service.set(d.toISOString());
-    expect(service.hasValue()).toBeTrue();
+    expect(service.hasValue()).toBe(true);
     expect(service.get()).toBeUndefined();
   });
 });

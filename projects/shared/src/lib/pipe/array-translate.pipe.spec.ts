@@ -21,8 +21,7 @@ import { ArrayTranslatePipe } from './array-translate.pipe';
 describe('ArrayTranslatePipe', () => {
   let pipe: ArrayTranslatePipe;
 
-  const translateServiceSpy = jasmine.createSpyObj('TranslateService', ['instant']);
-  translateServiceSpy.instant.and.returnValue('foobar');
+  const translateServiceSpy = { instant: vi.fn().mockReturnValue('foobar') };
 
   beforeEach(() => {
     TestBed.configureTestingModule({

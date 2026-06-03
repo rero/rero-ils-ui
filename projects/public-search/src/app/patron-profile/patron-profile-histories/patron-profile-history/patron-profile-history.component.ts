@@ -14,26 +14,32 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, inject, Input } from '@angular/core';
-import { PatronProfileMenuService } from '../../patron-profile-menu.service';
+import { AsyncPipe } from '@angular/common';
+import { Component, inject, input, ChangeDetectionStrategy} from '@angular/core';
+import { TranslateDirective } from '@ngx-translate/core';
+import { DateTranslatePipe, GetRecordPipe, RecordData } from '@rero/ng-core';
+import { ContributionComponent } from '@rero/shared';
+import { TagModule } from 'primeng/tag';
+import { PatronProfileStore } from '../../store/patron-profile.store';
 
 @Component({
     selector: 'public-search-patron-profile-history',
     templateUrl: './patron-profile-history.component.html',
-    standalone: false
+    imports: [AsyncPipe, TranslateDirective, DateTranslatePipe, GetRecordPipe, ContributionComponent, TagModule],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class PatronProfileHistoryComponent {
 
-  private patronProfileMenuService: PatronProfileMenuService = inject(PatronProfileMenuService);
+  private store = inject(PatronProfileStore);
 
   /** Loan record */
-  @Input() record: any;
+  record = input<RecordData>();
 
   /** Document section is collapsed */
   isCollapsed = true;
 
   /** Get current viewcode */
   get viewcode(): string {
-    return this.patronProfileMenuService.currentPatron.organisation.code;
+    return this.store.currentPatron()?.organisation.code ?? '';
   }
 }

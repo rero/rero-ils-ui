@@ -18,7 +18,7 @@ import { TestBed } from '@angular/core/testing';
 
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { TranslateModule } from '@ngx-translate/core';
-import { RecordModule, RecordService } from '@rero/ng-core';
+import { RecordService } from '@rero/ng-core';
 import { of } from 'rxjs';
 import { IllRequestApiService } from './ill-request-api.service';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
@@ -96,13 +96,13 @@ describe('IllRequestApiService', () => {
     "links": {}
   };
 
-  const recordServiceSpy = jasmine.createSpyObj('RecordService', ['getRecords', 'totalHits']);
-  recordServiceSpy.getRecords.and.returnValue(of(response));
-  recordServiceSpy.totalHits.and.returnValue(1);
+  const recordServiceSpy = { getRecords: vi.fn(), totalHits: vi.fn() };
+  recordServiceSpy.getRecords.mockReturnValue(of(response));
+  recordServiceSpy.totalHits.mockReturnValue(1);
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-    imports: [RecordModule,
+    imports: [
         TranslateModule.forRoot()],
     providers: [
         { provide: RecordService, useValue: recordServiceSpy },

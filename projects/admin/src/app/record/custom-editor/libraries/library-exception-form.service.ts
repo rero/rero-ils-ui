@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { UntypedFormBuilder, UntypedFormGroup, Validators} from '@angular/forms';
 import { TimeValidator } from '@rero/ng-core';
 import { DateTime } from 'luxon';
@@ -25,9 +25,11 @@ import { DateTime } from 'luxon';
 })
 export class LibraryExceptionFormService {
 
+  private fb: UntypedFormBuilder = inject(UntypedFormBuilder);
+
   public form;
 
-  constructor(private fb: UntypedFormBuilder) {
+  constructor() {
     this.build();
   }
 

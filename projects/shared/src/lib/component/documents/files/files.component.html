@@ -14,32 +14,32 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-@if (loading) {
+@if (isLoading()) {
   <i class="fa fa-spinner fa-spin"></i>
 }
 
 @else {
   <div class="ui:flex ui:flex-col ui:gap-2">
-  @if(collections.length) {
+  @if(collections().length) {
     <div class="ui:flex ui:gap-2">
-      @for (collection of collections; track collection) {
+      @for (collection of collections(); track collection) {
         <p-tag severity="info" [title]="'Digital collection' | translate">
           <i class="fa fa-bookmark"></i>
-          @if (useHref) {
+          @if (useHref()) {
             <a role="link" tabindex="0" [href]="getHref(collection)">{{ collection }}</a>
           } @else {
-            <a role="link" tabindex="0" [routerLink]="routerPath" [queryParams]="getQueryParams(collection)">{{ collection }}</a>
+            <a role="link" tabindex="0" [routerLink]="routerPath()" [queryParams]="getQueryParams(collection)">{{ collection }}</a>
           }
         </p-tag>
       }
     </div>
   }
-  @if (files?.length > 0) {
-    @if(files.length > numVisible) {
+  @if (files()?.length > 0) {
+    @if(files().length > numVisible()) {
       <div class="ui:flex ui:flex-col ui:gap-2">
         <p-inputgroup>
-          <input id="filter" type="text" pInputText [placeholder]="'filter' | translate" [(ngModel)]="filterText"
-            (keyup)="onTextChange($event)" />
+          <input id="filter" type="text" pInputText [placeholder]="'filter' | translate" [ngModel]="filterText()"
+            (ngModelChange)="filterText.set($event)" />
           <p-inputgroup-addon>
             <i class="fa fa-filter"></i>
           </p-inputgroup-addon>
@@ -49,15 +49,18 @@
         </small>
       </div>
     }
-    @if (filteredFiles.length > 0) {
+    @if (filteredFiles().length > 0) {
       <div class="ui:border ui:border-surface ui:rounded-border ui:text-center ui:py-4 ui:px-1">
-        <p-carousel [showIndicators]="false" [showNavigators]="false" [value]="filteredFiles" [numVisible]="numVisible"
-          [page]="page" [numScroll]="numVisible" [circular]="false">
+        <p-carousel [showIndicators]="false" [showNavigators]="false" [value]="filteredFiles()" [numVisible]="numVisible()"
+          [page]="page()" [numScroll]="numVisible()" [circular]="false">
           <ng-template let-file #item>
             <div class="ui:px-1 ui:flex ui:flex-col">
               @if (file.thumbnail) {
                 <div class="ui:flex ui:justify-center">
-                  <img (click)="preview(file); $event.preventDefault()" [src]="file.thumbnail" [alt]="file.label"
+                  <img tabindex="0"
+                    (click)="preview(file); $event.preventDefault()"
+                    (keyup.enter)="preview(file)"
+                    [src]="file.thumbnail" [alt]="file.label"
                     class="ui:shadow-sm ui:border-surface-300 ui:border ui:mb-1 ui:max-w-20 ui:cursor-zoom-in" loading="lazy" />
                 </div>
               } @else {
@@ -82,8 +85,8 @@
           </ng-template>
         </p-carousel>
       </div>
-      @if(files.length > numVisible) {
-        <p-paginator (onPageChange)="onPageChange($event)" [first]="1" [rows]="numVisible" [totalRecords]="filteredFiles.length"
+      @if(files().length > numVisible()) {
+        <p-paginator (onPageChange)="onPageChange($event)" [first]="1" [rows]="numVisible()" [totalRecords]="filteredFiles().length"
           [showJumpToPageInput]="false" [pageLinkSize]="3" />
       }
     }
@@ -95,11 +98,11 @@
   [style]="{ width: '50vw' }">
   <ng-template #header>
     <h4>
-      {{ previewFile?.label }}
+      {{ previewFile()?.label }}
     </h4>
   </ng-template>
-  @if (previewFile) {
-    <iframe id="preview-iframe" width="100%" height="800px" [src]="previewFile?.url" style="border: none">
+  @if (previewFile()) {
+    <iframe id="preview-iframe" width="100%" height="800px" [src]="previewFile()?.url" style="border: none">
     </iframe>
   }
 </p-dialog>

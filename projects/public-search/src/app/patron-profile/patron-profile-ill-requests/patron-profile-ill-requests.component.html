@@ -23,9 +23,9 @@
         </div>
       </ng-template>
 
-    @defer (when loaded) {
+    @defer (when loaded()) {
       @if (paginator.getRecordsCount() > 0) {
-        @for (record of records; track $index) {
+        @for (record of records(); track $index) {
           <div class="ui:odd:bg-surface-50">
             <public-search-patron-profile-ill-request
               [record]="record"

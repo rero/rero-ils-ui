@@ -14,7 +14,7 @@
  You should have received a copy of the GNU Affero General Public License
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-@if (historyLogs$ | async; as logs) {
+@if (historyLogs(); as logs) {
   <p-card>
     <ng-template #header>
       <div class="ui:grid ui:grid-cols-12 ui:gap-4 ui:py-4 ui:pl-4 ui:pr-7 ui:text-lg ui:font-bold ui:items-center">

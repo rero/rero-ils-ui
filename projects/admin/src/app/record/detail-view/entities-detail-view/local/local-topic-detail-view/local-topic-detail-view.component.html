@@ -17,29 +17,29 @@
 -->
 
 <!-- GLOBAL FIELDS -->
-<admin-entities-local-global [record]="record">
+<admin-entities-local-global [record]="record()">
   <!-- NAME -->
-  @if (record.name) {
+  @if (record().name) {
     <dt translate>Name</dt>
-    <dd>{{ record.name }}</dd>
+    <dd>{{ record().name }}</dd>
   }
   <!-- GENRE FORM -->
-  @if (record.genreForm) {
+  @if (record().genreForm) {
     <dt translate>Genre form</dt>
     <dd>
       <i class="fa" [ngClass]="{
-        'fa-check text-success': record.genreForm,
-        'fa-times text-error': !record.genreForm
+        'fa-check text-success': record().genreForm,
+        'fa-times text-error': !record().genreForm
       }"></i>
     </dd>
   }
   <!-- ALTERNATIVE NAMES -->
-  @if (record.alternative_names && record.alternative_names.length > 0) {
+  @if (record().alternative_names && record().alternative_names.length > 0) {
     <ng-container>
       <dt translate>Alternative names</dt>
       <dd>
         <ul class="ui:list-none">
-          @for (name of record.alternative_names; track $index) {
+          @for (name of record().alternative_names; track $index) {
             <li>{{ name }}</li>
           }
         </ul>

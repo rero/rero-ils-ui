@@ -16,27 +16,32 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, input, OnInit, ChangeDetectionStrategy} from '@angular/core';
+import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
+import { Bind } from 'primeng/bind';
+import { Tag } from 'primeng/tag';
+import { NgTemplateOutlet } from '@angular/common';
 
 @Component({
     selector: 'admin-remote-topic-detail-view',
     templateUrl: './remote-topic-detail-view.component.html',
-    standalone: false
+    imports: [TranslateDirective, Bind, Tag, NgTemplateOutlet, TranslatePipe],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class RemoteTopicDetailViewComponent implements OnInit{
 
   /** Record metadata */
-  @Input() record: any;
+  record = input<any>();
 
   /** Record source */
-  @Input() source: string;
+  source = input<string>();
 
   exactMatch = [];
   closeMatch = [];
 
   ngOnInit(): void {
-    this.exactMatch = this.identifiedByUriFilter(this.record.exactMatch);
-    this.closeMatch = this.identifiedByUriFilter(this.record.closeMatch);
+    this.exactMatch = this.identifiedByUriFilter(this.record().exactMatch);
+    this.closeMatch = this.identifiedByUriFilter(this.record().closeMatch);
   }
   identifiedByUriFilter(match: any[]): any[] {
     return match?.map((m: any) => {

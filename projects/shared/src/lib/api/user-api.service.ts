@@ -18,7 +18,7 @@ import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { CoreConfigService } from '@rero/ng-core';
 import { Observable } from 'rxjs';
-import { User } from '../class/user';
+import { User } from '../classes/user';
 
 @Injectable({
   providedIn: 'root'

@@ -15,17 +15,18 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, EventEmitter, inject, OnDestroy, OnInit, Output } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
-import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
-import { Subscription } from 'rxjs';
+import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
+import { RecordSearchStore } from '@rero/ng-core';
+import { Bind } from 'primeng/bind';
+import { Button } from 'primeng/button';
+import { DialogService } from 'primeng/dynamicdialog';
 import { DocumentAdvancedSearchFormComponent } from './document-advanced-search-form/document-advanced-search-form.component';
-import { TranslateService } from '@ngx-translate/core';
 
 @Component({
-    selector: 'admin-document-advanced-search',
-    template: `
-    @if (!simple) {
+  selector: 'admin-document-advanced-search',
+  template: `
+    @if (!isSimple()) {
       <p-button
         [label]="'Build advanced query' | translate"
         outlined
@@ -35,57 +36,31 @@ import { TranslateService } from '@ngx-translate/core';
       />
     }
   `,
-    standalone: false
+  imports: [Bind, Button, TranslatePipe],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class DocumentAdvancedSearchComponent implements OnInit, OnDestroy {
+export class DocumentAdvancedSearchComponent {
 
-  private dialogService: DialogService = inject(DialogService);
-  private route: ActivatedRoute = inject(ActivatedRoute);
-  private translateService: TranslateService = inject(TranslateService);
+  private dialogService = inject(DialogService);
+  private translateService = inject(TranslateService);
+  private store = inject(RecordSearchStore);
 
-  /** Simple search */
-  simple = true;
+  protected isSimple = computed(() => !this.store.hasFilter('simple', '0'));
 
-  /** Query event */
-  @Output() queryString = new EventEmitter<string>();
-
-  /** all component subscription */
-  private subscription = new Subscription();
-
-  /** OnInit hook */
-  ngOnInit(): void {
-    this.subscription.add(this.route.queryParams.subscribe((params: any) => {
-      if (params.simple) {
-        if (Array.isArray(params.simple)) {
-          this.simple =  params.simple.length > 0 ? ('1' === params.simple[0]) : true;
-        } else {
-          this.simple = ('1' === params.simple);
-        }
-      } else {
-        this.simple = true;
-      }
-    }));
-  }
-
-  /** OnDestroy hook */
-  ngOnDestroy(): void {
-      this.subscription.unsubscribe();
-  }
-
-  /** Opening the advanced search dialog */
   openModalBox(): void {
-    const ref: DynamicDialogRef = this.dialogService.open(DocumentAdvancedSearchFormComponent, {
+    const ref = this.dialogService.open(DocumentAdvancedSearchFormComponent, {
       modal: true,
-      width: "60vw",
+      width: '60vw',
       closable: true,
+      position: 'top',
       header: this.translateService.instant('Build advanced query'),
     });
-    this.subscription.add(
+    if (ref) {
       ref.onClose.subscribe((queryString?: string) => {
         if (queryString) {
-          this.queryString.emit(queryString);
+          this.store.updateQuery(queryString);
         }
-      })
-    );
+      });
+    }
   }
 }

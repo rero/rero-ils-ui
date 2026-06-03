@@ -17,18 +17,18 @@
 <ngx-spinner name="file-upload" color="#fff" size="medium" type="ball-zig-zag" [fullScreen]="true">
   <p class="ui:text-white">
     {{ "Loading..." | translate }}
-    @if (fileUpload?.files?.length > 0) { ({{ nUploadedFiles }} /
-    {{ fileUpload.files.length }}) }
+    @if (fileUpload()?.files?.length > 0) { ({{ nUploadedFiles() }} /
+    {{ fileUpload()!.files.length }}) }
   </p>
 </ngx-spinner>
 
-@if (files) {
+@if (files()) {
 <div class="ui:flex ui:flex-col ui:gap-2 ui:py-2">
   <admin-files-collections />
   <div>
     <h5 translate>Upload Files</h5>
     <p-fileUpload
-      [disabled]="reachMaxFileLimit"
+      [disabled]="reachMaxFileLimit()"
       #fileUpload
       [auto]="true"
       [multiple]="true"
@@ -53,12 +53,10 @@
       </ng-template>
       <ng-template #file let-file></ng-template>
       <ng-template #content let-file>
-        @if (reachMaxFileLimit) {
-          <p-message
-            [text]="'The maximum number of files is reached. No additional upload is allowed.' | translate"
-            severity="error"
-            showTransitionOptions="0ms"
-          />
+        @if (reachMaxFileLimit()) {
+          <p-message severity="error" showTransitionOptions="0ms">
+            {{ 'The maximum number of files is reached. No additional upload is allowed.' | translate }}
+          </p-message>
         } @else {
         <span translate>Drag and drop files.</span>
         }
@@ -66,7 +64,7 @@
     </p-fileUpload>
   </div>
 
-  @if (files.length > 0) {
+  @if ((files()?.length ?? 0) > 0) {
   <div>
     <h5 translate>Uploaded Files</h5>
     <p-inputGroup>
@@ -75,8 +73,8 @@
         type="text"
         pInputText
         [placeholder]="'filter' | translate"
-        [(ngModel)]="filterText"
-        (keyup)="onTextChange($event)"
+        [ngModel]="filterText()"
+        (ngModelChange)="filterText.set($event)"
       />
       <p-inputGroupAddon>
         <i class="fa fa-filter"></i>
@@ -84,13 +82,13 @@
     </p-inputGroup>
 
     <small id="filtered-results">
-      {{ getResultsText() | async }}
+      {{ getResultsText() }}
     </small>
   </div>
 
-  @if(filteredFiles.length > 0) {
+  @if(filteredFiles().length > 0) {
   <ul class="ui:list-none ui:border ui:border-surface ui:rounded-border ui:p-2">
-    @for (file of filteredFiles;track file.file_id) {
+    @for (file of filteredFiles();track file.key) {
     <li class="ui:odd:bg-surface-50">
       <div class="ui:grid ui:grid-cols-12 ui:gap-4 ui:items-center">
         <div class="ui:col-span-6">
@@ -98,7 +96,7 @@
             class="text-link"
             tabindex="-1"
             [pTooltip]="
-              (file.size | filesize) +
+              (+file.size | filesize) +
               ' / ' +
               (file.updated | dateTranslate : 'medium')
             "

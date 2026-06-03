@@ -16,14 +16,19 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { ChangeDetectorRef, Component, inject, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, inject, OnInit, ChangeDetectionStrategy} from '@angular/core';
 import { FieldType } from '@ngx-formly/core';
 import { extractIdOnRef, RecordService } from '@rero/ng-core';
 import { catchError, map, of, switchMap, tap } from 'rxjs';
+import { DocumentBriefViewComponent } from '@rero/shared';
+import { NotesComponent } from '../../components/notes/notes.component';
+import { Bind } from 'primeng/bind';
+import { OverlayBadge } from 'primeng/overlaybadge';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
-  selector: 'admin-formly-order-line-type',
-  template: `
+    selector: 'admin-formly-order-line-type',
+    template: `
     @if (orderLine) {
       <div class="ui:flex ui:gap-2">
         <div class="ui:grow-1">
@@ -32,11 +37,11 @@ import { catchError, map, of, switchMap, tap } from 'rxjs';
           } @else if (document === null) {
             <span class="ui:text-muted-color"><i class="fa fa-exclamation-triangle"></i>&nbsp;{{ "Unknown document" | translate }} (pid {{ documentPid }})</span>
           }
-          <admin-notes class="ui:text-sm" [notes]="orderLine.notes"/>
+          <admin-notes class="ui:text-sm" [notes]="$any(orderLine.notes)"/>
         </div>
         @if(orderLine.priority) {
           <div class="ui:flex">
-            <p-overlaybadge [value]="orderLine.priority" [severity]="severity(orderLine.priority)">
+            <p-overlaybadge [value]="orderLine.priority" [severity]="$any(severity(orderLine.priority))">
               <i class="fa fa-tachometer" style="font-size: 1.2rem"></i>
             </p-overlaybadge>
           </div>
@@ -44,7 +49,14 @@ import { catchError, map, of, switchMap, tap } from 'rxjs';
       </div>
     }
   `,
-  standalone: false,
+    imports: [
+        DocumentBriefViewComponent,
+        NotesComponent,
+        Bind,
+        OverlayBadge,
+        TranslatePipe,
+    ],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class OrderLineTypeComponent extends FieldType implements OnInit {
   private recordService: RecordService = inject(RecordService);

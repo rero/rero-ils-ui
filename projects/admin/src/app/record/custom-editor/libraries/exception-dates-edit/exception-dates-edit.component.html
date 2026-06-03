@@ -82,7 +82,7 @@
           appendTo="body"
           formControlName="dates"
           selectionMode="range"
-          numberOfMonths="2"
+          [numberOfMonths]="2"
           [showIcon]="true"
         />
         @if (dates.invalid && (dates.dirty || dates.touched)) {
@@ -203,7 +203,7 @@
       <div class="ui:col-span-10 ui:flex ui:gap-2 ui:items-center">
         <label for="interval"><span translate>Repeat each</span>&nbsp;*</label>
         <div class="ui:flex ui:gap-2">
-          <p-inputNumber [showButtons]="true"  min="1" step="1" formControlName="interval" />
+          <p-inputNumber [showButtons]="true" [min]="1" [step]="1" formControlName="interval" />
           <p-select
             appendTo="body"
             [options]="periods"

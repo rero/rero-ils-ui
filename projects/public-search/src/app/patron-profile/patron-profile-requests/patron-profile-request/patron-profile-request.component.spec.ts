@@ -19,17 +19,19 @@ import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { TranslateModule } from '@ngx-translate/core';
-import { SharedModule, testUserPatronWithSettings, UserApiService, UserService } from '@rero/shared';
+import { RecordService } from '@rero/ng-core';
+import { AppStore, testUserPatronWithSettings, User } from '@rero/shared';
 import { cloneDeep } from 'lodash-es';
 import { of } from 'rxjs';
-import { PatronProfileMenuService } from '../../patron-profile-menu.service';
+import { MessageService } from 'primeng/api';
+import { LoanApiService } from '../../../api/loan-api.service';
+import { PatronProfileStore } from '../../store/patron-profile.store';
 import { PatronProfileRequestComponent } from './patron-profile-request.component';
 
 describe('PatronProfileRequestComponent', () => {
   let component: PatronProfileRequestComponent;
   let fixture: ComponentFixture<PatronProfileRequestComponent>;
-  let userService: UserService;
-  let patronProfileMenuService: PatronProfileMenuService;
+  let store: InstanceType<typeof PatronProfileStore>;
 
   const record = {
     metadata: {
@@ -38,38 +40,40 @@ describe('PatronProfileRequestComponent', () => {
         pid: '1',
         title: [{ type: 'bf:Title', _text: 'Document title' }]
       },
+      item: {},
       pickup_name: 'Pickup name',
       state: 'ITEM_AT_DESK',
       rank: 3
     }
   };
 
-  const userApiServiceSpy = jasmine.createSpyObj('UserApiService', ['getLoggedUser']);
+  const appStoreSpy = {
+    user: vi.fn().mockReturnValue(new User(cloneDeep(testUserPatronWithSettings)))
+  };
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [PatronProfileRequestComponent],
-      schemas: [NO_ERRORS_SCHEMA],
-      imports: [
+    schemas: [NO_ERRORS_SCHEMA],
+    imports: [
         TranslateModule.forRoot(),
-        SharedModule
-      ],
-      providers: [
-        { provide: UserApiService, useValue: userApiServiceSpy },
+        PatronProfileRequestComponent
+    ],
+    providers: [
+      { provide: AppStore, useValue: appStoreSpy },
+        { provide: LoanApiService, useValue: { cancel: vi.fn().mockReturnValue(of(null)) } },
+        { provide: MessageService, useValue: { add: vi.fn() } },
+        { provide: RecordService, useValue: { getRecord: vi.fn().mockReturnValue(of({ metadata: {} })), MAX_REST_RESULTS_SIZE: 1000 } },
         provideHttpClient(withInterceptorsFromDi()),
         provideHttpClientTesting()
-      ]
-    }).compileComponents();
+    ]
+}).compileComponents();
   });
 
   beforeEach(() => {
     fixture = TestBed.createComponent(PatronProfileRequestComponent);
     component = fixture.componentInstance;
-    userApiServiceSpy.getLoggedUser.and.returnValue(of(cloneDeep(testUserPatronWithSettings)));
-    userService = TestBed.inject(UserService);
-    userService.load().subscribe();
-    patronProfileMenuService = TestBed.inject(PatronProfileMenuService);
-    patronProfileMenuService.init();
+    store = TestBed.inject(PatronProfileStore);
+    store.init(new User(cloneDeep(testUserPatronWithSettings)));
     fixture.detectChanges();
   });
 
@@ -78,7 +82,7 @@ describe('PatronProfileRequestComponent', () => {
   });
 
   it('should display the document information button and link', () => {
-    component.record = record;
+    fixture.componentRef.setInput('record', record);
     fixture.detectChanges();
     const documentLink = fixture.nativeElement.querySelector('public-search-patron-profile-document');
     expect(documentLink.length === 1);
@@ -89,7 +93,7 @@ describe('PatronProfileRequestComponent', () => {
 
   it('should display the loan with ITEM_AT_DESK state', () => {
     record.metadata.state = 'ITEM_AT_DESK';
-    component.record = record;
+    fixture.componentRef.setInput('record', record);
     fixture.detectChanges();
     const div = fixture.nativeElement.querySelectorAll('div')[2];
     expect(div.textContent).toContain('to pick up');
@@ -97,7 +101,7 @@ describe('PatronProfileRequestComponent', () => {
 
   it('should display the loan with PENDING state', () => {
     record.metadata.state = 'PENDING';
-    component.record = record;
+    fixture.componentRef.setInput('record', record);
     fixture.detectChanges();
     const div = fixture.nativeElement.querySelectorAll('div')[2];
     expect(div.textContent).toContain('(position {{ rank }} in waiting list)');

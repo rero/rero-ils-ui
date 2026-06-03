@@ -17,10 +17,7 @@
 import { inject, Pipe, PipeTransform } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 
-@Pipe({
-    name: 'arrayTranslate',
-    standalone: false
-})
+@Pipe({ name: 'arrayTranslate' })
 export class ArrayTranslatePipe implements PipeTransform {
 
   private translateService: TranslateService = inject(TranslateService);

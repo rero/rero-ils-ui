@@ -29,7 +29,7 @@ describe('LoanApiService', () => {
     total: 0
   };
 
-  const httpClientSpy = jasmine.createSpyObj('HttpClient', ['get']);
+  const httpClientSpy = { get: vi.fn() };
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -47,7 +47,7 @@ describe('LoanApiService', () => {
   });
 
   it('should return a list of overdue for a loan', () => {
-    httpClientSpy.get.and.returnValue(of(loanOverduePreview));
+    httpClientSpy.get.mockReturnValue(of(loanOverduePreview));
     service.getPreviewOverdue('1')
       .subscribe((result: LoanOverduePreview) => expect(result).toEqual(loanOverduePreview))
   });

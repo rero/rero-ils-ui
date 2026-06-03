@@ -15,16 +15,16 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <admin-circulation-log
-  [record]="record"
-  [isHighlight]="isHighlight"
-  [separator]="separator"
+  [record]="record()"
+  [isHighlight]="isHighlight()"
+  [separator]="separator()"
 >
   <p-tag badge translate>Scan Item</p-tag>
   <div collapsedContent class="ui:grid ui:grid-cols-12 ui:gap-4">
     <div class="ui:col-span-8">
       <i class="fa fa-globe"></i>&nbsp;
-      @if (record.metadata.scan.transaction_location) {
-        @if (record.metadata.scan.transaction_location.pid | getRecord : 'locations' | async; as location) {
+      @if (record().metadata.scan.transaction_location) {
+        @if (record().metadata.scan.transaction_location.pid | getRecord : 'locations' | async; as location) {
           {{ $any(location).metadata.library.pid | getRecord : 'libraries' : 'field' : 'name' | async }}
         }
       } @else {
@@ -39,8 +39,8 @@
         <i class="fa fa-globe"></i>&nbsp;{{ 'Library' | translate }}
       </div>
       <div class="ui:col-span-9">
-        @if (record.metadata.scan.transaction_location) {
-          @if (record.metadata.scan.transaction_location.pid | getRecord : 'locations' | async; as location) {
+        @if (record().metadata.scan.transaction_location) {
+          @if (record().metadata.scan.transaction_location.pid | getRecord : 'locations' | async; as location) {
             {{ $any(location).metadata.library.pid | getRecord : 'libraries' : 'field' : 'name' | async }}
           }
         } @else {
@@ -54,17 +54,17 @@
         <i class="fa fa-user-circle-o"></i>&nbsp;{{ 'Operator' | translate }}
       </div>
       <div class="ui:col-span-9">
-        {{ record.metadata.user_name }}
+        {{ record().metadata.user_name }}
       </div>
     </div>
     <!-- Note -->
-     @if (record.metadata.scan.note) {
+     @if (record().metadata.scan.note) {
       <div class="ui:grid ui:grid-cols-12 ui:gap-x-2">
         <div class="ui:col-span-3 ui:font-bold" translate>
           <i class="fa fa-comment-o"></i>&nbsp;{{ 'Note' | translate }}
         </div>
         <div class="ui:col-span-9">
-          {{ record.metadata.scan.note }}
+          {{ record().metadata.scan.note }}
         </div>
       </div>
     }

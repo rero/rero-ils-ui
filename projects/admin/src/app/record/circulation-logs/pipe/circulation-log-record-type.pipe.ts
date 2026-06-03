@@ -16,10 +16,7 @@
  */
 import { Pipe, PipeTransform } from '@angular/core';
 
-@Pipe({
-  name: 'circulationLogRecordType',
-  standalone: false
-})
+@Pipe({ name: 'circulationLogRecordType' })
 export class CirculationLogRecordTypePipe implements PipeTransform {
 
   transform(recordType: string): unknown {

@@ -15,18 +15,18 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-  @if (receipt) {
+  @if (receipt()) {
     <!-- RECEIPT INFORMATION COLUMN -->
       <div class="ui:grid ui:grid-cols-12 ui:gap-4 ui:p-4">
         <!-- FIRST ROW :: receipt detail (always visible) -->
         <div class="ui:col-span-7 ui:flex ui:flex-wrap ui:gap-2 ui:items-center">
-          @if (collapsable) {
+          @if (collapsable()) {
             <shared-open-close-button (status)="isCollapsed = $event" />
           }
           <div class="ui:grow ui:flex ui:gap-2 ui:items-center">
           <span>
-            {{ receipt.reference }}
-            @if (receipt | receptionDates; as reception_dates) {
+            {{ receipt().reference }}
+            @if (receipt() | receptionDates; as reception_dates) {
               @if (reception_dates.length > 0) {
                 <span class="ui:italic ui:text-sm">
                   ({{ reception_dates.join(', ') }})
@@ -34,71 +34,71 @@
               }
             }
           </span>
-          @if (receipt.notes.length > 0 && isCollapsed) {
+          @if (receipt().notes.length > 0 && isCollapsed) {
             <span class="ui:flex ui:gap-1">
-              @for (note of receipt.notes; track $index) {
+              @for (note of receipt().notes; track $index) {
                 <i class="fa fa-circle text-{{ note | noteBadgeColor }}" aria-hidden="true" [title]="note.type | translate"></i>
               }
             </span>
           }
         </div>
-          @if (receipt.quantity) {
+          @if (receipt().quantity) {
               <p-tag severity="info">
                 <i class="fa fa-sign-in"></i>&nbsp;
-                {{ receipt.quantity }}
-                {{ receipt.quantity | i18nPlural: {'=1': 'item', 'other': 'items'} | translate }}
+                {{ receipt().quantity }}
+                {{ receipt().quantity | i18nPlural: {'=1': 'item', 'other': 'items'} | translate }}
               </p-tag>
           }
         </div>
-        <div class="ui:col-span-3 ui:flex ui:font-bold ui:justify-end ui:items-center" [class.ui:border-right-1]="recordPermissions && allowActions">
-          {{ receipt.total_amount | currency:receipt.currency:'symbol' }}
+        <div class="ui:col-span-3 ui:flex ui:font-bold ui:justify-end ui:items-center" [class.ui:border-right-1]="recordPermissions() && allowActions()">
+          {{ receipt().total_amount | currency:receipt().currency:'symbol' }}
         </div>
         <!-- ACTION BUTTON COLUMN -->
-        @if (recordPermissions && allowActions) {
+        @if (recordPermissions() && allowActions()) {
           <div class="ui:col-span-2 ui:flex ui:flex-wrap ui:gap-1 ui:justify-end">
-            @if(recordPermissions.update?.can) {
+            @if(recordPermissions().update?.can) {
               <shared-action-button
                 icon="fa fa-edit"
                 [title]="'Edit' | translate"
                 severity="primary"
-                [routerLink]="['/', 'acquisition', 'records', 'acq_orders', 'receive', receipt.acq_order.pid]"
-                [queryParams]="{ receipt: receipt.pid }"
+                [routerLink]="['/', 'acquisition', 'records', 'acq_orders', 'receive', receipt().acq_order.pid]"
+                [queryParams]="{ receipt: receipt().pid }"
               />
             }
             <shared-action-button
               icon="fa fa-trash"
               [title]="'Delete' | translate"
               severity="danger"
-              [disabled]="!recordPermissions.delete.can"
+              [disabled]="!recordPermissions().delete.can"
               [message]="deleteInfoMessage"
               (btnClick)="deleteReceipt()"
             />
           </div>
         }
-        @if (!collapsable || !isCollapsed) {
+        @if (!collapsable() || !isCollapsed) {
           <!-- RECEPTION LINES ROWS :: One line for each reception line -->
            <div class="ui:col-span-12">
-            @for (line of receipt.receipt_lines; track line.pid) {
-              <admin-receipt-line [line]="line" [receipt]="receipt" [allowActions]="allowActions"/>
+            @for (line of receipt().receipt_lines; track line.pid) {
+              <admin-receipt-line [line]="line" [receipt]="receipt()" [allowActions]="allowActions()"/>
 
             }
           </div>
           <!-- RECEIPT ADJUSTMENTS :: One line for each adjustment -->
-          @for (adjustment of receipt.amount_adjustments; track $index) {
+          @for (adjustment of receipt().amount_adjustments; track $index) {
             <div class="ui:col-start-1 ui:col-span-7">
               <i class="fa fa-long-arrow-right ui:mr-4"></i>
               {{ adjustment.label }}
             </div>
             <div class="ui:col-span-3 ui:flex-col ui:font-bold ui:flex ui:items-end">
               <div>
-                {{ adjustment.amount | currency:receipt.currency:'symbol' }}
+                {{ adjustment.amount | currency:receipt().currency:'symbol' }}
               </div>
             </div>
           }
           <!-- RECEIPT NOTES -->
-          @if (receipt.notes.length > 0) {
+          @if (receipt().notes.length > 0) {
             <div class="ui:col-start-1 ui:col-span-7">
-              <admin-notes [notes]="receipt.notes" />
+              <admin-notes [notes]="$any(receipt().notes)" />
             </div>
           }
         }

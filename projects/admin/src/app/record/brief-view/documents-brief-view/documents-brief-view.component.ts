@@ -15,43 +15,43 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, inject, Input } from '@angular/core';
+import { Component, effect, inject, input, ChangeDetectionStrategy} from '@angular/core';
 import { DocumentApiService } from '@app/admin/api/document-api.service';
-import { ResultItem } from '@rero/ng-core';
+import { ThumbnailComponent, ContributionComponent, PartOfComponent, AvailabilityComponent, MainTitlePipe } from '@rero/shared';
+import { RouterLink } from '@angular/router';
 
 @Component({
     selector: 'admin-documents-brief-view',
     templateUrl: './documents-brief-view.component.html',
-    standalone: false
+    imports: [ThumbnailComponent, RouterLink, ContributionComponent, PartOfComponent, AvailabilityComponent, MainTitlePipe],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class DocumentsBriefViewComponent implements ResultItem {
+export class DocumentsBriefViewComponent {
 
   public documentApiService: DocumentApiService = inject(DocumentApiService);
 
-  /** Set record */
-  @Input() set record(record) {
-    this._record = record;
-    this.processProvisionActivityPublications();
-  }
+  record = input<any>();
 
-  @Input() type: string;
+  type = input<string>();
 
-  @Input() detailUrl: { link: string, external: boolean };
+  detailUrl = input<{ link: string, external: boolean }>();
 
   /** Provision activities */
   provisionActivityPublications: any[] = [];
 
-  /** Record */
-  private _record: any;
-
-  /** Get current record */
-  get record(): any {
-    return this._record;
+  constructor() {
+    effect(() => {
+      const record = this.record();
+      if (record) {
+        this.provisionActivityPublications = [];
+        this.processProvisionActivityPublications();
+      }
+    });
   }
 
   /** process provision activity publications */
   private processProvisionActivityPublications() {
-    const { provisionActivity } = this.record.metadata;
+    const { provisionActivity } = this.record().metadata;
     if (undefined === provisionActivity) {
       return;
     }

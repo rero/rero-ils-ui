@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2020-2024 RERO
+ * Copyright (C) 2020-2025 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -14,45 +14,42 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
-import { inject, Injectable } from '@angular/core';
-import { ActivatedRouteSnapshot, Router } from '@angular/router';
-import { UserService } from '@rero/shared';
+import { inject } from '@angular/core';
+import { ActivatedRouteSnapshot, CanActivateFn, Router } from '@angular/router';
+import { AppStore } from '@rero/shared';
 import { Observable, of } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 
-@Injectable({
-  providedIn: 'root'
-})
-export class LibraryGuard  {
-
-  protected userService: UserService = inject(UserService);
-  protected router: Router = inject(Router);
-
-  /**
-   * Check if the current logged user is linked to the same library than the desired resource.
-   * If access is denied --> 403 : forbidden
-   * If error occurred --> 500 : Internal server error
-   */
-  canActivate(next: ActivatedRouteSnapshot): Observable<boolean> {
-    return this.getOwningLibrary$(next).pipe(
-      map((owningLibrary: string) => {
-        if (owningLibrary !== this.userService.user.currentLibrary) {
-          this.router.navigate(['/errors/403'], { skipLocationChange: true });
-          return false;
-        }
-        return true;
-      }),
-      catchError(() => this.router.navigate(['/errors/500'], { skipLocationChange: true }))
-    );
-  }
-
-  /**
-   * Return the library associated to the resource
-   * @param route: the current URL route
-   * @return the library pid linked to the resource from the 'library' query parameters
-   */
-  getOwningLibrary$(route: ActivatedRouteSnapshot): Observable<string> {
-    return of(route.queryParams.library);
-  }
+/**
+ * Shared helper: checks that `owningLibrary$` emits the current user's library.
+ * Services must be injected by the caller and passed explicitly.
+ */
+export function checkLibraryAccess(
+  owningLibrary$: Observable<string>,
+  appStore: InstanceType<typeof AppStore>,
+  router: Router
+): Observable<boolean> {
+  return owningLibrary$.pipe(
+    map((owningLibrary: string) => {
+      if (owningLibrary !== appStore.currentLibraryPid()) {
+        router.navigate(['/errors/403'], { skipLocationChange: true });
+        return false;
+      }
+      return true;
+    }),
+    catchError(() => {
+      router.navigate(['/errors/500'], { skipLocationChange: true });
+      return of(false);
+    })
+  );
 }
+
+/**
+ * Guard that checks if the current user belongs to the library passed via the
+ * `library` query parameter. Redirects to /errors/403 if denied, /errors/500 on error.
+ */
+export const libraryGuard: CanActivateFn = (route: ActivatedRouteSnapshot): Observable<boolean> => {
+  const appStore = inject(AppStore);
+  const router = inject(Router);
+  return checkLibraryAccess(of(route.queryParams.library), appStore, router);
+};

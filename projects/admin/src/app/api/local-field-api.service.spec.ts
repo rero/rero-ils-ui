@@ -39,12 +39,12 @@ describe('LocalFieldApiService', () => {
     links: {}
   };
 
-  const recordServiceSpy = jasmine.createSpyObj('RecordService', ['getRecords', 'totalHits']);
-  recordServiceSpy.getRecords.and.returnValue(of(emptyRecords));
-  recordServiceSpy.totalHits.and.returnValue(0);
+  const recordServiceSpy = { getRecords: vi.fn(), totalHits: vi.fn() };
+  recordServiceSpy.getRecords.mockReturnValue(of(emptyRecords));
+  recordServiceSpy.totalHits.mockReturnValue(0);
 
-  const recordUiServiceSpy = jasmine.createSpyObj('RecordUiService', ['deleteRecord']);
-  recordUiServiceSpy.deleteRecord.and.returnValue(of(true));
+  const recordUiServiceSpy = { deleteRecord: vi.fn() };
+  recordUiServiceSpy.deleteRecord.mockReturnValue(of(true));
 
   beforeEach(() => {
     TestBed.configureTestingModule({

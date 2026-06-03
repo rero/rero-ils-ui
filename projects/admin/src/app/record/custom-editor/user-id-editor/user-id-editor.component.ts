@@ -14,21 +14,26 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, inject, OnInit } from '@angular/core';
-import { UntypedFormControl, UntypedFormGroup } from '@angular/forms';
-import { FormlyFieldConfig } from '@ngx-formly/core';
+import { Component, inject, OnInit, signal, ChangeDetectionStrategy} from '@angular/core';
+import { UntypedFormControl, UntypedFormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormlyFieldConfig, FormlyModule } from '@ngx-formly/core';
 import { FormlyJsonschema } from '@ngx-formly/core/json-schema';
-import { CONFIG, JSONSchema7, NgCoreTranslateService, processJsonSchema, RecordService, removeEmptyValues } from '@rero/ng-core';
-import { UserService } from '@rero/shared';
+import { CONFIG, JSONSchema7, NgCoreTranslateService, processJsonSchema, RecordService, removeEmptyValues, SearchInputComponent } from '@rero/ng-core';
+import { AppStore } from '@rero/shared';
 import { MessageService } from 'primeng/api';
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { of } from 'rxjs';
 import { debounceTime, map, switchMap, tap } from 'rxjs/operators';
+import { Bind } from 'primeng/bind';
+import { Divider } from 'primeng/divider';
+import { Button } from 'primeng/button';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
     selector: 'admin-user-id-editor',
     templateUrl: './user-id-editor.component.html',
-    standalone: false
+    imports: [SearchInputComponent, Bind, Divider, FormsModule, ReactiveFormsModule, Button, FormlyModule, TranslatePipe],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class UserIdEditorComponent implements OnInit {
 
@@ -38,7 +43,7 @@ export class UserIdEditorComponent implements OnInit {
   private recordService: RecordService = inject(RecordService);
   private formlyJsonschema: FormlyJsonschema = inject(FormlyJsonschema);
   private translateService: NgCoreTranslateService = inject(NgCoreTranslateService);
-  private userService: UserService = inject(UserService);
+  private appStore = inject(AppStore);
 
   searchText = '';
 
@@ -52,7 +57,7 @@ export class UserIdEditorComponent implements OnInit {
   schema = null;
 
   /** form initial values */
-  model: any = {};
+  readonly model = signal<any>({});
 
   /** angular form group for ngx-formly */
   form: UntypedFormGroup;
@@ -73,9 +78,9 @@ export class UserIdEditorComponent implements OnInit {
       tap(
         schema => {
           if (schema != null) {
-            schema = processJsonSchema(schema.schema);
+            const processedSchema: any = processJsonSchema((schema as any).schema);
             this.fields = [
-              this.formlyJsonschema.toFieldConfig(schema, {
+              this.formlyJsonschema.toFieldConfig(processedSchema, {
 
                 // post process JSONSchema7 to FormlyFieldConfig conversion
                 map: (field: FormlyFieldConfig, jsonSchema: JSONSchema7) => {
@@ -125,7 +130,7 @@ export class UserIdEditorComponent implements OnInit {
           : this.recordService.getRecord('users', this.userID);
       }),
       map((user: any) => user.metadata)
-    ).subscribe(model => this.model = model);
+    ).subscribe(model => this.model.set(model));
   }
 
   /**
@@ -138,10 +143,10 @@ export class UserIdEditorComponent implements OnInit {
       this.loadedUserID = null;
       this.passwordField.props.required = true;
       this.form.reset();
-      this.model = {};
+      this.model.set({});
       return;
     }
-    this.recordService.getRecords('users', query).pipe(
+    this.recordService.getRecords('users', { query }).pipe(
       map((res: any) => {
         if (res.hits.hits.length === 0) {
           this.messageService.add({
@@ -160,7 +165,7 @@ export class UserIdEditorComponent implements OnInit {
           return null;
         }
         // current logged user organisation
-        const currentOrgPid = this.userService.user.currentOrganisation;
+        const currentOrgPid = this.appStore.currentOrganisationPid();
         const patronAccounts = model.metadata.patrons;
         // user has patron account
         if (patronAccounts && patronAccounts.length > 0) {
@@ -185,7 +190,9 @@ export class UserIdEditorComponent implements OnInit {
         this.loadedUserID = model.id;
         this.passwordField.props.required = false;
         this.form.reset();
-        return this.model = model.metadata || null;
+        const metadata = model.metadata || null;
+        this.model.set(metadata);
+        return metadata;
       }),
     ).subscribe();
   }
@@ -242,7 +249,7 @@ export class UserIdEditorComponent implements OnInit {
         if (value == null || value.length === 0) {
           return of(true);
         }
-        return this.recordService.getRecords('users', `${fieldName}:${value}`).pipe(
+        return this.recordService.getRecords('users', { query: `${fieldName}:${value}` }).pipe(
           debounceTime(1000),
           map((res: any) => {
             const id = this.loadedUserID || this.userID;

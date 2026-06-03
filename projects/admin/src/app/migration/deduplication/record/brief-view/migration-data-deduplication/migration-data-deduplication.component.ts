@@ -15,114 +15,101 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { Component, computed, inject, input, OnInit, output } from '@angular/core';
-import { TranslateService } from '@ngx-translate/core';
-import { RecordService } from '@rero/ng-core';
+import { Component, computed, ElementRef, inject, input, OnInit, signal, viewChild, ChangeDetectionStrategy} from '@angular/core';
+import { TranslateService, TranslateDirective, TranslatePipe } from '@ngx-translate/core';
+import { RecordSearchStore, RecordService, DateTranslatePipe } from '@rero/ng-core';
 import { MessageService } from 'primeng/api';
+import { Bind } from 'primeng/bind';
+import { Inplace } from 'primeng/inplace';
+import { FormsModule } from '@angular/forms';
+import { Button } from 'primeng/button';
+import { Tag } from 'primeng/tag';
+import { MigrationMetadataBriefComponent } from '../migration-metadata/migration-metadata.component';
+import { DecimalPipe } from '@angular/common';
+import { Message } from 'primeng/message';
+import { InputText } from 'primeng/inputtext';
 
 @Component({
     selector: 'admin-migration-data-deduplication',
     templateUrl: './migration-data-deduplication.component.html',
-    standalone: false
+    imports: [Bind, Inplace, InputText, FormsModule, Button, Tag, TranslateDirective, MigrationMetadataBriefComponent, DecimalPipe, DateTranslatePipe, TranslatePipe, Message],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class MigrationDataDeduplicationBriefComponent implements OnInit {
-  // services
-  protected toastService: MessageService = inject(MessageService);
-  protected recordService: RecordService = inject(RecordService);
-  protected translateService: TranslateService = inject(TranslateService);
+  protected toastService = inject(MessageService);
+  protected recordService = inject(RecordService);
+  protected translateService = inject(TranslateService);
+  protected searchStore = inject(RecordSearchStore);
 
-  // current record
   record = input<any>();
+  type = input<string>();
+  detailUrl = input<{ link: string; external: boolean }>();
 
-  // need a result list refresh
-  refresh = output<boolean>();
+  ilsPidInput = viewChild<ElementRef<HTMLInputElement>>('ilsPidInput');
 
-  // current ILS pid
-  ilsPid = null;
+  ilsPid = signal<string | null>(null);
+  currentCandidate = signal<any | null>(null);
+  currentCandidateIndex = signal(-1);
 
-  // current candidate
-  currentCandidate = null;
-
-  // current candidate index
-  currentCandidateIndex = null;
-
-  // message logs server
-  messages = computed((): { severity: string; detail: string }[] => this.getMessages());
-
-  //** OnInit hook */
-  ngOnInit(): void {
-    let ilsPid = this.record()?.metadata?.deduplication?.ils_pid;
-    // get value from the backend if it exists
-    if (ilsPid == null && this.candidates.length > 0 && this.status() !== 'no match') {
-      ilsPid = this.candidates[0].json.pid;
-    }
-    // display the current candidate if exists
-    this.updateCurrentCandidate(ilsPid);
-    if (this.status() == 'no match') {
-      this.currentCandidateIndex = -1;
-      this.currentCandidate = null;
-    }
-  }
-
-  /**
-   * Get the backend log messages from the record.
-   *
-   * @returns list of messages on primeng format
-   */
-  getMessages(): { severity: string; detail: string }[] {
-    const messages = [];
+  candidates = computed<any[]>(() => this.record()?.metadata?.deduplication?.candidates ?? []);
+  status = computed(() => this.record()?.metadata?.deduplication?.status);
+  hasPrevious = computed(() => this.currentCandidateIndex() > 0);
+  hasNext = computed(() => this.currentCandidateIndex() < this.candidates().length - 1);
+  messages = computed((): { severity: string; detail: string }[] => {
+    const messages: { severity: string; detail: string }[] = [];
     if (this.record()?.metadata?.deduplication?.logs) {
-      ['info', 'warning', 'error'].map((field) => {
+      ['info', 'warning', 'error'].forEach((field) => {
         const log = this.record()?.metadata?.deduplication?.logs[field];
         if (log) {
           messages.push({
-            severity: field == 'warning' ? 'warn' : field,
+            severity: field === 'warning' ? 'warn' : field,
             detail: log.join('<br/>'),
           });
         }
       });
     }
     return messages;
+  });
+
+  focusInput(): void {
+    setTimeout(() => this.ilsPidInput()?.nativeElement.focus());
   }
 
-  // deduplication status.
-  status = computed(() => this.record()?.metadata?.deduplication?.status);
+  ngOnInit(): void {
+    let ilsPid = this.record()?.metadata?.deduplication?.ils_pid;
+    if (ilsPid == null && this.candidates().length > 0 && this.status() !== 'no match') {
+      ilsPid = this.candidates()[0].json.pid;
+    }
+    this.updateCurrentCandidate(ilsPid);
+    if (this.status() === 'no match') {
+      this.currentCandidateIndex.set(-1);
+      this.currentCandidate.set(null);
+    }
+  }
 
-  /**
-   * Updates the current candidates.
-   *
-   * Retrieve the candidate from the current list else retrieve the candidate from the backend.
-   *
-   * @param ilsPid - the ILS pid value.
-   */
-  updateCurrentCandidate(ilsPid: string): void {
-    // pid is null thus unselect
+  updateCurrentCandidate(ilsPid: string | null): void {
     if (ilsPid == null || ilsPid === '') {
-      this.currentCandidateIndex = -1;
-      this.currentCandidate = null;
-      this.ilsPid = null;
+      this.currentCandidateIndex.set(-1);
+      this.currentCandidate.set(null);
+      this.ilsPid.set(null);
     } else {
-      const existingCandidateIndex = this.candidates.findIndex((v) => v?.json?.pid == ilsPid);
-      // exists in the current list
+      const existingCandidateIndex = this.candidates().findIndex((v: any) => v?.json?.pid == ilsPid);
       if (existingCandidateIndex > -1) {
-        this.currentCandidateIndex = existingCandidateIndex;
-        this.currentCandidate = this.record()?.metadata?.deduplication?.candidates[this.currentCandidateIndex];
+        this.currentCandidateIndex.set(existingCandidateIndex);
+        this.currentCandidate.set(this.record()?.metadata?.deduplication?.candidates[existingCandidateIndex]);
         this.updateIlsPid();
       } else {
-        // retrieve from the backend
-        this.recordService.getRecords('documents', `pid:${ilsPid}`, 1, 1).subscribe((results: any) => {
-          if (results.hits.hits.length == 1) {
+        this.recordService.getRecords('documents', { query: `pid:${ilsPid}`, page: 1, itemsPerPage: 1 }).subscribe((results: any) => {
+          if (results.hits.hits.length === 1) {
             const record = results.hits.hits[0].metadata;
-            // add to the candidate list at the first position
             this.record().metadata.deduplication.candidates = [
               { pid: record.pid, json: record },
-              ...this.candidates.filter((c) => c.score),
+              ...this.candidates().filter((c: any) => c.score),
             ];
-            this.currentCandidateIndex = 0;
-            this.currentCandidate = this.record()?.metadata?.deduplication?.candidates[this.currentCandidateIndex];
+            this.currentCandidateIndex.set(0);
+            this.currentCandidate.set(this.record()?.metadata?.deduplication?.candidates[0]);
             this.updateIlsPid();
           } else {
-            // no document from the backend
             this.toastService.add({ severity: 'warn', summary: this.translateService.instant('Record not found.') });
           }
         });
@@ -130,92 +117,60 @@ export class MigrationDataDeduplicationBriefComponent implements OnInit {
     }
   }
 
-  /**
-   * Updates the ILS pid value if possible.
-   */
   updateIlsPid(): void {
-    if (this.currentCandidate) {
-      if (this.ilsPid != this.currentCandidate.json.pid) {
-        this.ilsPid = this.currentCandidate.json.pid;
-      }
+    const candidate = this.currentCandidate();
+    if (candidate && this.ilsPid() !== candidate.json.pid) {
+      this.ilsPid.set(candidate.json.pid);
     }
   }
 
-  // candidates shortcut
-  get candidates(): any[] {
-    const candidates = this.record()?.metadata?.deduplication?.candidates;
-    if (candidates) {
-      return candidates;
-    }
-    return [];
-  }
-
-  /**
-   * Has the current candidate a previous value?
-   * @returns true if exists
-   */
-  hasPrevious(): boolean {
-    return this.currentCandidateIndex > 0;
-  }
-  /**
-   * Has the current candidate a next value?
-   * @returns true if exists
-   */
-  hasNext(): boolean {
-    return this.currentCandidateIndex < this.candidates.length - 1;
-  }
-
-  /***
-   * Set the next candidate as the current candidate.
-   */
   nextCandidate(): void {
     if (this.hasNext()) {
-      this.currentCandidateIndex += 1;
-      this.updateCurrentCandidate(this.candidates[this.currentCandidateIndex].json.pid);
+      const next = this.currentCandidateIndex() + 1;
+      this.updateCurrentCandidate(this.candidates()[next].json.pid);
     }
   }
 
-  /***
-   * Set the previous candidate as the current candidate.
-   */
   previousCandidate(): void {
     if (this.hasPrevious()) {
-      this.currentCandidateIndex -= 1;
-      this.updateCurrentCandidate(this.candidates[this.currentCandidateIndex].json.pid);
+      const prev = this.currentCandidateIndex() - 1;
+      this.updateCurrentCandidate(this.candidates()[prev].json.pid);
     }
   }
 
-  /**
-   * Set the current ILS pid from the input value and set the candidate accordingly.
-   * @param event - keyboard event
-   */
-  saveIlsPid(event): void {
-    const ilsPid = event.target.value != '' ? event.target.value : null;
-    this.updateCurrentCandidate(ilsPid);
+  saveIlsPid(event: Event): void {
+    const { value } = event.target as HTMLInputElement;
+    this.updateCurrentCandidate(value !== '' ? value : null);
   }
 
-  /**
-   * Reject the candidates and set the status to "no match".
-   */
-  reject() {
-    this.ilsPid = null;
+  reject(): void {
+    this.ilsPid.set(null);
     this.save();
   }
 
-  /**
-   * Save the candidates and the ILS pid value in the backend.
-   */
   save(): void {
     this.recordService
       .update('migration_data', `${this.record().id}?migration=${this.record().metadata.migration_id}`, {
-        ils_pid: this.ilsPid,
-        candidates: this.candidates,
+        ils_pid: this.ilsPid(),
+        candidates: this.candidates(),
       })
       .subscribe((record: any) => {
-        this.refresh.emit(true);
+        const config = this.searchStore.config();
+        this.searchStore.fetchRecords({
+          index: this.searchStore.currentIndex(),
+          query: this.searchStore.queryString(),
+          page: this.searchStore.page(),
+          allowEmptySearch: config.allowEmptySearch,
+          itemsPerPage: this.searchStore.size(),
+          aggregationsFilters: this.searchStore.aggregationsFilters(),
+          preFilters: config.preFilters,
+          sort: this.searchStore.sort(),
+          facets: this.searchStore.facetsParameter(),
+          headers: config.listHeaders,
+        });
         this.toastService.add({
           severity: 'success',
-          summary: `${record.id} ` + this.translateService.instant('has been sucessfully updated.'),
+          summary: `${record.id} ` + this.translateService.instant('has been successfully updated.'),
           detail: this.translateService.instant('The status is now:') + ' ' + this.translateService.instant(record.deduplication.status),
         });
       });

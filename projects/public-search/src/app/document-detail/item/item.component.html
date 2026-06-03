@@ -16,52 +16,53 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <div class="ui:grid ui:grid-cols-12 ui:m-3">
+  @let m = $any(item()?.metadata);
   <div class="ui:col-span-9">
     <!-- ENUMERATION AND CHRONOLOGY -->
-    @if (item.metadata.enumerationAndChronology) {
+    @if (m?.enumerationAndChronology) {
       <div class="ui:flex ui:mb-2">
-        {{ item.metadata.enumerationAndChronology }}
+        {{ m.enumerationAndChronology }}
       </div>
     }
     <!-- LIBRARY AND LOCATION -->
-    @if (context === 'book') {
+    @if (context() === 'book') {
       <div class="ui:flex ui:flex-col ui:md:flex-row">
         <div class="ui:font-bold ui:md:w-[30%] ui:w-[100%]" translate>Location</div>
         <div>
-          {{item.metadata.library.name}}: {{item.metadata.location.name}}
+          {{m.library.name}}: {{m.location.name}}
         </div>
       </div>
     }
     <!-- CALL NUMBER -->
-    @if (item.metadata.call_number) {
+    @if (m?.call_number) {
       <div class="ui:flex ui:flex-col ui:md:flex-row">
         <div class="ui:font-bold ui:md:w-[30%] ui:w-[100%]" translate>Call number</div>
         <div>
-          {{ item.metadata.call_number }}
-        @if (item.metadata.second_call_number) {
-          | {{ item.metadata.second_call_number }}
+          {{ m.call_number }}
+        @if (m.second_call_number) {
+          | {{ m.second_call_number }}
         }
         </div>
       </div>
     }
     <!-- ITEM IN COLLECTION -->
-    @if (item.metadata.in_collection) {
+    @if (m?.in_collection) {
       <div class="ui:flex ui:flex-col ui:md:flex-row">
         <div class="ui:font-bold ui:md:w-[30%] ui:w-[100%]" translate>Temporary location</div>
         <div>
-          @for (collection of item.metadata.in_collection; track $index; let last = $last) {
+          @for (collection of m.in_collection; track $index; let last = $last) {
             <a href="/{{ collection.viewcode }}/collections/{{ collection.pid }}">{{ collection.title }}</a>
             {{ last ? '' : '; ' }}
           }
         </div>
       </div>
     } @else {
-      @if (item.metadata.temporary_location) {
+      @if (m?.temporary_location) {
         <div class="ui:flex ui:flex-col ui:md:flex-row">
           <div class="ui:font-bold ui:md:w-[30%] ui:w-[100%]" translate>Temporary location</div>
           <div>
             <i class="fa fa-exclamation-triangle text-warning" aria-hidden="true"></i>
-            {{ item.metadata.temporary_location.name }}
+            {{ m.temporary_location.name }}
           </div>
         </div>
       }
@@ -70,12 +71,12 @@
     <div class="ui:flex ui:flex-col ui:md:flex-row">
       <div class="ui:font-bold ui:md:w-[30%] ui:w-[100%]" translate>Barcode</div>
       <div>
-        {{ item.metadata.barcode }}
+        {{ m?.barcode }}
       </div>
     </div>
     <!-- NOTES -->
-    @if (item.metadata.notes && item.metadata.notes.length > 0) {
-      @for (note of item.metadata.notes | notesFilter : noteAuthorizedTypes; track $index) {
+    @if (m?.notes && m?.notes.length > 0) {
+      @for (note of m.notes | notesFilter : noteAuthorizedTypes; track $index) {
         <div class="ui:flex ui:flex-col ui:md:flex-row">
           <div class="ui:font-bold ui:md:w-[30%] ui:w-[100%]">{{ note.type | translate }}</div>
           <div [innerHTML]="note.content | nl2br"></div>
@@ -83,11 +84,11 @@
         }
     }
     <!-- URL -->
-    @if (item.metadata.url) {
+    @if (m?.url) {
       <div class="ui:flex ui:flex-col ui:md:flex-row">
         <div class="ui:font-bold ui:md:w-[30%] ui:w-[100%]" translate>URL</div>
         <div>
-          <a target="_blank" [href]="item.metadata.url | safeUrl">{{ item.metadata.url }}</a>
+          <a target="_blank" [href]="m.url | safeUrl">{{ m.url }}</a>
         </div>
       </div>
     }
@@ -101,22 +102,22 @@
           {{ circulationInformation }}
         </div>
       }
-      <shared-availability class="ui:justify-top ui:text-right" recordType="item" [record]="item" [apiService]="itemApiService" />
-      @if(userService.user.isPatron) {
+      <shared-availability class="ui:justify-top ui:text-right" recordType="item" [record]="item()" [apiService]="itemApiService" />
+      @if(isPatron()) {
         <div class="ui:my-2">
-          <public-search-item-request [record]="item" (request)="showRequestDialog = !showRequestDialog" />
+          <public-search-item-request [record]="item()" (request)="showRequestDialog = !showRequestDialog" />
         </div>
       }
     }
   </div>
 </div>
 
-@if(userService.user.isPatron) {
+@if(isPatron()) {
   <div class="ui:mb-2" [hidden]="!showRequestDialog">
     <public-search-pickup-location
-      [record]="item"
+      [record]="item()"
       recordType="item"
-      [viewcode]="viewcode"
+      [viewcode]="viewcode()"
       (closeEvent)="showRequestDialog = !showRequestDialog"
       class="ui:w-full"
     />

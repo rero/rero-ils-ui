@@ -18,8 +18,8 @@
 
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
-import { Record, RecordService } from '@rero/ng-core';
-import { Error } from '@rero/ng-core/lib/error/error';
+import type { EsResult, Error } from '@rero/ng-core';
+import { RecordService } from '@rero/ng-core';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { accountDefaultData, IAcqAccount } from '../classes/account';
@@ -45,9 +45,9 @@ export class AcqAccountApiService {
    */
   getAccount(accountPid: string): Observable<IAcqAccount> {
     return this.recordService
-      .getRecords(this.resourceName, `pid:${accountPid}`, 1, 1)
+      .getRecords(this.resourceName, { query: `pid:${accountPid}`, page: 1, itemsPerPage: 1 })
       .pipe(
-        map((result: Record) => this.recordService.totalHits(result.hits.total) === 0 ? [] : result.hits.hits),
+        map((result: EsResult) => +this.recordService.totalHits(result.hits.total) === 0 ? [] : result.hits.hits),
         map((hits: any[]) => hits.map((hit: any) => ({...accountDefaultData, ...hit.metadata}) )),
         map((hits: IAcqAccount[]) => hits.find(Boolean))  // Get first element of array if exists
       );
@@ -72,9 +72,15 @@ export class AcqAccountApiService {
     const query = defaultQueryParams.join(' AND ');
     options = { ...{sort: 'name'}, ...options };  // add some default params
     return this.recordService
-      .getRecords(this.resourceName, query, 1, RecordService.MAX_REST_RESULTS_SIZE, undefined, undefined, {'Accept': 'application/rero+json'}, options.sort)
+      .getRecords(this.resourceName, {
+        query,
+        page: 1,
+        itemsPerPage: RecordService.MAX_REST_RESULTS_SIZE,
+        headers: { Accept: 'application/rero+json' },
+        sort: options.sort
+      })
       .pipe(
-        map((result: Record) => this.recordService.totalHits(result.hits.total) === 0 ? [] : result.hits.hits),
+        map((result: EsResult) => +this.recordService.totalHits(result.hits.total) === 0 ? [] : result.hits.hits),
         map((hits: any[]) => hits.map(hit => ({...accountDefaultData, ...hit.metadata}) ))
       );
   }

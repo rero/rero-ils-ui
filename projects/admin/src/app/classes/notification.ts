@@ -17,7 +17,7 @@
 
 // required as json properties is not lowerCamelCase
 
-import { ObjectReference } from '../../../../shared/src/lib/class/core';
+import { ObjectReference } from '../../../../shared/src/lib/classes/core';
 import { DateTime } from 'luxon';
 
 export enum NotificationType {

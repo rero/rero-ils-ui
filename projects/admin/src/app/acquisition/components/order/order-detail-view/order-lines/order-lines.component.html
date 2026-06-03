@@ -15,18 +15,12 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-@defer (when orderLines) {
-  @if (orderLines.length > 0) {
-    @for (orderLine of orderLines; track orderLine.pid) {
-      <div class="ui:odd:bg-surface-50">
-        <admin-order-line [orderLine]="orderLine" [order]="order" />
-      </div>
-    }
-  } @else {
-    <div class="ui:my-3 ui:mx-4" translate>No order lines</div>
+@if (orderLines().length > 0) {
+  @for (orderLine of orderLines(); track orderLine.pid) {
+    <div class="ui:odd:bg-surface-50">
+      <admin-order-line [orderLine]="orderLine" [order]="order()" />
+    </div>
   }
-} @placeholder {
-  <div class="ui:my-3 ui:mx-4">
-    <i class="fa fa-spinner ui:animate-spin"></i>&nbsp;{{ "Loading in progress…" | translate }}
-  </div>
+} @else {
+  <div class="ui:my-3 ui:mx-4" translate>No order lines</div>
 }

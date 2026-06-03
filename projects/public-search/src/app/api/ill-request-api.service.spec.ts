@@ -17,62 +17,44 @@
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
-import { Record, RecordService } from '@rero/ng-core';
+import { RecordService } from '@rero/ng-core';
 import { of } from 'rxjs';
 import { IllRequestApiService } from './ill-request-api.service';
 
-
 describe('IllRequestApiService', () => {
   let service: IllRequestApiService;
-  const record = {
-    medatadata: {
-      pid: '1',
-      name: 'item name'
-    }
-  };
-
+  const record = { medatadata: { pid: '1', name: 'item name' } };
   const apiResponse = {
     aggregations: {},
-    hits: {
-      total: {
-        relation: 'eq',
-        value: 1
-      },
-      hits: [
-        record
-      ]
-    },
+    hits: { total: { relation: 'eq', value: 1 }, hits: [record] },
     links: {}
   };
-
-  const recordServiceSpy = jasmine.createSpyObj('RecordService', ['getRecords', 'totalHits']);
-  recordServiceSpy.getRecords.and.returnValue(of(apiResponse));
-  recordServiceSpy.totalHits.and.returnValue(1);
+  const recordServiceSpy = { getRecords: vi.fn(), totalHits: vi.fn() };
+  recordServiceSpy.getRecords.mockReturnValue(of(apiResponse));
+  recordServiceSpy.totalHits.mockReturnValue(1);
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-    imports: [],
-    providers: [
+      imports: [],
+      providers: [
         { provide: RecordService, useValue: recordServiceSpy },
         provideHttpClient(withInterceptorsFromDi()),
         provideHttpClientTesting()
-    ]
-});
+      ]
+    });
     service = TestBed.inject(IllRequestApiService);
   });
 
-  it('should be created', () => {
-    expect(service).toBeTruthy();
-  });
+  it('should be created', () => { expect(service).toBeTruthy(); });
 
   it('should return a set of Ill Requests', () => {
-    service.getIllRequest('1', 1, 10).subscribe((result: Record) => {
+    service.getIllRequest('1', 1, 10).subscribe((result: any) => {
       expect(result.hits.hits[0]).toEqual(record);
     });
   });
 
   it('should return a set of Public Ill Requests', () => {
-    service.getPublicIllRequest('1', 1, 10).subscribe((result: Record) => {
+    service.getPublicIllRequest('1', 1, 10).subscribe((result: any) => {
       expect(result.hits.hits[0]).toEqual(record);
     });
   });

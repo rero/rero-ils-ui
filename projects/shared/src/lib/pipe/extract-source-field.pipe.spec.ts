@@ -17,15 +17,14 @@
 import { TestBed } from '@angular/core/testing';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { testUserPatronWithSettings } from '../../tests/user';
-import { AppSettingsService } from '../service/app-settings.service';
+import { AppStore } from '../store/app.store';
 import { ExtractSourceFieldPipe } from './extract-source-field.pipe';
 
 
 describe('Pipe: ExtractFieldSource', () => {
 
   let extractSourceFieldPipe: ExtractSourceFieldPipe;
-  let translateService: TranslateService;
-  let appSettingsService: AppSettingsService;
+  let settings = testUserPatronWithSettings.settings;
 
   const metadata = {
     idref: {
@@ -41,24 +40,24 @@ describe('Pipe: ExtractFieldSource', () => {
 
   const field = 'authorized_access_point';
 
-  const translateServiceSpy = jasmine.createSpyObj('TranslateService', ['']);
-  translateServiceSpy.currentLang = 'en';
+  let currentLang = 'en';
+  const translateServiceSpy = { getCurrentLang: () => currentLang };
 
   beforeEach(() => {
+    currentLang = 'en';
     TestBed.configureTestingModule({
       imports: [
         TranslateModule.forRoot()
       ],
       providers: [
         ExtractSourceFieldPipe,
+        { provide: AppStore, useValue: { settings: vi.fn(() => settings) } },
         { provide: TranslateService, useValue: translateServiceSpy }
       ]
     });
 
     extractSourceFieldPipe = TestBed.inject(ExtractSourceFieldPipe);
-    translateService = TestBed.inject(TranslateService);
-    appSettingsService = TestBed.inject(AppSettingsService);
-    appSettingsService.settings = testUserPatronWithSettings.settings;
+    settings = testUserPatronWithSettings.settings;
   });
 
   it('create an instance', () => {
@@ -66,21 +65,21 @@ describe('Pipe: ExtractFieldSource', () => {
   });
 
   it('transform data with french language', () => {
-    translateService.currentLang = 'fr';
+    currentLang = 'fr';
     expect(
       extractSourceFieldPipe.transform(metadata, field)
     ).toEqual('idref-access-point');
   });
 
   it('transform data with deutsch language', () => {
-    translateService.currentLang = 'de';
+    currentLang = 'de';
     expect(
       extractSourceFieldPipe.transform(metadata, field)
     ).toEqual('gnd-access-point');
   });
 
   it('transform data with it language (fallback)', () => {
-    translateService.currentLang = 'it';
+    currentLang = 'it';
     expect(
       extractSourceFieldPipe.transform(metadata, field)
     ).toEqual('idref-access-point');

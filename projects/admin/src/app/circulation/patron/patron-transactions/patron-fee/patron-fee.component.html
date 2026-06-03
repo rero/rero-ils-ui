@@ -14,9 +14,9 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-@defer (when formFields) {
+@defer (when formFields() !== undefined) {
   <form [formGroup]="form" (ngSubmit)="submit(model)">
-    <formly-form [form]="form" [fields]="formFields" [model]="model" />
+    <formly-form [form]="form" [fields]="formFields()" [model]="model" />
     <div class="ui:flex ui:justify-end ui:gap-1 ui:mt-2">
       <p-button [label]="'Cancel'|translate" severity="danger" outlined (onClick)="closeModal()" />
       <p-button [label]="'Save'|translate" type="submit" [disabled]="!form.valid" />

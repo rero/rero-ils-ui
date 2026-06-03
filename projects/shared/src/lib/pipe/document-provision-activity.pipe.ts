@@ -16,10 +16,7 @@
  */
 import { Pipe, PipeTransform } from '@angular/core';
 
-@Pipe({
-    name: 'documentProvisionActivity',
-    standalone: false
-})
+@Pipe({ name: 'documentProvisionActivity' })
 export class DocumentProvisionActivityPipe implements PipeTransform {
 
   /**

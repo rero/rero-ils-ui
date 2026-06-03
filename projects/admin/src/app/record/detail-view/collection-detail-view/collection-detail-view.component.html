@@ -14,12 +14,12 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-@if (record) {
+@if (record(); as rec) {
   <section class="ui:flex ui:flex-col ui:py-2 ui:gap-2">
-    <h1 id="collection-title">{{ record.metadata.title }}</h1>
-    @if (record.metadata.subjects) {
+    <h1 id="collection-title">{{ rec.metadata.title }}</h1>
+    @if (rec.metadata.subjects) {
       <div id="subject" class="ui:flex ui:gap-1 ui:flex-wrap">
-        @for(subject of record.metadata.subjects; track $index) {
+        @for(subject of rec.metadata.subjects; track $index) {
           <p-tag severity="secondary">
             <i class="fa fa-tag"></i>&nbsp;{{ subject.name }}
           </p-tag>
@@ -27,31 +27,31 @@
       </div>
     }
     <dl class="metadata">
-      @if (record.metadata.description) {
+      @if (rec.metadata.description) {
         <dt translate>Description</dt>
-        <dd [innerHtml]="record.metadata.description | nl2br"></dd>
+        <dd [innerHtml]="rec.metadata.description | nl2br"></dd>
       }
-      @if (record.metadata.teachers) {
+      @if (rec.metadata.teachers) {
         <dt translate>Teachers</dt>
         <dd>
-          @for (teacher of record.metadata.teachers; track $index; let last = $last) {
+          @for (teacher of rec.metadata.teachers; track $index; let last = $last) {
             {{ teacher.name }} {{ last ? '' : ', ' }}
           }
         </dd>
       }
-      @if (record.metadata.collection_id) {
+      @if (rec.metadata.collection_id) {
         <dt translate>Collection ID</dt>
-        <dd>{{ record.metadata.collection_id }}</dd>
+        <dd>{{ rec.metadata.collection_id }}</dd>
       }
-      @if (record.metadata.collection_type) {
+      @if (rec.metadata.collection_type) {
         <dt translate>Type</dt>
-        <dd>{{ record.metadata.collection_type }}</dd>
+        <dd>{{ rec.metadata.collection_type }}</dd>
       }
-      @if (record.metadata.libraries) {
+      @if (rec.metadata.libraries) {
         <dt translate>Libraries</dt>
         <dd>
           <ul class="ui:list-none">
-            @for (library of record.metadata.libraries; track $index; let last=$last) {
+            @for (library of rec.metadata.libraries; track $index; let last=$last) {
               <li>{{ library.pid | getRecord: 'libraries' : 'field' : 'name' | async }}</li>
             }
           </ul>
@@ -59,13 +59,13 @@
       }
       <dt translate>Date</dt>
       <dd>
-        {{ record.metadata.start_date | dateTranslate: 'mediumDate' }}
-        - {{ record.metadata.end_date | dateTranslate: 'mediumDate' }}
+        {{ rec.metadata.start_date | dateTranslate: 'mediumDate' }}
+        - {{ rec.metadata.end_date | dateTranslate: 'mediumDate' }}
       </dd>
       <dt translate>Status</dt>
       <dd>
-        <i class="fa fa-circle ui:mr-1" aria-hidden="true" [ngClass]="{'text-success': record.metadata.published, 'text-error': !record.metadata.published}"></i>
-        @if (record.metadata.published) {
+        <i class="fa fa-circle ui:mr-1" aria-hidden="true" [ngClass]="{'text-success': rec.metadata.published, 'text-error': !rec.metadata.published}"></i>
+        @if (rec.metadata.published) {
           {{ 'published' | translate }}
         } @else {
           {{ 'unpublished' | translate }}
@@ -73,7 +73,7 @@
       </dd>
     </dl>
     <div class="ui:mt-3">
-      <admin-collection-items [items]="record.metadata.items" />
+      <admin-collection-items [items]="rec.metadata.items" />
     </div>
   </section>
 }

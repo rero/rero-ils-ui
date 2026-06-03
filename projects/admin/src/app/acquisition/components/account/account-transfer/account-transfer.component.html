@@ -16,14 +16,14 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 
-@if (accountsToDisplay && organisation) {
+@if (organisation()) {
   <div class="ui:flex ui:flex-wrap ui:gap-2 ui:justify-between">
     <h1 translate>Fund transfer</h1>
-    @if (budgets.length > 1) {
-      <p-select (onChange)="selectBudget($event)" [ngModel]="selectedBudget" [options]="budgets">
+    @if (budgets().length > 1) {
+      <p-select (onChange)="selectedBudget.set($event.value)" [ngModel]="selectedBudget()" [options]="budgets()">
         <ng-template #selectedItem>
           {{
-            selectedBudget.code | getRecord : "budgets" : "field" : "name" | async
+            selectedBudget()?.code | getRecord : "budgets" : "field" : "name" | async
           }}
         </ng-template>
         <ng-template #item let-budget>
@@ -43,8 +43,8 @@
       </div>
     </ng-template>
       <div class="ui:mt-4">
-        @if (accountsToDisplay.length > 0) {
-          @for (account of accountsToDisplay; track account.pid) {
+        @if (accountsToDisplay().length > 0) {
+          @for (account of accountsToDisplay(); track account.pid) {
             <div class="ui:grid ui:grid-cols-12 ui:py-1 ui:odd:bg-surface-50">
               <div class="ui:col-span-1 ui:text-center">
                 @if (!(form.get('target').value &&
@@ -66,7 +66,7 @@
               </div>
               <div class="ui:col-span-2 ui:text-right">
                 {{
-                  account.allocated_amount | currency : organisation.default_currency
+                  account.allocated_amount | currency : organisation()!.default_currency
                 }}
               </div>
               <div
@@ -78,8 +78,8 @@
                 }"
               >
                 {{
-                  account.remaining_balance.self
-                    | currency : organisation.default_currency
+                  account.remaining_balance?.self
+                    | currency : organisation()!.default_currency
                 }}
               </div>
               <div class="ui:col-span-1 ui:text-center">

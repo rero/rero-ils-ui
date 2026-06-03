@@ -17,24 +17,28 @@
 
 
 @use '../../../../shared/src/scss/styles';
-@use "../document-detail/holdings/holdings.component";
+
+// @theme blocks must be at root level (Tailwind v4 constraint)
+@import "@rero/ng-core/assets/scss/colors";
 
 @layer rero-ils-ui {
   .rero-ils-ui {
-    @import "@rero/ng-core/assets/scss/ng-core";
     @import "tailwindcss/preflight.css" layer(base) prefix(ui);
-  }
-}
+    @import "@rero/ng-core/assets/scss/theme";
+    @import "@rero/ng-core/assets/scss/typography";
+    @import "../document-detail/holdings/holdings.component";
 
-// due to the bootstrap reset (reboot)
-legend {
-  @apply ui:text-base;
-  width: auto;
-}
+    // Bootstrap reboot overrides — scoped to Angular app only
+    legend {
+      @apply ui:text-base;
+      width: auto;
+    }
 
-public-search-document {
-  .p-menubar-root-list {
-    @apply ui:items-start;
+    public-search-document {
+      .p-menubar-root-list {
+        @apply ui:items-start;
+      }
+    }
   }
 }
 

@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, EventEmitter, inject, Input, OnInit, Output } from '@angular/core';
+import { Component, inject, input, OnInit, output, signal, ChangeDetectionStrategy} from '@angular/core';
 import { UntypedFormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { FormlyFieldConfig, FormlyModule } from '@ngx-formly/core';
 import { TranslateService, TranslatePipe } from '@ngx-translate/core';
@@ -28,7 +28,8 @@ import { Button } from 'primeng/button';
 @Component({
     selector: 'public-search-pickup-location',
     templateUrl: './pickup-location.component.html',
-    imports: [Message, FormsModule, ReactiveFormsModule, FormlyModule, Button, TranslatePipe]
+    imports: [Message, FormsModule, ReactiveFormsModule, FormlyModule, Button, TranslatePipe],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class PickupLocationComponent implements OnInit {
 
@@ -38,23 +39,23 @@ export class PickupLocationComponent implements OnInit {
   private translateService: TranslateService = inject(TranslateService);
 
   /** Record: item or holding */
-  @Input() record: any;
+  record = input<any>();
 
   /** Record type */
-  @Input() recordType: string;
+  recordType = input<string>();
 
   /** View code */
-  @Input() viewcode: string;
+  viewcode = input<string>();
 
   /** Item count */
-  @Input() itemCount = 0;
+  itemCount = input(0);
 
   /** Close request dialog event */
-  @Output() closeEvent = new EventEmitter<boolean>();
+  closeEvent = output<boolean>();
 
   /** Form */
   form = new UntypedFormGroup({});
-  fields: FormlyFieldConfig[] = [];
+  readonly fields = signal<FormlyFieldConfig[]>([]);
   model: any = {};
 
   /** Show form */
@@ -70,23 +71,21 @@ export class PickupLocationComponent implements OnInit {
   apiRequest = null;
 
   /** User message */
-  requestMessage: {
-    success: boolean,
-    message: string
-  };
+  readonly requestMessage = signal<{success: boolean, message: string} | null>(null);
 
   /** OnInit hook */
   ngOnInit(): void {
     this.locationApiService
-      .getPickupLocationsByRecordId(this.recordType, this.record.metadata.pid)
+      .getPickupLocationsByRecordId(this.recordType(), this.record()?.metadata?.pid)
       .subscribe((pickups: any) => {
         const options = [];
         pickups.forEach((pickup: any) => {
           options.push({label: pickup.name, value: pickup.pid });
         });
+        const newFields: FormlyFieldConfig[] = [];
         // Text area Year/Volume/Number/Pages
-        if (this.recordType === 'holding') {
-          this.fields.push({
+        if (this.recordType() === 'holding') {
+          newFields.push({
             key: 'description',
             type: 'textarea',
             props: {
@@ -98,7 +97,7 @@ export class PickupLocationComponent implements OnInit {
           });
         }
         // Menu to select pickup location
-        this.fields.push({
+        newFields.push({
           key: `pickup`,
           type: 'select',
           props: {
@@ -109,6 +108,7 @@ export class PickupLocationComponent implements OnInit {
             options
           }
         });
+        this.fields.set(newFields);
       });
   }
 
@@ -120,15 +120,15 @@ export class PickupLocationComponent implements OnInit {
   /** Submit form */
   submit() {
     this.requestInProgress = true;
-    if (this.recordType === 'holding') {
+    if (this.recordType() === 'holding') {
       this.apiRequest = this.holdingsApiService.request({
-        holding_pid: this.record.metadata.pid,
+        holding_pid: this.record()?.metadata?.pid,
         pickup_location_pid: this.model.pickup,
         description: this.model.description,
       });
-    } else if (this.recordType === 'item') {
+    } else if (this.recordType() === 'item') {
       this.apiRequest = this.itemApiService.request({
-        item_pid: this.record.metadata.pid,
+        item_pid: this.record()?.metadata?.pid,
         pickup_location_pid: this.model.pickup,
       });
     }
@@ -142,16 +142,16 @@ export class PickupLocationComponent implements OnInit {
       tap(() => this.closeDialog()),
     ).subscribe(
       () => {
-        this.requestMessage = {
+        this.requestMessage.set({
           success: true,
           message: this.translateService.instant('Your request has been placed.')
-        };
+        });
       },
       () => {
-        this.requestMessage = {
+        this.requestMessage.set({
           success: false,
           message: this.translateService.instant('Error on this request.')
-        };
+        });
       }
     );
   }

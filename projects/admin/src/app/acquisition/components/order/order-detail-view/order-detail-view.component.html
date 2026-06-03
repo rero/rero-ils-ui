@@ -15,27 +15,25 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-@if (order && order.pid) {
-<div [ngClass]="{ 'ui:opacity-50': !order.is_current_budget }">
+@if (store.order(); as o) {
+<div [ngClass]="{ 'ui:opacity-50': !o.is_current_budget }">
   <!-- ROLLOVER INFO -->
-  @if (!order.is_current_budget) {
-    <p-message
-      [text]="'Fiscal year closed' | translate"
-      severity="warn"
-      showTransitionOptions="0ms"
-    />
+  @if (!o.is_current_budget) {
+    <p-message severity="warn" showTransitionOptions="0ms">
+      {{ 'Fiscal year closed' | translate }}
+    </p-message>
   }
 
   <!-- Place order button -->
   <div class="ui:flex ui:gap-2 ui:justify-between ui:flex-wrap">
-    <h1>{{ order.reference }}</h1>
-    @if (order?.is_current_budget && order?.pid) {
-      @if (recordPermissions && recordPermissions.update.can && order.status === acqOrderStatus.PENDING) {
+    <h1>{{ o.reference }}</h1>
+    @if (o.is_current_budget && o.pid) {
+      @if (store.orderPermissions()?.update?.can && o.status === acqOrderStatus.PENDING) {
         <section class="ui:flex ui:justify-end">
           <p-button
             (onClick)="placeOrderDialog()"
             severity="primary"
-            [disabled]="!canPlaceOrder"
+            [disabled]="!store.canPlaceOrder()"
             icon="fa fa-shopping-cart"
             [label]="'Place order' | translate"
           />
@@ -44,13 +42,13 @@
     }
   </div>
   <!-- ORDER SUMMARY -->
-  <admin-order-summary [order]="order">
-    @if (order.notes && order.notes.length > 0) {
+  <admin-order-summary>
+    @if (o.notes && o.notes.length > 0) {
     <dt translate>Notes</dt>
     <dd>
-      @for (note of order.notes; track $index) {
+      @for (note of o.notes; track $index) {
       <a href (click)="scrollTo($event, 'notes'); notesCollapsed = false">
-        <p-tag [severity]="note | noteBadgeColor">
+        <p-tag [severity]="$any(note | noteBadgeColor)">
           {{ note.type | translate }}
         </p-tag>
       </a>
@@ -59,22 +57,22 @@
     }
   </admin-order-summary>
 
-  <p-tabs class="ui:mt-3" [(value)]="tabActiveIndex">
+  <p-tabs class="ui:mt-3" [value]="tabActiveIndex()" (valueChange)="onTabChange($any($event))">
     <p-tablist>
       <p-tab value="order" translate>Order</p-tab>
-      <p-tab value="reception" [disabled]="disabledReceipts" translate>Reception</p-tab>
+      <p-tab value="reception" [disabled]="store.disabledReceipts()" translate>Reception</p-tab>
       <p-tab value="history" translate>History</p-tab>
     </p-tablist>
     <p-tabpanels>
-      <p-tabpanel #tabOrder value="order">
-        @if (tabOrder.active()) {
+      <p-tabpanel value="order">
+        @if (tabActiveIndex() === 'order') {
           <div class="ui:flex ui:flex-col ui:gap-2">
             <p-accordion [multiple]="true" [value]="['lines']">
               <p-accordion-panel value="lines">
                 <p-accordion-header>
                   <div class="ui:w-full ui:flex ui:justify-between ui:gap-2 ui:pr-3">
                     <span class="ui:text-bold ui:text-xl" translate>Order lines</span>
-                    @if (canAddLine) {
+                    @if (store.canAddLine()) {
                       <p-button
                         (click)="$event.stopPropagation()"
                         icon="fa fa-plus-square-o"
@@ -82,22 +80,22 @@
                         [outlined]="true"
                         [label]="'Add' | translate"
                         [routerLink]="['/acquisition', 'records', 'acq_order_lines', 'new']"
-                        [queryParams]="{ order: order.pid }"
+                        [queryParams]="{ order: o.pid }"
                       />
                     }
                   </div>
                   <ng-template #tooltipContent>
-                    <span [innerHTML]="createInfoMessage | nl2br"></span>
+                    <span [innerHTML]="store.orderCreateInfoMessage() | nl2br"></span>
                   </ng-template>
                 </p-accordion-header>
                 <p-accordion-content>
-                  <admin-order-lines [order]="order" />
+                  <admin-order-lines />
                 </p-accordion-content>
               </p-accordion-panel>
               <p-accordion-panel value="notes">
                 <p-accordion-header>
                   <div class="ui:w-full ui:flex ui:mr-2 ui:items-center">
-                   @let orderNotesSize = order.notes?.length || 0;
+                   @let orderNotesSize = o.notes?.length || 0;
                     <span class="ui:grow ui:text-bold ui:text-xl">
                       {{ orderNotesSize | i18nPlural : { "=0": "Note", "=1": "Note", other: "Notes" } | translate }}
                     </span>
@@ -106,7 +104,7 @@
                 </p-accordion-header>
                 <p-accordion-content>
                   <div class="ui:mt-2">
-                    <admin-notes [notes]="order.notes" />
+                    <admin-notes [notes]="$any(o.notes)" />
                   </div>
                 </p-accordion-content>
               </p-accordion-panel>
@@ -114,23 +112,14 @@
           </div>
         }
       </p-tabpanel>
-      <p-tabpanel #tabReceipt value="reception">
-        @if(tabReceipt.active()) {
-          <admin-receipt-list [order]="order" />
+      <p-tabpanel value="reception">
+        @if (tabActiveIndex() === 'reception') {
+          <admin-receipt-list />
         }
       </p-tabpanel>
-      <p-tabpanel #tabHistory value="history">
-        @if (tabHistory.active()) {
-          <p-timeline [value]="historyVersions">
-            <ng-template #opposite let-event>
-              <a [routerLink]="['/acquisition', 'records', 'acq_orders', 'detail', event.pid]">{{
-                event.label
-              }}</a>
-            </ng-template>
-            <ng-template #content let-event>
-              <small>{{ event.description }}</small>
-            </ng-template>
-          </p-timeline>
+      <p-tabpanel value="history">
+        @if (tabActiveIndex() === 'history') {
+          <admin-order-history />
         }
       </p-tabpanel>
     </p-tabpanels>

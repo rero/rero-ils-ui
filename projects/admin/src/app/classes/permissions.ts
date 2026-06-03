@@ -18,8 +18,7 @@
 
 // required as json properties is not lowerCamelCase
 
-export class RecordPermission {
-
+export type RecordPermission = {
   can: boolean;
   reasons?: {
     links?: any,

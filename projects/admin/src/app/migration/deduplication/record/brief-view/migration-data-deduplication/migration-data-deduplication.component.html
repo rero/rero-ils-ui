@@ -17,21 +17,28 @@
 @if (record()) {
 <div class="ui:flex ui:justify-between ui:mb-2">
   <div class="ui:flex ui:items-center ui:justify-center">
-    <p-inplace #inplace>
+    <p-inplace #inplace (onActivate)="focusInput()">
       <ng-template #display>
-        <strong>ILS pid:</strong> {{ ilsPid }}&nbsp;<i class="fa fa-pencil"></i>
+        <div class="ui:flex ui:gap-2">
+          <span><strong>ILS pid:</strong> {{ ilsPid() }}</span>
+          <span><i class="fa fa-pencil"></i></span>
+        </div>
       </ng-template>
-      <ng-template #content>
-        <input
-          [ngModel]="ilsPid"
-          (keyup.enter)="saveIlsPid($event); inplace.deactivate()"
-          (keydown.escape)="inplace.deactivate()"
-          type="text"
-          pInputText
-          onFocus="this.setSelectionRange(0, this.value.length)"
-          pAutoFocus
-         
-        />
+      <ng-template #content let-closeCallback="closeCallback">
+        <div class="ui:flex ui:gap-2">
+          <input
+            #ilsPidInput
+            [ngModel]="ilsPid()"
+            (keyup.enter)="saveIlsPid($event); inplace.deactivate()"
+            (keydown.escape)="inplace.deactivate()"
+            type="text"
+            pInputText
+            onFocus="this.setSelectionRange(0, this.value.length)"
+          />
+          <button type="button" pButton (click)="closeCallback($event)" text>
+            <i class="fa fa-close"></i>
+          </button>
+        </div>
       </ng-template>
     </p-inplace>
   </div>
@@ -43,9 +50,8 @@
       [text]="true"
     />
     <small>
-      {{ currentCandidateIndex + 1 }}&nbsp;/&nbsp;{{ candidates.length }}
-    </small
-    >
+      {{ currentCandidateIndex() + 1 }}&nbsp;/&nbsp;{{ candidates().length }}
+    </small>
     <p-button
       icon="fa fa-chevron-right"
       (onClick)="nextCandidate()"
@@ -75,10 +81,11 @@
 @for (message of messages(); track $index) {
   <p-message
     styleClass="ui:my-2"
-    [text]="message.detail"
-    [severity]="message.severity"
+    [severity]="$any(message.severity)"
     showTransitionOptions="0ms"
-  />
+  >
+    {{ message.detail }}
+  </p-message>
 }
 
 <div class="ui:flex ui:justify-between ui:mb-1">
@@ -101,10 +108,10 @@
     }
   </div>
 
-  @if (currentCandidate){
+  @if (currentCandidate()) {
   <div class="ui:flex ui:items-center ui:justify-center">
-    @if(currentCandidate?.score) {
-    <strong translate>Score</strong>&nbsp;{{ currentCandidate.score | number }}
+    @if(currentCandidate()?.score) {
+    <strong translate>Score</strong>&nbsp;{{ currentCandidate()!.score | number }}
     } @else {
     <strong translate>Manually added</strong>
     }
@@ -115,6 +122,6 @@
 <admin-migration-metadata
   class="ui:mb-2"
   [record]="record()"
-  [candidate]="currentCandidate"
+  [candidate]="currentCandidate()"
 />
 }

@@ -16,10 +16,7 @@
  */
 import { Pipe, PipeTransform } from '@angular/core';
 
-@Pipe({
-    name: 'mainTitleRelation',
-    standalone: false
-})
+@Pipe({ name: 'mainTitleRelation' })
 export class MainTitleRelationPipe implements PipeTransform {
 
   /**

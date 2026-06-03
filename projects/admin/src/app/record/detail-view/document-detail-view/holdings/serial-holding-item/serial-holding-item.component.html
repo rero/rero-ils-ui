@@ -15,35 +15,35 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-@if (item && ((item.metadata.issue && item.metadata.issue.status !== itemIssueStatus.DELETED) || item.metadata.type === 'provisional')) {
+@if (item && ((item().metadata.issue && item().metadata.issue.status !== itemIssueStatus.DELETED) || item().metadata.type === 'provisional')) {
     <div class="ui:grid ui:grid-cols-12 ui:gap-x-4 ui:py-1 ui:px-1 ui:grow ui:items-center">
       <div class="ui:col-span-3 ui:flex">
-        @if (item.metadata._masked) {
-          <admin-record-masked [record]="item" />
+        @if (item().metadata._masked) {
+          <admin-record-masked [record]="item()" />
         }
-        @if (permissions) {
-          <a [routerLink]="['/records', 'items', 'detail', item.metadata.pid]" name="barcode">
-            {{ item.metadata.barcode }}
+        @if (permissions()) {
+          <a [routerLink]="['/records', 'items', 'detail', item().metadata.pid]" name="barcode">
+            {{ item().metadata.barcode }}
           </a>
         } @else {
-          {{ item.metadata.barcode }}
+          {{ item().metadata.barcode }}
         }
       </div>
       <div class="ui:col-span-3">
         <shared-availability
           recordType="item"
-          [record]="item"
+          [record]="item()"
           [apiService]="itemApiService"
         />
       </div>
       <div class="ui:col-span-3">
-        {{ item.metadata.enumerationAndChronology }}
+        {{ item().metadata.enumerationAndChronology }}
       </div>
       <div class="ui:col-span-3 ui:flex ui:items-center">
         <div class="ui:grow">
-          <shared-inherited-call-number class-="ui:grow" [item]="item" />
+          <shared-inherited-call-number class-="ui:grow" [item]="item()" />
         </div>
-        @if (permissions) {
+        @if (permissions()) {
           <div class="ui:flex ui:gap-1 ui:justify-end">
             <p-button
               class="ui:pointer-events-auto"
@@ -51,22 +51,22 @@
               size="small"
               [title]="'Item request'|translate"
               outlined
-              (onClick)="addRequest(item.metadata.pid, 'item')"
+              (onClick)="addRequest(item().metadata.pid, 'item')"
               [pTooltip]="cannotRequestTooltipContent"
               tooltipPosition="top"
-              [disabled]="!permissions.canRequest?.can"
-              [tooltipDisabled]="permissions.canRequest?.can"
+              [disabled]="!permissions().canRequest?.can"
+              [tooltipDisabled]="permissions().canRequest?.can"
             />
             <ng-template #cannotRequestTooltipContent>
               <span [innerHTML]="cannotRequestInfoMessage | nl2br"></span>
             </ng-template>
-            @if (permissions.update && permissions.update.can) {
+            @if (permissions().update && permissions().update.can) {
               <p-button
                 icon="fa fa-pencil"
                 size="small"
                 [title]="'Edit'|translate"
                 outlined
-                [routerLink]="['/records', 'items', 'edit', item.metadata.pid]"
+                [routerLink]="['/records', 'items', 'edit', item().metadata.pid]"
               />
             }
             <p-button
@@ -78,8 +78,8 @@
               outlined
               [pTooltip]="deleteTooltipContent"
               tooltipPosition="top"
-              [disabled]="!permissions.delete?.can"
-              [tooltipDisabled]="permissions.delete?.can"
+              [disabled]="!permissions().delete?.can"
+              [tooltipDisabled]="permissions().delete?.can"
               (onClick)="delete()"
             />
             <ng-template #deleteTooltipContent>
@@ -89,24 +89,24 @@
         }
       </div>
       <div class="ui:col-span-12 ui:pt-0">
-        @if (permissions) {
-          @for (note of item.metadata.notes; track $index) {
+        @if (permissions()) {
+          @for (note of item().metadata.notes; track $index) {
             <admin-holding-item-note [note]="note" />
           }
-          <admin-holding-item-temporary-item-type [record]="item" />
+          <admin-holding-item-temporary-item-type [record]="item()" />
         }
         <!-- TEMPORARY LOCATION -->
-        @if (permissions && item.metadata.temporary_location) {
+        @if (permissions() && item().metadata.temporary_location) {
           <dl class="metadata">
             <dt translate>Temporary location</dt>
             <dd>
-              {{ item.metadata.temporary_location.pid | getRecord: 'locations' : 'field': 'name' | async }}
+              {{ item().metadata.temporary_location.pid | getRecord: 'locations' : 'field': 'name' | async }}
             </dd>
           </dl>
         }
         <!-- ITEM IN COLLECTION -->
-        @let itemPid = item.metadata.pid;
-        @if (permissions && itemPid) {
+        @let itemPid = item().metadata.pid;
+        @if (permissions() && itemPid) {
           @let collections = itemPid | itemInCollection | async;
           @if (collections && collections.length > 0) {
             <dl class="metadata">

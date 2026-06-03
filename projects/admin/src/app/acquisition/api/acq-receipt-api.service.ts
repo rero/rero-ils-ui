@@ -16,11 +16,12 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { HttpClient } from '@angular/common/http';
-import { inject, Injectable } from '@angular/core';
+import { inject, Injectable, signal } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-import { Record, RecordService, RecordUiService } from '@rero/ng-core';
+import type { EsResult } from '@rero/ng-core';
+import { RecordService, RecordUiService } from '@rero/ng-core';
 import { BaseApi } from '@rero/shared';
-import { Observable, of, Subject } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { IAcqReceipt, IAcqReceiptLine, receiptDefaultData, receiptLineDefaultData } from '../classes/receipt';
 import { AcqResponseReceiptLineStatus, ICreateLineMessage, IResponseReceiptLine } from '../components/receipt/receipt-form/order-receipt';
@@ -44,14 +45,9 @@ export class AcqReceiptApiService {
     headers: { Accept: 'application/json'},
     sort: 'receipt_date'
   };
-  /** Subject emitted when an order line is deleted. The order line pid will be emitted */
-  private _deletedReceiptSubject$ = new Subject<IAcqReceipt>();
-  private _deletedReceiptLineSubject$ = new Subject<IAcqReceiptLine>();
-
-  // GETTER AND SETTER ========================================================
-  /** expose _deletedOrderLineSubject$ in 'readonly' mode */
-  get deletedReceiptSubject$(): Observable<IAcqReceipt> { return this._deletedReceiptSubject$.asObservable(); }
-  get deletedReceiptLineSubject$(): Observable<IAcqReceiptLine> { return this._deletedReceiptLineSubject$.asObservable(); }
+  /** Last deleted receipt/receipt-line (null = no deletion yet) */
+  readonly lastDeletedReceipt = signal<IAcqReceipt | null>(null);
+  readonly lastDeletedReceiptLine = signal<IAcqReceiptLine | null>(null);
 
   // READ/LIST FUNCTIONS ======================================================
   /**
@@ -61,9 +57,9 @@ export class AcqReceiptApiService {
    */
   getReceipt(pid: string): Observable<IAcqReceipt> {
     return this.apiService
-      .getRecord(this.resourceName, pid, 1, BaseApi.reroJsonheaders)
+      .getRecord(this.resourceName, pid, { resolve: 1, headers: BaseApi.reroJsonheaders })
       .pipe(
-        map(data => ({...receiptDefaultData, ...data.metadata}) )
+        map((data: any) => ({...receiptDefaultData, ...data.metadata}) as IAcqReceipt)
       );
   }
 
@@ -79,9 +75,15 @@ export class AcqReceiptApiService {
   }): Observable<IAcqReceipt[]> {
     options = {...this._defaultRecordOptions, ...options};  // add some default params
     return this.apiService
-      .getRecords(this.resourceName, query, 1, RecordService.MAX_REST_RESULTS_SIZE, undefined, undefined, options.headers, options.sort)
+      .getRecords(this.resourceName, {
+        query,
+        page: 1,
+        itemsPerPage: RecordService.MAX_REST_RESULTS_SIZE,
+        headers: options.headers as any,
+        sort: options.sort
+      })
       .pipe(
-        map((result: Record) => this.apiService.totalHits(result.hits.total) === 0 ? [] : result.hits.hits),
+        map((result: EsResult) => +this.apiService.totalHits(result.hits.total) === 0 ? [] : result.hits.hits),
         map((hits: any[]) => hits.map(hit => ({...receiptDefaultData, ...hit.metadata}) ))
       );
   }
@@ -103,10 +105,15 @@ export class AcqReceiptApiService {
   getReceiptLines(receiptPid: string): Observable<IAcqReceiptLine[]> {
     const query = `acq_receipt.pid:${receiptPid}`;
     return this.apiService
-      .getRecords('acq_receipt_lines', query, 1, RecordService.MAX_REST_RESULTS_SIZE,
-                  undefined, undefined, BaseApi.reroJsonheaders, 'receipt_date')
+      .getRecords('acq_receipt_lines', {
+        query,
+        page: 1,
+        itemsPerPage: RecordService.MAX_REST_RESULTS_SIZE,
+        headers: BaseApi.reroJsonheaders as any,
+        sort: 'receipt_date'
+      })
       .pipe(
-        map((result: Record) => this.apiService.totalHits(result.hits.total) === 0 ? [] : result.hits.hits),
+        map((result: EsResult) => +this.apiService.totalHits(result.hits.total) === 0 ? [] : result.hits.hits),
         map((hits: any[]) => hits.map(hit => ({...receiptLineDefaultData, ...hit.metadata}) ))
       );
   }
@@ -179,7 +186,7 @@ export class AcqReceiptApiService {
       .deleteRecord(this.resourceName, receipt.pid)
       .subscribe((success: boolean) => {
           if (success) {
-            this._deletedReceiptSubject$.next(receipt);
+            this.lastDeletedReceipt.set(receipt);
           }
         }
       );
@@ -195,7 +202,7 @@ export class AcqReceiptApiService {
       .deleteRecord('acq_receipt_lines', receiptLine.pid)
       .subscribe((success: boolean) => {
         if (success) {
-          this._deletedReceiptLineSubject$.next(receiptLine);
+          this.lastDeletedReceiptLine.set(receiptLine);
         }
       });
   }

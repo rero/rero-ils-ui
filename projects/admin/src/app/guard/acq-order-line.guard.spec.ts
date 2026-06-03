@@ -16,14 +16,13 @@
  */
 
 import { TestBed } from "@angular/core/testing";
-import { AcqOrderLineGuard } from "./acq-order-line.guard";
+import { acqOrderLineGuard } from "./acq-order-line.guard";
 import { of } from "rxjs";
 import { RecordService } from "@rero/ng-core";
-import { ActivatedRouteSnapshot } from "@angular/router";
-import { UserService } from "@rero/shared";
+import { ActivatedRouteSnapshot, RouterStateSnapshot } from "@angular/router";
+import { AppStore } from "@rero/shared";
 
-describe('AcqOrderLineGuard', () => {
-  let guard: AcqOrderLineGuard;
+describe('acqOrderLineGuard', () => {
   let route: ActivatedRouteSnapshot;
 
   const acqOrder = {
@@ -34,36 +33,40 @@ describe('AcqOrderLineGuard', () => {
     }
   };
 
-  const recordServiceSpy = jasmine.createSpyObj('RecordService', ['getRecord']);
-  recordServiceSpy.getRecord.and.returnValue(of(acqOrder));
+  const recordServiceSpy = { getRecord: vi.fn() };
+  recordServiceSpy.getRecord.mockReturnValue(of(acqOrder));
 
-  const activatedRouteSnapshotSpy = jasmine.createSpyObj('ActivatedRouteSnapshot', ['']);
+  const activatedRouteSnapshotSpy = { } as any;
   activatedRouteSnapshotSpy.queryParams = {
     order: 1
   };
+  activatedRouteSnapshotSpy.params = {};
 
-  const userServiceSpy = jasmine.createSpyObj('UserService', ['']);
+  const appStoreSpy = { currentLibraryPid: vi.fn(() => '10') } as any;
+
+  const runGuard = (routeSnapshot: any) =>
+    TestBed.runInInjectionContext(() =>
+      acqOrderLineGuard(routeSnapshot, {} as RouterStateSnapshot)
+    ) as any;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
       providers: [
-        AcqOrderLineGuard,
         { provide: RecordService, useValue: recordServiceSpy },
         { provide: ActivatedRouteSnapshot, useValue: activatedRouteSnapshotSpy },
-        { provide: UserService, useValue: userServiceSpy }
+        { provide: AppStore, useValue: appStoreSpy }
       ]
     });
 
-    guard = TestBed.inject(AcqOrderLineGuard);
     route = TestBed.inject(ActivatedRouteSnapshot);
   });
 
   it('should be created', () => {
-    expect(guard).toBeTruthy();
+    expect(acqOrderLineGuard).toBeTruthy();
   });
 
-  it('should return the library id', () => {
-    guard.getOwningLibrary$(route)
-      .subscribe((libraryPid: string) => expect(libraryPid).toEqual('10'));
+  it('should return true when the library matches', () => {
+    runGuard(route)
+      .subscribe((result: boolean) => expect(result).toBe(true));
   });
 });

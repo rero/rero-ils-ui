@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2021-2024 RERO
+ * Copyright (C) 2021-2025 RERO
  * Copyright (C) 2021 UCLouvain
  *
  * This program is free software: you can redistribute it and/or modify
@@ -16,101 +16,121 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { Component, inject, OnDestroy, OnInit } from '@angular/core';
-import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
-import { OrganisationService } from '@app/admin/service/organisation.service';
-import { TranslateService } from '@ngx-translate/core';
-import { CONFIG } from '@rero/ng-core';
-import { Tools, UserService } from '@rero/shared';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  effect,
+  inject,
+  signal,
+  untracked,
+} from '@angular/core';
+import { toObservable, toSignal } from '@angular/core/rxjs-interop';
+import { UntypedFormBuilder, UntypedFormGroup, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { Router, RouterLink } from '@angular/router';
+import { TranslateService, TranslateDirective, TranslatePipe } from '@ngx-translate/core';
+import { CONFIG, GetRecordPipe } from '@rero/ng-core';
+import { AppStore, Tools } from '@rero/shared';
 import { MessageService } from 'primeng/api';
-import { SelectChangeEvent } from 'primeng/select';
-import { Subscription } from 'rxjs';
+import { filter, map, switchMap, take } from 'rxjs';
 import { AcqAccountApiService } from '../../../api/acq-account-api.service';
 import { IAcqAccount } from '../../../classes/account';
 import { orderAccountsAsTree } from '../../../utils/account';
+import { Bind } from 'primeng/bind';
+import { Button } from 'primeng/button';
+import { AsyncPipe, CurrencyPipe } from '@angular/common';
+import { SelectModule } from 'primeng/select';
+import { CardModule } from 'primeng/card';
+import { RadioButtonModule } from 'primeng/radiobutton';
+import { InputGroupModule } from 'primeng/inputgroup';
+import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
+import { InputTextModule } from 'primeng/inputtext';
 
 @Component({
-    selector: 'admin-account-transfer',
-    templateUrl: './account-transfer.component.html',
-    standalone: false
+  selector: 'admin-account-transfer',
+  templateUrl: './account-transfer.component.html',
+  imports: [
+    TranslateDirective, FormsModule, ReactiveFormsModule, RouterLink,
+    Bind, Button, AsyncPipe, CurrencyPipe, GetRecordPipe, TranslatePipe,
+    SelectModule, CardModule, RadioButtonModule, InputGroupModule, InputGroupAddonModule, InputTextModule
+  ],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class AccountTransferComponent implements OnInit, OnDestroy {
-  private acqAccountApiService: AcqAccountApiService = inject(AcqAccountApiService);
-  private organisationService: OrganisationService = inject(OrganisationService);
-  private formBuilder: UntypedFormBuilder = inject(UntypedFormBuilder);
-  private translateService: TranslateService = inject(TranslateService);
-  private router: Router = inject(Router);
-  private userService: UserService = inject(UserService);
+export class AccountTransferComponent {
+  private acqAccountApiService = inject(AcqAccountApiService);
+  private formBuilder = inject(UntypedFormBuilder);
+  private translateService = inject(TranslateService);
+  private router = inject(Router);
+  private appStore = inject(AppStore);
   private messageService = inject(MessageService);
 
+  protected readonly organisation = this.appStore.organisation;
+
   // COMPONENT ATTRIBUTES =======================================================
-  /** the accounts available for transfer */
-  accountsToDisplay: IAcqAccount[] = [];
-  /** active budgets */
-  budgets: any[] = [];
-  /** the transfer form group */
-  form: UntypedFormGroup;
+  protected readonly form: UntypedFormGroup = this.formBuilder.group({
+    source: [undefined, Validators.required],
+    target: [undefined, Validators.required],
+    amount: [0, Validators.min(0.01)],
+  });
 
-  /** the accounts available for transfer */
-  private accountsTree: IAcqAccount[] = [];
-  /** store the selected budgets */
-  selectedBudget = undefined;
+  private readonly accountsTree = toSignal(
+    toObservable(this.appStore.currentLibraryPid).pipe(
+      filter((pid): pid is string => !!pid),
+      take(1),
+      switchMap((pid) =>
+        this.acqAccountApiService
+          .getAccounts(pid, undefined, { sort: 'depth' })
+          .pipe(map(orderAccountsAsTree))
+      )
+    ),
+    { initialValue: [] as IAcqAccount[] }
+  );
 
-  private subscriptions = new Subscription();
+  readonly budgets = computed(() =>
+    Array.from(new Set(this.accountsTree().map((a) => a.budget.pid)))
+      .filter((pid): pid is string => pid !== undefined)
+      .map((pid) => ({ code: pid }))
+  );
 
-  // GETTER & SETTER ============================================================
-  /** Get the current organisation */
-  get organisation(): any {
-    return this.organisationService.organisation;
-  }
+  readonly selectedBudget = signal<{ code: string } | undefined>(undefined);
 
-  /** Get the currency symbol for the organisation */
-  get currencySymbol(): string {
-    return Tools.currencySymbol(this.translateService.currentLang, this.organisation.default_currency);
-  }
+  readonly accountsToDisplay = computed(() => {
+    const budget = this.selectedBudget();
+    if (!budget) return [];
+    return this.accountsTree().filter((acc) => acc.budget.pid === budget.code);
+  });
 
-  // CONSTRUCTOR & HOOKS ========================================================
+  private readonly sourceValue = toSignal(this.form.controls['source'].valueChanges);
+
+  // EFFECTS ====================================================================
   constructor() {
-    this.form = this.formBuilder.group({
-      source: [undefined, Validators.required],
-      target: [undefined, Validators.required],
-      amount: [0, Validators.min(0.01)],
+    /** Auto-select the first budget once accounts are loaded */
+    effect(() => {
+      const first = this.budgets()[0];
+      if (first && !untracked(this.selectedBudget)) {
+        this.selectedBudget.set(first);
+      }
+    }, { allowSignalWrites: true });
+
+    /** Update amount validators when the source account changes */
+    effect(() => {
+      const source: IAcqAccount | undefined = this.sourceValue();
+      if (source) {
+        const max = source.remaining_balance?.self ?? 0;
+        this.form.controls['amount'].setValidators([Validators.min(0.01), Validators.max(max)]);
+        this.form.controls['amount'].updateValueAndValidity();
+      }
     });
   }
 
-  /** OnInit hook */
-  ngOnInit(): void {
-    this._loadData();
-    this.subscriptions.add(
-      this.form.controls.source.valueChanges.subscribe((account: IAcqAccount) => {
-        const maxTransferAmount = account.remaining_balance.self;
-        this.form.controls.amount.setValidators([Validators.min(0.01), Validators.max(maxTransferAmount)]);
-      })
-    );
+  // GETTER & SETTER ============================================================
+  get currencySymbol(): string {
+    const org = this.organisation();
+    if (!org) return '';
+    return Tools.currencySymbol(this.translateService.getCurrentLang(), org.default_currency);
   }
 
-  /** onDestroy hook */
-  ngOnDestroy(): void {
-    this.subscriptions.unsubscribe();
-  }
-
-  // PUBLIC FUNCTIONS =========================================================
-  /** Handle event when a budget is selected */
-  selectBudget(event: SelectChangeEvent): void {
-    this.selectedBudget = event.value;
-    this._filterAccountToDisplay();
-  }
-
-  /**
-   * Handle event when use choose source/target account
-   * @param destination - the account destination (source || target)
-   * @param account - the selected account.
-   */
-  selectAccount(destination: string, account: IAcqAccount): void {
-    this.form.controls[destination].patchValue(account);
-  }
-
+  // PUBLIC FUNCTIONS ===========================================================
   /** Submit the form */
   submit(): void {
     this.acqAccountApiService
@@ -141,38 +161,8 @@ export class AccountTransferComponent implements OnInit, OnDestroy {
    * @param fieldName - the field name to check
    */
   checkInput(fieldName: string): boolean {
-    if (this.form.get(fieldName) === undefined) {
-      return true;
-    }
-    return (
-      this.form.get(fieldName).invalid &&
-      this.form.get(fieldName).errors &&
-      (this.form.get(fieldName).dirty || this.form.get(fieldName).touched)
-    );
-  }
-
-  // PRIVATE FUNCTIONS ========================================================
-  /** Load accounts and budgets. Order accounts as a hierarchical tree */
-  private _loadData(): void {
-    const libraryPid = this.userService.user.currentLibrary;
-    this.acqAccountApiService
-      .getAccounts(libraryPid, undefined, { sort: 'depth' })
-      .subscribe((accounts: IAcqAccount[]) => {
-        this.accountsTree = orderAccountsAsTree(accounts);
-        this.budgets = Array.from(new Set(this.accountsTree.map((account: IAcqAccount) => account.budget.pid))).map(
-          (val) => {
-            return { code: val };
-          }
-        );
-        this.selectedBudget = this.budgets.find(Boolean); // get the first element
-        this._filterAccountToDisplay();
-      });
-  }
-
-  /** Allow to filter loaded accounts by the selected budget */
-  private _filterAccountToDisplay(): void {
-    this.accountsToDisplay = this.accountsTree.filter(
-      (acc: IAcqAccount) => acc.budget.pid === this.selectedBudget.code
-    );
+    const control = this.form.get(fieldName);
+    if (!control) return true;
+    return control.invalid && !!control.errors && (control.dirty || control.touched);
   }
 }

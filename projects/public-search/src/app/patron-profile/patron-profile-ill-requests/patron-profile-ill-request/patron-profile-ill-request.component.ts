@@ -14,17 +14,33 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, Input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, input } from '@angular/core';
+import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
+import { Nl2brPipe, RecordData, TruncateTextPipe } from '@rero/ng-core';
+import { JournalVolumePipe, NotesFilterPipe, OpenCloseButtonComponent } from '@rero/shared';
+import { TagModule } from 'primeng/tag';
+import { LoanStatusBadgePipe } from '../../../pipe/loan-status-badge.pipe';
 
 @Component({
     selector: 'public-search-patron-profile-ill-request',
     templateUrl: './patron-profile-ill-request.component.html',
-    standalone: false
+    imports: [
+      TranslateDirective,
+      TranslatePipe,
+      Nl2brPipe,
+      TruncateTextPipe,
+      JournalVolumePipe,
+      NotesFilterPipe,
+      OpenCloseButtonComponent,
+      TagModule,
+      LoanStatusBadgePipe,
+    ],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class PatronProfileIllRequestComponent {
 
   /** Ill record */
-  @Input() record: any;
+  record = input<RecordData>();
 
   /** Detail collapsed */
   isCollapsed = true;

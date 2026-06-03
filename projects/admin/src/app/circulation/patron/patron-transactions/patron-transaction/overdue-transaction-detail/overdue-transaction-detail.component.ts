@@ -15,34 +15,41 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, inject, Input, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, input } from '@angular/core';
+import { toObservable, toSignal } from '@angular/core/rxjs-interop';
+import { RouterLink } from '@angular/router';
 import { Item } from '@app/admin/classes/items';
 import { PatronTransaction } from '@app/admin/classes/patron-transaction';
-import { RecordService } from '@rero/ng-core';
-import { map, mergeMap } from 'rxjs/operators';
+import { DateTranslatePipe, GetRecordPipe, RecordService, TruncateTextPipe } from '@rero/ng-core';
+import { MainTitlePipe } from '@rero/shared';
+import { TranslateDirective } from '@ngx-translate/core';
+import { AsyncPipe } from '@angular/common';
+import { of } from 'rxjs';
+import { map, mergeMap, switchMap } from 'rxjs/operators';
 
 @Component({
-    selector: 'admin-overdue-transaction-detail',
-    templateUrl: './overdue-transaction-detail.component.html',
-    standalone: false
+  selector: 'admin-overdue-transaction-detail',
+  templateUrl: './overdue-transaction-detail.component.html',
+  imports: [TranslateDirective, RouterLink, AsyncPipe, DateTranslatePipe, GetRecordPipe, MainTitlePipe, TruncateTextPipe],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class OverdueTransactionDetailComponent implements OnInit {
+export class OverdueTransactionDetailComponent {
 
-  private recordService: RecordService = inject(RecordService);
+  private recordService = inject(RecordService);
 
-  /** Patron transaction */
-  @Input() transaction: PatronTransaction;
-  /** item linked to this transaction if transaction linked to a loan */
-  item: Item;
+  transaction = input<PatronTransaction>();
 
-  /** Load item information's if the transaction is linked to a loan */
-  ngOnInit(): void {
-    if (this.transaction && this.transaction.loan && this.transaction.loan.pid) {
-      this.recordService.getRecord('loans', this.transaction.loan.pid).pipe(
-        map(data => data.metadata),
-        mergeMap( data => this.recordService.getRecord('items', data.item_pid.value)),
-        map(data => new Item(data.metadata))
-      ).subscribe((data) => this.item = data);
-    }
-  }
+  readonly item = toSignal(
+    toObservable(this.transaction).pipe(
+      switchMap(t => {
+        if (!t?.loan?.pid) return of(null);
+        return this.recordService.getRecord('loans', t.loan.pid, {}).pipe(
+          map(data => data.metadata),
+          mergeMap(data => this.recordService.getRecord('items', (data as any).item_pid.value, {})),
+          map(data => new Item(data.metadata))
+        );
+      })
+    ),
+    { initialValue: null }
+  );
 }

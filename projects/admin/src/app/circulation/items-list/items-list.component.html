@@ -14,26 +14,26 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-@if (checkedOutItems && checkedOutItems.length === 0 && patron) {
+@if (checkedOutItems() && checkedOutItems().length === 0 && patron()) {
   <div class="ui:mb-2">
     <span translate>No loan for the current patron.</span>
   </div>
 }
-@if ((checkedOutItems && checkedOutItems.length > 0) || (checkedInItems && checkedInItems.length > 0)) {
+@if ((checkedOutItems() && checkedOutItems().length > 0) || (checkedInItems() && checkedInItems().length > 0)) {
   <!-- HEADER -->
    <p-card>
     <ng-template #header>
         <div class="ui:grid ui:grid-cols-12 ui:gap-4 ui:py-4 ui:px-2 ui:text-lg ui:font-bold ui:items-center">
           <div class="ui:col-span-3 ui:flex ui:gap-2 ui:items-center">
             <div>
-              <shared-open-close-button (status)="allCollapsed = $event" />
+              <shared-open-close-button (status)="allCollapsed.set($event)" />
             </div>
             <div translate>Item</div>
           </div>
           <div class="ui:col-span-5" translate>Document</div>
           <div class="ui:col-span-2" translate>Circulation info</div>
           <div class="ui:col-span-2 ui:flex ui:justify-end">
-            @if (patron) {
+            @if (patron()) {
               <p-button
                 id="renew-all-button"
                 [label]="'Renew all'|translate"
@@ -47,13 +47,13 @@
 
     <div>
       <!-- CHECKED OUT ITEMS -->
-      @for (item of checkedOutItems; track item.pid) {
+      @for (item of checkedOutItems(); track item.pid) {
         <div class="ui:odd:bg-surface-50">
           <admin-item
-            [patron]="patron"
+            [patron]="patron()"
             [item]="item"
             [attr.id]="item.barcode | idAttribute:{prefix: 'item'}"
-            [isCollapsed]="allCollapsed"
+            [isCollapsed]="allCollapsed()"
             (extendLoanClicked)="extendLoanClick($event, item)"
           />
         </div>
@@ -61,13 +61,13 @@
 
       <!-- CHECKED IN ITEMS -->
       <!-- Callout ui:border for [TRANSIT|REQUEST|FEE] -->
-      @for (item of checkedInItems; track item.pid) {
+      @for (item of checkedInItems(); track item.pid) {
         <div class="ui:odd:bg-surface-50">
           <admin-item
-            [patron]="patron"
+            [patron]="patron()"
             [item]="item"
             [attr.id]="item.barcode | idAttribute:{prefix: 'item'}"
-            [isCollapsed]="allCollapsed"
+            [isCollapsed]="allCollapsed()"
             (hasFeesEmitter)="hasFees($event)"
           />
         </div>

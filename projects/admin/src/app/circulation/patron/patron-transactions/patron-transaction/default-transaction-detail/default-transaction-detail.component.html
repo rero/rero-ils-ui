@@ -14,9 +14,9 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-@if (transaction?.note) {
+@if (transaction()?.note) {
   <div class="ui:grid ui:grid-cols-12">
     <div class="ui:col-span-2" translate>Note</div>
-    <div class="ui:col-span-10">{{ transaction.note }}</div>
+    <div class="ui:col-span-10">{{ transaction().note }}</div>
   </div>
 }

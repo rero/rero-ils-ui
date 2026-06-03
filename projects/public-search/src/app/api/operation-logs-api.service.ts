@@ -16,7 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { inject, Injectable } from '@angular/core';
-import { Error, Record, RecordService } from '@rero/ng-core';
+import { RecordService } from '@rero/ng-core';
+import type { Error, EsResult } from '@rero/ng-core';
 import { BaseApi } from '@rero/shared';
 import { DateTime } from 'luxon';
 import { Observable } from 'rxjs';
@@ -40,12 +41,11 @@ export class OperationLogsApiService extends BaseApi {
     patronPid: string,
     page: number,
     itemsPerPage = 10
-  ): Observable<Record | Error> {
+  ): Observable<EsResult | Error> {
     const date = DateTime.now().minus({ months: 6 }).toISO();
     const query = `record.type:loan AND loan.patron.pid:${patronPid} AND loan.trigger:checkin AND date:[${date} TO *]`;
     return this.recordService.getRecords(
-      'operation_logs', query, page, itemsPerPage,
-      undefined, undefined, undefined, 'mostrecent'
+      'operation_logs', { query, page, itemsPerPage, sort: 'mostrecent' }
       );
   }
 }

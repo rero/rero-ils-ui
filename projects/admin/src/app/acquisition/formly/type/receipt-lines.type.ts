@@ -14,13 +14,16 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component } from '@angular/core';
-import { FieldArrayType } from '@ngx-formly/core';
+import { Component, ChangeDetectionStrategy} from '@angular/core';
+import { FieldArrayType, FormlyModule } from '@ngx-formly/core';
+import { TranslatePipe } from '@ngx-translate/core';
+import { PanelModule } from 'primeng/panel';
+import { CheckboxModule } from 'primeng/checkbox';
 
 @Component({
     selector: 'admin-formly-receipt-lines',
     template: `
-    <p-panel [header]="'Add receipt line(s)' | translate" styleClass="ui:my-3">
+    <p-panel [header]="'Add receipt line(s)' | translate" class="ui:my-3">
       @if (field.fieldGroup.length > 0) {
         <div class="ui:grid ui:grid-cols-12 ui:gap-4  ui:px-4">
           @for (f of field.fieldGroup[0].fieldGroup; track f.id) {
@@ -49,6 +52,7 @@ import { FieldArrayType } from '@ngx-formly/core';
       }
     </p-panel>
   `,
-    standalone: false
+    imports: [FormlyModule, TranslatePipe, PanelModule, CheckboxModule],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ReceiptLinesTypeComponent extends FieldArrayType {}

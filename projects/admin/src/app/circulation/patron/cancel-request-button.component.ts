@@ -14,72 +14,80 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, EventEmitter, inject, Input, Output } from '@angular/core';
+import { Component, inject, input, output, ChangeDetectionStrategy } from '@angular/core';
 import { LoanService } from '@app/admin/service/loan.service';
-import { TranslateService } from '@ngx-translate/core';
+import { TranslateService, TranslatePipe } from '@ngx-translate/core';
 import { CONFIG } from '@rero/ng-core';
-import { UserService } from '@rero/shared';
-import { MessageService } from 'primeng/api';
+import { AppStore } from '@rero/shared';
+import { ConfirmationService, MessageService } from 'primeng/api';
+import { Bind } from 'primeng/bind';
+import { Button } from 'primeng/button';
+import { ConfirmDialog } from 'primeng/confirmdialog';
+import { TooltipModule } from 'primeng/tooltip';
 
 @Component({
-    selector: 'admin-cancel-request-button',
-    template: `
+  selector: 'admin-cancel-request-button',
+  template: `
+    <p-confirmDialog />
     <p-button
       class="ui:pointer-events-auto"
       icon="fa fa-trash"
       severity="danger"
       outlined
-      [pTooltip]="'The request cannot be cancelled'|translate"
+      [pTooltip]="'The request cannot be cancelled' | translate"
       tooltipPosition="top"
       [disabled]="!canCancelRequest()"
       [tooltipDisabled]="canCancelRequest()"
-      (onClick)="showCancelRequestDialog($event)"
+      (onClick)="showCancelRequestDialog()"
     />
   `,
-    standalone: false
+  providers: [ConfirmationService],
+  imports: [Bind, Button, ConfirmDialog, TranslatePipe, TooltipModule],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CancelRequestButtonComponent {
 
-  loanService: LoanService = inject(LoanService);
-  userService: UserService = inject(UserService);
-  translateService: TranslateService = inject(TranslateService);
-  messageService: MessageService = inject(MessageService);
+  private loanService = inject(LoanService);
+  private appStore = inject(AppStore);
+  private translateService = inject(TranslateService);
+  private messageService = inject(MessageService);
+  private confirmationService = inject(ConfirmationService);
 
-  /** Loan record */
-  @Input() loan: any;
+  loan = input<any>();
+  cancelRequestEvent = output<any>();
 
-  /** Informs parent component to remove request when it is cancelled */
-  @Output() cancelRequestEvent = new EventEmitter<any>();
-
-  /**
-   * Can cancel a loan request
-   * @returns true if it is possible to cancel a loan
-   */
   canCancelRequest(): boolean {
-    return this.loanService.canCancelRequest(this.loan);
+    return this.loanService.canCancelRequest(this.loan());
   }
 
-  /** Show a confirmation dialog box for cancel request. */
-  showCancelRequestDialog(event: Event): void {
-    this.loanService.cancelRequestDialog(event, () => {
-      this.loanService.cancelLoan(
-        this.loan.metadata.item.pid,
-        this.loan.metadata.pid,
-        this.userService.user.currentLibrary
-      ).subscribe((item: any) => {
-        let message = this.translateService.instant("The request has been cancelled.");
-        if (item?.pending_loans?.length > 0) {
-          message += "<br>";
-          message += this.translateService.instant("The item contains requests.");
-        }
-        this.messageService.add({
-          severity: 'warn',
-          summary: this.translateService.instant('Request'),
-          detail: message,
-          life: CONFIG.MESSAGE_LIFE
+  showCancelRequestDialog(): void {
+    this.confirmationService.confirm({
+      header: this.translateService.instant('Cancel request'),
+      message: this.translateService.instant('Do you really want to cancel the request?'),
+      acceptLabel: this.translateService.instant('Yes'),
+      rejectLabel: this.translateService.instant('No'),
+      icon: 'fa fa-exclamation-triangle fa-2x core:text-red-500',
+      acceptButtonStyleClass: 'core:bg-red-500 core:border-red-500',
+      rejectButtonStyleClass: 'p-button-text',
+      accept: () => {
+        this.loanService.cancelLoan(
+          this.loan().metadata.item.pid,
+          this.loan().metadata.pid,
+          this.appStore.currentLibraryPid()
+        ).subscribe((item: any) => {
+          let message = this.translateService.instant('The request has been cancelled.');
+          if (item?.pending_loans?.length > 0) {
+            message += '<br>' + this.translateService.instant('The item contains requests.');
+          }
+          this.messageService.add({
+            severity: 'warn',
+            summary: this.translateService.instant('Request'),
+            detail: message,
+            life: CONFIG.MESSAGE_LIFE
+          });
+          this.cancelRequestEvent.emit(this.loan().id);
         });
-        this.cancelRequestEvent.emit(this.loan.id);
-      });
+      }
     });
   }
 }

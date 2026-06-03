@@ -18,8 +18,8 @@ import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { ApiService, RecordService } from '@rero/ng-core';
-import { IQueryOptions, ISuggestionItem } from '@rero/prime/remote-autocomplete/remote-autocomplete.interface';
-import { AppSettingsService, Entity } from '@rero/shared';
+import { IQueryOptions, ISuggestionItem } from '@rero/ng-core';
+import { AppStore, Entity } from '@rero/shared';
 import { catchError, forkJoin, map, Observable, of } from 'rxjs';
 import { IRemoteAutocomplete } from './i-remote-autocomplete';
 
@@ -30,7 +30,7 @@ export class MefRemoteService implements IRemoteAutocomplete {
 
   private httpClient: HttpClient = inject(HttpClient);
   private translateService: TranslateService = inject(TranslateService);
-  private appSettingsService: AppSettingsService = inject(AppSettingsService);
+  private appStore = inject(AppStore);
   private recordService: RecordService = inject(RecordService);
   private apiService: ApiService = inject(ApiService);
 
@@ -46,7 +46,7 @@ export class MefRemoteService implements IRemoteAutocomplete {
     return 'mef';
   }
 
-  getSuggestions(query: string, queryOptions: IQueryOptions, currentPid: string): Observable<ISuggestionItem[]> {
+  getSuggestions(query: string, queryOptions: IQueryOptions, _currentPid: string | null): Observable<ISuggestionItem[]> {
     if (!query) {
       return of([]);
     }
@@ -57,7 +57,7 @@ export class MefRemoteService implements IRemoteAutocomplete {
     const searchCategory = queryOptions.filter;
 
     const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
-    const params = new HttpParams().set('size', queryOptions.maxOfResult);
+    const params = new HttpParams().set('size', queryOptions.maxOfResult ?? 100);
     // Build API call to get remote suggestions.
     const remoteUrl = `${this.remoteSearchEntrypoint}/${searchCategory}/${query}/`;
     const remoteSuggestions$ = this.httpClient.get(remoteUrl, {headers, params}).pipe(
@@ -73,7 +73,7 @@ export class MefRemoteService implements IRemoteAutocomplete {
 
     // Build API call to get local entity suggestions.
     const localUrl = `${this.localSearchEntrypoint}/${searchCategory}/${query}/`;
-    const localSuggestions$ = this.httpClient.get(localUrl, {headers, params}).pipe(
+    const localSuggestions$ = (this.httpClient.get(localUrl, {headers, params}) as Observable<any[]>).pipe(
       map((hits: any[]) => this.buildLocalSuggestions(hits)),
       catchError(e => {
         switch (e.status) {
@@ -88,12 +88,12 @@ export class MefRemoteService implements IRemoteAutocomplete {
     );
   }
   getValueAsHTML(queryOptions: IQueryOptions, item: ISuggestionItem): Observable<string> {
-    return (item.value.match(/local_entities\/.*$/))
-       ? this.getLocalValueAsHTML(queryOptions, item.value)
-       : this.getRemoteValueAsHTML(queryOptions, item.value);
+    return (item.value!.match(/local_entities\/.*$/))
+       ? this.getLocalValueAsHTML(queryOptions, item.value!)
+       : this.getRemoteValueAsHTML(queryOptions, item.value!);
   }
 
-  private getRemoteValueAsHTML(options: IQueryOptions, value: string): Observable<string> {
+  private getRemoteValueAsHTML(_options: IQueryOptions, value: string): Observable<string> {
     // We need to call the url to get remote metadata. But we can't do that directly because this url could be external. So we need to call
     // a proxy passing the URL as query string argument.
     const source = value.split('/').slice(-2)[0];
@@ -113,7 +113,7 @@ export class MefRemoteService implements IRemoteAutocomplete {
             delete data.metadata.identifier;
           }
           if (data?.metadata && data?.metadata.identifiedBy) {
-            data.metadata.identifiedBy.map(identifier => identifier.source = identifier.source.toLowerCase());
+            data.metadata.identifiedBy.map((identifier: any) => identifier.source = identifier.source.toLowerCase());
           }
           return data;
         }),
@@ -137,7 +137,7 @@ export class MefRemoteService implements IRemoteAutocomplete {
    * @param value: formControl value i.e. $ref value
    * @returns Observable on HTML template representation of the value.
    */
-  private getLocalValueAsHTML(options: IQueryOptions, value: string): Observable<string> {
+  private getLocalValueAsHTML(_options: IQueryOptions, value: string): Observable<string> {
     const pid = value.split('/').slice(-1)[0];
     return this.recordService
       .getRecord('local_entities', pid)
@@ -194,17 +194,14 @@ export class MefRemoteService implements IRemoteAutocomplete {
    * @returns Suggestions corresponding to hits.
    */
   private buildRemoteSuggestions(hits: any): ISuggestionItem[] {
-    let suggestions = [];
-    this.sources().map((source: string) => suggestions.push({
-      label: source,
-      items: []
-    }));
-    let selectedSource: any;
+    type SuggestionGroup = { label: string; items: ISuggestionItem[] };
+    let suggestions: SuggestionGroup[] = [];
+    this.sources().map((source: string) => suggestions.push({ label: source, items: [] }));
 
     hits.map((hit: any) => {
       for (const source of this.sources()) {
         if (hit.metadata[source]) {
-          selectedSource = suggestions.filter((suggestion: any) => suggestion.label === source);
+          const selectedSource = suggestions.filter((s) => s.label === source);
           if (selectedSource.length === 1) {
             selectedSource[0].items.push(this.getNameRef(hit.metadata, source));
           }
@@ -213,9 +210,9 @@ export class MefRemoteService implements IRemoteAutocomplete {
     });
 
     // Remove sources without items
-    suggestions = suggestions.filter((suggestion: any) => suggestion.items.length > 0);
+    suggestions = suggestions.filter((s) => s.items.length > 0);
 
-    return suggestions;
+    return suggestions as unknown as ISuggestionItem[];
   }
 
   /**
@@ -252,8 +249,8 @@ export class MefRemoteService implements IRemoteAutocomplete {
    * @return array of sources
    */
   public sources(): string[] {
-    const language = this.translateService.currentLang;
-    const order: any = this.appSettingsService.agentLabelOrder;
+    const language = this.translateService.getCurrentLang();
+    const order: any = this.appStore.settings()?.agentLabelOrder;
     const key = language in order ? language : 'fallback';
     const agentSources = (key === 'fallback')
       ? order[order[key]]
@@ -267,7 +264,7 @@ export class MefRemoteService implements IRemoteAutocomplete {
    * @returns Suggestions corresponding to hits.
    */
   private buildLocalSuggestions(hits: any): ISuggestionItem[] {
-    const suggestions = [{ label: 'local', items: [] }];
+    const suggestions: { label: string; items: ISuggestionItem[] }[] = [{ label: 'local', items: [] }];
     hits.map((hit: any) => {
       suggestions[0].items.push({
         label: hit.authorized_access_point,
@@ -277,7 +274,7 @@ export class MefRemoteService implements IRemoteAutocomplete {
       });
     });
 
-    return suggestions;
+    return suggestions as unknown as ISuggestionItem[];
   }
 
   /**

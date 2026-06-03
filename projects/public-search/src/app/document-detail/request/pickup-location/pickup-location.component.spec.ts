@@ -22,9 +22,9 @@ import { BrowserModule } from '@angular/platform-browser';
 import { FormlyModule } from '@ngx-formly/core';
 import { FormlyPrimeNGModule } from '@ngx-formly/primeng';
 import { TranslateModule } from '@ngx-translate/core';
-import { CoreModule } from '@rero/ng-core';
-import { UserService } from '@rero/shared';
+
 import { of } from 'rxjs';
+import { HoldingsApiService } from '../../../api/holdings-api.service';
 import { ItemApiService } from '../../../api/item-api.service';
 import { LocationApiService } from '../../../api/location-api.service';
 import { PickupLocationComponent } from './pickup-location.component';
@@ -46,12 +46,10 @@ describe('PickupLocationComponent', () => {
     { pid: '2', name: 'location 2' }
   ];
 
-  const locationServiceSpy = jasmine.createSpyObj('LocationService', ['getPickupLocationsByRecordId']);
-  locationServiceSpy.getPickupLocationsByRecordId.and.returnValue(of(pickupLocations));
+  const locationServiceSpy = { getPickupLocationsByRecordId: vi.fn() };
+  locationServiceSpy.getPickupLocationsByRecordId.mockReturnValue(of(pickupLocations));
 
-  const userServiceSpy = jasmine.createSpyObj('UserService', ['']);
-
-  const itemServiceSpy = jasmine.createSpyObj('ItemService', ['']);
+  const itemServiceSpy = {};
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -60,15 +58,14 @@ describe('PickupLocationComponent', () => {
     ],
     imports: [BrowserModule,
         TranslateModule.forRoot(),
-        CoreModule,
         FormsModule,
         ReactiveFormsModule,
         FormlyModule.forRoot(),
         FormlyPrimeNGModule],
     providers: [
         { provide: LocationApiService, useValue: locationServiceSpy },
-        { provide: UserService, useValue: userServiceSpy },
         { provide: ItemApiService, useValue: itemServiceSpy },
+        { provide: HoldingsApiService, useValue: {} },
         provideHttpClient(withInterceptorsFromDi()),
         provideHttpClientTesting()
     ]
@@ -79,7 +76,7 @@ describe('PickupLocationComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(PickupLocationComponent);
     component = fixture.componentInstance;
-    component.record = itemRecord;
+    fixture.componentRef.setInput('record', itemRecord);
     fixture.detectChanges();
   });
 

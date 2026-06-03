@@ -18,10 +18,7 @@
 import { Pipe, PipeTransform } from '@angular/core';
 import { IAcqReceipt } from '../classes/receipt';
 
-@Pipe({
-    name: 'receptionDates',
-    standalone: false
-})
+@Pipe({ name: 'receptionDates' })
 export class ReceptionDatesPipe implements PipeTransform {
 
   /**

@@ -14,12 +14,15 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy} from '@angular/core';
+import { LoadingBarModule } from '@ngx-loading-bar/core';
+import { RouterOutlet } from '@angular/router';
 
 @Component({
     selector: 'public-search-root',
     templateUrl: './app.component.html',
-    standalone: false
+    imports: [LoadingBarModule, RouterOutlet],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AppComponent {
 

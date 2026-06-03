@@ -15,60 +15,86 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, inject, OnDestroy, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
-import { TranslateService } from '@ngx-translate/core';
-import { DetailRecord, RecordService } from '@rero/ng-core';
-import { IPermissions, PERMISSIONS, PermissionsService } from '@rero/shared';
-import { Observable, of, Subscription } from 'rxjs';
-import { switchMap } from 'rxjs/operators';
+import { Component, computed, inject, input, ChangeDetectionStrategy } from '@angular/core';
+import { toObservable, toSignal } from '@angular/core/rxjs-interop';
+import { ActivatedRoute, RouterLink } from '@angular/router';
+import { TranslateService, TranslateDirective, TranslatePipe } from '@ngx-translate/core';
+import { RecordService, CallbackArrayFilterPipe, RecordData } from '@rero/ng-core';
+import { AppStore, IPermissions, PERMISSIONS, ThumbnailComponent, ContributionComponent, PartOfComponent, OtherEditionComponent, EntityLinkComponent, FilesComponent, DocumentDescriptionComponent, DocumentProvisionActivityPipe, MainTitlePipe } from '@rero/shared';
+import { of, switchMap } from 'rxjs';
 import { DocumentApiService } from '../../../api/document-api.service';
+import { RelatedResourceComponent } from './related-resource/related-resource.component';
+import { Bind } from 'primeng/bind';
+import { Tag } from 'primeng/tag';
+import { RecordMaskedComponent } from '../record-masked/record-masked.component';
+import { ButtonDirective } from 'primeng/button';
+import { Tabs, TabList, Tab, TabPanels, TabPanel } from 'primeng/tabs';
+import { Ripple } from 'primeng/ripple';
+import { HoldingsComponent } from './holdings/holdings.component';
+import { EntitiesRelatedComponent } from './entities-related/entities-related.component';
+import { LocalFieldComponent } from '../local-field/local-field.component';
+import { UploadFilesComponent } from './files-collections/upload-files/upload-files.component';
+import { TableModule } from 'primeng/table';
+import { I18nPluralPipe, KeyValuePipe } from '@angular/common';
+import { MarcPipe } from '../../../pipe/marc.pipe';
+import { Message } from 'primeng/message';
+import { ReadMoreComponent } from '@rero/ng-core';
 
 @Component({
     selector: 'admin-document-detail-view',
     templateUrl: './document-detail-view.component.html',
-    standalone: false
+    imports: [ThumbnailComponent, ContributionComponent, PartOfComponent, OtherEditionComponent, RelatedResourceComponent, Bind, Tag, EntityLinkComponent, RecordMaskedComponent, ButtonDirective, RouterLink, Tabs, TabList, Ripple, Tab, TranslateDirective, TabPanels, TabPanel, FilesComponent, HoldingsComponent, DocumentDescriptionComponent, EntitiesRelatedComponent, LocalFieldComponent, UploadFilesComponent, TableModule, I18nPluralPipe, KeyValuePipe, CallbackArrayFilterPipe, TranslatePipe, DocumentProvisionActivityPipe, MainTitlePipe, MarcPipe, Message, ReadMoreComponent],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class DocumentDetailViewComponent implements DetailRecord, OnInit, OnDestroy {
+export class DocumentDetailViewComponent {
 
   private translateService: TranslateService = inject(TranslateService);
   private activatedRouter: ActivatedRoute = inject(ActivatedRoute);
   private recordService: RecordService = inject(RecordService);
   private documentApiService: DocumentApiService = inject(DocumentApiService);
-  private permissionsService: PermissionsService = inject(PermissionsService);
+  private appStore = inject(AppStore);
 
-  /** Observable resolving record data */
-  record$: Observable<any>;
-
-  /** Observable of the imported record in marc format */
-  marc$: Observable<any>;
-
-  /** Record subscription */
-  private _recordObs: Subscription;
+  readonly record = input<RecordData | undefined>();
 
   /** Resource type */
-  type: string;
+  readonly type = input.required<string>();
 
-  /** Document record */
-  record: any;
+  /** Signal of the imported record in marc format */
+  readonly marc = toSignal(
+    toObservable(this.record).pipe(
+      switchMap((record: any) => {
+        if (record?.metadata != null && record.metadata.pid == null) {
+          return this.recordService.getRecord(
+            this.activatedRouter.snapshot.params.type, this.pid, {
+            resolve: 0,
+            headers: { Accept: 'application/marc+json, application/json' }
+          });
+        }
+        return of(null);
+      })
+    ),
+    { initialValue: null }
+  );
 
-  /** Related resources */
-  relatedResources = [];
+  readonly relatedResources = computed(() => this._processRelatedResources(this.record()));
+  readonly recordMessage = computed(() => this._message(this.record()));
+  readonly activateLink = computed(() =>
+    !this.activatedRouter.snapshot.params.type?.startsWith('import_')
+  );
 
-  /** Linked documents count */
-  linkedDocumentsCount = 0;
-
-  /** Enables or disables links */
-  activateLink = true;
-
-  recordMessage: string = undefined;
+  readonly linkedDocumentsCount = toSignal(
+    toObservable(this.record).pipe(
+      switchMap(() => this.pid
+        ? this.documentApiService.getLinkedDocumentsCount(this.pid)
+        : of(0)
+      )
+    ),
+    { initialValue: 0 }
+  );
 
   /** External identifier for imported record. */
   get pid(): string | null {
-    if (this.activatedRouter.snapshot && this.activatedRouter.snapshot.params && this.activatedRouter.snapshot.params.pid !== null) {
-      return this.activatedRouter.snapshot.params.pid;
-    }
-    return null;
+    return this.activatedRouter.snapshot?.params?.pid ?? null;
   }
 
   /**
@@ -76,7 +102,7 @@ export class DocumentDetailViewComponent implements DetailRecord, OnInit, OnDest
    * @return string - language
    */
   get currentLanguage(): string {
-    return this.translateService.currentLang;
+    return this.translateService.getCurrentLang();
   }
 
   /** return all available permissions for current user */
@@ -87,7 +113,7 @@ export class DocumentDetailViewComponent implements DetailRecord, OnInit, OnDest
    * @return boolean - if False, hide the local fields tab
    */
   get showLocalFieldsTab(): boolean {
-    return this.permissionsService.canAccess([PERMISSIONS.LOFI_SEARCH, PERMISSIONS.LOFI_CREATE]);
+    return this.appStore.canAccess([PERMISSIONS.LOFI_SEARCH, PERMISSIONS.LOFI_CREATE]);
   }
 
   /**
@@ -95,41 +121,11 @@ export class DocumentDetailViewComponent implements DetailRecord, OnInit, OnDest
    * @return boolean - if False, hide the local fields tab
    */
   get showFilesTab(): boolean {
-    return this.permissionsService.canAccess(PERMISSIONS.CIRC_ADMIN);
-  }
-
-  /** On init hook */
-  ngOnInit(): void {
-    this.activateLink = !this.activatedRouter.snapshot.params.type.startsWith('import_');
-    this._recordObs = this.record$.pipe(
-      switchMap((record: any) => {
-        this.record = record;
-        this.relatedResources = this.processRelatedResources(record);
-        this.recordMessage = this.message(record);
-        if (record != null && record.metadata != null && this.record.metadata.pid == null) {
-          this.marc$ = this.recordService.getRecord(
-            this.activatedRouter.snapshot.params.type, this.pid, 0, {
-            Accept: 'application/marc+json, application/json'
-          });
-        } else {
-          this.marc$ = of(null);
-        }
-        return this.pid
-          ? this.documentApiService.getLinkedDocumentsCount(this.pid)
-          : of(0);
-      })
-    ).subscribe((count: number) => {
-      this.linkedDocumentsCount = count;
-    });
-  }
-
-  /** On destroy hook */
-  ngOnDestroy(): void {
-    this._recordObs.unsubscribe();
+    return this.appStore.canAccess(PERMISSIONS.CIRC_ADMIN);
   }
 
   selectedTab(): string {
-    return this.record.metadata.pid ? 'get' : 'description';
+    return this.record()?.metadata?.pid ? 'get' : 'description';
   }
 
   /**
@@ -188,8 +184,8 @@ export class DocumentDetailViewComponent implements DetailRecord, OnInit, OnDest
    * @param record - Record metadata
    * @returns Array of related resources
    */
-  private processRelatedResources(record: any): any[] {
-    if (record.metadata.electronicLocator) {
+  private _processRelatedResources(record: any): any[] {
+    if (record?.metadata?.electronicLocator) {
       return record.metadata.electronicLocator.filter(
         (electronicLocator: any) => [
           'hiddenUrl', 'noInfo', 'resource', 'relatedResource', 'versionOfResource'
@@ -200,17 +196,18 @@ export class DocumentDetailViewComponent implements DetailRecord, OnInit, OnDest
     return [];
   }
 
-  private message(record: any): string {
-    if (record.metadata?.adminMetadata?.encodingLevel !== 'Full level' || record.metadata?.adminMetadata?.note) {
+  private _message(record: any): string | undefined {
+    if (record?.metadata?.adminMetadata?.encodingLevel !== 'Full level' || record?.metadata?.adminMetadata?.note) {
       const message = [];
-      if (record.metadata?.adminMetadata?.encodingLevel) {
+      if (record?.metadata?.adminMetadata?.encodingLevel) {
         message.push(this.translateService.instant('Encoding level') + ': ');
         message.push(this.translateService.instant(record.metadata.adminMetadata.encodingLevel) + '.')
       }
-      if (record.metadata.adminMetadata.note) {
+      if (record?.metadata?.adminMetadata?.note) {
         message.push(record.metadata.adminMetadata.note.join('. ') + '.')
       }
-      return message.join(' ');
+      return message.join(' ') || undefined;
     }
+    return undefined;
   }
 }

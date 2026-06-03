@@ -1,6 +1,6 @@
 <!--
   RERO ILS UI
-  Copyright (C) 2019-2025 RERO
+  Copyright (C) 2019-2026 RERO
   Copyright (C) 2019-2023 UCLouvain
 
   This program is free software: you can redistribute it and/or modify
@@ -16,48 +16,47 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <div class="ui:flex ui:content-start">
-  @if (iconTemplate) {
+  @if (iconTemplate()) {
     <div class="ui:text-center">
-      <ng-container [ngTemplateOutlet]="iconTemplate" />
+      <ng-container [ngTemplateOutlet]="iconTemplate()" />
     </div>
   }
-
   <div class="ui:mx-4">
     <div>
-      @if (titleTemplate) {
+      @if (titleTemplate()) {
         <ng-container
-          [ngTemplateOutlet]="titleTemplate"
-          [ngTemplateOutletContext]="{ title:title, link:link }"
+          [ngTemplateOutlet]="titleTemplate()"
+          [ngTemplateOutletContext]="{ title:title(), link:detailUrl() }"
         />
       } @else {
         <h5>
-          @if (link) {
-            @if (isArray(link)) {
-              <a [routerLink]="link">{{ title }}</a>
+          @if (link()) {
+            @if (isArray(detailUrl())) {
+              <a [routerLink]="detailUrl()">{{ title() }}</a>
             } @else {
-              <a [href]="link">{{ title }}</a>
+              <a [href]="detailUrl()">{{ title() }}</a>
             }
           } @else {
-            {{ title }}
+            {{ title() }}
           }
         </h5>
       }
     </div>
-    @if (contentTemplate) {
+    @if (contentTemplate()) {
       <div class="ui:italic">
-        <ng-container [ngTemplateOutlet]="contentTemplate" />
+        <ng-container [ngTemplateOutlet]="contentTemplate()" />
       </div>
     }
     <div>
-      @if (tagsTemplate) {
+      @if (tagsTemplate()) {
         <ng-container
-          [ngTemplateOutlet]="tagsTemplate"
-          [ngTemplateOutletContext]="{ $implicit: tags }"
+          [ngTemplateOutlet]="tagsTemplate()"
+          [ngTemplateOutletContext]="{ $implicit: tags() }"
         />
       } @else {
-        @if (tags) {
+        @if (tags()) {
           <div id="subject" class="ui:flex ui:gap-1 ui:flex-wrap">
-            @for (tag of tags; track $index) {
+            @for (tag of tags(); track $index) {
               <p-tag severity="success" [value]="tag.label"/>
             }
           </div>

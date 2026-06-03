@@ -14,43 +14,58 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, EventEmitter, inject, Input, OnInit, Output } from '@angular/core';
-import { RecordService } from '@rero/ng-core';
-import { forkJoin } from 'rxjs';
+import { ChangeDetectionStrategy, Component, computed, inject, input, output } from '@angular/core';
+import { toObservable, toSignal } from '@angular/core/rxjs-interop';
+import { RouterLink } from '@angular/router';
+import { DateTranslatePipe, GetRecordPipe, RecordService } from '@rero/ng-core';
+import { ContributionComponent, MainTitlePipe } from '@rero/shared';
+import { Bind } from 'primeng/bind';
+import { Tag } from 'primeng/tag';
+import { forkJoin, of } from 'rxjs';
+import { map, switchMap } from 'rxjs/operators';
 import { ItemsService } from '../../../../service/items.service';
+import { CancelRequestButtonComponent } from '../../cancel-request-button.component';
+import { AsyncPipe } from '@angular/common';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
-    selector: 'admin-pickup-item',
-    templateUrl: './pickup-item.component.html',
-    standalone: false
+  selector: 'admin-pickup-item',
+  templateUrl: './pickup-item.component.html',
+  imports: [RouterLink, Bind, Tag, ContributionComponent, CancelRequestButtonComponent, AsyncPipe, DateTranslatePipe, GetRecordPipe, MainTitlePipe, TranslatePipe],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class PickupItemComponent implements OnInit {
+export class PickupItemComponent {
 
-  private recordService: RecordService = inject(RecordService);
-  private itemService: ItemsService = inject(ItemsService);
+  private recordService = inject(RecordService);
+  private itemService = inject(ItemsService);
 
   // COMPONENT ATTRIBUTES =====================================================
   /** Loan */
-  @Input() loan = undefined;
+  loan = input<any>(undefined);
   /** Informs parent component to remove request when it is cancelled */
-  @Output() cancelRequestEvent = new EventEmitter<any>();
-  /** Item, document */
-  item = undefined;
-  document = undefined;
+  cancelRequestEvent = output<any>();
 
-  /** OnInit hook */
-  ngOnInit() {
-    if (this.loan) {
-      const item$ = this.itemService.getItem(this.loan.metadata.item.barcode, this.loan.metadata.paton_pid);
-      const doc$ = this.recordService.getRecord('documents', this.loan.metadata.item.document.pid, 1, {Accept: 'application/rero+json'});
-      forkJoin([item$, doc$]).subscribe(
-        ([itemData, documentData]) => {
-          this.item = itemData;
-          this.document = documentData.metadata;
+  private readonly loanData = toSignal(
+    toObservable(this.loan).pipe(
+      switchMap(loan => {
+        if (!loan) {
+          return of(null);
         }
-      );
-    }
-  }
+        const item$ = this.itemService.getItem(loan.metadata.item.barcode, loan.metadata.paton_pid);
+        const doc$ = this.recordService.getRecord('documents', loan.metadata.item.document.pid, {
+          resolve: 1,
+          headers: { Accept: 'application/rero+json' }
+        });
+        return forkJoin([item$, doc$]).pipe(
+          map(([itemData, documentData]: [any, any]) => ({ item: itemData, document: documentData.metadata }))
+        );
+      })
+    ),
+    { initialValue: null }
+  );
+
+  readonly item = computed(() => this.loanData()?.item ?? null);
+  readonly document = computed(() => this.loanData()?.document ?? null);
 
   /**
    * Emit a new cancel request

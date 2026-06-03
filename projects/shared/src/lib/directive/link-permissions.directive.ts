@@ -15,45 +15,29 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { AfterViewInit, Directive, ElementRef, inject, Input, Renderer2 } from '@angular/core';
-import { PermissionsService } from '../service/permissions.service';
+import { AfterViewInit, Directive, ElementRef, inject, input, Renderer2 } from '@angular/core';
+import { AppStore } from '../store/app.store';
 import { PERMISSION_OPERATOR } from '../util/permissions';
 
 @Directive({
     // eslint-disable-next-line @angular-eslint/directive-selector
-    selector: '[linkPermissions]',
-    standalone: false
-})
+    selector: '[linkPermissions]' })
 export class LinkPermissionsDirective implements AfterViewInit {
 
   protected el: ElementRef = inject(ElementRef);
   protected renderer: Renderer2 = inject(Renderer2);
-  protected permissionsService: PermissionsService = inject(PermissionsService);
+  protected appStore = inject(AppStore);
 
-  // DIRECTIVE ATTRIBUTES =====================================================
-  /** permissions */
-  private _permissions: string[] = [];
-  /** operator */
-  private _operator: PERMISSION_OPERATOR = PERMISSION_OPERATOR.OR;
-
-  // GETTER & SETTER ==========================================================
-  @Input()
-  set linkPermissions(permissions: string[] | string) {
-    if (typeof permissions === 'string') {
-      permissions = [permissions];
-    }
-    this._permissions = permissions;
-  };
-
-  @Input()
-  set linkPermissionsOperator(operator: PERMISSION_OPERATOR) {
-    this._operator = operator;
-  };
+  readonly linkPermissions = input<string[] | string>([]);
+  readonly linkPermissionsOperator = input<PERMISSION_OPERATOR>(PERMISSION_OPERATOR.OR);
 
   /** AfterViewInit hook */
   ngAfterViewInit(): void {
-    if (!this.permissionsService.canAccess(this._permissions, this._operator)) {
-      const el : HTMLElement = this.el.nativeElement;
+    const perms = typeof this.linkPermissions() === 'string'
+      ? [this.linkPermissions() as string]
+      : this.linkPermissions() as string[];
+    if (!this.appStore.canAccess(perms, this.linkPermissionsOperator())) {
+      const el: HTMLElement = this.el.nativeElement;
       const parent = el.parentNode;
       this.renderer.removeChild(parent, el);
       parent.append(this.el.nativeElement.textContent);

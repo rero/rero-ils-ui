@@ -53,7 +53,7 @@ export type IAcqOrder = {
     provisional: IAcqOrderAccountingInformation,
     expenditure: IAcqOrderAccountingInformation
   }
-  order_lines?: {}[];
+  order_lines?: IAcqOrderLine[];
   vendor: IObjectReference;
   is_current_budget: boolean;
 } & IAcqBaseResource & IAcqResourceWithNotes

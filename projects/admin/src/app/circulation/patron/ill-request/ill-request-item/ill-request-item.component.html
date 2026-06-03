@@ -20,21 +20,21 @@
   <div class="ui:col-span-4 ui:flex ui:gap-2">
     <shared-open-close-button (status)="isCollapsed = $event" />
     <div>
-      {{ record.metadata.document.title }}
-      <div class="ui:text-sm">{{ record.metadata.document.authors }}</div>
+      {{ record().metadata.document.title }}
+      <div class="ui:text-sm">{{ record().metadata.document.authors }}</div>
     </div>
   </div>
-  <div class="ui:col-span-3">{{ record.metadata.pickup_location.name }}</div>
-  <div class="ui:col-span-2">{{ record.created | dateTranslate:'medium'}}</div>
+  <div class="ui:col-span-3">{{ record().metadata.pickup_location.name }}</div>
+  <div class="ui:col-span-2">{{ record().created | dateTranslate:'medium'}}</div>
   <div class="ui:col-span-2">
-    <p-tag [severity]="badgeColor(record.metadata.loan_status)" [value]="record.metadata.loan_status|translate" />
+    <p-tag [severity]="$any(badgeColor(record().metadata.loan_status))" [value]="record().metadata.loan_status|translate" />
   </div>
   <div class="ui:col-span-1 ui:text-right">
     <p-button
       icon="fa fa-eye"
       outlined
       [title]="'Details'|translate"
-      [routerLink]="['/', 'records', 'ill_requests', 'detail', record.metadata.pid]"
+      [routerLink]="['/', 'records', 'ill_requests', 'detail', record().metadata.pid]"
     />
   </div>
   <!-- DETAIL ROWS :: collapsible detail information's -->
@@ -42,68 +42,68 @@
     <div class="ui:col-span-12">
       <dl class="metadata ui:ml-11">
         <!-- PUBLISHER -->
-        @if (record.metadata.document.publisher) {
+        @if (record().metadata.document.publisher) {
           <dt translate>Publisher</dt>
-          <dd>{{ record.metadata.document.publisher }}</dd>
+          <dd>{{ record().metadata.document.publisher }}</dd>
         }
         <!-- YEAR -->
-        @if (record.metadata.document.year) {
+        @if (record().metadata.document.year) {
           <dt translate>Year</dt>
-          <dd>{{ record.metadata.document.year }}</dd>
+          <dd>{{ record().metadata.document.year }}</dd>
         }
         <!-- IDENTIFIER -->
-        @if (record.metadata.document.identifier) {
+        @if (record().metadata.document.identifier) {
           <dt translate>Identifier</dt>
-          <dd>{{ record.metadata.document.identifier }}</dd>
+          <dd>{{ record().metadata.document.identifier }}</dd>
         }
         <!-- SOURCE -->
-        @if (record.metadata.document.source) {
+        @if (record().metadata.document.source) {
           <dt translate>Source</dt>
           <dd>
-            @if (record.metadata.document.source.volume || record.metadata.document.source.number) {
-              {{ record.metadata.document.source | journalVolume }}
+            @if (record().metadata.document.source.volume || record().metadata.document.source.number) {
+              {{ record().metadata.document.source | journalVolume }}
             }
           </dd>
         }
         <!-- SCOPE -->
         <dt translate>Scope</dt>
         <dd>
-          @if (record.metadata.copy) {
+          @if (record().metadata.copy) {
             {{ 'Copy' | translate }}
           } @else {
             {{ 'Loan' | translate }}
           }
         </dd>
         <!-- PAGES -->
-        @if (record.metadata.copy && record.metadata.pages) {
+        @if (record().metadata.copy && record().metadata.pages) {
           <dt translate>Pages</dt>
-          <dd>{{ record.metadata.pages }}</dd>
+          <dd>{{ record().metadata.pages }}</dd>
         }
         <!-- FOUND IN -->
-        @if (record.metadata.found_in) {
+        @if (record().metadata.found_in) {
           <dt translate>Found in</dt>
           <dd>
             <a
-              [title]="record.metadata.found_in.url"
-              [href]="record.metadata.found_in.url"
+              [title]="record().metadata.found_in.url"
+              [href]="record().metadata.found_in.url"
               target="_blank"
             >
-              {{ record.metadata.found_in.url | truncateText: 80 : '…' : 'char' }}
+              {{ record().metadata.found_in.url | truncateText: 80 : '…' : 'char' }}
             </a>
-            <p-tag class="ui:ml-2" severity="secondary" [value]="record.metadata.found_in.source" />
+            <p-tag class="ui:ml-2" severity="secondary" [value]="record().metadata.found_in.source" />
           </dd>
         }
         <!-- STATUS -->
         <dt translate>Request status</dt>
         <dd>
-          <p-tag [severity]="badgeColor(record.metadata.status)" [value]="record.metadata.status|translate" />
+          <p-tag [severity]="$any(badgeColor(record().metadata.status))" [value]="record().metadata.status|translate" />
         </dd>
         <!-- NOTES -->
-        @if (record.metadata.notes && record.metadata.notes.length > 0) {
+        @if (record().metadata.notes && record().metadata.notes.length > 0) {
           <dt translate>Note</dt>
           <dd>
             <ul class="ui:list-none">
-              @for (note of record.metadata.notes; track $index) {
+              @for (note of record().metadata.notes; track $index) {
                 <li [innerHTML]="note.content | nl2br"></li>
               }
             </ul>

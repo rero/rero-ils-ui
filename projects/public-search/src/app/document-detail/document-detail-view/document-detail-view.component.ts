@@ -16,11 +16,11 @@
  */
 
 import { AsyncPipe, NgClass } from '@angular/common';
-import { Component, inject, Input, OnInit } from '@angular/core';
+import { Component, inject, input, OnInit, ChangeDetectionStrategy} from '@angular/core';
 import { LoadingBarModule } from '@ngx-loading-bar/core';
 import { TranslateDirective, TranslateService } from '@ngx-translate/core';
-import { RecordModule } from '@rero/ng-core';
-import { AppSettingsService, SharedModule } from '@rero/shared';
+import { AppStore, DocumentDescriptionComponent, FilesComponent } from '@rero/shared';
+import { GetRecordPipe } from '@rero/ng-core';
 import { MenuItem } from 'primeng/api';
 import { Ripple } from 'primeng/ripple';
 import { Tab, TabList, TabPanel, TabPanels, Tabs } from 'primeng/tabs';
@@ -30,15 +30,16 @@ import { ElectronicHoldingsComponent } from './holdings/electronic-holdings/elec
 @Component({
     selector: 'public-search-document-detail-vew',
     templateUrl: './document-detail-view.component.html',
-    imports: [LoadingBarModule, Tabs, TabList, Ripple, Tab, TranslateDirective, TabPanels, TabPanel, SharedModule, HoldingsComponent, ElectronicHoldingsComponent, NgClass, AsyncPipe, RecordModule]
+    imports: [LoadingBarModule, Tabs, TabList, Ripple, Tab, TranslateDirective, TabPanels, TabPanel, GetRecordPipe, FilesComponent, DocumentDescriptionComponent, HoldingsComponent, ElectronicHoldingsComponent, NgClass, AsyncPipe],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class DocumentDetailViewComponent implements OnInit {
-  private appSettingsService: AppSettingsService = inject(AppSettingsService);
+  private appStore = inject(AppStore);
   private translateService: TranslateService = inject(TranslateService);
 
-  @Input() viewcode: string;
-  @Input() documentpid: string;
-  @Input() showinfo = 'false';
+  viewcode = input<string>();
+  documentpid = input<string>();
+  showinfo = input('false');
 
   document = null;
   exportItems: MenuItem[];
@@ -46,17 +47,17 @@ export class DocumentDetailViewComponent implements OnInit {
   /** OnInit hook */
   ngOnInit(): void {
     // Set view code to app settings
-    this.appSettingsService.currentViewCode = this.viewcode;
+    this.appStore.setCurrentViewCode(this.viewcode());
     this.exportItems = [
       {
         icon: "fa fa-file-code-o",
         label: this.translateService.instant("JSON Data"),
-        url: `/api/documents/${this.documentpid}?format=json`
+        url: `/api/documents/${this.documentpid()}?format=json`
       },
       {
         icon: "fa fa-file-text-o",
         label: this.translateService.instant("RIS (Zotero...)"),
-        url: `/api/documents/${this.documentpid}?format=ris`
+        url: `/api/documents/${this.documentpid()}?format=ris`
       }
     ];
   }

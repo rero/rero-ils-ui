@@ -14,52 +14,53 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, inject, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, effect, inject } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { TranslateService } from '@ngx-translate/core';
-import { MenuItem } from 'primeng/api';
-import { Subscription } from 'rxjs';
+import { AppStore } from '@rero/shared';
+import { map, startWith } from 'rxjs/operators';
 import { MENU_APP } from '../menu-definition/menu-app';
-import { ISwitchLibrary, LibraryService } from '../service/library.service';
 import { MenuTranslateService } from '../service/menu-translate.service';
-import { MenuService } from '../service/menu.service';
+import { MenuStore } from '../store/menu.store';
+import { Bind } from 'primeng/bind';
+import { Menubar } from 'primeng/menubar';
+import { Ripple } from 'primeng/ripple';
+import { RouterLink } from '@angular/router';
+import { NgClass } from '@angular/common';
+import { MenuUserComponent } from '../menu-user/menu-user.component';
 
 @Component({
     selector: 'admin-menu-app',
     templateUrl: './menu-app.component.html',
-    standalone: false
+    imports: [Bind, Menubar, Ripple, RouterLink, NgClass, MenuUserComponent],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class MenuAppComponent implements OnInit, OnDestroy {
+export class MenuAppComponent {
 
   private translateService: TranslateService = inject(TranslateService);
-  private menuService: MenuService = inject(MenuService);
+  private appStore = inject(AppStore);
+  private menuStore = inject(MenuStore);
   private menuTranslateService: MenuTranslateService = inject(MenuTranslateService);
-  private libraryService: LibraryService = inject(LibraryService);
 
-  items: MenuItem[] = [];
+  private readonly currentLanguage = toSignal(
+    this.translateService.onLangChange.pipe(
+      map(() => this.translateService.getCurrentLang()),
+      startWith(this.translateService.getCurrentLang())
+    ),
+    { initialValue: this.translateService.getCurrentLang() }
+  );
 
-  subscription = new Subscription();
+  readonly items = computed(() => {
+    this.currentLanguage();
+    return this.menuTranslateService.process(this.menuStore.applicationMenuItems());
+  });
 
-  ngOnInit(): void {
-    this.generateMenu();
-    this.subscription.add(
-      this.translateService.onLangChange.subscribe(() => this.changeLanguage()
-      )
-    );
-    this.subscription.add(
-      this.libraryService.switch$.subscribe((library: ISwitchLibrary) => this.menuService.updateLibraryLink(library))
-    )
-  }
+  private readonly initializeMenu = effect(() => {
+    if (!this.appStore.user()) {
+      return;
+    }
 
-  ngOnDestroy(): void {
-      this.subscription.unsubscribe();
-  }
+    this.menuStore.generateAppMenu(MENU_APP);
+  });
 
-  private generateMenu(): void {
-    this.items = this.menuService.generateAppMenu(MENU_APP);
-    this.items = this.menuTranslateService.process(this.items);
-  }
-
-  private changeLanguage(): void {
-    this.items = this.menuTranslateService.process(this.items);
-  }
 }

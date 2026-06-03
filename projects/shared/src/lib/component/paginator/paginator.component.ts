@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, input, output } from '@angular/core';
+import { Component, input, output, ChangeDetectionStrategy} from '@angular/core';
 import { Paginator, PaginatorState } from 'primeng/paginator';
 import { Pager } from './model/paginator-model';
 
@@ -30,7 +30,8 @@ import { Pager } from './model/paginator-model';
       [totalRecords]="total()"
       [rowsPerPageOptions]="pager().rowsPerPageOptions"
       (onPageChange)="pageChange.emit($event)" />
-  `
+  `,
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class PaginatorComponent {
 

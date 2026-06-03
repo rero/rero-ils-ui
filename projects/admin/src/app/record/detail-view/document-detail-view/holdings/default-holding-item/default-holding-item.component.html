@@ -15,7 +15,7 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-@if (item) {
+@if (editableItem(); as item) {
   <div class="ui:flex ui:gap-2 ui:pt-2">
       <div class="ui:grow">  <!-- First row :: item detail -->
       <!-- METADATA COLUMN -->
@@ -27,7 +27,7 @@
               <admin-record-masked [record]="item" />
             }
             <!-- Remove link if not current organisation -->
-            @if (permissions) {
+            @if (permissions()) {
               <a [routerLink]="['/records', 'items', 'detail', item.metadata.pid]" name="barcode">
                 {{ item.metadata.barcode }}
               </a>
@@ -85,7 +85,7 @@
           }
         </dl>
         <!-- (hide if not current organisation) -->
-        @if (permissions) {
+        @if (permissions()) {
           @for (note of item.metadata.notes; track $index) {
             <admin-holding-item-note [note]="note" />
           }
@@ -94,7 +94,7 @@
 
     </div>
     <!-- ACTIONS BUTTONS -->
-    @if (permissions) {
+    @if (permissions()) {
       <div class="ui:flex ui:gap-1">
         <p-button
           icon="fa fa-shopping-basket"
@@ -105,14 +105,14 @@
           (onClick)="addRequest(item.metadata.pid, 'item')"
           [pTooltip]="cannotRequestTooltipContent"
           tooltipPosition="top"
-          [disabled]="!permissions.canRequest?.can"
-          [tooltipDisabled]="permissions.canRequest?.can"
+          [disabled]="!permissions().canRequest?.can"
+          [tooltipDisabled]="permissions().canRequest?.can"
         />
         <ng-template #cannotRequestTooltipContent>
           <span [innerHTML]="cannotRequestInfoMessage | nl2br"></span>
         </ng-template>
 
-        @if (permissions?.switchLocation?.can) {
+        @if (permissions()?.switchLocation?.can) {
           <p-button
             icon="fa fa-random"
             size="small"
@@ -121,7 +121,7 @@
             [routerLink]="['/records', 'items', 'switch_location', item.metadata.pid]"
           />
         }
-        @if (permissions?.update?.can) {
+        @if (permissions()?.update?.can) {
           <p-button
             icon="fa fa-pencil"
             size="small"
@@ -139,8 +139,8 @@
           [title]="'Delete'|translate"
           [pTooltip]="tooltipContent"
           tooltipPosition="top"
-          [disabled]="!permissions.delete?.can"
-          [tooltipDisabled]="permissions.delete?.can"
+          [disabled]="!permissions().delete?.can"
+          [tooltipDisabled]="permissions().delete?.can"
           (onClick)="delete()"
         />
         <ng-template #tooltipContent>

@@ -16,23 +16,21 @@
  */
 
 import { provideHttpClientTesting } from '@angular/common/http/testing';
-import { fakeAsync, TestBed, tick } from '@angular/core/testing';
-import { Router, RouterModule } from '@angular/router';
+import { TestBed } from '@angular/core/testing';
+import { NavigationEnd, Router, RouterModule, RouterStateSnapshot } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
-import { CoreModule } from '@rero/ng-core';
-import { UserService } from '@rero/shared';
+import { RecordUiService } from '@rero/ng-core';
+import { AppStore } from '@rero/shared';
 import { cloneDeep } from 'lodash-es';
-import { userTestingService } from 'projects/admin/tests/utils';
-import { of } from 'rxjs';
+import { filter, firstValueFrom, of } from 'rxjs';
 import { ErrorPageComponent } from '../../../error/error-page/error-page.component';
 import { AcqOrderApiService } from '../../api/acq-order-api.service';
 import { AcqReceiptApiService } from '../../api/acq-receipt-api.service';
 import { AcqOrderStatus } from '../../classes/order';
-import { CanOrderReceiptGuard } from './can-order-receipt.guard';
+import { canOrderReceiptGuard } from './can-order-receipt.guard';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
-describe('CanOrderReceiptGuard', () => {
-  let guard: CanOrderReceiptGuard;
+describe('canOrderReceiptGuard', () => {
   let acqOrderApiService: AcqOrderApiService;
   let acqReceiptApiService: AcqReceiptApiService;
   let router: Router;
@@ -79,8 +77,7 @@ describe('CanOrderReceiptGuard', () => {
 
   const receipt = {
     acq_order: {
-      pid: '1',
-    },
+      pid: '1' },
     exchange_rate: 1,
     amount_adjustments: [{
       label: 'amount',
@@ -97,85 +94,94 @@ describe('CanOrderReceiptGuard', () => {
   };
 
 
-  const activatedRouteSnapshotSpy = jasmine.createSpyObj('ActivatedRouteSnapshot', ['']);
+  const activatedRouteSnapshotSpy = { } as any;
   activatedRouteSnapshotSpy.params = { pid: '1' };
   activatedRouteSnapshotSpy.queryParams = { };
+
+  const appStoreSpy = { currentLibraryPid: () => '1' } as any;
+
+  const runGuard = (route: any) =>
+    TestBed.runInInjectionContext(() =>
+      canOrderReceiptGuard(route, {} as RouterStateSnapshot)
+    ) as any;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
     imports: [RouterModule.forRoot(routes),
-        TranslateModule.forRoot(),
-        CoreModule],
+        TranslateModule.forRoot()],
     providers: [
-        { provide: UserService, useValue: userTestingService },
+        { provide: AppStore, useValue: appStoreSpy },
+        { provide: RecordUiService, useValue: {} },
         provideHttpClient(withInterceptorsFromDi()),
         provideHttpClientTesting()
     ]
 });
-    guard = TestBed.inject(CanOrderReceiptGuard);
     acqOrderApiService = TestBed.inject(AcqOrderApiService);
     acqReceiptApiService = TestBed.inject(AcqReceiptApiService);
     router = TestBed.inject(Router);
   });
 
+  async function waitForNavigation(): Promise<void> {
+    await firstValueFrom(
+      router.events.pipe(filter(e => e instanceof NavigationEnd))
+    );
+  }
+
   it('should be created', () => {
-    expect(guard).toBeTruthy();
+    expect(canOrderReceiptGuard).toBeTruthy();
   });
 
-  it('should return a 400 error if any parameters are missing', fakeAsync(() => {
+  it('should return a 400 error if any parameters are missing', async () => {
     const activatedRoute = cloneDeep(activatedRouteSnapshotSpy);
     activatedRoute.params = {};
-    guard.canActivate(activatedRoute).subscribe(() => {
-      tick();
-      expect(router.url).toBe('/errors/400');
-    });
-  }));
-
-  it('should return true if the order in status ordered (new receipt)', () => {
-    spyOn(acqOrderApiService, 'getOrder').and.returnValue(of(order));
-    guard.canActivate(activatedRouteSnapshotSpy).subscribe((access: boolean) => {
-      expect(access).toBeTruthy();
-    });
+    const navPromise = waitForNavigation();
+    await firstValueFrom(runGuard(activatedRoute));
+    await navPromise;
+    expect(router.url).toBe('/errors/400');
   });
 
-  it('should return a 403 error if the order in status received (new receipt)', fakeAsync(() => {
+  it('should return true if the order in status ordered (new receipt)', async () => {
+    vi.spyOn(acqOrderApiService, 'getOrder').mockReturnValue(of(order));
+    const access = await firstValueFrom(runGuard(activatedRouteSnapshotSpy));
+    expect(access).toBeTruthy();
+  });
+
+  it('should return a 403 error if the order in status received (new receipt)', async () => {
     const orderReceived = cloneDeep(order);
     orderReceived.status = AcqOrderStatus.RECEIVED;
-    spyOn(acqOrderApiService, 'getOrder').and.returnValue(of(orderReceived));
-    guard.canActivate(activatedRouteSnapshotSpy).subscribe((access: boolean) => {
-      expect(access).toBeTruthy();
-    });
-  }));
+    vi.spyOn(acqOrderApiService, 'getOrder').mockReturnValue(of(orderReceived));
+    const access = await firstValueFrom(runGuard(activatedRouteSnapshotSpy));
+    expect(access).toBeTruthy();
+  });
 
-  it('Should return a 403 error if the order is not on an active budget', fakeAsync(() => {
+  it('Should return a 403 error if the order is not on an active budget', async () => {
     const orderReceived = cloneDeep(order);
     orderReceived.is_current_budget = false;
-    spyOn(acqOrderApiService, 'getOrder').and.returnValue(of(orderReceived));
-    guard.canActivate(activatedRouteSnapshotSpy).subscribe(() => {
-      tick();
-      expect(router.url).toBe('/errors/403');
-    });
-  }));
+    vi.spyOn(acqOrderApiService, 'getOrder').mockReturnValue(of(orderReceived));
+    const navPromise = waitForNavigation();
+    await firstValueFrom(runGuard(activatedRouteSnapshotSpy));
+    await navPromise;
+    expect(router.url).toBe('/errors/403');
+  });
 
-  it('should return a 403 error if the order and receipt in not the same order pid (update receipt)', fakeAsync(() => {
+  it('should return a 403 error if the order and receipt in not the same order pid (update receipt)', async () => {
     const activatedRoute = cloneDeep(activatedRouteSnapshotSpy);
     activatedRoute.queryParams.receipt = '1';
     activatedRoute.params.pid = '2';
-    spyOn(acqOrderApiService, 'getOrder').and.returnValue(of(order));
-    spyOn(acqReceiptApiService, 'getReceipt').and.returnValue(of(receipt));
-    guard.canActivate(activatedRoute).subscribe(() => {
-      tick();
-      expect(router.url).toBe('/errors/403');
-    });
-  }));
+    vi.spyOn(acqOrderApiService, 'getOrder').mockReturnValue(of(order));
+    vi.spyOn(acqReceiptApiService, 'getReceipt').mockReturnValue(of(receipt));
+    const navPromise = waitForNavigation();
+    await firstValueFrom(runGuard(activatedRoute));
+    await navPromise;
+    expect(router.url).toBe('/errors/403');
+  });
 
-  it('should return true if the order and receipt in the same order pid (update receipt)', () => {
+  it('should return true if the order and receipt in the same order pid (update receipt)', async () => {
     const activatedRoute = cloneDeep(activatedRouteSnapshotSpy);
     activatedRoute.queryParams.receipt = '1';
-    spyOn(acqOrderApiService, 'getOrder').and.returnValue(of(order));
-    spyOn(acqReceiptApiService, 'getReceipt').and.returnValue(of(receipt));
-    guard.canActivate(activatedRoute).subscribe((access: boolean) => {
-      expect(access).toBeTruthy();
-    });
+    vi.spyOn(acqOrderApiService, 'getOrder').mockReturnValue(of(order));
+    vi.spyOn(acqReceiptApiService, 'getReceipt').mockReturnValue(of(receipt));
+    const access = await firstValueFrom(runGuard(activatedRoute));
+    expect(access).toBeTruthy();
   });
 });

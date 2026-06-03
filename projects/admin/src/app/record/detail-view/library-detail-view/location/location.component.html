@@ -17,25 +17,25 @@
 @if (permissions) {
   <div class="ui:flex ui:justify-between ui:items-center ui:gap-2 ui:mx-2">
     <div>
-      <a [routerLink]="['/records/locations/detail', location.metadata.pid]">{{ location.metadata.name }}</a>
+      <a [routerLink]="['/records/locations/detail', location().metadata.pid]">{{ location().metadata.name }}</a>
     </div>
     <div class="ui:flex ui:gap-6">
     <div class="ui:flex ui:gap-2 ui:items-center">
-      @if (location.metadata.is_pickup) {
+      @if (location().metadata.is_pickup) {
         <i
           class="fa fa-truck"
           [pTooltip]="'Pickup location'|translate"
           tooltipPosition="top"
         ></i>
       }
-      @if (location.metadata.is_ill_pickup) {
+      @if (location().metadata.is_ill_pickup) {
         <i
           class="fa fa-truck ui:text-primary"
           [pTooltip]="'ILL pickup location'|translate"
           tooltipPosition="top"
         ></i>
       }
-      @if (location.metadata.is_online) {
+      @if (location().metadata.is_online) {
         <i
           class="fa fa-globe"
           [pTooltip]="'Online location'|translate"
@@ -51,7 +51,7 @@
           icon="fa fa-pencil"
           [title]="'Edit'|translate"
           [outlined]="true"
-          [routerLink]="['/records', 'locations', 'edit', location.metadata.pid]"
+          [routerLink]="['/records', 'locations', 'edit', location().metadata.pid]"
         />
       }
       <!-- Delete button -->
@@ -62,7 +62,7 @@
           severity="danger"
           [title]="'Delete'|translate"
           [outlined]="true"
-          (onClick)="delete(location.metadata.pid)"
+          (onClick)="delete(location().metadata.pid)"
           [pTooltip]="tooltipContent"
           tooltipPosition="top"
           [disabled]="!permissions.delete?.can"

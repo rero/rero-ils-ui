@@ -15,53 +15,73 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { AfterViewInit, Component, inject, Input, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
+import { ChangeDetectionStrategy, Component, effect, inject, input, model, signal } from '@angular/core';
 import { ItemApiService } from '@app/admin/api/item-api.service';
 import { IssueService } from '@app/admin/service/issue.service';
-import { RecordService } from '@rero/ng-core';
-import { DetailRecord } from '@rero/ng-core/lib/record/detail/view/detail-record';
-import { IPermissions, IssueItemStatus, PERMISSION_OPERATOR, PERMISSIONS, UserService } from '@rero/shared';
+import { DateTranslatePipe, GetRecordPipe, Nl2brPipe, RecordService } from '@rero/ng-core';
+
+import { AsyncPipe, CurrencyPipe, JsonPipe, NgClass, NgPlural, NgPluralCase } from '@angular/common';
+import { RouterLink } from '@angular/router';
+import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
+import { AppStore, AvailabilityComponent, InheritedCallNumberComponent, IPermissions, IssueItemStatus, ItemHoldingsCallNumberPipe, KeyExistsPipe, MainTitlePipe, OperationLogsService, PERMISSION_OPERATOR, PERMISSIONS, PermissionsDirective, SafeUrlPipe } from '@rero/shared';
 import { DateTime } from 'luxon';
-import { Observable, Subscription } from 'rxjs';
+import { Badge } from 'primeng/badge';
+import { Bind } from 'primeng/bind';
+import { Button } from 'primeng/button';
+import { Ripple } from 'primeng/ripple';
+import { Tab, TabList, TabPanel, TabPanels, Tabs } from 'primeng/tabs';
+import { Tooltip } from 'primeng/tooltip';
 import { Item, ItemNote } from '../../../classes/items';
+import { ItemInCollectionPipe } from '../../../pipe/item-in-collection.pipe';
 import { HoldingsService } from '../../../service/holdings.service';
-import { OperationLogsService } from '@rero/shared';
-import { OrganisationService } from '../../../service/organisation.service';
+import { CirculationLogsDialogComponent } from '../../circulation-logs/circulation-logs-dialog.component';
+import { LocalFieldComponent } from '../local-field/local-field.component';
+import { RecordMaskedComponent } from '../record-masked/record-masked.component';
+import { ItemFeesComponent } from './item-fees/item-fees.component';
+import { ItemTransactionsComponent } from './item-transactions/item-transactions.component';
 
 @Component({
     selector: 'admin-item-detail-view',
     templateUrl: './item-detail-view.component.html',
     providers: [IssueService],
     styles: ['dl * { margin-bottom: 0; }'],
-    standalone: false
+    imports: [Bind, Button, RouterLink, RecordMaskedComponent, TranslateDirective, InheritedCallNumberComponent, AvailabilityComponent, NgClass, Tooltip, Tabs, TabList, Ripple, Tab, NgPlural, NgPluralCase, TabPanels, TabPanel, CirculationLogsDialogComponent, ItemTransactionsComponent, ItemFeesComponent, PermissionsDirective, LocalFieldComponent, AsyncPipe, JsonPipe, CurrencyPipe, TranslatePipe, DateTranslatePipe, GetRecordPipe, ItemHoldingsCallNumberPipe, KeyExistsPipe, MainTitlePipe, Nl2brPipe, SafeUrlPipe, ItemInCollectionPipe, Badge],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class ItemDetailViewComponent implements OnChanges, OnDestroy {
+export class ItemDetailViewComponent {
 
   public itemApiService: ItemApiService = inject(ItemApiService);
   private recordService: RecordService = inject(RecordService);
   private holdingService: HoldingsService = inject(HoldingsService);
   private operationLogsService: OperationLogsService= inject(OperationLogsService);
-  private organisationService: OrganisationService = inject(OrganisationService);
-  private userService: UserService = inject(UserService);
+  private appStore = inject(AppStore);
 
   /** Document record */
-  @Input() record: any;
+  record = model<any>();
+  /** Resource type */
+  type = input<string>('');
   /** Record permissions */
-  @Input() recordPermissions: any;
+  recordPermissions = input<any>();
 
   /** Permissions */
   permissions: IPermissions = PERMISSIONS;
   permissionOperator = PERMISSION_OPERATOR;
 
   /** Location record */
-  location: any;
+  readonly location = signal<any>(null);
   /** Load operation logs on show */
   showOperationLogs = false;
   /** reference to ItemIssueStatus */
   issueItemStatus = IssueItemStatus;
 
-  /** Record subscription */
-  private subscription: Subscription = new Subscription();
+  constructor() {
+    effect(() => {
+      const record = this.record();
+      if (record != null) {
+        this.recordService.getRecord('locations', record.metadata.location.pid, { resolve: 1 }).subscribe(data => this.location.set(data));
+      }
+    });
+  }
 
   /**
    * Is operation log enabled
@@ -72,7 +92,7 @@ export class ItemDetailViewComponent implements OnChanges, OnDestroy {
   }
 
   get isDisplayLocalFieldsTab(): boolean {
-    return this.userService.user.currentLibrary === this.record.metadata.library.pid;
+    return this.appStore.currentLibraryPid() === this.record()?.metadata.library.pid;
   }
 
   /**
@@ -80,23 +100,13 @@ export class ItemDetailViewComponent implements OnChanges, OnDestroy {
    * @return string
    */
   get organisationCurrency(): string {
-    return this.organisationService.organisation.default_currency;
+    return this.appStore.organisation().default_currency;
   }
 
   /** returns an array of claim dates in DESC order */
   get claimsDates(): string[] {
-    return this.record.metadata.issue.claims.dates
+    return this.record()?.metadata.issue.claims.dates
       .sort((a: string, b: string) => new Date(b).getTime() - new Date(a).getTime());
-  }
-
-  ngOnChanges(changes: SimpleChanges): void {
-    if(changes?.record?.currentValue != null) {
-      this.recordService.getRecord('locations', changes.record.currentValue.metadata.location.pid, 1).subscribe(data => this.location = data);
-    }
-  }
-  /** OnDestroy hook */
-  ngOnDestroy() {
-    this.subscription.unsubscribe();
   }
 
   /**
@@ -113,8 +123,9 @@ export class ItemDetailViewComponent implements OnChanges, OnDestroy {
    * @return boolean
    */
   hasTemporaryItemType(): boolean {
-    if ('temporary_item_type' in this.record.metadata) {
-      const endDateValue = this.record.metadata.temporary_item_type.end_date || undefined;
+    const metadata = this.record()?.metadata;
+    if (metadata && 'temporary_item_type' in metadata) {
+      const endDateValue = metadata.temporary_item_type.end_date || undefined;
       return !(endDateValue && DateTime.fromISO(endDateValue) < DateTime.now());
     }
     return false;
@@ -122,8 +133,8 @@ export class ItemDetailViewComponent implements OnChanges, OnDestroy {
 
   /** Update item status */
   updateItemStatus(): void {
-    this.recordService.getRecord('items', this.record.metadata.pid, 1)
-      .subscribe((item: any) => this.record = item);
+    this.recordService.getRecord('items', this.record()?.metadata.pid, { resolve: 1 })
+      .subscribe((item: any) => this.record.set(item));
   }
 
   /**

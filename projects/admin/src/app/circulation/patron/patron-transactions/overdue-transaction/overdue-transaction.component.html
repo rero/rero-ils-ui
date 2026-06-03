@@ -14,27 +14,29 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-@if (transaction !== undefined && transaction.fees.total > 0) {
+@if (transaction() !== undefined && transaction().fees.total > 0) {
   <div class="ui:p-2">
     <div class="ui:grid ui:grid-cols-12 ui:gap-4 ui:items-start">
       <div class="ui:col-span-2 ui:flex ui:gap-2">
-        <shared-open-close-button (status)="isCollapsed = $event" />
-        {{ transaction.loan.end_date | dateTranslate :'shortDate' }}
+        <shared-open-close-button (status)="isCollapsed.set($event)" />
+        {{ transaction().loan.end_date | dateTranslate :'shortDate' }}
       </div>
       <div class="ui:col-span-8">
-        @if (document && document.title | mainTitle; as title) {
-          <a [routerLink]="['/records','documents','detail', document.pid]">
-            {{ title | truncateText: 15 }}
-          </a>
+        @if (document(); as doc) {
+          @if (doc.title | mainTitle; as title) {
+            <a [routerLink]="['/records','documents','detail', doc.pid]">
+              {{ title | truncateText: 15 }}
+            </a>
+          }
         }
       </div>
-      <div class="ui:col-span-2 ui:flex ui:justify-end">{{ transaction.fees.total | currency: organisation.default_currency }}</div>
+      <div class="ui:col-span-2 ui:flex ui:justify-end">{{ transaction().fees.total | currency: organisation.default_currency }}</div>
     </div>
-    @if (!isCollapsed) {
+    @if (!isCollapsed()) {
       <div class="ui:mt-2">
         <h6 translate>Details</h6>
         <section class="ui:mb-4">
-          @if (item) {
+          @if (item(); as item) {
             <div class="ui:grid ui:grid-cols-12">
               <div class="ui:col-span-2" translate>Item</div>
               <div class="ui:col-span-10">
@@ -45,8 +47,8 @@
                 <shared-inherited-call-number [item]="item" />
               </div>
               <div class="ui:col-span-2" translate>Borrowed on</div>
-              <div class="ui:col-span-10">{{ transaction.loan.start_date | dateTranslate :'short' }}</div>
-              @let location = transaction.loan.transaction_location_pid | getRecord: 'locations' | async;
+              <div class="ui:col-span-10">{{ transaction().loan.start_date | dateTranslate :'short' }}</div>
+              @let location = transaction().loan.transaction_location_pid | getRecord: 'locations' | async;
               @if (location) {
                 <div class="ui:col-span-2" translate>Borrowed at</div>
                 <div class="ui:col-span-10">
@@ -58,9 +60,8 @@
         </section>
 
         <h6 translate>Transaction history</h6>
-        <admin-patron-transaction-history [events]="transaction.fees.steps" />
+        <admin-patron-transaction-history [events]="transaction().fees.steps" />
       </div>
     }
   </div>
 }
-

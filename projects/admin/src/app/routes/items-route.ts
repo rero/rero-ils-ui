@@ -14,24 +14,90 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import {
-  ItemSwitchLocationStandaloneComponent
-} from '@app/admin/components/items/switch-location/item-switch-location-standalone/item-switch-location-standalone.component';
-import { _ } from "@ngx-translate/core";
+import { inject } from '@angular/core';
+import { toObservable } from '@angular/core/rxjs-interop';
+import { ResolveFn, Routes } from '@angular/router';
+import { ItemSwitchLocationComponent } from '@app/admin/components/items/switch-location/item-switch-location/item-switch-location.component';
 import { FormlyFieldConfig } from '@ngx-formly/core';
-import { ComponentCanDeactivateGuard, EditorComponent, JSONSchema7, Record, RecordSearchPageComponent, RecordService, RouteInterface } from '@rero/ng-core';
+import { _ } from '@ngx-translate/core';
+import {
+  ComponentCanDeactivateGuard,
+  EditorComponent,
+  IFilter,
+  JSONSchema7,
+  RecordData,
+  RecordSearchPageComponent,
+  RecordService,
+  RecordType,
+  RouteDataTypesInterface,
+} from '@rero/ng-core';
 import { IssueItemStatus, PERMISSIONS, PERMISSION_OPERATOR } from '@rero/shared';
-import { of } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { Observable, of } from 'rxjs';
+import { filter, map, take } from 'rxjs/operators';
 import { ItemType } from '../classes/items';
-import { CAN_ACCESS_ACTIONS, CanAccessGuard } from '../guard/can-access.guard';
-import { PermissionGuard } from '../guard/permission.guard';
+import { CAN_ACCESS_ACTIONS, canAccessGuard } from '../guard/can-access.guard';
+import { permissionGuard } from '../guard/permission.guard';
 import { ItemsBriefViewComponent } from '../record/brief-view/items-brief-view/items-brief-view.component';
 import { ItemDetailViewComponent } from '../record/detail-view/item-detail-view/item-detail-view.component';
 import { ItemPageDetailComponent } from '../record/detail-view/item-detail-view/item-page-detail/item-page-detail.component';
 import { BaseRoute } from './base-route';
 
-export class ItemsRoute extends BaseRoute implements RouteInterface {
+export const itemsRouteResolver: ResolveFn<Partial<RecordType>[]> = () =>
+  new ItemsRoute().getTypes();
+
+export const itemsRoutes: Routes = [
+  {
+    path: '',
+    component: RecordSearchPageComponent,
+    title: _('Items'),
+    canActivate: [permissionGuard],
+    data: {
+      permissions: [PERMISSIONS.ITEM_ACCESS, PERMISSIONS.ITEM_SEARCH],
+      operator: PERMISSION_OPERATOR.AND,
+    },
+  },
+  {
+    path: 'detail/:pid',
+    component: ItemPageDetailComponent,
+    canActivate: [canAccessGuard],
+    data: {
+      action: CAN_ACCESS_ACTIONS.READ,
+    },
+  },
+  {
+    path: 'edit/:pid',
+    component: EditorComponent,
+    title: _('Item'),
+    canActivate: [canAccessGuard],
+    canDeactivate: [ComponentCanDeactivateGuard],
+    data: {
+      action: CAN_ACCESS_ACTIONS.UPDATE,
+    },
+  },
+  {
+    path: 'switch_location/:pid',
+    component: ItemSwitchLocationComponent,
+    title: _('Item'),
+    canActivate: [canAccessGuard],
+    data: {
+      action: CAN_ACCESS_ACTIONS.UPDATE,
+    },
+  },
+  {
+    path: 'new',
+    component: EditorComponent,
+    title: _('Item'),
+    canActivate: [permissionGuard],
+    canDeactivate: [ComponentCanDeactivateGuard],
+    data: {
+      permissions: [PERMISSIONS.HOLD_CREATE, PERMISSIONS.ITEM_CREATE],
+      permissionsOperator: PERMISSION_OPERATOR.AND,
+    },
+  },
+];
+
+class ItemsRoute extends BaseRoute implements RouteDataTypesInterface {
+  protected recordService = inject(RecordService);
 
   /** Route name */
   readonly name = 'items';
@@ -39,226 +105,164 @@ export class ItemsRoute extends BaseRoute implements RouteInterface {
   /** Record type */
   readonly recordType = 'items';
 
-  /**
-   * Get Configuration
-   * @return Object
-   */
-  getConfiguration() {
-    const config = {
-      matcher: (url: any) => this.routeMatcher(url, this.name),
-      children: [
-        {
-          path: '',
-          component: RecordSearchPageComponent,
-          title: _('Items'),
-          canActivate: [ PermissionGuard ],
-          data: {
-            permissions: [ PERMISSIONS.ITEM_ACCESS, PERMISSIONS.ITEM_SEARCH ],
-            operator: PERMISSION_OPERATOR.AND
-          }
+  getTypes(): Partial<RecordType>[] {
+    const types: Partial<RecordType>[] = [
+      {
+        key: this.name,
+        label: 'Items',
+        editorSettings: {
+          longMode: true,
+          template: {
+            recordType: 'templates',
+            loadFromTemplate: true,
+            saveAsTemplate: true,
+          },
+        } as any,
+        component: ItemsBriefViewComponent,
+        detailComponent: ItemDetailViewComponent,
+        searchFilters: [this.expertSearchFilter()],
+        preFilters: {
+          organisation: null,
         },
-        {
-          path: 'detail/:pid',
-          component: ItemPageDetailComponent,
-          canActivate: [ CanAccessGuard ],
-          data: {
-            action: CAN_ACCESS_ACTIONS.READ
+        canRead: (record: RecordData) => this.canRead(record),
+        canAdd: () => of({ can: false, message: '' }),
+        permissions: (record: RecordData) => this.routeToolService.permissions(record, this.recordType, false),
+        processFilterName: (filter: IFilter) => this.processFilterName(filter),
+        preprocessRecordEditor: (record: any) => {
+          // If we found an `holding` parameter into the query string then we need to pre-populated
+          // the form with the corresponding holding metadata (see '_populateItemFieldFromHolding' function
+          // to know which fields will be filled.
+          const holdingPid = this.routeToolService.getRouteQueryParam('holding');
+          if (holdingPid !== null) {
+            this._populateItemFieldFromHolding(record, holdingPid);
           }
+          return record;
         },
-        {
-          path: 'edit/:pid',
-          component: EditorComponent,
-          title: _('Item'),
-          canActivate: [ CanAccessGuard ],
-          canDeactivate: [ ComponentCanDeactivateGuard ],
-          data: {
-            action: CAN_ACCESS_ACTIONS.UPDATE
+        preCreateRecord: (data: any) => {
+          if (data.document == null) {
+            data.document = {
+              $ref: this.routeToolService.apiService.getRefEndpoint(
+                'documents',
+                this.routeToolService.getRouteQueryParam('document')
+              ),
+            };
           }
+          return data;
         },
-        {
-          path: 'switch_location/:pid',
-          component: ItemSwitchLocationStandaloneComponent,
-          title: _('Item'),
-          canActivate: [ CanAccessGuard ],
-          data: {
-            action: CAN_ACCESS_ACTIONS.UPDATE
+        preUpdateRecord: (data: any) => {
+          // remove dynamic field
+          if (Object.hasOwn(data, 'available')) {
+            delete data.available;
           }
+          return data;
         },
-        {
-          path: 'new',
-          component: EditorComponent,
-          title: _('Item'),
-          canActivate: [ PermissionGuard ],
-          canDeactivate: [ ComponentCanDeactivateGuard ],
-          data: {
-            permissions: [ PERMISSIONS.HOLD_CREATE, PERMISSIONS.ITEM_CREATE ],
-            permissionsOperator: PERMISSION_OPERATOR.AND
+        postprocessRecordEditor: (record: any) => {
+          // * As 'issue' is part of the JSON propertiesOrder. The record should always contain this property ;
+          //   But this property is only necessary for 'issue' item type.
+          // * Keep 'received_date' information only if the issue has the correct status.
+          if (record.issue) {
+            if (record.type !== 'issue') {
+              delete record.issue;
+            } else if (record.issue.status !== IssueItemStatus.RECEIVED && record.issue.received_date) {
+              delete record.issue.received_date;
+            }
           }
-        }
-      ],
-      data: {
-        types: [
-          {
-            key: this.name,
-            label: 'Items',
-            editorSettings: {
-              longMode: true,
-              template: {
-                recordType: 'templates',
-                loadFromTemplate: true,
-                saveAsTemplate: true
-              }
-            },
-            component: ItemsBriefViewComponent,
-            detailComponent: ItemDetailViewComponent,
-            searchFilters: [
-              this.expertSearchFilter()
-            ],
-            preFilters: {
-              organisation: null
-            },
-            canRead: (record: any) => this.canRead(record),
-            canAdd: () => of({can: false}),
-            permissions: (record: any) => this.routeToolService.permissions(record, this.recordType, false),
-            preprocessRecordEditor: (record: any) => {
-              // If we found an `holding` parameter into the query string then we need to pre-populated
-              // the form with the corresponding holding metadata (see '_populateItemFieldFromHolding' function
-              // to know which fields will be filled.
-              const holdingPid = this.routeToolService.getRouteQueryParam('holding');
-              if (holdingPid !== null) {
-                this._populateItemFieldFromHolding(record, holdingPid);
-              }
-              return record;
-            },
-            preCreateRecord: (data: any) => {
-              if (data.document == null) {
-                data.document = {
-                  $ref: this.routeToolService.apiService.getRefEndpoint(
-                    'documents',
-                    this.routeToolService.getRouteQueryParam('document')
-                  )
-                };
-              }
-              return data;
-            },
-            preUpdateRecord: (data: any) => {
-              // remove dynamic field
-              if (Object.hasOwn(data, 'available')) {
-                delete data.available;
-              }
-              return data;
-            },
-            postprocessRecordEditor: (record: any) => {
-              // * As 'issue' is part of the JSON propertiesOrder. The record should always contain this property ;
-              //   But this property is only necessary for 'issue' item type.
-              // * Keep 'received_date' information only if the issue has the correct status.
-              if (record.issue) {
-                if (record.type !== 'issue') {
-                  delete record.issue;
-                } else if (record.issue.status !== IssueItemStatus.RECEIVED && record.issue.received_date) {
-                  delete record.issue.received_date;
-                }
-              }
-              // If we try to save an item with without any notes, then remove the empty array notes array from record
-              if (record.notes && record.notes.length === 0) {
-                delete record.notes;
-              }
-              // If we save an item with 'new_acquisition' flag set to false, ensure than we don't send any acquisition_date
-              if (!Object.hasOwn(record, 'acquisition_date') && record.acquisition_date == null) {
-                delete record.acquisition_date;
-              }
-              return record;
-            },
-            formFieldMap: (field: FormlyFieldConfig, jsonSchema: JSONSchema7): FormlyFieldConfig => {
-              return this._populateLocationsByCurrentUserLibrary(field, jsonSchema);
-            },
-            redirectUrl: (record: any) => this.getUrl(record),
-            aggregationsBucketSize: 10,
-            aggregationsOrder: [
-              'document_type',
-              'library',
-              'location',
-              'item_type',
-              'temporary_location',
-              'temporary_item_type',
-              'status',
-              'current_requests'
-            ],
-            aggregationsExpand: [
-              'document_type',
-              'library',
-              'location',
-            ],
-            itemHeaders: {
-              Accept: 'application/rero+json, application/json'
-            },
-            listHeaders: {
-              Accept: 'application/rero+json, application/json'
-            },
-            exportFormats: [
-              {
-                label: 'CSV',
-                format: 'csv',
-                endpoint: this.routeToolService.apiService.getEndpointByType('item/inventory'),
-                disableMaxRestResultsSize: true,
-              },
-            ],
-            sortOptions: [
-              {
-                label: _('Relevance'),
-                value: 'bestmatch',
-                defaultQuery: true,
-                icon: 'fa fa-sort-amount-desc'
-              },
-              {
-                label: _('Barcode'),
-                value: 'barcode',
-                 icon: 'fa fa-sort-alpha-asc'
-              },
-              {
-                label: _('Barcode (desc)'),
-                value: '-barcode',
-                icon: 'fa fa-sort-alpha-desc'
-              },
-              {
-                label: _('Call number'),
-                value: 'call_number',
-                icon: 'fa fa-sort-alpha-asc'
-              },
-              {
-                label: _('Call number (desc)'),
-                value: '-call_number',
-                icon: 'fa fa-sort-alpha-desc'
-              },
-              {
-                label: _('Second call number'),
-                value: 'second_call_number',
-                icon: 'fa fa-sort-alpha-asc'
-              },
-              {
-                label: _('Second call number (desc)'),
-                value: '-second_call_number',
-                icon: 'fa fa-sort-alpha-desc'
-              },
-              {
-                label: _('Current requests'),
-                value: 'current_requests',
-                icon: 'fa fa-sort-amount-desc'
-              }
-            ]
+          // If we try to save an item with without any notes, then remove the empty array notes array from record
+          if (record.notes && record.notes.length === 0) {
+            delete record.notes;
           }
+          // If we save an item with 'new_acquisition' flag set to false, ensure than we don't send any acquisition_date
+          if (!Object.hasOwn(record, 'acquisition_date') && record.acquisition_date == null) {
+            delete record.acquisition_date;
+          }
+          return record;
+        },
+        formFieldMap: ((field: FormlyFieldConfig, jsonSchema: JSONSchema7): FormlyFieldConfig => {
+          return this._populateLocationsByCurrentUserLibrary(field, jsonSchema);
+        }) as any,
+        redirectUrl: (record: RecordData) => this.getUrl(record),
+        aggregationsBucketSize: 10,
+        aggregationsOrder: [
+          'document_type',
+          'library',
+          'location',
+          'item_type',
+          'temporary_location',
+          'temporary_item_type',
+          'status',
+          'current_requests',
         ],
-      }
-    };
-    // TODO: Refactor this after the change of AppInitializer service with user.
-    this.routeToolService.userService.loaded$.subscribe(() => {
-      const { patronLibrarian } = this.routeToolService.userService.user;
-      if (patronLibrarian) {
-        config.data.types[0].preFilters.organisation = patronLibrarian.organisation.pid;
-      }
-    });
+        aggregationsExpand: ['document_type', 'library', 'location'],
+        itemHeaders: {
+          Accept: 'application/rero+json, application/json',
+        },
+        listHeaders: {
+          Accept: 'application/rero+json, application/json',
+        },
+        exportFormats: [
+          {
+            label: 'CSV',
+            format: 'csv',
+            endpoint: this.routeToolService.apiService.getEndpointByType('item/inventory'),
+            disableMaxRestResultsSize: true,
+          },
+        ],
+        sortOptions: [
+          {
+            label: _('Relevance'),
+            value: 'bestmatch',
+            defaultQuery: true,
+            icon: 'fa fa-sort-amount-desc',
+          },
+          {
+            label: _('Barcode'),
+            value: 'barcode',
+            icon: 'fa fa-sort-alpha-asc',
+          },
+          {
+            label: _('Barcode (desc)'),
+            value: '-barcode',
+            icon: 'fa fa-sort-alpha-desc',
+          },
+          {
+            label: _('Call number'),
+            value: 'call_number',
+            icon: 'fa fa-sort-alpha-asc',
+          },
+          {
+            label: _('Call number (desc)'),
+            value: '-call_number',
+            icon: 'fa fa-sort-alpha-desc',
+          },
+          {
+            label: _('Second call number'),
+            value: 'second_call_number',
+            icon: 'fa fa-sort-alpha-asc',
+          },
+          {
+            label: _('Second call number (desc)'),
+            value: '-second_call_number',
+            icon: 'fa fa-sort-alpha-desc',
+          },
+          {
+            label: _('Current requests'),
+            value: 'current_requests',
+            icon: 'fa fa-sort-amount-desc',
+          },
+        ],
+      },
+    ];
 
-    return config;
+    // TODO: Refactor this after the change of AppInitializer service with user.
+    toObservable(this.routeToolService.appStore.user, { injector: this.routeToolService.injector })
+      .pipe(filter(u => !!u), take(1)).subscribe(() => {
+        const { patronLibrarian } = this.routeToolService.appStore.user();
+        if (patronLibrarian) {
+          (types[0] as any).preFilters.organisation = patronLibrarian.organisation.pid;
+        }
+      });
+
+    return types;
   }
 
   /**
@@ -270,13 +274,7 @@ export class ItemsRoute extends BaseRoute implements RouteInterface {
    */
   private getUrl(record: any) {
     const redirectTo = this.routeToolService.getRouteQueryParam('redirectTo');
-    return redirectTo
-        ? of(redirectTo)
-        : this.redirectUrl(
-            record.metadata.document,
-            '/records/documents/detail'
-          )
-    ;
+    return redirectTo ? of(redirectTo) : this.redirectUrl(record.metadata.document, '/records/documents/detail');
   }
 
   /**
@@ -292,24 +290,24 @@ export class ItemsRoute extends BaseRoute implements RouteInterface {
       field.hooks = {
         ...field.hooks,
         afterContentInit: (f: FormlyFieldConfig) => {
-          const { user } = this.routeToolService.userService;
-          const { apiService, recordService } = this.routeToolService;
-          const libraryPid = user.currentLibrary;
+          const apiService: any = this.routeToolService.apiService;
+          const recordService: RecordService = this.routeToolService.recordService as RecordService;
+          const libraryPid = this.routeToolService.appStore.currentLibraryPid();
           const query = `library.pid:${libraryPid}`;
-          f.props.options = recordService
-            .getRecords('locations', query, 1, RecordService.MAX_REST_RESULTS_SIZE, undefined, undefined, undefined, 'name')
+          f.props!.options = recordService
+            .getRecords('locations', { query, page: 1, itemsPerPage: RecordService.MAX_REST_RESULTS_SIZE, sort: 'name' })
             .pipe(
-              map((result: Record) => this.routeToolService.recordService.totalHits(result.hits.total) === 0 ? [] : result.hits.hits),
-              map((hits: Record[]) =>
+              map((result: any) => (+recordService.totalHits(result.hits.total) === 0 ? [] : result.hits.hits)),
+              map((hits: any[]) =>
                 hits.map((hit: any) => {
                   return {
                     label: hit.metadata.name,
-                    value: apiService.getRefEndpoint('locations',hit.metadata.pid)
+                    value: apiService.getRefEndpoint('locations', hit.metadata.pid),
                   };
                 })
               )
             );
-        }
+        },
       };
     }
     return field;
@@ -328,7 +326,7 @@ export class ItemsRoute extends BaseRoute implements RouteInterface {
   private _populateItemFieldFromHolding(record: any, holdingPid: string) {
     record.type = ItemType.ISSUE;
     record.issue = record.issue || {};
-    record.issue.regular = true;  // default to true
+    record.issue.regular = true; // default to true
 
     // setting irregular issue from url parameter
     try {
@@ -337,20 +335,34 @@ export class ItemsRoute extends BaseRoute implements RouteInterface {
       if (isIrregular) {
         record.issue.regular = false;
       }
-    } catch (e) { }
+    } catch (_e) {
+      /* intentional */
+    }
     // setting other issue attributes from url parameters
     const today = this.routeToolService.datePipe.transform(Date.now(), 'yyyy-MM-dd');
     record.enumerationAndChronology = this.routeToolService.getRouteQueryParam('enumerationAndChronology', '');
     record.issue.expected_date = this.routeToolService.getRouteQueryParam('expected_date', today);
     record.issue.received_date = this.routeToolService.getRouteQueryParam('received_date', today);
 
-    this.routeToolService.recordService.getRecord('holdings', holdingPid).subscribe(
-      (holdingData) => {
+    (this.routeToolService.recordService as RecordService).getRecord('holdings', holdingPid).subscribe(
+      (holdingData: any) => {
         record.item_type = holdingData.metadata.circulation_category;
         record.location = holdingData.metadata.location;
         record.document = holdingData.metadata.document;
-        record.holding = { $ref: this.routeToolService.apiService.getRefEndpoint('holdings', holdingPid) };
+        record.holding = { $ref: (this.routeToolService.apiService as any).getRefEndpoint('holdings', holdingPid) };
       }
     );
+  }
+
+  private processFilterName(filter: IFilter): Observable<string> {
+    if(filter.name) { return of(filter.name); }
+    switch (filter.aggregationKey) {
+      case 'item_type':
+      case 'temporary_item_type': return this.recordService.getRecord<{metadata: {name: string}}>('item_types', filter.key).pipe(map(record => record.metadata.name));
+      case 'library': return this.recordService.getRecord<{metadata: {name: string}}>('libraries', filter.key).pipe(map(record => record.metadata.name));
+      case 'location':
+      case 'temporary_location': return this.recordService.getRecord<{metadata: {name: string}}>('locations', filter.key).pipe(map(record => record.metadata.name));
+      default: return this.routeToolService.translateService.stream(filter.key);
+    }
   }
 }

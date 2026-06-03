@@ -15,21 +15,21 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-@if (stats) {
+@if (stats()) {
   <div class="ui:flex ui:gap-2">
     <div class="ui:w-50 ui:flex-auto">
       <p-panel [header]="'Past year (last 365 days)'|translate" class="ui:bg-white">
         <ul class="ui:mx-5 ui:mb-4">
-          <li>{{ 'checkout' | translate | ucfirst }}: {{ stats.total_year.checkout | default: 0 }}</li>
-          <li>{{ 'renewal' | translate | ucfirst }}: {{ stats.total_year.extend | default: 0 }}</li>
+          <li>{{ 'checkout' | translate | ucfirst }}: {{ stats().total_year.checkout | default: 0 }}</li>
+          <li>{{ 'renewal' | translate | ucfirst }}: {{ stats().total_year.extend | default: 0 }}</li>
         </ul>
       </p-panel>
     </div>
     <div class="ui:w-50 ui:flex-auto">
       <p-panel [header]="'Total'|translate">
         <ul class="ui:mx-5 ui:mb-4">
-          <li>{{ 'checkout' | translate | ucfirst }}: {{ stats.total.checkout | default: 0 }}</li>
-          <li>{{ 'renewal' | translate| ucfirst }}: {{ stats.total.extend | default: 0 }}</li>
+          <li>{{ 'checkout' | translate | ucfirst }}: {{ stats().total.checkout | default: 0 }}</li>
+          <li>{{ 'renewal' | translate| ucfirst }}: {{ stats().total.extend | default: 0 }}</li>
         </ul>
       </p-panel>
     </div>

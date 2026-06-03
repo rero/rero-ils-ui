@@ -16,7 +16,7 @@
  */
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
-import { Record, RecordService } from '@rero/ng-core';
+import { RecordService } from '@rero/ng-core';
 import { of } from 'rxjs';
 import { OperationLogsApiService } from './operation-logs-api.service';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
@@ -43,9 +43,10 @@ describe('OperationLogsService', () => {
     links: {}
   };
 
-  const recordServiceSpy = jasmine.createSpyObj('RecordService', ['getRecords', 'totalHits']);
-  recordServiceSpy.getRecords.and.returnValue(of(responseRecords));
-  recordServiceSpy.totalHits.and.returnValue(0);
+  const recordServiceSpy = {
+    getRecords: vi.fn().mockReturnValue(of(responseRecords)),
+    totalHits: vi.fn().mockReturnValue(0)
+  };
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -67,7 +68,7 @@ describe('OperationLogsService', () => {
     service
       .getLogs('documents', '1', 'create', 1)
       .subscribe({
-        next: (response: Record) => expect(response).toEqual(responseRecords)
+        next: (response: any) => expect(response).toEqual(responseRecords)
     });
   });
 
@@ -75,7 +76,7 @@ describe('OperationLogsService', () => {
     service
       .getCirculationLogs('documents', '1', 1)
       .subscribe({
-        next: (response: Record) => expect(response).toEqual(responseRecords)
+        next: (response: any) => expect(response).toEqual(responseRecords)
     });
   });
 });

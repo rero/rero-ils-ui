@@ -19,7 +19,7 @@ import { provideHttpClient, withInterceptorsFromDi } from "@angular/common/http"
 import { provideHttpClientTesting } from "@angular/common/http/testing";
 import { TestBed } from "@angular/core/testing";
 import { TranslateModule } from "@ngx-translate/core";
-import { RecordModule, RecordService } from "@rero/ng-core";
+import { RecordService } from "@rero/ng-core";
 import { of } from "rxjs";
 import { CirculationPolicyApiService } from "./circulation-policy-api.service";
 
@@ -44,14 +44,13 @@ describe('CirculationPolicyApiService', () => {
     links: {}
   };
 
-  const recordServiceSpy = jasmine.createSpyObj('RecordService', ['getRecords']);
-  recordServiceSpy.getRecords.and.returnValue(of(response));
+  const recordServiceSpy = { getRecords: vi.fn() };
+  recordServiceSpy.getRecords.mockReturnValue(of(response));
 
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [
-        TranslateModule.forRoot(),
-        RecordModule
+        TranslateModule.forRoot()
       ],
       providers: [
         CirculationPolicyApiService,
@@ -69,8 +68,8 @@ describe('CirculationPolicyApiService', () => {
 
   it('should return circulation policies', () => {
     service.getAll().subscribe((result: any[]) => {
-      expect(result).toHaveSize(1);
-      expect('metadata' in result[0]).toBeTrue();
+      expect(result).toHaveLength(1);
+      expect('metadata' in result[0]).toBe(true);
     });
   });
 });

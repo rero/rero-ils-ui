@@ -16,15 +16,16 @@
  */
 import { Component, Input } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { PermissionsService } from '../service/permissions.service';
+import { AppStore } from '../store/app.store';
 import { PermissionsDirective } from './permissions.directive';
 
 @Component({
     // eslint-disable-next-line @angular-eslint/component-selector
     selector: 'permissions-testing-component',
+    standalone: true,
+    imports: [PermissionsDirective],
     template: `
-  <div id="perm" [permissions]="permissions">Permissions testing</div>`,
-    standalone: false
+  <div id="perm" [permissions]="permissions">Permissions testing</div>`
 })
 class PermissionsTestingComponent {
   @Input() permissions: string[] | string = [];
@@ -34,20 +35,19 @@ class PermissionsTestingComponent {
 describe('PermissionDirective', () => {
   let fixture: ComponentFixture<PermissionsTestingComponent>;
   let component: PermissionsTestingComponent;
-  let permissionsService: PermissionsService;
+  let canAccess = true;
 
   beforeEach(() => {
     fixture = TestBed.configureTestingModule({
-      declarations: [
-        PermissionsDirective,
-        PermissionsTestingComponent
-      ]
-    })
+    imports: [PermissionsTestingComponent],
+    providers: [
+      { provide: AppStore, useValue: { canAccess: vi.fn(() => canAccess) } }
+    ]
+})
     .createComponent(PermissionsTestingComponent);
 
     component = fixture.componentInstance;
-    permissionsService = TestBed.inject(PermissionsService);
-    permissionsService.setPermissions(['foo']);
+    canAccess = true;
   });
 
   it('should create an instance', () => {
@@ -55,12 +55,14 @@ describe('PermissionDirective', () => {
   });
 
   it('should delete the element if the permission is not available', () => {
+    canAccess = false;
     component.permissions = ['bar'];
     fixture.detectChanges();
     expect(fixture.elementRef.nativeElement.querySelector('#perm')).toBeNull();
   });
 
   it('should leave the element visible if permission is granted', () => {
+    canAccess = true;
     component.permissions = ['foo'];
     fixture.detectChanges();
     expect(fixture.elementRef.nativeElement.querySelector('#perm')).toBeTruthy();

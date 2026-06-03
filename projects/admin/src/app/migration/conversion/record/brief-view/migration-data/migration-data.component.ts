@@ -15,25 +15,26 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { Component, Input } from '@angular/core';
+import { Component, computed, input, ChangeDetectionStrategy} from '@angular/core';
+import { RouterLink } from '@angular/router';
+import { Tag } from 'primeng/tag';
+import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
+import { DateTranslatePipe } from '@rero/ng-core';
+import { MainTitlePipe } from '@rero/shared';
 
 @Component({
     selector: 'admin-migration-data',
     templateUrl: './migration-data.component.html',
-    standalone: false
+    imports: [RouterLink, Tag, TranslateDirective, DateTranslatePipe, MainTitlePipe, TranslatePipe],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class MigrationDataBriefComponent {
-  // current record
-  @Input() record: any;
+  record = input<any>();
 
-  // detail URL
-  @Input() detailUrl: { link: string; external: boolean };
+  type = input<string>();
 
-  /**
-   * Get the conversion status.
-   */
-  get status() {
-    return this.record?.metadata?.conversion?.status;
-  }
+  detailUrl = input<{ link: string; external: boolean }>();
+
+  status = computed(() => this.record()?.metadata?.conversion?.status);
 
 }

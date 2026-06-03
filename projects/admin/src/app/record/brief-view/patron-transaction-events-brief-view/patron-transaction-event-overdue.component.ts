@@ -16,13 +16,19 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy} from '@angular/core';
 import { PatronTransactionEventDefaultComponent } from './patron-transaction-event-default.component';
+import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
+import { InheritedCallNumberComponent, MainTitlePipe } from '@rero/shared';
+import { RouterLink } from '@angular/router';
+import { AsyncPipe } from '@angular/common';
+import { PatronNamePipe } from '../../../pipe/patron-name.pipe';
 
 @Component({
     selector: 'admin-patron-transaction-event-overdue',
     templateUrl: './patron-transaction-event-overdue.component.html',
-    standalone: false
+    imports: [TranslateDirective, InheritedCallNumberComponent, RouterLink, AsyncPipe, TranslatePipe, MainTitlePipe, PatronNamePipe],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class PatronTransactionEventOverdueComponent extends PatronTransactionEventDefaultComponent {
 

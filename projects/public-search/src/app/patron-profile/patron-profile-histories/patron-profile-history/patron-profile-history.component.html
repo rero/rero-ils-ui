@@ -15,21 +15,22 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 
-@if (record) {
+@if (record()) {
   <div class="ui:grid ui:grid-cols-12 ui:gap-4 ui:p-2">
     <!-- DOCUMENT & ADDITIONAL DATA -->
-    @let document = record.metadata.loan.item.document.pid | getRecord:'documents':'object':'':{ Accept:'application/rero+json' } | async;
+    @let m = $any(record()!.metadata);
+    @let document = m.loan.item.document.pid | getRecord:'documents':'object':'':{ Accept:'application/rero+json' } | async;
     <div class="ui:md:col-span-10 ui:col-span-12">
       @if (document) {
-        <a href="/{{ viewcode }}/documents/{{ record.metadata.loan.item.document.pid }}">
-          {{ record.metadata.loan.item.document.title }}
+        <a href="/{{ viewcode }}/documents/{{ m.loan.item.document.pid }}">
+          {{ m.loan.item.document.title }}
         </a>
       } @else {
-        {{ record.metadata.loan.item.document.title }}
+        {{ m.loan.item.document.title }}
       }
-      @if (record.metadata.loan.item.enumerationAndChronology) {
+      @if (m.loan.item.enumerationAndChronology) {
         <p-tag severity="info">
-          {{ record.metadata.loan.item.enumerationAndChronology }}
+          {{ m.loan.item.enumerationAndChronology }}
         </p-tag>
       }
       @if (document) {
@@ -37,12 +38,12 @@
       }
         <dl class="ui:md:hidden ui:grid ui:grid-cols-4">
           <dt translate>Return date</dt>
-          <dd>{{ record.metadata.date | dateTranslate: 'shortDate' }}</dd>
+          <dd>{{ m.date | dateTranslate: 'shortDate' }}</dd>
         </dl>
     </div>
     <!-- DUE DATE -->
       <div class="ui:md:col-span-2 ui:col-span-12 ui:hidden ui:md:block">
-        {{ record.metadata.date | dateTranslate: 'shortDate' }}
+        {{ m.date | dateTranslate: 'shortDate' }}
     </div>
   </div>
 }

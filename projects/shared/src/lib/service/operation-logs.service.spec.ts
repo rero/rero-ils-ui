@@ -16,37 +16,25 @@
  */
 import { TestBed } from '@angular/core/testing';
 import { OperationLogsService } from './operation-logs.service';
-import { AppSettingsService } from './app-settings.service';
+import { AppStore } from '../store/app.store';
 
 describe('OperationLogsService', () => {
   let service: OperationLogsService;
-  let apiService: AppSettingsService;
+  let settings: any;
 
   beforeEach(() => {
+    settings = {
+      operationLogs: {
+        documents: 'Documents'
+      }
+    };
+
     TestBed.configureTestingModule({
       providers: [
-        AppSettingsService
+        { provide: AppStore, useValue: { settings: vi.fn(() => settings) } }
       ]
     });
     service = TestBed.inject(OperationLogsService);
-    apiService = TestBed.inject(AppSettingsService);
-
-    apiService.settings = {
-      baseUrl: 'https://foo.bar',
-      agentSources: [],
-      agentAgentTypes: [],
-      agentLabelOrder: [],
-      globalView: 'global',
-      language: 'fr',
-      operationLogs: {
-        'documents': 'Documents'
-      },
-      documentAdvancedSearch: false,
-      userProfile: {
-        readOnly: true,
-        readOnlyFields: []
-      }
-    };
   });
 
   it('should be created', () => {
@@ -54,8 +42,8 @@ describe('OperationLogsService', () => {
   });
 
   it('should return a boolean for log operation visibility', () => {
-    expect(service.isLogVisible('documents')).toBeTrue();
-    expect(service.isLogVisible('items')).toBeFalse();
+    expect(service.isLogVisible('documents')).toBe(true);
+    expect(service.isLogVisible('items')).toBe(false);
   });
 
   it('Should return an exception if the resource does not exist', () => {

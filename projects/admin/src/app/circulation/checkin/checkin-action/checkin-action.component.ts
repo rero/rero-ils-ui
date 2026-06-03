@@ -14,13 +14,17 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, inject } from '@angular/core';
+import { Component, inject, ChangeDetectionStrategy} from '@angular/core';
 import { DynamicDialogRef } from 'primeng/dynamicdialog';
+import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
+import { Bind } from 'primeng/bind';
+import { Button } from 'primeng/button';
 
 @Component({
     selector: 'admin-checkin-action',
     templateUrl: './checkin-action.component.html',
-    standalone: false
+    imports: [TranslateDirective, Bind, Button, TranslatePipe],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CheckinActionComponent {
 

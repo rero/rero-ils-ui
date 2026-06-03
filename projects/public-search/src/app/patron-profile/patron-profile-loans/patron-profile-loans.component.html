@@ -17,14 +17,19 @@
 <!-- Due date dropdown menu -->
 @if (paginator.getRecordsCount() > 0) {
   <section class="ui:flex ui:justify-end">
-    <ng-core-menu-sort
-      [config]="[
-        {value:'duedate', label:'Due date (earliest)' | translate, icon:'fa fa-sort-numeric-asc'},
-        {value:'-duedate', label:'Due date (latest)' | translate, icon:'fa fa-sort-numeric-desc'}
-      ]"
-      selectedValue="duedate"
-      (onChange)="selectingSortCriteria($event)">
-    </ng-core-menu-sort>
+    <p-select
+      [options]="sortOptions"
+      [(ngModel)]="sortCriteria"
+      optionLabel="label"
+      optionValue="value"
+      (onChange)="selectingSortCriteria($event.value)">
+      <ng-template #selectedItem let-opt>
+        <span><i [class]="opt.icon" class="ui:mr-1"></i>{{ opt.label }}</span>
+      </ng-template>
+      <ng-template #item let-opt>
+        <span><i [class]="opt.icon" class="ui:mr-1"></i>{{ opt.label }}</span>
+      </ng-template>
+    </p-select>
   </section>
 }
 
@@ -37,9 +42,9 @@
         <div class="ui:col-span-2" translate>Due date</div>
       </div>
     </ng-template>
-  @defer (when loaded) {
+  @if (loaded()) {
     @if (paginator.getRecordsCount() > 0) {
-      @for (loan of records; track $index) {
+      @for (loan of records(); track $index) {
         <div class="ui:odd:bg-surface-50 ui:my-1">
           <public-search-patron-profile-loan [record]="loan" id="loan-{{ loan.metadata.pid }}" />
         </div>
@@ -48,7 +53,7 @@
     } @else {
         <div class="ui:font-bold ui:mx-2 ui:my-6" translate>No loan</div>
     }
-  } @placeholder {
+  } @else {
       <div class="ui:font-bold ui:mx-2 ui:my-6" translate>Loading in progress</div>
   }
   </p-panel>

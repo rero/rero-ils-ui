@@ -15,44 +15,28 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { AfterViewInit, Directive, ElementRef, inject, Input } from '@angular/core';
-import { PermissionsService } from '../service/permissions.service';
+import { AfterViewInit, Directive, ElementRef, inject, input } from '@angular/core';
+import { AppStore } from '../store/app.store';
 import { PERMISSION_OPERATOR } from '../util/permissions';
 
 @Directive({
     // eslint-disable-next-line @angular-eslint/directive-selector
-    selector: '[permissions]',
-    standalone: false
-})
+    selector: '[permissions]' })
 export class PermissionsDirective implements AfterViewInit {
 
   protected el: ElementRef = inject(ElementRef);
-  protected permissionsService: PermissionsService = inject(PermissionsService);
+  protected appStore = inject(AppStore);
 
-  // DIRECTIVE ATTRIBUTES =====================================================
-  /** permissions */
-  private _permissions: string[] = [];
-  /** operator */
-  private _operator: PERMISSION_OPERATOR = PERMISSION_OPERATOR.OR;
-
-  // GETTER & SETTER ==========================================================
-  @Input()
-  set permissions(permissions: string[] | string) {
-    if (typeof permissions === 'string') {
-      permissions = [permissions];
-    }
-    this._permissions = permissions;
-  };
-
-  @Input()
-  set operator(operator: PERMISSION_OPERATOR) {
-    this._operator = operator;
-  };
+  readonly permissions = input<string[] | string>([]);
+  readonly operator = input<PERMISSION_OPERATOR>(PERMISSION_OPERATOR.OR);
 
   /** AfterViewInit hook */
   ngAfterViewInit(): void {
+    const perms = typeof this.permissions() === 'string'
+      ? [this.permissions() as string]
+      : this.permissions() as string[];
     // Remove element if not allowed
-    if (!this.permissionsService.canAccess(this._permissions, this._operator)) {
+    if (!this.appStore.canAccess(perms, this.operator())) {
       this.el.nativeElement.remove();
     }
   }

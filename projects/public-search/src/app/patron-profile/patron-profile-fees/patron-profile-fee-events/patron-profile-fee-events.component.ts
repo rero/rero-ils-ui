@@ -14,13 +14,15 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, Input } from '@angular/core';
+import { Component, input, ChangeDetectionStrategy} from '@angular/core';
+import { PatronProfileFeeEventComponent } from './patron-profile-fee-event/patron-profile-fee-event.component';
 
 @Component({
   selector: 'public-search-patron-profile-fee-events',
   templateUrl: './patron-profile-fee-events.component.html',
-  standalone: false
+  imports: [PatronProfileFeeEventComponent],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class PatronProfileFeeEventsComponent<T> {
-  @Input() events: T;
+export class PatronProfileFeeEventsComponent {
+  events = input<any[]>();
 }

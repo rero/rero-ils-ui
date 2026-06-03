@@ -15,27 +15,28 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { Component, Input } from '@angular/core';
-import { ResultItem  } from '@rero/ng-core';
+import { Component, input, ChangeDetectionStrategy} from '@angular/core';
+import { RouterLink } from '@angular/router';
 
 @Component({
     selector: 'admin-libraries-brief-view',
     template: `
   <h5>
-    <a [routerLink]="[detailUrl.link]">{{ record.metadata.name }}</a>
+    <a [routerLink]="[detailUrl().link]">{{ record().metadata.name }}</a>
   </h5>
-  <small> {{ record.metadata.code }}</small>
+  <small> {{ record().metadata.code }}</small>
   `,
-    standalone: false
+    imports: [RouterLink],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class LibrariesBriefViewComponent implements ResultItem {
+export class LibrariesBriefViewComponent {
 
   /** Record data */
-  @Input() record: any;
+  record = input<any>();
 
   /** Resource type */
-  @Input() type: string;
+  type = input<string>();
 
   /** Detail URL to navigate to detail view */
-  @Input() detailUrl: { link: string, external: boolean };
+  detailUrl = input<{ link: string, external: boolean }>();
 }

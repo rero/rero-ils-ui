@@ -14,23 +14,30 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { AfterViewInit, Component, inject, OnDestroy } from '@angular/core';
-import { ApiService, RemoteAutocomplete } from '@rero/ng-core';
-import { PERMISSIONS, PermissionsService } from '@rero/shared';
+import { AfterViewInit, Component, inject, OnDestroy, ChangeDetectionStrategy} from '@angular/core';
+import { ApiService, RemoteAutocompleteComponent } from '@rero/ng-core';
+import { AppStore, PERMISSIONS } from '@rero/shared';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { Subscription } from 'rxjs';
 import { AddEntityLocalFormComponent } from './add-entity-local-form/add-entity-local-form.component';
+import { Bind } from 'primeng/bind';
+import { Select } from 'primeng/select';
+import { FormsModule } from '@angular/forms';
+import { AutoComplete } from 'primeng/autocomplete';
+import { NgClass } from '@angular/common';
+import { Button } from 'primeng/button';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
-  selector: 'admin-entity-autocomplete',
-  template: `
+    selector: 'admin-entity-autocomplete',
+    template: `
     <div class="ui:grid ui:grid-cols-12 ui:gap-2">
       @if (!field.formControl.value) {
         @if (props.filters?.options) {
           <div class="ui:col-span-4">
             <p-select
               [fluid]="true"
-              [options]="optionValues$|async"
+              [options]="optionValues()"
               [ngModel]="props.filters.selected"
               (onChange)="changeFilter($event)"
             >
@@ -43,8 +50,7 @@ import { AddEntityLocalFormComponent } from './add-entity-local-form/add-entity-
         <div class="ui:col-span-8">
           <p-autoComplete
             [fluid]="true"
-            class="props.class"
-            styleClass="props.styleClass"
+            [class]="props['styleClass']"
             [scrollHeight]="props.scrollHeight"
             [minLength]="props.minLength"
             [maxlength]="props.maxLength"
@@ -92,11 +98,12 @@ import { AddEntityLocalFormComponent } from './add-entity-local-form/add-entity-
         </div>
       }
     </div>`,
-  standalone: false
+    imports: [Bind, Select, FormsModule, AutoComplete, NgClass, Button, TranslatePipe],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class EntityAutocompleteComponent extends RemoteAutocomplete implements OnDestroy, AfterViewInit {
+export class EntityAutocompleteComponent extends RemoteAutocompleteComponent implements OnDestroy, AfterViewInit {
 
-  private permissionsService: PermissionsService = inject(PermissionsService);
+  private appStore = inject(AppStore);
   private dialogService: DialogService = inject(DialogService);
   private apiService: ApiService = inject(ApiService);
 
@@ -109,7 +116,7 @@ export class EntityAutocompleteComponent extends RemoteAutocomplete implements O
   }
 
   ngAfterViewInit(): void {
-    this.isAuthorizedToAddLocalEntity = this.permissionsService.canAccess(PERMISSIONS.LOCENT_CREATE);
+    this.isAuthorizedToAddLocalEntity = this.appStore.canAccess(PERMISSIONS.LOCENT_CREATE);
     super.ngAfterViewInit();
   }
 

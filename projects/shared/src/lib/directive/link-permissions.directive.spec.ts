@@ -16,15 +16,16 @@
  */
 import { Component, Input } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { PermissionsService } from '../service/permissions.service';
+import { AppStore } from '../store/app.store';
 import { LinkPermissionsDirective } from './link-permissions.directive';
 
 @Component({
     // eslint-disable-next-line @angular-eslint/component-selector
     selector: 'link-permissions-testing-component',
+    standalone: true,
+    imports: [LinkPermissionsDirective],
     template: `
-  <a href="#" id="link-perm" [linkPermissions]="linkPermissions">Link text</a>`,
-    standalone: false
+  <a href="#" id="link-perm" [linkPermissions]="linkPermissions">Link text</a>`
 })
 class LinkPermissionsTestingComponent {
   @Input() linkPermissions: string[] | string = [];
@@ -34,20 +35,19 @@ class LinkPermissionsTestingComponent {
 describe('LinkPermissionsDirective', () => {
   let fixture: ComponentFixture<LinkPermissionsTestingComponent>;
   let component: LinkPermissionsTestingComponent;
-  let permissionsService: PermissionsService;
+  let canAccess = true;
 
   beforeEach(() => {
     fixture = TestBed.configureTestingModule({
-      declarations: [
-        LinkPermissionsDirective,
-        LinkPermissionsTestingComponent
-      ]
-    })
+    imports: [LinkPermissionsTestingComponent],
+    providers: [
+      { provide: AppStore, useValue: { canAccess: vi.fn(() => canAccess) } }
+    ]
+})
     .createComponent(LinkPermissionsTestingComponent);
 
     component = fixture.componentInstance;
-    permissionsService = TestBed.inject(PermissionsService);
-    permissionsService.setPermissions(['foo']);
+    canAccess = true;
   });
 
   it('should create an instance', () => {
@@ -55,6 +55,7 @@ describe('LinkPermissionsDirective', () => {
   });
 
   it('should remove the link and show only link text', () => {
+    canAccess = false;
     component.linkPermissions = ['bar'];
     fixture.detectChanges();
     expect(fixture.elementRef.nativeElement.querySelector('a')).toBeNull();
@@ -62,6 +63,7 @@ describe('LinkPermissionsDirective', () => {
   });
 
   it('should leave the element visible if permission is granted', () => {
+    canAccess = true;
     component.linkPermissions = ['foo'];
     fixture.detectChanges();
     expect(fixture.elementRef.nativeElement.querySelector('a')).toBeTruthy();

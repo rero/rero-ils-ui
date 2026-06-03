@@ -15,19 +15,17 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-@if (organisation && esRecord$ | async; as account) {
+@if (organisation && esRecord(); as account) {
   <!-- ROLLOVER INFO -->
   @if (!account.is_active) {
-    <p-message
-      [text]="'Fiscal year closed' | translate"
-      severity="warn"
-      showTransitionOptions="0ms"
-    />
+    <p-message severity="warn" showTransitionOptions="0ms">
+      {{ 'Fiscal year closed' | translate }}
+    </p-message>
   }
   <h1>{{ account.name }}</h1>
   <!-- Account general information's -->
   <div class="ui:flex ui:flex-col ui:gap-y-4 ui:mt-5">
-    <p-panel styleClass="ui:pb-3">
+    <p-panel class="ui:pb-3">
       <ng-template #header>
         <span class="ui:text-xl" translate>Details</span>
       </ng-template>
@@ -50,7 +48,7 @@
     </p-panel>
 
     <!-- Account accounting information's -->
-    <p-panel styleClass="ui:pb-3">
+    <p-panel class="ui:pb-3">
       <ng-template #header>
         <span class="ui:text-xl" translate>Accounting informations</span>
       </ng-template>

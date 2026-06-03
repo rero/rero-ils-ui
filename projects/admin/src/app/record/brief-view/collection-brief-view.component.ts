@@ -15,47 +15,49 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { Component, Input } from '@angular/core';
-import { ResultItem } from '@rero/ng-core';
+import { Component, input, ChangeDetectionStrategy} from '@angular/core';
+import { NgClass } from '@angular/common';
+import { RouterLink } from '@angular/router';
+import { DateTranslatePipe, Nl2brPipe } from '@rero/ng-core';
 
 @Component({
     selector: 'admin-collection-brief',
     template: `
     <div class="ui:flex ui:flex-col ui:gap-1">
       <h5>
-        <i class="fa fa-circle ui:mr-1" [ngClass]="{'text-success': record.metadata.published, 'text-error': !record.metadata.published}" aria-hidden="true"></i>
-        <a id="collection-link" [routerLink]="[detailUrl.link]">{{ record.metadata.title }}</a>
-        @if (record.metadata.collection_id) {
-          ({{ record.metadata.collection_id }})
+        <i class="fa fa-circle ui:mr-1" [ngClass]="{'text-success': record().metadata.published, 'text-error': !record().metadata.published}" aria-hidden="true"></i>
+        <a id="collection-link" [routerLink]="[detailUrl().link]">{{ record().metadata.title }}</a>
+        @if (record().metadata.collection_id) {
+          ({{ record().metadata.collection_id }})
         }
       </h5>
-        @if (record.metadata.teachers) {
+        @if (record().metadata.teachers) {
           <div id="collection-teacher">
-            @for (teacher of record.metadata.teachers; track $index; let last = $last) {
+            @for (teacher of record().metadata.teachers; track $index; let last = $last) {
               {{ teacher.name }} {{ last ? '' : ', ' }}
             }
           </div>
         }
-        @if (record.metadata.description) {
+        @if (record().metadata.description) {
           <div
             id="collection-start-end-date"
-            [innerHtml]="record.metadata.description | nl2br"
+            [innerHtml]="record().metadata.description | nl2br"
           ></div>
         }
         <div>
-        {{ record.metadata.start_date | dateTranslate: 'mediumDate' }}
-        - {{ record.metadata.end_date | dateTranslate: 'mediumDate' }}
+        {{ record().metadata.start_date | dateTranslate: 'mediumDate' }}
+        - {{ record().metadata.end_date | dateTranslate: 'mediumDate' }}
         </div>
     </div>
   `,
-    standalone: false
+    imports: [NgClass, RouterLink, DateTranslatePipe, Nl2brPipe],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class CollectionBriefViewComponent implements ResultItem {
+export class CollectionBriefViewComponent {
 
-  @Input() record: any;
+  record = input<any>();
 
-  @Input() type: string;
+  type = input<string>();
 
-  @Input()
-  detailUrl: { link: string, external: boolean };
+  detailUrl = input<{ link: string, external: boolean }>();
 }

@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2021-2024 RERO
+ * Copyright (C) 2021-2025 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -14,53 +14,12 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { inject, Injectable } from '@angular/core';
-import { ActivatedRouteSnapshot, Router } from '@angular/router';
+import { inject } from '@angular/core';
+import { ActivatedRouteSnapshot, CanActivateFn, Router } from '@angular/router';
 import { Observable, of } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { RecordPermissions } from '../classes/permissions';
 import { RecordPermissionService } from '../service/record-permission.service';
-
-@Injectable({
-  providedIn: 'root'
-})
-export class CanAccessGuard  {
-
-  private permissionService: RecordPermissionService = inject(RecordPermissionService);
-  private router: Router = inject(Router);
-
-  private _mandatoryParams = [
-    'type',
-    'pid'
-  ];
-
-  /**
-   * Can activate
-   * @param route - ActivatedRouteSnapshot
-   * @returns True if granted or redirect to error page 400/403
-   */
-  canActivate(route: ActivatedRouteSnapshot): Observable<boolean> {
-    // Check if the action entry is in route data
-    if (
-      !('action' in route.data)
-      || !(Object.values(CAN_ACCESS_ACTIONS).includes(route.data.action))
-      || !(this._mandatoryParams.every((param: string) => param in route.params))
-    ) {
-      this.router.navigate(['/errors/400'], { skipLocationChange: true });
-      return of(false);
-    }
-
-    return this.permissionService.getPermission(route.params.type, route.params.pid).pipe(
-      map((permission: RecordPermissions) => {
-        if (!permission[route.data.action].can) {
-          this.router.navigate(['/errors/403'], { skipLocationChange: true });
-          return false;
-        }
-        return true;
-      })
-    );
-  }
-}
 
 export const CAN_ACCESS_ACTIONS = {
   CREATE: 'create',
@@ -68,4 +27,36 @@ export const CAN_ACCESS_ACTIONS = {
   LIST: 'list',
   READ: 'read',
   UPDATE: 'update'
-}
+} as const;
+
+const mandatoryParams = ['type', 'pid'];
+
+/**
+ * Guard that checks if the current user has read/write/delete access to a specific record.
+ * Requires `data.action` (one of CAN_ACCESS_ACTIONS) and route params `type` + `pid`.
+ * Redirects to /errors/400 on bad route config, /errors/403 on insufficient permissions.
+ */
+export const canAccessGuard: CanActivateFn = (route: ActivatedRouteSnapshot): Observable<boolean> => {
+  const permissionService = inject(RecordPermissionService);
+  const router = inject(Router);
+
+  if (
+    !('action' in route.data)
+    || !(Object.values(CAN_ACCESS_ACTIONS).includes(route.data.action))
+    || !(mandatoryParams.every((param: string) => param in route.params))
+  ) {
+    router.navigate(['/errors/400'], { skipLocationChange: true });
+    return of(false);
+  }
+
+  return permissionService.getPermission(route.params.type, route.params.pid).pipe(
+    map((permission: RecordPermissions) => {
+      const action = route.data.action as keyof RecordPermissions;
+      if (!permission[action]?.can) {
+        router.navigate(['/errors/403'], { skipLocationChange: true });
+        return false;
+      }
+      return true;
+    })
+  );
+};

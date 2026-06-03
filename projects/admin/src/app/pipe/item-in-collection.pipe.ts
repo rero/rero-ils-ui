@@ -20,10 +20,7 @@ import { RecordService } from '@rero/ng-core';
 import { Observable, of } from 'rxjs';
 import { map } from 'rxjs/operators';
 
-@Pipe({
-    name: 'itemInCollection',
-    standalone: false
-})
+@Pipe({ name: 'itemInCollection' })
 export class ItemInCollectionPipe implements PipeTransform {
 
   private recordService: RecordService = inject(RecordService);
@@ -39,16 +36,10 @@ export class ItemInCollectionPipe implements PipeTransform {
     }
     return this.recordService.getRecords(
       'collections',
-      `items.pid:${itemPid} AND published:true`,
-      1,
-      RecordService.MAX_REST_RESULTS_SIZE,
-      undefined,
-      undefined,
-      undefined,
-      'title'
+      { query: `items.pid:${itemPid} AND published:true`, page: 1, itemsPerPage: RecordService.MAX_REST_RESULTS_SIZE, sort: 'title' }
     ).pipe(
       map((result: any) => {
-        return (this.recordService.totalHits(result.hits.total) === 0)
+        return (+this.recordService.totalHits(result.hits.total) === 0)
           ? []
           : result.hits.hits;
       })

@@ -14,31 +14,65 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, inject, OnDestroy, OnInit } from '@angular/core';
-import { _ } from "@ngx-translate/core";
+import { ChangeDetectionStrategy, Component, computed, inject, Injector, linkedSignal, signal } from '@angular/core';
+import { toObservable, toSignal } from '@angular/core/rxjs-interop';
+import { _, TranslateDirective, TranslatePipe } from "@ngx-translate/core";
 import { TranslateService } from '@ngx-translate/core';
-import { CONFIG } from '@rero/ng-core';
-import { UserService } from '@rero/shared';
+import { CONFIG, SearchInputComponent } from '@rero/ng-core';
+import { AppStore } from '@rero/shared';
 import { DateTime } from 'luxon';
 import { MessageService } from 'primeng/api';
-import { interval, Subscription } from 'rxjs';
+import { interval, of } from 'rxjs';
+import { map, startWith, switchMap } from 'rxjs/operators';
 import { ItemsService } from '../../service/items.service';
+import { Bind } from 'primeng/bind';
+import { ToggleSwitch } from 'primeng/toggleswitch';
+import { FormsModule } from '@angular/forms';
+import { RequestedItemsListComponent } from './requested-items-list/requested-items-list.component';
+import { SelectModule } from 'primeng/select';
+
+type RefreshOption = {
+  value: string;
+  label: string;
+  icon: string;
+};
+
+type SortOption = RefreshOption;
+
+type RequestedLoanItem = {
+  pid: string;
+  barcode: string;
+  status: string;
+  call_number?: string;
+  library: { name: string };
+  location: { name: string };
+  loan: {
+    pid: string;
+    transaction_date: string;
+    pickup_location: {
+      pickup_name?: string;
+      library_name: string;
+      name: string;
+    };
+  };
+};
 
 @Component({
     selector: 'admin-circulation-main-request',
     templateUrl: './main-request.component.html',
-    standalone: false
+    imports: [SearchInputComponent, Bind, ToggleSwitch, FormsModule, TranslateDirective, RequestedItemsListComponent, TranslatePipe, SelectModule],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class MainRequestComponent implements OnInit, OnDestroy {
+export class MainRequestComponent {
 
-  private userService: UserService = inject(UserService);
+  private appStore = inject(AppStore);
   private itemsService: ItemsService = inject(ItemsService);
   private translateService: TranslateService = inject(TranslateService);
   private messageService = inject(MessageService);
 
   // COMPONENT ATTRIBUTES ==================================================================
   /** options used for auto-refresh select box */
-  public refreshOptions = [
+  readonly refreshOptions: RefreshOption[] = [
     {value: '15000', label: '15 s', icon: 'fa fa-clock-o'},
     {value: '30000', label: '30 s', icon: 'fa fa-clock-o'},
     {value: '60000', label: '1 m', icon: 'fa fa-clock-o'},
@@ -48,77 +82,87 @@ export class MainRequestComponent implements OnInit, OnDestroy {
   ];
 
   /** options used to sort requested items list */
-  public sortingCriteria = [
-    {value: 'requestdate', label: this.translateService.instant('Request date'), icon: 'fa fa-sort-numeric-asc'},
-    {value: '-requestdate', label: this.translateService.instant('Request date (desc)'), icon: 'fa fa-sort-numeric-desc'},
-    {value: 'callnumber', label: this.translateService.instant('Call number'), icon: 'fa fa-sort-alpha-asc'},
-    {value: '-callnumber', label: this.translateService.instant('Call number (desc)'), icon: 'fa fa-sort-alpha-desc'},
-    {value: 'location', label: this.translateService.instant('Location'), icon: 'fa fa-sort-alpha-asc'},
-    {value: '-location', label: this.translateService.instant('Location (desc)'), icon: 'fa fa-sort-alpha-desc'},
-    {value: 'pickuplocation', label: this.translateService.instant('Pick-up location'), icon: 'fa fa-sort-alpha-asc'},
-    {value: '-pickuplocation', label: this.translateService.instant('Pick-up location (desc)'), icon: 'fa fa-sort-alpha-desc'},
-  ];
+  private readonly currentLanguage = toSignal(
+    this.translateService.onLangChange.pipe(
+      map(() => this.translateService.getCurrentLang()),
+      startWith(this.translateService.getCurrentLang())
+    ),
+    { initialValue: this.translateService.getCurrentLang() }
+  );
+
+  readonly sortingCriteria = computed<SortOption[]>(() => {
+    this.currentLanguage();
+    return [
+      {value: 'requestdate', label: this.translateService.instant('Request date'), icon: 'fa fa-sort-numeric-asc'},
+      {value: '-requestdate', label: this.translateService.instant('Request date (desc)'), icon: 'fa fa-sort-numeric-desc'},
+      {value: 'callnumber', label: this.translateService.instant('Call number'), icon: 'fa fa-sort-alpha-asc'},
+      {value: '-callnumber', label: this.translateService.instant('Call number (desc)'), icon: 'fa fa-sort-alpha-desc'},
+      {value: 'location', label: this.translateService.instant('Location'), icon: 'fa fa-sort-alpha-asc'},
+      {value: '-location', label: this.translateService.instant('Location (desc)'), icon: 'fa fa-sort-alpha-desc'},
+      {value: 'pickuplocation', label: this.translateService.instant('Pick-up location'), icon: 'fa fa-sort-alpha-asc'},
+      {value: '-pickuplocation', label: this.translateService.instant('Pick-up location (desc)'), icon: 'fa fa-sort-alpha-desc'},
+    ];
+  });
 
   /** the placeholder string used on the */
-  public placeholder = _('Please enter an item barcode.');
+  readonly placeholder = _('Please enter an item barcode.');
   /** search text used into the search input component */
-  public searchText = '';
-  /** requested items loaded */
-  public items = null;
+  readonly searchText = signal('');
   /** the interval (in millis) between 2 calls of requested items (0 = no refresh) */
-  public refreshInterval = 0;
+  readonly refreshInterval = signal(0);
   /** Focus attribute of the search input */
-  public searchInputFocus = true;
+  readonly searchInputFocus = signal(true);
   /** Disabled attribute of the search input */
-  public searchInputDisabled = false;
-
-  /** the library pid for which load the requested items */
-  private libraryPid: string;
-  /** the subscription for the interval refreshing */
-  private intervalSubscription = new Subscription();
+  readonly searchInputDisabled = signal(false);
   /** the sort criteria used */
-  private sortCriteria = this.sortingCriteria[1].value;
+  readonly sortCriteria = linkedSignal(() => this.sortingCriteria()[0].value);
+  private readonly itemOverrides = signal<Map<string, RequestedLoanItem>>(new Map());
+  private readonly injector = inject(Injector);
 
-  /** OnInit hook */
-  ngOnInit() {
-    const { user } = this.userService;
-    if (user) {
-      this.libraryPid = user.currentLibrary;
-      this.getRequestedLoans();
-      this._enableAutoRefresh();
-    }
-  }
+  readonly libraryPid = computed(() => this.appStore.currentLibraryPid());
 
-  /** OnDestroy hook */
-  ngOnDestroy() {
-    if (this.intervalSubscription) {
-      this.intervalSubscription.unsubscribe();
+  private readonly rawItems = toSignal(
+    toObservable(this.libraryPid, { injector: this.injector }).pipe(
+      switchMap(libraryPid => {
+        if (!libraryPid) {
+          return of<RequestedLoanItem[] | null>(null);
+        }
+        return toObservable(this.refreshInterval, { injector: this.injector }).pipe(
+          switchMap(refreshInterval => refreshInterval > 0
+            ? interval(refreshInterval).pipe(startWith(0), switchMap(() => this.itemsService.getRequestedLoans(libraryPid)))
+            : this.itemsService.getRequestedLoans(libraryPid)
+          )
+        );
+      })
+    ),
+    { injector: this.injector, initialValue: null }
+  );
+
+  readonly items = computed<RequestedLoanItem[] | null>(() => {
+    const items = this.rawItems();
+    const sortCriteria = this.sortCriteria();
+    const overrides = this.itemOverrides();
+    if (!items) {
+      return null;
     }
-  }
+    const merged = overrides.size > 0
+      ? items.map((item: RequestedLoanItem) => overrides.get(item.pid) ?? item)
+      : items;
+    return this.sortRequestedLoans(merged, sortCriteria);
+  });
 
   // PRIVATE FUNCTIONS ========================================================================
-  /** Enable the requested items auto-refresh behavior if needed */
-  private _enableAutoRefresh() {
-    if (this.intervalSubscription) {
-      this.intervalSubscription.unsubscribe();
-      this.intervalSubscription = new Subscription();
-    }
-    if (this.refreshInterval > 0) {
-      this.intervalSubscription = interval(this.refreshInterval).subscribe(() => this.getRequestedLoans());
-    }
-  }
-
   /**
    * Allow to sort an item list using the sort criteria used by the component
    * @param items: the item list to sort
    * @return the sorted item list based on component sort criteria
    */
-  private _sortingRequestedLoans(items: any[]) {
-    this.items = items.sort((a, b) => {
+  private sortRequestedLoans(items: RequestedLoanItem[], sortCriteria: string): RequestedLoanItem[] {
+    return [...items].sort((a: RequestedLoanItem, b: RequestedLoanItem) => {
       const aTime = DateTime.fromISO(a.loan.transaction_date);
       const bTime = DateTime.fromISO(b.loan.transaction_date);
-      switch (this.sortCriteria) {
-        case '-requestdate': return bTime.diff(aTime);
+      switch (sortCriteria) {
+        case '-requestdate': return bTime.toMillis() - aTime.toMillis();
         case 'callnumber':
           return (('call_number' in a) && ('call_number' in b))
             ? a.call_number.localeCompare(b.call_number)
@@ -131,7 +175,7 @@ export class MainRequestComponent implements OnInit, OnDestroy {
         case '-location':
           { const locA = a.library.name + ' ' + a.location.name;
           const locB = b.library.name + ' ' + b.location.name;
-          return (this.sortCriteria === 'location')
+          return (sortCriteria === 'location')
             ? locA.localeCompare(locB)
             : locB.localeCompare(locA); }
         case 'pickuplocation':
@@ -139,25 +183,18 @@ export class MainRequestComponent implements OnInit, OnDestroy {
           { const pickA = (a.loan.pickup_location.pickup_name)
             ? a.loan.pickup_location.pickup_name
             : a.loan.pickup_location.library_name + ' ' + a.loan.pickup_location.name;
-          const pickB = (a.loan.pickup_location.pickup_name)
+          const pickB = (b.loan.pickup_location.pickup_name)
             ? b.loan.pickup_location.pickup_name
             : b.loan.pickup_location.library_name + ' ' + b.loan.pickup_location.name;
-          return (this.sortCriteria === 'pickuplocation')
+          return (sortCriteria === 'pickuplocation')
             ? pickA.localeCompare(pickB)
             : pickB.localeCompare(pickA); }
-        default: return aTime.diff(bTime);
+        default: return aTime.toMillis() - bTime.toMillis();
       }
     });
   }
 
   // PUBLIC FUNCTIONS ========================================================================
-
-  /** Get the requested loans for the library of the current user */
-  getRequestedLoans() {
-   this.itemsService.getRequestedLoans(this.libraryPid).subscribe(items => {
-     this._sortingRequestedLoans(items);
-   });
-  }
 
   /**
    * Method used when an item barcode (or other string) are entered into the search input component
@@ -167,10 +204,12 @@ export class MainRequestComponent implements OnInit, OnDestroy {
     if (! searchText) {
       return null;
     }
-    this.searchInputFocus = false;
-    this.searchInputDisabled = true;
-    this.searchText = searchText;
-    const item = this.items.find(currItem => currItem.barcode === searchText);
+    this.searchInputFocus.set(false);
+    this.searchInputDisabled.set(true);
+    this.searchText.set(searchText);
+    const libraryPid = this.libraryPid();
+    const items = this.items();
+    const item = items?.find((currItem: RequestedLoanItem) => currItem.barcode === searchText);
     if (item === undefined) {
       this.messageService.add({
         severity: 'warn',
@@ -180,11 +219,14 @@ export class MainRequestComponent implements OnInit, OnDestroy {
       });
       this._resetSearchInput();
     } else {
-      /*const items = this.items;
-      this.items = null;*/
-      this.itemsService.doValidateRequest(item, this.libraryPid).subscribe(
+      if (!libraryPid) {
+        this._resetSearchInput();
+        return;
+      }
+
+      this.itemsService.doValidateRequest(item, libraryPid).subscribe(
         newItem => {
-          this._sortingRequestedLoans(this.items.map(currItem => (currItem.pid === newItem.pid) ? newItem : currItem));
+          this.itemOverrides.update(overrides => new Map(overrides).set(newItem.pid, newItem));
           this.messageService.add({
             severity: 'warn',
             summary: this.translateService.instant('request'),
@@ -202,17 +244,15 @@ export class MainRequestComponent implements OnInit, OnDestroy {
    * @param state: the toggle switch state
    */
   enableAutoRefresh(state: boolean): void {
-    this.refreshInterval = (state) ? parseInt(this.refreshOptions[0].value, 10) : 0;
-    this._enableAutoRefresh();
+    this.refreshInterval.set((state) ? parseInt(this.refreshOptions[0].value, 10) : 0);
   }
 
   /**
    * when user choose an new auto refresh interval time
    * @param value: the interval value (values of this.refreshOptions)
    */
-  selectingIntervalTimer(value: any): void {
-    this.refreshInterval = parseInt(value, 10);
-    this._enableAutoRefresh();
+  selectingIntervalTimer(value: string): void {
+    this.refreshInterval.set(parseInt(value, 10));
   }
 
   /**
@@ -220,16 +260,12 @@ export class MainRequestComponent implements OnInit, OnDestroy {
    * @param criteria: the sort criteria
    */
   selectingSortCriteria(criteria: string) {
-    this.sortCriteria = criteria;
-    this._sortingRequestedLoans(this.items);
+    this.sortCriteria.set(criteria);
   }
 
   /** Reset search input */
   private _resetSearchInput(): void {
-    this.searchInputDisabled = false;
-    this.searchText = '';
-    setTimeout(() => {
-      this.searchInputFocus = true;
-    });
+    this.searchInputDisabled.set(false);
+    this.searchText.set('');
   }
 }

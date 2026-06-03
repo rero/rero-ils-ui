@@ -14,30 +14,30 @@
    You should have received a copy of the GNU Affero General Public License
    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-@if (exception) {
-  <div class="ui:grid ui:grid-cols-12 ui:gap-4 ui:mx-2 ui:my-1" [ngClass]="{'ui:text-muted-color': isOver(exception)}">
+@if (exception()) {
+  <div class="ui:grid ui:grid-cols-12 ui:gap-4 ui:mx-2 ui:my-1" [ngClass]="{'ui:text-muted-color': isOver(exception())}">
     <i class="fa ui:col-span-1" aria-hidden="true" [ngClass]="{
-      'fa-circle text-success': exception.is_open,
-      'fa-ban text-error': !exception.is_open
+      'fa-circle text-success': exception().is_open,
+      'fa-ban text-error': !exception().is_open
     }"></i>
     <div class="ui:col-span-3">
-      {{ exception.start_date | dateTranslate:'longDate' }}
-      @if (exception.end_date) {
-        <i class="fa fa-long-arrow-right"></i>&nbsp;{{ exception.end_date | dateTranslate:'longDate' }}
+      {{ exception().start_date | dateTranslate:'longDate' }}
+      @if (exception().end_date) {
+        <i class="fa fa-long-arrow-right"></i>&nbsp;{{ exception().end_date | dateTranslate:'longDate' }}
       }
     </div>
     <div class="ui:col-span-2">
-      @if (exception.times) {
-        @for (time of exception.times; track $index) {
+      @if (exception().times) {
+        @for (time of exception().times; track $index) {
           <div>{{ time.start_time }} - {{ time.end_time }}</div>
         }
       }
-      @if (exception.repeat) {
+      @if (exception().repeat) {
         <i class="fa fa-repeat"></i>&nbsp;
-        {{ exception.repeat.period | translate }}={{ exception.repeat.interval }}
+        {{ exception().repeat.period | translate }}={{ exception().repeat.interval }}
       }
     </div>
-    <span class="ui:col-span-5">{{ exception.title }}</span>
+    <span class="ui:col-span-5">{{ exception().title }}</span>
     <div class="ui:col-span-1">
       <ng-content></ng-content>
     </div>

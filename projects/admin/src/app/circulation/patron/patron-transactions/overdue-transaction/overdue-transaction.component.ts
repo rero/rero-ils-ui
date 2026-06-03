@@ -15,58 +15,64 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { Component, inject, Input, OnInit } from '@angular/core';
+import { AsyncPipe, CurrencyPipe } from '@angular/common';
+import { ChangeDetectionStrategy, Component, computed, inject, input, signal } from '@angular/core';
+import { toObservable, toSignal } from '@angular/core/rxjs-interop';
+import { RouterLink } from '@angular/router';
 import { Item } from '@app/admin/classes/items';
 import { Loan, LoanOverduePreview } from '@app/admin/classes/loans';
 import { PatronTransactionEvent, PatronTransactionEventType } from '@app/admin/classes/patron-transaction';
-import { OrganisationService } from '@app/admin/service/organisation.service';
-import { RecordService } from '@rero/ng-core';
-import { forkJoin } from 'rxjs';
+import { TranslateDirective } from '@ngx-translate/core';
+import { DateTranslatePipe, GetRecordPipe, RecordService, TruncateTextPipe } from '@rero/ng-core';
+import { AppStore, InheritedCallNumberComponent, MainTitlePipe, OpenCloseButtonComponent } from '@rero/shared';
+import { forkJoin, of } from 'rxjs';
+import { map, switchMap } from 'rxjs/operators';
+import { PatronTransactionHistoryComponent } from '../patron-transaction/patron-transaction-history/patron-transaction-history.component';
 
 @Component({
-    selector: 'admin-overdue-transaction',
-    templateUrl: './overdue-transaction.component.html',
-    standalone: false
+  selector: 'admin-overdue-transaction',
+  templateUrl: './overdue-transaction.component.html',
+  imports: [OpenCloseButtonComponent, RouterLink, TranslateDirective, InheritedCallNumberComponent, PatronTransactionHistoryComponent, AsyncPipe, CurrencyPipe, DateTranslatePipe, GetRecordPipe, MainTitlePipe, TruncateTextPipe],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class OverdueTransactionComponent implements OnInit {
+export class OverdueTransactionComponent {
 
-  private organisationService: OrganisationService = inject(OrganisationService);
+  private appStore = inject(AppStore);
   private recordService: RecordService = inject(RecordService);
 
   // COMPONENT ATTRIBUTES ====================================================
-  /** the overdue preview to display */
-  @Input() transaction: {loan: Loan, fees: LoanOverduePreview};
-  /** Is transaction detail visible ? */
-  isCollapsed = true;
-  /** item, document corresponding to the loan */
-  item: Item = undefined;
-  document: any = undefined;
+  transaction = input<{loan: Loan, fees: LoanOverduePreview}>();
+  isCollapsed = signal(true);
 
+  private readonly loanData = toSignal(
+    toObservable(this.transaction).pipe(
+      switchMap(t => {
+        if (!t) return of(null);
+        t.fees.steps = t.fees.steps.map(event => new PatronTransactionEvent({
+          creation_date: event[1],
+          amount: event[0],
+          type: PatronTransactionEventType.FEE,
+          subtype: 'overdue'
+        })).reverse();
+        if (!t.loan.item_pid?.value || !t.loan.document_pid) return of(null);
+        return forkJoin([
+          this.recordService.getRecord('items', t.loan.item_pid.value),
+          this.recordService.getRecord('documents', t.loan.document_pid)
+        ]).pipe(
+          map(([itemData, documentData]: [any, any]) => ({
+            item: new Item(itemData.metadata),
+            document: documentData.metadata
+          }))
+        );
+      })
+    ),
+    { initialValue: null }
+  );
 
-  // GETTER & SETTER =========================================================
-  /** Get current organisation
-   *  @return: current organisation
-   */
+  readonly item = computed(() => this.loanData()?.item ?? null);
+  readonly document = computed(() => this.loanData()?.document ?? null);
+
   get organisation() {
-    return this.organisationService.organisation;
-  }
-
-  /** OnInit hook */
-  ngOnInit(): void {
-    const itemRecord$ = this.recordService.getRecord('items', this.transaction.loan.item_pid.value);
-    const documentRecord$ = this.recordService.getRecord('documents', this.transaction.loan.document_pid);
-    forkJoin([itemRecord$, documentRecord$]).subscribe(
-      ([itemData, documentData]) => {
-        this.item = new Item(itemData.metadata);
-        this.document = documentData.metadata;
-      }
-    );
-    // transform fees steps to fake PatronTransactionEvent
-    this.transaction.fees.steps = this.transaction.fees.steps.map(event => new PatronTransactionEvent({
-      creation_date: event[1],
-      amount: event[0],
-      type: PatronTransactionEventType.FEE,
-      subtype: 'overdue'
-    })).reverse();
+    return this.appStore.organisation();
   }
 }

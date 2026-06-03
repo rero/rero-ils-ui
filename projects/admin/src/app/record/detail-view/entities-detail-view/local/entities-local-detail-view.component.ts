@@ -15,40 +15,43 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, input, ChangeDetectionStrategy} from '@angular/core';
 import { Router } from '@angular/router';
 import { OperationLogsService } from '@rero/shared';
-import { TranslateService } from '@ngx-translate/core';
-import { DetailRecord } from '@rero/ng-core/lib/record/detail/view/detail-record';
+import { TranslateService, TranslateDirective, TranslatePipe } from '@ngx-translate/core';
+
 import { Entity, EntityType, EntityTypeIcon } from '@rero/shared';
+import { Bind } from 'primeng/bind';
+import { Tag } from 'primeng/tag';
+import { Panel } from 'primeng/panel';
+import { LocalOrganisationDetailViewComponent } from './local-organisation-detail-view/local-organisation-detail-view.component';
+import { LocalPersonDetailViewComponent } from './local-person-detail-view/local-person-detail-view.component';
+import { LocalPlaceDetailViewComponent } from './local-place-detail-view/local-place-detail-view.component';
+import { LocalTopicDetailViewComponent } from './local-topic-detail-view/local-topic-detail-view.component';
+import { LocalWorkDetailViewComponent } from './local-work-detail-view/local-work-detail-view.component';
 
 @Component({
     selector: 'admin-entities-local-detail-view',
     templateUrl: './entities-local-detail-view.component.html',
-    standalone: false
+    imports: [Bind, Tag, Panel, TranslateDirective, LocalOrganisationDetailViewComponent, LocalPersonDetailViewComponent, LocalPlaceDetailViewComponent, LocalTopicDetailViewComponent, LocalWorkDetailViewComponent, TranslatePipe],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class EntitiesLocalDetailViewComponent implements OnInit, DetailRecord {
+export class EntitiesLocalDetailViewComponent {
 
   private translateService: TranslateService = inject(TranslateService);
   private router: Router = inject(Router);
   private operationLogsService: OperationLogsService = inject(OperationLogsService);
 
-  /** Observable resolving record data */
-  record$: any;
+  readonly record = input<any>();
 
   /** Resource type */
-  type: string;
+  readonly type = input<string>('');
 
   /** Enum of type of Entity */
   entityType = EntityType;
 
   /** Is operation log enabled */
-  isEnabledOperationLog = false;
-
-  /** OnInit hook */
-  ngOnInit(): void {
-    this.isEnabledOperationLog = this.operationLogsService.isLogVisible('local_entities');
-  }
+  readonly isEnabledOperationLog = this.operationLogsService.isLogVisible('local_entities');
 
   /**
    * Icon

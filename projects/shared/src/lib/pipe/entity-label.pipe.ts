@@ -44,10 +44,7 @@ import { TranslateService } from '@ngx-translate/core';
  * output will be : "default label - part1_es - part2"
  *
  */
-@Pipe({
-    name: 'entityLabel',
-    standalone: false
-})
+@Pipe({ name: 'entityLabel' })
 export class EntityLabelPipe implements PipeTransform {
 
   protected translateService: TranslateService = inject(TranslateService);
@@ -69,7 +66,7 @@ export class EntityLabelPipe implements PipeTransform {
    */
   transform(entity: any, partSeparator: string = this._defaultPartSeparator): string {
     const parts: string[] = []
-    const currentLangKey = `${this._authorizedKey}_${this.translateService.currentLang}`;
+    const currentLangKey = `${this._authorizedKey}_${this.translateService.getCurrentLang()}`;
     const fallbackLangKey = `${this._authorizedKey}_en`;
     parts.push(entity[currentLangKey] || entity[fallbackLangKey] || entity[this._authorizedKey]);
     if (entity?.subdivisions) {

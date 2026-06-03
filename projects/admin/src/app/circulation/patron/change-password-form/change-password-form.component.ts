@@ -15,19 +15,22 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { Component, inject, OnInit } from '@angular/core';
-import { UntypedFormGroup } from '@angular/forms';
-import { FormlyFieldConfig } from '@ngx-formly/core';
-import { TranslateService } from '@ngx-translate/core';
+import { Component, inject, OnInit, signal, ChangeDetectionStrategy } from '@angular/core';
+import { UntypedFormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormlyFieldConfig, FormlyModule } from '@ngx-formly/core';
+import { TranslateService, TranslatePipe } from '@ngx-translate/core';
 import { CONFIG } from '@rero/ng-core';
 import { User, UserApiService } from '@rero/shared';
 import { MessageService } from 'primeng/api';
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
+import { Bind } from 'primeng/bind';
+import { Button } from 'primeng/button';
 
 @Component({
     selector: 'admin-change-password-form',
     templateUrl: './change-password-form.component.html',
-    standalone: false
+    imports: [FormsModule, ReactiveFormsModule, FormlyModule, Bind, Button, TranslatePipe],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ChangePasswordFormComponent implements OnInit {
 
@@ -37,24 +40,34 @@ export class ChangePasswordFormComponent implements OnInit {
   private translateService: TranslateService = inject(TranslateService);
   private userApiService: UserApiService = inject(UserApiService);
 
-  /** patron to change the password */
-  patron: User;
-
-  /** form */
-  form: UntypedFormGroup = new UntypedFormGroup({});
-
-  /** model */
-  model = {};
-
-  /** form fields */
-  formFields: FormlyFieldConfig[];
+  patron = signal<User | undefined>(undefined);
+  form = signal(new UntypedFormGroup({}));
+  readonly model = {};
+  formFields = signal<FormlyFieldConfig[]>([]);
 
   ngOnInit() {
-    this.patron = this.dynamicDialogConfig.data.patron;
-    if (!this.patron) {
+    const { patron } = this.dynamicDialogConfig.data;
+    if (!patron) {
       this.closeModal();
+      return;
     }
-    this.initForm();
+    this.patron.set(patron);
+    this.formFields.set([
+      {
+        key: 'password',
+        type: 'passwordGenerator',
+        props: {
+          api: '/api/user/password/generate',
+          label: 'New password',
+          required: true,
+          keydown: (_, event) => {
+            if (event.key === 'Enter') {
+              event.preventDefault();
+            }
+          }
+        }
+      }
+    ]);
   }
 
   /**
@@ -62,8 +75,12 @@ export class ChangePasswordFormComponent implements OnInit {
    * @param patron - Object
    * @param model - Object
    */
-  submit(patron: any, model: any) {
-    this.userApiService.changePassword(patron.username, model.password).subscribe({
+  submit(patron: any) {
+    const password = this.form().get('password')?.value;
+    if (!password || !this.form().valid) {
+      return;
+    }
+    this.userApiService.changePassword(patron.username, password).subscribe({
       next: () => {
         this.messageService.add({
           severity: 'success',
@@ -88,25 +105,6 @@ export class ChangePasswordFormComponent implements OnInit {
         this.closeModal();
       }
     });
-  }
-
-  private initForm() {
-    this.formFields = [
-      {
-        key: 'password',
-        type: 'passwordGenerator',
-        props: {
-          api: "/api/user/password/generate",
-          label: 'New password',
-          required: true,
-          keydown: (_, event) => {
-            if (event.key === 'Enter') {
-              event.preventDefault();
-            }
-          }
-        }
-      }
-    ];
   }
 
   closeModal() {

@@ -14,28 +14,35 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, inject, OnInit } from '@angular/core';
-import { UntypedFormGroup } from '@angular/forms';
+import { Component, inject, OnInit, ChangeDetectionStrategy} from '@angular/core';
+import { UntypedFormGroup, ValidationErrors, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { PatronTransactionService } from '@app/admin/circulation/services/patron-transaction.service';
 import { PatronTransaction } from '@app/admin/classes/patron-transaction';
-import { OrganisationService } from '@app/admin/service/organisation.service';
-import { FormlyFieldConfig } from '@ngx-formly/core';
-import { TranslateService } from '@ngx-translate/core';
-import { Tools } from '@rero/shared';
+import { FormlyFieldConfig, FormlyModule } from '@ngx-formly/core';
+import { TranslateService, TranslateDirective, TranslatePipe } from '@ngx-translate/core';
+import { AppStore, Tools } from '@rero/shared';
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
+import { forkJoin, Observable } from 'rxjs';
+import { Bind } from 'primeng/bind';
+import { Panel } from 'primeng/panel';
+import { ScrollPanel } from 'primeng/scrollpanel';
+import { Button } from 'primeng/button';
+import { CurrencyPipe } from '@angular/common';
+import { DateTranslatePipe } from '@rero/ng-core';
 
 
 @Component({
     selector: 'admin-patron-transaction-form',
     templateUrl: './patron-transaction-event-form.component.html',
-    standalone: false
+    imports: [FormsModule, ReactiveFormsModule, FormlyModule, Bind, ScrollPanel, TranslateDirective, Button, CurrencyPipe, DateTranslatePipe, TranslatePipe, Panel],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class PatronTransactionEventFormComponent implements OnInit {
 
   private dynamicDialogConfig: DynamicDialogConfig = inject(DynamicDialogConfig);
   private dynamicDialogRef: DynamicDialogRef = inject(DynamicDialogRef);
   private translateService: TranslateService = inject(TranslateService);
-  private organisationService: OrganisationService = inject(OrganisationService);
+  private appStore = inject(AppStore);
   private patronTransactionService: PatronTransactionService = inject(PatronTransactionService);
 
   /** the transactions to perform with this form */
@@ -105,14 +112,14 @@ export class PatronTransactionEventFormComponent implements OnInit {
         required: true,
         addonLeft: [
           Tools.currencySymbol(
-            this.translateService.currentLang,
-            this.organisationService.organisation.default_currency
+            this.translateService.getCurrentLang(),
+            this.appStore.organisation().default_currency
           )
         ]
       },
       validation: {
         messages: {
-          pattern: (error, field: FormlyFieldConfig) => `Only 2 decimals are allowed`
+          pattern: (_error: ValidationErrors, _field: FormlyFieldConfig) => `Only 2 decimals are allowed`
         }
       },
       validators: {
@@ -120,7 +127,7 @@ export class PatronTransactionEventFormComponent implements OnInit {
           // As we use 'step' property, we need to specify 'min' property to '0' for a nice value interval. But
           // with this special validator, we disallow to place a payment with a 0 amount
           expression: (c) => c.value > 0,
-          message: (error) => this.translateService.instant('Must be greater than 0')
+          message: (_error) => this.translateService.instant('Must be greater than 0')
         }
       }
     };
@@ -180,7 +187,7 @@ export class PatronTransactionEventFormComponent implements OnInit {
    *  @return: current organisation
    */
   get organisation() {
-    return this.organisationService.organisation;
+    return this.appStore.organisation();
   }
 
   /**
@@ -188,13 +195,14 @@ export class PatronTransactionEventFormComponent implements OnInit {
    */
   onSubmitForm() {
     const formValues = this.form.value;
+    const observables: Observable<void>[] = [];
     if (this.action === 'pay') {
       let residualAmount = formValues.amount as number;
       for (const transaction of this.transactions) {
         const transactionAmount = (residualAmount >= transaction.total_amount)
           ? transaction.total_amount
           : residualAmount;
-        this.patronTransactionService.payPatronTransaction(transaction, transactionAmount, formValues.method);
+        observables.push(this.patronTransactionService.payPatronTransaction(transaction, transactionAmount, formValues.method));
         // DEV NOTES : We use the below syntax to avoid floating-number precision drift.
         //   on each iteration we 'round' the residual amount to a float with 2 decimals precision.
         //   --> with this syntax : (7.8 - 2 - 2 - 2) = 1.8
@@ -206,14 +214,17 @@ export class PatronTransactionEventFormComponent implements OnInit {
       }
     } else if (this.action === 'dispute') {
       for (const transaction of this.transactions) {
-        this.patronTransactionService.disputePatronTransaction(transaction, formValues.comment);
+        observables.push(this.patronTransactionService.disputePatronTransaction(transaction, formValues.comment));
       }
     } else if (this.action === 'cancel') {
       for (const transaction of this.transactions) {
-        this.patronTransactionService.cancelPatronTransaction(transaction, formValues.amount, formValues.comment);
+        observables.push(this.patronTransactionService.cancelPatronTransaction(transaction, formValues.amount, formValues.comment));
       }
     }
-    this.dynamicDialogRef.close();
+    const patronPid = this.transactions[0]?.patron?.pid;
+    forkJoin(observables).subscribe({
+      next: () => this.dynamicDialogRef.close(patronPid)
+    });
   }
 }
 

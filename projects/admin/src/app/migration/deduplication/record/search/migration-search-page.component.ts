@@ -15,27 +15,14 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy} from '@angular/core';
 import { RecordSearchPageComponent } from '@rero/ng-core';
 
 @Component({
     selector: 'admin-migration-search-page',
-    template: `
-      <admin-migration-search
-        [adminMode]="adminMode"
-        [currentType]="currentType"
-        [types]="types"
-        [detailUrl]="detailUrl"
-        [showSearchInput]="showSearchInput"
-        [q]="q"
-        [page]="page"
-        [size]="size"
-        [sort]="sort"
-        (parametersChanged)="updateUrl($event)"
-      />
-  `,
-    standalone: false
+    template: `<ng-core-record-search-page />`,
+    imports: [RecordSearchPageComponent],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class MigrationSearchPageComponent extends RecordSearchPageComponent {
-
+export class MigrationSearchPageComponent {
 }

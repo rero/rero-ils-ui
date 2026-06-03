@@ -15,30 +15,34 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, inject, Input, OnInit } from '@angular/core';
+import { Component, inject, input, OnInit, ChangeDetectionStrategy} from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-import { OrganisationService } from '../../../../../service/organisation.service';
 import { PaymentData } from '../../interfaces';
+import { AppStore } from '@rero/shared';
+import { Bind } from 'primeng/bind';
+import { UIChart } from 'primeng/chart';
 
 @Component({
     selector: 'admin-payments-data-pie',
     templateUrl: './payment-data-pie.component.html',
-    standalone: false
+    imports: [Bind, UIChart],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class PaymentDataPieComponent implements OnInit {
-  private organisationService: OrganisationService = inject(OrganisationService);
+  private appStore = inject(AppStore);
   private translateService: TranslateService = inject(TranslateService);
 
   // COMPONENT ATTRIBUTES =====================================================
   /** The payment data to display. */
-  @Input() data: PaymentData;
+  data = input<PaymentData>();
 
   values: any;
   options: any;
 
   /** OnInit hook */
   ngOnInit() {
-    if (this.data.subtypes) {
+    const data = this.data();
+    if (data?.subtypes) {
       this.values = {
         labels: [],
         datasets: [
@@ -47,7 +51,7 @@ export class PaymentDataPieComponent implements OnInit {
           },
         ],
       };
-      this.data.subtypes.map((subtype) => {
+      data.subtypes.map((subtype) => {
         this.values.labels.push(this.translateService.instant(subtype.name));
         this.values.datasets[0].data.push(subtype.total);
       });
@@ -56,9 +60,9 @@ export class PaymentDataPieComponent implements OnInit {
       plugins: {
         tooltip: {
           callbacks: {
-            label: (context) => {
+            label: (context: any) => {
               const label = context.formattedValue || '';
-              return ` ${label} ${this.organisationService.organisation.default_currency}`;
+              return ` ${label} ${this.appStore.organisation()?.default_currency ?? ''}`;
             },
           },
         },

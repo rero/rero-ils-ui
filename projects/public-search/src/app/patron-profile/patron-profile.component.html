@@ -28,14 +28,13 @@
 </section>
 
 <section class="ui:mt-4">
-  @let tabsOrder = tabs|keyvalue: sortTabs;
+  @let tabsOrder = tabs()|keyvalue: sortTabs;
   <p-tabs [(value)]="activeTab" scrollable>
     <p-tablist>
       @for (tab of tabsOrder; track $index) {
         @if (tab.value.display) {
-          <p-tab [value]="tab.key">
-            <div class="ui:flex ui:gap-1">
-              <div>{{ tab.value.title }}</div>
+          <p-tab [value]="tab.key" class="ui:flex ui:items-center ui:!gap-2">
+              <span>{{ tab.value.title }}</span>
               @if (tab.value.count >= 0) {
                 <p-badge [value]="tab.value.count" severity="info" />
               }
@@ -47,7 +46,6 @@
                   tooltipPosition="top"
                 />
               }
-            </div>
           </p-tab>
         }
       }
@@ -57,7 +55,7 @@
         <p-tabpanel [value]="tab.key">
           @switch(tab.key) {
             @case ('loan') {
-              <public-search-patron-profile-loans [count]="tab.value.count" />
+              <public-search-patron-profile-loans />
             }
             @case ('request') {
               <public-search-patron-profile-requests />

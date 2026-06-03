@@ -17,12 +17,11 @@
 import { inject, Injectable } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { ApiService, RecordService, TruncateTextPipe } from '@rero/ng-core';
-import { IQueryOptions, ISuggestionItem } from '@rero/prime/remote-autocomplete/remote-autocomplete.interface';
+import { IQueryOptions, ISuggestionItem } from '@rero/ng-core';
 import { MainTitlePipe } from '@rero/shared';
 import { catchError, forkJoin, from, map, mergeMap, Observable, of, switchMap, toArray } from 'rxjs';
 import { IRemoteAutocomplete } from './i-remote-autocomplete';
 
-/* eslint-disable  @typescript-eslint/no-explicit-any */
 
 @Injectable({
   providedIn: 'root'
@@ -39,10 +38,10 @@ export class ItemsRemoteService implements IRemoteAutocomplete {
     return 'items';
   }
 
-  documentObs = (pid: string) => this.recordService.getRecord('documents', pid)
+  documentObs = (pid: string) => this.recordService.getRecord('documents', pid, {})
   .pipe(map(record => record.metadata));
 
-  libraryObs = (pid: string) => this.recordService.getRecord('libraries', pid)
+  libraryObs = (pid: string) => this.recordService.getRecord('libraries', pid, {})
   .pipe(map(record => record.metadata));
 
   getSuggestions(query: string, queryOptions: IQueryOptions): Observable<ISuggestionItem[]> {
@@ -57,9 +56,7 @@ export class ItemsRemoteService implements IRemoteAutocomplete {
 
     return this.recordService.getRecords(
       queryOptions.type,
-      queryString,
-      1,
-      queryOptions.maxOfResult
+      { query: queryString, page: 1, itemsPerPage: queryOptions.maxOfResult }
     ).pipe(
       switchMap((result: any) => {
         return from(result.hits.hits).pipe(
@@ -99,11 +96,11 @@ export class ItemsRemoteService implements IRemoteAutocomplete {
   getValueAsHTML(queryOptions: IQueryOptions, item: ISuggestionItem): Observable<string> {
     const url = item.value.split('/');
 
-    return this.recordService.getRecord(queryOptions.type, url.pop(), 1).pipe(
+    return this.recordService.getRecord(queryOptions.type, url.pop(), { resolve: 1 }).pipe(
       switchMap(record => forkJoin({
         record: of(record),
-        library: this.libraryObs(record.metadata.library.pid),
-        document: this.documentObs(record.metadata.document.pid),
+        library: this.libraryObs((record.metadata as any).library.pid),
+        document: this.documentObs((record.metadata as any).document.pid),
       })),
       map(({ record, library, document }) => `
         <div class="flex ui:pt-0">

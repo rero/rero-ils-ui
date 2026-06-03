@@ -15,8 +15,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { inject, Injectable } from '@angular/core';
-import { Record, RecordService } from '@rero/ng-core';
-import { Error } from '@rero/ng-core/lib/error/error';
+import { RecordService } from '@rero/ng-core';
+import type { Error, EsResult } from '@rero/ng-core';
 import { BaseApi } from '@rero/shared';
 import { Observable } from 'rxjs';
 
@@ -40,9 +40,9 @@ export class IllRequestApiService extends BaseApi {
     page: number,
     itemsPerPage = 10,
     headers = BaseApi.reroJsonheaders
-  ): Observable<Record | Error> {
+  ): Observable<EsResult | Error> {
     const query = `patron.pid:${patronPid}`;
-    return this.recordService.getRecords('ill_requests', query, page, itemsPerPage, undefined, undefined, headers);
+    return this.recordService.getRecords('ill_requests', { query, page, itemsPerPage, headers });
   }
 
   /**
@@ -61,8 +61,8 @@ export class IllRequestApiService extends BaseApi {
     sort = '-created',
     // eslint-disable-next-line @typescript-eslint/consistent-indexed-object-style
     filters?: {[key: string]: string}
-  ): Observable<Record | Error> {
+  ): Observable<EsResult | Error> {
     const query = `patron.pid:${patronPid}`;
-    return this.recordService.getRecords('ill_requests', query, page, itemsPerPage, undefined, filters, headers, sort);
+    return this.recordService.getRecords('ill_requests', { query, page, itemsPerPage, preFilters: filters, headers, sort });
   }
 }

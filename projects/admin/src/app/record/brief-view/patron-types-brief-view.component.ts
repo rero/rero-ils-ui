@@ -15,27 +15,29 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { Component, Input } from '@angular/core';
-import { ResultItem } from '@rero/ng-core';
+import { Component, input, ChangeDetectionStrategy} from '@angular/core';
+import { RouterLink } from '@angular/router';
+
 
 @Component({
     selector: 'admin-patron-types-brief-view',
     template: `
   <h5>
-    <a [routerLink]="[detailUrl.link]">{{ record.metadata.name }}</a>
+    <a [routerLink]="[detailUrl().link]">{{ record().metadata.name }}</a>
   </h5>
-  @if (record.metadata.description) {
-    {{ record.metadata.description }}
+  @if (record().metadata.description) {
+    {{ record().metadata.description }}
   }
   `,
     styles: [],
-    standalone: false
+    imports: [RouterLink],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class PatronTypesBriefViewComponent implements ResultItem {
+export class PatronTypesBriefViewComponent {
 
-  @Input() record: any;
+  record = input<any>();
 
-  @Input() type: string;
+  type = input<string>();
 
-  @Input() detailUrl: { link: string, external: boolean };
+  detailUrl = input<{ link: string, external: boolean }>();
 }

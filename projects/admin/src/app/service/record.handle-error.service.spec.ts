@@ -18,7 +18,6 @@
 import { HttpErrorResponse, HttpStatusCode } from '@angular/common/http';
 import { TestBed } from "@angular/core/testing";
 import { TranslateModule, TranslateService } from "@ngx-translate/core";
-import { RecordModule } from "@rero/ng-core";
 import { NgxSpinnerModule, NgxSpinnerService } from "ngx-spinner";
 import { MessageService } from "primeng/api";
 import { RecordHandleErrorService } from './record.handle-error.service';
@@ -32,20 +31,20 @@ describe('RecordHandleErrorService', () => {
     TestBed.configureTestingModule({
       imports: [
         TranslateModule.forRoot(),
-        NgxSpinnerModule.forRoot(),
-        RecordModule
+        NgxSpinnerModule.forRoot()
       ],
       providers: [
         RecordHandleErrorService,
         NgxSpinnerService,
-        MessageService,
-        TranslateService
+        MessageService
       ]
     });
 
     service = TestBed.inject(RecordHandleErrorService);
     messageService = TestBed.inject(MessageService);
     translateService = TestBed.inject(TranslateService);
+    translateService.setDefaultLang('en');
+    translateService.use('en');
   });
 
   it('should be created', () => {

@@ -16,19 +16,17 @@
 -->
 <div class="ui:flex ui:flex-col ui:gap-4">
   <!-- Loan borrowed -->
-  @defer (when borrowedBy) {
-    @if (borrowedBy.length > 0) {
-      <p-panel [header]="'Borrowed by' | translate" id="item-loans-requests" [permissions]="permissions.CIRC_ADMIN">
-        <div class="ui:pb-3">
-          <div class="ui:grid ui:grid-cols-12 ui:gap-4 ui:px-4 ui:py-2">
-            <div class="ui:col-span-4 ui:font-bold" translate>Patron</div>
-            <div class="ui:col-span-4 ui:font-bold" translate>Renewal</div>
-            <div class="ui:col-span-3 ui:font-bold" translate>Due date</div>
-          </div>
-          <admin-item-transaction type="loan_borrow" [transaction]="borrowedBy[0]" />
+  @if (borrowedBy().length > 0) {
+    <p-panel [header]="'Borrowed by' | translate" id="item-loans-requests" [permissions]="permissions.CIRC_ADMIN">
+      <div class="ui:pb-3">
+        <div class="ui:grid ui:grid-cols-12 ui:gap-4 ui:px-4 ui:py-2">
+          <div class="ui:col-span-4 ui:font-bold" translate>Patron</div>
+          <div class="ui:col-span-4 ui:font-bold" translate>Renewal</div>
+          <div class="ui:col-span-3 ui:font-bold" translate>Due date</div>
         </div>
-      </p-panel>
-    }
+        <admin-item-transaction type="loan_borrow" [transaction]="borrowedBy()[0]" />
+      </div>
+    </p-panel>
   }
   <p-panel>
   <!-- Loan requested -->
@@ -47,31 +45,27 @@
       </div>
     </div>
     </ng-template>
-    @defer (when requestedBy) {
-      @if (requestedBy.length > 0) {
-        <div class="ui:grid ui:grid-cols-12 ui:gap-4 ui:px-4">
-          <div class="ui:col-span-4 ui:font-bold" translate>Patron</div>
-          <div class="ui:col-span-4 ui:font-bold" translate>Pick-up Location</div>
-          <div class="ui:col-span-3 ui:font-bold" translate>Request date</div>
-        </div>
-        <div>
-          @for (request of requestedBy; track request.id) {
-            <div class="ui:py-2 ui:odd:bg-surface-50">
-              <admin-item-transaction
-                type="loan_request"
-                [transaction]="request"
-                [itemPid]="itemPid"
-                (cancelRequestEvent)="cancelRequest($event)"
-                (updatePickupLocationEvent)="updateRequestPickupLocation($event)"
-              />
-            </div>
-          }
-        </div>
-      } @else {
-        <div class="ui:p-4" translate>No pending request</div>
-      }
-    } @placeholder {
-      <i class="fa fa-spin fa-spinner"></i>&nbsp;{{ 'Loading in progress…' | translate }}
+    @if (requestedBy().length > 0) {
+      <div class="ui:grid ui:grid-cols-12 ui:gap-4 ui:px-4">
+        <div class="ui:col-span-4 ui:font-bold" translate>Patron</div>
+        <div class="ui:col-span-4 ui:font-bold" translate>Pick-up Location</div>
+        <div class="ui:col-span-3 ui:font-bold" translate>Request date</div>
+      </div>
+      <div>
+        @for (request of requestedBy(); track request.id) {
+          <div class="ui:py-2 ui:odd:bg-surface-50">
+            <admin-item-transaction
+              type="loan_request"
+              [transaction]="request"
+              [itemPid]="itemPid()"
+              (cancelRequestEvent)="cancelRequest($event)"
+              (updatePickupLocationEvent)="updateRequestPickupLocation($event)"
+            />
+          </div>
+        }
+      </div>
+    } @else {
+      <div class="ui:p-4" translate>No pending request</div>
     }
   </p-panel>
 </div>

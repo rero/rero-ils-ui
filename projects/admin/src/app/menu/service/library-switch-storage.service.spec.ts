@@ -28,9 +28,9 @@ describe('LibrarySwitchStorageService', () => {
     libraryName: 'library name'
   };
 
-  const localStorageSpy = jasmine.createSpyObj('LocalStorageService', ['has', 'get', 'set', 'remove']);
-  localStorageSpy.has.and.returnValue(true);
-  localStorageSpy.get.and.returnValue(data);
+  const localStorageSpy = { has: vi.fn(), get: vi.fn(), set: vi.fn(), remove: vi.fn() };
+  localStorageSpy.has.mockReturnValue(true);
+  localStorageSpy.get.mockReturnValue(data);
 
   beforeEach(() => {
     TestBed.configureTestingModule({

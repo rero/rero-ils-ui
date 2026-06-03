@@ -14,28 +14,30 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, ChangeDetectionStrategy, OnInit} from '@angular/core';
 import { IdentifierTypes } from '@app/admin/classes/identifiers';
-import { OperationLogsService } from '@rero/shared';
-import {
-  DetailComponent,
-  Record
-} from '@rero/ng-core';
-import { IPermissions, PERMISSIONS, UserService } from '@rero/shared';
+import { OperationLogsService, OperationLogsDialogComponent, PermissionsDirective } from '@rero/shared';
+import { DetailComponent, DetailButtonComponent, ErrorComponent } from '@rero/ng-core';
+import { AppStore, IPermissions, PERMISSIONS } from '@rero/shared';
 import { cloneDeep } from 'lodash-es';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { DialogImportComponent } from '../dialog-import/dialog-import.component';
+import { Bind } from 'primeng/bind';
+import { Button } from 'primeng/button';
+import { RouterLink } from '@angular/router';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
     selector: 'admin-document-detail',
     templateUrl: './document-detail.component.html',
-    standalone: false
+    imports: [DetailButtonComponent, OperationLogsDialogComponent, Bind, Button, PermissionsDirective, RouterLink, ErrorComponent, TranslatePipe],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class DocumentDetailComponent extends DetailComponent implements OnInit {
 
   private dialogService: DialogService = inject(DialogService);
   private operationLogsService: OperationLogsService = inject(OperationLogsService);
-  private userService: UserService = inject(UserService);
+  private appStore = inject(AppStore);
 
   fileTitle = 'files';
   /** return all available permissions for current user */
@@ -60,7 +62,7 @@ export class DocumentDetailComponent extends DetailComponent implements OnInit {
   ];
 
   ngOnInit(): void {
-    const libPid = this.userService.user.currentLibrary;
+    const libPid = this.appStore.currentLibraryPid();
     if (libPid) {
       this.recordService.getRecord('libraries', libPid).subscribe((library) => {
         this.fileTitle = [
@@ -69,7 +71,6 @@ export class DocumentDetailComponent extends DetailComponent implements OnInit {
         ].join(' - ');
       });
     }
-    super.ngOnInit();
   }
 
   /** Source for imported record. */
@@ -80,18 +81,6 @@ export class DocumentDetailComponent extends DetailComponent implements OnInit {
       this.route.snapshot.params.type !== null
     ) {
       return this.route.snapshot.params.type.replace('import_', '');
-    }
-    return null;
-  }
-
-  /** External identifier for imported record. */
-  get pid(): string | null {
-    if (
-      this.route.snapshot &&
-      this.route.snapshot.params &&
-      this.route.snapshot.params.pid !== null
-    ) {
-      return this.route.snapshot.params.pid;
     }
     return null;
   }
@@ -164,8 +153,8 @@ export class DocumentDetailComponent extends DetailComponent implements OnInit {
         warning = true;
       }
       this.recordService.getRecords(
-        'documents', query, 1, undefined, undefined, undefined, { accept: 'application/rero+json' }
-      ).subscribe((response: Record) => {
+        'documents', { query, page: 1, headers: { accept: 'application/rero+json' } }
+      ).subscribe((response: any) => {
         if (this.recordService.totalHits(response.hits.total) === 0 && !warning) {
           this.router.navigate(route, { queryParams: data });
         } else {

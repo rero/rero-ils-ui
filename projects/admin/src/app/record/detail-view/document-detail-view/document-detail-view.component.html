@@ -15,23 +15,25 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-@if (record) {
+@if (record()) {
   <!-- ADMIN METADATA -->
-  @if (recordMessage) {
-    <p-message [text]="recordMessage" severity="warn" showTransitionOptions="0ms" />
+  @if (recordMessage()) {
+    <p-message severity="warn" showTransitionOptions="0ms">
+      {{ recordMessage() }}
+    </p-message>
   }
   <!-- HEADER -->
   <header class="ui:py-2 ui:flex ui:gap-6">
     <div class="ui:hidden ui:md:block">
-      <shared-thumbnail [record]="record" styleClass="ui:w-40" />
+      <shared-thumbnail [record]="$any(record())" styleClass="ui:w-40" />
     </div>
     <div class="ui:grow ui:flex ui:flex-col ui:gap-1">
       <!-- TITLE -->
-      @if (record.metadata.title && record.metadata.title | mainTitle; as title) {
+      @if (record().metadata.title && record().metadata.title | mainTitle; as title) {
       <h1 id="doc-title">
-        <ng-core-text-read-more
+        <ng-core-read-more
           [text]="title"
-          [unit]="'character'"
+          [unit]="'char'"
           [limit]="150"
           [showMoreLabel]="'Show more' | translate"
           [showLessLabel]="'Show less' | translate"
@@ -40,20 +42,20 @@
       }
 
       <!-- TITLE ALTERNATIVE GRAPHICS -->
-      @if (record.metadata.ui_title_altgr) {
-        @for (altgr_title of record.metadata.ui_title_altgr; track $index; let i = $index) {
+      @if (record().metadata.ui_title_altgr) {
+        @for (altgr_title of $any(record()).metadata.ui_title_altgr; track $index; let i = $index) {
           <h3 id="{{ 'doc-altgr-title-' + i }}">{{ altgr_title }}</h3>
         }
       }
 
       <!-- CONTRIBUTION -->
       <shared-contribution
-        [contributions]="record.metadata?.contribution"
+        [contributions]="$any(record().metadata?.contribution)"
         [withRoles]="true"
-        [activateLink]="activateLink"
+        [activateLink]="activateLink()"
       />
       <!-- PUBLICATION ACTIVITY: PUBLICATION -->
-       @let provisionActivity = record.metadata.provisionActivity
+       @let provisionActivity = record().metadata.provisionActivity
         | documentProvisionActivity
         | keyvalue
         | callbackArrayFilter
@@ -69,24 +71,24 @@
       }
 
       <!-- EXTENT-->
-      @if (record.metadata.extent) {
+      @if (record().metadata.extent) {
         <div id="doc-extent">
-          {{ record.metadata.extent }}
+          {{ record().metadata.extent }}
         </div>
       }
 
       <!-- DURATION -->
-      @if (record.metadata.duration && record.metadata.duration.length > 0) {
+      @if (record().metadata.duration && $any(record()).metadata.duration.length > 0) {
       <div id="doc-duration">
-        {{ "Duration" | translate }}: {{ record.metadata.duration.join(", ") }}
+        {{ "Duration" | translate }}: {{ $any(record()).metadata.duration.join(", ") }}
       </div>
       }
 
       <!-- EDITION STATEMENT -->
-      @if (record.metadata.editionStatement) {
+      @if (record().metadata.editionStatement) {
       <div id="doc-edition-statement">
         <ul class="ui:list-none">
-          @for (edition of record.metadata.editionStatement; track $index) {
+          @for (edition of $any(record()).metadata.editionStatement; track $index) {
             <li>{{ edition._text[0].value }}</li>
           }
         </ul>
@@ -94,10 +96,10 @@
       }
 
       <!-- FREQUENCY -->
-      @if (record.metadata.frequency) {
+      @if (record().metadata.frequency) {
         <div id="doc-frequency">
           <b>{{ "Frequency" | translate }}</b>:
-          @for (freq of record.metadata.frequency; track $index; let isLast =
+          @for (freq of $any(record()).metadata.frequency; track $index; let isLast =
           $last) {
             {{ freq.label }}
             @if (freq.date) {
@@ -108,62 +110,62 @@
       }
 
       <!-- IS PART OF -->
-      <shared-part-of [record]="record" />
+      <shared-part-of [record]="record()" />
 
       <!-- ISSUED WITH -->
-      @if (record.metadata.issuedWith) {
+      @if (record().metadata.issuedWith) {
       <shared-other-edition
         [fieldLabel]="'Issued with' | translate"
-        [field]="record.metadata.issuedWith"
-        [header]="true"
+        [field]="record().metadata.issuedWith"
+
         [inline]="true"
       />
       }
 
       <!-- PRECEDED BY -->
-      @if (record.metadata.precededBy) {
+      @if (record().metadata.precededBy) {
       <shared-other-edition
         [fieldLabel]="'Preceded by' | translate"
-        [field]="record.metadata.precededBy"
-        [header]="true"
+        [field]="record().metadata.precededBy"
+
         [inline]="true"
       />
       }
 
       <!-- SUCCEEDED BY -->
-      @if (record.metadata.succeededBy) {
+      @if (record().metadata.succeededBy) {
       <shared-other-edition
         [fieldLabel]="'Succeeded by' | translate"
-        [field]="record.metadata.succeededBy"
-        [header]="true"
+        [field]="record().metadata.succeededBy"
+
         [inline]="true"
       />
       }
 
       <!-- SUPPLEMENT TO -->
-      @if (record.metadata.supplementTo) {
+      @if (record().metadata.supplementTo) {
       <shared-other-edition
         [fieldLabel]="'Supplement to' | translate"
-        [field]="record.metadata.supplementTo"
-        [header]="true"
+        [field]="record().metadata.supplementTo"
+
         [inline]="true"
       />
       }
 
       <!-- REPRODUCTION OF -->
-      @if (record.metadata.reproductionOf) {
+      @if (record().metadata.reproductionOf) {
       <shared-other-edition
         [fieldLabel]="'Reproduction of' | translate"
-        [field]="record.metadata.reproductionOf"
-        [header]="true"
+        [field]="record().metadata.reproductionOf"
+
         [inline]="true"
       />
       }
 
       <!-- ELECTRONIC LOCATOR: RELATED RESOURCE -->
-      @if (relatedResources.length > 0) {
+      @if (relatedResources().length > 0) {
         <ul class="ui:list-none">
-          @for (eloc of relatedResources; track $index) {
+          @for (eloc of relatedResources(); track $index) {
           <li>
             <admin-related-resource [electronicLocator]="eloc" />
           </li>
@@ -172,12 +174,12 @@
       }
 
       <!-- SUMMARY -->
-      @if (record.metadata.summary) {
-        @for (sum of record.metadata.summary; track $index) {
+      @if (record().metadata.summary) {
+        @for (sum of $any(record()).metadata.summary; track $index) {
           @for (data of sum.label; track $index) {
-            <ng-core-text-read-more
+            <ng-core-read-more
               [text]="data.value"
-              [unit]="'character'"
+              [unit]="'char'"
               [limit]="400"
               [showMoreLabel]="'Show more' | translate"
               [showLessLabel]="'Show less' | translate"
@@ -187,9 +189,9 @@
       }
 
       <!-- SUBJECTS -->
-      @if (record.metadata.subjects; as subjects) {
+      @if (record().metadata.subjects; as subjects) {
         <div class="ui:flex ui:gap-1 ui:flex-wrap">
-          @for (subject of subjects; track $index) {
+          @for (subject of $any(subjects); track $index) {
           <p-tag
             severity="secondary"
             [title]="subject.entity.type | translate"
@@ -205,9 +207,9 @@
       }
 
       <!-- GENRE, FORM -->
-      @if (record.metadata.genreForm) {
+      @if (record().metadata.genreForm) {
         <div class="ui:flex ui:gap-1 ui:flex-wrap">
-          @for (genre of record.metadata.genreForm; track $index) {
+          @for (genre of $any(record()).metadata.genreForm; track $index) {
             <span class="ui:flex ui:gap-1 ui:items-center">
               <i class="fa fa-tag"></i>
               <shared-entity-link resourceName="genreForm" [entity]="genre.entity" />
@@ -217,12 +219,12 @@
       }
 
       <!-- MASKED -->
-      @if (record.metadata._masked) {
-        <admin-record-masked [record]="record" [withLabel]="true" />
+      @if (record().metadata._masked) {
+        <admin-record-masked [record]="record()" [withLabel]="true" />
       }
 
       <!-- LINKED DOCUMENTS -->
-      @if (linkedDocumentsCount) {
+      @if (linkedDocumentsCount()) {
         <div>
           <a
             pButton
@@ -232,9 +234,9 @@
             [queryParams]="{ q: 'partOf.document.pid:' + pid, simple: 0 }"
           >
             <i class="fa fa-list" aria-hidden="true"></i>&nbsp;
-            {{ linkedDocumentsCount }}
+            {{ linkedDocumentsCount() }}
             {{
-              linkedDocumentsCount
+              linkedDocumentsCount()
                 | i18nPlural : { "=1": "article/volume", other: "articles/volumes" }
                 | translate
             }}
@@ -246,40 +248,40 @@
   <!-- END OF HEADER -->
 
   <!-- TABS -->
-   @let marcRecord = marc$ | async;
+   @let marcRecord = marc();
    <p-tabs [value]="selectedTab()">
     <p-tablist>
-      @if (record.metadata.pid) {
-      <p-tab value="get">
-        <i class="fa fa-list-ul"></i>&nbsp;
-        {{ "Get" | translate }}
+      @if (record().metadata.pid) {
+      <p-tab value="get" class="ui:flex ui:items-center ui:!gap-2">
+        <i class="fa fa-list-ul"></i>
+        <span translate>Get</span>
       </p-tab>
       }
-      <p-tab value="description">
-        <i class="fa fa-bars"></i>&nbsp;
-        {{ "Description" | translate }}
+      <p-tab value="description" class="ui:flex ui:items-center ui:!gap-2">
+        <i class="fa fa-bars"></i>
+        <span translate>Description</span>
       </p-tab>
-      @if (!record.metadata.harvested && record.metadata.pid) {
-        <p-tab value="entity">
-          <i class="fa fa-cubes"></i>&nbsp;
-          {{ "Related Entities" | translate }}
+      @if (!record().metadata.harvested && record().metadata.pid) {
+        <p-tab value="entity" class="ui:flex ui:items-center ui:!gap-2">
+          <i class="fa fa-cubes"></i>
+          <span translate>Related Entities</span>
         </p-tab>
       }
-      @if (!record.metadata.harvested && record.metadata.pid && showLocalFieldsTab) {
-        <p-tab value="local">
-          <i class="fa fa-list-ul"></i>&nbsp;
-          {{ "Local fields" | translate }}
+      @if (!record().metadata.harvested && record().metadata.pid && showLocalFieldsTab) {
+        <p-tab value="local" class="ui:flex ui:items-center ui:!gap-2">
+           <i class="fa fa-list-ul"></i>
+          <span translate>Local fields</span>
         </p-tab>
       }
-      @if (!record.metadata.harvested && record.metadata.pid && showFilesTab) {
-        <p-tab value="file">
-          <i class="fa fa-file"></i>&nbsp;
-          {{ "Files" | translate }}
+      @if (!record().metadata.harvested && record().metadata.pid && showFilesTab) {
+        <p-tab value="file" class="ui:flex ui:items-center ui:!gap-2">
+          <i class="fa fa-file"></i>
+          <span translate>Files</span>
         </p-tab>
       }
       @if (marcRecord) {
-        <p-tab value="marc">
-          <i class="fa fa-list-ul"></i>&nbsp;
+        <p-tab value="marc" class="ui:flex ui:items-center ui:!gap-2">
+          <i class="fa fa-list-ul"></i>
           <span translate>Marc</span>
         </p-tab>
       }
@@ -288,32 +290,32 @@
       <p-tabpanel #tabGet value="get">
         <div class="ui:mb-2">
           @if (tabGet.active()) {
-            <shared-doc-files [documentPid]="record.metadata.pid" [routerPath]="['/','records', 'documents']" />
+            <shared-doc-files [documentPid]="$any(record().metadata.pid)" [routerPath]="['/','records', 'documents']" />
           }
         </div>
-        <admin-holdings [document]="record" />
+        <admin-holdings [document]="record()" />
       </p-tabpanel>
       <p-tabpanel value="description">
-        <shared-document-description [record]="record" />
+        <shared-document-description [record]="record()" />
       </p-tabpanel>
-      @if (!record.metadata.harvested && record.metadata.pid) {
+      @if (!record().metadata.harvested && record().metadata.pid) {
         <p-tabpanel value="entity">
-          <admin-entities-related [record]="record" />
+          <admin-entities-related [record]="record()" />
         </p-tabpanel>
       }
-      @if (!record.metadata.harvested && record.metadata.pid && showLocalFieldsTab) {
+      @if (!record().metadata.harvested && record().metadata.pid && showLocalFieldsTab) {
         <p-tabpanel value="local">
-          <admin-local-field [resourceType]="'documents'" [resourcePid]="record.metadata.pid" />
+          <admin-local-field [resourceType]="'documents'" [resourcePid]="$any(record().metadata.pid)" />
         </p-tabpanel>
       }
-      @if (!record.metadata.harvested && record.metadata.pid && showFilesTab) {
+      @if (!record().metadata.harvested && record().metadata.pid && showFilesTab) {
         <p-tabpanel value="file">
-          <admin-upload-files [pid]="record.metadata.pid" />
+          <admin-upload-files [pid]="$any(record().metadata.pid)" />
         </p-tabpanel>
       }
       @if (marcRecord) {
         <p-tabpanel value="marc">
-          <p-table stripedRows [value]="marcRecord" size="small">
+          <p-table stripedRows [value]="$any(marcRecord)" size="small">
             <ng-template #body let-field>
               <tr>
                 @if (field | marc; as f) {

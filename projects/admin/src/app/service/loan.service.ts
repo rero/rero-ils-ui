@@ -17,11 +17,8 @@
 
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
-import { TranslateService } from '@ngx-translate/core';
 import { RecordService } from '@rero/ng-core';
-import { Record } from '@rero/ng-core/lib/record/record';
-import { UserService } from '@rero/shared';
-import { Confirmation, ConfirmationService } from 'primeng/api';
+import { AppStore } from '@rero/shared';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { CircPolicy } from '../classes/circ-policy';
@@ -34,9 +31,7 @@ export class LoanService {
 
   private recordService: RecordService = inject(RecordService);
   private httpClient: HttpClient = inject(HttpClient);
-  private userService: UserService = inject(UserService);
-  private translateService: TranslateService = inject(TranslateService);
-  private confirmationService: ConfirmationService = inject(ConfirmationService);
+  private appStore = inject(AppStore);
 
   // SERVICE CONSTANTS ========================================================
   /** Statuses of a borrow loan */
@@ -60,7 +55,7 @@ export class LoanService {
   borrowedBy$(itemPid: string): Observable<any> {
     return this.loans$(itemPid, LoanService.borrowStatuses)
       .pipe(
-        map((results: Record) => results.hits.hits)
+        map((results: any) => results.hits.hits)
       );
   }
 
@@ -72,7 +67,7 @@ export class LoanService {
   requestedBy$(itemPid: string): Observable<any> {
     return this.loans$(itemPid, LoanService.requestStatuses)
       .pipe(
-        map((results: Record) => results.hits.hits)
+        map((results: any) => results.hits.hits)
     );
   }
 
@@ -101,7 +96,7 @@ export class LoanService {
       pid: loanPid,
       transaction_library_pid: transactionLibraryPid,
       // TODO: Fix this with multiple patron
-      transaction_user_pid: this.userService.user.patrons[0].pid
+      transaction_user_pid: this.appStore.user()?.patrons[0].pid
     }).pipe(
       map(data => {
         const itemData = data.metadata;
@@ -145,27 +140,6 @@ export class LoanService {
     return this.httpClient.get<CircPolicy>(apiUrl);
   }
 
-  /**
-   * Cancel request dialog.
-   */
-  cancelRequestDialog(event: Event, accept?: Function, reject?: Function): void {
-    const confirmation: Confirmation = {
-      target: event.target as EventTarget,
-      icon: 'fa fa-exclamation-triangle',
-      header: this.translateService.instant('Cancel request'),
-      message: this.translateService.instant('Do you really want to cancel the request?'),
-      acceptLabel: this.translateService.instant('Yes'),
-      rejectLabel: this.translateService.instant('No')
-    };
-    if (accept) {
-      confirmation.accept = accept;
-    }
-    if (reject) {
-      confirmation.reject = reject;
-    }
-    this.confirmationService.confirm(confirmation);
-  }
-
   // PRIVATES SERVICE FUNCTIONS ===============================================
   /**
    * Search about loans related to an item
@@ -179,6 +153,6 @@ export class LoanService {
       const states = statuses.join(' OR state:');
       query +=  ` AND (state:${states})`;
     }
-    return this.recordService.getRecords('loans', query, 1, 100, [], undefined, undefined, 'created');
+    return this.recordService.getRecords('loans', { query, page: 1, itemsPerPage: 100, aggregationsFilters: [], sort: 'created' });
   }
 }

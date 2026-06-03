@@ -19,17 +19,19 @@
   <div class="ui:col-span-10">
     <i class="ui:mr-1 fa"
        [ngClass]="{'fa-plus-square-o': isCollapsed === true, 'fa-minus-square-o': isCollapsed === false}"
-       (click)="isCollapsed = !isCollapsed">
+       tabindex="0"
+       (click)="isCollapsed = !isCollapsed"
+       (keyup.enter)="isCollapsed = !isCollapsed">
     </i>
-    {{ permission.name }}
+    {{ permission().name }}
   </div>
   <div class="ui:col-span-2 ui:text-center">
-    <i class="fa fa-square" [ngClass]="{'text-success': permission.can, 'text-error': !permission.can}"></i>
+    <i class="fa fa-square" [ngClass]="{'text-success': permission().can, 'text-error': !permission().can}"></i>
   </div>
   @if(!isCollapsed) {
   <div id="reasons" class="ui:col-span-12 ui:my-1 ui:ml-8">
     <ul class="ui:list-none">
-      @for (role of permission.reasons | keyvalue; track $index) {
+      @for (role of permission().reasons | keyvalue; track $index) {
         <li>
           <div class="ui:grid ui:grid-cols-12 ui:gap-4">
             <div class="ui:col-span-6">{{ role.key | translate }}</div>

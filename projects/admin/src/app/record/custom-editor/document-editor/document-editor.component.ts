@@ -15,10 +15,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { Component, inject } from '@angular/core';
+import { ChangeDetectorRef, Component, inject, ChangeDetectionStrategy} from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
-import { AbstractCanDeactivateComponent, CONFIG, RecordService } from '@rero/ng-core';
+import { AbstractCanDeactivateComponent, CONFIG, RecordService, EditorComponent } from '@rero/ng-core';
 import { MessageService } from 'primeng/api';
 import { combineLatest } from 'rxjs';
 import { EditorService } from '../../../service/editor.service';
@@ -26,7 +26,8 @@ import { EditorService } from '../../../service/editor.service';
 @Component({
     selector: 'admin-document-editor',
     templateUrl: './document-editor.component.html',
-    standalone: false
+    imports: [EditorComponent],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 
 /**
@@ -34,6 +35,7 @@ import { EditorService } from '../../../service/editor.service';
  */
 export class DocumentEditorComponent extends AbstractCanDeactivateComponent {
 
+  private cdr: ChangeDetectorRef = inject(ChangeDetectorRef);
   private editorService: EditorService = inject(EditorService);
   private translateService: TranslateService = inject(TranslateService);
   private route: ActivatedRoute = inject(ActivatedRoute);
@@ -56,6 +58,7 @@ export class DocumentEditorComponent extends AbstractCanDeactivateComponent {
       record => {
         if (record) {
           this.model = record.metadata;
+          this.cdr.markForCheck();
         } else {
           this.messageService.add({
             severity: 'warn',
@@ -80,6 +83,7 @@ export class DocumentEditorComponent extends AbstractCanDeactivateComponent {
           delete (record.metadata.pid);
           delete (record.metadata.harvested);
           this.model = record.metadata;
+          this.cdr.markForCheck();
           this.messageService.add({
             severity: 'success',
             summary: this.translateService.instant('Duplicate'),
@@ -109,7 +113,7 @@ export class DocumentEditorComponent extends AbstractCanDeactivateComponent {
   loadingChanged(value: boolean): void {
     if (value === false) {
       combineLatest([this.route.params, this.route.queryParams])
-      .subscribe(([params, queryParams]) => {
+      .subscribe(([_params, queryParams]) => {
         if (queryParams.pid) {
           if (queryParams.source && queryParams.source !== 'templates') {
             this.importFromExternalSource(queryParams.source, queryParams.pid);

@@ -14,78 +14,73 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, EventEmitter, inject, Input, OnChanges, OnDestroy, Output, signal, SimpleChanges, WritableSignal } from '@angular/core';
+import { Component, DestroyRef, effect, inject, input, output, signal, ChangeDetectionStrategy } from '@angular/core';
 import { DateTime } from 'luxon';
 import { getSeverity } from '../../../utils/utils';
-import { CirculationStatsService } from '../service/circulation-stats.service';
+import { CirculationStore } from '../../store/circulation.store';
+import { NgClass, AsyncPipe } from '@angular/common';
+import { RouterLink } from '@angular/router';
+import { Bind } from 'primeng/bind';
+import { Button } from 'primeng/button';
+import { DateTranslatePipe, GetRecordPipe, Nl2brPipe, UpperCaseFirstPipe } from '@rero/ng-core';
+import { TranslatePipe } from '@ngx-translate/core';
+import { MessageModule } from 'primeng/message';
 
 @Component({
     selector: 'admin-circulation-patron-detailed',
     templateUrl: './card.component.html',
-    standalone: false
+    imports: [NgClass, RouterLink, Bind, Button, AsyncPipe, DateTranslatePipe, GetRecordPipe, Nl2brPipe, UpperCaseFirstPipe, TranslatePipe, MessageModule],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class CardComponent implements OnChanges, OnDestroy {
+export class CardComponent {
 
-  private circulationStatsService: CirculationStatsService = inject(CirculationStatsService);
+  protected store = inject(CirculationStore);
 
   // COMPONENT ATTRIBUTES =====================================================
   /** the patron */
-  @Input() patron: any;
+  patron = input<any>();
   /** the patron barcode */
-  @Input() barcode: string;
+  barcode = input<string>();
   /** is the circulation messages should be displayed */
-  @Input() displayCirculationMessages = false;
+  displayCirculationMessages = input(false);
   /** is the clear patron button should be displayed or not */
-  @Input() clearPatronButton = true;
+  clearPatronButton = input(true);
   /** which link should be use on the main patron name */
-  @Input() linkMode: 'circulation'|'detail' = 'detail';
+  linkMode = input('detail');
   /** event emitter when the close button are fired */
-  @Output() clearPatron = new EventEmitter<any>();
+  clearPatron = output<any>();
 
-  /** Link used on the patron name */
-  patronLink: string;
-  /** it's the birthday of the patron */
-  isBirthday = false;
-  /** Patron age */
-  patronAge: number;
-  /** circulation messages about the loaded patron if exists */
-  circulationMessages: WritableSignal<{severity: string, detail: string}[]> = signal([]);
+  readonly patronLink = signal('');
+  readonly isBirthday = signal(false);
+  readonly patronAge = signal(0);
+  readonly circulationMessages = this.store.messages;
 
-  ngOnChanges(changes: SimpleChanges): void {
-    if (changes.patron) {
-      if (this.patron) {
-      this.patronLink = (this.linkMode === 'detail')
-        ? '/records/patrons/detail/' + this.patron.pid
-        : '/circulation/patron/' + this.barcode + '/loan';
-    }
-
-    if (this.patron && this.patron.birth_date) {
-      const today = DateTime.now().toFormat('M-dd');
-      const birthDate = DateTime.fromISO(this.patron.birth_date).toFormat('M-dd');
-      if (today === birthDate) {
-        this.isBirthday = true;
+  constructor() {
+    inject(DestroyRef).onDestroy(() => this.store.clearMessages());
+    effect(() => {
+      const patron = this.patron();
+      if (patron) {
+        this.patronLink.set(
+          (this.linkMode() === 'detail')
+            ? '/records/patrons/detail/' + patron.pid
+            : '/circulation/patron/' + this.barcode() + '/loan'
+        );
+        if (patron.birth_date) {
+          const today = DateTime.now().toFormat('M-dd');
+          const birthDate = DateTime.fromISO(patron.birth_date).toFormat('M-dd');
+          this.isBirthday.set(today === birthDate);
+          this.patronAge.set(Math.floor(DateTime.now().diff(DateTime.fromISO(patron.birth_date), 'years').years));
+        }
       }
-    }
-
-    if (this.patron && this.patron.birth_date) {
-      const birthDate = DateTime.fromISO(this.patron.birth_date);
-      this.patronAge = Math.floor(DateTime.now().diff(birthDate, 'years').years);
-    }
-
-    this.circulationMessages = this.circulationStatsService.messages;
-    }
-  }
-
-  ngOnDestroy(): void {
-    this.circulationStatsService.clearMessages();
+    });
   }
 
   /** Clear current patron */
   clear(): void {
-    if (this.patron) {
-      this.clearPatron.emit(this.patron);
+    if (this.patron()) {
+      this.clearPatron.emit(this.patron());
     }
-    this.circulationStatsService.clearMessages();
+    this.store.clearMessages();
   }
 
   /**

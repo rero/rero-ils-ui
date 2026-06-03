@@ -15,46 +15,63 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, effect, input, output, ChangeDetectionStrategy} from '@angular/core';
 import { Tools } from '@rero/shared';
 import { ITypeEmail } from '../../IPreviewInterface';
+import { NgTemplateOutlet } from '@angular/common';
+import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
+import { Bind } from 'primeng/bind';
+import { Panel } from 'primeng/panel';
+import { Tag } from 'primeng/tag';
+import { Draggable, Droppable } from 'primeng/dragdrop';
+import { AutoComplete } from 'primeng/autocomplete';
+import { FormsModule } from '@angular/forms';
+import { Button } from 'primeng/button';
 
 @Component({
     selector: 'admin-preview-email',
     templateUrl: './preview-email.component.html',
-    standalone: false
+    imports: [NgTemplateOutlet, TranslateDirective, Bind, Panel, Tag, Draggable, AutoComplete, Droppable, FormsModule, Button, TranslatePipe],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class PreviewEmailComponent {
 
   /** Suggested emails */
-  @Input() emails: string[];
+  emails = input<string[]>();
   /** Email body text preview */
-  @Input() preview: string;
+  preview = input<string>();
   /** Preview position */
-  @Input() previewPosition: 'top' | 'bottom' = 'top';
+  previewPosition = input('top');
   /** Available types of destination */
-  @Input() emailTypes: ('to' | 'cc' | 'bcc' | 'reply_to')[] = ['to', 'cc', 'bcc', 'reply_to'];
+  emailTypes = input(['to', 'cc', 'bcc', 'reply_to']);
   /** Mandatory types */
-  @Input() mandatoryEmailTypes: ('to' | 'cc' | 'bcc' | 'reply_to')[] = ['to'];
+  mandatoryEmailTypes = input(['to']);
   /** Allows to pre-populate the recipients */
-  @Input() set prePopulateRecipients(rep: ITypeEmail[]) {
-    const keys = Object.keys(this.recipients);
-    rep.forEach((el: ITypeEmail) => {
-      if (keys.includes(el.type)) {
-        this.recipients[el.type].push(el.address);
-      }
-    });
-  }
+  prePopulateRecipients = input<ITypeEmail[]>();
   /** Event to transmit email address recipients */
-  @Output() data = new EventEmitter<ITypeEmail[]>();
+  data = output<ITypeEmail[]>();
   /** Event to allow closing the dialog */
-  @Output() closeDialog = new EventEmitter<boolean>(false);
+  closeDialog = output<boolean>();
 
   /** Email address that is in drag mode */
-  draggedEmail: string;
+  draggedEmail: string | null = null;
 
   /** Recipients */
   recipients = { to: [], cc: [], bcc: [], reply_to: [] };
+
+  constructor() {
+    effect(() => {
+      const rep = this.prePopulateRecipients();
+      if (rep) {
+        const keys = Object.keys(this.recipients);
+        rep.forEach((el: ITypeEmail) => {
+          if (keys.includes(el.type)) {
+            this.recipients[el.type].push(el.address);
+          }
+        });
+      }
+    });
+  }
 
   /**
    * Drag start
@@ -104,7 +121,7 @@ export class PreviewEmailComponent {
    */
   formValid(): boolean {
     // Validation of the mandatory types
-    if (!this.mandatoryEmailTypes.every((key: string) => this.recipients[key].length > 0)) {
+    if (!this.mandatoryEmailTypes().every((key: string) => this.recipients[key].length > 0)) {
       return false;
     }
     // Validation of all email addresses of each recipient

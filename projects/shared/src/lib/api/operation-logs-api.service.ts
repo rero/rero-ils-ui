@@ -16,8 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { inject, Injectable } from '@angular/core';
-import { Record, RecordService } from '@rero/ng-core';
-import { Error } from '@rero/ng-core/lib/error/error';
+import { RecordService } from '@rero/ng-core';
+import type { Error, EsResult } from '@rero/ng-core';
 import { BaseApi } from '../api/base-api';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
@@ -42,9 +42,9 @@ export class OperationLogsApiService extends BaseApi {
    */
   getLogs(
     resourceType: string, resourcePid: string, action: 'create'|'update',
-    page: number, itemPerPage = 5, sort = 'mostrecent'): Observable<Record | Error> {
+    page: number, itemPerPage = 5, sort = 'mostrecent'): Observable<EsResult | Error> {
     const query = `record.type:${resourceType} AND record.value:${resourcePid} AND operation:${action}`;
-    return this.recordService.getRecords('operation_logs', query, page, itemPerPage, undefined, undefined, BaseApi.reroJsonheaders, sort);
+    return this.recordService.getRecords('operation_logs', { query, page, itemsPerPage: itemPerPage, headers: BaseApi.reroJsonheaders, sort });
   }
 
   /**
@@ -58,7 +58,7 @@ export class OperationLogsApiService extends BaseApi {
    * @returns Observable
    */
   getCirculationLogs(
-    resourceType: string, resourcePid: string, page: number, itemPerPage = 5, filters: object = {}, sort = 'mostrecent'): Observable<Record | Error> {
+    resourceType: string, resourcePid: string, page: number, itemPerPage = 5, filters: object = {}, sort = 'mostrecent'): Observable<EsResult | Error> {
     const query = [];
     const queryField = (resourceType === 'loan')
       ? 'loan.pid'
@@ -83,7 +83,7 @@ export class OperationLogsApiService extends BaseApi {
       });
       query.push(`(${typeFilters.join(' OR ')})`);
     }
-    return this.recordService.getRecords('operation_logs', query.join(' AND '), page, itemPerPage, undefined, undefined, undefined, sort);
+    return this.recordService.getRecords('operation_logs', { query: query.join(' AND '), page, itemsPerPage: itemPerPage, sort });
   }
 
   /**
@@ -93,11 +93,11 @@ export class OperationLogsApiService extends BaseApi {
    * @param itemsPerPage - number
    * @return Observable
    */
-   getCheckInHistory(patronPid: string, page: number, itemsPerPage = 10): Observable<Record | Error> {
+   getCheckInHistory(patronPid: string, page: number, itemsPerPage = 10): Observable<EsResult | Error> {
     const date = DateTime.now().minus({ months: 6 }).toISO();
     const query = `_exists_:loan AND record.type:loan AND loan.patron.pid:${patronPid} AND loan.trigger:checkin AND date:[${date} TO *]`;
     return this.recordService.getRecords(
-      'operation_logs', query, page, itemsPerPage, undefined, undefined, BaseApi.reroJsonheaders, 'mostrecent');
+      'operation_logs', { query, page, itemsPerPage, headers: BaseApi.reroJsonheaders, sort: 'mostrecent' });
   }
 
   /**
@@ -106,9 +106,9 @@ export class OperationLogsApiService extends BaseApi {
    * @param type - string
    * @returns Observable
    */
-  getHistoryByLoanPid(loanPid: string, type = 'checkin'): Observable<Record | Error> {
+  getHistoryByLoanPid(loanPid: string, type = 'checkin'): Observable<EsResult | Error> {
     const query = `_exists_:loan AND loan.pid:${loanPid} AND loan.trigger:${type} AND record.type:loan`;
-    return this.recordService.getRecords('operation_logs', query, 1, 1, undefined, undefined, BaseApi.reroJsonheaders)
+    return this.recordService.getRecords('operation_logs', { query, page: 1, itemsPerPage: 1, headers: BaseApi.reroJsonheaders })
       .pipe(map((result: any) => {
         return this.recordService.totalHits(result.hits.total) === 1
           ? result.hits.hits[0]

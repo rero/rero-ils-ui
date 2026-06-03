@@ -17,7 +17,7 @@
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { TranslateModule } from '@ngx-translate/core';
-import { RecordModule, RecordService } from '@rero/ng-core';
+import { RecordService, RecordUiService } from '@rero/ng-core';
 import { of } from 'rxjs';
 
 import { HoldingsApiService } from './holdings-api.service';
@@ -42,16 +42,17 @@ describe('HoldingsApiService', () => {
     links: {}
   };
 
-  const recordServiceSpy = jasmine.createSpyObj('RecordService', ['getRecords', 'totalHits']);
-  recordServiceSpy.getRecords.and.returnValue(of(response));
-  recordServiceSpy.totalHits.and.returnValue(1);
+  const recordServiceSpy = { getRecords: vi.fn(), totalHits: vi.fn() };
+  recordServiceSpy.getRecords.mockReturnValue(of(response));
+  recordServiceSpy.totalHits.mockReturnValue(1);
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-    imports: [RecordModule,
+    imports: [
         TranslateModule.forRoot()],
     providers: [
         { provide: RecordService, useValue: recordServiceSpy },
+        { provide: RecordUiService, useValue: {} },
         provideHttpClient(withInterceptorsFromDi()),
         provideHttpClientTesting(),
     ]

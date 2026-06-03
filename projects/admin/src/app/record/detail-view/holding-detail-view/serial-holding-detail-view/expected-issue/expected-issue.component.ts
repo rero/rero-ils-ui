@@ -15,16 +15,19 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, Input } from '@angular/core';
+import { Component, input, ChangeDetectionStrategy} from '@angular/core';
 import { PredictionIssue } from '@app/admin/service/holdings.service';
+import { TranslatePipe } from '@ngx-translate/core';
+import { DateTranslatePipe } from '@rero/ng-core';
 
 @Component({
     selector: 'admin-expected-issue',
     templateUrl: './expected-issue.component.html',
-    standalone: false
+    imports: [TranslatePipe, DateTranslatePipe],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ExpectedIssueComponent {
 
-  @Input() issue: PredictionIssue;
+  issue = input<PredictionIssue>();
 
 }

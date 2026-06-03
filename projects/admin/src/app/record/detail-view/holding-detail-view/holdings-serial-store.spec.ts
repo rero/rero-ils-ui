@@ -17,18 +17,21 @@
 
 import { provideHttpClient } from "@angular/common/http";
 import { provideHttpClientTesting } from "@angular/common/http/testing";
-import { fakeAsync, TestBed, tick } from "@angular/core/testing";
+import { TestBed } from "@angular/core/testing";
 import { HoldingsApiService } from "@app/admin/api/holdings-api.service";
 import { HoldingsService, PredictionIssue } from "@app/admin/service/holdings.service";
 import { TranslateModule } from "@ngx-translate/core";
-import { EsResult, PermissionsService, UserService } from "@rero/shared";
+import { RecordUiService } from "@rero/ng-core";
+import { AppStore, EsResult } from "@rero/shared";
 import { ConfirmationService, MessageService } from "primeng/api";
 import { Observable, of } from "rxjs";
 import { HoldingsSerialStore } from "./holdings-serial-store";
 
 describe('Holdings Serial Store', () => {
-  let permissionService: PermissionsService;
+  let appStore: InstanceType<typeof AppStore>;
+
   beforeEach(() => {
+    vi.useFakeTimers();
     TestBed.configureTestingModule({
       providers: [
         HoldingsSerialStore,
@@ -36,10 +39,10 @@ describe('Holdings Serial Store', () => {
         holdingsApiServiceMock,
         { provide: HoldingsService, useExisting: holdingsServiceMock },
         { provide: HoldingsApiService, useExisting: holdingsApiServiceMock },
-        { provide: UserService, useValue: userServiceSpy },
+        { provide: AppStore, useValue: appStoreSpy },
+        { provide: RecordUiService, useValue: { deleteRecord: vi.fn().mockReturnValue(of(true)) } },
         MessageService,
         ConfirmationService,
-        PermissionsService,
         provideHttpClient(),
         provideHttpClientTesting(),
       ],
@@ -47,81 +50,89 @@ describe('Holdings Serial Store', () => {
         TranslateModule.forRoot()
       ]
     });
-    permissionService = TestBed.inject(PermissionsService);
+    appStore = TestBed.inject(AppStore);
   });
 
-  it('should return items and prediction', fakeAsync((store = TestBed.inject(HoldingsSerialStore)) => {
+  afterEach(() => {
+    vi.useRealTimers();
+  });
+
+  it('should return items and prediction', async () => {
+    const store = TestBed.inject(HoldingsSerialStore);
     store.setHoldings(holdings);
-    tick(500);
+    await vi.advanceTimersByTimeAsync(500);
     expect(store.holdings()).toEqual(holdings);
-    tick(500);
-    expect(store.receivedItems()).toHaveSize(3);
-    expect(store.issues()).toHaveSize(3);
-  }));
+    await vi.advanceTimersByTimeAsync(500);
+    expect(store.receivedItems()).toHaveLength(3);
+    expect(store.issues()).toHaveLength(3);
+  });
 
-  it('should return more prediction', fakeAsync((store = TestBed.inject(HoldingsSerialStore)) => {
+  it('should return more prediction', async () => {
+    const store = TestBed.inject(HoldingsSerialStore);
     store.setHoldings(holdings);
-    tick(500);
-    expect(store.issues()).toHaveSize(3);
+    await vi.advanceTimersByTimeAsync(500);
+    expect(store.issues()).toHaveLength(3);
     store.moreIssues(6);
-    tick(500);
-    expect(store.issues()).toHaveSize(6);
-  }));
+    await vi.advanceTimersByTimeAsync(500);
+    expect(store.issues()).toHaveLength(6);
+  });
 
-  it('should return a list of issues with the first one marked as new', fakeAsync((store = TestBed.inject(HoldingsSerialStore)) => {
+  it('should return a list of issues with the first one marked as new', async () => {
+    const store = TestBed.inject(HoldingsSerialStore);
     store.setHoldings(holdings);
-    tick(500);
+    await vi.advanceTimersByTimeAsync(500);
     store.quickIssueReceive();
-    tick(500);
-    expect(store.receivedItems()[0].new_issue).toBeTrue();
-  }));
+    await vi.advanceTimersByTimeAsync(500);
+    expect(store.receivedItems()[0].new_issue).toBe(true);
+  });
 
-  it('should return only one result with a filter', fakeAsync((store = TestBed.inject(HoldingsSerialStore)) => {
+  it('should return only one result with a filter', async () => {
+    const store = TestBed.inject(HoldingsSerialStore);
     store.setHoldings(holdings);
-    tick(500);
+    await vi.advanceTimersByTimeAsync(500);
     store.setFilter('2022');
-    tick(500);
-    expect(store.receivedItems()).toHaveSize(1);
-    expect(store.isFilterEnabled()).toBeTrue();
-  }));
+    await vi.advanceTimersByTimeAsync(500);
+    expect(store.receivedItems()).toHaveLength(1);
+    expect(store.isFilterEnabled()).toBe(true);
+  });
 
-  it('should return if an issue can be added', fakeAsync((store = TestBed.inject(HoldingsSerialStore)) => {
-    spyOn(permissionService, 'canAccess').and.returnValue(true);
+  it('should return if an issue can be added', async () => {
+    vi.spyOn(appStore, 'canAccess').mockReturnValue(true);
+    const store = TestBed.inject(HoldingsSerialStore);
     store.setHoldings(holdings);
-    tick(500);
-    expect(store.isAllowIssueCreation()).toBeTrue();
-    expect(store.isDisplayLocalFieldsTab()).toBeTrue();
+    await vi.advanceTimersByTimeAsync(500);
+    expect(store.isAllowIssueCreation()).toBe(true);
+    expect(store.isDisplayLocalFieldsTab()).toBe(true);
 
     const newHoldings = {...holdings};
-    newHoldings.metadata.library.pid = '2';
+    newHoldings.metadata = {...holdings.metadata, library: { pid: '2', type: 'lib' }};
     store.setHoldings(newHoldings);
-    tick(500);
-    expect(store.isAllowIssueCreation()).toBeFalse();
-    expect(store.isDisplayLocalFieldsTab()).toBeFalse();
-  }));
+    await vi.advanceTimersByTimeAsync(500);
+    expect(store.isAllowIssueCreation()).toBe(false);
+    expect(store.isDisplayLocalFieldsTab()).toBe(false);
+  });
 
-  it('should return false, because the paginator is not active', fakeAsync((store = TestBed.inject(HoldingsSerialStore)) => {
+  it('should return false, because the paginator is not active', async () => {
+    const store = TestBed.inject(HoldingsSerialStore);
     store.setHoldings(holdings);
-    tick(500);
-    expect(store.isPaginatorEnabled()).toBeFalse();
-  }));
+    await vi.advanceTimersByTimeAsync(500);
+    expect(store.isPaginatorEnabled()).toBe(false);
+  });
 
-  it('should remove a item record', fakeAsync((store = TestBed.inject(HoldingsSerialStore)) => {
-      // Do not test the delete dialog
-      store.setHoldings(holdings);
-      tick(500);
-      store.deleteItem(store.receivedItems()[1]);
-      expect(store.receivedItems()).not.toBeNull();
-    }));
+  it('should remove a item record', async () => {
+    const store = TestBed.inject(HoldingsSerialStore);
+    // Do not test the delete dialog
+    store.setHoldings(holdings);
+    await vi.advanceTimersByTimeAsync(500);
+    store.deleteItem(store.receivedItems()[1]);
+    expect(store.receivedItems()).not.toBeNull();
+  });
 });
 
-const userServiceSpy = jasmine.createSpyObj('UserService', ['']);
-  userServiceSpy.user = {
-    patronLibrarian: {
-      pid: '1'
-    },
-    currentLibrary: '1'
-  }
+const appStoreSpy = {
+  currentLibraryPid: vi.fn(() => '1'),
+  canAccess: vi.fn(() => false)
+} as any;
 
 const holdings = {
     "created": "2025-11-18T13:37:49.970060+00:00",
@@ -255,7 +266,7 @@ class holdingsServiceMock {
     return of(issues);
   }
 
-  quickReceivedIssue(holding: any, displayText?: string, receivedDate?: string) {
+  quickReceivedIssue(_holding: any, _displayText?: string, _receivedDate?: string) {
     return of({
       "issue": {
         "$schema": "https://bib.rero.ch/schemas/items/item-v0.0.1.json",

@@ -15,8 +15,8 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 
-@if (exceptionDates) {
-    @for(exception of exceptionDates; track $index; let i=$index) {
+@if (exceptionDates()) {
+    @for(exception of exceptionDates(); track $index; let i=$index) {
       <div class="ui:odd:bg-surface-50">
         <admin-exception-date [exception]="exception">
         <!-- Actions -->

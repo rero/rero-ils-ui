@@ -14,68 +14,56 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
-import { fakeAsync, inject, TestBed, tick } from '@angular/core/testing';
-import { CollectionAccessGuard } from './collection-access.guard';
-import { ActivatedRouteSnapshot, Router, RouterModule } from '@angular/router';
+import { TestBed } from '@angular/core/testing';
+import { ActivatedRouteSnapshot, NavigationEnd, Router, RouterModule, RouterStateSnapshot } from '@angular/router';
+import { filter, firstValueFrom } from 'rxjs';
 import { AppConfigService } from '../app-config.service';
 import { ErrorPageComponent } from '../error/error-page.component';
-import { cloneDeep } from 'lodash-es';
+import { collectionAccessGuard } from './collection-access.guard';
 
-describe('CollectionAccessGuard', () => {
+const waitForNavigation = (router: Router): Promise<void> =>
+  firstValueFrom(router.events.pipe(filter(e => e instanceof NavigationEnd))).then(() => undefined);
 
-  let activatedRouteSnapshot: ActivatedRouteSnapshot;
+const makeRoute = (viewcode: string | undefined, parentViewcode?: string): ActivatedRouteSnapshot =>
+  ({
+    params: viewcode !== undefined ? { viewcode } : {},
+    parent: parentViewcode !== undefined ? { params: { viewcode: parentViewcode } } : null,
+  }) as unknown as ActivatedRouteSnapshot;
+
+describe('collectionAccessGuard', () => {
   let router: Router;
-
-  const activatedRouteSnapshotSpy = jasmine.createSpyObj('ActivatedRouteSnapshot', ['']);
-  activatedRouteSnapshotSpy.data = {
-    types: [
-      {
-        preFilters: {
-          view: 'global'
-        }
-      }
-    ]
-  }
+  let appConfigService: AppConfigService;
 
   const routes = [
-    {
-      path: 'errors/403',
-      component: ErrorPageComponent
-    }
+    { path: 'errors/403', component: ErrorPageComponent }
   ];
+
+  const runGuard = (route: ActivatedRouteSnapshot): boolean =>
+    TestBed.runInInjectionContext(() =>
+      collectionAccessGuard(route, {} as RouterStateSnapshot) as boolean
+    );
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [
-        RouterModule.forRoot(routes)
-      ],
-      providers: [
-        CollectionAccessGuard,
-        AppConfigService,
-        { provide: ActivatedRouteSnapshot, useValue: activatedRouteSnapshotSpy }
-      ]
+      imports: [RouterModule.forRoot(routes)],
+      providers: [AppConfigService]
     });
-    activatedRouteSnapshot = TestBed.inject(ActivatedRouteSnapshot);
     router = TestBed.inject(Router);
+    appConfigService = TestBed.inject(AppConfigService);
   });
 
-  it('should create', inject([CollectionAccessGuard], (guard: CollectionAccessGuard) => {
-    expect(guard).toBeTruthy();
-  }));
+  it('should deny access and redirect to 403 when viewcode matches globalViewName', async () => {
+    const navPromise = waitForNavigation(router);
+    expect(runGuard(makeRoute(appConfigService.globalViewName))).toBe(false);
+    await navPromise;
+    expect(router.url).toBe('/errors/403');
+  });
 
-  it('should not allow access', inject([CollectionAccessGuard], fakeAsync((guard: CollectionAccessGuard) => {
-    guard.canActivate(activatedRouteSnapshot).subscribe(() => {
-      tick();
-      expect(router.url).toBe('/errors/403');
-    });
-  })));
+  it('should allow access when viewcode does not match globalViewName', () => {
+    expect(runGuard(makeRoute('foo'))).toBe(true);
+  });
 
-  it('should allow access', inject([CollectionAccessGuard], fakeAsync((guard: CollectionAccessGuard) => {
-    const routeSnapshot = cloneDeep(activatedRouteSnapshot) as ActivatedRouteSnapshot;
-    routeSnapshot.data.types[0].preFilters.view = 'foo';
-    guard.canActivate(routeSnapshot).subscribe((access: boolean) => {
-      expect(access).toBeTrue();
-    })
-  })));
+  it('should fall back to parent params when viewcode is absent', () => {
+    expect(runGuard(makeRoute(undefined, 'foo'))).toBe(true);
+  });
 });

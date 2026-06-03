@@ -14,24 +14,24 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, inject, OnInit } from '@angular/core';
-import { FormGroup } from '@angular/forms';
-import { FormlyFieldConfig } from '@ngx-formly/core';
-import { TranslateService } from '@ngx-translate/core';
+import { Component, inject, OnInit, signal, ChangeDetectionStrategy} from '@angular/core';
+import { FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormlyFieldConfig, FormlyModule } from '@ngx-formly/core';
+import { TranslateService, TranslatePipe } from '@ngx-translate/core';
 import { ApiService, CONFIG, RecordService } from '@rero/ng-core';
-import { Tools, UserService } from '@rero/shared';
+import { AppStore, Tools } from '@rero/shared';
 import { DateTime } from 'luxon';
 import { MessageService } from 'primeng/api';
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
-import { PatronTransactionApiService } from 'projects/admin/src/app/api/patron-transaction-api.service';
-import { OrganisationService } from 'projects/admin/src/app/service/organisation.service';
-import { CirculationStatsService } from '../../service/circulation-stats.service';
-import { switchMap } from 'rxjs';
+import { PatronTransactionApiService } from '@app/admin/api/patron-transaction-api.service';
+import { Bind } from 'primeng/bind';
+import { Button } from 'primeng/button';
 
 @Component({
-  selector: 'admin-patron-fee',
-  templateUrl: './patron-fee.component.html',
-  standalone: false
+    selector: 'admin-patron-fee',
+    templateUrl: './patron-fee.component.html',
+    imports: [FormsModule, ReactiveFormsModule, FormlyModule, Bind, Button, TranslatePipe],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class PatronFeeComponent implements OnInit {
 
@@ -40,16 +40,14 @@ export class PatronFeeComponent implements OnInit {
   private dynamicDialogRef: DynamicDialogRef = inject(DynamicDialogRef);
   private recordService: RecordService = inject(RecordService);
   private translateService: TranslateService = inject(TranslateService);
-  private organisationService: OrganisationService = inject(OrganisationService);
-  private userService: UserService = inject(UserService);
+  private appStore = inject(AppStore);
   private patronTransactionApiService: PatronTransactionApiService = inject(PatronTransactionApiService);
   private apiService: ApiService = inject(ApiService);
-  private circulationStatsService: CirculationStatsService = inject(CirculationStatsService);
 
   /** form */
   form: FormGroup = new FormGroup({});
   /** form fields */
-  formFields: FormlyFieldConfig[];
+  formFields = signal<FormlyFieldConfig[] | undefined>(undefined);
   /** model */
   model: FeeFormModel;
 
@@ -72,9 +70,7 @@ export class PatronFeeComponent implements OnInit {
     if (model.creation_date instanceof Date) {
       model.creation_date = DateTime.fromObject(model.creation_date).toISO();
     }
-    this.patronTransactionApiService.addFee(model).pipe(
-      switchMap(() => this.circulationStatsService.getStats(this.patron.pid))
-    ).subscribe({
+    this.patronTransactionApiService.addFee(model).subscribe({
       next: () => {
         this.closeModal();
         this.messageService.add({
@@ -101,7 +97,7 @@ export class PatronFeeComponent implements OnInit {
 
   /** Init form model */
   private _initForm(properties: any): void {
-    this.formFields = [{
+    this.formFields.set([{
       key: 'type',
       type: 'select',
       props: {
@@ -119,8 +115,8 @@ export class PatronFeeComponent implements OnInit {
         required: true,
         addonLeft: [
           Tools.currencySymbol(
-            this.translateService.currentLang,
-            this.organisationService.organisation.default_currency
+            this.translateService.getCurrentLang(),
+            this.appStore.organisation().default_currency
           )
         ]
       }
@@ -139,7 +135,7 @@ export class PatronFeeComponent implements OnInit {
         required: true,
         dateFormat: 'yy-mm-dd'
       }
-    }];
+    }]);
 
     // Default model value
     this.model = {
@@ -157,15 +153,15 @@ export class PatronFeeComponent implements OnInit {
         $ref: this.apiService.getRefEndpoint('organisations', this.organisationPid)
       },
       library: {
-        $ref: this.apiService.getRefEndpoint('libraries', this.userService.user.currentLibrary)
+        $ref: this.apiService.getRefEndpoint('libraries', this.appStore.currentLibraryPid())
       },
       status: 'open',
       event: {
         operator: {
-          $ref: this.apiService.getRefEndpoint('patrons', this.userService.user.patronLibrarian.pid)
+          $ref: this.apiService.getRefEndpoint('patrons', this.appStore.user()?.patronLibrarian.pid)
         },
         library: {
-          $ref: this.apiService.getRefEndpoint('libraries', this.userService.user.currentLibrary)
+          $ref: this.apiService.getRefEndpoint('libraries', this.appStore.currentLibraryPid())
         }
       }
     }

@@ -15,11 +15,11 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 
-@if (electronicLocator) {
-    <a target="_blank" [href]="electronicLocator.url | safeUrl">
-      <i class="fa fa-link"></i> {{ electronicLocator.type | translate }}
-      @if (electronicLocator.content) {
-        : {{ electronicLocator.content | translate }}
+@if (electronicLocator()) {
+    <a target="_blank" [href]="electronicLocator().url | safeUrl">
+      <i class="fa fa-link"></i> {{ electronicLocator().type | translate }}
+      @if (electronicLocator().content) {
+        : {{ electronicLocator().content | translate }}
       }
     </a>
     @if (publicNotes) {

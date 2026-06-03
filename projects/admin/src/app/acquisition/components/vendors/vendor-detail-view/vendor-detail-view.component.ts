@@ -14,32 +14,37 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, inject } from '@angular/core';
-import { TranslateService } from '@ngx-translate/core';
-import { DetailRecord } from '@rero/ng-core/lib/record/detail/view/detail-record';
-import { Observable } from 'rxjs';
+import { Component, inject, input, ChangeDetectionStrategy} from '@angular/core';
+import { TranslateService, TranslateDirective, TranslatePipe } from '@ngx-translate/core';
+import { Bind } from 'primeng/bind';
+import { Tag } from 'primeng/tag';
+import { Tabs, TabList, Tab, TabPanels, TabPanel } from 'primeng/tabs';
+import { Ripple } from 'primeng/ripple';
+import { AddressTypeComponent } from '../../address-type/address-type.component';
+import { TranslateLanguagePipe } from '@rero/ng-core';
 
 @Component({
     selector: 'admin-vendor-detail-view',
     templateUrl: './vendor-detail-view.component.html',
-    standalone: false
+    imports: [TranslateDirective, Bind, Tag, Tabs, TabList, Ripple, Tab, TabPanels, TabPanel, AddressTypeComponent, TranslateLanguagePipe, TranslatePipe],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class VendorDetailViewComponent implements DetailRecord {
+export class VendorDetailViewComponent {
 
   private translateService: TranslateService = inject(TranslateService);
 
-  /** Observable resolving record data */
-  record$: Observable<any>;
+  /** Record data */
+  readonly record = input<any>();
 
   /** Resource type */
-  type: string;
+  readonly type = input<string>('');
 
   /**
    * Get Current language interface
    * @return string - language
    */
   get currentLanguage() {
-    return this.translateService.currentLang;
+    return this.translateService.getCurrentLang();
   }
 
   filterContact(contacts: any[], type: string): any {

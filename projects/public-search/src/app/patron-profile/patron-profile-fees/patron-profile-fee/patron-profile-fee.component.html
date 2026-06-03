@@ -15,25 +15,25 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 
-@if (record) {
+@if (record()) {
   <div class="ui:grid ui:grid-cols-12 ui:gap-4 ui:p-2 ui:pl-1">
     <div class="ui:col-span-1">
       <shared-open-close-button (status)="isCollapsed = $event" />
     </div>
     <div class="ui:col-span-11 ui:md:grid ui:md:grid-cols-12 ui:flex-col ui:ml-5 ui:md:ml-0">
-      <div class="ui:col-span-2">{{ record.createdAt | dateTranslate: 'short' }}</div>
+      <div class="ui:col-span-2">{{ record().createdAt | dateTranslate: 'short' }}</div>
       <div class="ui:col-span-7">
         <div class="ui:flex ui:flex-col">
-          @if (isCollapsed && document) {
-            <a href="/{{ organisation.code }}/documents/{{ document.metadata.pid }}">{{ document.metadata.title | mainTitle }}</a>
+          @if (isCollapsed && document()) {
+            <a href="/{{ organisation.code }}/documents/{{ document().metadata.pid }}">{{ document().metadata.title | mainTitle }}</a>
           }
           <div>
-            {{ record.type | translate }}
+            {{ record().type | translate }}
           </div>
         </div>
       </div>
       <div class="ui:col-span-3 ui:flex ui:justify-start ui:md:justify-end ui:mr-3 ui:font-bold">
-        {{ record.totalAmount | currency:organisation.currency:'symbol' }}
+        {{ record().totalAmount | currency:organisation.currency:'symbol' }}
       </div>
     </div>
 
@@ -41,12 +41,12 @@
     @if (!isCollapsed) {
       <div class="ui:col-span-11 ui:col-start-2">
           <!-- NOTE -->
-          @if (record.notes?.length > 0) {
-            @let headerTitle = record.notes.length > 1 ? 'Notes' : 'Note';
-            <p-panel styleClass="ui:mb-2 ui:pb-2 ui:bg-transparent" [header]="headerTitle | translate">
+          @if (record().notes?.length > 0) {
+            @let headerTitle = record().notes.length > 1 ? 'Notes' : 'Note';
+            <p-panel class="ui:mb-2 ui:pb-2 ui:bg-transparent" [header]="headerTitle | translate">
               <div class="ui:mx-5">
                 <ul>
-                  @for (note of record.notes; track $index) {
+                  @for (note of record().notes; track $index) {
                     <li>{{ note }}</li>
                   }
                 </ul>
@@ -54,33 +54,33 @@
             </p-panel>
           }
           <!-- DOCUMENT METADATA -->
-          @if (document) {
-            <p-panel styleClass="ui:mb-2 ui:pb-2 ui:bg-transparent" [header]="'Document' | translate" id="fee-{{ document.metadata.pid }}-document">
+          @if (document()) {
+            <p-panel class="ui:mb-2 ui:pb-2 ui:bg-transparent" [header]="'Document' | translate" id="fee-{{ document().metadata.pid }}-document">
               <dl class="metadata ui:mx-5">
                 <!-- TITLE -->
                 <dt translate>Title</dt>
                 <dd>
-                  <a href="/{{ organisation.code }}/documents/{{ document.metadata.pid }}">{{ document.metadata.title | mainTitle }}</a>
+                  <a href="/{{ organisation.code }}/documents/{{ document().metadata.pid }}">{{ document().metadata.title | mainTitle }}</a>
                 </dd>
                 <!-- CALL NUMBER -->
-                @if (record.loan.item?.call_number) {
+                @if (record().loan.item?.call_number) {
                   <dt translate>Call number</dt>
-                  <dd>{{ record.loan.item.call_number }}</dd>
+                  <dd>{{ record().loan.item.call_number }}</dd>
                 }
                 <!-- LOAN DATE -->
                 <dt translate>Loan started at</dt>
-                <dd>{{ record.loan.start_date | dateTranslate: 'short' }}</dd>
+                <dd>{{ record().loan.start_date | dateTranslate: 'short' }}</dd>
               </dl>
             </p-panel>
           }
 
           <!-- TRANSACTIONS HISTORY -->
-          <p-panel styleClass="ui:bg-transparent  ui:pb-2 time-line-30" [header]="'Transactions history' | translate">
+          <p-panel class="ui:bg-transparent  ui:pb-2 time-line-30" [header]="'Transactions history' | translate">
 
-          <public-search-patron-profile-fee-events [events]="record.transactions" />
+          <public-search-patron-profile-fee-events [events]="record().transactions" />
 
-          @if (record.overdue > 0) {
-            <p-timeline [value]="[record]" class="ui:mt-2">
+          @if (record().overdue > 0) {
+            <p-timeline [value]="[record()]" class="ui:mt-2">
                 <ng-template #content let-event>
                     <div class="ui:md:flex">
                       <div class="ui:flex-grow" translate>

@@ -14,11 +14,13 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy} from '@angular/core';
+import { TranslateDirective } from '@ngx-translate/core';
 
 @Component({
     selector: 'shared-description-zone',
     templateUrl: './description-zone.component.html',
-    standalone: false
+    imports: [TranslateDirective],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class DescriptionZoneComponent { }

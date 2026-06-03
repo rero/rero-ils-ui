@@ -15,21 +15,21 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-@if (record) {
+@if (record()) {
   <article class="ui:flex ui:gap-6">
     <div class="ui:hidden ui:md:block">
-      <shared-thumbnail [record]="record" />
+      <shared-thumbnail [record]="record()" />
     </div>
     <div class="ui:grow">
       <!-- document title -->
       <h4 class="ui:mb-1">
-        <a target="_self" [routerLink]="['/records', type.startsWith('import_') ? type: 'documents', 'detail', record.metadata.pid]">{{ record.metadata.title | mainTitle }}</a>
+        <a target="_self" [routerLink]="['/records', type().startsWith('import_') ? type(): 'documents', 'detail', record().metadata.pid]">{{ record().metadata.title | mainTitle }}</a>
       </h4>
       <!-- contribution -->
       <shared-contribution
-        [contributions]="record.metadata?.contribution"
+        [contributions]="record().metadata?.contribution"
         [limitRecord]="3"
-        [activateLink]="!type.startsWith('import_')"
+        [activateLink]="!type().startsWith('import_')"
       />
       <!-- provision activity publications -->
       @if (provisionActivityPublications.length > 0) {
@@ -40,20 +40,20 @@
         </ul>
       }
       <!-- shared part -->
-      <shared-part-of [record]="record" />
+      <shared-part-of [record]="record()" />
       <!-- edition statement -->
-      @if (record.metadata.editionStatement) {
+      @if (record().metadata.editionStatement) {
         <ul class="ui:list-none">
-          @for (edition of record.metadata.editionStatement; track $index) {
+          @for (edition of record().metadata.editionStatement; track $index) {
             <li>{{ edition._text[0].value }}</li>
           }
         </ul>
       }
       <!-- availability -->
-      @if (!type.startsWith('import_') && record.metadata.type !== 'ebook') {
+      @if (!type().startsWith('import_') && record().metadata.type !== 'ebook') {
         <shared-availability
           recordType="document"
-          [record]="record"
+          [record]="record()"
           [apiService]="documentApiService"
         />
       }

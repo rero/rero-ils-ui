@@ -16,19 +16,18 @@
  */
 
 import { TestBed } from "@angular/core/testing";
-import { ItemAccessGuard } from "./item-access.guard";
-import { UserService } from "@rero/shared";
+import { itemAccessGuard } from "./item-access.guard";
+import { AppStore } from "@rero/shared";
 import { of } from "rxjs";
-import { apiResponse } from "projects/shared/src/tests/api";
+import { apiResponse } from "@rero/shared";
 import { RecordService } from "@rero/ng-core";
 import { TranslateModule } from "@ngx-translate/core";
 import { MessageService, ToastMessageOptions } from "primeng/api";
 import { ActivatedRouteSnapshot, RouterStateSnapshot } from "@angular/router";
 
-describe('ItemAccessGuard', () => {
-  let guard: ItemAccessGuard;
+describe('itemAccessGuard', () => {
   let route: ActivatedRouteSnapshot;
-  let router: RouterStateSnapshot;
+  let routerState: RouterStateSnapshot;
   let messageService: MessageService;
 
   const item = {
@@ -47,21 +46,18 @@ describe('ItemAccessGuard', () => {
       }
     }
   };
-  const userServiceSpy = jasmine.createSpyObj('userService', ['']);
-  userServiceSpy.user = {
-    currentLibrary: '10'
-  }
+  const appStoreSpy = { currentLibraryPid: vi.fn(() => '10') } as any;
 
-  const recordServiceSpy = jasmine.createSpyObj('recordService', ['getRecord', 'getRecords', 'totalHits']);
-  recordServiceSpy.getRecord.and.returnValue(of(item));
-  recordServiceSpy.totalHits.and.returnValue(1);
+  const recordServiceSpy = { getRecord: vi.fn(), getRecords: vi.fn(), totalHits: vi.fn() };
+  recordServiceSpy.getRecord.mockReturnValue(of(item));
+  recordServiceSpy.totalHits.mockReturnValue(1);
 
-  const activatedRouteSnapshotSpy = jasmine.createSpyObj('ActivatedRouteSnapshot', ['']);
+  const activatedRouteSnapshotSpy = { } as any;
   activatedRouteSnapshotSpy.params = {
     pid: '1'
   };
 
-  const routerStateSnapshotSpy = jasmine.createSpyObj('RouterStateSnapshot', ['']);
+  const routerStateSnapshotSpy = { } as any;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -69,26 +65,24 @@ describe('ItemAccessGuard', () => {
         TranslateModule.forRoot()
       ],
       providers: [
-        ItemAccessGuard,
         MessageService,
-        { provide: UserService, useValue: userServiceSpy },
+        { provide: AppStore, useValue: appStoreSpy },
         { provide: RecordService, useValue: recordServiceSpy },
         { provide: ActivatedRouteSnapshot, useValue: activatedRouteSnapshotSpy },
         { provide: RouterStateSnapshot, useValue: routerStateSnapshotSpy }
       ]
     });
 
-    guard = TestBed.inject(ItemAccessGuard);
     route = TestBed.inject(ActivatedRouteSnapshot);
-    router = TestBed.inject(RouterStateSnapshot);
+    routerState = TestBed.inject(RouterStateSnapshot);
     messageService = TestBed.inject(MessageService);
 
     apiResponse.hits.hits = [holdings];
-    recordServiceSpy.getRecords.and.returnValue(of(apiResponse));
+    recordServiceSpy.getRecords.mockReturnValue(of(apiResponse));
   });
 
   it('should be created', () => {
-    expect(guard).toBeTruthy();
+    expect(itemAccessGuard).toBeTruthy();
   });
 
   it('should display a message if access is denied', () => {
@@ -97,6 +91,6 @@ describe('ItemAccessGuard', () => {
         expect(message.severity).toEqual('warn');
         expect(message.detail).toEqual('Access denied');
       });
-      guard.canActivate(route, router);
+    TestBed.runInInjectionContext(() => itemAccessGuard(route, routerState));
   });
 });

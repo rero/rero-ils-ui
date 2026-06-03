@@ -19,9 +19,9 @@ import { Tools } from './tools';
 
 describe('Tools', () => {
   it('should validate an email address', () => {
-    expect(Tools.validateEmail('foo')).toBeFalse();
-    expect(Tools.validateEmail('foo@bar')).toBeFalse();
-    expect(Tools.validateEmail('foo@bar.com')).toBeTrue();
+    expect(Tools.validateEmail('foo')).toBe(false);
+    expect(Tools.validateEmail('foo@bar')).toBe(false);
+    expect(Tools.validateEmail('foo@bar.com')).toBe(true);
   });
 
   it('should return the currency symbol according to language', () => {

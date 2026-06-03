@@ -39,15 +39,18 @@
 
 <p-tabs value="issue">
   <p-tablist>
-    <p-tab value="issue">
-      <i class="fa fa-list-ul"></i>&nbsp;{{ 'Issues' | translate }}
+    <p-tab value="issue" class="ui:flex ui:items-center ui:!gap-2">
+      <i class="fa fa-list-ul"></i>
+      <span translate>Issues</span>
     </p-tab>
-    <p-tab value="detail">
-      <i class="fa fa-list-ul"></i>&nbsp;{{ 'Details' | translate }}
+    <p-tab value="detail" class="ui:flex ui:items-center ui:!gap-2">
+      <i class="fa fa-list-ul"></i>
+      <span translate>Details</span>
     </p-tab>
     @if (store.isDisplayLocalFieldsTab()) {
-      <p-tab value="local">
-        <i class="fa fa-list-ul"></i>&nbsp;{{ 'Local fields' | translate }}
+      <p-tab value="local" class="ui:flex ui:items-center ui:!gap-2">
+        <i class="fa fa-list-ul"></i>
+        <span translate>Local fields</span>
       </p-tab>
     }
   </p-tablist>
@@ -156,7 +159,7 @@
     </p-tabpanel>
     @if (store.isDisplayLocalFieldsTab()) {
       <p-tabpanel value="local">
-        <admin-local-field [resourceType]="'holdings'" [resourcePid]="holding().metadata.pid"></admin-local-field>
+        <admin-local-field [resourceType]="'holdings'" [resourcePid]="$any(holding().metadata.pid)"></admin-local-field>
       </p-tabpanel>
     }
   </p-tabpanels>

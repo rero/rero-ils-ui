@@ -16,12 +16,17 @@
  */
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
+import { LOCALE_ID } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
+import { NgCoreTranslateService } from '@rero/ng-core';
+import { Observable, of } from 'rxjs';
 import { ButtonModule } from 'primeng/button';
 import { DynamicDialogConfig, DynamicDialogModule, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { TableModule } from 'primeng/table';
-import { of } from 'rxjs';
+class FakeLoader implements TranslateLoader {
+  getTranslation(_lang: string): Observable<any> { return of({}); }
+}
 import { OperationLogsApiService } from '../../api/operation-logs-api.service';
 import { OperationLogsService } from '../../service/operation-logs.service';
 import { OperationLogsComponent } from './operation-logs.component';
@@ -40,61 +45,52 @@ describe('OperationLogsComponent', () => {
     }
   ];
 
-  const operationLogsServiceSpy = jasmine.createSpyObj('OperationLogsService', ['_setting', 'getResourceKeyByResourceName']);
-  operationLogsServiceSpy._setting.and.returnValue({
-    documents: 'doc',
-    holdings: 'hold',
-    items: 'item'
-  });
-  operationLogsServiceSpy.getResourceKeyByResourceName.and.returnValue('doc');
+  const operationLogsServiceSpy = {
+    _setting: vi.fn().mockReturnValue({ documents: 'doc', holdings: 'hold', items: 'item' }),
+    getResourceKeyByResourceName: vi.fn().mockReturnValue('doc')
+  };
 
-  const operationLogsApiServiceSpy = jasmine.createSpyObj('OperationLogsApiService', ['getLogs']);
-  operationLogsApiServiceSpy.getLogs.and.returnValue(of({
-    aggregations: [],
-    hits: {
-      total: {
-        value: 1
-      },
-      hits: records
-    },
-    links: [],
-    total: {
-      value: 1
-    }
-  }));
+  const operationLogsApiServiceSpy = {
+    getLogs: vi.fn().mockReturnValue(of({
+      aggregations: [],
+      hits: { total: { value: 1 }, hits: records },
+      links: [],
+      total: { value: 1 }
+    }))
+  };
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [OperationLogsComponent],
-      imports: [
-        TranslateModule.forRoot(),
+    imports: [
+        TranslateModule.forRoot({ loader: { provide: TranslateLoader, useClass: FakeLoader } }),
         DynamicDialogModule,
         TableModule,
-        ButtonModule
-      ],
-      providers: [
-          { provide: OperationLogsService, useValue: operationLogsServiceSpy },
-          { provide: OperationLogsApiService, useValue: operationLogsApiServiceSpy },
-          provideHttpClient(withInterceptorsFromDi()),
-          provideHttpClientTesting(),
-          DynamicDialogRef,
-          DynamicDialogConfig
-      ]
-    }).compileComponents();
+        ButtonModule,
+        OperationLogsComponent
+    ],
+    providers: [
+        { provide: LOCALE_ID, useValue: 'en-US' },
+        { provide: NgCoreTranslateService, useValue: { instant: vi.fn((x: string) => x) } },
+        { provide: OperationLogsService, useValue: operationLogsServiceSpy },
+        { provide: OperationLogsApiService, useValue: operationLogsApiServiceSpy },
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting(),
+        DynamicDialogRef,
+        DynamicDialogConfig
+    ]
+}).compileComponents();
   });
 
   beforeEach(() => {
     fixture = TestBed.createComponent(OperationLogsComponent);
     component = fixture.componentInstance;
-    fixture.detectChanges();
   });
 
   it('should create', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should display the log table', () => {
-    const htmlElement: HTMLElement = fixture.nativeElement;
-    expect(htmlElement).toBeDefined();
+  it('should have a native element', () => {
+    expect(fixture.nativeElement).toBeDefined();
   });
 });

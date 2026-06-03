@@ -14,28 +14,35 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, EventEmitter, inject, Input, OnInit, Output } from '@angular/core';
+import { ChangeDetectorRef, Component, inject, input, OnInit, output, ChangeDetectionStrategy} from '@angular/core';
 import { RecordPermissionService } from '@app/admin/service/record-permission.service';
 import { RecordUiService } from '@rero/ng-core';
+import { RouterLink } from '@angular/router';
+import { Tooltip } from 'primeng/tooltip';
+import { Bind } from 'primeng/bind';
+import { Button } from 'primeng/button';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
     selector: 'admin-location',
     templateUrl: './location.component.html',
-    standalone: false
+    imports: [RouterLink, Tooltip, Bind, Button, TranslatePipe],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class LocationComponent implements OnInit {
 
+  private cdr: ChangeDetectorRef = inject(ChangeDetectorRef);
   private recordUiService: RecordUiService = inject(RecordUiService);
   private recordPermissionService: RecordPermissionService = inject(RecordPermissionService);
 
   /** The location whose details are displayed */
-  @Input() location: any;
+  location = input<any>();
 
   /** The parent library of the location */
-  @Input() library: any;
+  library = input<any>();
 
   /** Delete location event emitter */
-  @Output() deleteLocation = new EventEmitter();
+  deleteLocation = output<string>();
 
   /** location record permission */
   permissions: any;
@@ -44,8 +51,11 @@ export class LocationComponent implements OnInit {
    * Init
    */
   ngOnInit() {
-    this.recordPermissionService.getPermission('locations', this.location.metadata.pid).subscribe(
-      (permissions) => this.permissions = permissions
+    this.recordPermissionService.getPermission('locations', this.location().metadata.pid).subscribe(
+      (permissions) => {
+        this.permissions = permissions;
+        this.cdr.markForCheck();
+      }
     );
   }
 

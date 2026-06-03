@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2021-2024 RERO
+ * Copyright (C) 2021-2025 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -16,10 +16,10 @@
  */
 
 import { inject, Injectable } from '@angular/core';
-import { TranslateService } from '@ngx-translate/core';
-import { AppSettingsService, UserService } from '@rero/shared';
-import { AppConfigService } from 'projects/admin/src/app/service/app-config.service';
-import { PatronProfileMenuService } from 'projects/public-search/src/app/patron-profile/patron-profile-menu.service';
+import { NgCoreTranslateService } from '@rero/ng-core';
+import { AppStore } from '@rero/shared';
+import { AppConfigService } from '@app/admin/service/app-config.service';
+import { PatronProfileStore } from '@app/public-search/patron-profile/store/patron-profile.store';
 import { Observable } from 'rxjs';
 import { switchMap, tap } from 'rxjs/operators';
 
@@ -28,27 +28,28 @@ import { switchMap, tap } from 'rxjs/operators';
 })
 export class AppInitializerService {
 
-  private userService: UserService = inject(UserService);
-  private patronProfileMenuService: PatronProfileMenuService = inject(PatronProfileMenuService);
-  private translateService: TranslateService = inject(TranslateService);
-  private appSettingsService: AppSettingsService = inject(AppSettingsService);
-  private appConfigService: AppConfigService = inject(AppConfigService);
+  private appStore = inject(AppStore);
+  private store = inject(PatronProfileStore);
+  private translateService = inject(NgCoreTranslateService);
+  private appConfigService = inject(AppConfigService);
 
   load(): Observable<any> {
-    return this.userService.load().pipe(
+    return this.appStore.load().pipe(
       tap(() => {
-        this.patronProfileMenuService.init();
+        const user = this.appStore.user();
+        if (user) this.store.init(user);
       }),
       switchMap(() => this.initTranslateService())
     );
   }
 
   private initTranslateService(): Observable<any> {
-    let {language} = this.appSettingsService.settings;
+    let language = this.appStore.settings()?.language;
     if (language == null) {
-      const browserLang = this.translateService.getBrowserLang();
-      language = browserLang.match(this.appConfigService.languages.join('|')) ?
-        browserLang : this.appConfigService.defaultLanguage;
+      const browserLang = this.translateService.getBrowserLang() ?? '';
+      language = browserLang.match(this.appConfigService.languages.join('|'))
+        ? browserLang
+        : this.appConfigService.defaultLanguage;
     }
     return this.translateService.use(language);
   }

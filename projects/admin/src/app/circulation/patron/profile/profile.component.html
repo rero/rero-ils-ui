@@ -14,148 +14,148 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-@defer(when patron) {
+@defer(when patron() !== undefined) {
   <dl class="metadata">
     <dt translate>Username</dt>
     <dd>
-      {{ $any(patron).username }}
+      {{ $any(patron()).username }}
     </dd>
     <dt translate>Street</dt>
     <dd>
-      {{ $any(patron).street }}
+      {{ $any(patron()).street }}
     </dd>
     <dt translate>City</dt>
     <dd>
-      {{ $any(patron).postal_code }} {{ $any(patron).city }}
+      {{ $any(patron()).postal_code }} {{ $any(patron()).city }}
     </dd>
-    @if ($any(patron).country) {
+    @if ($any(patron()).country) {
       <dt translate>Country</dt>
       <dd>
-        {{ 'country_' + $any(patron).country | translate }}
+        {{ 'country_' + $any(patron()).country | translate }}
       </dd>
     }
-    @if ($any(patron).home_phone) {
+    @if ($any(patron()).home_phone) {
       <dt translate>Home phone number</dt>
       <dd>
-        {{ $any(patron).home_phone }}
+        {{ $any(patron()).home_phone }}
       </dd>
     }
-    @if ($any(patron).business_phone) {
+    @if ($any(patron()).business_phone) {
       <dt translate>Business phone number</dt>
       <dd>
-        {{ $any(patron).business_phone }}
+        {{ $any(patron()).business_phone }}
       </dd>
     }
-    @if ($any(patron).mobile_phone) {
+    @if ($any(patron()).mobile_phone) {
       <dt translate>Mobile phone</dt>
       <dd>
-        {{ $any(patron).mobile_phone }}
+        {{ $any(patron()).mobile_phone }}
       </dd>
     }
-    @if ($any(patron).other_phone) {
+    @if ($any(patron()).other_phone) {
       <dt translate>Other phone</dt>
       <dd>
-        {{ $any(patron).other_phone }}
+        {{ $any(patron()).other_phone }}
       </dd>
     }
-    @if ($any(patron).email) {
+    @if ($any(patron()).email) {
       <dt>Email</dt>
       <dd>
-        {{ $any(patron).email }}
+        {{ $any(patron()).email }}
       </dd>
     }
-    @if ($any(patron).source) {
+    @if ($any(patron()).source) {
       <dt translate>Source</dt>
       <dd>
-        {{ $any(patron).source }}
+        {{ $any(patron()).source }}
       </dd>
     }
-    @if ($any(patron).local_code) {
+    @if ($any(patron()).local_code) {
       <dt translate>Local code</dt>
       <dd>
-        {{ $any(patron).local_code }}
+        {{ $any(patron()).local_code }}
       </dd>
     }
     <dt translate>Keep history</dt>
     <dd>
-      <i class="fa" [ngClass]="$any(patron).keep_history ? 'fa-check text-success' : 'fa-times text-error'"
+      <i class="fa" [ngClass]="$any(patron()).keep_history ? 'fa-check text-success' : 'fa-times text-error'"
         aria-hidden="true">
       </i>
     </dd>
   </dl>
 
-  @if ($any(patron).second_address) {
+  @if ($any(patron()).second_address) {
     <h4 class="ui:mt-4" translate>Second address</h4>
     <dl class="metadata">
-      @if ($any(patron).second_address.street) {
+      @if ($any(patron()).second_address.street) {
         <dt translate>Street</dt>
         <dd>
-          {{ $any(patron).second_address.street }}
+          {{ $any(patron()).second_address.street }}
         </dd>
       }
-      @if ($any(patron).second_address.postal_code ||  $any(patron).second_address.city) {
+      @if ($any(patron()).second_address.postal_code ||  $any(patron()).second_address.city) {
         <dt translate>City</dt>
         <dd>
-          @if ($any(patron).second_address.postal_code) {
-            {{ $any(patron).second_address.postal_code }}
+          @if ($any(patron()).second_address.postal_code) {
+            {{ $any(patron()).second_address.postal_code }}
           }
-          @if ($any(patron).second_address.city) {
-            {{ $any(patron).second_address.city }}
+          @if ($any(patron()).second_address.city) {
+            {{ $any(patron()).second_address.city }}
           }
         </dd>
       }
-      @if ($any(patron).second_address.country) {
+      @if ($any(patron()).second_address.country) {
         <dt translate>Country</dt>
         <dd>
-          {{ 'country_' + $any(patron).second_address.country | translate }}
+          {{ 'country_' + $any(patron()).second_address.country | translate }}
         </dd>
       }
     </dl>
   }
 
-  @if ($any(patron).isLibrarian) {
+  @if ($any(patron()).isLibrarian) {
     <h4 class="ui:mt-4" translate>Librarian Information</h4>
     <dl class="metadata">
       <dt translate>Library</dt>
       <dd>
-        {{ $any(patron).library.pid | getRecord: 'libraries' : 'field' : 'name' | async }}
+        {{ $any(patron()).library.pid | getRecord: 'libraries' : 'field' : 'name' | async }}
       </dd>
     </dl>
   }
-  @if ($any(patron).patron) {
+  @if ($any(patron()).patron) {
     <h4 class="ui:mt-4" translate>Patron Information</h4>
     <dl class="metadata">
       <dt>
-        <span [ngPlural]="$any(patron).roles.length">
+        <span [ngPlural]="$any(patron()).roles.length">
           <ng-template ngPluralCase="0" translate>Role</ng-template>
           <ng-template ngPluralCase="=1" translate>Role</ng-template>
           <ng-template ngPluralCase="other" translate>Roles</ng-template>
         </span>
       </dt>
       <dd>
-        @for (role of $any(patron).roles; track $index; let last=$last) {
+        @for (role of $any(patron()).roles; track $index; let last=$last) {
           {{ role | translate }}{{ last ? '' : ', ' }}
         }
       </dd>
       <dt translate>Patron's barcodes or cards number</dt>
       <dd>
-        <a [routerLink]="['/circulation', 'patron', $any(patron).patron.barcode[0]]">
-          {{ $any(patron).patron.barcode | join: ', '}}
+        <a [routerLink]="['/circulation', 'patron', $any(patron()).patron.barcode[0]]">
+          {{ $any(patron()).patron.barcode | join: ', '}}
         </a>
       </dd>
       <dt translate>Type</dt>
       <dd>
-        {{ $any(patron).patron.type.pid | getRecord: 'patron_types' : 'field' : 'name' | async }}
+        {{ $any(patron()).patron.type.pid | getRecord: 'patron_types' : 'field' : 'name' | async }}
       </dd>
       <dt translate>Account expiration</dt>
       <dd>
-        {{ $any(patron).patron.expiration_date | dateTranslate:'mediumDate' }}
+        {{ $any(patron()).patron.expiration_date | dateTranslate:'mediumDate' }}
       </dd>
-      @if ($any(patron).libraries && $any(patron).libraries.length > 0) {
+      @if ($any(patron()).libraries && $any(patron()).libraries.length > 0) {
         <dt translate>Affiliation libraries</dt>
         <dd>
           <ul class="ui:list-none">
-            @for (library of $any(patron).libraries; track $index) {
+            @for (library of $any(patron()).libraries; track $index) {
               <li>{{ library.pid | getRecord: 'libraries' : 'field' : 'name' | async }}</li>
             }
           </ul>
@@ -169,12 +169,12 @@
       <p-button
         id="profile-change-password-button"
         [label]="'Change Password'|translate"
-        (onClick)="updatePatronPassword(patron)"
+        (onClick)="updatePatronPassword(patron())"
       />
       <p-button
         id="profile-edit-button"
         [label]="'Edit' | translate"
-        [routerLink]="['/records','patrons','edit', $any(patron).pid]"
+        [routerLink]="['/records','patrons','edit', $any(patron()).pid]"
       />
     </div>
   }

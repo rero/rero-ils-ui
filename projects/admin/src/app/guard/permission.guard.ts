@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2022-2024 RERO
+ * Copyright (C) 2022-2025 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -14,50 +14,38 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { inject, Injectable } from '@angular/core';
-import { ActivatedRouteSnapshot, Router } from '@angular/router';
-import { PERMISSION_OPERATOR, PermissionsService } from '@rero/shared';
-import { Observable, of } from 'rxjs';
+import { inject } from '@angular/core';
+import { ActivatedRouteSnapshot, CanActivateFn, Router } from '@angular/router';
+import { AppStore, PERMISSION_OPERATOR } from '@rero/shared';
 
 /**
- * This guards check if the current logged user has a specific permission. The permission to check should be passed
- * using data.permissions (see below). You can provide multiple permissions;
+ * Functional guard checking whether the logged-in user holds the required
+ * permissions declared in route data.
  *
- * Available values for operator: and, or
+ * Available values for operator: 'and' | 'or'  (default: 'or')
  *
  * USAGE:
  * { path: 'new',
  *   component: MyComponent,
- *   canActivate: [PermissionGuard],
+ *   canActivate: [permissionGuard],
  *   data: {
  *     permissions: ['xxx', 'yyy'],
  *     operator: 'and'
  *   }
  * }
  */
+export const permissionGuard: CanActivateFn = (route: ActivatedRouteSnapshot): boolean => {
+  const appStore = inject(AppStore);
+  const router = inject(Router);
 
- @Injectable({
-  providedIn: 'root'
-})
-export class PermissionGuard  {
+  const permissions: string[] = route.data['permissions'] ?? [];
+  const operator: string = route.data['operator'] ?? PERMISSION_OPERATOR.OR;
 
-  private permissionService: PermissionsService = inject(PermissionsService);
-  private router: Router = inject(Router);
-
-  /**
-   * Can activate
-   * @param route - ActivatedRouteSnapshot
-   * @returns True if the permission(s) is granted
-   */
-  canActivate(route: ActivatedRouteSnapshot): Observable<boolean> {
-    const permissions = 'permissions' in route.data ? route.data.permissions : [];
-    const operator = 'operator' in route.data ? route.data.operator : PERMISSION_OPERATOR.OR;
-    if (!this.permissionService.canAccess(permissions, operator)) {
-      this.router.navigate(['/errors/403'], { skipLocationChange: true });
-
-      return of(false);
-    }
-
-    return of(true);
+  const result = appStore.canAccess(permissions, operator);
+  if (!result) {
+    router.navigate(['/errors/403'], { skipLocationChange: true });
+    return false;
   }
-}
+
+  return true;
+};

@@ -14,8 +14,6 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-@let isAuthenticated = userService.user.isAuthenticated;
-
 @if(store.filter().length > 1) {
 <div class="ui:mb-3">
   <p-multiselect
@@ -31,13 +29,11 @@
 }
 
 @if (store.filteredHoldings().length > 0) {
-  @if (!isAuthenticated) {
+  @if (!isAuthenticated()) {
     <div class="ui:mb-4">
-      <p-message
-        [text]="'Log in to see request options' | translate"
-        severity="warn"
-        showTransitionOptions="0ms"
-      />
+      <p-message severity="warn" showTransitionOptions="0ms">
+        {{ 'Log in to see request options' | translate }}
+      </p-message>
     </div>
   }
   <p-accordion [multiple]="true" [value]="store.filteredHoldings().length === 1 ? [0] : []">
@@ -49,11 +45,11 @@
               <div class="ui:col-span-12 ui:md:col-span-5">
                 {{ holding.metadata.library.name }}:&nbsp;{{ holding.metadata.location.name }}
                 @if (holding.metadata.location.public_note) {
-                  <div class="ui:text-sm ui:text-gray-500">{{ holding.metadata.location.public_note | getTranslatedLabel : translateService.currentLang }}</div>
+                  <div class="ui:text-sm ui:text-gray-500">{{ holding.metadata.location.public_note | getTranslatedLabel : currentLang }}</div>
                 }
               </div>
               <div class="ui:col-span-12 ui:md:col-span-2">
-                {{ holding.metadata.circulation_category.circulation_information | getTranslatedLabel : translateService.currentLang }}
+                {{ holding.metadata.circulation_category.circulation_information | getTranslatedLabel : currentLang }}
               </div>
               <div class="ui:col-span-12 ui:md:col-span-2">
                 @if (holding.metadata.public_items_count > 0) {
@@ -139,12 +135,12 @@
         <p-accordion-content>
           @if (panel.active()) {
             @if (holding.metadata.public_items_count > 0) {
-              <public-search-items [holding]="holding" [viewcode]="viewcode" />
+              <public-search-items [holding]="holding" [viewcode]="viewcode()" />
             }
             <public-search-request
               [record]="holding"
               recordType="holding"
-              [viewcode]="viewcode"
+              [viewcode]="viewcode()"
               [holdingsItemsCount]="holding.metadata.public_items_count"
               class="ui:w-full"
               [ngClass]="{'ui:mt-2': holding.metadata.public_items_count === 0}"
@@ -156,14 +152,14 @@
   </p-accordion>
 
   <div class="ui:mt-2">
-    @if(isAuthenticated && userService.user.hasRoles(['patron']) && viewcode === 'global') {
+    @if(isAuthenticated() && isPatron() && viewcode() === 'global') {
       <div>
         <a
           pButton
           [outlined]="true"
           size="small"
           icon="fa fa-truck"
-          href="/{{ viewcode }}/ill_requests/new?record_pid={{ documentPid }}"
+          href="/{{ viewcode() }}/ill_requests/new?record_pid={{ documentPid() }}"
           translate
         >
           Interlibrary loan

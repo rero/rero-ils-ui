@@ -32,8 +32,8 @@ describe('LibraryApiService', () => {
       pid: 1
     }
   };
-  const recordServiceSpy = jasmine.createSpyObj('RecordService', ['getRecord']);
-  recordServiceSpy.getRecord.and.returnValue(of(library));
+  const recordServiceSpy = { getRecord: vi.fn() };
+  recordServiceSpy.getRecord.mockReturnValue(of(library));
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -42,8 +42,7 @@ describe('LibraryApiService', () => {
         { provide: RecordService, useValue: recordServiceSpy },
         provideHttpClient(withInterceptorsFromDi()),
         provideHttpClientTesting(),
-      ],
-    });
+      ] });
 
     service = TestBed.inject(LibraryApiService);
   });

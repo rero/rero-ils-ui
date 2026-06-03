@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2022-2024 RERO
+ * Copyright (C) 2022-2026 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -14,15 +14,15 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { DOCUMENT, Location } from '@angular/common';
-import { Component, ElementRef, inject, Input } from '@angular/core';
-import { AbstractControl, UntypedFormControl, UntypedFormGroup } from '@angular/forms';
-import { _ } from "@ngx-translate/core";
-import { FormlyFieldConfig } from '@ngx-formly/core';
-import { TranslateService } from '@ngx-translate/core';
+import { Location } from '@angular/common';
+import { ChangeDetectionStrategy, Component, ElementRef, inject, input } from '@angular/core';
+import { AbstractControl, ReactiveFormsModule, UntypedFormControl, UntypedFormGroup } from '@angular/forms';
+import { FormlyFieldConfig, FormlyModule } from '@ngx-formly/core';
+import { LoadingBarModule } from '@ngx-loading-bar/core';
+import { _, TranslatePipe, TranslateService } from "@ngx-translate/core";
 import { CONFIG } from '@rero/ng-core';
-import { AppSettingsService } from '@rero/shared';
 import { MessageService } from 'primeng/api';
+import { Button } from 'primeng/button';
 import { of } from 'rxjs';
 import { catchError, debounceTime, map } from 'rxjs/operators';
 import { UserApiService } from '../../api/user-api.service';
@@ -45,7 +45,8 @@ export function fieldPasswordMatchValidator(control: AbstractControl) {
 @Component({
     selector: 'public-search-patron-profile-password',
     templateUrl: './patron-profile-password.component.html',
-    standalone: false
+    imports: [ReactiveFormsModule, FormlyModule, TranslatePipe, LoadingBarModule, Button],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class PatronProfilePasswordComponent {
 
@@ -56,7 +57,7 @@ export class PatronProfilePasswordComponent {
   private messageService: MessageService = inject(MessageService);
 
   /** Request referer */
-  @Input() referer: string | null;
+  referer = input<string | null>(null);
 
   /** angular form group for ngx-formly */
   form: UntypedFormGroup = new UntypedFormGroup({});
@@ -80,6 +81,7 @@ export class PatronProfilePasswordComponent {
           type: 'password',
           label: _('Current password'),
           required: true,
+          attributes: { autocomplete: 'current-password' },
         },
       },
       {
@@ -90,7 +92,8 @@ export class PatronProfilePasswordComponent {
           label: _('New password'),
           required: true,
           minLength: 8,
-          maxLength: 128
+          maxLength: 128,
+          attributes: { autocomplete: 'new-password' },
         },
         asyncValidators: {
           'validatePassword': this.validatePassword()
@@ -105,6 +108,7 @@ export class PatronProfilePasswordComponent {
           required: true,
           minLength: 8,
           maxLength: 128,
+          attributes: { autocomplete: 'new-password' },
         }
       }
     ]

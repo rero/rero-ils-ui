@@ -15,21 +15,24 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { fakeAsync, TestBed, tick } from "@angular/core/testing";
+import { TestBed } from "@angular/core/testing";
 import { EsRecord, EsResult } from "@rero/shared";
-import { Observable, of } from "rxjs";
+import { Observable, of, Subject } from "rxjs";
 import { ItemsStore } from "./items-store";
 import { ItemApiService } from "../../../../../api/item-api.service";
 import { provideHttpClient } from "@angular/common/http";
 import { provideHttpClientTesting } from "@angular/common/http/testing";
 import { TranslateModule } from "@ngx-translate/core";
 import { ConfirmationService, MessageService } from "primeng/api";
+import { RecordUiService } from "@rero/ng-core";
 
 describe('Items Store', () => {
   beforeEach(() => {
+    vi.useFakeTimers();
     TestBed.configureTestingModule({
       providers: [
         ItemsStore,
+        { provide: RecordUiService, useValue: { deleteRecord: vi.fn().mockReturnValue(new Subject()) } },
         ConfirmationService,
         MessageService,
         ItemApiServiceMock,
@@ -43,42 +46,50 @@ describe('Items Store', () => {
     });
   });
 
-  it('should return items', fakeAsync((store = TestBed.inject(ItemsStore)) => {
+  afterEach(() => {
+    vi.useRealTimers();
+  });
+
+  it('should return items', async () => {
+    const store = TestBed.inject(ItemsStore);
     store.setHoldings(holdings);
-    tick(500);
+    await vi.advanceTimersByTimeAsync(500);
     expect(store.holdings()).toEqual(holdings);
-    expect(store.items()).toHaveSize(10);
+    expect(store.items()).toHaveLength(10);
     expect(store.total()).toEqual(12);
     expect(store.filterTotal()).toEqual(12);
-  }));
+  });
 
-  it('should return items of page 2', fakeAsync((store = TestBed.inject(ItemsStore)) => {
+  it('should return items of page 2', async () => {
+    const store = TestBed.inject(ItemsStore);
     store.setHoldings(holdings);
-    tick(500);
+    await vi.advanceTimersByTimeAsync(500);
     store.setPaginator({ page: 1, first: 11, rows: 10 });
-    tick(500);
-    expect(store.items()).toHaveSize(2);
+    await vi.advanceTimersByTimeAsync(500);
+    expect(store.items()).toHaveLength(2);
     expect(store.total()).toEqual(12);
     expect(store.filterTotal()).toEqual(12);
-  }));
+  });
 
-  it('should return a item if a filter is active', fakeAsync((store = TestBed.inject(ItemsStore)) => {
+  it('should return a item if a filter is active', async () => {
+    const store = TestBed.inject(ItemsStore);
     store.setHoldings(holdings);
-    tick(500);
+    await vi.advanceTimersByTimeAsync(500);
     store.setFilter('100000001');
-    tick(500);
-    expect(store.items()).toHaveSize(1);
+    await vi.advanceTimersByTimeAsync(500);
+    expect(store.items()).toHaveLength(1);
     expect(store.filterTotal()).toEqual(1);
-  }));
+  });
 
-  it('should remove a item record', fakeAsync((store = TestBed.inject(ItemsStore)) => {
+  it('should remove a item record', async () => {
+    const store = TestBed.inject(ItemsStore);
     // Do not test the delete dialog
     store.setHoldings(holdings);
-    tick(500);
+    await vi.advanceTimersByTimeAsync(500);
     const record = store.items()[2];
     store.delete(record);
     expect(store.record()).toEqual(record);
-  }));
+  });
 });
 
 const holdings = {

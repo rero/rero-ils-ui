@@ -15,16 +15,16 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 
-@if (record) {
+@if (record()) {
 <div class="ui:flex ui:justify-between">
   <div>
     <h5>
-      {{ record.metadata.name }}&nbsp;<p-tag [value]="record.metadata.status" />
+      {{ record().metadata.name }}&nbsp;<p-tag [value]="record().metadata.status" />
     </h5>
-    @if(record.metadata?.description) {
+    @if(record().metadata?.description) {
     <div>
       <p>
-        {{ record.metadata.description }}
+        {{ record().metadata.description }}
       </p>
     </div>
     }
@@ -32,14 +32,14 @@
   <div class="ui:flex ui:gap-1">
     <p-button
       [routerLink]="['..', 'format', 'migration_data']"
-      [queryParams]="{ migration: record.id }"
+      [queryParams]="{ migration: record().id }"
       outlined
       size="small"
       [label]="'Data conversion' | translate"
     />
     <p-button
       [routerLink]="['..', 'deduplication', 'migration_data']"
-      [queryParams]="{ migration: record.id }"
+      [queryParams]="{ migration: record().id }"
       outlined
       size="small"
       [label]="'Deduplication' | translate"

@@ -15,40 +15,19 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { Component, OnDestroy, OnInit } from '@angular/core';
-import { DetailRecord } from '@rero/ng-core/lib/record/detail/view/detail-record';
-import { Observable, Subscription } from 'rxjs';
+import { Component, input, ChangeDetectionStrategy } from '@angular/core';
+import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
+import { NgClass, NgStyle, AsyncPipe } from '@angular/common';
+import { GetRecordPipe } from '@rero/ng-core';
 
 @Component({
     selector: 'admin-location-detail-view',
     templateUrl: './location-detail-view.component.html',
-    standalone: false
+    imports: [TranslateDirective, NgClass, NgStyle, AsyncPipe, TranslatePipe, GetRecordPipe],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class LocationDetailViewComponent implements OnInit, OnDestroy, DetailRecord {
+export class LocationDetailViewComponent {
 
-  /** Observable resolving record data */
-  record$: Observable<any>;
-
-  /** Resource type */
-  type: string;
-
-  /** Record */
-  record: any;
-
-  /** The observer to the record observable */
-  private _recordObs: Subscription;
-
-  /** On init hook */
-  ngOnInit() {
-    this._recordObs = this.record$.subscribe(record => {
-      this.record = record;
-    });
-  }
-
-  /**
-   * Destroy
-   */
-  ngOnDestroy(): void {
-    this._recordObs.unsubscribe();
-  }
+  readonly record = input<any>();
+  readonly type = input<string>('');
 }

@@ -16,15 +16,15 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 
-<admin-entities-local-global [record]="record">
+<admin-entities-local-global [record]="record()">
   <!-- TITLE -->
-  @if (record.title) {
+  @if (record().title) {
     <dt translate>Title</dt>
-    <dd>{{ record.title }}</dd>
+    <dd>{{ record().title }}</dd>
   }
   <!-- CREATOR -->
-  @if (record.creator) {
+  @if (record().creator) {
     <dt translate>Creator</dt>
-    <dd>{{ record.creator }}</dd>
+    <dd>{{ record().creator }}</dd>
   }
 </admin-entities-local-global>

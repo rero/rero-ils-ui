@@ -15,12 +15,12 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, DestroyRef, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import { Router } from '@angular/router';
-import { _ } from "@ngx-translate/core";
+import { _, TranslateDirective, TranslatePipe } from "@ngx-translate/core";
 import { TranslateService } from '@ngx-translate/core';
-import { CONFIG, Record, RecordService } from '@rero/ng-core';
-import { ItemStatus, User, UserService } from '@rero/shared';
+import { CONFIG, RecordService, SearchInputComponent } from '@rero/ng-core';
+import { AppStore, ItemStatus, User } from '@rero/shared';
 import { MessageService } from 'primeng/api';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { forkJoin } from 'rxjs';
@@ -29,51 +29,42 @@ import { Item, ItemAction, ItemNoteType } from '../../classes/items';
 import { ItemsService } from '../../service/items.service';
 import { PatronService } from '../../service/patron.service';
 import { CheckinActionComponent } from './checkin-action/checkin-action.component';
+import { CardComponent } from '../patron/card/card.component';
+import { ItemsListComponent } from '../items-list/items-list.component';
 
 @Component({
     selector: 'admin-circulation-checkout',
     templateUrl: './checkin.component.html',
-    standalone: false
+    imports: [TranslateDirective, SearchInputComponent, CardComponent, ItemsListComponent, TranslatePipe],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class CheckinComponent implements OnInit {
+export class CheckinComponent {
 
   private messageService: MessageService = inject(MessageService);
   private dialogService: DialogService = inject(DialogService);
-  private userService: UserService = inject(UserService);
+  private appStore = inject(AppStore);
   private recordService: RecordService = inject(RecordService);
   private itemsService: ItemsService = inject(ItemsService);
   private router: Router = inject(Router);
   private translate: TranslateService = inject(TranslateService);
   private patronService: PatronService = inject(PatronService);
 
+  constructor() {
+    inject(DestroyRef).onDestroy(() => this.patronInfo.set(undefined));
+  }
+
   public placeholder = _('Please enter a patron card number or an item barcode.');
-  public searchText = '';
-  public patronInfo: User;
-  public barcode: string;
-  currentLibraryPid: string;
+  searchText = signal('');
+  patronInfo = signal<User | undefined>(undefined);
+  readonly barcode = signal<string | null>(null);
 
-  private loggedUser: User;
+  items = signal<any[]>([]);
 
-  items = [];
-
-  /** Focus attribute of the search input */
-  searchInputFocus = true;
-
-  /** Disabled attribute of the search input */
-  searchInputDisabled = false;
+  readonly searchInputFocus = signal(true);
+  readonly searchInputDisabled = signal(false);
 
   /** current called item */
   private item: any;
-
-  ngOnInit() {
-    this.loggedUser = this.userService.user;
-    this.patronService.currentPatron$.subscribe(
-      patron => this.patronInfo = patron
-    );
-    this.currentLibraryPid = this.loggedUser.currentLibrary;
-    this.patronInfo = null;
-    this.barcode = null;
-  }
 
   /** Search value with search input
    * @param searchText: value to search for (barcode)
@@ -82,20 +73,20 @@ export class CheckinComponent implements OnInit {
     if (!searchText) {
       return null;
     }
-    this.searchText = searchText;
-    this.getPatronOrItem(this.searchText);
+    this.searchText.set(searchText);
+    this.getPatronOrItem(this.searchText());
   }
 
   /** Apply check-in and checkout automatically
    * @param itemBarcode: item barcode
    */
   checkin(itemBarcode: string) {
-    this.searchInputFocus = false;
-    this.searchInputDisabled = true;
-    this.itemsService.checkin(itemBarcode, this.loggedUser.currentLibrary).subscribe({
+    this.searchInputFocus.set(false);
+    this.searchInputDisabled.set(true);
+    this.itemsService.checkin(itemBarcode, this.appStore.currentLibraryPid()).subscribe({
       next: (item) => {
         // TODO: remove this when policy will be in place
-        if (item === null || item.location.organisation.pid !== this.loggedUser.currentOrganisation) {
+        if (item === null || item.location.organisation.pid !== this.appStore.currentOrganisationPid()) {
           this.messageService.add({
             severity: 'error',
             summary: this.translate.instant('Checkin'),
@@ -158,16 +149,16 @@ export class CheckinComponent implements OnInit {
             }
             break;
           case ItemAction.receive:
-            if (item.library.pid === this.userService.user.currentLibrary) {
+            if (item.library.pid === this.appStore.currentLibraryPid()) {
               this.displayCirculationInformation(item, ItemNoteType.CHECKIN);
             }
             break;
         }
-        this.items.unshift(item);
+        this.items.update(current => [item, ...current]);
         this._resetSearchInput();
       },
       error: (error) => {
-        if (this.item && this.items.findIndex(i => i.barcode === this.item.barcode) === -1) {
+        if (this.item && this.items().findIndex((i: Item) => i.barcode === this.item.barcode) === -1) {
           // Reload item to have data up to date.
           this.itemsService.getItem(this.item.barcode).subscribe((item: any) => {
             delete item.actions;
@@ -187,7 +178,7 @@ export class CheckinComponent implements OnInit {
                 type: ItemNoteType.API
               });
             }
-            this.items.unshift(item);
+            this.items.update(current => [item, ...current]);
             // If no action could be done by the '/item/checkin' api, an error will be raised.
             // catch this error to display it as a Toast message.
             this._checkinErrorManagement(error, item);
@@ -211,21 +202,20 @@ export class CheckinComponent implements OnInit {
    */
   getPatronInfo(barcode: string) {
     if (barcode) {
-      this.barcode = barcode;
-      this.patronService
-        .getPatron(barcode)
-        .subscribe({
-          error: (error) => this.messageService.add({
-            severity: 'error',
-            summary: this.translate.instant('Checkin'),
-            detail: error.message,
-            sticky: true,
-            closable: true
-          })
+      this.barcode.set(barcode);
+      this.patronService.getPatron(barcode).subscribe({
+        next: (patron) => this.patronInfo.set(patron),
+        error: (error) => this.messageService.add({
+          severity: 'error',
+          summary: this.translate.instant('Checkin'),
+          detail: error.message,
+          sticky: true,
+          closable: true
+        })
       });
     } else {
-      this.patronInfo = null;
-      this.barcode = null;
+      this.patronInfo.set(undefined);
+      this.barcode.set(null);
     }
   }
 
@@ -234,14 +224,13 @@ export class CheckinComponent implements OnInit {
    */
   getPatronOrItem(barcode: string) {
     this.item = undefined;
-    const loggerOrg = this.loggedUser.currentOrganisation;
-    const query = `patron.barcode:${barcode} AND organisation.pid:${loggerOrg}`;
+    const query = `patron.barcode:${barcode} AND organisation.pid:${this.appStore.currentOrganisationPid()}`;
     const patronQuery = this.recordService
-      .getRecords('patrons', query, 1, 1, [])
-      .pipe(map((result: Record) => result.hits));
+      .getRecords('patrons', { query, page: 1, itemsPerPage: 1 })
+      .pipe(map((result: any) => result.hits));
     const itemQuery = this.recordService
-      .getRecords('items', `barcode:${barcode}`, 1, 1, [])
-      .pipe(map((result: Record) => result.hits));
+      .getRecords('items', { query: `barcode:${barcode}`, page: 1, itemsPerPage: 1 })
+      .pipe(map((result: any) => result.hits));
     forkJoin([patronQuery, itemQuery])
     .subscribe({
       next: ([patron, item]: any[]) => {
@@ -290,7 +279,7 @@ export class CheckinComponent implements OnInit {
             this.item = item.hits[0].metadata;
             // Check if the item is already into the item list. If it happens,
             // just notify the user and clear the form.
-            if (this.items.find(it => it.barcode === barcode)) {
+            if (this.items().find((it: Item) => it.barcode === barcode)) {
               this.messageService.add({
                 severity: 'warn',
                 summary: this.translate.instant('Checkin'),
@@ -337,7 +326,7 @@ export class CheckinComponent implements OnInit {
       }));
     }
     // Show additional message only for the owning library
-    if (item.library.pid === this.userService.user.currentLibrary) {
+    if (item.library.pid === this.appStore.currentLibraryPid()) {
       const additionalMessage = this.displayCollectionsAndTemporaryLocation(item);
       if (additionalMessage.length > 0) {
         if (message.length > 0) {
@@ -384,7 +373,7 @@ export class CheckinComponent implements OnInit {
       })}`;
     }
     // Show additional message only for the owning library
-    if (item.library.pid === this.userService.user.currentLibrary) {
+    if (item.library.pid === this.appStore.currentLibraryPid()) {
       const additionalMessage = this.displayCollectionsAndTemporaryLocation(item);
       if (additionalMessage.length > 0) {
         message += `<br/>${additionalMessage}`;
@@ -429,10 +418,10 @@ export class CheckinComponent implements OnInit {
 
   /** Reset search input */
   private _resetSearchInput(): void {
-    this.searchInputDisabled = false;
-    this.searchText = '';
+    this.searchInputDisabled.set(false);
+    this.searchText.set('');
     setTimeout(() => {
-      this.searchInputFocus = true;
+      this.searchInputFocus.set(true);
     });
   }
 }

@@ -17,13 +17,13 @@
  */
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
-import { ApiService, Error, Record, RecordService } from '@rero/ng-core';
+import { ApiService, Error, RecordService } from '@rero/ng-core';
 import { BaseApi, EsResult, esResultInitialState, IAvailability, IAvailabilityService } from '@rero/shared';
 import { Observable, of } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { AppConfigService } from '../service/app-config.service';
 import { ITypeEmail } from '../shared/preview-email/IPreviewInterface';
-import { EsRecord } from 'projects/shared/src/public-api';
+import { EsRecord } from '@rero/shared';
 
 @Injectable({
   providedIn: 'root'
@@ -63,16 +63,10 @@ export class ItemApiService implements IAvailabilityService {
     }
     return this.recordService.getRecords(
       ItemApiService.RESOURCE_NAME,
-      query,
-      page,
-      itemsPerPage,
-      undefined,
-      undefined,
-      BaseApi.reroJsonheaders,
-      sort
+      { query, page, itemsPerPage, headers: BaseApi.reroJsonheaders, sort }
     ).pipe(
       catchError(() => of(esResultInitialState)),
-      map((response: Record) => response)
+      map((response: EsResult) => response)
     );
   }
 
@@ -85,7 +79,7 @@ export class ItemApiService implements IAvailabilityService {
    */
   getItem(pid: string, resolve = false): Observable<any> {
     return this.recordService
-      .getRecord(ItemApiService.RESOURCE_NAME, pid, resolve ? 1 : 0)
+      .getRecord(ItemApiService.RESOURCE_NAME, pid, resolve ? { resolve: 1 } : undefined)
       .pipe(
         map((result: any) => result.metadata)
       );
@@ -131,7 +125,7 @@ export class ItemApiService implements IAvailabilityService {
   addClaimIssue(itemPid: string, recipients: ITypeEmail[]): Observable<boolean> {
     const apiUrl = `${this.appConfigService.apiEndpointPrefix}/item/${itemPid}/issue/claims`;
     return this.httpClient.post(apiUrl, {recipients}).pipe(
-      map((_: unknown) => true),
+      map(() => true),
       catchError(() => of(false))
     );
   }

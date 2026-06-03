@@ -15,30 +15,32 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, Input } from '@angular/core';
+import { Component, input, ChangeDetectionStrategy} from '@angular/core';
+import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
 
 @Component({
     selector: 'admin-entities-local-global',
     template: `
   <dl class="metadata">
     <ng-content></ng-content>
-    @if (record.source_catalog) {
+    @if (record().source_catalog) {
         <dt translate>Source catalog</dt>
-        <dd>{{ record.source_catalog }}</dd>
+        <dd>{{ record().source_catalog }}</dd>
     }
-    @if (record.identifier) {
+    @if (record().identifier) {
       <dt translate>Identifier</dt>
       <dd>
-        {{ record.identifier.type | translate }} - {{ record.identifier.value }}
-        @if (record.identifier.source) {
-          ({{ record.identifier.source }})
+        {{ record().identifier.type | translate }} - {{ record().identifier.value }}
+        @if (record().identifier.source) {
+          ({{ record().identifier.source }})
         }
       </dd>
     }
   </dl>
   `,
-    standalone: false
+    imports: [TranslateDirective, TranslatePipe],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class EntitiesLocalGlobalComponent {
-  @Input() record: any;
+  record = input<any>();
 }

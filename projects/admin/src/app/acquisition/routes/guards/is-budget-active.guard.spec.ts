@@ -15,18 +15,17 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { provideHttpClientTesting } from '@angular/common/http/testing';
-import { fakeAsync, TestBed, tick } from '@angular/core/testing';
-import { Router, RouterModule } from '@angular/router';
+import { TestBed } from '@angular/core/testing';
+import { NavigationEnd, Router, RouterModule, RouterStateSnapshot } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
-import { CoreModule, RecordService } from '@rero/ng-core';
+import { RecordService } from '@rero/ng-core';
 import { cloneDeep } from 'lodash-es';
-import { of } from 'rxjs';
+import { filter, firstValueFrom, of } from 'rxjs';
 import { ErrorPageComponent } from '../../../error/error-page/error-page.component';
-import { IsBudgetActiveGuard } from './is-budget-active.guard';
+import { isBudgetActiveGuard } from './is-budget-active.guard';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
-describe('IsBudgetActiveGuard', () => {
-  let guard: IsBudgetActiveGuard;
+describe('isBudgetActiveGuard', () => {
   let recordService: RecordService;
   let router: Router;
 
@@ -40,8 +39,7 @@ describe('IsBudgetActiveGuard', () => {
   const receipt = {
     metadata: {
       acq_order: {
-        pid: '1',
-      },
+        pid: '1' },
       exchange_rate: 1,
       amount_adjustments: [{
         label: 'amount',
@@ -58,52 +56,60 @@ describe('IsBudgetActiveGuard', () => {
     }
   };
 
-  const activatedRouteSnapshotSpy = jasmine.createSpyObj('ActivatedRouteSnapshot', ['']);
+  const activatedRouteSnapshotSpy = { } as any;
   activatedRouteSnapshotSpy.params = { type: 'acq_receipt', pid: '1' };
   activatedRouteSnapshotSpy.queryParams = { };
+
+  const runGuard = (route: any) =>
+    TestBed.runInInjectionContext(() =>
+      isBudgetActiveGuard(route, {} as RouterStateSnapshot)
+    ) as any;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
     imports: [RouterModule.forRoot(routes),
-        TranslateModule.forRoot(),
-        CoreModule],
+        TranslateModule.forRoot()],
     providers: [provideHttpClient(withInterceptorsFromDi()), provideHttpClientTesting()]
 });
-    guard = TestBed.inject(IsBudgetActiveGuard);
     recordService = TestBed.inject(RecordService);
     router = TestBed.inject(Router);
   });
 
+  async function waitForNavigation(): Promise<void> {
+    await firstValueFrom(
+      router.events.pipe(filter(e => e instanceof NavigationEnd))
+    );
+  }
+
   it('should be created', () => {
-    expect(guard).toBeTruthy();
+    expect(isBudgetActiveGuard).toBeTruthy();
   });
 
-  it('should return true if the record has the flag true on is_current_budget', () => {
+  it('should return true if the record has the flag true on is_current_budget', async () => {
     const record = cloneDeep(receipt);
-    spyOn(recordService, 'getRecord').and.returnValue(of(record));
-    guard.canActivate(activatedRouteSnapshotSpy).subscribe((access: boolean) => {
-      expect(access).toBeTruthy();
-    });
+    vi.spyOn(recordService, 'getRecord').mockReturnValue(of(record));
+    const access = await firstValueFrom(runGuard(activatedRouteSnapshotSpy));
+    expect(access).toBeTruthy();
   });
 
-  it('should return a 403 error if the record has the flag false on is_current_budget', fakeAsync(() => {
+  it('should return a 403 error if the record has the flag false on is_current_budget', async () => {
     const record = cloneDeep(receipt);
     record.metadata.is_current_budget = false;
-    spyOn(recordService, 'getRecord').and.returnValue(of(record));
-    guard.canActivate(activatedRouteSnapshotSpy).subscribe(() => {
-      tick();
-      expect(router.url).toBe('/errors/403');
-    });
-  }));
+    vi.spyOn(recordService, 'getRecord').mockReturnValue(of(record));
+    const navPromise = waitForNavigation();
+    await firstValueFrom(runGuard(activatedRouteSnapshotSpy));
+    await navPromise;
+    expect(router.url).toBe('/errors/403');
+  });
 
-  it('should return a 403 error if the record does not have the field is_current_budget', fakeAsync(() => {
+  it('should return a 403 error if the record does not have the field is_current_budget', async () => {
     const record = cloneDeep(receipt);
-    delete record.is_current_budget;
+    delete (record as any).is_current_budget;
     record.metadata.is_current_budget = false;
-    spyOn(recordService, 'getRecord').and.returnValue(of(record));
-    guard.canActivate(activatedRouteSnapshotSpy).subscribe(() => {
-      tick();
-      expect(router.url).toBe('/errors/403');
-    });
-  }));
+    vi.spyOn(recordService, 'getRecord').mockReturnValue(of(record));
+    const navPromise = waitForNavigation();
+    await firstValueFrom(runGuard(activatedRouteSnapshotSpy));
+    await navPromise;
+    expect(router.url).toBe('/errors/403');
+  });
 });

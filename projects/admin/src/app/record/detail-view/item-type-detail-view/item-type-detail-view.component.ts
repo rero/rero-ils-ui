@@ -14,18 +14,20 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component } from '@angular/core';
-import { DetailRecord } from '@rero/ng-core/lib/record/detail/view/detail-record';
-import { Observable } from 'rxjs';
+import { Component, input, ChangeDetectionStrategy } from '@angular/core';
+import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
+import { NgClass } from '@angular/common';
+import { Bind } from 'primeng/bind';
+import { Panel } from 'primeng/panel';
 
 @Component({
     selector: 'admin-item-type-detail-view',
     templateUrl: './item-type-detail-view.component.html',
-    standalone: false
+    imports: [TranslateDirective, NgClass, Bind, Panel, TranslatePipe],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class ItemTypeDetailViewComponent implements DetailRecord {
+export class ItemTypeDetailViewComponent {
 
-  record$: Observable<any>;
-
-  type: string;
+  readonly record = input<any>();
+  readonly type = input<string>('');
 }

@@ -14,40 +14,37 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, inject, Input, OnDestroy, OnInit } from '@angular/core';
-import { PatronTransactionEventApiService } from '../../../../api/patron-transaction-event-api.service';
-import { PatronProfileMenuService } from '../../../patron-profile-menu.service';
-import { Subscription } from 'rxjs';
+import { CurrencyPipe, NgClass } from '@angular/common';
+import { Component, inject, input, OnInit, signal, ChangeDetectionStrategy} from '@angular/core';
+import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
+import { DateTranslatePipe, RecordData } from '@rero/ng-core';
 import { IOrganisation } from '@rero/shared';
-import { Record } from '@rero/ng-core';
+import type { EsResult } from '@rero/ng-core';
+import { TagModule } from 'primeng/tag';
+import { TimelineModule } from 'primeng/timeline';
+import { PatronTransactionEventApiService } from '../../../../api/patron-transaction-event-api.service';
+import { PatronProfileStore } from '../../../store/patron-profile.store';
 
 @Component({
   selector: 'public-search-patron-profile-fee-event',
   templateUrl: './patron-profile-fee-event.component.html',
-  standalone: false
+  imports: [CurrencyPipe, NgClass, TranslateDirective, TranslatePipe, DateTranslatePipe, TagModule, TimelineModule],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class PatronProfileFeeEventComponent implements OnInit, OnDestroy {
-    private patronTransactionEventApiService: PatronTransactionEventApiService = inject(PatronTransactionEventApiService);
-    private patronProfileMenuService: PatronProfileMenuService = inject(PatronProfileMenuService);
+export class PatronProfileFeeEventComponent implements OnInit {
+    private patronTransactionEventApiService = inject(PatronTransactionEventApiService);
+    private store = inject(PatronProfileStore);
 
-    @Input() event;
+    event = input<RecordData>();
 
-    transactionEvents;
-
-    private subscription = new Subscription();
+    readonly transactionEvents = signal<any[]>([]);
 
     get organisation(): IOrganisation {
-      return this.patronProfileMenuService.currentPatron.organisation;
+      return this.store.currentPatron()!.organisation;
     }
 
     ngOnInit(): void {
-      this.subscription.add(
-        this.patronTransactionEventApiService.getEvents(this.event.metadata.pid).subscribe((response: Record) =>
-        this.transactionEvents = response.hits.hits
-      ));
-    }
-
-    ngOnDestroy(): void {
-      this.subscription.unsubscribe();
+      this.patronTransactionEventApiService.getEvents((this.event()!.metadata as any).pid)
+        .subscribe((response: EsResult) => this.transactionEvents.set(response.hits.hits));
     }
 }

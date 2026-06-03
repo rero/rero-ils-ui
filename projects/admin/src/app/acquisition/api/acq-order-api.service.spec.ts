@@ -21,10 +21,10 @@ import { Notification, NotificationType } from "@app/admin/classes/notification"
 import { IPreview } from "@app/admin/shared/preview-email/IPreviewInterface";
 import { TranslateModule } from "@ngx-translate/core";
 import { RecordService, RecordUiService } from "@rero/ng-core";
+import { apiResponse } from "@rero/shared";
 import { ConfirmationService, MessageService } from "primeng/api";
-import { apiResponse } from "projects/shared/src/tests/api";
 import { of } from "rxjs";
-import { AcqOrderHistoryVersionResponseInterface, AcqOrderLineStatus, AcqOrderStatus, IAcqOrder, IAcqOrderLine, orderDefaultData, orderLineDefaultData } from "../classes/order";
+import { AcqOrderHistoryVersionResponseInterface, AcqOrderLineStatus, AcqOrderStatus, IAcqOrder, orderDefaultData, orderLineDefaultData } from "../classes/order";
 import { AcqOrderApiService } from "./acq-order-api.service";
 
 describe('AcqOrderApiService', () => {
@@ -112,13 +112,13 @@ describe('AcqOrderApiService', () => {
     }
   ];
 
-  const recordServiceSpy = jasmine.createSpyObj('RecordService', ['getRecord','getRecords', 'totalHits']);
-  recordServiceSpy.totalHits.and.returnValue(1);
+  const recordServiceSpy = { getRecord: vi.fn(), getRecords: vi.fn(), totalHits: vi.fn() };
+  recordServiceSpy.totalHits.mockReturnValue(1);
 
-  const recordUiServiceSpy = jasmine.createSpyObj('RecordUiService', ['deleteRecord']);
-  recordUiServiceSpy.deleteRecord.and.returnValue(of(true));
+  const recordUiServiceSpy = { deleteRecord: vi.fn() };
+  recordUiServiceSpy.deleteRecord.mockReturnValue(of(true));
 
-  const httpClientSpy = jasmine.createSpyObj('httpClient', ['get', 'post']);
+  const httpClientSpy = { get: vi.fn(), post: vi.fn() };
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -144,18 +144,18 @@ describe('AcqOrderApiService', () => {
 
   it('should return a budget', () => {
     const data = {...orderDefaultData, ...orderRecord};
-    recordServiceSpy.getRecord.and.returnValue(of({ metadata: orderRecord }));
+    recordServiceSpy.getRecord.mockReturnValue(of({ metadata: orderRecord }));
     service.getOrder('1').subscribe((result: IAcqOrder) => expect(result).toEqual(data));
   });
 
   it('should return the order preview', () => {
-    httpClientSpy.get.and.returnValue(of(orderPreview));
+    httpClientSpy.get.mockReturnValue(of(orderPreview));
     service.getOrderPreview('1')
       .subscribe((result: IPreview) => expect(result).toEqual(orderPreview));
   });
 
   it('should return the notification sent', () => {
-    httpClientSpy.post.and.returnValue(of({data: notification}));
+    httpClientSpy.post.mockReturnValue(of({data: notification}));
     service.sendOrder('1', [{ type: 'to', address: 'foo@bar.com'}])
       .subscribe((result: Notification) => {
         expect(result).toBeInstanceOf(Notification);
@@ -163,14 +163,14 @@ describe('AcqOrderApiService', () => {
   });
 
   it('should return a list of the order history', () => {
-    httpClientSpy.get.and.returnValue(of(orderHistory));
+    httpClientSpy.get.mockReturnValue(of(orderHistory));
     service.getOrderHistory('1')
       .subscribe((result: any) => expect(result).toEqual(orderHistory));
   });
 
   it('should return a list of lines in an order', () => {
     apiResponse.hits.hits = orderLines;
-    recordServiceSpy.getRecords.and.returnValue(of(apiResponse));
+    recordServiceSpy.getRecords.mockReturnValue(of(apiResponse));
     const data = [{...orderLineDefaultData, ...orderLines[0].metadata}];
     service.getOrderLines('1').subscribe((result: any) => {
         expect(result).toEqual(data);
@@ -178,10 +178,9 @@ describe('AcqOrderApiService', () => {
       });
   });
 
-  it('should return to delete a line', () => {
+  it('should update lastDeletedOrderLine signal on deleteOrderLine', () => {
     const orderLine = orderLines[0].metadata;
-    service.deletedOrderLineSubject$
-      .subscribe((result: IAcqOrderLine) => expect(result).toEqual(orderLine));
     service.deleteOrderLine(orderLine);
+    expect(service.lastDeletedOrderLine()).toEqual(orderLine);
   });
 });

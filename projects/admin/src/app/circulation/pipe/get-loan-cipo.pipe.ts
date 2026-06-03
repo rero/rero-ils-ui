@@ -21,10 +21,7 @@ import { CircPolicy } from '../../classes/circ-policy';
 import { Loan } from '../../classes/loans';
 import { LoanService } from '../../service/loan.service';
 
-@Pipe({
-    name: 'getLoanCipo',
-    standalone: false
-})
+@Pipe({ name: 'getLoanCipo' })
 export class GetLoanCipoPipe implements PipeTransform {
 
   private loanService: LoanService = inject(LoanService);

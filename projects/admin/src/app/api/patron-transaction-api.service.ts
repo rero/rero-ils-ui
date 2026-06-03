@@ -16,7 +16,8 @@
  */
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
-import { ApiService, Record, RecordService } from '@rero/ng-core';
+import type { EsResult } from '@rero/ng-core';
+import { ApiService, RecordService } from '@rero/ng-core';
 import { Observable, map } from 'rxjs';
 import { FeeFormModel } from '../circulation/patron/patron-transactions/patron-fee/patron-fee.component';
 
@@ -39,7 +40,7 @@ export class PatronTransactionApiService {
 
   getActiveFeesByItemPid(itemPid: string): Observable<any> {
     const query = `item.pid:${itemPid} AND total_amount:>0`;
-    return this.recordService.getRecords('patron_transactions', query)
-      .pipe(map((result: Record) => result.hits.hits));
+    return this.recordService.getRecords('patron_transactions', { query })
+      .pipe(map((result: EsResult) => result.hits.hits));
   }
 }

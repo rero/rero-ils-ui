@@ -14,24 +14,18 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { inject, Injectable } from '@angular/core';
-import { ActivatedRouteSnapshot, Router, UrlTree } from '@angular/router';
-import { Observable, of } from 'rxjs';
+import { inject } from '@angular/core';
+import { ActivatedRouteSnapshot, CanActivateFn, Router } from '@angular/router';
 import { AppConfigService } from '../app-config.service';
 
-@Injectable({
-  providedIn: 'root'
-})
-export class CollectionAccessGuard  {
+export const collectionAccessGuard: CanActivateFn = (route: ActivatedRouteSnapshot): boolean => {
+  const appConfigService = inject(AppConfigService);
+  const router = inject(Router);
 
-  private _appConfigService: AppConfigService = inject(AppConfigService);
-  private _router: Router = inject(Router);
-
-  canActivate(next: ActivatedRouteSnapshot): Observable<boolean> {
-    const {view} = next.data.types[0].preFilters;
-    if (this._appConfigService.globalViewName === view) {
-      this._router.navigate(['/errors/403'], { skipLocationChange: true });
-    }
-    return of(true);
+  const viewcode = route.params['viewcode'] ?? route.parent?.params['viewcode'];
+  if (appConfigService.globalViewName === viewcode) {
+    router.navigate(['/errors/403'], { skipLocationChange: true });
+    return false;
   }
-}
+  return true;
+};

@@ -15,55 +15,73 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, inject, OnInit } from '@angular/core';
-import { IRolePermission, PermissionApiService } from '../../../api/permission-api.service';
+import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { NgClass } from '@angular/common';
+import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
+import { InputText } from 'primeng/inputtext';
+import { PermissionApiService } from '../../../api/permission-api.service';
+
+type IRole = {
+  name: string;
+  type: string;
+};
 
 @Component({
-    selector: 'admin-permission-detail-view',
-    templateUrl: './permission-detail-view.component.html',
-    standalone: false
+  selector: 'admin-permission-detail-view',
+  templateUrl: './permission-detail-view.component.html',
+  standalone: true,
+  imports: [TranslateDirective, InputText, NgClass, TranslatePipe],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class PermissionDetailViewComponent implements OnInit {
+export class PermissionDetailViewComponent {
 
-  private permissionApiService: PermissionApiService = inject(PermissionApiService);
+  private readonly permissionApiService = inject(PermissionApiService);
 
-  // COMPONENT ATTRIBUTES =====================================================
-  /** All available roles */
-  roles: {name: string, type:string}[] = [];
-  /** All available permissions */
-  permissionNames: string[];
-  /** Filtered permissions */
-  filteredPermissionNames: string[];
-  /** All permissions regrouped by roles */
-  globalPermissions: Record<string, any>;
+  readonly globalPermissions = toSignal(
+    this.permissionApiService.getAllPermissionsByRole()
+  );
 
-  /** OnInit hook */
-  ngOnInit(): void {
-    this.permissionApiService
-      .getAllPermissionsByRole()
-      .subscribe((permissions: IRolePermission) => {
-        this.roles = [];  // reset the roles;
-        Object.keys(permissions).map(roleName => this.roles.push({name: roleName, type: permissions[roleName].type}));
-        this.roles.sort((role1, role2) => {
-          return (role1.type == role2.type)
-            ? role1.name.localeCompare(role2.name)
-            : (role1.type == 'system_role') ? -1 : 1;
-        });
+  readonly roles = computed<IRole[]>(() => {
+    const permissions = this.globalPermissions();
+    if (!permissions) return [];
+    return Object.keys(permissions)
+      .map(roleName => ({ name: roleName, type: permissions[roleName].type }))
+      .sort((a, b) =>
+        a.type === b.type
+          ? a.name.localeCompare(b.name)
+          : a.type === 'system_role' ? -1 : 1
+      );
+  });
 
-        this.permissionNames = Object.keys(permissions[this.roles[0].name].actions);
-        this.globalPermissions = permissions;
-        this.filteredPermissionNames = [ ...this.permissionNames ];
-      });
+  private readonly permissionNames = computed<string[]>(() => {
+    const permissions = this.globalPermissions();
+    const roles = this.roles();
+    if (!permissions || roles.length === 0) return [];
+    return Object.keys(permissions[roles[0].name].actions);
+  });
+
+  private readonly filterValue = signal('');
+
+  readonly filteredPermissionNames = computed<string[]>(() => {
+    const filter = this.filterValue();
+    const names = this.permissionNames();
+    if (!filter) return names;
+    const regexp = new RegExp(filter, 'g');
+    return names.filter(name => name.match(regexp));
+  });
+
+  roleClass(type: string): string {
+    return 'type-' + type.replace('_', '-');
   }
 
-  // COMPONENT FUNCTIONS ======================================================
-  /**
-   * Filter the permission list based on permission name.
-   * @param value - string: a regular expression used to filter the permission list.
-   */
+  permissionClass(value: boolean | null): string {
+    if (value === true) return 'text-success';
+    if (value === false) return 'text-error';
+    return 'ui:text-muted-color';
+  }
+
   filterPermissions(value: string): void {
-    const regexp = RegExp(value, 'g');
-    this.filteredPermissionNames = this.permissionNames.filter((name: string) => name.match(regexp));
+    this.filterValue.set(value);
   }
-
 }
