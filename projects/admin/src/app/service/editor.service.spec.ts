@@ -35,9 +35,9 @@ describe('EditorService', () => {
     { issue: 'issue 2', expected_date: '2025-04-22 14:00:00' }
   ];
 
-  const httpClientSpy = jasmine.createSpyObj('HttpClient', ['get', 'post']);
-  httpClientSpy.get.and.returnValue(of(record));
-  httpClientSpy.post.and.returnValue(of({ issues }));
+  const httpClientSpy = { get: vi.fn(), post: vi.fn() };
+  httpClientSpy.get.mockReturnValue(of(record));
+  httpClientSpy.post.mockReturnValue(of({ issues }));
 
   beforeEach(() => {
     TestBed.configureTestingModule({

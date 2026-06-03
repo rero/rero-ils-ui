@@ -16,13 +16,4 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 
-<ng-core-record-search [adminMode]="adminMode" [currentType]="currentType" [types]="types" [detailUrl]="detailUrl"
-  [showSearchInput]="showSearchInput" [q]="q" [page]="page" [size]="size" [sort]="sort"
-  (parametersChanged)="updateUrl($event)" (recordsSearched)="recordsSearched($event)"
->
-  @if (currentType === 'documents' && showLink) {
-    <div class="ui:my-6">
-      <a href="{{ uriGlobalView }}" translate>Expand to all RERO ILS</a>
-    </div>
-  }
-</ng-core-record-search>
+<ng-core-record-search-page />

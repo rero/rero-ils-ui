@@ -15,46 +15,36 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { _ } from "@ngx-translate/core";
-import { RouteInterface } from '@rero/ng-core';
-import { of } from 'rxjs';
+import { ResolveFn, Routes } from '@angular/router';
+import { _ } from '@ngx-translate/core';
+import { RecordType, RouteDataTypesInterface } from '@rero/ng-core';
 import { RemoteEntitiesDetailViewComponent } from '../record/detail-view/entities-detail-view/remote/entities-remote-detail-view.component';
 import { RemotePageDetailComponent } from '../record/detail-view/entities-detail-view/remote/remote-page-detail/remote-page-detail.component';
 import { BaseRoute } from './base-route';
 
-export class EntitiesRemoteRoute extends BaseRoute implements RouteInterface {
+export const entitiesRemoteRouteResolver: ResolveFn<Partial<RecordType>[]> = () =>
+  new EntitiesRemoteRoute().getTypes();
 
+export const entitiesRemoteRoutes: Routes = [
+  {
+    path: 'detail/:pid',
+    component: RemotePageDetailComponent,
+    title: _('Remote entity'),
+  },
+];
+
+class EntitiesRemoteRoute extends BaseRoute implements RouteDataTypesInterface {
   /** Route name */
   readonly name = 'remote_entities';
 
-  /**
-   * Get Configuration
-   * @return Object
-   */
-  getConfiguration() {
-    return {
-      matcher: (url: any) => this.routeMatcher(url, this.name),
-      children: [
-        {
-          path: 'detail/:pid',
-          component: RemotePageDetailComponent,
-          title: _('Remote entity'),
-        }
-      ],
-      data: {
-        adminMode: () => of({
-          can: false,
-          message: ''
-        }),
-        types: [
-          {
-            key: this.name,
-            index: this.name,
-            label: _('Remote entities'),
-            detailComponent: RemoteEntitiesDetailViewComponent
-          }
-        ]
-      }
-    };
+  getTypes(): Partial<RecordType>[] {
+    return [
+      {
+        key: this.name,
+        index: this.name,
+        label: _('Remote entities'),
+        detailComponent: RemoteEntitiesDetailViewComponent,
+      },
+    ];
   }
 }

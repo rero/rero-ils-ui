@@ -17,7 +17,7 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { ApiService, RecordService } from '@rero/ng-core';
-import { BaseApi, ItemStatus, UserService } from '@rero/shared';
+import { AppStore, BaseApi, ItemStatus } from '@rero/shared';
 import { Observable, of } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { Item, ItemAction, ItemNoteType } from '../classes/items';
@@ -28,7 +28,7 @@ import { Item, ItemAction, ItemNoteType } from '../classes/items';
 export class ItemsService {
 
   private httpClient: HttpClient = inject(HttpClient);
-  private userService: UserService = inject(UserService);
+  private appStore = inject(AppStore);
   private recordService: RecordService = inject(RecordService);
   private apiService: ApiService = inject(ApiService);
 
@@ -39,7 +39,7 @@ export class ItemsService {
    */
   getByPidFromEs(pid: string): Observable<any> {
     return this.recordService.getRecords(
-      'items', `pid:${pid}`, 1, 1, undefined, undefined, BaseApi.reroJsonheaders
+      'items', { query: `pid:${pid}`, page: 1, itemsPerPage: 1, headers: BaseApi.reroJsonheaders }
     ).pipe(map((result: any) => result.hits.hits[0]));
   }
 
@@ -53,7 +53,7 @@ export class ItemsService {
     const url = `${itemApiUrl}/requested_loans/${libraryPid}`;
     return this.httpClient.get<any>(url).pipe(
       map(data => data.hits),
-      map(hits => this.recordService.totalHits(hits.total) === 0 ? [] : hits.hits),
+      map(hits => +this.recordService.totalHits(hits.total) === 0 ? [] : hits.hits),
       map(hits => hits.map(
         data => {
           const { item } = data;
@@ -79,7 +79,7 @@ export class ItemsService {
       item_pid: item.pid,
       pid: item.loan.pid,
       transaction_library_pid: transactionLibraryPid,
-      transaction_user_pid: this.userService.user.patronLibrarian.pid
+      transaction_user_pid: this.appStore.user()?.patronLibrarian.pid
     }).pipe(
       map(data => {
         const itemData = data.metadata;
@@ -134,7 +134,7 @@ export class ItemsService {
     return this.httpClient.post<any>(`${itemApiUrl}/checkin`, {
       item_barcode: barcode,
       transaction_library_pid: transactionLibraryPid,
-      transaction_user_pid: this.userService.user.patronLibrarian.pid
+      transaction_user_pid: this.appStore.user()?.patronLibrarian.pid
     }).pipe(
       map(data => {
         const item = new Item(data.metadata);

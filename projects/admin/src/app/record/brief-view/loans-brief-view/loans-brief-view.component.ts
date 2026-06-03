@@ -15,33 +15,40 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, inject, Input, OnInit } from '@angular/core';
-import { ResultItem } from '@rero/ng-core';
-import { PermissionsService } from '@rero/shared';
+import { Component, inject, input, OnInit, ChangeDetectionStrategy} from '@angular/core';
+
+import { AppStore, InheritedCallNumberComponent, MainTitlePipe } from '@rero/shared';
 import { DateTime } from 'luxon';
 import { DialogService } from 'primeng/dynamicdialog';
 import { LoanState } from '../../../classes/loans';
 import { CirculationLogsComponent } from '../../circulation-logs/circulation-logs.component';
-import { TranslateService } from '@ngx-translate/core';
+import { TranslateService, TranslateDirective, TranslatePipe } from '@ngx-translate/core';
+import { Bind } from 'primeng/bind';
+import { Button } from 'primeng/button';
+import { RouterLink } from '@angular/router';
+import { Tag } from 'primeng/tag';
+import { NgClass, JsonPipe, DatePipe } from '@angular/common';
+import { ScrollPanel } from 'primeng/scrollpanel';
 
 @Component({
     selector: 'admin-loans-brief-view',
     templateUrl: './loans-brief-view.component.html',
-    standalone: false
+    imports: [Bind, Button, TranslateDirective, InheritedCallNumberComponent, RouterLink, Tag, NgClass, ScrollPanel, JsonPipe, DatePipe, TranslatePipe, MainTitlePipe],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class LoansBriefViewComponent implements ResultItem, OnInit {
+export class LoansBriefViewComponent implements OnInit {
 
   private dialogService: DialogService = inject(DialogService);
-  private permissionsService: PermissionsService = inject(PermissionsService);
+  private appStore = inject(AppStore);
   private translateService: TranslateService = inject(TranslateService);
 
   // COMPONENT ATTRIBUTES =====================================================
   /** Information to build the URL on the record detail view. */
-  @Input() detailUrl: { link: string; external: boolean };
+  detailUrl = input<{ link: string; external: boolean }>();
   /** The record to perform. */
-  @Input() record: any;
+  record = input<any>();
   /** The type of the record. */
-  @Input() type: string;
+  type = input<string>();
 
   /** debug mode toggle */
   debugMode = false;
@@ -58,7 +65,7 @@ export class LoansBriefViewComponent implements ResultItem, OnInit {
    * @returns True if the debug mode can be enabled and switched
    */
   get canUseDebugMode(): boolean {
-    return this.permissionsService.canAccessDebugMode();
+    return this.appStore.canAccessDebugMode();
   }
 
   // HOOKS ======================================================
@@ -67,8 +74,8 @@ export class LoansBriefViewComponent implements ResultItem, OnInit {
     // State bullet color
     this.setTagSeverity();
     // Is request is expired
-    if ('request_expire_date' in this.record.metadata) {
-      const requestExpireDate = DateTime.fromISO(this.record.metadata.request_expire_date);
+    if ('request_expire_date' in this.record().metadata) {
+      const requestExpireDate = DateTime.fromISO(this.record().metadata.request_expire_date);
       this.isRequestExpired = DateTime.now() >= requestExpireDate;
     }
   }
@@ -92,7 +99,7 @@ export class LoansBriefViewComponent implements ResultItem, OnInit {
 
   /** Define the bullet color. */
   private setTagSeverity(): void {
-    switch (this.record.metadata.state) {
+    switch (this.record().metadata.state) {
       case LoanState.CREATED:
       case LoanState.PENDING:
       case LoanState.ITEM_AT_DESK:

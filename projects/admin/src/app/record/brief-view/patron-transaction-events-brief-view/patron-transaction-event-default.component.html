@@ -15,14 +15,14 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-@if (parent.note) {
+@if (parent().note) {
   <h5>
-    [{{ 'Note' | translate }}: {{ parent.note }}]
+    [{{ 'Note' | translate }}: {{ parent().note }}]
   </h5>
 }
 <dl class="metadata">
   <dt translate>Patron</dt>
   <dd>
-    <a [routerLink]="['/records', 'patrons', 'detail', parent.patron.pid]">{{ parent.patron.pid | patronName | async }}</a>
+    <a [routerLink]="['/records', 'patrons', 'detail', parent().patron.pid]">{{ parent().patron.pid | patronName | async }}</a>
   </dd>
 </dl>

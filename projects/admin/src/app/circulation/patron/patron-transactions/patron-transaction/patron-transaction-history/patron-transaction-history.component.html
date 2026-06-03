@@ -34,14 +34,16 @@
           @if (event.type !== patronTransactionEventType.DISPUTE) {
             <p-tag
               [value]="event.amount | currency: organisation.default_currency"
-              [severity]="tagSeverity(event)"
+              [severity]="$any(tagSeverity(event))"
             />
           }
           @if (event.pid) {
             <i
               class="fa"
               [ngClass]="{'fa-eye': hideShowEye('event-' + event.pid), 'fa-eye-slash': !hideShowEye('event-' + event.pid)}"
-              (click)="hideShowEvent('event-' + event.pid)"></i>
+              tabindex="0"
+              (click)="hideShowEvent('event-' + event.pid)"
+              (keyup.enter)="hideShowEvent('event-' + event.pid)"></i>
           }
         </div>
       </div>
@@ -101,7 +103,7 @@
                 @if (event.type !== patronTransactionEventType.DISPUTE) {
                   <p-tag
                     [value]="step.amount | currency: organisation.default_currency"
-                    [severity]="tagSeverity(event)"
+                    [severity]="$any(tagSeverity(event))"
                   />
                 }
               </div>

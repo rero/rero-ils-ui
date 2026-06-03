@@ -16,26 +16,24 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { Directive, inject, Input, TemplateRef } from '@angular/core';
+import { Directive, inject, TemplateRef, input } from '@angular/core';
 
 /** See: https://github.com/primefaces/primeng/blob/master/src/app/components/api/shared.ts */
 
-@Directive({
+@Directive({ 
     // eslint-disable-next-line @angular-eslint/directive-selector
-    selector: '[rTemplate]',
-    standalone: false
-})
+    selector: '[rTemplate]' })
 export class ReroTemplateDirective {
 
   public template: TemplateRef<any> = inject(TemplateRef);
 
   /** the template type. */
-  @Input() type: string | undefined;
+  readonly type = input<string | undefined>(undefined);
   /** the template name. */
-  @Input('rTemplate') name: string | undefined;
+  readonly name = input<string | undefined>(undefined, { alias: "rTemplate" });
 
   /** get the type of template. */
   getType(): string {
-    return this.name!;
+    return this.name()!;
   }
 }

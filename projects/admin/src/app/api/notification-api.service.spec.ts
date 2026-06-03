@@ -49,8 +49,8 @@ describe('NotificationApiService', () => {
     "updated": "2023-03-22T16:00:14.719610+00:00"
   };
 
-  const recordServiceSpy = jasmine.createSpyObj('RecordService', ['getRecord']);
-  recordServiceSpy.getRecord.and.returnValue(of(notificationRecord));
+  const recordServiceSpy = { getRecord: vi.fn() };
+  recordServiceSpy.getRecord.mockReturnValue(of(notificationRecord));
 
   beforeEach(() => {
     TestBed.configureTestingModule({

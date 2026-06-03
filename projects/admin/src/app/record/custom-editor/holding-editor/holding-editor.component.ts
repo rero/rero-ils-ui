@@ -14,12 +14,14 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, inject, OnDestroy, OnInit } from '@angular/core';
-import { AbstractCanDeactivateComponent, removeEmptyValues } from '@rero/ng-core';
+import { Component, inject, OnDestroy, OnInit, ChangeDetectionStrategy} from '@angular/core';
+import { AbstractCanDeactivateComponent, removeEmptyValues, EditorComponent } from '@rero/ng-core';
 import { BehaviorSubject, of, Subscription } from 'rxjs';
 import { catchError, debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
 import { EditorService } from '../../../service/editor.service';
 import { PredictionIssue } from '../../../service/holdings.service';
+import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
+import { SlicePipe } from '@angular/common';
 
 /**
  * Holding specific editor.
@@ -28,7 +30,8 @@ import { PredictionIssue } from '../../../service/holdings.service';
 @Component({
     selector: 'admin-holding-editor',
     templateUrl: './holding-editor.component.html',
-    standalone: false
+    imports: [EditorComponent, TranslateDirective, SlicePipe, TranslatePipe],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class HoldingEditorComponent extends AbstractCanDeactivateComponent implements OnInit, OnDestroy {
 

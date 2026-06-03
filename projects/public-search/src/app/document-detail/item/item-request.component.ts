@@ -14,11 +14,11 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, computed, inject, input, OnInit, output, signal } from '@angular/core';
+import { Component, computed, inject, input, OnInit, output, signal, ChangeDetectionStrategy} from '@angular/core';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { Button } from 'primeng/button';
 import { ItemApiService } from '../../api/item-api.service';
-import { EsRecord, IPatron, UserService } from '@rero/shared';
+import { EsRecord, IPatron, AppStore } from '@rero/shared';
 import { Tooltip } from 'primeng/tooltip';
 import { canRequest } from '../model/can-request-model';
 
@@ -39,11 +39,12 @@ import { canRequest } from '../model/can-request-model';
     <i class="fa fa-cart-arrow-down ui:mr-2"></i>
     {{ 'Request' | translate }}
   </p-button>
-  `
+  `,
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ItemRequestComponent implements OnInit {
   private itemApiService = inject(ItemApiService);
-  private userService = inject(UserService);
+  private appStore = inject(AppStore);
   private translateService = inject(TranslateService);
 
   record = input.required<EsRecord>();
@@ -73,8 +74,8 @@ export class ItemRequestComponent implements OnInit {
   private _patron: IPatron;
 
   ngOnInit(): void {
-    if (this.userService.user && this.record) {
-      this._patron = this.userService.user.getPatronByOrganisationPid(
+    if (this.appStore.user() && this.record) {
+      this._patron = this.appStore.user()?.getPatronByOrganisationPid(
         this.record().metadata.organisation.pid
       );
       if (this._patron?.patron) {

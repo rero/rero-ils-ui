@@ -14,16 +14,16 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-@if (items) {
+@if (items()) {
   <h4 translate>Items</h4>
   <ul class="ui:list-none">
-    @for (item of items; track item.pid) {
+    @for (item of items(); track item.pid) {
       @let itemData = item.pid | getRecord: 'items' | async;
       @if (itemData) {
         <li class="ui:p-2 ui:odd:bg-surface-50 ui:flex ui:gap-6">
           @if ($any(itemData).metadata.document.pid | getRecord:'documents':'object':null:{Accept: 'application/rero+json'} | async; as document) {
             <div class="ui:hidden ui:sm:block">
-              <shared-thumbnail [record]="document" />
+              <shared-thumbnail [record]="$any(document)" />
             </div>
             <div class="ui:grow">
               <h5>

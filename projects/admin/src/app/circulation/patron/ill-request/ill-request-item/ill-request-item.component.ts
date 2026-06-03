@@ -15,19 +15,27 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, Input } from '@angular/core';
+import { Component, input, ChangeDetectionStrategy} from '@angular/core';
 import { getTagSeverityFromStatus } from '@app/admin/utils/utils';
+import { OpenCloseButtonComponent, JournalVolumePipe } from '@rero/shared';
+import { Bind } from 'primeng/bind';
+import { Tag } from 'primeng/tag';
+import { Button } from 'primeng/button';
+import { RouterLink } from '@angular/router';
+import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
+import { DateTranslatePipe, Nl2brPipe, TruncateTextPipe } from '@rero/ng-core';
 
 @Component({
     selector: 'admin-ill-request-item',
     templateUrl: './ill-request-item.component.html',
-    standalone: false
+    imports: [OpenCloseButtonComponent, Bind, Tag, Button, RouterLink, TranslateDirective, DateTranslatePipe, Nl2brPipe, TruncateTextPipe, JournalVolumePipe, TranslatePipe],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class IllRequestItemComponent {
 
   // COMPONENT ATTRIBUTES =====================================================
   /** ILL record. */
-  @Input() record: any;
+  record = input<any>();
   /** Is detail is collapsed. */
   isCollapsed = true;
 

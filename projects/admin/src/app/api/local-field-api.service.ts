@@ -16,7 +16,8 @@
  */
 
 import { inject, Injectable } from '@angular/core';
-import { Record, RecordService, RecordUiService } from '@rero/ng-core';
+import type { EsResult } from '@rero/ng-core';
+import { RecordService, RecordUiService } from '@rero/ng-core';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
@@ -39,10 +40,10 @@ export class LocalFieldApiService {
     const query = `parent.type:${resourceType} AND parent.pid:${resourcePid} AND organisation.pid:${organisationPid}`;
 
     return this.recordService
-      .getRecords('local_fields', query, 1, 1)
+      .getRecords('local_fields', { query, page: 1, itemsPerPage: 1 })
       .pipe(
-        map((result: Record) => {
-          return this.recordService.totalHits(result.hits.total) === 0
+        map((result: EsResult) => {
+          return +this.recordService.totalHits(result.hits.total) === 0
             ? {}
             : result.hits.hits[0];
         })

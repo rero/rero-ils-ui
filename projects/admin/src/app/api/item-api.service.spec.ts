@@ -17,7 +17,7 @@
 import { HttpClient } from '@angular/common/http';
 import { TestBed } from '@angular/core/testing';
 import { TranslateModule } from '@ngx-translate/core';
-import { RecordModule, RecordService } from '@rero/ng-core';
+import { ApiService, RecordService } from '@rero/ng-core';
 import { IAvailability } from '@rero/shared';
 import { of } from 'rxjs';
 import { ItemApiService } from './item-api.service';
@@ -74,20 +74,20 @@ describe('ItemApiService', () => {
     }
   ];
 
-  const httpClientSpy = jasmine.createSpyObj('HttpClient', ['get', 'post']);
+  const httpClientSpy = { get: vi.fn(), post: vi.fn() };
 
-  const recordServiceSpy = jasmine.createSpyObj('RecordService', ['getRecord', 'update']);
-  recordServiceSpy.getRecord.and.returnValue(of(record));
+  const recordServiceSpy = { getRecord: vi.fn(), update: vi.fn() };
+  recordServiceSpy.getRecord.mockReturnValue(of(record));
 
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [
-        RecordModule,
         TranslateModule.forRoot()
       ],
       providers: [
         { provide: RecordService, useValue: recordServiceSpy },
-        { provide: HttpClient, useValue: httpClientSpy }
+        { provide: HttpClient, useValue: httpClientSpy },
+        { provide: ApiService, useValue: { getRefEndpoint: vi.fn().mockReturnValue('api/locations/2') } }
       ]
     });
     service = TestBed.inject(ItemApiService);
@@ -106,33 +106,33 @@ describe('ItemApiService', () => {
   it('should return the item\'s updated location', () => {
     const itemUpdated = {...item};
     itemUpdated.location = { $ref: 'api/locations/2' };
-    recordServiceSpy.update.and.returnValue(of(itemUpdated));
+    recordServiceSpy.update.mockReturnValue(of(itemUpdated));
     service.updateLocation(item, '2').subscribe((result: any) => {
       expect(result).toEqual(itemUpdated);
     })
   });
 
   it('should return the availability of the item', () => {
-    httpClientSpy.get.and.returnValue(of(availability));
+    httpClientSpy.get.mockReturnValue(of(availability));
     service.getAvailability('1')
       .subscribe((response: IAvailability) => expect(response).toEqual(availability));
   });
 
   it('should return statistics on an item', () => {
-    httpClientSpy.get.and.returnValue(of(statItem));
+    httpClientSpy.get.mockReturnValue(of(statItem));
     service.getStatsByItemPid('1')
       .subscribe((result: any) => expect(result).toEqual(statItem));
   });
 
   it('should return the preview on the item', () => {
-    httpClientSpy.get.and.returnValue(of(preview));
+    httpClientSpy.get.mockReturnValue(of(preview));
     service.getPreviewByItemPid('1')
       .subscribe((result: any) => expect(result).toEqual(preview));
   });
 
   it('should add a claim at the end of the item', () => {
-    httpClientSpy.post.and.returnValue(of(true));
+    httpClientSpy.post.mockReturnValue(of(true));
     service.addClaimIssue('1', emailTypes)
-      .subscribe((result: any) => expect(result).toBeTrue())
+      .subscribe((result: any) => expect(result).toBe(true))
   });
 });

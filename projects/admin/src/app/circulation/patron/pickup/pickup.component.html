@@ -14,7 +14,7 @@
  You should have received a copy of the GNU Affero General Public License
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-@defer(when loans) {
+@defer(when loans() !== undefined) {
   <p-card>
     <ng-template #header>
       <div class="ui:grid ui:grid-cols-12 ui:gap-4 ui:py-4 ui:px-2 ui:my-1 ui:text-lg ui:font-bold ui:items-center">
@@ -24,9 +24,9 @@
         <div class="ui:col-span-2" translate>To pick-up until</div>
       </div>
     </ng-template>
-    @if (loans.length > 0) {
+    @if (loans().length > 0) {
       <div>
-        @for (loan of loans; track $index) {
+        @for (loan of loans(); track $index) {
           <div class="ui:odd:bg-surface-50">
             <admin-pickup-item
               [loan]="loan"

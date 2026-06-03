@@ -18,7 +18,7 @@
 import { TestBed } from "@angular/core/testing";
 import { LocationService } from "./location.service";
 import { of } from "rxjs";
-import { apiResponse } from "projects/shared/src/tests/api";
+import { apiResponse } from "@rero/shared";
 import { RecordService } from "@rero/ng-core";
 import { location } from "@rero/shared";
 
@@ -27,9 +27,9 @@ describe('LocationService', () => {
 
   const response = {...apiResponse};
 
-  const recordServiceSpy = jasmine.createSpyObj('RecordService', ['getRecords', 'totalHits']);
+  const recordServiceSpy = { getRecords: vi.fn(), totalHits: vi.fn() };
 
-  recordServiceSpy.totalHits.and.returnValue(1);
+  recordServiceSpy.totalHits.mockReturnValue(1);
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -48,7 +48,7 @@ describe('LocationService', () => {
 
   it('should return a list of locations in relation to libraries', () => {
     response.hits.hits = [{...location}];
-    recordServiceSpy.getRecords.and.returnValue(of(response));
+    recordServiceSpy.getRecords.mockReturnValue(of(response));
     service.getLocationsByLibraries$(['1'])
       .subscribe((result: any) => expect(result).toEqual([location]));
   });

@@ -47,7 +47,7 @@ export class KeyboardShortcutsService {
       keys: 's',
       group: this.translateService.instant('Global shortcuts'),
       description: this.translateService.instant('Set focus on the header search input')
-    }).subscribe(e => {
+    }).subscribe(_e => {
       const autocompleteElement = document.getElementsByClassName('p-autocomplete')[0];
       const inputField = autocompleteElement.getElementsByTagName('input')[0];
       inputField.focus();
@@ -58,7 +58,7 @@ export class KeyboardShortcutsService {
       group: this.translateService.instant('Global shortcuts'),
       description: this.translateService.instant('Open the global help page')
     }).subscribe(
-      _ => window.open('/help', 'rero-ils-help')
+      _e => window.open('/help', 'rero-ils-help')
     );
 
     this.hotKeys.addShortcut({
@@ -66,7 +66,7 @@ export class KeyboardShortcutsService {
       group: this.translateService.instant('Global shortcuts'),
       description: this.translateService.instant('Open the patron search page')
     }).subscribe(
-      _ => this.router.navigate(['/records', 'patrons'])
+      _e => this.router.navigate(['/records', 'patrons'])
     );
 
     this.hotKeys.addShortcut({
@@ -74,7 +74,7 @@ export class KeyboardShortcutsService {
       group: this.translateService.instant('Global shortcuts'),
       description: this.translateService.instant('Open the circulation checkin interface')
     }).subscribe(
-      _ => this.router.navigate(['/circulation', 'checkout'])
+      _e => this.router.navigate(['/circulation', 'checkout'])
     );
 
     this.hotKeys.addShortcut({
@@ -82,7 +82,7 @@ export class KeyboardShortcutsService {
       group: this.translateService.instant('Global shortcuts'),
       description: this.translateService.instant('Open the main requests page')
     }).subscribe(
-      _ => this.router.navigate(['/circulation', 'requests'])
+      _e => this.router.navigate(['/circulation', 'requests'])
     );
 
     this.hotKeys.addShortcut({
@@ -90,7 +90,7 @@ export class KeyboardShortcutsService {
       group: this.translateService.instant('Global shortcuts'),
       description: this.translateService.instant('Open the inventory list')
     }).subscribe(
-      _ => this.router.navigate(['/', 'records', 'items'])
+      _e => this.router.navigate(['/', 'records', 'items'])
     );
 
   }

@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2021-2024 RERO
+ * Copyright (C) 2021-2026 RERO
  * Copyright (C) 2021-2023 UCLouvain
  *
  * This program is free software: you can redistribute it and/or modify
@@ -15,7 +15,13 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, input, output } from '@angular/core';
+import { NgClass } from '@angular/common';
+import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
+import { RouterLink } from '@angular/router';
+import { Nl2brPipe } from '@rero/ng-core';
+import { Bind } from 'primeng/bind';
+import { Button, ButtonSeverity } from 'primeng/button';
+import { Tooltip } from 'primeng/tooltip';
 
 @Component({
     selector: 'shared-action-button',
@@ -65,15 +71,16 @@ import { Component, input, output } from '@angular/core';
       </ng-template>
     }
   `,
-    standalone: false
+    imports: [Bind, Button, Tooltip, RouterLink, NgClass, Nl2brPipe],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ActionButtonComponent {
   label = input<string>();
   icon = input<string>();
   title = input.required<string>();
-  severity = input<string>('primary');
+  severity = input<ButtonSeverity>('primary');
   routerLink = input<string[]>();
-  queryParams = input<any>();
+  queryParams = input<Record<string, string | number | boolean>>();
   class = input<string>();
   outlined = input<boolean>(true);
   rounded = input<boolean>(false);

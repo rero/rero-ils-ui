@@ -16,17 +16,17 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <admin-circulation-log
-  [record]="record"
-  [isHighlight]="isHighlight"
-  [separator]="separator"
+  [record]="record()"
+  [isHighlight]="isHighlight()"
+  [separator]="separator()"
 >
-  <p-tag badge>{{ record.metadata.loan.trigger | translate }}</p-tag>
+  <p-tag badge>{{ record().metadata.loan.trigger | translate }}</p-tag>
   <div collapsedContent class="ui:grid ui:grid-cols-12 ui:gap-4">
     <!-- Location -->
     <div class="ui:col-span-8">
       <i class="fa fa-globe"></i>&nbsp;
-      @if (record.metadata.loan.transaction_location) {
-        @if (record.metadata.loan.transaction_location.pid | getRecord : 'locations' | async; as location) {
+      @if (record().metadata.loan.transaction_location) {
+        @if (record().metadata.loan.transaction_location.pid | getRecord : 'locations' | async; as location) {
           {{ $any(location).metadata.library.pid | getRecord : 'libraries' : 'field' : 'name' | async }}
         }
       } @else {
@@ -36,14 +36,14 @@
     <!-- Patron -->
     <div class="ui:col-span-4">
       <i class="fa fa-user"></i>&nbsp;
-      @if (record.metadata.loan.patron.pid) {
-        @if (record.metadata.loan.patron.pid | getRecord : 'patrons' | async; as patron) {
+      @if (record().metadata.loan.patron.pid) {
+        @if (record().metadata.loan.patron.pid | getRecord : 'patrons' | async; as patron) {
           <a [routerLink]="['/circulation', 'patron', $any(patron).metadata.patron.barcode[0]]"  (click)="closeDialog()">
             {{ $any(patron).metadata.last_name }}, {{ $any(patron).metadata.first_name }}
           </a>
         }
       } @else {
-        {{ 'Patron type' | translate }}: {{ record.metadata.loan.patron.type }}
+        {{ 'Patron type' | translate }}: {{ record().metadata.loan.patron.type }}
       }
     </div>
   </div>
@@ -51,8 +51,8 @@
     <!-- Library -->
     <dt><i class="fa fa-globe"></i>&nbsp;{{'Library' | translate}}</dt>
     <dd>
-      @if (record.metadata.loan.transaction_location) {
-        @if (record.metadata.loan.transaction_location.pid | getRecord : 'locations' | async; as location) {
+      @if (record().metadata.loan.transaction_location) {
+        @if (record().metadata.loan.transaction_location.pid | getRecord : 'locations' | async; as location) {
           {{ $any(location).metadata.library.pid | getRecord : 'libraries' : 'field' : 'name' | async }}
         }
       } @else {
@@ -62,27 +62,27 @@
 
     <!-- Location -->
     <dt><i class="fa fa-map-marker"></i>&nbsp;{{'Pickup location' | translate}}</dt>
-    <dd>{{ record.metadata.loan.pickup_location.name }}</dd>
+    <dd>{{ record().metadata.loan.pickup_location.name }}</dd>
 
     <!-- Patron -->
     <dt><i class="fa fa-user"></i>&nbsp;{{ 'Patron' | translate }}</dt>
     <dd>
-      @if (record.metadata.loan.patron.pid) {
-        @if (record.metadata.loan.patron.pid | getRecord : 'patrons' | async; as patron) {
+      @if (record().metadata.loan.patron.pid) {
+        @if (record().metadata.loan.patron.pid | getRecord : 'patrons' | async; as patron) {
           <a [routerLink]="['/circulation', 'patron', $any(patron).metadata.patron.barcode[0]]" (click)="closeDialog()">
             {{ $any(patron).metadata.last_name }}, {{ $any(patron).metadata.first_name }}
           </a>
         }
       } @else {
-        {{ 'Patron type' | translate }}: {{ record.metadata.loan.patron.type }}
+        {{ 'Patron type' | translate }}: {{ record().metadata.loan.patron.type }}
       }
     </dd>
 
     <!-- Operator -->
     <dt><i class="fa fa-user-circle-o"></i>&nbsp;{{ 'Operator' | translate }}</dt>
     <dd>
-      {{ record.metadata.user_name }}
-      @if (record.metadata.loan.auto_extend) {
+      {{ record().metadata.user_name }}
+      @if (record().metadata.loan.auto_extend) {
         ({{ 'automatic renewal' | translate }})
       }
     </dd>

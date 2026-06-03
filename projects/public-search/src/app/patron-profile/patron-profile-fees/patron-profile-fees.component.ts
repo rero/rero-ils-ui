@@ -14,49 +14,51 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, inject, Input, OnInit } from '@angular/core';
-import { Record, RecordService } from '@rero/ng-core';
+import { CurrencyPipe } from '@angular/common';
+import { Component, inject, input, OnInit, signal, ChangeDetectionStrategy } from '@angular/core';
+import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
+import { RecordService } from '@rero/ng-core';
+import type { EsResult } from '@rero/ng-core';
+import { PanelModule } from 'primeng/panel';
 import { forkJoin } from 'rxjs';
 import { PatronApiService } from '../../api/patron-api.service';
 import { PatronTransactionApiService } from '../../api/patron-transaction-api.service';
-import { PatronProfileMenuService } from '../patron-profile-menu.service';
+import { PatronProfileStore } from '../store/patron-profile.store';
+import { PatronProfileFeeComponent } from './patron-profile-fee/patron-profile-fee.component';
 import { fee, overdueFee } from './types';
 
 @Component({
     selector: 'public-search-patron-profile-fees',
     templateUrl: './patron-profile-fees.component.html',
-    standalone: false
+    imports: [CurrencyPipe, TranslateDirective, TranslatePipe, PanelModule, PatronProfileFeeComponent],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class PatronProfileFeesComponent implements OnInit {
 
-  private patronTransactionApiService: PatronTransactionApiService = inject(PatronTransactionApiService);
-  private patronProfileMenuService: PatronProfileMenuService = inject(PatronProfileMenuService);
-  private patronApiService: PatronApiService = inject(PatronApiService);
+  private patronTransactionApiService = inject(PatronTransactionApiService);
+  private store = inject(PatronProfileStore);
+  private patronApiService = inject(PatronApiService);
 
-  /** Total of fees */
-  @Input() feesTotal: number;
+  feesTotal = input<number>();
 
-  /** First call of get record */
-  loaded = false;
-
-  /** requests records */
-  records = [];
+  readonly loaded = signal(false);
+  readonly records = signal<any[]>([]);
 
   get currency() {
-    return this.patronProfileMenuService.currentPatron.organisation.currency;
+    return this.store.currentPatron()?.organisation.currency;
   }
 
-  /** OnInit hook */
   ngOnInit(): void {
-    const patronPid = this.patronProfileMenuService.currentPatron.pid;
+    const patronPid = this.store.currentPatron()!.pid;
     const queryFees = this.patronTransactionApiService.getFees(patronPid, 'open', 1, RecordService.MAX_REST_RESULTS_SIZE);
     const queryOverdue = this.patronApiService.getOverduePreviewByPatronPid(patronPid);
 
     forkJoin([queryFees, queryOverdue]).subscribe({
-      next: ([feesResponse, overdueResponse]: [Record, overdueFee[]]) => {
-        feesResponse.hits.hits.map(record => {
+      next: ([feesResponse, overdueResponse]: [EsResult, overdueFee[]]) => {
+        const records: any[] = [];
+        feesResponse.hits.hits.map((record: any) => {
           if (record.metadata?.loan) {
-            const result = this.records.filter((fee: fee) => record.metadata?.loan?.pid === fee.loan?.pid);
+            const result = records.filter((fee: fee) => record.metadata?.loan?.pid === fee.loan?.pid);
             if (result.length === 1) {
               if (record.metadata.note) {
                 result[0].notes.push(record.metadata.note);
@@ -64,35 +66,36 @@ export class PatronProfileFeesComponent implements OnInit {
               result[0].totalAmount += record.metadata.total_amount;
               result[0].transactions.push(record);
             } else {
-              this.createFee(record);
+              records.push(this.buildFee(record));
             }
           } else {
-            this.createFee(record);
+            records.push(this.buildFee(record));
           }
         });
         overdueResponse.map((overdue: overdueFee) => {
-          const result = this.records.filter((record: fee) => record.loan?.pid === overdue.loan.pid);
+          const result = records.filter((record: fee) => record.loan?.pid === overdue.loan.pid);
           if (result.length === 1) {
             result[0].totalAmount += overdue.fees.total;
             result[0].overdue = overdue.fees.total;
           } else {
-            const overdueRecord = {
+            records.push({
               type: 'overdue',
               createdAt: new Date(),
               loan: overdue.loan,
               totalAmount: overdue.fees.total,
               overdue: overdue.fees.total
-            }
-            this.records.push(overdueRecord);
+            });
           }
         });
-        this.records.sort((a, b) => a.createdAt - b.createdAt);
-        this.loaded = true;
-      }});
+        records.sort((a, b) => a.createdAt - b.createdAt);
+        this.records.set(records);
+        this.loaded.set(true);
+      }
+    });
   }
 
-  private createFee(record): void {
-    const fee: fee = {
+  private buildFee(record): fee {
+    const result: fee = {
       type: record.metadata.type,
       notes: [],
       createdAt: new Date(record.metadata.creation_date),
@@ -100,11 +103,11 @@ export class PatronProfileFeesComponent implements OnInit {
       transactions: [record]
     };
     if (record.metadata.note) {
-      fee.notes.push(record.metadata.note);
+      result.notes.push(record.metadata.note);
     }
     if (record.metadata.loan) {
-      fee.loan = record.metadata.loan;
+      result.loan = record.metadata.loan;
     }
-    this.records.push(fee);
+    return result;
   }
 }

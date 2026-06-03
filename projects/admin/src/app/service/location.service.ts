@@ -17,7 +17,8 @@
  */
 
 import { inject, Injectable } from '@angular/core';
-import { Record, Error, RecordService } from '@rero/ng-core';
+import type { EsResult } from '@rero/ng-core';
+import { Error, RecordService } from '@rero/ng-core';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
@@ -52,8 +53,8 @@ export class LocationService {
   getLocationsByLibraries$(libraryPids: string[]): Observable<any[]> {
     const query = libraryPids.map(pid => `library.pid:${pid}`).join(' OR ');
     return this._query(query).pipe(
-      map((data: Record) => data.hits),
-      map((hits: {hits: any[], total:number}) => this.recordService.totalHits(hits.total) === 0 ? [] : hits.hits),
+      map((data: EsResult) => data.hits as any),
+      map((hits: {hits: any[], total: any}) => +this.recordService.totalHits(hits.total) === 0 ? [] : hits.hits),
     );
   }
 
@@ -63,17 +64,19 @@ export class LocationService {
    * @param query: the query to use
    * @param options: options to use to get records.
    */
-  private _query(query: string, options?: GetRecordsOptions): Observable<Record | Error> {
+  private _query(query: string, options?: GetRecordsOptions): Observable<EsResult | Error> {
     options = {...LocationService.defaultOptions, ...options};
     return this.recordService.getRecords(
       LocationService.resource,
-      query,
-      options.page,
-      options.itemsPerPage,
-      options.aggregations,
-      options.preFilters,
-      options.headers,
-      options.sort
+      {
+        query,
+        page: options.page,
+        itemsPerPage: options.itemsPerPage,
+        aggregationsFilters: options.aggregations as any,
+        preFilters: options.preFilters as any,
+        headers: options.headers,
+        sort: options.sort
+      }
     );
   }
 }

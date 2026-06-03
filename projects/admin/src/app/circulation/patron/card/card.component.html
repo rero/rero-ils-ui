@@ -14,8 +14,8 @@
  You should have received a copy of the GNU Affero General Public License
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-@if (patron?.patron) {
-  <div [ngClass]="{'ui:text-muted-color': !clearPatronButton}">
+@if (patron()?.patron) {
+  <div [ngClass]="{'ui:text-muted-color': !clearPatronButton()}">
     <div class="ui:grid ui:grid-cols-12 ui:gap-x-4 ui:mt-1">
       <div class="ui:col-span-6">
         <div class="ui:flex ui:w-full">
@@ -25,48 +25,48 @@
           <div class="ui:flex ui:w-full">
             <div class="ui:w-full">
               <h3>
-                <a [routerLink]="patronLink">
-                  <span id="patron-last-name">{{ patron.last_name }}</span>
-                  @if (patron.first_name) {
-                    <span id="patron-first-name">, {{ patron.first_name }}</span>
+                <a [routerLink]="patronLink()">
+                  <span id="patron-last-name">{{ patron().last_name }}</span>
+                  @if (patron().first_name) {
+                    <span id="patron-first-name">, {{ patron().first_name }}</span>
                   }
                 </a>
               </h3>
               <div class="ui:grid ui:grid-cols-12 ui:w-full ui:mt-2">
                 <div class="ui:col-span-6">
                   <div id="patron-birth-date">
-                    @if (patron.birth_date) {
-                      {{ patron.birth_date | dateTranslate:'mediumDate' }}
-                      ({{ patronAge }} {{ 'years old' | translate }})
-                      @if (isBirthday) {
+                    @if (patron().birth_date) {
+                      {{ patron().birth_date | dateTranslate:'mediumDate' }}
+                      ({{ patronAge() }} {{ 'years old' | translate }})
+                      @if (isBirthday()) {
                         &nbsp;
                         <i class="fa fa-birthday-cake text-warning ui:animate-pulse"></i>
                       }
                     }
                   </div>
-                  <div id="patron-city">{{ patron.city }}</div>
+                  <div id="patron-city">{{ patron().city }}</div>
                 </div>
                 <div class="ui:col-span-6">
-                  @if (patron.patron.type.pid | getRecord: 'patron_types': 'string':'name' | async; as patronTypeName) {
+                  @if (patron().patron.type.pid | getRecord: 'patron_types': 'string':'name' | async; as patronTypeName) {
                     <div id="patron-type">{{ patronTypeName }}</div>
                   }
-                  <div id="patron-barcode">{{ barcode }}</div>
+                  <div id="patron-barcode">{{ barcode() }}</div>
                 </div>
               </div>
             </div>
           </div>
-          @if (clearPatronButton) {
+          @if (clearPatronButton()) {
             <div class="ui:flex">
               <p-button icon="fa fa-close" severity="danger" outlined (onClick)="clear()"></p-button>
             </div>
           }
         </div>
         <!-- NOTES-->
-        @if (patron.notes) {
+        @if (patron().notes) {
           <div class="ui:my-3">
             <p-message class="ui:w-full" severity="warn" showTransitionOptions="0ms">
               <ul class="ui:list-none">
-                @for (note of patron.notes; track $index) {
+                @for (note of patron().notes; track $index) {
                   <li class="ui:my-1">
                     <span class="ui:font-bold ui:text-xl">{{ note.type | translate | ucfirst }}</span>
                     <p [innerHTML]="note.content | nl2br"></p>
@@ -79,25 +79,26 @@
       </div>
       <div class="ui:col-span-6">
         <!-- Circulation message -->
-        @if (displayCirculationMessages) {
-            @if (patron.circulation_information) {
-              @for (message of patron.circulation_informations.messages; track $index) {
+        @if (displayCirculationMessages()) {
+            @if (patron().circulation_information) {
+              @for (message of patron().circulation_informations.messages; track $index) {
                 <p-message
                   class="ui:w-full"
-                  [text]="message.content"
-                  severity="getMessageSeverity(message.type)"
+                  [severity]="$any(getMessageSeverity(message.type))"
                   showTransitionOptions="0ms"
-                />
+                >
+                  {{ message.content }}
+                </p-message>
               }
             }
             @for (message of circulationMessages(); track $index) {
               <p-message
                 class="ui:w-full"
-                [severity]="message.severity"
-                [text]="message.detail"
-                severity="info"
+                [severity]="$any(message.severity)"
                 showTransitionOptions="0ms"
-              />
+              >
+              {{ message.detail }}
+              </p-message>
             }
         }
       </div>

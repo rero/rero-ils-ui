@@ -16,63 +16,62 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { Component, EventEmitter, inject, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
+import { Component, effect, inject, input, model, output, signal, ChangeDetectionStrategy} from '@angular/core';
 import { PatronTransactionService } from '@app/admin/circulation/services/patron-transaction.service';
 import { Organisation } from '@app/admin/classes/core';
 import { Item, ItemAction, ItemNote, ItemNoteType } from '@app/admin/classes/items';
 import { Loan, LoanState } from '@app/admin/classes/loans';
 import { ItemsService } from '@app/admin/service/items.service';
-import { OrganisationService } from '@app/admin/service/organisation.service';
-import { RecordService } from '@rero/ng-core';
-import { ItemStatus, PermissionsService, UserService } from '@rero/shared';
-import { Observable } from 'rxjs';
+import { RecordService, DateTranslatePipe, GetRecordPipe, TruncateTextPipe } from '@rero/ng-core';
+import { AppStore, ItemStatus, OpenCloseButtonComponent, InheritedCallNumberComponent, ContributionComponent, IdAttributePipe, MainTitlePipe } from '@rero/shared';
 import { map } from 'rxjs/operators';
-import { CirculationStatsService } from '../patron/service/circulation-stats.service';
+import { CirculationStore } from '../store/circulation.store';
+import { computeTotalTransactionsAmount } from '../utils/transaction.utils';
+import { NgClass, AsyncPipe, JsonPipe, CurrencyPipe } from '@angular/common';
+import { RouterLink } from '@angular/router';
+import { Bind } from 'primeng/bind';
+import { Tag } from 'primeng/tag';
+import { ButtonDirective, Button } from 'primeng/button';
+import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
+import { ScrollPanel } from 'primeng/scrollpanel';
+import { GetLoanCipoPipe } from '../pipe/get-loan-cipo.pipe';
 
 @Component({
     selector: 'admin-item',
     templateUrl: './item.component.html',
-    standalone: false
+    imports: [NgClass, OpenCloseButtonComponent, RouterLink, InheritedCallNumberComponent, Bind, Tag, ContributionComponent, ButtonDirective, TranslateDirective, Button, ScrollPanel, AsyncPipe, JsonPipe, CurrencyPipe, DateTranslatePipe, GetRecordPipe, IdAttributePipe, MainTitlePipe, TruncateTextPipe, TranslatePipe, GetLoanCipoPipe],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class ItemComponent implements OnChanges {
+export class ItemComponent {
 
   private recordService: RecordService = inject(RecordService);
-  private organisationService: OrganisationService = inject(OrganisationService);
   private patronTransactionService: PatronTransactionService = inject(PatronTransactionService);
   private itemService: ItemsService = inject(ItemsService);
-  private permissionsService: PermissionsService = inject(PermissionsService);
-  private userService: UserService = inject(UserService);
-  private circulationStatsService: CirculationStatsService = inject(CirculationStatsService);
+  private appStore = inject(AppStore);
+  protected store = inject(CirculationStore);
 
 
   NOTEAPI =  ItemNoteType.API;
 
   // COMPONENT ATTRIBUTES ====================================================
   /** Current item */
-  @Input() item: any;
+  item = input<any>();
   /** Current patron */
-  @Input() patron: any;
+  patron = input<any>();
   /** Is the component is collapsed or not */
-  @Input() isCollapsed = true;
+  isCollapsed = model(true);
   /** Item has fees */
-  @Output() hasFeesEmitter = new EventEmitter<boolean>();
+  hasFeesEmitter = output<boolean>();
   /** Extend loan event emitter */
-  @Output() extendLoanClicked = new EventEmitter<any[]>();
+  extendLoanClicked = output<any[]>();
 
-  /** loan corresponding to the item */
-  loan: Loan;
-  /** Fees related to the item/loan */
-  totalAmountOfFee = 0;
-  /** Notifications related to the current loan */
-  notifications$: Observable<any>;
-  /** ItemAction reference */
-  itemAction = ItemAction;
-  /** related document */
-  document = undefined;
-  /** ItemStatus class reference */
-  ItemStatus = ItemStatus;
-  /** debug mode is enabled ? */
-  debugMode = false;
+  readonly loan = signal<Loan | null>(null);
+  readonly totalAmountOfFee = signal(0);
+  readonly notifications = signal<any[] | null>(null);
+  readonly itemAction = ItemAction;
+  readonly document = signal<any>(undefined);
+  readonly ItemStatus = ItemStatus;
+  readonly debugMode = signal(false);
 
   // GETTER & SETTER =========================================================
   /**
@@ -80,7 +79,7 @@ export class ItemComponent implements OnChanges {
    * @returns current organisation
    */
   get organisation(): Organisation {
-    return this.organisationService.organisation;
+    return this.appStore.organisation();
   }
 
   /**
@@ -88,38 +87,42 @@ export class ItemComponent implements OnChanges {
    * @returns True if the debug mode can be enabled and switched
    */
   get canUseDebugMode(): boolean {
-    return this.permissionsService.canAccessDebugMode();
+    return this.appStore.canAccessDebugMode();
   }
-  ngOnChanges(changes: SimpleChanges): void {
-    if(changes?.item?.currentValue){
-      this.loan = (this.item && this.item.loan) ? new Loan(this.item.loan) : null;
-      if (this.loan) {
-        const loanPid = this.item.loan.pid;
-        this.patronTransactionService.patronTransactionsByLoan$(loanPid, 'overdue', 'open').subscribe(
-          (transactions) => {
-            this.totalAmountOfFee = this.patronTransactionService.computeTotalTransactionsAmount(transactions);
-            if (this.totalAmountOfFee > 0) {
-              this.hasFeesEmitter.emit(true);
-              if(this.patron.pid) {
-                // update patron fees
-                this.circulationStatsService.updateFees(this.patron.pid).subscribe();
+  constructor() {
+    effect(() => {
+      const item = this.item();
+      if (item) {
+        this.loan.set(item.loan ? new Loan(item.loan) : null);
+        this.notifications.set(null);
+        if (this.loan()) {
+          const loanPid = item.loan.pid;
+          this.patronTransactionService.patronTransactionsByLoan(loanPid, 'overdue', 'open').subscribe(
+            (transactions) => {
+              const amount = computeTotalTransactionsAmount(transactions);
+              this.totalAmountOfFee.set(amount);
+              if (amount > 0) {
+                this.hasFeesEmitter.emit(true);
+                if (this.patron().pid) {
+                  this.store.loadFees(this.patron().pid);
+                }
               }
             }
-          }
-        );
-        this.notifications$ = this.recordService.getRecords(
-          'notifications', `context.loan.pid:${loanPid}`, 1, RecordService.MAX_REST_RESULTS_SIZE,
-          [], {}, null, 'mostrecent'
-        ).pipe(
-          map((results: any) => results.hits.hits)
-        );
+          );
+          this.recordService.getRecords(
+            'notifications', { query: `context.loan.pid:${loanPid}`, page: 1, itemsPerPage: RecordService.MAX_REST_RESULTS_SIZE, sort: 'mostrecent' }
+          ).pipe(
+            map((results: any) => results.hits.hits)
+          ).subscribe((hits: any[]) => this.notifications.set(hits));
+        }
+        if (item?.document?.pid) {
+          this.recordService.getRecord('documents', item.document.pid, {
+            resolve: 1,
+            headers: { Accept: 'application/rero+json, application/json' }
+          }).subscribe(doc => this.document.set(doc.metadata));
+        }
       }
-      if (this.item?.document?.pid) {
-        this.recordService.getRecord('documents', this.item.document.pid, 1, {
-          Accept: 'application/rero+json, application/json'
-        }).subscribe(document => this.document = document.metadata);
-      }
-    }
+    });
   }
 
   // COMPONENT FUNCTIONS ====================================================
@@ -128,21 +131,21 @@ export class ItemComponent implements OnChanges {
    * @return: transit location pid
    */
   getTransitLocationPid() {
-    if (this.patron || this.item.action_applied === undefined) {
-      if (this.item.loan && this.item.loan.state === LoanState.ITEM_IN_TRANSIT_FOR_PICKUP) {
-        return this.item.loan.pickup_location_pid;
+    if (this.patron() || this.item().action_applied === undefined) {
+      if (this.item().loan && this.item().loan.state === LoanState.ITEM_IN_TRANSIT_FOR_PICKUP) {
+        return this.item().loan.pickup_location_pid;
       }
-      if (this.item.loan && this.item.loan.state === LoanState.ITEM_IN_TRANSIT_TO_HOUSE) {
-        return this.item.location.pid;
+      if (this.item().loan && this.item().loan.state === LoanState.ITEM_IN_TRANSIT_TO_HOUSE) {
+        return this.item().location.pid;
       }
     } else {
-      const validatedLoan = new Loan(this.item.action_applied[ItemAction.validate]);
-      const checkedInLoan = new Loan(this.item.action_applied[ItemAction.checkin]);
+      const validatedLoan = new Loan(this.item().action_applied[ItemAction.validate]);
+      const checkedInLoan = new Loan(this.item().action_applied[ItemAction.checkin]);
       if (validatedLoan && validatedLoan.state === LoanState.ITEM_IN_TRANSIT_FOR_PICKUP) {
         return validatedLoan.pickup_location_pid;
       }
       if (checkedInLoan && checkedInLoan.state === LoanState.ITEM_IN_TRANSIT_TO_HOUSE) {
-        return this.item.location.pid;
+        return this.item().location.pid;
       }
     }
     return null;
@@ -153,28 +156,28 @@ export class ItemComponent implements OnChanges {
    * @return the corresponding note if the corresponding action has been done.
    */
   getCirculationNoteForAction(): ItemNote[] {
-    if (this.item.actionDone) {
+    if (this.item().actionDone) {
       const notes: ItemNote[] = [];
-      const checkinNote = this.item.getNote(ItemNoteType.CHECKIN)
+      const checkinNote = this.item().getNote(ItemNoteType.CHECKIN)
       if (checkinNote && (
-        (this.item.actionDone === this.itemAction.checkin) || (
-          (((this.item.actionDone === this.itemAction.receive) && this.item.library.pid === this.userService.user.currentLibrary))
+        (this.item().actionDone === this.itemAction.checkin) || (
+          (((this.item().actionDone === this.itemAction.receive) && this.item().library.pid === this.appStore.currentLibraryPid()))
         )
       )) {
         notes.push(checkinNote);
       }
-      const checkoutNote = this.item.getNote(ItemNoteType.CHECKOUT)
-      if (checkoutNote && this.item.actionDone === this.itemAction.checkout) {
+      const checkoutNote = this.item().getNote(ItemNoteType.CHECKOUT)
+      if (checkoutNote && this.item().actionDone === this.itemAction.checkout) {
         notes.push(checkoutNote);
       }
       // Also include API notes (like temporary item type removal)
-      const apiNotes = this.item?.notes?.filter(i => i.type === ItemNoteType.API) || [];
+      const apiNotes = this.item()?.notes?.filter(i => i.type === ItemNoteType.API) || [];
       notes.push(...apiNotes);
       return notes;
-    } else if (this.item.notes) {
+    } else if (this.item().notes) {
       // Notes for item without loan.
       // This api note is pushed on error exception.
-      return this.item?.notes.filter(i => [ItemNoteType.CHECKIN, ItemNoteType.API].includes(i.type));
+      return this.item()?.notes.filter(i => [ItemNoteType.CHECKIN, ItemNoteType.API].includes(i.type));
     }
     return [];
   }
@@ -183,8 +186,8 @@ export class ItemComponent implements OnChanges {
    * Extend loan action
    * @param event: the event fired
    */
-  extendLoanClick(event: any) {
-    this.extendLoanClicked.emit(this.item);
+  extendLoanClick(_event: any) {
+    this.extendLoanClicked.emit(this.item());
   }
 
 

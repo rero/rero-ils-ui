@@ -30,12 +30,12 @@ describe('Service: UserApi', () => {
     settings: { language: 'fr' }
   };
 
-  const httpClientSpy = jasmine.createSpyObj('HttpClient', ['get', 'post']);
-  httpClientSpy.get.and.returnValue(of(record));
-  httpClientSpy.post.and.returnValue(of(true));
+  const httpClientSpy = {
+    get: vi.fn().mockReturnValue(of(record)),
+    post: vi.fn().mockReturnValue(of(true))
+  };
 
-  const apiServiceSpy = jasmine.createSpyObj('ApiService', ['']);
-  apiServiceSpy.endpointPrefix = '/api';
+  const apiServiceSpy = { endpointPrefix: '/api' };
 
   beforeEach(() => {
     TestBed.configureTestingModule({

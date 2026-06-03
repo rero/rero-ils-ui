@@ -15,41 +15,42 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { User } from '@rero/shared';
+import { Component, input, output, signal, ChangeDetectionStrategy} from '@angular/core';
+import { User, OpenCloseButtonComponent, IdAttributePipe } from '@rero/shared';
 import { ItemAction } from '../../classes/items';
+import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
+import { Bind } from 'primeng/bind';
+import { Button } from 'primeng/button';
+import { ItemComponent } from '../item/item.component';
+import { CardModule } from 'primeng/card';
 
 @Component({
     selector: 'admin-circulation-items-list',
     templateUrl: './items-list.component.html',
-    standalone: false
+    imports: [TranslateDirective, OpenCloseButtonComponent, Bind, Button, ItemComponent, IdAttributePipe, TranslatePipe, CardModule],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class ItemsListComponent implements OnInit{
+export class ItemsListComponent {
 
   // COMPONENT ATTRIBUTES =====================================================
   /** Items of the checked out list */
-  @Input() checkedOutItems: any[];
+  checkedOutItems = input<any[]>();
   /** Items of the checked in list */
-  @Input() checkedInItems: any[];
+  checkedInItems = input<any[]>();
   /** Current patron */
-  @Input() patron: User;
+  patron = input<User>();
 
   /** Extend (renew) all event emitter */
-  @Output() extendAllLoansClicked = new EventEmitter<any[]>();
+  extendAllLoansClicked = output<any[]>();
   /** Extend loan event emitter */
-  @Output() extendLoanClicked = new EventEmitter<any[]>();
+  extendLoanClicked = output<any[]>();
   /** Item has fees */
-  @Output() hasFeesEmitter = new EventEmitter<boolean>();
+  hasFeesEmitter = output<boolean>();
 
-  /** is all items should be collapsed or not */
-  allCollapsed = true;
+  readonly allCollapsed = signal(true);
 
   // CONSTRUCTOR & HOOKS ======================================================
   /** Constructor */
-  ngOnInit() {
-    this.checkedOutItems = null;
-  }
-
   // COMPONENT FUNCTIONS ======================================================
   /** Extend loan
    * @param event: event
@@ -70,7 +71,7 @@ export class ItemsListComponent implements OnInit{
 
   /** Get loans that can be extended */
   get loansToExtend() {
-    return this.checkedOutItems.filter(item => item.actions.includes(ItemAction.extend_loan));
+    return this.checkedOutItems().filter(item => item.actions.includes(ItemAction.extend_loan));
   }
 
   /**

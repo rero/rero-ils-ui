@@ -14,9 +14,9 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-@if (libForm) {
+@if (libForm()) {
 <h1 translate>Library</h1>
-<form [formGroup]="libForm" (ngSubmit)="onSubmit()">
+<form [formGroup]="libForm()" (ngSubmit)="onSubmit()">
   <p-accordion [value]="['0']" [multiple]="true">
     <!-- DESCRIPTIVE METADATA TAB ===================================== -->
     <p-accordion-panel value="0">
@@ -124,10 +124,10 @@
           >
           <div class="ui:col-span-9">
             <p-select
-              [options]="availableCommunicationLanguagesOptions"
+              [options]="availableCommunicationLanguagesOptions()"
               id="communication_language"
               formControlName="communication_language"
-              styleClass="ui:w-full"
+              class="ui:w-full"
             />
             @if (communicationLanguage.invalid && (communicationLanguage.dirty ||
             communicationLanguage.touched)) {
@@ -221,9 +221,8 @@
                             <p-button
                               (onClick)="deleteTime(i, t)"
                               outlined
-                              size="large"
                               severity="danger"
-                              icon="fa fa-trash-o"
+                              icon="fa fa-trash"
                             />
                           }
                         </div>
@@ -285,14 +284,12 @@
               icon="fa fa-plus-square-o"
               [label]="'Add' | translate"
             />
-            <p-badge [value]="library?.exception_dates?.length || '0'" />
+            <p-badge [value]="exceptionDates().length || '0'" />
           </div>
         </div>
       </p-accordion-header>
       <p-accordion-content>
-        @if (library) {
-          <admin-libraries-exception-dates-list [exceptionDates]="library.exception_dates" />
-        }
+        <admin-libraries-exception-dates-list [exceptionDates]="exceptionDates()" />
       </p-accordion-content>
     </p-accordion-panel>
     <!-- NOTIFICATIONS SETTING TAB ==================================== -->
@@ -372,13 +369,13 @@
       <p-accordion-content>
         <p-tabs value="0" formGroupName="acquisition_settings">
           <p-tablist>
-            <p-tab value="0" translate>
-              <i class="fa fa-book"></i>&nbsp;
-              Default acquisition settings
+            <p-tab class="ui:flex ui:items-center ui:!gap-2" value="0">
+              <i class="fa fa-book"></i>
+              <span translate>Default acquisition settings</span>
             </p-tab>
-            <p-tab value="1" translate>
-              <i class="fa fa-newspaper-o"></i>&nbsp;
-              Serial acquisition settings
+            <p-tab class="ui:flex ui:items-center ui:!gap-2" value="1">
+              <i class="fa fa-newspaper-o"></i>
+              <span translate>Serial acquisition settings</span>
             </p-tab>
           </p-tablist>
           <p-tabpanels>
@@ -386,7 +383,7 @@
               <ng-container
                 [ngTemplateOutlet]="contact_block"
                 [ngTemplateOutletContext]="{
-                  formGroup: this.libForm
+                  formGroup: libForm()
                     .get('acquisition_settings')
                     .get('shipping_informations'),
                   icon: 'fa-truck',
@@ -397,7 +394,7 @@
               <ng-container
                 [ngTemplateOutlet]="contact_block"
                 [ngTemplateOutletContext]="{
-                  formGroup: this.libForm
+                  formGroup: libForm()
                     .get('acquisition_settings')
                     .get('billing_informations'),
                   icon: 'fa-money',
@@ -410,7 +407,7 @@
               <ng-container
                 [ngTemplateOutlet]="contact_block"
                 [ngTemplateOutletContext]="{
-                  formGroup: this.libForm
+                  formGroup: libForm()
                     .get('serial_acquisition_settings')
                     .get('shipping_informations'),
                   icon: 'fa-truck',
@@ -421,7 +418,7 @@
               <ng-container
                 [ngTemplateOutlet]="contact_block"
                 [ngTemplateOutletContext]="{
-                  formGroup: this.libForm
+                  formGroup: libForm()
                     .get('serial_acquisition_settings')
                     .get('billing_informations'),
                   icon: 'fa-money',
@@ -456,10 +453,10 @@
           <div class="ui:col-span-9">
             <p-select
               appendTo="body"
-              [options]="rolloverAccountTransferOptions"
+              [options]="rolloverAccountTransferOptions()"
               id="account-transfer"
               formControlName="account_transfer"
-              styleClass="ui:w-full"
+              class="ui:w-full"
             ></p-select>
           </div>
         </div>
@@ -480,7 +477,7 @@
       type="submit"
       size="small"
       severity="primary"
-      [disabled]="libForm.invalid"
+      [disabled]="libForm()!.invalid"
       icon="fa fa-save"
       [label]="'Save' | translate"
     />
@@ -582,8 +579,8 @@
             formControlName="country"
             appendTo="body"
             [id]="fieldPrefix + '_country'"
-            [options]="countryIsoCodesOptions"
-            styleClass="ui:w-full"
+            [options]="countryIsoCodesOptions()"
+            class="ui:w-full"
             [filter]="true"
             [showClear]="true"
             [placeholder]="'Select a country' | translate"

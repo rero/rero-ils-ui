@@ -27,3 +27,11 @@ export type PaymentDataSubtype = {
   name: string;
   total: number;
 }
+
+export type SubtypeBucket = {
+  key: string;
+  subtotal: {
+    value: number;
+  }
+  [key: string]: any;
+};

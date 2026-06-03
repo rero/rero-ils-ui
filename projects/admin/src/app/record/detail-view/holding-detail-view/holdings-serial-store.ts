@@ -23,10 +23,10 @@ import { patchState, signalMethod, signalStore, withComputed, withHooks, withMet
 import { rxMethod } from "@ngrx/signals/rxjs-interop";
 import { TranslateService } from "@ngx-translate/core";
 import { CONFIG, RecordUiService } from "@rero/ng-core";
-import { EsRecord, EsResult, nonNullable, Pager, PERMISSIONS, PermissionsService, UserService, withPaginator } from "@rero/shared";
+import { AppStore, EsRecord, EsResult, nonNullable, Pager, PERMISSIONS, withPaginator } from "@rero/shared";
 import { MessageService } from "primeng/api";
 import { PaginatorState } from "primeng/paginator";
-import { numberGreatThan } from "projects/shared/src/public-api";
+import { numberGreatThan } from "@rero/shared";
 import { catchError, debounceTime, pipe, switchMap, tap } from "rxjs";
 
 type HoldingsSerialState = {
@@ -77,17 +77,16 @@ export const HoldingsSerialStore = signalStore(
     holdingsApiService: inject(HoldingsApiService),
     messageService: inject(MessageService),
     translateService: inject(TranslateService),
-    userService: inject(UserService),
-    permissionsService: inject(PermissionsService),
+    appStore: inject(AppStore),
     recordUiService: inject(RecordUiService),
   })),
   withComputed((store) => ({
     isFilterEnabled: computed(() => store.receivedItemsCount() >= 11 || '' !== store.filter()),
     isPaginatorEnabled: computed(() => store.pager.rows() < store.filterTotal()),
-    isAllowIssueCreation: computed(() => store.userService.user.currentLibrary === store.holdings().metadata.library.pid),
+    isAllowIssueCreation: computed(() => store.appStore.currentLibraryPid() === store.holdings().metadata.library.pid),
     isDisplayLocalFieldsTab: computed(() =>
-      store.permissionsService.canAccess(localFieldsPermissions)
-      && store.userService.user.currentLibrary === store.holdings().metadata.library.pid
+      store.appStore.canAccess(localFieldsPermissions)
+      && store.appStore.currentLibraryPid() === store.holdings().metadata.library.pid
     ),
   })),
   withMethods((store) => ({
@@ -123,6 +122,14 @@ export const HoldingsSerialStore = signalStore(
         tap(() => patchState(store, { reload: false }))
       ),
     ),
+    updateItem(item: EsRecord) {
+      const current = store.receivedItems();
+      if (current) {
+        patchState(store, {
+          receivedItems: current.map(i => i.metadata.pid === item.metadata.pid ? item : i)
+        });
+      }
+    },
     deleteItem: rxMethod<EsRecord>(
       pipe(
         switchMap((item: EsRecord) => store.recordUiService.deleteRecord('items', item.metadata.pid)),

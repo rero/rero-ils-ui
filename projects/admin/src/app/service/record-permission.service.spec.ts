@@ -27,7 +27,7 @@ describe('RecordPermissionService', () => {
   let service: RecordPermissionService;
   let translateService: TranslateService;
 
-  const httpClientSpy = jasmine.createSpyObj('HttpClient', ['get']);
+  const httpClientSpy = { get: vi.fn() };
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -51,14 +51,14 @@ describe('RecordPermissionService', () => {
   });
 
   it('should return the list of permissions', () => {
-    httpClientSpy.get.and.returnValue(of(testRecordPermission));
+    httpClientSpy.get.mockReturnValue(of(testRecordPermission));
     service.getPermission('documents')
       .subscribe((result: RecordPermissions) => expect(result).toEqual(testRecordPermission))
     expect(service).toBeTruthy();
   });
 
   it('should return permission roles', () => {
-    httpClientSpy.get.and.returnValue(of(testRolesPermissions));
+    httpClientSpy.get.mockReturnValue(of(testRolesPermissions));
     service.getRolesManagementPermissions()
       .subscribe((result: any) => expect(result).toEqual(testRolesPermissions));
   });
@@ -94,17 +94,14 @@ describe('RecordPermissionService', () => {
   });
 
   it('should return a list of permissions based on the current library', () => {
-    const user = {
-      currentLibrary: '1'
-    };
     const permissions = {...testRecordPermission};
     const membershipPermissions = {...testRecordPermission, ...{
       update: { can: false },
       delete: { can: false, reasons: { others: { record_not_in_current_library : '' }}}
     }}
-    // the user's library is different from the current library
-    expect(service.membership(user, '2', permissions)).toEqual(membershipPermissions);
-    // the user's library is the same as the current Library
-    expect(service.membership(user, '1', permissions)).toEqual(permissions);
+    // the current library is different from the record's library
+    expect(service.membership('1', '2', permissions)).toEqual(membershipPermissions);
+    // the current library matches the record's library
+    expect(service.membership('1', '1', permissions)).toEqual(permissions);
   });
 });

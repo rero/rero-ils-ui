@@ -14,25 +14,44 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, inject, Input, OnDestroy, OnInit } from '@angular/core';
-import { RecordService } from '@rero/ng-core';
-import { IOrganisation } from '@rero/shared/public-api';
+import { CurrencyPipe } from '@angular/common';
+import { Component, inject, input, OnDestroy, OnInit, signal, ChangeDetectionStrategy} from '@angular/core';
+import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
+import { DateTranslatePipe, RecordService } from '@rero/ng-core';
+import { MainTitlePipe, OpenCloseButtonComponent, IOrganisation } from '@rero/shared';
+import { fee } from '../types';
+import { PanelModule } from 'primeng/panel';
+import { TagModule } from 'primeng/tag';
+import { TimelineModule } from 'primeng/timeline';
 import { Observable, Subscription } from 'rxjs';
-import { PatronProfileMenuService } from '../../patron-profile-menu.service';
+import { PatronProfileStore } from '../../store/patron-profile.store';
+import { PatronProfileFeeEventsComponent } from '../patron-profile-fee-events/patron-profile-fee-events.component';
 
 @Component({
     selector: 'public-search-patron-profile-fee',
     templateUrl: './patron-profile-fee.component.html',
     styleUrl: './patron-profile-fee.component.scss',
-    standalone: false
+    imports: [
+      CurrencyPipe,
+      TranslateDirective,
+      TranslatePipe,
+      DateTranslatePipe,
+      MainTitlePipe,
+      OpenCloseButtonComponent,
+      PanelModule,
+      TagModule,
+      TimelineModule,
+      PatronProfileFeeEventsComponent,
+    ],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class PatronProfileFeeComponent<T> implements OnInit, OnDestroy {
 
-  private patronProfileMenuService: PatronProfileMenuService = inject(PatronProfileMenuService);
-  private recordService: RecordService = inject(RecordService);
+  private store = inject(PatronProfileStore);
+  private recordService = inject(RecordService);
 
   /** Fee record */
-  @Input() record;
+  record = input<fee>();
 
   /** Detail collapsed */
   isCollapsed = true;
@@ -40,19 +59,19 @@ export class PatronProfileFeeComponent<T> implements OnInit, OnDestroy {
   /** Array of event records */
   events = [];
 
-  document = null;
+  readonly document = signal<any>(null);
 
   subscription = new Subscription();
 
   get organisation(): IOrganisation {
-    return this.patronProfileMenuService.currentPatron.organisation;
+    return this.store.currentPatron()!.organisation;
   }
 
   ngOnInit(): void {
-    if (this.record.loan) {
+    if (this.record()?.loan) {
       this.subscription.add(
-        this.recordService.getRecord('documents', this.record.loan.document_pid)
-          .subscribe(document => this.document = document)
+        this.recordService.getRecord('documents', this.record()?.loan.document_pid)
+          .subscribe(document => this.document.set(document))
       );
     }
   }
@@ -62,6 +81,6 @@ export class PatronProfileFeeComponent<T> implements OnInit, OnDestroy {
   }
 
   getPatronTransaction(pid: string): Observable<T> {
-    return this.recordService.getRecord('patron_transactions', pid, 1);
+    return this.recordService.getRecord('patron_transactions', pid, { resolve: 1 });
   }
 }

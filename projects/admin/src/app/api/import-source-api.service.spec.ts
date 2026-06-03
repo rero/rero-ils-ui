@@ -31,8 +31,8 @@ describe('ImportSourceApiService', () => {
     endpoint: '/source/api/import'
   };
 
-  const httpClientSpy = jasmine.createSpyObj('HttpClient', ['get']);
-  httpClientSpy.get.and.returnValue(of([data]));
+  const httpClientSpy = { get: vi.fn() };
+  httpClientSpy.get.mockReturnValue(of([data]));
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -51,7 +51,7 @@ describe('ImportSourceApiService', () => {
 
   it('should return a list of import sources', () => {
     service.getSources().subscribe((result: ExternalSourceSetting[]) => {
-      expect(result).toHaveSize(1);
+      expect(result).toHaveLength(1);
       expect(result[0]).toBeInstanceOf(ExternalSourceSetting);
     });
   });

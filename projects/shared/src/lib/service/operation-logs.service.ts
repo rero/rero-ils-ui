@@ -15,14 +15,14 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { inject, Injectable } from '@angular/core';
-import { AppSettingsService } from '../service/app-settings.service';
+import { AppStore } from '../store/app.store';
 
 @Injectable({
   providedIn: 'root'
 })
 export class OperationLogsService {
 
-  private appSettingsService: AppSettingsService = inject(AppSettingsService);
+  private appStore = inject(AppStore);
 
   /**
    * Is operation logs is visible
@@ -50,6 +50,6 @@ export class OperationLogsService {
    * @return Object
    */
   private _setting(): any {
-    return this.appSettingsService.settings.operationLogs;
+    return this.appStore.settings()?.operationLogs;
   }
 }

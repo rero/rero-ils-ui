@@ -47,6 +47,6 @@ describe('KeyboardShortcutsService', () => {
 
   it('should have defined shortcuts', () => {
     service.initializeShortcuts();
-    expect(hotkeys.getShortcuts().length > 0).toBeTrue();
+    expect(hotkeys.getShortcuts().length > 0).toBe(true);
   });
 });

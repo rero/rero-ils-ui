@@ -17,7 +17,7 @@
 import { APP_BASE_HREF } from '@angular/common';
 import { inject, Injectable } from '@angular/core';
 import { ApiService, RecordService } from '@rero/ng-core';
-import { IQueryOptions, ISuggestionItem } from '@rero/prime/remote-autocomplete/remote-autocomplete.interface';
+import { IQueryOptions, ISuggestionItem } from '@rero/ng-core';
 import { Entity, MainTitlePipe } from '@rero/shared';
 import { catchError, map, Observable, of } from 'rxjs';
 import { IRemoteAutocomplete } from './i-remote-autocomplete';
@@ -38,7 +38,7 @@ export class DocumentsRemoteService implements IRemoteAutocomplete {
     return 'documents';
   }
 
-  getSuggestions(query: string, queryOptions: IQueryOptions, currentPid: string): Observable<ISuggestionItem[]> {
+  getSuggestions(query: string, queryOptions: IQueryOptions, currentPid: string | null): Observable<ISuggestionItem[]> {
     if (!query) {
       return of([]);
     }
@@ -56,13 +56,13 @@ export class DocumentsRemoteService implements IRemoteAutocomplete {
     }
 
     return this.recordService
-      .getRecords(this.getName(), queryString, 1, queryOptions.maxOfResult)
+      .getRecords(this.getName(), { query: queryString, page: 1, itemsPerPage: queryOptions.maxOfResult })
       .pipe(
         map((result: any) => {
           if (result.hits.total.value == 0) {
             return [];
           }
-          const hits = [];
+          const hits: ISuggestionItem[] = [];
           result.hits.hits.map((hit: any) => {
             hits.push(this.processHit(hit.metadata, queryOptions));
           });
@@ -81,11 +81,11 @@ export class DocumentsRemoteService implements IRemoteAutocomplete {
   }
 
   getValueAsHTML(queryOptions: IQueryOptions, item: ISuggestionItem): Observable<string> {
-    const url = item.value.split('/');
-    const pid = url.pop();
+    const url = item.value!.split('/');
+    const pid = url.pop()!;
 
     return this.recordService
-      .getRecord(queryOptions.type, pid, 1)
+      .getRecord(queryOptions.type, pid, { resolve: 1 })
       .pipe(
         map((data: any) =>
           `<span class="ui:p-2"><strong>${this.mainTitlePipe.transform(data.metadata.title)}</strong></span>`
@@ -96,7 +96,7 @@ export class DocumentsRemoteService implements IRemoteAutocomplete {
       );
   }
 
-  private processHit(metadata: any, queryOptions: IQueryOptions): ISuggestionItem {
+  private processHit(metadata: any, _queryOptions: IQueryOptions): ISuggestionItem {
     const summary = [];
     const baseHref = this.baseHref.replace(/\/$/, '');
     if (metadata.contribution) {
@@ -115,8 +115,8 @@ export class DocumentsRemoteService implements IRemoteAutocomplete {
 
   private processContribution(contributions: any): string | undefined {
     const authorized = 'authorized_access_point';
-    const key = `${authorized}_${this.translateService.currentLang}`;
-    const contrib = [];
+    const key = `${authorized}_${this.translateService.getCurrentLang()}`;
+    const contrib: string[] = [];
     contributions.map((contribution: any) => {
       const keys = Object.keys(contribution.entity);
       if (contribution.entity && (keys.includes(key) || keys.includes(authorized))) {
@@ -131,7 +131,7 @@ export class DocumentsRemoteService implements IRemoteAutocomplete {
   }
 
   private processTitle(title: any, maxLengthSuggestion = 100): string {
-    let text = this.mainTitlePipe.transform(title);
+    let text = this.mainTitlePipe.transform(title) ?? '';
     // Truncate text if the length of text great than maxLengthSuggestion
     if (text.length > maxLengthSuggestion) {
       text = text.slice(0, maxLengthSuggestion) + '…';
@@ -141,7 +141,7 @@ export class DocumentsRemoteService implements IRemoteAutocomplete {
   }
 
   private processIdentifiedBy(identifiedBy: any): string {
-    const ids = [];
+    const ids: string[] = [];
       const identifiers = this.extractIdentifier(identifiedBy);
       const keys = Object.keys(identifiers);
       keys.forEach((key: string) => {
@@ -164,7 +164,7 @@ export class DocumentsRemoteService implements IRemoteAutocomplete {
       .splice(0, 6)
       .forEach((element: any) => {
         let data = element.value;
-        const key = availableIdentifiers[element.type];
+        const key = availableIdentifiers[element.type as keyof typeof availableIdentifiers];
         if (!(key in result)) {
           result[key] = new Set();
         }

@@ -35,8 +35,8 @@ describe('LocationService', () => {
     { pid: '2', name: 'location 2 name' }
   ];
 
-  const httpClientSpy = jasmine.createSpyObj('HttpClient', ['get']);
-  httpClientSpy.get.and.returnValue(of(locations));
+  const httpClientSpy = { get: vi.fn() };
+  httpClientSpy.get.mockReturnValue(of(locations));
 
   beforeEach(() => {
     TestBed.configureTestingModule({

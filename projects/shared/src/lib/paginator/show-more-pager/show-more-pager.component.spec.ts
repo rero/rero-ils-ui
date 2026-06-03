@@ -28,20 +28,20 @@ describe('ShowMorePagerComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ ShowMorePagerComponent ],
-      imports: [
+    imports: [
         TranslateModule.forRoot(),
-        ButtonModule
-      ]
-    })
+        ButtonModule,
+        ShowMorePagerComponent
+    ]
+})
     .compileComponents();
   });
 
   beforeEach(() => {
     fixture = TestBed.createComponent(ShowMorePagerComponent);
     component = fixture.componentInstance;
-    component.id = 'my-button';
-    component.paginator = new Paginator();
+    fixture.componentRef.setInput('id', 'my-button');
+    fixture.componentRef.setInput('paginator', new Paginator());
     fixture.detectChanges();
   });
 
@@ -50,18 +50,14 @@ describe('ShowMorePagerComponent', () => {
   });
 
   it('should display the pager', () => {
-    component.paginator
-      .setRecordsPerPage(5)
-      .setRecordsCount(10);
+    fixture.componentRef.setInput('paginator', new Paginator().setRecordsPerPage(5).setRecordsCount(10));
     fixture.detectChanges();
     button = fixture.nativeElement.querySelector('.p-button');
     expect(button.textContent).toContain('Show more');
   });
 
   it('should not display the pager', () => {
-    component.paginator
-      .setRecordsPerPage(10)
-      .setRecordsCount(8);
+    fixture.componentRef.setInput('paginator', new Paginator().setRecordsPerPage(10).setRecordsCount(8));
     fixture.detectChanges();
     button = fixture.nativeElement.querySelector('.p-button');
     expect(button).toBeNull();

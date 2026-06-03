@@ -14,27 +14,33 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, Input } from '@angular/core';
+import { Component, input, ChangeDetectionStrategy} from '@angular/core';
+import { RouterLink } from '@angular/router';
+import { DescriptionZoneComponent } from '../description-zone/description-zone.component';
+import { AsyncPipe } from '@angular/common';
+import { GetRecordPipe } from '@rero/ng-core';
+import { MainTitleRelationPipe } from '../../../../pipe/main-title-relation.pipe';
 
 @Component({
     selector: 'shared-other-edition',
     templateUrl: './other-edition.component.html',
-    standalone: false
+    imports: [RouterLink, DescriptionZoneComponent, AsyncPipe, GetRecordPipe, MainTitleRelationPipe],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class OtherEditionComponent {
 
   /** Field label */
-  @Input() fieldLabel: string;
+  readonly fieldLabel = input<string>(undefined);
 
   /** Field data */
-  @Input() field: any;
+  readonly field = input<any>(undefined);
 
   /** Inline display mode */
-  @Input() inline = false;
+  readonly inline = input(false);
 
   /** View code for public URL */
-  @Input() viewcode: string = null;
+  readonly viewcode = input<string>(null);
 
   /** Is public view */
-  @Input() isPublicView = false;
+  readonly isPublicView = input(false);
 }

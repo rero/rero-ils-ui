@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2019-2024 RERO
+ * Copyright (C) 2019-2025 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -14,106 +14,71 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, inject, OnDestroy, OnInit } from '@angular/core';
-import { FormControl, FormGroup } from '@angular/forms';
-import { OrganisationService } from '@app/admin/service/organisation.service';
+import { ChangeDetectionStrategy, Component, effect, inject } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ResourcesFilesService } from '@app/admin/service/resources-files.service';
-import { TranslateService } from '@ngx-translate/core';
+import { TranslateDirective, TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { CONFIG } from '@rero/ng-core';
-import { MessageService } from 'primeng/api';
-import { Subscription } from 'rxjs';
+import { AppStore } from '@rero/shared';
+import { MessageService, PrimeTemplate } from 'primeng/api';
+import { AutoComplete } from 'primeng/autocomplete';
+import { Bind } from 'primeng/bind';
+import { Tooltip } from 'primeng/tooltip';
 
 @Component({
     selector: 'admin-files-collections',
     templateUrl: './files-collections.component.html',
-    standalone: false
+    imports: [TranslateDirective, FormsModule, ReactiveFormsModule, Bind, AutoComplete, Tooltip, PrimeTemplate, TranslatePipe],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class FilesCollectionsComponent implements OnInit, OnDestroy {
+export class FilesCollectionsComponent {
 
-  private messageService: MessageService = inject(MessageService);
-  private resourcesFilesService: ResourcesFilesService = inject(ResourcesFilesService);
-  private translateService: TranslateService = inject(TranslateService);
-  private organisationService: OrganisationService = inject(OrganisationService);
+  private messageService = inject(MessageService);
+  private resourcesFilesService = inject(ResourcesFilesService);
+  private translateService = inject(TranslateService);
+  private appStore = inject(AppStore);
 
-  // current record
-  record: any;
+  protected readonly currentParentRecord = this.resourcesFilesService.currentParentRecord;
 
-  // form control for the collection editor
   formGroup = new FormGroup({
     collections: new FormControl<string[] | null>(null)
   });
 
-  // all component subscription
-  private subscriptions = new Subscription();
+  constructor() {
+    effect(() => {
+      const rec = this.resourcesFilesService.currentParentRecord();
+      if (rec?.metadata?.collections) {
+        this.formGroup.get('collections')!.setValue(rec.metadata.collections, { emitEvent: false });
+      } else {
+        this.formGroup.get('collections')!.setValue(null, { emitEvent: false });
+      }
+    });
 
-  /** OnInit hook */
-  ngOnInit(): void {
-      this.resourcesFilesService.currentParentRecord$.subscribe((record) => {
-        this.setRecord(record, false);
-      })
-    this.subscriptions.add(
-      this.formGroup.valueChanges.subscribe(() => this.save())
-    );
+    this.formGroup.valueChanges.pipe(
+      takeUntilDestroyed()
+    ).subscribe(() => this.save());
   }
 
-  /** OnDestroy hook */
-  ngOnDestroy(): void {
-    this.subscriptions.unsubscribe();
-  }
-
-  /**
-   * Set the current file record.
-   *
-   * @param record - the file record instance.
-   */
-  setRecord(record, emitEvent=false): void {
-    this.record = record;
-    if (this.record?.metadata?.collections) {
-      this.formGroup.get('collections').setValue(this.record.metadata.collections, {emitEvent});
-    } else {
-      this.formGroup.get('collections').setValue(null, {emitEvent});
-    }
-  }
-
-  /**
-   * Generate the public interface collection search link.
-   *
-   * @param name - the collection name
-   * @returns - url on the public interface
-   */
-  getCollectionLink(name): string {
-    const viewcode = this.organisationService.organisation.code;
+  getCollectionLink(name: string): string {
+    const viewcode = this.appStore.organisation().code;
     return `/${viewcode}/search/documents?q=files.collections.raw:(${name})&simple=0`;
   }
 
-  /** Is the submit action is disabled? */
-  disabled(): void {
-    // eslint-disable-next-line @typescript-eslint/no-unused-expressions
-    this.formGroup.touched;
-  }
 
-  getIndex(collection: string): number {
-    const value = this.formGroup.get('collections')?.value?.indexOf(collection);
-    if (value == null) {
-      return -1;
-    }
-    return value;
-  }
-
-  /**
-   * Save the form and put the new value on the backend.
-   */
   save(): void {
-    const coll = Array.from(new Set(this.formGroup.get('collections').value));
-    const metadata = this.record.metadata;
+    const rec = this.resourcesFilesService.currentParentRecord();
+    if (!rec) return;
+    const coll = Array.from(new Set(this.formGroup.get('collections')!.value));
+    const metadata = rec.metadata;
     if (coll) {
       metadata.collections = coll;
     } else {
       delete metadata.collections;
     }
     this.resourcesFilesService
-      .updateParentRecordMetadata(this.record.id, { metadata: metadata })
-      .subscribe((record) => this.setRecord(record));
+      .updateParentRecordMetadata(rec.id, { metadata })
+      .subscribe(updatedRecord => this.resourcesFilesService.currentParentRecord.set(updatedRecord));
     this.formGroup.markAsPristine();
     this.messageService.add({
       severity: 'success',

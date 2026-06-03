@@ -29,8 +29,8 @@ describe('PatronApiService', () => {
     }
   ];
 
-  const httpClientSpy = jasmine.createSpyObj('HttpClient', ['get']);
-  httpClientSpy.get.and.returnValue(of(messages));
+  const httpClientSpy = { get: vi.fn() };
+  httpClientSpy.get.mockReturnValue(of(messages));
 
   beforeEach(() => {
     TestBed.configureTestingModule({

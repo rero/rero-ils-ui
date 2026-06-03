@@ -17,10 +17,11 @@
 
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
-import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ActivatedRoute } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
-import { RecordModule } from '@rero/ng-core';
-import { SharedModule } from '@rero/shared';
+import { of } from 'rxjs';
+
 import { DocumentBriefComponent } from './document-brief.component';
 
 
@@ -39,29 +40,26 @@ describe('DocumentBriefComponent', () => {
     }
   };
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      declarations: [
-          DocumentBriefComponent
-      ],
-      imports: [
-        RecordModule,
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+    imports: [
         TranslateModule.forRoot(),
-        SharedModule
-      ],
-      providers: [
+        DocumentBriefComponent
+    ],
+    providers: [
         provideHttpClient(withInterceptorsFromDi()),
-        provideHttpClientTesting()
-      ]
-    }).compileComponents();
-  }));
+        provideHttpClientTesting(),
+        { provide: ActivatedRoute, useValue: { params: of({ viewcode: 'global' }) } }
+    ]
+}).compileComponents();
+  });
 
   beforeEach(() => {
     fixture = TestBed.createComponent(DocumentBriefComponent);
     component = fixture.componentInstance;
-    component.detailUrl = { link: '/foo', external: false };
-    component.viewcode = 'global';
-    component.record = record
+    fixture.componentRef.setInput('detailUrl', { link: '/foo', external: false });
+    fixture.componentRef.setInput('type', 'main');
+    fixture.componentRef.setInput('record', record);
     fixture.detectChanges();
   });
 

@@ -15,13 +15,20 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, inject, Input } from '@angular/core';
+import { Component, inject, input, ChangeDetectionStrategy} from '@angular/core';
 import { NotificationApiService } from '@app/admin/api/notification-api.service';
+import { CirculationLogComponent } from '../circulation-log.component';
+import { Bind } from 'primeng/bind';
+import { Tag } from 'primeng/tag';
+import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
+import { AsyncPipe } from '@angular/common';
+import { DateTranslatePipe, GetRecordPipe } from '@rero/ng-core';
 
 @Component({
     selector: 'admin-circulation-log-notification',
     templateUrl: './circulation-log-notification.component.html',
-    standalone: false
+    imports: [CirculationLogComponent, Bind, Tag, TranslateDirective, AsyncPipe, TranslatePipe, DateTranslatePipe, GetRecordPipe],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CirculationLogNotificationComponent {
 
@@ -29,11 +36,11 @@ export class CirculationLogNotificationComponent {
 
   // COMPONENT ATTRIBUTES =====================================================
   /** Operation log record */
-  @Input() record: any;
+  record = input<any>();
   /** Is the log should be highlighted */
-  @Input() isHighlight = false;
+  isHighlight = input(false);
   /** Is the transaction must be separated from sibling elements */
-  @Input() separator = false;
+  separator = input(false);
 
   /** Notification record */
   notificationRecord: any;
@@ -44,7 +51,7 @@ export class CirculationLogNotificationComponent {
    */
   loadData(isCollapsed: boolean): void {
     if (!isCollapsed && this.notificationRecord === undefined) {
-      this.NotificationApiService.getNotificationByPid(this.record.metadata.notification.pid)
+      this.NotificationApiService.getNotificationByPid(this.record().metadata.notification.pid)
       .subscribe((record: any) => {
         this.notificationRecord = record;
       })

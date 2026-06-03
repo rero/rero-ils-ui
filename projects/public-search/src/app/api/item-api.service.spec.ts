@@ -20,7 +20,6 @@ import { TestBed } from '@angular/core/testing';
 import { RecordService } from '@rero/ng-core';
 import { EsRecord, EsResult, IAvailability } from '@rero/shared';
 import { of } from 'rxjs';
-import { QueryResponse } from '../record';
 import { ItemApiService } from './item-api.service';
 
 
@@ -71,11 +70,11 @@ describe('ItemService', () => {
     status: 'on_loan'
   }
 
-  const recordServiceSpy = jasmine.createSpyObj('RecordService', ['getRecords', 'totalHits']);
-  recordServiceSpy.getRecords.and.returnValue(of(apiResponse));
-  recordServiceSpy.totalHits.and.returnValue(1);
+  const recordServiceSpy = { getRecords: vi.fn(), totalHits: vi.fn() };
+  recordServiceSpy.getRecords.mockReturnValue(of(apiResponse));
+  recordServiceSpy.totalHits.mockReturnValue(1);
 
-  const httpClientSpy = jasmine.createSpyObj('HttpClient', ['get', 'post']);
+  const httpClientSpy = { get: vi.fn(), post: vi.fn() };
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -105,21 +104,21 @@ describe('ItemService', () => {
   });
 
   it('should return item can request', () => {
-    httpClientSpy.get.and.returnValue(of(canRequest));
+    httpClientSpy.get.mockReturnValue(of(canRequest));
     service.canRequest('1', '1', 'xxxxxxxx').subscribe((result: any) => {
       expect(result).toEqual(canRequest);
     });
   });
 
   it('should return a result of request', () => {
-    httpClientSpy.post.and.returnValue(of(request));
+    httpClientSpy.post.mockReturnValue(of(request));
     service.request({ item_pid: '1', pickup_location_pid: '1' }).subscribe((result: any) => {
       expect(result).toEqual(request);
     });
   });
 
   it('should return the availability of the item', () => {
-    httpClientSpy.get.and.returnValue(of(availability));
+    httpClientSpy.get.mockReturnValue(of(availability));
     service.getAvailability('1')
       .subscribe((response: IAvailability) => expect(response).toEqual(availability));
   });

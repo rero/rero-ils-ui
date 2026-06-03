@@ -16,18 +16,18 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 
-<admin-entities-local-global [record]="record">
+<admin-entities-local-global [record]="record()">
   <!-- NAME -->
-  @if (record.name) {
+  @if (record().name) {
     <dt translate>Name</dt>
-    <dd>{{ record.name }}</dd>
+    <dd>{{ record().name }}</dd>
   }
   <!-- ALTERNATIVE NAMES -->
-  @if (record.alternative_names && record.alternative_names.length > 0) {
+  @if (record().alternative_names && record().alternative_names.length > 0) {
     <dt translate>Alternative names</dt>
     <dd>
       <ul class="ui:list-none">
-        @for (name of record.alternative_names; track $index) {
+        @for (name of record().alternative_names; track $index) {
           <li>{{ name }}</li>
         }
       </ul>

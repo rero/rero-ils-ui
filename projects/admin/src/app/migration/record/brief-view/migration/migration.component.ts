@@ -15,16 +15,25 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { Component, Input } from '@angular/core';
+import { Component, input, ChangeDetectionStrategy} from '@angular/core';
+import { Bind } from 'primeng/bind';
+import { Tag } from 'primeng/tag';
+import { Button } from 'primeng/button';
+import { RouterLink } from '@angular/router';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
     selector: 'admin-migration',
     templateUrl: './migration.component.html',
-    standalone: false
+    imports: [Bind, Tag, Button, RouterLink, TranslatePipe],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class MigrationDetailComponent {
 
-  // current record
-  @Input() record: any;
+  record = input<any>();
+
+  type = input<string>();
+
+  detailUrl = input<{ link: string; external: boolean }>();
 
 }

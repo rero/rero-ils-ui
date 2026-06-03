@@ -15,96 +15,75 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, inject, Input, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, input } from '@angular/core';
+import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { RecordPermissions } from '@app/admin/classes/permissions';
 import { RecordPermissionService } from '@app/admin/service/record-permission.service';
-import { CurrentLibraryPermissionValidator } from '@app/admin/utils/permissions';
 import { RecordService } from '@rero/ng-core';
-import { forkJoin, of, Subscription } from 'rxjs';
-import { catchError, map } from 'rxjs/operators';
+import { forkJoin, of } from 'rxjs';
+import { catchError, map, switchMap } from 'rxjs/operators';
 import { AcqOrderApiService } from '../../../../api/acq-order-api.service';
 import { AcqOrderLineStatus, IAcqOrderLine } from '../../../../classes/order';
+import { AppStore, OpenCloseButtonComponent, DocumentBriefViewComponent, ActionButtonComponent } from '@rero/shared';
+import { NgClass, CurrencyPipe } from '@angular/common';
+import { Bind } from 'primeng/bind';
+import { OverlayBadge } from 'primeng/overlaybadge';
+import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
+import { NotesComponent } from '../../../notes/notes.component';
+import { RouterLink } from '@angular/router';
+import { NoteBadgeColorPipe } from '../../../../pipes/note-badge-color.pipe';
 
 @Component({
     selector: 'admin-order-line',
     templateUrl: './order-line.component.html',
-    standalone: false
+    imports: [OpenCloseButtonComponent, NgClass, DocumentBriefViewComponent, Bind, OverlayBadge, TranslateDirective, NotesComponent, ActionButtonComponent, RouterLink, CurrencyPipe, TranslatePipe, NoteBadgeColorPipe],
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class OrderLineComponent implements OnInit, OnDestroy {
-  private recordPermissionService: RecordPermissionService = inject(RecordPermissionService);
-  private recordService: RecordService = inject(RecordService);
-  private acqOrderApiService: AcqOrderApiService = inject(AcqOrderApiService);
-  private permissionValidator: CurrentLibraryPermissionValidator = inject(CurrentLibraryPermissionValidator);
+export class OrderLineComponent {
+  private recordPermissionService = inject(RecordPermissionService);
+  private recordService = inject(RecordService);
+  private acqOrderApiService = inject(AcqOrderApiService);
+  private appStore = inject(AppStore);
 
-  // COMPONENT ATTRIBUTES =====================================================
-  /** order line */
-  @Input() orderLine: IAcqOrderLine;
-  /** parent order */
-  @Input() order: any;
+  orderLine = input.required<IAcqOrderLine>();
+  order = input<any>();
 
-  /** order line related account */
-  account: any;
-  /** order line related document record */
-  document: any;
-  /** Is the line is collapsed */
   isCollapsed = true;
-  /** reference to AcqOrderLineStatus */
-  orderLineStatus = AcqOrderLineStatus;
-  recordPermissions?: RecordPermissions;
+  readonly orderLineStatus = AcqOrderLineStatus;
 
-  /** all component subscription */
-  private subscriptions = new Subscription();
+  private readonly lineData = toSignal(
+    toObservable(this.orderLine).pipe(
+      switchMap(line => forkJoin([
+        this.recordPermissionService.getPermission('acq_order_lines', line.pid).pipe(
+          map(p => this.appStore.validateLibraryPermissions(p, this.order()?.library?.pid ?? ''))
+        ),
+        this.recordService.getRecord('acq_accounts', line.acq_account.pid),
+        this.recordService.getRecord('documents', line.document.pid).pipe(catchError(() => of(null)))
+      ]))
+    )
+  );
 
-  // GETTER & SETTER ==========================================================
-  /**
-   * Get a message containing the reasons why the order line cannot be deleted
-   * @return the message to display into the tooltip box
-   */
-  get deleteInfoMessage(): string {
-    return !this.recordPermissions.delete.can
-      ? this.recordPermissionService.generateTooltipMessage(this.recordPermissions.delete.reasons, 'delete')
+  readonly recordPermissions = computed(() => this.lineData()?.[0] as RecordPermissions | undefined);
+  readonly account = computed(() => this.lineData()?.[1]);
+  readonly document = computed(() => this.lineData()?.[2]);
+
+  get deleteInfoMessage(): string | null {
+    return !this.recordPermissions()?.delete?.can
+      ? this.recordPermissionService.generateTooltipMessage(this.recordPermissions()?.delete?.reasons, 'delete') ?? null
       : null;
   }
 
-  /** OnInit hook */
-  ngOnInit() {
-    const account$ = this.recordService.getRecord('acq_accounts', this.orderLine.acq_account.pid);
-    const permissions$ = this.recordPermissionService
-      .getPermission('acq_order_lines', this.orderLine.pid)
-      .pipe(map((permissions) => this.permissionValidator.validate(permissions, this.order.library.pid)));
-    const document$ = this.recordService.getRecord('documents', this.orderLine.document.pid).pipe(
-      catchError(() => of(null))
-    );
-    forkJoin([permissions$, account$, document$]).subscribe(([permissions, account, document]) => {
-      this.recordPermissions = permissions;
-      this.account = account;
-      this.document = document;
-    });
-  }
-
-  /** onDestroy hook */
-  ngOnDestroy(): void {
-    this.subscriptions.unsubscribe();
-  }
-
-  // COMPONENT FUNCTIONS ======================================================
-  /** Delete the order line */
-  deleteOrderLine() {
-    this.acqOrderApiService.deleteOrderLine(this.orderLine);
+  deleteOrderLine(): void {
+    this.acqOrderApiService.deleteOrderLine(this.orderLine());
   }
 
   severity(): string {
-    switch(this.orderLine.priority) {
-      case 2:
-        return 'primary';
-      case 3:
-        return 'info';
-      case 4:
-        return 'warn';
-      case 5:
-        return 'danger';
-      default:
-        return 'success';
+    switch (this.orderLine().priority) {
+      case 2: return 'primary';
+      case 3: return 'info';
+      case 4: return 'warn';
+      case 5: return 'danger';
+      default: return 'success';
     }
   }
 }

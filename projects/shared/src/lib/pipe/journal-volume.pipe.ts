@@ -17,10 +17,7 @@
 import { inject, Pipe, PipeTransform } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 
-@Pipe({
-    name: 'journalVolume',
-    standalone: false
-})
+@Pipe({ name: 'journalVolume' })
 export class JournalVolumePipe implements PipeTransform {
 
   private translateService: TranslateService = inject(TranslateService);

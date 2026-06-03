@@ -14,18 +14,22 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, inject } from '@angular/core';
-import { DetailComponent } from '@rero/ng-core';
-import { AppSettingsService, Entity } from '@rero/shared';
+import { Component, inject, ChangeDetectionStrategy} from '@angular/core';
+import { DetailComponent, DetailButtonComponent, ErrorComponent } from '@rero/ng-core';
+import { AppStore, Entity } from '@rero/shared';
+import { Bind } from 'primeng/bind';
+import { Button } from 'primeng/button';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
     selector: 'admin-remote-page-detail',
     templateUrl: './remote-page-detail.component.html',
-    standalone: false
+    imports: [DetailButtonComponent, Bind, Button, ErrorComponent, TranslatePipe],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class RemotePageDetailComponent extends DetailComponent {
 
-  private appSettingsService: AppSettingsService = inject(AppSettingsService);
+  private appStore = inject(AppStore);
 
     /**
    * Launch an expert search on the document view.
@@ -34,8 +38,8 @@ export class RemotePageDetailComponent extends DetailComponent {
     search(record: any): void {
       let catalogKey = undefined;
       let catalogPid = undefined;
-      const orderKey = this.findOrderKeyByLanguage(this.translate.currentLang);
-      this.appSettingsService.settings.agentLabelOrder[orderKey].forEach((source: string) => {
+      const orderKey = this.findOrderKeyByLanguage(this.translate.getCurrentLang());
+      this.appStore.settings()?.agentLabelOrder[orderKey].forEach((source: string) => {
         if (record.metadata.sources.includes(source) && !catalogKey && !catalogPid) {
           catalogKey = source;
           catalogPid = record.metadata[source].pid;
@@ -58,9 +62,9 @@ export class RemotePageDetailComponent extends DetailComponent {
      * @returns The matched language code
      */
     private findOrderKeyByLanguage(language: string): string {
-      let orderKey = Object.keys(this.appSettingsService.settings.agentLabelOrder).find((key: string) => key === language);
+      let orderKey = Object.keys(this.appStore.settings()?.agentLabelOrder).find((key: string) => key === language);
       if (!orderKey) {
-        orderKey = this.appSettingsService.settings.agentLabelOrder.fallback;
+        orderKey = this.appStore.settings()?.agentLabelOrder.fallback;
       }
 
       return orderKey;

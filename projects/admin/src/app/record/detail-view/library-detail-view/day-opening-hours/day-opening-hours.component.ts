@@ -15,21 +15,23 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, Input } from '@angular/core';
+import { Component, input, ChangeDetectionStrategy} from '@angular/core';
+import { NgClass } from '@angular/common';
+import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
 
 @Component({
     selector: 'admin-day-opening-hours',
     template: `
     <dl class="metadata ui:mx-2">
-      <dt>{{ day.day | translate }}</dt>
+      <dt>{{ day().day | translate }}</dt>
       <dd>
         <div class="ui:flex ui:gap-x-3 ui:items-center">
         <i class="fa" [ngClass]="{
-          'fa-times-circle-o text-error': !day.is_open,
-          'fa-circle text-success': day.is_open
+          'fa-times-circle-o text-error': !day().is_open,
+          'fa-circle text-success': day().is_open
         }"></i>
-        @if (day.is_open) {
-            @for (time of day.times; track $index; let last = $last) {
+        @if (day().is_open) {
+            @for (time of day().times; track $index; let last = $last) {
               <span>{{ time.start_time }} - {{ time.end_time }}</span>
               @if (!last) {
                 /
@@ -42,8 +44,9 @@ import { Component, Input } from '@angular/core';
       </dd>
     </dl>
   `,
-    standalone: false
+    imports: [NgClass, TranslateDirective, TranslatePipe],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class DayOpeningHoursComponent {
-  @Input() day: any;
+  day = input<any>();
 }

@@ -16,10 +16,10 @@
  */
 
 import { HttpClient } from '@angular/common/http';
-import { Injectable, inject } from '@angular/core';
-import { ApiService, File, Record, RecordService } from '@rero/ng-core';
-import { UserService } from '@rero/shared';
-import { BehaviorSubject, Observable, map, of, switchMap, tap } from 'rxjs';
+import { Injectable, inject, signal } from '@angular/core';
+import { ApiService, File } from '@rero/ng-core';
+import { AppStore } from '@rero/shared';
+import { Observable, map, of, switchMap, tap } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -28,16 +28,13 @@ export class ResourcesFilesService {
 
   private httpService: HttpClient = inject(HttpClient);
   private apiService: ApiService = inject(ApiService);
-  private userService: UserService = inject(UserService);
+  private appStore = inject(AppStore);
 
   //api base URL
   baseUrl: string;
 
-  // Current file parent record.
-  currentParentRecord = new BehaviorSubject(null);
-
-  // Current file parent record observable.
-  currentParentRecord$ = this.currentParentRecord.asObservable();
+  /** Current file parent record */
+  readonly currentParentRecord = signal<any>(null);
 
   /**
    * Constructor.
@@ -58,7 +55,7 @@ export class ResourcesFilesService {
    */
   getParentRecord(pid: string): Observable<any> {
     // get the current library pid
-    const libPid = this.userService.user.currentLibrary;
+    const libPid = this.appStore.currentLibraryPid();
     // retrieve the file record attached to the document and the current library
     return this.httpService
       .get(`${this.baseUrl}?q=metadata.document.pid:${pid} AND metadata.library.pid:${libPid}`)
@@ -79,7 +76,7 @@ export class ResourcesFilesService {
           metadata.library = { $ref: this.apiService.getRefEndpoint('libraries', metadata.library.pid) };
           return esResult;
         }),
-        tap((record) => this.currentParentRecord.next(record))
+        tap((record) => this.currentParentRecord.set(record))
       );
   }
 
@@ -93,9 +90,9 @@ export class ResourcesFilesService {
    * @param type
    * @param pid
    */
-  createParentRecord(docPid: string): Observable<Record> {
+  createParentRecord(docPid: string): Observable<any> {
     // get the current library pid
-    const libPid = this.userService.user.currentLibrary;
+    const libPid = this.appStore.currentLibraryPid();
     // create the file record attached to the current library pid and the given
     // document
     return this.httpService
@@ -105,7 +102,7 @@ export class ResourcesFilesService {
           library: { $ref: this.apiService.getRefEndpoint('libraries', libPid) },
         },
       })
-      .pipe(tap((record) => this.currentParentRecord.next(record))) as Observable<any>;
+      .pipe(tap((record) => this.currentParentRecord.set(record))) as Observable<any>;
   }
 
   /**
@@ -161,13 +158,13 @@ export class ResourcesFilesService {
     return this.httpService
       .post(`${this.baseUrl}/${parentRecordId}/files`, [{ key: fileKey, metadata: { label: fileData.label }}])
       .pipe(
-        switchMap((res: any) =>
+        switchMap((_res: any) =>
           // set the file content
           this.httpService.put(`${this.baseUrl}/${parentRecordId}/files/${fileKey}/content`, fileData, {
             headers: { 'content-type': 'application/octet-stream' },
           })
         ),
-        switchMap((res: any) => {
+        switchMap((_res: any) => {
           // commit the file
           return this.httpService.post(
             `${this.baseUrl}/${parentRecordId}/files/${fileKey}/commit`,
@@ -192,7 +189,7 @@ export class ResourcesFilesService {
    */
   update(parentRecordId: string, file: File, fileData: any): Observable<File> {
     return this.delete(parentRecordId, file.key, true).pipe(
-      switchMap((res) => this.create(parentRecordId, file.key, fileData))
+      switchMap((_res) => this.create(parentRecordId, file.key, fileData))
     );
   }
 
@@ -222,7 +219,7 @@ export class ResourcesFilesService {
             // remove the file record
             return this.httpService
               .delete(`${this.baseUrl}/${parentRecordId}`)
-              .pipe(tap(() => this.currentParentRecord.next(null)));
+              .pipe(tap(() => this.currentParentRecord.set(null)));
           })
         )
     );

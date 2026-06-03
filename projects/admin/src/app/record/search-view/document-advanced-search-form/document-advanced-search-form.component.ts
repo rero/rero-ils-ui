@@ -15,75 +15,71 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, inject, OnInit } from '@angular/core';
-import { FormGroup } from '@angular/forms';
+import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
+import { FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
-import { FormlyFieldConfig, FormlyFormBuilder, FormlyFormOptions } from '@ngx-formly/core';
+import { FormlyFieldConfig, FormlyFormBuilder, FormlyFormOptions, FormlyModule } from '@ngx-formly/core';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { LocalStorageService } from '@rero/ng-core';
+import { Bind } from 'primeng/bind';
+import { Button } from 'primeng/button';
 import { DynamicDialogRef } from 'primeng/dynamicdialog';
 import { BehaviorSubject } from 'rxjs';
 import { AdvancedSearchService } from './advanced-search.service';
 import { IFieldsData, IFieldsType, ISearchModel } from './i-advanced-search-config-interface';
-import { TranslateService } from '@ngx-translate/core';
 
 @Component({
-    selector: 'admin-document-advanced-search-form',
-    templateUrl: './document-advanced-search-form.component.html',
-    standalone: false
+  selector: 'admin-document-advanced-search-form',
+  templateUrl: './document-advanced-search-form.component.html',
+  imports: [FormsModule, ReactiveFormsModule, FormlyModule, Bind, Button, TranslatePipe],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class DocumentAdvancedSearchFormComponent implements OnInit {
+export class DocumentAdvancedSearchFormComponent {
 
-  private dynamicDialogRef: DynamicDialogRef = inject(DynamicDialogRef);
-  private route: ActivatedRoute = inject(ActivatedRoute);
-  private localeStorage: LocalStorageService = inject(LocalStorageService);
-  private translateService: TranslateService = inject(TranslateService);
-  private advancedSearchService: AdvancedSearchService = inject(AdvancedSearchService);
-  private formBuilder: FormlyFormBuilder = inject(FormlyFormBuilder);
+  private dynamicDialogRef = inject(DynamicDialogRef);
+  private route = inject(ActivatedRoute);
+  private localeStorage = inject(LocalStorageService);
+  private translateService = inject(TranslateService);
+  private advancedSearchService = inject(AdvancedSearchService);
+  private formBuilder = inject(FormlyFormBuilder);
 
-  /** Locale storage parameters */
   private static LOCALE_STORAGE_NAME = 'advancedSearch';
   private static LOCALE_STORAGE_EXPIRED_IN_SECONDS = 600;
 
-  /** Configuration loaded from backend */
-  configurationLoaded = false;
+  protected configurationLoaded = signal(false);
 
-  /** Field data config with map */
-  fieldDataConfig: IFieldsData;
+  private fieldDataConfig!: IFieldsData;
+  private fieldsSearchTypeConfig: IFieldsType = {};
 
-  /** Field search type config */
-  fieldsSearchTypeConfig: IFieldsType = {};
-
-  /** Form configuration */
   form = new FormGroup({});
-  model: ISearchModel;
+  model!: ISearchModel;
   options: FormlyFormOptions = {};
   fieldsConfig: FormlyFieldConfig[] = [];
 
-  fieldHook = function(field: any, selectName: string) {
+  private fieldHook = (field: any, selectName: string) => {
     const fieldControl = field.form.get(selectName);
     this.initField(field, fieldControl.value);
     fieldControl.valueChanges.subscribe((fieldKey: string) => {
       this.initField(field, fieldKey);
       field.formControl.setValue(null);
     });
-  }
+  };
 
-  fieldSearchTypeHook = function(field: any, selectName: string) {
+  private fieldSearchTypeHook = (field: any, selectName: string) => {
     const fieldControl = field.form.get(selectName);
     this.initFieldSearchType(field, fieldControl.value);
     fieldControl.valueChanges.subscribe((fieldKey: string) => {
       this.initFieldSearchType(field, fieldKey);
     });
-  }
+  };
 
-  /** OnInit hook */
-  ngOnInit(): void {
-    const {q} = this.route.snapshot.queryParams;
+  constructor() {
+    const { q } = this.route.snapshot.queryParams;
     this.initModel();
     this.advancedSearchService.load().subscribe(() => {
       this.initializeFieldConfig();
       this.loadOrResetStorage(q);
-      this.configurationLoaded = true;
+      this.configurationLoaded.set(true);
     });
   }
 

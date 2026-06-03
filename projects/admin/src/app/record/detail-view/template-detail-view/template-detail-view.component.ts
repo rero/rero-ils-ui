@@ -14,59 +14,22 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, inject, OnDestroy, OnInit } from '@angular/core';
+import { Component, inject, input, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { RecordService } from '@rero/ng-core';
-import { Observable, of, Subscription } from 'rxjs';
+import { GetRecordPipe, Nl2brPipe } from '@rero/ng-core';
+import { TranslateDirective } from '@ngx-translate/core';
+import { AsyncPipe } from '@angular/common';
 
 @Component({
     selector: 'admin-template-detail-view',
     templateUrl: './template-detail-view.component.html',
-    standalone: false
+    imports: [TranslateDirective, AsyncPipe, GetRecordPipe, Nl2brPipe],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class TemplateDetailViewComponent implements OnInit, OnDestroy {
+export class TemplateDetailViewComponent {
 
-  private router: ActivatedRoute = inject(ActivatedRoute);
-  private recordService: RecordService = inject(RecordService);
+  private route: ActivatedRoute = inject(ActivatedRoute);
 
-  /** Observable resolving record data */
-  record$: Observable<any>;
-
-  /** Observable of the imported record in marc format */
-  marc$: Observable<any>;
-
-  /** Resource type */
-  type: string;
-
-  /** Document record */
-  record: any;
-
-  /** Record subscription */
-  private recordSubscription: Subscription;
-
-  /** External identifier for imported record. */
-  get pid() {
-    return this.router.snapshot.params.pid;
-  }
-
-  /** On init hook */
-  ngOnInit(): void {
-    this.recordSubscription = this.record$.subscribe((record: any) => {
-      this.record = record;
-      // only for imported record
-      if (record != null && record.metadata != null && this.record.metadata.pid == null) {
-        this.marc$ = this.recordService.getRecord(
-          this.router.snapshot.params.type, this.pid, 0, {
-          Accept: 'application/marc+json, application/json'
-        });
-      } else {
-        this.marc$ = of(null);
-      }
-    });
-  }
-
-  /** On destroy hook */
-  ngOnDestroy(): void {
-    this.recordSubscription.unsubscribe();
-  }
+  readonly record = input<any>();
+  readonly type = input<string>('');
 }

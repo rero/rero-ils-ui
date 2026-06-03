@@ -15,20 +15,24 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, inject, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { ItemApiService } from '@app/admin/api/item-api.service';
-import { ITypeEmail } from '@app/admin/shared/preview-email/IPreviewInterface';
+import { IPreview, ISuggestions, ITypeEmail } from '@app/admin/shared/preview-email/IPreviewInterface';
 import { Tools } from '@app/admin/shared/preview-email/utils/tools';
 import { CONFIG, NgCoreTranslateService, RecordService } from '@rero/ng-core';
 import { MessageService } from 'primeng/api';
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
+import { PreviewEmailComponent } from '../../../shared/preview-email/component/preview-email/preview-email.component';
+import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
+import { Message } from 'primeng/message';
 
 @Component({
-    selector: 'admin-issue-email',
-    templateUrl: './issue-email.component.html',
-    standalone: false
+  selector: 'admin-issue-email',
+  templateUrl: './issue-email.component.html',
+  imports: [PreviewEmailComponent, TranslateDirective, TranslatePipe, Message],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class IssueEmailComponent implements OnInit {
+export class IssueEmailComponent {
 
   private messageService: MessageService = inject(MessageService);
   private dynamicDialogConfig: DynamicDialogConfig = inject(DynamicDialogConfig);
@@ -37,38 +41,36 @@ export class IssueEmailComponent implements OnInit {
   private translateService: NgCoreTranslateService = inject(NgCoreTranslateService);
   private recordService: RecordService = inject(RecordService);
 
-  record: any;
+  private record = this.dynamicDialogConfig.data.record;
 
   /** Available recipient types */
-  emailTypes = ['to', 'cc', 'bcc', 'reply_to'];
+  readonly emailTypes = ['to', 'cc', 'bcc', 'reply_to'];
 
   /** Mandatory email types */
-  mandatoryEmailTypes = ['to', 'reply_to'];
+  readonly mandatoryEmailTypes = ['to', 'reply_to'];
 
-  /** Suggested emails and PrePopulate recipients */
-  suggestions: { emails: string[], recipients: ITypeEmail[] } = { emails: [], recipients: []};
+  /** Suggested emails and pre-populated recipients */
+  suggestions = signal<ISuggestions>({ emails: [], recipients: [] });
 
   /** Previewing the message body for the email */
-  response: any;
+  response = signal<IPreview | null>(null);
 
-  /** OnInit hook */
-  ngOnInit(): void {
-    this.record = this.dynamicDialogConfig.data.record;
+  constructor() {
     this.itemApiService.getPreviewByItemPid(this.record.metadata.pid)
       .subscribe({
-        next: (response: any) => {
-          if (response.error) {
+        next: (data: IPreview & { error?: string }) => {
+          if (data.error) {
             this.closeDialog(this.record);
             this.messageService.add({
               severity: 'error',
               summary: this.translateService.instant('Claim'),
-              detail: this.translateService.instant(`An error has occurred.<br><em>Error: ${response.error}</em>`),
+              detail: this.translateService.instant(`An error has occurred.<br><em>Error: ${data.error}</em>`),
               sticky: true,
               closable: true
             });
           } else {
-            this.suggestions = Tools.processRecipientSuggestions(response.recipient_suggestions);
-            this.response = response;
+            this.suggestions.set(Tools.processRecipientSuggestions(data.recipient_suggestions));
+            this.response.set(data);
           }
         },
         error: () => this.messageService.add({
@@ -91,7 +93,7 @@ export class IssueEmailComponent implements OnInit {
           life: CONFIG.MESSAGE_LIFE
         });
         this.recordService
-          .getRecord('items', this.record.metadata.pid, 1, {Accept: 'application/rero+json'})
+          .getRecord('items', this.record.metadata.pid, { resolve: 1, headers: { Accept: 'application/rero+json' } })
           .subscribe((record: any) => this.closeDialog(record));
       } else {
         this.messageService.add({
@@ -102,7 +104,7 @@ export class IssueEmailComponent implements OnInit {
           closable: true
         });
       }
-    })
+    });
   }
 
   closeDialog(record?: any): void {

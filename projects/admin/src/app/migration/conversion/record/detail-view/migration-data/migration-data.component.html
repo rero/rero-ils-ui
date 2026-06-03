@@ -18,7 +18,7 @@
   <h5>
     {{ record().id }}&nbsp;
     <p-tag
-      [severity]="status() === 'complete'? 'success': status().endsWith('error') ? 'danger': 'secondary'"
+      [severity]="$any(status() === 'complete'? 'success': status().endsWith('error') ? 'danger': 'secondary')"
       [value]="record().conversion.status | translate"
     />
   </h5>
@@ -27,12 +27,10 @@
   </div>
   <div class="ui:my-3">
     @for (message of messages(); track $index) {
-      <p-message
-        styleClass="ui:mb-2"
-        [text]="message.detail"
-        [severity]="message.severity"
-        showTransitionOptions="0ms"
-      />
+      <p-message styleClass="ui:mb-2" [severity]="$any(message.severity)" showTransitionOptions="0ms"
+      >
+        {{ message.detail }}
+      </p-message>
     }
   </div>
   <div class="ui:text-sm ui:grid ui:grid-cols-12 ui:gap-2 data">

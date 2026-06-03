@@ -15,40 +15,36 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
+import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { RecordService } from '@rero/ng-core';
-import { Observable } from 'rxjs';
-import { map, switchMap } from 'rxjs/operators';
+import { filter, map, switchMap } from 'rxjs/operators';
 import { OperationLogsApiService } from '@rero/shared';
-import { PatronService } from '../../../service/patron.service';
+import { CirculationStore } from '../../store/circulation.store';
+import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
+import { HistoryLogComponent } from './history-log/history-log.component';
+import { CardModule } from 'primeng/card';
 
 @Component({
     selector: 'admin-history',
     templateUrl: './history.component.html',
-    standalone: false
+    imports: [TranslateDirective, HistoryLogComponent, TranslatePipe, CardModule],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class HistoryComponent implements OnInit {
+export class HistoryComponent {
 
-  private patronService: PatronService = inject(PatronService);
   private operationLogsApiService: OperationLogsApiService = inject(OperationLogsApiService);
+  private store = inject(CirculationStore);
 
-  /** History logs */
-  historyLogs$: Observable<any>;
-
-  /** OnInit hook */
-  ngOnInit() {
-    this.historyLogs$ = this.patronService.currentPatron$.pipe(
-      switchMap((patron: any) => {
-        return this.operationLogsApiService.getCheckInHistory(
-          patron.pid,
-          1,
-          RecordService.MAX_REST_RESULTS_SIZE
-        ).pipe(
-          map((result: any) => {
-            return result.hits.hits;
-          })
-        );
-      })
-    );
-  }
+  historyLogs = toSignal(
+    toObservable(this.store.patron).pipe(
+      filter((patron): patron is any => !!patron),
+      switchMap(patron =>
+        this.operationLogsApiService.getCheckInHistory(patron.pid, 1, RecordService.MAX_REST_RESULTS_SIZE).pipe(
+          map((result: any) => result.hits.hits)
+        )
+      )
+    ),
+    { initialValue: null }
+  );
 }

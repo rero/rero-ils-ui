@@ -15,66 +15,72 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, inject, OnDestroy, OnInit } from '@angular/core';
-import { RecordService } from '@rero/ng-core';
-import { DetailRecord } from '@rero/ng-core/lib/record/detail/view/detail-record';
-import { Record } from '@rero/ng-core/lib/record/record';
-import { UserService } from '@rero/shared';
-import { Observable, Subscription } from 'rxjs';
+import { Component, computed, effect, inject, input, signal, ChangeDetectionStrategy } from '@angular/core';
+import { toObservable, toSignal } from '@angular/core/rxjs-interop';
+import { RecordService, UpperCaseFirstPipe } from '@rero/ng-core';
+import { AppStore } from '@rero/shared';
+import { map, of, switchMap } from 'rxjs';
 import { Library } from '../../../classes/library';
+import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
+import { Bind } from 'primeng/bind';
+import { Accordion, AccordionPanel, AccordionHeader, AccordionContent } from 'primeng/accordion';
+import { Ripple } from 'primeng/ripple';
+import { Button } from 'primeng/button';
+import { RouterLink } from '@angular/router';
+import { LocationComponent } from './location/location.component';
+import { NgClass, NgTemplateOutlet } from '@angular/common';
+import { DayOpeningHoursComponent } from './day-opening-hours/day-opening-hours.component';
+import { ExceptionDateComponent } from './exception-date/exception-date.component';
+import { Divider } from 'primeng/divider';
+import { Fieldset } from 'primeng/fieldset';
+import { Tag } from 'primeng/tag';
+import { CountryCodeTranslatePipe } from '../../../pipe/country-code-translate.pipe';
+import { Badge } from 'primeng/badge';
 
 @Component({
     selector: 'admin-library-detail-view',
     templateUrl: './library-detail-view.component.html',
-    standalone: false
+    imports: [TranslateDirective, Bind, Accordion, AccordionPanel, Ripple, AccordionHeader, Button, RouterLink, AccordionContent, LocationComponent, NgClass, DayOpeningHoursComponent, ExceptionDateComponent, Divider, NgTemplateOutlet, Fieldset, Tag, UpperCaseFirstPipe, TranslatePipe, CountryCodeTranslatePipe, Badge],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class LibraryDetailViewComponent implements DetailRecord, OnInit, OnDestroy {
+export class LibraryDetailViewComponent {
 
   private recordService: RecordService = inject(RecordService);
-  private userService: UserService = inject(UserService);
+  private appStore = inject(AppStore);
 
-  // COMPONENT ATTRIBUTES =====================================================
-  /** Observable resolving record data */
-  record$: Observable<any>;
-  /** Resource type */
-  type: string;
-  /** the library record as `Library` */
-  record: Library = null;
-  /** linked locations */
-  locations = [];
-  /** Is the current logged user can add locations */
-  isUserCanAddLocation = false;
+  readonly record = input<any>();
+  readonly type = input<string>('');
 
-  /** Record subscription */
-  private recordObs: Subscription;
+  readonly library = computed(() => {
+    const r = this.record();
+    return r ? new Library(r.metadata) : null;
+  });
 
-  /** OnInit hook */
-  ngOnInit() {
-   this.recordObs = this.record$.subscribe((data: any) => {
-      const libraryPid = data.metadata.pid;
-      this.record = new Library(data.metadata);
-      this.isUserCanAddLocation = this.userService.user.currentLibrary === libraryPid;
-      // Load linked locations
-      this.recordService
-        .getRecords('locations', `library.pid:${libraryPid}`, 1, RecordService.MAX_REST_RESULTS_SIZE, [], {}, null, 'name')
-        .subscribe((record: Record) => this.locations = record.hits.hits || []);
-   });
+  readonly isUserCanAddLocation = computed(() =>
+    this.appStore.currentLibraryPid() === this.record()?.metadata?.pid
+  );
+
+  private readonly _fetchedLocations = toSignal(
+    toObservable(this.record).pipe(
+      switchMap(r => {
+        const pid = r?.metadata?.pid;
+        if (!pid) return of([]);
+        return this.recordService.getRecords('locations', {
+          query: `library.pid:${pid}`, page: 1,
+          itemsPerPage: RecordService.MAX_REST_RESULTS_SIZE, sort: 'name'
+        }).pipe(map((res: any) => res.hits.hits || []));
+      })
+    ),
+    { initialValue: [] }
+  );
+
+  readonly locations = signal<any[]>([]);
+
+  constructor() {
+    effect(() => this.locations.set(this._fetchedLocations()));
   }
 
-  /** OnDestroy hook */
-  ngOnDestroy(): void {
-    this.recordObs.unsubscribe();
+  deleteLocation(deletedLocationPid: string): void {
+    this.locations.update(list => list.filter((location: any) => deletedLocationPid !== location.metadata.pid));
   }
-
-  // COMPONENT FUNCTIONS ======================================================
-  /**
-   * Delete a location event listener
-   * This function catch the event emitted when a location is deleted and removed the deleted location
-   * from the known locations list
-   * @param deletedLocationPid - The deleted location pid
-   */
-  deleteLocation(deletedLocationPid: Event): void {
-    this.locations = this.locations.filter((location: any) => deletedLocationPid !== location.metadata.pid);
-  }
-
 }

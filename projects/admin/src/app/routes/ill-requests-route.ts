@@ -14,17 +14,76 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { _ } from "@ngx-translate/core";
-import { ComponentCanDeactivateGuard, DetailComponent, EditorComponent, RecordSearchPageComponent, RouteInterface } from '@rero/ng-core';
-import { PERMISSIONS, PERMISSION_OPERATOR } from '@rero/shared';
-import { of } from 'rxjs';
-import { CAN_ACCESS_ACTIONS, CanAccessGuard } from '../guard/can-access.guard';
-import { PermissionGuard } from '../guard/permission.guard';
+import { inject } from '@angular/core';
+import { ResolveFn, Routes } from '@angular/router';
+import { _ } from '@ngx-translate/core';
+import {
+  ActionStatus,
+  ComponentCanDeactivateGuard,
+  DetailComponent,
+  EditorComponent,
+  IFilter,
+  RecordData,
+  RecordSearchPageComponent,
+  RecordService,
+  RecordType,
+  RouteDataTypesInterface,
+} from '@rero/ng-core';
+import { PERMISSION_OPERATOR, PERMISSIONS } from '@rero/shared';
+import { map, Observable, of } from 'rxjs';
+import { CAN_ACCESS_ACTIONS, canAccessGuard } from '../guard/can-access.guard';
+import { permissionGuard } from '../guard/permission.guard';
 import { IllRequestsBriefViewComponent } from '../record/brief-view/ill-requests-brief-view/ill-requests-brief-view.component';
 import { IllRequestDetailViewComponent } from '../record/detail-view/ill-request-detail-view/ill-request-detail-view.component';
 import { BaseRoute } from './base-route';
 
-export class IllRequestsRoute extends BaseRoute implements RouteInterface {
+export const illRequestsRouteResolver: ResolveFn<Partial<RecordType>[]> = () =>
+  new IllRequestsRoute().getTypes();
+
+export const illRequestsRoutes: Routes = [
+  {
+    path: '',
+    component: RecordSearchPageComponent,
+    title: _('ILL requests'),
+    canActivate: [permissionGuard],
+    data: {
+      permissions: [PERMISSIONS.ILL_ACCESS, PERMISSIONS.ILL_SEARCH],
+      operator: PERMISSION_OPERATOR.AND,
+    },
+  },
+  {
+    path: 'detail/:pid',
+    component: DetailComponent,
+    title: _('ILL request'),
+    canActivate: [canAccessGuard],
+    data: {
+      action: CAN_ACCESS_ACTIONS.READ,
+    },
+  },
+  {
+    path: 'edit/:pid',
+    component: EditorComponent,
+    title: _('ILL request'),
+    canActivate: [canAccessGuard],
+    canDeactivate: [ComponentCanDeactivateGuard],
+    data: {
+      action: CAN_ACCESS_ACTIONS.UPDATE,
+    },
+  },
+  {
+    path: 'new',
+    component: EditorComponent,
+    title: _('ILL request'),
+    canActivate: [permissionGuard],
+    canDeactivate: [ComponentCanDeactivateGuard],
+    data: {
+      permissions: [PERMISSIONS.ILL_CREATE],
+    },
+  },
+];
+
+class IllRequestsRoute extends BaseRoute implements RouteDataTypesInterface {
+  protected recordService = inject(RecordService);
 
   /** Route name */
   readonly name = 'ill_requests';
@@ -32,77 +91,34 @@ export class IllRequestsRoute extends BaseRoute implements RouteInterface {
   /** Record type */
   readonly recordType = 'ill_requests';
 
-  /**
-   * Get Configuration
-   * @return Object
-   */
-  getConfiguration() {
-    return {
-      matcher: (url: any) => this.routeMatcher(url, this.name),
-      children: [
-        {
-          path: '',
-          component: RecordSearchPageComponent,
-          title: _('ILL requests'),
-          canActivate: [ PermissionGuard ],
-          data: {
-            permissions: [ PERMISSIONS.ILL_ACCESS, PERMISSIONS.ILL_SEARCH ],
-            operator: PERMISSION_OPERATOR.AND
-          }
+  getTypes(): Partial<RecordType>[] {
+    return [
+      {
+        key: this.name,
+        label: 'ILL request',
+        component: IllRequestsBriefViewComponent,
+        detailComponent: IllRequestDetailViewComponent,
+        searchFilters: [this.expertSearchFilter()],
+        canAdd: () =>
+          of({ can: this.routeToolService.appStore.canAccess(PERMISSIONS.ILL_CREATE) } as ActionStatus),
+        canUpdate: (record: RecordData) => this.routeToolService.canUpdate(record, this.recordType),
+        canDelete: (record: RecordData) => this.routeToolService.canDelete(record, this.recordType),
+        processFilterName: (filter: IFilter) => this.processFilterName(filter),
+        aggregationsExpand: ['request_status', 'loan_status', 'requester'],
+        aggregationsOrder: ['request_status', 'loan_status', 'requester', 'library'],
+        listHeaders: {
+          Accept: 'application/rero+json, application/json',
         },
-        {
-          path: 'detail/:pid',
-          component: DetailComponent,
-          title: _('ILL request'),
-          canActivate: [ CanAccessGuard ],
-          data: {
-            action: CAN_ACCESS_ACTIONS.READ
-          }
-        },
-        {
-          path: 'edit/:pid',
-          component: EditorComponent,
-          title: _('ILL request'),
-          canActivate: [ CanAccessGuard ],
-          canDeactivate: [ ComponentCanDeactivateGuard ],
-          data: {
-            action: CAN_ACCESS_ACTIONS.UPDATE
-          }
-        },
-        {
-          path: 'new',
-          component: EditorComponent,
-          title: _('ILL request'),
-          canActivate: [ PermissionGuard ],
-          canDeactivate: [ ComponentCanDeactivateGuard ],
-          data: {
-            permissions: [ PERMISSIONS.ILL_CREATE ]
-          }
-        }
-      ],
-      data: {
-        linkPrefix: 'records',
-        types: [
-          {
-            key: this.name,
-            label: 'ILL request',
-            component: IllRequestsBriefViewComponent,
-            detailComponent: IllRequestDetailViewComponent,
-            searchFilters: [
-              this.expertSearchFilter()
-            ],
-            canAdd: () => of({ can: this.routeToolService.permissionsService.canAccess(PERMISSIONS.ILL_CREATE) }),
-            canUpdate: (record: any) => this.routeToolService.canUpdate(record, this.recordType),
-            canDelete: (record: any) => this.routeToolService.canDelete(record, this.recordType),
-            aggregationsExpand: ['request_status', 'loan_status', 'requester'],
-            aggregationsOrder: ['request_status', 'loan_status', 'requester', 'library'],
-            listHeaders: {
-              Accept: 'application/rero+json, application/json'
-            },
-            showFacetsIfNoResults: true
-          }
-        ]
-      }
-    };
+        showFacetsIfNoResults: true,
+      },
+    ];
+  }
+
+  private processFilterName(filter: IFilter): Observable<string> {
+    if(filter.name) { return of(filter.name); }
+    switch (filter.aggregationKey) {
+      case 'library': return this.recordService.getRecord<{metadata: {name: string}}>('libraries', filter.key).pipe(map(record => record.metadata.name));
+      default: return this.routeToolService.translateService.stream(filter.key);
+    }
   }
 }

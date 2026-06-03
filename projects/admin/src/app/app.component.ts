@@ -15,31 +15,37 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { AfterViewInit, Component, inject, OnInit } from '@angular/core';
+import { AfterViewInit, Component, inject, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { HotkeysService } from '@ngneat/hotkeys';
-import { User, UserService } from '@rero/shared';
+import { AppStore, User, RemoteSearchComponent } from '@rero/shared';
 import { DialogService } from 'primeng/dynamicdialog';
 import { KeyboardShortcutsService } from './service/keyboard-shortcuts.service';
 import { CustomShortcutHelpComponent } from './widgets/custom-shortcut-help/custom-shortcut-help.component';
-import { TranslateService } from '@ngx-translate/core';
+import { TranslateService, TranslateDirective, TranslatePipe } from '@ngx-translate/core';
+import { LoadingBarModule } from '@ngx-loading-bar/core';
+import { RouterLink, RouterOutlet } from '@angular/router';
+import { MenuAppComponent } from './menu/menu-app/menu-app.component';
+import { NgxSpinnerComponent } from 'ngx-spinner';
+import { Toast } from 'primeng/toast';
+import { ConfirmDialog } from 'primeng/confirmdialog';
 
 @Component({
     selector: 'admin-root',
     templateUrl: './app.component.html',
     styleUrls: ['./app.component.scss'],
-    standalone: false
+    imports: [LoadingBarModule, TranslateDirective, RouterLink, RemoteSearchComponent, MenuAppComponent, RouterOutlet, TranslatePipe, NgxSpinnerComponent, Toast, ConfirmDialog],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AppComponent implements OnInit, AfterViewInit {
 
-  private userService: UserService = inject(UserService);
+  private appStore = inject(AppStore);
   private keyboardShortcutsService: KeyboardShortcutsService = inject(KeyboardShortcutsService);
   private hotKeysService: HotkeysService = inject(HotkeysService);
   private dialogService: DialogService = inject(DialogService);
   private translateService: TranslateService = inject(TranslateService);
-
   /** user */
-  get user(): User {
-    return this.userService.user;
+  get user(): User | null {
+    return this.appStore.user();
   }
 
   /** Init hook */

@@ -14,20 +14,20 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-@if (item && document) {
+@if (item(); as item) {
   <div class="ui:grid ui:grid-cols-12 ui:gap-4 ui:p-2">
     <!-- FIRST ROW : barcode, title, availability, action button -->
     <div class="ui:col-span-3 ui:flex ui:items-start ui:gap-2">
       <div>
-        <shared-open-close-button (status)="isCollapsed = $event" />
+        <shared-open-close-button (status)="isCollapsed.set($event)" />
       </div>
       <div>
         <a [routerLink]="['/records', 'items', 'detail', item.pid]">{{ item.barcode }}</a>
       </div>
     </div>
     <div class="ui:col-span-6">
-      @if (document.title | mainTitle; as title) {
-        <a [routerLink]="['/records', 'documents', 'detail', document.pid]">
+      @if (document().title | mainTitle; as title) {
+        <a [routerLink]="['/records', 'documents', 'detail', document().pid]">
           {{ title }}
         </a>
         @if (item.enumerationAndChronology) {
@@ -35,14 +35,14 @@
         }
         <br/>
       }
-      <shared-contribution [contributions]="document?.contribution" />
+      <shared-contribution [contributions]="document()?.contribution" />
 
-      @if (!isCollapsed) {
+      @if (!isCollapsed()) {
         <dl class="metadata ui:pl-0">
           <!-- position into queue -->
           <dt translate>Position</dt>
           <dd>
-            <p-badge severity="info" value="{{ loan.metadata.rank }} / {{ item.current_pending_requests }}" />
+            <p-badge severity="info" value="{{ loan().metadata.rank }} / {{ item.current_pending_requests }}" />
           </dd>
           <!-- item location -->
           @if (item.location.pid | getRecord: 'locations' | async; as location) {
@@ -54,9 +54,9 @@
         </dl>
       }
     </div>
-    <div class="ui:col-span-2">{{ loan.created | dateTranslate: 'short' }}</div>
+    <div class="ui:col-span-2">{{ loan().created | dateTranslate: 'short' }}</div>
     <div class="ui:col-span-1 ui:flex ui:justify-end">
-      <admin-cancel-request-button [loan]="loan" (cancelRequestEvent)="cancelRequest($event)" />
+      <admin-cancel-request-button [loan]="loan()" (cancelRequestEvent)="cancelRequest($event)" />
     </div>
   </div>
 }

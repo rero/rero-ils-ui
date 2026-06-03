@@ -15,24 +15,27 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { Component, Input } from '@angular/core';
+import { Component, input, ChangeDetectionStrategy} from '@angular/core';
+import { TranslatePipe } from '@ngx-translate/core';
+import { SafeUrlPipe } from '@rero/shared';
 
 @Component({
     selector: 'admin-related-resource',
     templateUrl: './related-resource.component.html',
-    standalone: false
+    imports: [TranslatePipe, SafeUrlPipe],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class RelatedResourceComponent {
 
-  @Input() electronicLocator: any;
+  electronicLocator = input<any>();
 
   /**
    * Format public note for display
    * @param electronicLocator: electronic locator to filter
    */
   get publicNotes(): any {
-    if (this.electronicLocator.publicNote) {
-      return this.electronicLocator.publicNote.join(', ');
+    if (this.electronicLocator().publicNote) {
+      return this.electronicLocator().publicNote.join(', ');
     }
   }
 }

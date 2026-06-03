@@ -15,10 +15,13 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { TranslateModule } from '@ngx-translate/core';
-import { SharedModule } from '@rero/shared';
+import { AppStore } from '@rero/shared';
+import { of } from 'rxjs';
+
 import { AppInitializerService } from './app-initializer.service';
 
 
@@ -29,9 +32,12 @@ describe('AppInitializerService', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [
-        HttpClientTestingModule,
         TranslateModule.forRoot(),
-        SharedModule
+      ],
+      providers: [
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting(),
+        { provide: AppStore, useValue: { load: vi.fn().mockReturnValue(of(null)), settings: vi.fn().mockReturnValue({ language: 'en' }) } }
       ]
     });
     appInitializerService = TestBed.inject(AppInitializerService);

@@ -14,31 +14,31 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-@if (record) {
+@if (record(); as rec) {
   <h1 id="template-name">
-    {{ record.metadata.name }}
-    @if (record.metadata.visibility && record.metadata.visibility === 'private') {
+    {{ rec.metadata.name }}
+    @if (rec.metadata.visibility && rec.metadata.visibility === 'private') {
       <i class="fa fa-lock ui:text-muted-color ui:ml-2" aria-hidden="true"></i>
     }
   </h1>
   <dl class="metadata">
     <!-- DESCRIPTION -->
-    @if (record.metadata.description) {
+    @if (rec.metadata.description) {
       <dt translate>Description</dt>
-      <dd id="template-description" [innerHTML]="record.metadata.description | nl2br"></dd>
+      <dd id="template-description" [innerHTML]="rec.metadata.description | nl2br"></dd>
     }
     <!-- CREATOR -->
-    @if (record.metadata.creator.pid | getRecord: 'patrons' | async; as creator) {
+    @if (rec.metadata.creator.pid | getRecord: 'patrons' | async; as creator) {
       <dt translate>Creator</dt>
       <dd>
         {{ $any(creator).metadata.first_name }} {{ $any(creator).metadata.last_name }}
       </dd>
     }
     <!-- TYPE -->
-    @if (record.metadata.template_type) {
+    @if (rec.metadata.template_type) {
       <dt translate>Type</dt>
       <dd id="template-type">
-        {{ record.metadata.template_type }}
+        {{ rec.metadata.template_type }}
       </dd>
     }
   </dl>

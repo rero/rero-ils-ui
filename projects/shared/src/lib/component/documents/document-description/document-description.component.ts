@@ -15,26 +15,36 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, inject, Input, OnInit } from '@angular/core';
-import { TranslateService } from '@ngx-translate/core';
+import { Component, inject, OnInit, input, ChangeDetectionStrategy} from '@angular/core';
+import { TranslateService, TranslatePipe } from '@ngx-translate/core';
+import { DescriptionZoneComponent } from './description-zone/description-zone.component';
+import { OtherEditionComponent } from './other-edition/other-edition.component';
+import { Bind } from 'primeng/bind';
+import { Tag } from 'primeng/tag';
+import { CallbackArrayFilterPipe, TranslateLanguagePipe, UpperCaseFirstPipe } from '@rero/ng-core';
+import { KeyValuePipe } from '@angular/common';
+import { DocumentProvisionActivityPipe } from '../../../pipe/document-provision-activity.pipe';
+import { IdAttributePipe } from '../../../pipe/id-attribute.pipe';
+import { SafeUrlPipe } from '../../../pipe/safe-url.pipe';
 
 @Component({
     selector: 'shared-document-description',
     templateUrl: './document-description.component.html',
-    standalone: false
+    imports: [DescriptionZoneComponent, OtherEditionComponent, Bind, Tag, CallbackArrayFilterPipe, KeyValuePipe, TranslateLanguagePipe, TranslatePipe, UpperCaseFirstPipe, DocumentProvisionActivityPipe, IdAttributePipe, SafeUrlPipe],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class DocumentDescriptionComponent implements OnInit {
 
   public translateService: TranslateService = inject(TranslateService);
 
   /** Document record */
-  @Input() record: any;
+  readonly record = input<any>();
 
   /** View code for public URL */
-  @Input() viewcode: string = null;
+  readonly viewcode = input<string>(null);
 
   /** Is public view */
-  @Input() isPublicView = false;
+  readonly isPublicView = input(false);
   /** Cartographic attributes */
   cartographicAttributes: any[] = [];
   /** Edition statement */
@@ -57,7 +67,7 @@ export class DocumentDescriptionComponent implements OnInit {
    * @return string - language
    */
   get currentLanguage() {
-    return this.translateService.currentLang;
+    return this.translateService.getCurrentLang();
   }
 
   /** On init hook */
@@ -83,8 +93,9 @@ export class DocumentDescriptionComponent implements OnInit {
 
   /** Process cartographic attributes */
   private processCartographicAttributes(): void {
-    if ('cartographicAttributes' in this.record.metadata) {
-      this.record.metadata.cartographicAttributes.forEach((attribute: any) => {
+    const metadata = this.record()?.metadata;
+    if ('cartographicAttributes' in metadata) {
+      metadata.cartographicAttributes.forEach((attribute: any) => {
         if ('projection' in attribute || ('coordinates' in attribute && 'label' in attribute.coordinates)) {
           this.cartographicAttributes.push(attribute);
         }
@@ -94,8 +105,9 @@ export class DocumentDescriptionComponent implements OnInit {
 
   /** Process edition statement */
   private processEditionStatement(): void {
-    if ('seriesStatement' in this.record.metadata) {
-      this.record.metadata.seriesStatement.forEach((element: any) => {
+    const metadata = this.record()?.metadata;
+    if ('seriesStatement' in metadata) {
+      metadata.seriesStatement.forEach((element: any) => {
         if ('_text' in element) {
           const elementText = element._text;
           const keys = Object.keys(elementText);
@@ -115,8 +127,9 @@ export class DocumentDescriptionComponent implements OnInit {
 
   /** Process identified by */
   private processIdentifiedBy(): void {
-    if ('identifiedBy' in this.record.metadata) {
-      this.record.metadata.identifiedBy.forEach((id: any) => {
+    const metadata = this.record()?.metadata;
+    if ('identifiedBy' in metadata) {
+      metadata.identifiedBy.forEach((id: any) => {
         const details = [];
         // Replace bf:Local by source
         const idType = (id.type === 'bf:Local') ? id.source : id.type;
@@ -141,26 +154,29 @@ export class DocumentDescriptionComponent implements OnInit {
 
   /** Process General notes */
   private processNotesGeneral(): void {
-    if ('note' in this.record.metadata) {
+    const metadata = this.record()?.metadata;
+    if ('note' in metadata) {
       this.notesGeneral = this._sortedNotesByType(
-        this.record.metadata.note.filter((el: any) => el.noteType === 'general')
+        metadata.note.filter((el: any) => el.noteType === 'general')
       );
     }
   }
 
   /** Process all without general */
   private processNotesExceptGeneral(): void {
-    if ('note' in this.record.metadata) {
+    const metadata = this.record()?.metadata;
+    if ('note' in metadata) {
       this.notesExceptGeneral = this._sortedNotesByType(
-        this.record.metadata.note.filter((el: any) => el.noteType !== 'general')
+        metadata.note.filter((el: any) => el.noteType !== 'general')
       );
     }
   }
 
   /** Process provision activity original date */
   private processProvisionActivityOriginalDate(): void {
-    if ('provisionActivity' in this.record.metadata) {
-      this.provisionActivityOriginalDate = this.record.metadata.provisionActivity
+    const metadata = this.record()?.metadata;
+    if ('provisionActivity' in metadata) {
+      this.provisionActivityOriginalDate = metadata.provisionActivity
       .filter((element: any) => element.key !== 'bf:Publication')
       .filter((provision: any) => 'original_date' in provision)
     }
@@ -168,8 +184,9 @@ export class DocumentDescriptionComponent implements OnInit {
 
   /** Process title variants */
   private processTitleVariants(): void {
-    if ('title' in this.record.metadata) {
-      const titles = this.record.metadata.title.filter((title: any) => title.type !== 'bf:Title');
+    const metadata = this.record()?.metadata;
+    if ('title' in metadata) {
+      const titles = metadata.title.filter((title: any) => title.type !== 'bf:Title');
       titles.forEach((title: any) => {
         if (!(title.type in this.titleVariants)) {
           this.titleVariants[title.type] = [];
@@ -203,8 +220,9 @@ export class DocumentDescriptionComponent implements OnInit {
 
   /** Process work access point */
   private processWorkAccessPoint(): void {
-    if ('work_access_point' in this.record.metadata) {
-      this.record.metadata.work_access_point.forEach((workAccess: any) => {
+    const metadata = this.record()?.metadata;
+    if ('work_access_point' in metadata) {
+      metadata.work_access_point.forEach((workAccess: any) => {
         let agentFormatted = '';
         if (workAccess.creator) {
           const agent = workAccess.creator;

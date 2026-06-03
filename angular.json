@@ -15,8 +15,9 @@
       "prefix": "admin",
       "architect": {
         "build": {
-          "builder": "@angular-devkit/build-angular:application",
+          "builder": "@angular/build:application",
           "options": {
+            "preserveSymlinks": true,
             "allowedCommonJsDependencies": [
               "crypto-js",
               "easymde",
@@ -24,14 +25,12 @@
               "generate-password-lite",
               "simple-isbn"
             ],
-            "preserveSymlinks": true,
             "outputPath": {
               "base": "build/dist/admin"
             },
             "index": "projects/admin/src/index.html",
-            "polyfills": [
-              "projects/admin/src/polyfills.ts"
-            ],
+            "browser": "projects/admin/src/main.ts",
+            "polyfills": [],
             "tsConfig": "projects/admin/tsconfig.app.json",
             "assets": [
               "projects/admin/src/assets",
@@ -48,8 +47,7 @@
             "extractLicenses": false,
             "sourceMap": true,
             "optimization": false,
-            "namedChunks": true,
-            "browser": "projects/admin/src/main.ts"
+            "namedChunks": true
           },
           "configurations": {
             "production": {
@@ -59,7 +57,11 @@
                   "with": "projects/admin/src/environments/environment.prod.ts"
                 }
               ],
-              "optimization": true,
+              "optimization": {
+                "styles": {
+                  "inlineCritical": false
+                }
+              },
               "outputHashing": "all",
               "sourceMap": false,
               "namedChunks": false,
@@ -68,7 +70,7 @@
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "2.5mb",
+                  "maximumWarning": "5mb",
                   "maximumError": "9mb"
                 },
                 {
@@ -76,6 +78,11 @@
                   "maximumWarning": "6kb"
                 }
               ]
+            },
+            "development": {
+              "optimization": false,
+              "extractLicenses": false,
+              "sourceMap": true
             }
           },
           "defaultConfiguration": ""
@@ -88,8 +95,18 @@
           "configurations": {
             "production": {
               "buildTarget": "admin:build:production"
+            },
+            "development": {
+              "buildTarget": "admin:build:development",
+              "prebundle": {
+                "exclude": [
+                  "@rero/ng-core",
+                  "primelocale"
+                ]
+              }
             }
-          }
+          },
+          "defaultConfiguration": "development"
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
@@ -98,14 +115,10 @@
           }
         },
         "test": {
-          "builder": "@angular-devkit/build-angular:karma",
+          "builder": "@angular/build:unit-test",
           "options": {
-            "main": "projects/admin/src/test.ts",
-            "polyfills": "projects/admin/src/polyfills.ts",
             "tsConfig": "projects/admin/tsconfig.spec.json",
-            "karmaConfig": "projects/admin/karma.conf.js",
-            "assets": [],
-            "scripts": []
+            "runnerConfig": "projects/admin/vitest.config.ts"
           }
         },
         "e2e": {
@@ -139,8 +152,9 @@
       "prefix": "app",
       "architect": {
         "build": {
-          "builder": "@angular-devkit/build-angular:application",
+          "builder": "@angular/build:application",
           "options": {
+            "preserveSymlinks": true,
             "allowedCommonJsDependencies": [
               "crypto-js",
               "easymde",
@@ -152,9 +166,8 @@
               "base": "build/dist/public-holdings-items"
             },
             "index": "projects/public-holdings-items/src/index.html",
-            "polyfills": [
-              "projects/public-holdings-items/src/polyfills.ts"
-            ],
+            "browser": "projects/public-holdings-items/src/main.ts",
+            "polyfills": [],
             "tsConfig": "projects/public-holdings-items/tsconfig.app.json",
             "assets": [
               {
@@ -175,8 +188,7 @@
             "extractLicenses": false,
             "sourceMap": true,
             "optimization": false,
-            "namedChunks": true,
-            "browser": "projects/public-holdings-items/src/main.ts"
+            "namedChunks": true
           },
           "configurations": {
             "production": {
@@ -186,23 +198,42 @@
                   "with": "projects/public-holdings-items/src/environments/environment.prod.ts"
                 }
               ],
-              "optimization": true,
+              "optimization": {
+                "styles": {
+                  "inlineCritical": false
+                }
+              },
               "outputHashing": "all",
               "sourceMap": false,
               "namedChunks": false,
               "extractLicenses": true,
-              "deployUrl": "/static/node_modules/@rero/rero-ils-ui/dist/public-holdings-item/browser/",
+              "deployUrl": "/static/node_modules/@rero/rero-ils-ui/dist/public-holdings-items/browser/",
               "styles": [
                 "projects/public-search/src/app/scss/styles.scss"
               ],
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "2mb",
+                  "maximumWarning": "3mb",
                   "maximumError": "5mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "6kb"
                 }
               ]
+            },
+            "development": {
+              "optimization": false,
+              "extractLicenses": false,
+              "sourceMap": true
             }
+          }
+        },
+        "test": {
+          "builder": "@angular/build:unit-test",
+          "options": {
+            "tsConfig": "projects/public-holdings-items/tsconfig.spec.json"
           }
         },
         "serve": {
@@ -214,8 +245,18 @@
           "configurations": {
             "production": {
               "buildTarget": "public-holdings-items:build:production"
+            },
+            "development": {
+              "buildTarget": "public-holdings-items:build:development",
+              "prebundle": {
+                "exclude": [
+                  "@rero/ng-core",
+                  "primelocale"
+                ]
+              }
             }
-          }
+          },
+          "defaultConfiguration": "development"
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
@@ -254,8 +295,9 @@
       "prefix": "public-search",
       "architect": {
         "build": {
-          "builder": "@angular-devkit/build-angular:application",
+          "builder": "@angular/build:application",
           "options": {
+            "preserveSymlinks": true,
             "allowedCommonJsDependencies": [
               "crypto-js",
               "easymde",
@@ -263,14 +305,12 @@
               "generate-password-lite",
               "simple-isbn"
             ],
-            "preserveSymlinks": true,
             "outputPath": {
               "base": "build/dist/public-search"
             },
             "index": "projects/public-search/src/index.html",
-            "polyfills": [
-              "projects/public-search/src/polyfills.ts"
-            ],
+            "browser": "projects/public-search/src/main.ts",
+            "polyfills": [],
             "tsConfig": "projects/public-search/tsconfig.app.json",
             "assets": [
               "projects/public-search/src/favicon.ico",
@@ -288,8 +328,7 @@
             "extractLicenses": false,
             "sourceMap": true,
             "optimization": false,
-            "namedChunks": true,
-            "browser": "projects/public-search/src/main.ts"
+            "namedChunks": true
           },
           "configurations": {
             "production": {
@@ -299,19 +338,23 @@
                   "with": "projects/public-search/src/environments/environment.prod.ts"
                 }
               ],
-              "styles": [
-                "projects/public-search/src/app/scss/styles.scss"
-              ],
-              "optimization": true,
+              "optimization": {
+                "styles": {
+                  "inlineCritical": false
+                }
+              },
               "outputHashing": "all",
               "sourceMap": false,
               "namedChunks": false,
               "extractLicenses": true,
               "deployUrl": "/static/node_modules/@rero/rero-ils-ui/dist/public-search/browser/",
+              "styles": [
+                "projects/public-search/src/app/scss/styles.scss"
+              ],
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "2mb",
+                  "maximumWarning": "3mb",
                   "maximumError": "5mb"
                 },
                 {
@@ -319,6 +362,11 @@
                   "maximumWarning": "6kb"
                 }
               ]
+            },
+            "development": {
+              "optimization": false,
+              "extractLicenses": false,
+              "sourceMap": true
             }
           },
           "defaultConfiguration": ""
@@ -332,8 +380,18 @@
           "configurations": {
             "production": {
               "buildTarget": "public-search:build:production"
+            },
+            "development": {
+              "buildTarget": "public-search:build:development",
+              "prebundle": {
+                "exclude": [
+                  "@rero/ng-core",
+                  "primelocale"
+                ]
+              }
             }
-          }
+          },
+          "defaultConfiguration": "development"
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
@@ -342,16 +400,9 @@
           }
         },
         "test": {
-          "builder": "@angular-devkit/build-angular:karma",
+          "builder": "@angular/build:unit-test",
           "options": {
-            "preserveSymlinks": true,
-            "main": "projects/public-search/src/test.ts",
-            "polyfills": "projects/public-search/src/polyfills.ts",
-            "tsConfig": "projects/public-search/tsconfig.spec.json",
-            "karmaConfig": "projects/public-search/karma.conf.js",
-            "assets": [],
-            "styles": [],
-            "scripts": []
+            "tsConfig": "projects/public-search/tsconfig.spec.json"
           }
         },
         "e2e": {
@@ -370,8 +421,8 @@
           "builder": "@angular-eslint/builder:lint",
           "options": {
             "lintFilePatterns": [
-              "projects/public-search/**/*.ts",
-              "projects/public-search/**/*.html"
+              "projects/public-search/src/**/*.ts",
+              "projects/public-search/src/**/*.html"
             ]
           }
         }
@@ -385,8 +436,9 @@
       "prefix": "app",
       "architect": {
         "build": {
-          "builder": "@angular-devkit/build-angular:application",
+          "builder": "@angular/build:application",
           "options": {
+            "preserveSymlinks": true,
             "allowedCommonJsDependencies": [
               "crypto-js",
               "easymde",
@@ -398,9 +450,8 @@
               "base": "build/dist/search-bar"
             },
             "index": "projects/search-bar/src/index.html",
-            "polyfills": [
-              "projects/search-bar/src/polyfills.ts"
-            ],
+            "browser": "projects/search-bar/src/main.ts",
+            "polyfills": [],
             "tsConfig": "projects/search-bar/tsconfig.app.json",
             "assets": [
               {
@@ -421,8 +472,7 @@
             "extractLicenses": false,
             "sourceMap": true,
             "optimization": false,
-            "namedChunks": true,
-            "browser": "projects/search-bar/src/main.ts"
+            "namedChunks": true
           },
           "configurations": {
             "production": {
@@ -432,30 +482,36 @@
                   "with": "projects/search-bar/src/environments/environment.prod.ts"
                 }
               ],
-              "optimization": true,
+              "optimization": {
+                "styles": {
+                  "inlineCritical": false
+                }
+              },
               "outputHashing": "all",
               "sourceMap": false,
               "namedChunks": false,
               "extractLicenses": true,
+              "deployUrl": "/static/node_modules/@rero/rero-ils-ui/dist/search-bar/browser/",
               "styles": [
                 "projects/public-search/src/app/scss/styles.scss"
               ],
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "2mb",
+                  "maximumWarning": "3mb",
                   "maximumError": "5mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "6kb"
                 }
               ]
+            },
+            "development": {
+              "optimization": false,
+              "extractLicenses": false,
+              "sourceMap": true
             }
-          }
-        },
-        "test": {
-          "builder": "@angular-devkit/build-angular:karma",
-          "options": {
-            "main": "projects/search-bar/src/test.ts",
-            "tsConfig": "projects/search-bar/tsconfig.spec.json",
-            "karmaConfig": "projects/search-bar/karma.conf.js"
           }
         },
         "serve": {
@@ -467,8 +523,18 @@
           "configurations": {
             "production": {
               "buildTarget": "search-bar:build:production"
+            },
+            "development": {
+              "buildTarget": "search-bar:build:development",
+              "prebundle": {
+                "exclude": [
+                  "@rero/ng-core",
+                  "primelocale"
+                ]
+              }
             }
-          }
+          },
+          "defaultConfiguration": "development"
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
@@ -506,7 +572,7 @@
       "prefix": "shared",
       "architect": {
         "build": {
-          "builder": "@angular-devkit/build-angular:ng-packagr",
+          "builder": "@angular/build:ng-packagr",
           "options": {
             "tsConfig": "projects/shared/tsconfig.lib.json",
             "project": "projects/shared/ng-package.json"
@@ -514,15 +580,14 @@
           "configurations": {
             "production": {
               "tsConfig": "projects/shared/tsconfig.lib.prod.json"
-            }
+            },
+            "development": {}
           }
         },
         "test": {
-          "builder": "@angular-devkit/build-angular:karma",
+          "builder": "@angular/build:unit-test",
           "options": {
-            "main": "projects/shared/src/test.ts",
-            "tsConfig": "projects/shared/tsconfig.spec.json",
-            "karmaConfig": "projects/shared/karma.conf.js"
+            "tsConfig": "projects/shared/tsconfig.spec.json"
           }
         },
         "lint": {
@@ -544,23 +609,23 @@
       "prefix": "public-patron-profile",
       "architect": {
         "build": {
-          "builder": "@angular-devkit/build-angular:application",
+          "builder": "@angular/build:application",
           "options": {
+            "preserveSymlinks": true,
             "allowedCommonJsDependencies": [
               "crypto-js",
               "easymde",
               "issn",
               "generate-password-lite",
-              "simple-isbn"
+              "simple-isbn",
+              "jsbarcode"
             ],
-            "preserveSymlinks": true,
             "outputPath": {
               "base": "build/dist/public-patron-profile"
             },
             "index": "projects/public-patron-profile/src/index.html",
-            "polyfills": [
-              "projects/public-patron-profile/src/polyfills.ts"
-            ],
+            "browser": "projects/public-patron-profile/src/main.ts",
+            "polyfills": [],
             "tsConfig": "projects/public-patron-profile/tsconfig.app.json",
             "assets": [
               {
@@ -581,8 +646,7 @@
             "extractLicenses": false,
             "sourceMap": true,
             "optimization": false,
-            "namedChunks": true,
-            "browser": "projects/public-patron-profile/src/main.ts"
+            "namedChunks": true
           },
           "configurations": {
             "production": {
@@ -592,20 +656,23 @@
                   "with": "projects/public-patron-profile/src/environments/environment.prod.ts"
                 }
               ],
-              "optimization": true,
+              "optimization": {
+                "styles": {
+                  "inlineCritical": false
+                }
+              },
               "outputHashing": "all",
               "sourceMap": false,
               "namedChunks": false,
               "extractLicenses": true,
+              "deployUrl": "/static/node_modules/@rero/rero-ils-ui/dist/public-patron-profile/browser/",
               "styles": [
                 "projects/public-search/src/app/scss/styles.scss"
               ],
-              "deployUrl": "/static/node_modules/@rero/rero-ils-ui/dist/public-patron-profile/browser/",
-              "baseHref": "",
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "2mb",
+                  "maximumWarning": "3mb",
                   "maximumError": "5mb"
                 },
                 {
@@ -614,9 +681,20 @@
                   "maximumError": "10kb"
                 }
               ]
+            },
+            "development": {
+              "optimization": false,
+              "extractLicenses": false,
+              "sourceMap": true
             }
           },
           "defaultConfiguration": ""
+        },
+        "test": {
+          "builder": "@angular/build:unit-test",
+          "options": {
+            "tsConfig": "projects/public-patron-profile/tsconfig.spec.json"
+          }
         },
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
@@ -627,8 +705,18 @@
           "configurations": {
             "production": {
               "buildTarget": "public-patron-profile:build:production"
+            },
+            "development": {
+              "buildTarget": "public-patron-profile:build:development",
+              "prebundle": {
+                "exclude": [
+                  "@rero/ng-core",
+                  "primelocale"
+                ]
+              }
             }
-          }
+          },
+          "defaultConfiguration": "development"
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
@@ -661,6 +749,34 @@
     }
   },
   "cli": {
-    "schematicCollections": ["@angular-eslint/schematics"]
+    "schematicCollections": [
+      "@angular-eslint/schematics"
+    ]
+  },
+  "schematics": {
+    "@schematics/angular:component": {
+      "type": "component"
+    },
+    "@schematics/angular:directive": {
+      "type": "directive"
+    },
+    "@schematics/angular:service": {
+      "type": "service"
+    },
+    "@schematics/angular:guard": {
+      "typeSeparator": "."
+    },
+    "@schematics/angular:interceptor": {
+      "typeSeparator": "."
+    },
+    "@schematics/angular:module": {
+      "typeSeparator": "."
+    },
+    "@schematics/angular:pipe": {
+      "typeSeparator": "."
+    },
+    "@schematics/angular:resolver": {
+      "typeSeparator": "."
+    }
   }
 }

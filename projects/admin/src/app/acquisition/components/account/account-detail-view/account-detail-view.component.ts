@@ -16,41 +16,48 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { Component, inject, OnInit } from '@angular/core';
-import { DetailRecord } from '@rero/ng-core/lib/record/detail/view/detail-record';
-import { Observable } from 'rxjs';
-import { OrganisationService } from '../../../../service/organisation.service';
+import { Component, inject, input, ChangeDetectionStrategy} from '@angular/core';
+import { toObservable, toSignal } from '@angular/core/rxjs-interop';
+import { filter, switchMap } from 'rxjs';
 import { AcqAccountApiService } from '../../../api/acq-account-api.service';
-import { IAcqAccount } from '../../../classes/account';
+import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
+import { RouterLink } from '@angular/router';
+import { NgClass, AsyncPipe, CurrencyPipe } from '@angular/common';
+import { GetRecordPipe } from '@rero/ng-core';
+import { AppStore } from '@rero/shared';
+import { NegativeAmountPipe } from '../../../pipes/negative-amount.pipe';
+import { MessageModule } from 'primeng/message';
+import { PanelModule } from 'primeng/panel';
 
 @Component({
     selector: 'admin-acquisition-account-detail-view',
     templateUrl: './account-detail-view.component.html',
-    standalone: false
+    imports: [TranslateDirective, RouterLink, NgClass, AsyncPipe, CurrencyPipe, GetRecordPipe, TranslatePipe, NegativeAmountPipe, MessageModule, PanelModule],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class AccountDetailViewComponent implements OnInit, DetailRecord {
+export class AccountDetailViewComponent {
 
   private acqAccountApiService: AcqAccountApiService = inject(AcqAccountApiService);
-  private organisationService: OrganisationService = inject(OrganisationService);
+  private appStore = inject(AppStore);
 
   // COMPONENT ATTRIBUTES =======================================================
-  /** Observable resolving record data */
-  record$: Observable<any>;
-  /** metadata from ES - much more complete than DB stored record */
-  esRecord$: Observable<IAcqAccount>;
+  /** Record data */
+  readonly record = input<any>();
   /** Resource type */
-  type: string;
+  readonly type = input<string>('');
+
+  /** metadata from ES - much more complete than DB stored record */
+  readonly esRecord = toSignal(
+    toObservable(this.record).pipe(
+      filter((data: any) => !!data?.metadata?.pid),
+      switchMap((data: any) => this.acqAccountApiService.getAccount(data.metadata.pid))
+    ),
+    { initialValue: null }
+  );
 
   // GETTER & SETTER ============================================================
   /** Get the current budget pid for the organisation */
   get organisation(): any {
-    return this.organisationService.organisation;
-  }
-
-  /** OnInit hook */
-  ngOnInit(): void {
-    this.record$.subscribe((data: any) => {
-      this.esRecord$ = this.acqAccountApiService.getAccount(data.metadata.pid);
-    });
+    return this.appStore.organisation();
   }
 }

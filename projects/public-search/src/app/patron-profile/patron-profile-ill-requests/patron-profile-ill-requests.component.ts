@@ -14,94 +14,78 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, inject, OnDestroy, OnInit } from '@angular/core';
-import { _ } from "@ngx-translate/core";
-import { Error, Record } from '@rero/ng-core';
-import { BaseApi, Paginator } from '@rero/shared';
-import { Observable, Subscription } from 'rxjs';
+import { ChangeDetectionStrategy, Component, effect, inject, OnInit, signal, untracked } from '@angular/core';
+import { _, TranslateDirective } from "@ngx-translate/core";
+import { BaseApi, Paginator, ShowMorePagerComponent } from '@rero/shared';
+import { PanelModule } from 'primeng/panel';
 import { IllRequestApiService } from '../../api/ill-request-api.service';
-import { PatronProfileMenuService } from '../patron-profile-menu.service';
-import { ITabEvent, PatronProfileService } from '../patron-profile.service';
+import { PatronProfileStore } from '../store/patron-profile.store';
+import { PatronProfileIllRequestComponent } from './patron-profile-ill-request/patron-profile-ill-request.component';
 
 @Component({
     selector: 'public-search-patron-profile-ill-requests',
     templateUrl: './patron-profile-ill-requests.component.html',
-    standalone: false
+    imports: [TranslateDirective, PanelModule, ShowMorePagerComponent, PatronProfileIllRequestComponent],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class PatronProfileIllRequestsComponent implements OnInit, OnDestroy {
+export class PatronProfileIllRequestsComponent implements OnInit {
 
-  private illRequestApiService: IllRequestApiService = inject(IllRequestApiService);
-  private patronProfileService: PatronProfileService = inject(PatronProfileService);
-  private patronProfileMenuService: PatronProfileMenuService = inject(PatronProfileMenuService);
+  private illRequestApiService = inject(IllRequestApiService);
+  private store = inject(PatronProfileStore);
 
-  /** First call of get record */
-  loaded = false;
+  readonly loaded = signal(false);
+  readonly records = signal<any[]>([]);
 
-  /** requests records */
-  records = [];
-
-  /** Records paginator */
   paginator: Paginator;
 
-  /** Observable subscription */
-  private _subscription = new Subscription();
+  constructor() {
+    effect(() => {
+      this.store.currentPatron();
+      untracked(() => this._reset());
+    });
+    effect(() => {
+      if (this.store.activeTab() === 'illRequest') {
+        untracked(() => this._initialLoad());
+      }
+    });
+  }
 
-  /** OnInit hook */
   ngOnInit(): void {
     this.paginator = new Paginator();
-    this.paginator
-      .setHiddenInfo(
-        _('({{ count }} hidden ill request)'),
-        _('({{ count }} hidden ill requests)')
-      );
-    this._subscription.add(
-      this.paginator.more$.subscribe((page: number) => {
-        this._illRequestQuery(page).subscribe((response: Record) => {
-          this.records = this.records.concat(response.hits.hits);
-        });
-      })
+    this.paginator.setHiddenInfo(
+      _('({{ count }} hidden ill request)'),
+      _('({{ count }} hidden ill requests)')
     );
-    this._subscription.add(
-      this.patronProfileService.tabsEvent$.subscribe((event: ITabEvent) => {
-        if (event.name === 'illRequest') {
-          if (event.count === 0) {
-            this.loaded = true;
-          } else {
-            this._illRequestQuery(1).subscribe((response: Record) => {
-              this.paginator.setRecordsCount(response.hits.total.value);
-              this.records = response.hits.hits;
-              this.loaded = true;
-            });
-          }
-        }
-      })
-    );
-    /** Cleaning up after the change of organization */
-    this._subscription.add(
-      this.patronProfileMenuService.onChange$.subscribe(() => {
-        this.paginator.setRecordsCount(0);
-        this.records = [];
-        this.loaded = false;
-      })
-    );
+    this.paginator.more$.subscribe((page: number) => {
+      this._illRequestQuery(page).subscribe((response) => {
+        if (!('hits' in response)) return;
+        this.records.update(r => [...r, ...response.hits.hits]);
+      });
+    });
   }
 
-  /** OnDestroy hook */
-  ngOnDestroy(): void {
-    this._subscription.unsubscribe();
+  private _initialLoad(): void {
+    if (!this.paginator) return;
+    this._illRequestQuery(1).subscribe((response) => {
+      if (!('hits' in response)) return;
+      this.paginator.setRecordsCount(response.hits.total.value);
+      this.records.set(response.hits.hits);
+      this.loaded.set(true);
+    });
   }
 
-  /**
-   * Ill request query
-   * @param page - number
-   * @return Observable
-   */
-  private _illRequestQuery(page: number): Observable<Record | Error> {
-    const patronPid = this.patronProfileMenuService.currentPatron.pid;
-    return this.illRequestApiService
-      .getPublicIllRequest(
-        patronPid, page, this.paginator.getRecordsPerPage(),
-        BaseApi.reroJsonheaders, '-created', {remove_archived: '1'}
-      );
+  private _reset(): void {
+    if (!this.paginator) return;
+    this.paginator.setRecordsCount(0);
+    this.records.set([]);
+    this.loaded.set(false);
+  }
+
+  private _illRequestQuery(page: number) {
+    const patronPid = this.store.currentPatron()!.pid;
+    return this.illRequestApiService.getPublicIllRequest(
+      patronPid, page, this.paginator.getRecordsPerPage(),
+      BaseApi.reroJsonheaders, '-created', { remove_archived: '1' }
+    );
   }
 }

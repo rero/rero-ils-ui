@@ -14,7 +14,7 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-@defer (when items) {
+@if (items(); as itemList) {
   <p-card>
     <ng-template #header>
       <div class="ui:grid ui:grid-cols-12 ui:gap-4 ui:py-4 ui:m-2 ui:text-lg ui:font-bold ui:items-center">
@@ -29,8 +29,8 @@
         <div class="ui:col-span-2" translate>Request date</div>
       </div>
     </ng-template>
-    @if (items.length > 0) {
-      @for (item of items; track item.pid) {
+    @if (itemList.length > 0) {
+      @for (item of itemList; track item.pid) {
         <div class="ui:odd:bg-surface-50 ui:print:border-b-1">
           <admin-requested-item
             [item]="item"
@@ -46,6 +46,6 @@
       </div>
     }
   </p-card>
-} @placeholder {
+} @else {
   <div class="ui:mx-2 ui:my-6" translate>Loading in progress</div>
 }

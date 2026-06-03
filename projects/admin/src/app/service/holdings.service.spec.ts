@@ -31,7 +31,7 @@ describe('HoldingsService', () => {
 
   const locations = [];
 
-  const httpClientSpy = jasmine.createSpyObj('HttpClient', ['get', 'post']);
+  const httpClientSpy = { get: vi.fn(), post: vi.fn() };
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -49,13 +49,13 @@ describe('HoldingsService', () => {
   });
 
   it('Should return a holdings pattern in reverse order', () => {
-    httpClientSpy.get.and.returnValue(of({ issues }));
+    httpClientSpy.get.mockReturnValue(of({ issues }));
     service.getHoldingPatternPreview('1')
       .subscribe((result: PredictionIssue[]) => expect(result[0].issue).toEqual('issue 2'));
   });
 
   it('should create an issue on a holdings', () => {
-    httpClientSpy.post.and.returnValue(of({}));
+    httpClientSpy.post.mockReturnValue(of({}));
     service.quickReceivedIssue('1')
       .subscribe((result: any) => expect(result).toEqual({}))
   });
@@ -68,12 +68,12 @@ describe('HoldingsService', () => {
   });
 
   it('should return true on the possibility of making a request', () => {
-    httpClientSpy.get.and.returnValue(of({ can: true, reasons: {} }));
-    service.canRequest('pid').subscribe((result: any) => expect(result.can).toBeTrue());
+    httpClientSpy.get.mockReturnValue(of({ can: true, reasons: {} }));
+    service.canRequest('pid').subscribe((result: any) => expect(result.can).toBe(true));
   });
 
   it('should return a list of pickup locations', () => {
-    httpClientSpy.get.and.returnValue(of({ locations }));
+    httpClientSpy.get.mockReturnValue(of({ locations }));
     service.getPickupLocations('1').subscribe((result: any) => expect(result).toEqual([]));
   })
 });

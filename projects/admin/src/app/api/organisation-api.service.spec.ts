@@ -31,8 +31,8 @@ describe('OrganisationApiService', () => {
       name: 'Organisation name'
     }
   }
-  const recordServiceSpy = jasmine.createSpyObj('RecordService', ['getRecord']);
-  recordServiceSpy.getRecord.and.returnValue(of(response));
+  const recordServiceSpy = { getRecord: vi.fn() };
+  recordServiceSpy.getRecord.mockReturnValue(of(response));
 
   beforeEach(() => {
     TestBed.configureTestingModule({

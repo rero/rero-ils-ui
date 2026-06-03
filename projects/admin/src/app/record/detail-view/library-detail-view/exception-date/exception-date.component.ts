@@ -14,16 +14,20 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, Input } from '@angular/core';
+import { Component, input, ChangeDetectionStrategy} from '@angular/core';
 import { ExceptionDates, Library } from '@app/admin/classes/library';
+import { NgClass } from '@angular/common';
+import { TranslatePipe } from '@ngx-translate/core';
+import { DateTranslatePipe } from '@rero/ng-core';
 
 @Component({
     selector: 'admin-exception-date',
     templateUrl: './exception-date.component.html',
-    standalone: false
+    imports: [NgClass, TranslatePipe, DateTranslatePipe],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ExceptionDateComponent {
-  @Input() exception: ExceptionDates;
+  exception = input<ExceptionDates>();
 
   isOver(exception: ExceptionDates): boolean {
     return Library.isExceptionDateOver(exception);

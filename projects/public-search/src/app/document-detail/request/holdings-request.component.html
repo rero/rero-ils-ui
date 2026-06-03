@@ -14,12 +14,12 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-@if (patron) {
-  @if (!requestDialog) {
+@if (hasPatron()) {
+  @if (!requestDialog()) {
     <p-button
       styleClass="ui:m-2"
       class="ui:pointer-events-auto"
-      id="record-{{ record.metadata.pid }}-request-button"
+      id="record-{{ record()?.metadata.pid }}-request-button"
       outlined
       (onClick)="showRequestDialog()"
       [hidden]="!hiddenRequestButton()"
@@ -29,7 +29,7 @@
       tooltipPosition="top"
     >
       <i class="fa fa-cart-arrow-down ui:mr-2"></i>
-      @if (holdingsItemsCount > 0) {
+      @if (holdingsItemsCount() > 0) {
         {{ 'Request another issue' | translate }}
       } @else {
         {{ 'Request an issue' | translate }}
@@ -37,10 +37,10 @@
       </p-button>
   } @else {
     <public-search-pickup-location
-      [record]="record"
-      [itemCount]="holdingsItemsCount"
-      [recordType]="recordType"
-      [viewcode]="viewcode"
+      [record]="record()"
+      [itemCount]="holdingsItemsCount()"
+      [recordType]="recordType()"
+      [viewcode]="viewcode()"
       (closeEvent)="closeDialog()"
       class="ui:w-full"
     />

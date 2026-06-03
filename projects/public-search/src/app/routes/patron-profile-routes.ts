@@ -16,9 +16,9 @@
  */
 import { Routes } from '@angular/router';
 import { _ } from '@ngx-translate/core';
-import { PatronProfileComponent } from 'projects/public-search/src/app/patron-profile/patron-profile.component';
-import { PatronProfilePersonalEditorComponent } from 'projects/public-search/src/app/patron-profile/patron-profile-personal-editor/patron-profile-personal-editor.component';
-import { PatronProfilePasswordComponent } from 'projects/public-search/src/app/patron-profile/patron-profile-password/patron-profile-password.component';
+import { PatronProfileComponent } from '../patron-profile/patron-profile.component';
+import { PatronProfilePersonalEditorComponent } from '../patron-profile/patron-profile-personal-editor/patron-profile-personal-editor.component';
+import { PatronProfilePasswordComponent } from '../patron-profile/patron-profile-password/patron-profile-password.component';
 
 export const patronProfileRoutes : Routes = [
   {

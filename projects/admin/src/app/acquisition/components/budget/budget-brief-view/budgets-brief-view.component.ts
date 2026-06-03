@@ -16,9 +16,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { Component, inject, Input } from '@angular/core';
+import { Component, inject, input, ChangeDetectionStrategy} from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-import { ResultItem } from '@rero/ng-core';
+import { NgClass } from '@angular/common';
+import { RouterLink } from '@angular/router';
 
 @Component({
     selector: 'admin-budgets-brief-view',
@@ -27,30 +28,31 @@ import { ResultItem } from '@rero/ng-core';
       <i
         class="fa fa-circle ui:mr-2"
         [title]="title"
-        [ngClass]="{'text-success': record.metadata.is_active, 'text-error': !record.metadata.is_active}"
+        [ngClass]="{'text-success': record().metadata.is_active, 'text-error': !record().metadata.is_active}"
       ></i>&nbsp;
-      <a [routerLink]="[detailUrl.link]">{{ record.metadata.name }}</a>
+      <a [routerLink]="[detailUrl().link]">{{ record().metadata.name }}</a>
     </h5>
   `,
-    standalone: false
-  })
-export class BudgetsBriefViewComponent implements ResultItem {
+    imports: [NgClass, RouterLink],
+  changeDetection: ChangeDetectionStrategy.OnPush
+})
+export class BudgetsBriefViewComponent {
 
   private translateService: TranslateService = inject(TranslateService);
 
   /** The record to display */
-  @Input() record: any;
+  record = input<any>();
   /** The record type */
-  @Input() type: string;
+  type = input<string>();
   /** The URL to the detail view of the record */
-  @Input() detailUrl: { link: string, external: boolean };
+  detailUrl = input<{ link: string, external: boolean }>();
 
   /**
    * Status of the budget on bullet title
    * @returns string - status
    */
   get title(): string {
-    return this.record.metadata.is_active
+    return this.record().metadata.is_active
       ? this.translateService.instant('Active')
       : this.translateService.instant('Inactive');
   }

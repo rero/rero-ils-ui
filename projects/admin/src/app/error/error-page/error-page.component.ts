@@ -15,10 +15,12 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { Component, inject, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
-import { _ } from "@ngx-translate/core";
+import { Component, inject, OnInit, signal, ChangeDetectionStrategy} from '@angular/core';
+import { ActivatedRoute, RouterLink } from '@angular/router';
+import { _, TranslatePipe } from "@ngx-translate/core";
 import { map } from 'rxjs/operators';
+import { Bind } from 'primeng/bind';
+import { Button } from 'primeng/button';
 
 @Component({
     selector: 'admin-error-page',
@@ -27,14 +29,14 @@ import { map } from 'rxjs/operators';
       <div class="ui:py-8 ui:px-4 ui:mx-auto ui:max-w-screen-xl ui:lg:py-16 ui:lg:px-6">
           <div class="ui:mx-auto ui:max-w-screen-sm ui:text-center">
               <span class="ui:mb-4 ui:text-7xl ui:tracking-tight ui:font-extrabold ui:lg:text-8xl ui:text-primary-600">
-              {{ statusCode }}
+              {{ statusCode() }}
               </span>
               <p class="ui:mb-4 ui:text-3xl ui:tracking-tight ui:font-bold ui:text-gray-900 ui:md:text-4xl">
-                {{ messages[statusCode].title }}
+                {{ messages[statusCode()].title }}
               </p>
               <div class="ui:mb-4 ui:text-lg ui:font-light ui:text-gray-500">
                 <ul class="ui:list-none">
-                  @for (text of messages[statusCode].description || []; track $index) {
+                  @for (text of messages[statusCode()].description || []; track $index) {
                     <li>{{ text }}</li>
                   }
                 </ul>
@@ -46,7 +48,8 @@ import { map } from 'rxjs/operators';
       </div>
     </section>
   `,
-    standalone: false
+    imports: [Bind, Button, RouterLink, TranslatePipe],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 
 export class ErrorPageComponent implements OnInit {
@@ -54,7 +57,7 @@ export class ErrorPageComponent implements OnInit {
   private route: ActivatedRoute = inject(ActivatedRoute);
 
   /** the status code to display. By default 404 : Page not found */
-  statusCode = 404;
+  readonly statusCode = signal(404);
   /** All messages alt to be managed by this component. Available for each error are :
    *   - title : the error title
    *   - description : A human readable description of this error as Array<string>. Each array
@@ -100,6 +103,6 @@ export class ErrorPageComponent implements OnInit {
       map(params => params.status_code || 404),  // check for status_code parameter from ActivatedRoute
       map(code => /^\d+$/.test(code) ? parseInt(code, 10) : 404),  // try to parse status code to integer
       map(code => code in this.messages ? code : 404)  // check if http code definition exists
-    ).subscribe(code => this.statusCode = code );
+    ).subscribe(code => this.statusCode.set(code));
   }
 }

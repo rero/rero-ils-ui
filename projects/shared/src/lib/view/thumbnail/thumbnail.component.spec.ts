@@ -16,7 +16,7 @@
  */
 
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
-import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ThumbnailComponent } from './thumbnail.component';
 
 
@@ -24,14 +24,13 @@ describe('ThumbnailComponent', () => {
   let component: ThumbnailComponent;
   let fixture: ComponentFixture<ThumbnailComponent>;
 
-  beforeEach(waitForAsync(() => {
+  beforeEach(async () => {
     TestBed.configureTestingModule({
-    declarations: [ThumbnailComponent],
-    imports: [],
+    imports: [ThumbnailComponent],
     providers: [provideHttpClient(withInterceptorsFromDi())]
 })
     .compileComponents();
-  }));
+  });
 
   beforeEach(() => {
     fixture = TestBed.createComponent(ThumbnailComponent);

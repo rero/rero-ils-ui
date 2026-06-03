@@ -14,31 +14,28 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { EventEmitter, Injectable, inject } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-import { UserService } from '@rero/shared';
+import { AppStore } from '@rero/shared';
+import { cloneDeep } from 'lodash-es';
 import { MenuItem } from 'primeng/api';
-import { Observable } from 'rxjs';
+
+type ReplacementVariableName = keyof MenuTranslateService['REPLACEMENT_VARIABLES'];
+type QueryParams = Record<string, unknown>;
 
 @Injectable({
   providedIn: 'root'
 })
 export class MenuTranslateService {
   private translateService: TranslateService = inject(TranslateService);
-  private userService: UserService = inject(UserService);
-
-  private onProcess = new EventEmitter<MenuItem[]>();
-
-  get onProcess$(): Observable<MenuItem[]> {
-    return this.onProcess.asObservable();
-  }
+  private appStore = inject(AppStore);
 
   // Available variables for menu definitions.
   public REPLACEMENT_VARIABLES = {
-    $currentLibrary: () => this.userService.user.currentLibrary,
-    $currentOrganisation: () => this.userService.user.currentOrganisation,
-    $symbolName: () => this.userService.user.symbolName,
-    $currentBudget: () => this.userService.user.currentBudget,
+    $currentLibrary: () => this.appStore.currentLibraryPid(),
+    $currentOrganisation: () => this.appStore.currentOrganisationPid(),
+    $symbolName: () => this.appStore.user()?.symbolName,
+    $currentBudget: () => this.appStore.currentBudgetPid(),
     $currentDayRange: () => {
       const today = new Date()
       const tomorrow = new Date(today);
@@ -48,30 +45,30 @@ export class MenuTranslateService {
   };
 
   process(menuItems: MenuItem[]): MenuItem[] {
-    menuItems.map((item: MenuItem) => {
+    const clonedMenuItems = cloneDeep(menuItems);
+
+    clonedMenuItems.forEach((item: MenuItem) => {
       item.label = this.translateLabel(item);
       if (item.routerLink) {
         item.routerLink = this.processRouterLink(item.routerLink);
       }
       if (item.queryParams) {
-        item.queryParams = this.processQueryParams(item.queryParams);
+        item.queryParams = this.processQueryParams(item.queryParams as QueryParams);
       }
       if (item.items) {
         item.items = this.process(item.items);
       }
     });
 
-    this.onProcess.emit(menuItems);
-
-    return menuItems;
+    return clonedMenuItems;
   }
 
   private translateLabel(item: MenuItem): string {
     if (item?.translateLabel?.startsWith('$')) {
-      if (!this.hasVariableAvailable(item.translateLabel)) {
+      if (!this.hasVariableAvailable(item.translateLabel as ReplacementVariableName)) {
         throw new EvalError(`Label exception: This variable "${item.translateLabel}" is not available.`);
       }
-      return String(this.REPLACEMENT_VARIABLES[item.translateLabel]())
+      return String(this.REPLACEMENT_VARIABLES[item.translateLabel as ReplacementVariableName]())
     } else {
       return item.translateLabel ? this.translateService.instant(item.translateLabel) : item.label;
     }
@@ -80,30 +77,31 @@ export class MenuTranslateService {
   private processRouterLink(routerLink: string[]): string[] {
     return routerLink.map((link: string) => {
       if (link.startsWith('$')) {
-        if (!this.hasVariableAvailable(link)) {
+        if (!this.hasVariableAvailable(link as ReplacementVariableName)) {
           throw new EvalError(`RouterLink exception: This variable "${link}" is not available.`);
         }
-        link = String(this.REPLACEMENT_VARIABLES[link]());
+        link = String(this.REPLACEMENT_VARIABLES[link as ReplacementVariableName]());
       }
       return link;
     });
   }
 
-  private processQueryParams(queryParams: object): object {
+  private processQueryParams(queryParams: QueryParams): QueryParams {
     Object.keys(queryParams)
       .filter((key: string) => String(queryParams[key]).startsWith('$'))
-      .map((key: string) => {
+      .forEach((key: string) => {
         if (String(queryParams[key]).startsWith('$')) {
-          if (!this.hasVariableAvailable(queryParams[key])) {
+          const replacementName = String(queryParams[key]) as ReplacementVariableName;
+          if (!this.hasVariableAvailable(replacementName)) {
             throw new EvalError(`Query Param exception: This variable "${queryParams[key]}" is not available.`);
           }
-          queryParams[key] = String(this.REPLACEMENT_VARIABLES[queryParams[key]]());
+          queryParams[key] = String(this.REPLACEMENT_VARIABLES[replacementName]());
         }
       });
     return queryParams;
   }
 
-  private hasVariableAvailable(name: string): boolean {
+  private hasVariableAvailable(name: ReplacementVariableName): boolean {
     return name in this.REPLACEMENT_VARIABLES;
   }
 

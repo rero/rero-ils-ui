@@ -15,67 +15,45 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { HttpClient } from "@angular/common/http";
-import { Component, inject, OnDestroy, OnInit, viewChild } from '@angular/core';
+import { Component, inject, input, signal, ChangeDetectionStrategy } from '@angular/core';
+import { rxResource } from "@angular/core/rxjs-interop";
 import { AppConfigService } from "@app/admin/service/app-config.service";
-import { TranslateService } from "@ngx-translate/core";
-import { DetailRecord } from '@rero/ng-core/lib/record/detail/view/detail-record';
-import { Observable, Subscription } from 'rxjs';
+import { TranslateDirective, TranslatePipe } from "@ngx-translate/core";
+import { NgClass, AsyncPipe } from "@angular/common";
+import { Bind } from "primeng/bind";
+import { Fieldset } from "primeng/fieldset";
+import { Tabs, TabList, Tab, TabPanels, TabPanel } from "primeng/tabs";
+import { Ripple } from "primeng/ripple";
+import { ReportsListComponent } from "./reports-list/reports-list.component";
+import { ReportDataComponent } from "./report-data/report-data.component";
+import { DateTranslatePipe, GetRecordPipe, Nl2brPipe } from "@rero/ng-core";
+import { Message } from "primeng/message";
 
 @Component({
     selector: "admin-statistics-cfg-view",
     templateUrl: "./statistics-cfg-detail-view.component.html",
-    standalone: false
+    imports: [TranslateDirective, NgClass, Bind, Fieldset, Tabs, TabList, Ripple, Tab, TabPanels, TabPanel, ReportsListComponent, ReportDataComponent, AsyncPipe, TranslatePipe, DateTranslatePipe, GetRecordPipe, Nl2brPipe, Message],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class StatisticsCfgDetailViewComponent implements DetailRecord, OnInit, OnDestroy {
+export class StatisticsCfgDetailViewComponent {
 
-  private httpClient: HttpClient = inject(HttpClient);
-  private appConfigService: AppConfigService = inject(AppConfigService);
-  private translateService: TranslateService = inject(TranslateService);
+  private httpClient = inject(HttpClient);
+  private appConfigService = inject(AppConfigService);
 
-  /** Observable resolving record data */
-  record$: Observable<any>;
+  readonly record = input<any>();
+  readonly type = input<string>('');
 
-  /** Resource type */
-  type: string;
+  private liveRequested = signal(false);
 
-  /** the api response record */
-  record: any;
-
-  // the current preview values
-  liveData: any = null;
-
-  // Error on data loading
-  liveDataError: string = undefined;
-
-  /** Subscription to (un)follow the record$ Observable */
-  private subscriptions = new Subscription();
-
-  /** OnInit hook */
-  ngOnInit() {
-    this.subscriptions = this.record$.subscribe((record) => {
-      this.record = record;
-    });
-  }
-
-  /** onDestroy hook */
-  ngOnDestroy(): void {
-    this.subscriptions.unsubscribe();
-  }
-
-  /** Preview values corresponding to the current configuration. */
-  getLiveValues(): void {
-    // only once
-    if (this.liveData != null) {
-      return;
+  readonly liveData = rxResource({
+    params: () => this.liveRequested() ? this.record()?.metadata.pid : undefined,
+    stream: ({ params: pid }) => {
+      const baseUrl = this.appConfigService.apiEndpointPrefix;
+      return this.httpClient.get<unknown[][]>(`${baseUrl}/stats_cfg/live/${pid}`);
     }
-    this.liveDataError = undefined;
-    const { pid } = this.record.metadata;
-    const baseUrl = this.appConfigService.apiEndpointPrefix;
-    this.httpClient
-      .get(`${baseUrl}/stats_cfg/live/${pid}`)
-      .subscribe({
-        next: (res) => (this.liveData = res),
-        error: () => this.liveDataError = this.translateService.instant('Data loading error')
-      });
+  });
+
+  requestLiveValues(): void {
+    this.liveRequested.set(true);
   }
 }

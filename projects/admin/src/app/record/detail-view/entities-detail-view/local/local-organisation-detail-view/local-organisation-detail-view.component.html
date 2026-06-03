@@ -16,64 +16,64 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 
-<admin-entities-local-global [record]="record">
+<admin-entities-local-global [record]="record()">
   <!-- NAME -->
-  @if (record.name) {
+  @if (record().name) {
     <dt translate>Name</dt>
-    <dd>{{ record.name }}</dd>
+    <dd>{{ record().name }}</dd>
   }
   <!-- SUBORDINATE UNIT -->
-  @if (record.subordinate_unit) {
+  @if (record().subordinate_unit) {
     <dt translate>Subordinate unit</dt>
     <dd>
       <ul class="ui:list-none">
-        @for (name of record.subordinate_unit; track $index) {
+        @for (name of record().subordinate_unit; track $index) {
           <li>{{ name }}</li>
         }
       </ul>
     </dd>
   }
   <!-- CONFERENCE PLACE -->
-  @if (record.conference_place) {
+  @if (record().conference_place) {
     <dt translate>Conference place</dt>
-    <dd>{{ record.conference_place }}</dd>
+    <dd>{{ record().conference_place }}</dd>
   }
   <!-- CONFERENCE NUMBERING -->
-  @if (record.conference_numbering) {
+  @if (record().conference_numbering) {
     <dt translate>Conference numbering</dt>
-    <dd>{{ record.conference_numbering }}</dd>
+    <dd>{{ record().conference_numbering }}</dd>
   }
   <!-- CONFERENCE DATE -->
-  @if (record.conference_date) {
+  @if (record().conference_date) {
     <dt translate>Conference date</dt>
-    <dd>{{ record.conference_date }}</dd>
+    <dd>{{ record().conference_date }}</dd>
   }
   <!-- CONFERENCE -->
-  @if (record.conference) {
+  @if (record().conference) {
     <dt translate>Conference</dt>
     <dd>
       <i class="fa ui:mr-2" [ngClass]="{
-        'fa-check text-success': record.conference,
-        'fa-times text-error': !record.conference
+        'fa-check text-success': record().conference,
+        'fa-times text-error': !record().conference
       }"></i>
     </dd>
   }
   <!-- START DATE -->
-  @if (record.start_date) {
+  @if (record().start_date) {
     <dt translate>Start date</dt>
-    <dd>{{ record.start_date }}</dd>
+    <dd>{{ record().start_date }}</dd>
   }
   <!-- END DATE -->
-  @if (record.end_date) {
+  @if (record().end_date) {
     <dt translate>End date</dt>
-    <dd>{{ record.end_date }}</dd>
+    <dd>{{ record().end_date }}</dd>
   }
   <!-- ALTERNATIVE NAMES -->
-  @if (record.alternative_names && record.alternative_names.length > 0) {
+  @if (record().alternative_names && record().alternative_names.length > 0) {
     <dt translate>Alternative names</dt>
     <dd>
       <ul class="ui:list-none">
-        @for (name of record.alternative_names; track $index) {
+        @for (name of record().alternative_names; track $index) {
           <li>{{ name }}</li>
         }
       </ul>

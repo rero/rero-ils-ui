@@ -15,19 +15,23 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, inject, OnDestroy, OnInit } from '@angular/core';
-import { FormGroup } from '@angular/forms';
-import { FormlyFieldConfig } from '@ngx-formly/core';
+import { Component, inject, OnDestroy, OnInit, ChangeDetectionStrategy} from '@angular/core';
+import { FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormlyFieldConfig, FormlyModule } from '@ngx-formly/core';
 import { FormlyJsonschema } from '@ngx-formly/core/json-schema';
 import { NgCoreTranslateService, processJsonSchema, RecordService } from '@rero/ng-core';
 import { MessageService } from 'primeng/api';
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { Subscription } from 'rxjs';
+import { Bind } from 'primeng/bind';
+import { Button } from 'primeng/button';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
     selector: 'admin-add-entity-local-form',
     templateUrl: './add-entity-local-form.component.html',
-    standalone: false
+    imports: [FormsModule, ReactiveFormsModule, FormlyModule, Bind, Button, TranslatePipe],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AddEntityLocalFormComponent implements OnInit, OnDestroy {
 
@@ -68,8 +72,8 @@ export class AddEntityLocalFormComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     const { selectedType, searchTerm } = this.dynamicDialogConfig.data;
     this.form = new FormGroup({});
-    this.subscriptions.add(this.recordService.getSchemaForm('local_entities').subscribe((schema) => {
-      schema = processJsonSchema(schema.schema);
+    this.subscriptions.add(this.recordService.getSchemaForm('local_entities').subscribe((schemaResult) => {
+      let schema: any = processJsonSchema((schemaResult as any).schema);
       // Transfer the selected oneOf to the root schema
       schema = schema.oneOf.find((element: any) => element.properties.type.const === this.translatedType(selectedType));
       // Deleting the oneOf key from the schema

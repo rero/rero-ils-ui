@@ -17,7 +17,7 @@
 
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
-import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterModule } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 import { PartOfComponent } from './part-of.component';
@@ -26,19 +26,19 @@ describe('PartOfComponent', () => {
   let component: PartOfComponent;
   let fixture: ComponentFixture<PartOfComponent>;
 
-  beforeEach(waitForAsync (() => {
+  beforeEach(async () => {
     TestBed.configureTestingModule({
-      declarations: [PartOfComponent],
-      imports: [
+    imports: [
         TranslateModule.forRoot({}),
-          RouterModule
-        ],
-      providers: [
+        RouterModule,
+        PartOfComponent
+    ],
+    providers: [
         provideHttpClient(withInterceptorsFromDi()),
         provideHttpClientTesting()
-      ]
-    }).compileComponents();
-  }));
+    ]
+}).compileComponents();
+  });
 
   beforeEach(() => {
     fixture = TestBed.createComponent(PartOfComponent);

@@ -17,7 +17,7 @@
 
 import { TestBed } from "@angular/core/testing";
 import { ItemTypeApiService } from "./item-type-api.service";
-import { RecordModule, RecordService } from "@rero/ng-core";
+import { RecordService } from "@rero/ng-core";
 import { of } from "rxjs";
 import { TranslateModule } from "@ngx-translate/core";
 
@@ -55,14 +55,13 @@ describe('ItemTypeApiService', () => {
     links: {}
   };
 
-  const recordServiceSpy = jasmine.createSpyObj('RecordService', ['getRecords']);
-  recordServiceSpy.getRecords.and.returnValue(of(response));
+  const recordServiceSpy = { getRecords: vi.fn() };
+  recordServiceSpy.getRecords.mockReturnValue(of(response));
 
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [
-        TranslateModule.forRoot(),
-        RecordModule
+        TranslateModule.forRoot()
       ],
       providers: [
         ItemTypeApiService,
@@ -79,8 +78,8 @@ describe('ItemTypeApiService', () => {
 
   it('should return a list of item types', () => {
     service.getAll().subscribe((result: any[]) => {
-      expect(result).toHaveSize(2);
-      expect('metadata' in result[0]).toBeTrue();
+      expect(result).toHaveLength(2);
+      expect('metadata' in result[0]).toBe(true);
     });
   });
 });

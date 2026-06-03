@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2019-2025 RERO
+ * Copyright (C) 2019-2026 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -14,253 +14,125 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, inject, model, ModelSignal, OnDestroy, OnInit } from '@angular/core';
-import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
-import { OrganisationService } from '@app/admin/service/organisation.service';
-import { PatronService } from '@app/admin/service/patron.service';
+import { ChangeDetectionStrategy, Component, DestroyRef, computed, effect, inject, signal } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { ActivatedRoute, NavigationEnd, Router, RouterLink, RouterOutlet } from '@angular/router';
 import { HotkeysService } from '@ngneat/hotkeys';
-import { TranslateService } from '@ngx-translate/core';
+import { AppStore } from '@rero/shared';
+import { TranslateService, TranslatePipe } from '@ngx-translate/core';
 import { MenuItem } from 'primeng/api';
-import { Subscription, switchMap, tap } from 'rxjs';
-import { CirculationStatsService } from '../service/circulation-stats.service';
+import { filter, map, startWith } from 'rxjs';
+import { CirculationStore } from '../../store/circulation.store';
+import { CardComponent } from '../card/card.component';
+import { Bind } from 'primeng/bind';
+import { Tabs, TabList, Tab } from 'primeng/tabs';
+import { Ripple } from 'primeng/ripple';
+import { CurrencyPipe } from '@angular/common';
+import { BadgeModule } from 'primeng/badge';
 
 @Component({
     selector: 'admin-main',
     templateUrl: './main.component.html',
-    standalone: false
+    imports: [CardComponent, Bind, Tabs, TabList, Ripple, Tab, RouterLink, RouterOutlet, CurrencyPipe, TranslatePipe, BadgeModule],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class MainComponent implements OnInit, OnDestroy {
+export class MainComponent {
 
   private route: ActivatedRoute = inject(ActivatedRoute);
   private router: Router = inject(Router);
-  private patronService: PatronService = inject(PatronService);
-  private organisationService: OrganisationService = inject(OrganisationService);
+  protected appStore = inject(AppStore);
   private hotKeysService: HotkeysService = inject(HotkeysService);
   private translateService: TranslateService = inject(TranslateService);
-  private circulationStatsService: CirculationStatsService = inject(CirculationStatsService);
+
+  protected store = inject(CirculationStore);
 
   // COMPONENT ATTRIBUTES ====================================================
-  /** shortcuts for patron tabs */
-  private _shortcuts = [];
+  private readonly SHORTCUT_KEYS = ['1', '2', '3', '4', '5', '6', '7'];
 
-  /** the current logged patron */
-  patron: any = undefined;
-
-  /** the current patron barcode */
-  barcode: string;
-
-  items: MenuItem[] | undefined = [];
-
-  activeTab: ModelSignal<string> = model.required<string>();
-
-  subscription = new Subscription();
-
-  stats: any;
-
-  // GETTER & SETTER ====================================================
-  /**
-   * Get current organisation
-   * @return current organisation
-   */
-  get organisation() {
-    return this.organisationService.organisation;
-  }
-
-  /** OnInit hook */
-  ngOnInit(): void {
-    this.circulationStatsService.clearStats();
-    /** load patron if the barcode changes */
-    this.subscription.add(this.route.params.subscribe((data: any) => {
-      if (Object.hasOwn(data, 'barcode') && (this.barcode !== data.barcode)) {
-        this.load(data.barcode);
-      }
-    }));
-    this.subscription.add(this.router.events.subscribe((event: NavigationEnd | any) => {
-      if (event instanceof NavigationEnd) {
-        this.activeTab.set(this.router.url.split('/').pop());
-      }
+  readonly barcode = signal('');
+  readonly menuItems = computed<MenuItem[]>(() => {
+    const patron = this.store.patron();
+    if (!patron) return [];
+    const barcode = this.barcode();
+    const items: MenuItem[] = [
+      { id: 'loan', label: this.translateService.instant('On loan'), routerLink: ['/circulation', 'patron', barcode, 'loan'] },
+      { id: 'pickup', label: this.translateService.instant('To pick up'), routerLink: ['/circulation', 'patron', barcode, 'pickup'] },
+      { id: 'pending', label: this.translateService.instant('Pending'), routerLink: ['/circulation', 'patron', barcode, 'pending'] },
+      { id: 'ill', label: this.translateService.instant('Interlibrary loan'), routerLink: ['/circulation', 'patron', barcode, 'ill'] },
+      { id: 'profile', label: this.translateService.instant('Profile'), routerLink: ['/circulation', 'patron', barcode, 'profile'] },
+      { id: 'fees', label: this.translateService.instant('Fees'), routerLink: ['/circulation', 'patron', barcode, 'fees'], severity: 'warn', withCurrency: true },
+    ];
+    if (patron.keep_history) {
+      items.push({ id: 'history', label: this.translateService.instant('History'), routerLink: ['/circulation', 'patron', barcode, 'history'] });
     }
-    ));
-    // Active the active tab
-   this.activeTab.set(this.router.url.split('/').pop());
+    return items;
+  });
+  readonly activeTab = toSignal(
+    this.router.events.pipe(
+      filter(e => e instanceof NavigationEnd),
+      map(() => this.router.url.split('/').pop() ?? ''),
+      startWith(this.router.url.split('/').pop() ?? '')
+    ),
+    { initialValue: this.router.url.split('/').pop() ?? '' }
+  );
+
+  readonly shortcuts = computed(() => {
+    const patron = this.store.patron();
+    if (!patron) return [];
+    const group = this.translateService.instant('Patron profile shortcuts');
+    const nav = (tab: string) => () => this.router.navigate(['/circulation', 'patron', this.barcode(), tab]);
+    const base = [
+      { keys: '1', group, description: this.translateService.instant('Go to "circulation" tab'), callback: nav('loan') },
+      { keys: '2', group, description: this.translateService.instant('Go to "pickup" tab'), callback: nav('pickup') },
+      { keys: '3', group, description: this.translateService.instant('Go to "pending" tab'), callback: nav('pending') },
+      { keys: '4', group, description: this.translateService.instant('Go to "ILL" tab'), callback: nav('ill') },
+      { keys: '5', group, description: this.translateService.instant('Go to "patron profile" tab'), callback: nav('profile') },
+      { keys: '6', group, description: this.translateService.instant('Go to "fees" tab'), callback: nav('fees') },
+    ];
+    if (patron.keep_history) {
+      base.push({ keys: '7', group, description: this.translateService.instant('Go to "history" tab'), callback: nav('history') });
+    }
+    return base;
+  });
+
+  constructor() {
+    inject(DestroyRef).onDestroy(() => {
+      this._unregisterShortcuts();
+      this.store.clear();
+    });
+
+    effect(() => {
+      const shortcuts = this.shortcuts();
+      this._unregisterShortcuts();
+      for (const { callback, ...config } of shortcuts) {
+        this.hotKeysService.addShortcut(config).subscribe(() => callback());
+      }
+    });
+
+    const routeParams = toSignal(this.route.params, { initialValue: {} as Record<string, string> });
+    effect(() => {
+      const barcode = routeParams()['barcode'];
+      if (barcode && this.barcode() !== barcode) {
+        this.load(barcode);
+      }
+    });
   }
 
-
-  /** OnDestroy hook */
-  ngOnDestroy(): void {
-    this._unregisterShortcuts();
-    this.subscription.unsubscribe();
-  }
-
-  // COMPONENT FUNCTIONS ====================================================
-  /**
-   * Load data
-   * @param barcode: string, patron barcode
-   */
   load(barcode: string): void {
-    this.barcode = barcode;
-    this.subscription.add(
-      this.patronService.getPatron(barcode)
-      .pipe(
-        tap((patron: any) => this.patron = patron),
-        tap(() => this.initializeTabs(this.patron.keep_history)),
-        // load statistics
-        switchMap((patron: any) =>
-          this.circulationStatsService.getStats(patron.pid)
-        ),
-        switchMap(() => this.circulationStatsService.updateFees(this.patron.pid)),
-        tap(() => this.initializeShortcuts(this.patron.keep_history)),
-        tap(() => {
-          this._unregisterShortcuts();
-          this._registerShortcuts();
-        })
-      )
-      .subscribe()
-    );
+    this.barcode.set(barcode);
+    this.store.clear();
+    this.store.loadPatron(barcode);
   }
 
-  /** reset the patron currently viewed */
   clearPatron(): void {
-    this.circulationStatsService.clearStats();
     this.router.navigate(['/circulation']);
   }
 
-  /** Register all component shortcuts on the hotkeysService */
-  private _registerShortcuts(): void {
-    for (const shortcut of this._shortcuts) {
-      const { callback } = shortcut;
-      delete shortcut.callback;
-      this.hotKeysService.addShortcut(shortcut).subscribe($event => callback($event));
-    }
-  }
-
-  /** Unregister all component shortcuts from the hotkeysService (if they are registered) */
   private _unregisterShortcuts(): void {
-    const registeredHotKeys = this.hotKeysService.getHotkeys().map(shortcut => shortcut.keys);
-    const componentShortcuts = this._shortcuts.map(shortcut => shortcut.keys);
-    const intersectionShortcuts = registeredHotKeys.filter(value => componentShortcuts.includes(value));
-    if (intersectionShortcuts.length > 0) {
-      this.hotKeysService.removeShortcuts(intersectionShortcuts);
-    }
-  }
-
-  private initializeTabs(keepHistory: boolean): void {
-    const items = [
-      {
-        id: 'loan',
-        label: this.translateService.instant('On loan'),
-        routerLink: ['/circulation', 'patron', this.barcode, 'loan'],
-        tag: {
-          statistics: this.circulationStatsService.statistics
-        }
-      },
-      {
-        id: 'pickup',
-        label: this.translateService.instant('To pick up'),
-        routerLink: ['/circulation', 'patron', this.barcode, 'pickup'],
-        tag: {
-          statistics: this.circulationStatsService.statistics
-        }
-      },
-      {
-        id: 'pending',
-        label: this.translateService.instant('Pending'),
-        routerLink: ['/circulation', 'patron', this.barcode, 'pending'],
-        tag: {
-          statistics: this.circulationStatsService.statistics
-        }
-      },
-      {
-        id: 'ill',
-        label: this.translateService.instant('Interlibrary loan'),
-        routerLink: ['/circulation', 'patron', this.barcode, 'ill'],
-        tag: {
-          statistics: this.circulationStatsService.statistics
-        }
-      },
-      {
-        id: 'profile',
-        label: this.translateService.instant('Profile'),
-        routerLink: ['/circulation', 'patron', this.barcode, 'profile']
-      },
-      {
-        id: 'fees',
-        label: this.translateService.instant('Fees'),
-        routerLink: ['/circulation', 'patron', this.barcode, 'fees'],
-        tag: {
-          severity: 'warn',
-          statistics: this.circulationStatsService.statistics,
-          withCurrency: true,
-        }
-      }
-    ];
-    if (keepHistory) {
-      items.push({
-        id: 'history',
-        label: this.translateService.instant('History'),
-        routerLink: ['/circulation', 'patron', this.barcode, 'history']
-      });
-    }
-    this.items = items;
-  }
-
-  private initializeShortcuts(keepHistory: boolean): void {
-    this._shortcuts = [
-      {
-        keys: '1',
-        group: this.translateService.instant('Patron profile shortcuts'),
-        description: this.translateService.instant('Go to "circulation" tab'),
-        callback: ($event) => {
-          this.router.navigate(['/circulation', 'patron', this.barcode, 'loan']);
-        }
-      }, {
-        keys: '2',
-        group: this.translateService.instant('Patron profile shortcuts'),
-        description: this.translateService.instant('Go to "pickup" tab'),
-        callback: ($event) => {
-          this.router.navigate(['/circulation', 'patron', this.barcode, 'pickup']);
-        }
-      }, {
-        keys: '3',
-        group: this.translateService.instant('Patron profile shortcuts'),
-        description: this.translateService.instant('Go to "pending" tab'),
-        callback: ($event) => {
-          this.router.navigate(['/circulation', 'patron', this.barcode, 'pending']);
-        }
-      }, {
-        keys: '4',
-        group: this.translateService.instant('Patron profile shortcuts'),
-        description: this.translateService.instant('Go to "ILL" tab'),
-        callback: ($event) => {
-          this.router.navigate(['/circulation', 'patron', this.barcode, 'ill']);
-        }
-      }, {
-        keys: '5',
-        group: this.translateService.instant('Patron profile shortcuts'),
-        description: this.translateService.instant('Go to "patron profile" tab'),
-        callback: ($event) => {
-          this.router.navigate(['/circulation', 'patron', this.barcode, 'profile']);
-        }
-      }, {
-        keys: '6',
-        group: this.translateService.instant('Patron profile shortcuts'),
-        description: this.translateService.instant('Go to "fees" tab'),
-        callback: ($event) => {
-          this.router.navigate(['/circulation', 'patron', this.barcode, 'fees']);
-        }
-      }
-    ];
-    if(keepHistory) {
-        this._shortcuts.push(
-          {
-            keys: '7',
-            group: this.translateService.instant('Patron profile shortcuts'),
-            description: this.translateService.instant('Go to "history" tab'),
-            callback: ($event) => {
-              this.router.navigate(['/circulation', 'patron', this.barcode, 'history']);
-            }
-          }
-        );
+    const registeredKeys = this.hotKeysService.getHotkeys().map(s => s.keys);
+    const toRemove = registeredKeys.filter(k => this.SHORTCUT_KEYS.includes(k));
+    if (toRemove.length > 0) {
+      this.hotKeysService.removeShortcuts(toRemove);
     }
   }
 }

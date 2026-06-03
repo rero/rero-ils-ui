@@ -18,9 +18,9 @@
   <form [formGroup]="form" (ngSubmit)="onSubmitForm()">
     <formly-form [form]="form" [fields]="formFields" [model]="model" />
 
-    <p-scrollPanel class="ui:m-6 ui:w-full ui:max-h-[500px]">
+    <p-scrollPanel class="ui:my-6 ui:w-full ui:max-h-[500px]">
     @for (transaction of transactions; track transaction.pid) {
-      <p-panel styleClass="ui:mb-2" [header]="transaction.type|translate">
+      <p-panel class="ui:mb-2" [header]="transaction.type|translate">
         <div class="ui:ml-4 ui:mb-2">
           @if (transaction.note) {
             <div class="ui:grid ui:grid-cols-12 ui:gap-4">

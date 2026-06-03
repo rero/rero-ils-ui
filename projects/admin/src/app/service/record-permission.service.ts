@@ -43,7 +43,7 @@ export class RecordPermissionService {
    * @param pid - string : the resource pid (optional)
    * @return Return an observable of RecordPermissions
    */
-  getPermission(resource: string, pid?: string) {
+  getPermission(resource: string, pid?: string): Observable<RecordPermissions> {
     const url = (pid == null)
       ? `/api/permissions/${resource}`
       : `/api/permissions/${resource}/${pid}`;
@@ -67,7 +67,7 @@ export class RecordPermissionService {
    */
   generateTooltipMessage(reasons: any, type: string): string {
     const translatePlural = new I18nPluralPipe(new NgLocaleLocalization(
-      this.translateService.currentLang
+      this.translateService.getCurrentLang()
     ));
     const messages = [];
 
@@ -77,7 +77,7 @@ export class RecordPermissionService {
         const pluralDict = this.pluralLinksMessages();
         Object.keys(reasons.links).forEach(link => {
           const message = (link in pluralDict)
-            ? translatePlural.transform(reasons.links[link], pluralDict[link], this.translateService.currentLang)
+            ? translatePlural.transform(reasons.links[link], pluralDict[link], this.translateService.getCurrentLang())
             : `${reasons.links[link][link]} ${link}`;
           messages.push('- ' + message);
         });
@@ -123,14 +123,14 @@ export class RecordPermissionService {
 
   /**
    * Membership
-   * @param user - any
+   * @param currentLibraryPid - string
    * @param libraryPid - string
    * @param permission - any
    * @param membership - Check record ownership
    * @returns permissions of current record
    */
-  membership(user: any, libraryPid: string, permission: any, membership = true): any {
-    if (membership && user.currentLibrary !== libraryPid) {
+  membership(currentLibraryPid: string | null, libraryPid: string, permission: any, membership = true): any {
+    if (membership && currentLibraryPid !== libraryPid) {
       const membershipExcludePermission = {
         update: { can: false },
         delete: { can: false, reasons: { others: { record_not_in_current_library : '' }}}

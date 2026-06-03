@@ -15,25 +15,30 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, inject, Input } from '@angular/core';
-import { OrganisationService } from '../../../../../service/organisation.service';
+import { Component, inject, input, ChangeDetectionStrategy} from '@angular/core';
 import { PaymentData } from '../../interfaces';
+import { AppStore } from '@rero/shared';
+import { Bind } from 'primeng/bind';
+import { Divider } from 'primeng/divider';
+import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
+import { CurrencyPipe } from '@angular/common';
 
 @Component({
     selector: 'admin-payments-data-table',
     templateUrl: './payments-data-table.component.html',
-    standalone: false
+    imports: [Bind, Divider, TranslateDirective, CurrencyPipe, TranslatePipe],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class PaymentsDataTableComponent {
 
-  private organisationService: OrganisationService = inject(OrganisationService);
+  private appStore = inject(AppStore);
 
   // COMPONENT ATTRIBUTES =====================================================
-  @Input() protected data: PaymentData;
+  data = input<PaymentData>();
 
   // GETTER & SETTER ==========================================================
   /** Organisation currency */
   get org_currency() {
-    return this.organisationService.organisation.default_currency;
+    return this.appStore.organisation()?.default_currency;
   }
 }

@@ -2,17 +2,18 @@
   "extends": "../../tsconfig.json",
   "compilerOptions": {
     "outDir": "../../out-tsc/spec",
-    "types": [
-      "jasmine",
-      "node"
-    ]
+    "types": ["vitest/globals"],
+    "paths": {
+      "@rero/shared": ["../../projects/shared/src/public-api.ts"],
+      "@rero/shared/*": ["../../projects/shared/src/*"],
+      "@app/admin/*": ["./src/app/*"],
+      "@app/public-search/*": ["../../projects/public-search/src/app/*"],
+      "moment": ["../../node_modules/moment/min/moment.min.js"],
+      "@rero/prime/*": ["../../node_modules/@rero/ng-core/lib/record/editor/formly/primeng/*"]
+    }
   },
   "files": [
-    "src/test.ts",
-    "src/polyfills.ts"
+    "src/vitest.d.ts"
   ],
-  "include": [
-    "src/**/*.spec.ts",
-    "src/**/*.d.ts"
-  ]
+  "include": ["src/**/*.d.ts", "src/**/*.spec.ts"]
 }

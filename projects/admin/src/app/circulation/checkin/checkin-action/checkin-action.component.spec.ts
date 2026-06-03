@@ -32,19 +32,19 @@ describe('CheckinActionComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [CheckinActionComponent],
-      imports: [
+    imports: [
         TranslateModule.forRoot(),
         RouterModule,
         ButtonModule,
-        DynamicDialogModule
-      ],
-      providers: [
+        DynamicDialogModule,
+        CheckinActionComponent
+    ],
+    providers: [
         DynamicDialogRef,
         provideHttpClient(withInterceptorsFromDi()),
         provideHttpClientTesting()
-      ]
-    }).compileComponents();
+    ]
+}).compileComponents();
   });
 
   beforeEach(() => {

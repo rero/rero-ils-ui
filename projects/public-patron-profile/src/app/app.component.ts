@@ -16,11 +16,15 @@
  */
 
 import { Component } from '@angular/core';
+import { RouterOutlet } from '@angular/router';
+import { LoadingBarHttpClientModule } from '@ngx-loading-bar/http-client';
+import { ToastModule } from 'primeng/toast';
 
 @Component({
     selector: 'public-patron-profile-app',
     templateUrl: './app.component.html',
-    standalone: false
+    standalone: true,
+    imports: [RouterOutlet, LoadingBarHttpClientModule, ToastModule]
 })
 export class AppComponent {
 

@@ -16,6 +16,7 @@
  */
 import { HttpClient } from '@angular/common/http';
 import { TestBed } from '@angular/core/testing';
+import { ApiService } from '@rero/ng-core';
 import { of } from 'rxjs';
 import { UserApiService } from './user-api.service';
 
@@ -23,13 +24,16 @@ describe('UserApiService', () => {
   let service: UserApiService;
 
   const apiResponse = {};
-  const httpClientSpy = jasmine.createSpyObj('HttpClient', ['post']);
-  httpClientSpy.post.and.returnValue(of(apiResponse));
+  const httpClientSpy = { post: vi.fn() };
+  httpClientSpy.post.mockReturnValue(of(apiResponse));
+
+  const apiServiceSpy = { getEndpointByType: vi.fn().mockReturnValue('/api/user/password/validate') };
 
   beforeEach(() => {
     TestBed.configureTestingModule({
       providers: [
-        { provide: HttpClient, useValue: httpClientSpy }
+        { provide: HttpClient, useValue: httpClientSpy },
+        { provide: ApiService, useValue: apiServiceSpy }
       ]
     });
     service = TestBed.inject(UserApiService);

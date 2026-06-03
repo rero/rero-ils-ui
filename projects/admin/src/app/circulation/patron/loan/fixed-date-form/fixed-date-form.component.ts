@@ -15,24 +15,30 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, inject, OnDestroy, OnInit } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { Component, inject, OnInit, ChangeDetectionStrategy} from '@angular/core';
+import { FormControl, FormGroup, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Library } from '@app/admin/classes/library';
 import { DateValidators } from '@app/admin/utils/validators';
 import { RecordService } from '@rero/ng-core';
-import { UserService } from '@rero/shared';
+import { AppStore } from '@rero/shared';
 import { DynamicDialogRef } from 'primeng/dynamicdialog';
-import { Subscription } from 'rxjs';
+import { NgClass, NgTemplateOutlet } from '@angular/common';
+import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
+import { Bind } from 'primeng/bind';
+import { Button } from 'primeng/button';
+import { DatePickerModule } from 'primeng/datepicker';
+import { CheckboxModule } from 'primeng/checkbox';
 
 @Component({
     selector: 'admin-fixed-date-form',
     templateUrl: './fixed-date-form.component.html',
-    standalone: false
+    imports: [FormsModule, ReactiveFormsModule, NgClass, NgTemplateOutlet, TranslateDirective, Bind, Button, TranslatePipe, DatePickerModule, CheckboxModule],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class FixedDateFormComponent implements OnInit, OnDestroy {
+export class FixedDateFormComponent implements OnInit {
 
   private dynamicDialogRef: DynamicDialogRef = inject(DynamicDialogRef);
-  private userService: UserService = inject(UserService);
+  private appStore = inject(AppStore);
   private recordService: RecordService = inject(RecordService);
 
   // COMPONENT ATTRIBUTES ====================================
@@ -52,24 +58,16 @@ export class FixedDateFormComponent implements OnInit, OnDestroy {
 
   today: Date = new Date();
 
-  /** component subscriptions */
-  private subscription = new Subscription();
-
   /** OnInit hook */
   ngOnInit(): void {
-    if (this.userService.user) {
-      this.recordService.getRecord('libraries', this.userService.user.currentLibrary, 1).subscribe(
+    if (this.appStore.user()) {
+      this.recordService.getRecord('libraries', this.appStore.currentLibraryPid(), { resolve: 1 }).subscribe(
         (data: any) => {
           const library = new Library(data.metadata);
           this.disabledDays = library.closedDays;
         }
       );
     }
-  }
-
-  /** OnDestroy hook */
-  ngOnDestroy(): void {
-    this.subscription.unsubscribe();
   }
 
   // FUNCTIONS =================================================

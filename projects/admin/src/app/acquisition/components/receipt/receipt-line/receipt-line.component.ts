@@ -15,27 +15,39 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { Component, inject, input } from '@angular/core';
+import { Component, inject, input, ChangeDetectionStrategy} from '@angular/core';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 
 import { AcqReceiptApiService } from '@app/admin/acquisition/api/acq-receipt-api.service';
 import { IAcqReceipt, IAcqReceiptLine } from '@app/admin/acquisition/classes/receipt';
 import { RecordPermissions } from '@app/admin/classes/permissions';
 import { RecordPermissionService } from '@app/admin/service/record-permission.service';
-import { CurrentLibraryPermissionValidator } from '@app/admin/utils/permissions';
-import { RecordService } from '@rero/ng-core';
+import { RecordService, GetRecordPipe } from '@rero/ng-core';
 import { catchError, map, of, switchMap } from 'rxjs';
+import { AppStore, DocumentBriefViewComponent, ActionButtonComponent } from '@rero/shared';
+import { RouterLink } from '@angular/router';
+import { AsyncPipe, CurrencyPipe } from '@angular/common';
+import { TranslatePipe } from '@ngx-translate/core';
+import { ReceiptLineTotalAmountPipe } from '../../../pipes/receipt-line-total-amount.pipe';
 
 @Component({
-  selector: 'admin-receipt-line',
-  standalone: false,
-  templateUrl: './receipt-line.component.html',
+    selector: 'admin-receipt-line',
+    templateUrl: './receipt-line.component.html',
+    imports: [
+        DocumentBriefViewComponent,
+        ActionButtonComponent,
+        RouterLink,
+        AsyncPipe,
+        CurrencyPipe,
+        GetRecordPipe,
+        TranslatePipe,
+        ReceiptLineTotalAmountPipe,
+    ],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ReceiptLineComponent {
   private recordPermissionService: RecordPermissionService = inject(RecordPermissionService);
-  private currentLibraryPermissionValidator: CurrentLibraryPermissionValidator = inject(
-    CurrentLibraryPermissionValidator
-  );
+  private appStore = inject(AppStore);
   private acqReceiptApiService: AcqReceiptApiService = inject(AcqReceiptApiService);
   private recordService: RecordService = inject(RecordService);
 
@@ -82,7 +94,7 @@ export class ReceiptLineComponent {
     }
     return this.recordPermissionService.getPermission('acq_receipt_lines', this.line().pid).pipe(
       map((permissions) => {
-        this.currentLibraryPermissionValidator.validate(permissions, this.receipt().library.pid);
+        this.appStore.validateLibraryPermissions(permissions, this.receipt()?.library?.pid ?? '');
         return permissions;
       })
     );

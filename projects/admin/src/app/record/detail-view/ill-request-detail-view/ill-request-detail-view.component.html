@@ -14,8 +14,8 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-@if (record) {
-  <h1>{{ 'ILL request' | translate }} #{{ record.metadata.pid }}</h1>
+@if (record(); as rec) {
+  <h1>{{ 'ILL request' | translate }} #{{ rec.metadata.pid }}</h1>
   <div class="ui:flex ui:flex-col ui:gap-3 ui:mt-5">
     <!-- DOCUMENT INFORMATION'S -->
     <p-panel>
@@ -27,27 +27,27 @@
       </ng-template>
       <dl class="metadata ui:m-3">
         <dt translate>Title</dt>
-        <dd>{{ record.metadata.document.title }}</dd>
-        @if (record.metadata.document.authors; as authors) {
+        <dd>{{ rec.metadata.document.title }}</dd>
+        @if (rec.metadata.document.authors; as authors) {
           <dt translate>Authors</dt>
           <dd>{{ authors }}</dd>
         }
-        @if (record.metadata.document.publisher || record.metadata.document.year) {
+        @if (rec.metadata.document.publisher || rec.metadata.document.year) {
           <dt translate>Edition</dt>
           <dd>
-            @if (record.metadata.document.publisher; as publisher) {
+            @if (rec.metadata.document.publisher; as publisher) {
               {{ publisher }}
             }
-            @if (record.metadata.document.year; as year) {
+            @if (rec.metadata.document.year; as year) {
               &nbsp;({{ year }})
             }
           </dd>
         }
-        @if (record.metadata.document.identifier; as identifier) {
+        @if (rec.metadata.document.identifier; as identifier) {
           <dt translate>Identifiers</dt>
           <dd>{{ identifier }}</dd>
         }
-        @if (record.metadata.document.source; as source) {
+        @if (rec.metadata.document.source; as source) {
           <dt translate>Published in</dt>
           <dd>
             {{ source.journal_title }}
@@ -70,7 +70,7 @@
       </span>
     </ng-template>
     <dl class="metadata ui:m-3">
-      @if (record.metadata.found_in; as source) {
+      @if (rec.metadata.found_in; as source) {
         <dt translate>Found in</dt>
         <dd>
           {{ source.source }} &mdash;
@@ -85,54 +85,54 @@
       }
       <dt translate>Requester</dt>
       <dd>
-        @if (requester && requester.patron && requester.patron.barcode[0]) {
-          <a [routerLink]="['/circulation', 'patron', requester.patron.barcode[0]]">
-            <span id="patron-last-name">{{ requester.last_name }}</span>
-            @if (requester.first_name; as firstName) {
+        @if (requester() && requester().patron && requester().patron.barcode[0]) {
+          <a [routerLink]="['/circulation', 'patron', requester().patron.barcode[0]]">
+            <span id="patron-last-name">{{ requester().last_name }}</span>
+            @if (requester().first_name; as firstName) {
               <span id="patron-first-name">, {{ firstName }}</span>
             }
           </a>
         }
       </dd>
       <dt translate>Request date</dt>
-      <dd>{{ record.created | dateTranslate : 'medium' }}</dd>
+      <dd>{{ rec.created | dateTranslate : 'medium' }}</dd>
       <dt translate>Request status</dt>
       <dd>
-        <p-tag [severity]="tagSeverity">
-          {{ record.metadata.status | translate }}
+        <p-tag [severity]="$any(tagSeverity())">
+          {{ rec.metadata.status | translate }}
         </p-tag>
       </dd>
-      @if (record.metadata.loan_status) {
+      @if (rec.metadata.loan_status) {
         <dt translate>Loan status</dt>
         <dd>
-          <p-tag [severity]="loanTagSeverity">
-            {{ record.metadata.loan_status | translate}}
+          <p-tag [severity]="$any(loanTagSeverity())">
+            {{ rec.metadata.loan_status | translate}}
           </p-tag>
         </dd>
       }
       <dt translate>Pickup location</dt>
       <dd>
-        @if (record.metadata.pickup_location.pid | getRecord:'locations':'field':'ill_pickup_name' | async; as location_name) {
+        @if (rec.metadata.pickup_location.pid | getRecord:'locations':'field':'ill_pickup_name' | async; as location_name) {
           {{ location_name }}
         }
       </dd>
       <dt translate>Scope</dt>
       <dd>
-        @if (record.metadata.copy) {
+        @if (rec.metadata.copy) {
           <span translate>Copy</span>
         } @else {
           <span translate>Loan</span>
         }
       </dd>
-      @if (record.metadata.copy) {
+      @if (rec.metadata.copy) {
         <dt translate>Pages</dt>
-        <dd>{{ record.metadata.pages }}</dd>
+        <dd>{{ rec.metadata.pages }}</dd>
       }
     </dl>
   </p-panel>
 
   <!-- NOTES :: public/staff -->
-  @if (record.metadata.notes) {
+  @if (rec.metadata.notes) {
     <p-panel>
       <ng-template #header>
         <span class="ui:text-xl">
@@ -141,7 +141,7 @@
         </span>
       </ng-template>
       <dl class="metadata ui:m-3">
-        @for (note of record.metadata.notes; track $index) {
+        @for (note of rec.metadata.notes; track $index) {
           <dt translate>{{ note.type }}</dt>
           <dd [innerHTML]="note.content | nl2br"></dd>
         }

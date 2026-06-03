@@ -16,7 +16,7 @@
  */
 import { TestBed } from '@angular/core/testing';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
-import { UserService } from '@rero/shared';
+import { AppStore } from '@rero/shared';
 import { MenuItem } from 'primeng/api';
 import { MenuTranslateService } from './menu-translate.service';
 
@@ -24,13 +24,12 @@ describe('MenuTranslateService', () => {
   let service: MenuTranslateService;
   let translate: TranslateService;
 
-  const userServiceSpy = jasmine.createSpyObj('UserService', ['']);
-  userServiceSpy.user = {
-    currentLibrary: '1',
-    currentOrganisation: '2',
-    symbolName: 'AM',
-    currentBudget: '1'
-  };
+  const appStoreSpy = {
+    currentLibraryPid: () => '1',
+    currentOrganisationPid: () => '2',
+    user: () => ({ symbolName: 'AM' }),
+    currentBudgetPid: () => '1'
+  } as any;
 
   const translations = {
     'user': 'utilisateur'
@@ -54,8 +53,7 @@ describe('MenuTranslateService', () => {
         translateLabel: 'query params',
         queryParams: {
           id: 1,
-          organisation: '$currentOrganisation',
-        }
+          organisation: '$currentOrganisation' }
       }
     ]
   }];
@@ -94,8 +92,7 @@ describe('MenuTranslateService', () => {
 
   const menuLabelError: MenuItem[] = [{
     label: '$fooBar',
-    translateLabel: '$fooBar',
-  }];
+    translateLabel: '$fooBar' }];
 
   const menuRouterLinkError: MenuItem[] = [{
     label: 'label',
@@ -117,7 +114,7 @@ describe('MenuTranslateService', () => {
         TranslateModule.forRoot()
       ],
       providers: [
-        { provide: UserService, useValue: userServiceSpy },
+        { provide: AppStore, useValue: appStoreSpy },
         TranslateService
       ]
     });
@@ -137,24 +134,24 @@ describe('MenuTranslateService', () => {
 
   it('should return the date range', () => {
     const { range } = service.process(menuItemDateRange)[0].queryParams;
-    expect(range.includes('--')).toBeTrue();
+    expect(range.includes('--')).toBe(true);
     const [timeA, timeB] = range.split('--');
-    expect(/^\d+$/.test(timeA)).toBeTrue();
-    expect(/^\d+$/.test(timeB)).toBeTrue();
+    expect(/^\d+$/.test(timeA)).toBe(true);
+    expect(/^\d+$/.test(timeB)).toBe(true);
   });
 
   it('should have an error if the variable does not exist for the label', () => {
     expect(function() { service.process(menuLabelError) })
-      .toThrow(new Error('Label exception: This variable "$fooBar" is not available.'));
+      .toThrow(new EvalError('Label exception: This variable "$fooBar" is not available.'));
   });
 
   it('should have an error if the variable does not exist for the routerlink', () => {
     expect(function() { service.process(menuRouterLinkError) })
-      .toThrow(new Error('RouterLink exception: This variable "$fooBar" is not available.'));
+      .toThrow(new EvalError('RouterLink exception: This variable "$fooBar" is not available.'));
   });
 
   it('should have an error if the variable does not exist for the queryParams', () => {
     expect(function() { service.process(menuQueryParamsError) })
-      .toThrow(new Error('Query Param exception: This variable "$fooBar" is not available.'));
+      .toThrow(new EvalError('Query Param exception: This variable "$fooBar" is not available.'));
   });
 });

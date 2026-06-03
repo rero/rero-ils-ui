@@ -15,57 +15,50 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-@if (globalPermissions) {
-    <h1 translate>Permissions matrix</h1>
-    <div class="ui:flex ui:flex-col ui:gap-2">
-      <label for="filter" translate>Filter permission list</label>
-      <input
-          pInputText
-          id="filter"
-          aria-describedby="filter-help"
-          #search
-          (keyup)="filterPermissions(search.value)"
-      />
-      <small id="filter-help" class=" ui:text-muted-color" translate>
-        Enter a part of the permission name to filter the list.
-      </small>
-    </div>
+@if (globalPermissions()) {
+  <h1 translate>Permissions matrix</h1>
+  <div class="ui:flex ui:flex-col ui:gap-2">
+    <label for="filter" translate>Filter permission list</label>
+    <input
+      pInputText
+      id="filter"
+      aria-describedby="filter-help"
+      #search
+      (keyup)="filterPermissions(search.value)"
+    />
+    <small id="filter-help" class="ui:text-muted-color" translate>
+      Enter a part of the permission name to filter the list.
+    </small>
+  </div>
 
-      @if (filteredPermissionNames.length >0) {
-        <table>
-          <thead>
-            <tr>
-              <th>&nbsp;</th>
-              @for (role of roles; track $index) {
-                <th [ngClass]="'type-'+role.type.replace('_', '-')">
-                  <span>{{ role.name | translate }}</span>
-                </th>
-              }
-            </tr>
-          </thead>
-          <tbody>
-            @for (permissionName of filteredPermissionNames; track $index) {
-              <tr>
-                <td>{{ permissionName }}</td>
-                @for (role of roles; track $index) {
-                  <td [ngClass]="'type-'+role.type.replace('_', '-')">
-                    <span title="{{ role.name | translate }}">
-                      <i
-                        class="fa fa-square"
-                        [ngClass]="{
-                          'text-success': true === globalPermissions[role.name].actions[permissionName],
-                          'text-error': false === globalPermissions[role.name].actions[permissionName],
-                          ' ui:text-muted-color': null === globalPermissions[role.name].actions[permissionName]
-                        }">
-                      </i>
-                    </span>
-                  </td>
-                }
-              </tr>
+  @if (filteredPermissionNames().length > 0) {
+    <table>
+      <thead>
+        <tr>
+          <th>&nbsp;</th>
+          @for (role of roles(); track role.name) {
+            <th [ngClass]="roleClass(role.type)">
+              <span>{{ role.name | translate }}</span>
+            </th>
+          }
+        </tr>
+      </thead>
+      <tbody>
+        @for (permissionName of filteredPermissionNames(); track permissionName) {
+          <tr>
+            <td>{{ permissionName }}</td>
+            @for (role of roles(); track role.name) {
+              <td [ngClass]="roleClass(role.type)">
+                <span title="{{ role.name | translate }}">
+                  <i class="fa fa-square" [ngClass]="permissionClass(globalPermissions()![role.name].actions[permissionName])"></i>
+                </span>
+              </td>
             }
-          </tbody>
-        </table>
-      } @else {
-        <p class="ui:mt-4" translate>No result</p>
-      }
+          </tr>
+        }
+      </tbody>
+    </table>
+  } @else {
+    <p class="ui:mt-4" translate>No result</p>
+  }
 }

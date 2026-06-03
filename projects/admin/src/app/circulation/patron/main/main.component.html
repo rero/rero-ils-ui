@@ -14,26 +14,26 @@
  You should have received a copy of the GNU Affero General Public License
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-@if (patron && items) {
+@if (menuItems().length) {
   <admin-circulation-patron-detailed
-    [patron]="patron"
-    [barcode]="barcode"
+    [patron]="store.patron()"
+    [barcode]="barcode()"
     [displayCirculationMessages]="true"
     (clearPatron)="clearPatron()"
   />
   <p-tabs [value]="activeTab()">
     <p-tablist>
-      @for(item of items; track item.id) {
-        <p-tab [value]="item.id" [routerLink]="item.routerLink">
+      @for(item of menuItems(); track item.id) {
+        <p-tab class="ui:flex ui:items-center ui:!gap-2" [value]="item.id" [routerLink]="item.routerLink">
           <span>{{ item.label | translate }}</span>
-          @if (item.tag?.statistics && item.tag?.statistics()[item.id] && item.tag?.statistics()[item.id] > 0) {
-            @if (item.tag.withCurrency) {
+          @if ($any(store.statistics())[item.id] > 0) {
+            @if (item.withCurrency) {
               <p-badge
-                [severity]="item.tag.severity || 'info'"
-                [value]="item.tag.statistics()[item.id] | currency: organisation.default_currency"
+                [severity]="item.severity || 'info'"
+                [value]="$any(store.statistics())[item.id] | currency: appStore.organisation().default_currency"
               />
             } @else {
-              <p-badge [severity]="item.tag.severity || 'info'" [value]="item.tag.statistics()[item.id]" />
+              <p-badge [severity]="item.severity || 'info'" [value]="$any(store.statistics())[item.id]" />
             }
           }
         </p-tab>

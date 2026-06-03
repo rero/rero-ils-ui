@@ -15,28 +15,23 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { Component, OnInit } from '@angular/core';
-import { DetailRecord } from '@rero/ng-core/lib/record/detail/view/detail-record';
-import { Observable } from 'rxjs';
+import { Component, input, ChangeDetectionStrategy } from '@angular/core';
+import { Bind } from 'primeng/bind';
+import { Tag } from 'primeng/tag';
+import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
+import { NgClass, AsyncPipe } from '@angular/common';
+import { CollectionItemsComponent } from './collection-items/collection-items.component';
+import { DateTranslatePipe, GetRecordPipe, Nl2brPipe } from '@rero/ng-core';
 
 
 @Component({
     selector: 'admin-collection-detail-view',
     templateUrl: './collection-detail-view.component.html',
-    standalone: false
+    imports: [Bind, Tag, TranslateDirective, NgClass, CollectionItemsComponent, AsyncPipe, TranslatePipe, DateTranslatePipe, GetRecordPipe, Nl2brPipe],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class CollectionDetailViewComponent implements DetailRecord, OnInit {
+export class CollectionDetailViewComponent {
 
-  /** The observable resolving record data */
-  record$: Observable<any>;
-
-  /** The resource type */
-  type: string;
-
-  /** The record */
-  record: any;
-
-  ngOnInit(): void {
-    this.record$.subscribe((record: any) => this.record = record);
-  }
+  readonly record = input<any>();
+  readonly type = input<string>('');
 }

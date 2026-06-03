@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2019-2024 RERO
+ * Copyright (C) 2019-2025 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -15,14 +15,27 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { BreakpointObserver, BreakpointState, Breakpoints } from '@angular/cdk/layout';
+import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { HttpClient } from '@angular/common/http';
-import { Component, Input, OnDestroy, OnInit, inject } from '@angular/core';
+import { Component, computed, inject, input, signal, Signal, ChangeDetectionStrategy } from '@angular/core';
+import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
-import { TranslateService } from '@ngx-translate/core';
-import { ApiService, Record, RecordService } from '@rero/ng-core';
+import { TranslateService, TranslatePipe } from '@ngx-translate/core';
+import { ApiService, RecordService } from '@rero/ng-core';
+import type { EsResult } from '@rero/ng-core';
 import { DialogService } from 'primeng/dynamicdialog';
-import { Observable, Subscription, forkJoin, map, of, switchMap, tap } from 'rxjs';
+import { catchError, forkJoin, map, Observable, of, switchMap, tap } from 'rxjs';
+import { Bind } from 'primeng/bind';
+import { Tag } from 'primeng/tag';
+import { RouterLink } from '@angular/router';
+import { FormsModule } from '@angular/forms';
+import { Carousel } from 'primeng/carousel';
+import { NgClass, AsyncPipe } from '@angular/common';
+import { Paginator } from 'primeng/paginator';
+import { Dialog } from 'primeng/dialog';
+import { InputGroup } from 'primeng/inputgroup';
+import { InputGroupAddon } from 'primeng/inputgroupaddon';
+import { FaIconClassPipe } from '../../../pipe/fa-icon-class.pipe';
 
 // file interface
 export type File = {
@@ -40,9 +53,10 @@ export type File = {
 @Component({
     selector: 'shared-doc-files',
     templateUrl: './files.component.html',
-    standalone: false
+    imports: [Bind, Tag, RouterLink, FormsModule, Carousel, NgClass, Paginator, Dialog, InputGroup, InputGroupAddon, AsyncPipe, TranslatePipe, FaIconClassPipe],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class FilesComponent implements OnInit, OnDestroy {
+export class FilesComponent {
 
   protected httpService: HttpClient = inject(HttpClient);
   protected translateService: TranslateService = inject(TranslateService);
@@ -52,243 +66,157 @@ export class FilesComponent implements OnInit, OnDestroy {
   protected breakpointObserver: BreakpointObserver = inject(BreakpointObserver);
   protected dialogService: DialogService = inject(DialogService);
 
-  // input document pid
-  @Input() documentPid: string;
-  @Input({ required: true }) routerPath: string[];
-  @Input() useHref = false;
+  // INPUTS ===================================================================
+  readonly documentPid = input<string>(undefined);
+  readonly routerPath = input.required<string[]>();
+  readonly useHref = input(false);
 
-  // list of files
-  files: File[] = [];
-  // filtered array of files
-  filteredFiles = [];
-  // input text filter
-  filterText = '';
-  // number of visible items in the carousel
-  numVisible = 5;
-  // current page for the carousel
-  page = 0;
-  loading = false;
-  collections: string[] = [];
+  // STATE ====================================================================
+  readonly isLoading = signal(false);
+  readonly filterText = signal('');
+  readonly page = signal(0);
+  readonly previewVisible = signal(false);
+  readonly previewFile = signal<{ label: string; url: SafeUrl } | null>(null);
 
-  // file to preview
-  previewFile: {
-    label: string;
-    url: SafeUrl;
-  };
-  previewVisible = false;
+  // SIGNALS ==================================================================
 
-  /** all component subscription */
-  private subscriptions = new Subscription();
-
-  /** OnInit hook */
-  ngOnInit(): void {
-    this.getFiles();
-    this.changeNItemsOnCarousel();
-  }
-
-  /** OnDestroy hook */
-  ngOnDestroy(): void {
-    this.subscriptions.unsubscribe();
-  }
-
-  getQueryParams(collection:string): {q: string, simple:string} {
-    const escapedCollection = collection.replace(/[+\-&|!(){}[\]^"~*?:\\/]/g, '\\$&');
-    return {
-      q: `files.collections.raw:(${escapedCollection})`,
-      simple: '0'
-    };
-  };
-
-  /**
-   * Changes the number of items in the carousel.
-   *
-   * To be responsive.
-   */
-  changeNItemsOnCarousel(): void {
-    this.subscriptions.add(
-      this.breakpointObserver
-        .observe([Breakpoints.XSmall, Breakpoints.Small, Breakpoints.Medium, Breakpoints.Large])
-        .subscribe((state: BreakpointState) => {
-          switch (true) {
-            case this.breakpointObserver.isMatched(Breakpoints.XSmall):
-              this.numVisible = 1;
-              break;
-            case this.breakpointObserver.isMatched(Breakpoints.Small):
-              this.numVisible = 2;
-              break;
-            case this.breakpointObserver.isMatched(Breakpoints.Medium):
-              this.numVisible = 4;
-              break;
-            case this.breakpointObserver.isMatched(Breakpoints.Large):
-              this.numVisible = 5;
-              break;
-          }
-        })
-    );
-  }
-
-  /**
-   * Retrieves the files information from the backend.
-   */
-  getFiles(): void {
-    const baseUrl = this.apiService.getEndpointByType('records');
-    // retrieve all records files linked to a given document pid
-    const query = `metadata.document.pid:${this.documentPid}`;
-    this.loading = true;
-    this.httpService
-      .get(`${baseUrl}?q=${query}`)
+  /** Number of visible carousel items, reactive to viewport breakpoints */
+  readonly numVisible: Signal<number> = toSignal(
+    this.breakpointObserver
+      .observe([Breakpoints.XSmall, Breakpoints.Small, Breakpoints.Medium, Breakpoints.Large])
       .pipe(
-        map((result: Record) => (this.recordService.totalHits(result.hits.total) === 0 ? [] : result.hits.hits)),
-        tap(hits => {
-          const colls: string[] = [];
-          hits.forEach(hit => {
-            if (Array.isArray(hit.metadata.collections)) {
-              colls.push(...hit.metadata.collections);
-            }
-          });
-          this.collections = Array.from(new Set(colls));
-        }),
-        map((hits: any[]) => hits.map((hit: any) => hit.id)),
-        // get all files attached to the given records
-        switchMap((ids: any[]) => {
-          const obs = ids.map((id) => {
-            return this.httpService.get(`${baseUrl}/${id}/files`).pipe(
-              map((res: any) => {
-                return {
-                  id: id,
-                  entries: res.entries,
-                };
-              })
+        map(() => {
+          if (this.breakpointObserver.isMatched(Breakpoints.XSmall)) return 1;
+          if (this.breakpointObserver.isMatched(Breakpoints.Small)) return 2;
+          if (this.breakpointObserver.isMatched(Breakpoints.Medium)) return 4;
+          return 5;
+        })
+      ),
+    { initialValue: 5 }
+  );
+
+  /** Source of truth: files + collections fetched from the API */
+  private readonly _data = toSignal(
+    toObservable(this.documentPid).pipe(
+      tap(() => this.isLoading.set(true)),
+      switchMap(pid => {
+        const baseUrl = this.apiService.getEndpointByType('records');
+        return this.httpService.get(`${baseUrl}?q=metadata.document.pid:${pid}`).pipe(
+          map((result: EsResult) =>
+            +this.recordService.totalHits(result.hits.total) === 0 ? [] : result.hits.hits
+          ),
+          switchMap((hits: any[]) => {
+            const collections = Array.from(new Set(
+              hits.flatMap(hit => Array.isArray(hit.metadata.collections) ? hit.metadata.collections as string[] : [])
+            ));
+            const obs = hits.map(hit =>
+              this.httpService.get(`${baseUrl}/${hit.id}/files`).pipe(
+                map((res: any) => ({ id: hit.id, entries: res.entries }))
+              )
             );
-          });
-          if (obs.length > 0) {
-            return forkJoin(obs);
-          }
-          return of([]);
-        }),
-        tap(() => (this.loading = false))
-      )
-      .subscribe((res: any[]) => {
-        const files = [];
-        res.map((rec: any) => {
-          const data = {};
-          // retrieve main files
-          rec.entries.map((entry) => {
-            // main file (such as pdf)
-            if (!['thumbnail', 'fulltext'].includes(entry?.metadata?.type)) {
-              const dataFile: any = {
-                label: entry?.metadata?.label ? entry.metadata.label : entry.key,
-                mimetype: entry.mimetype,
-                download: new URL(entry.links.content).pathname,
-              };
-              if (entry?.links?.preview) {
-                dataFile.preview = new URL(entry.links.preview).pathname;
-              }
-              if (entry?.links?.thumbnail) {
-                dataFile.thumbnail = new URL(entry.links.thumbnail).pathname;
-              }
-              data[entry.key] = dataFile;
-            }
-          });
-          Object.values(data).map((d: File) => files.push(d));
-        });
-        files.sort((a, b) => a.label.localeCompare(b.label, 'en', { numeric: true }));
-        this.files = files;
-        this.filteredFiles = files;
-        this.loading = false;
-      });
-  }
-  /**
-   * Fired when the text to filter the items changes.
-   *
-   * @param $event - standard event
-   */
-  onTextChange(event): void {
-    if (this.filterText.length > 0) {
-      this.filteredFiles = this.files.filter((value) => value.label.toLowerCase().includes(this.filterText.toLowerCase()));
-    } else {
-      this.filteredFiles = this.files;
-    }
+            return (obs.length > 0 ? forkJoin(obs) : of([])).pipe(
+              map((recs: any[]) => ({ files: this._processFiles(recs), collections }))
+            );
+          }),
+          tap(() => this.isLoading.set(false)),
+          catchError(() => {
+            this.isLoading.set(false);
+            return of({ files: [], collections: [] });
+          })
+        );
+      })
+    ),
+    { initialValue: null }
+  );
+
+  readonly files: Signal<File[]> = computed(() => this._data()?.files ?? []);
+  readonly collections: Signal<string[]> = computed(() => this._data()?.collections ?? []);
+
+  readonly filteredFiles: Signal<File[]> = computed(() => {
+    const text = this.filterText().toLowerCase();
+    const files = this.files();
+    return text ? files.filter(f => f.label.toLowerCase().includes(text)) : files;
+  });
+
+  // PUBLIC FUNCTIONS =========================================================
+
+  getQueryParams(collection: string): { q: string; simple: string } {
+    const escapedCollection = collection.replace(/[+\-&|!(){}[\]^"~*?:\\/]/g, '\\$&');
+    return { q: `files.collections.raw:(${escapedCollection})`, simple: '0' };
   }
 
   getHref(collection: string): string {
     const params = this.getQueryParams(collection);
     const queryString = new URLSearchParams(params).toString();
-    const routerPath = [...this.routerPath];
+    const routerPath = [...this.routerPath()];
     if (routerPath[0] === '/') {
       routerPath[0] = '';
     }
     return `${routerPath.join('/')}?${queryString}`;
   }
 
-  /**
-   * Get the string used to display the search result number.
-   * @param hits - list of hit results.
-   * @returns observable of the string representation of the number of results.
-   */
   getResultsText(): Observable<string> {
-    const total = this.filteredFiles.length;
-    if (total == this.files.length) {
+    const total = this.filteredFiles().length;
+    if (total === this.files().length) {
       return this.translateService.stream('{{ total }} results', { total });
     }
     return total === 0
       ? this.translateService.stream('no result')
       : this.translateService.stream('{{ total }} results of {{ remoteTotal }}', {
           total,
-          remoteTotal: this.files.length,
+          remoteTotal: this.files().length,
         });
   }
 
-  /**
-   * Fired when the page change in the paginator.
-   * @param $event - standard event.
-   */
-  onPageChange($event): void {
-    this.page = $event.page;
+  onPageChange($event: any): void {
+    this.page.set($event.page);
   }
 
-  /**
-   * Get the font awesome class depending on the file mimetype.
-   *
-   * @param file
-   * @returns the css class of the icon
-   */
-  getIcon(file): string {
+  getIcon(file: any): string {
     const { mimetype } = file;
-    if (mimetype == null) {
-      return 'fa-file-o';
-    }
+    if (mimetype == null) return 'fa-file-o';
     switch (true) {
-      case mimetype.startsWith('image/'):
-        return 'fa-file-image-o';
-      case mimetype.startsWith('audio/'):
-        return 'fa-file-audio-o';
-      case mimetype.startsWith('text/'):
-        return 'fa-file-text-o';
-      case mimetype.startsWith('video/'):
-        return 'fa-file-video-o';
-      case mimetype.startsWith('application/vnd.openxmlformats-officedocument.presentationml'):
-        return 'fa-file-powerpoint-o';
-      case mimetype.startsWith('application/vnd.openxmlformats-officedocument.wordprocessingml'):
-        return 'fa-file-word-o';
-      case mimetype.startsWith('application/vnd.openxmlformats-officedocument.spreadsheetml'):
-        return 'fa-file-excel-o';
-      case mimetype.startsWith('application/pdf'):
-        return 'fa-file-pdf-o';
+      case mimetype.startsWith('image/'): return 'fa-file-image-o';
+      case mimetype.startsWith('audio/'): return 'fa-file-audio-o';
+      case mimetype.startsWith('text/'): return 'fa-file-text-o';
+      case mimetype.startsWith('video/'): return 'fa-file-video-o';
+      case mimetype.startsWith('application/vnd.openxmlformats-officedocument.presentationml'): return 'fa-file-powerpoint-o';
+      case mimetype.startsWith('application/vnd.openxmlformats-officedocument.wordprocessingml'): return 'fa-file-word-o';
+      case mimetype.startsWith('application/vnd.openxmlformats-officedocument.spreadsheetml'): return 'fa-file-excel-o';
+      case mimetype.startsWith('application/pdf'): return 'fa-file-pdf-o';
     }
     return 'fa-file-o';
   }
 
-  /** Open the file preview in a modal container.
-   *
-   * @param file - the file to preview.
-   */
-
   preview(file: File): void {
-    this.previewFile = {
+    this.previewFile.set({
       label: file.label,
       url: this.sanitizer.bypassSecurityTrustResourceUrl(file.preview),
-    };
-    this.previewVisible = true;
+    });
+    this.previewVisible.set(true);
+  }
+
+  // PRIVATE FUNCTIONS ========================================================
+
+  private _processFiles(recs: any[]): File[] {
+    const files: File[] = [];
+    recs.forEach(rec => {
+      const data: Record<string, File> = {};
+      rec.entries.forEach((entry: any) => {
+        if (!['thumbnail', 'fulltext'].includes(entry?.metadata?.type)) {
+          const dataFile: any = {
+            label: entry?.metadata?.label ? entry.metadata.label : entry.key,
+            mimetype: entry.mimetype,
+            download: new URL(entry.links.content).pathname,
+          };
+          if (entry?.links?.preview) dataFile.preview = new URL(entry.links.preview).pathname;
+          if (entry?.links?.thumbnail) dataFile.thumbnail = new URL(entry.links.thumbnail).pathname;
+          data[entry.key] = dataFile;
+        }
+      });
+      Object.values(data).forEach(d => files.push(d));
+    });
+    files.sort((a, b) => a.label.localeCompare(b.label, 'en', { numeric: true }));
+    return files;
   }
 }

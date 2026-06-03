@@ -15,79 +15,79 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-@if (item && !(item.loading || false)) {
+@if (item() && !(item().loading || false)) {
   <div class="ui:grid ui:grid-cols-12 ui:gap-4 ui:items-start ui:p-2" [ngClass]="{
-      'callout callout-warning': needCallout(item, 'warning') || (item.actionDone === itemAction.checkin && totalAmountOfFee > 0) || !item.loan,
-      ' ui:text-muted-color': item.status !== ItemStatus.ON_LOAN
+      'callout callout-warning': needCallout(item(), 'warning') || (item().actionDone === itemAction.checkin && totalAmountOfFee() > 0) || !item().loan,
+      ' ui:text-muted-color': item().status !== ItemStatus.ON_LOAN
     }"
   >
     <!-- BARCODE -->
     <div name="barcode" class="ui:col-span-3 ui:flex ui:gap-2">
-      @if (!item.actions || item.loan || totalAmountOfFee || item.pending_loans || notifications$) {
-        <shared-open-close-button [collapsed]="isCollapsed" (status)="isCollapsed = $event" />
+      @if (!item().actions || item().loan || totalAmountOfFee() || item().pending_loans || notifications()) {
+        <shared-open-close-button [collapsed]="isCollapsed()" (status)="isCollapsed.set($event)" />
       }
       <div class="ui:flex ui:flex-col ui:gap-2 ui:w-full">
         <div class="ui:flex ui:items-center">
           <div class="ui:grow">
-            <a [routerLink]="['/records','items','detail', item.pid]">{{ item.barcode }}</a>
+            <a [routerLink]="['/records','items','detail', item().pid]">{{ item().barcode }}</a>
           </div>
           @if (getCirculationNoteForAction().length > 0) {
             <i class="fa fa-sticky-note-o text-warning" [title]="'Note' | translate"></i>
           }
         </div>
-        @if (isCollapsed) {
-          <shared-inherited-call-number class="ui:block ui:text-sm" [item]="item" />
+        @if (isCollapsed()) {
+          <shared-inherited-call-number class="ui:block ui:text-sm" [item]="item()" />
         }
       </div>
-      @if (item.actionDone) {
-        @if ((item.actionDone === itemAction.checkin && item.getNote('checkin_note')) ||
-        (item.actionDone === itemAction.checkout && item.getNote('checkout_note'))) {
+      @if (item().actionDone) {
+        @if ((item().actionDone === itemAction.checkin && item().getNote('checkin_note')) ||
+        (item().actionDone === itemAction.checkout && item().getNote('checkout_note'))) {
           <i class="fa fa-exclamation-triangle text-warning ui:mt-1 ui:ml-auto ui:mr-2"></i>
         }
       } @else {
-        @if (!item.actions) {
+        @if (!item().actions) {
           <i class="fa fa-exclamation-triangle text-warning ui:mt-1 ui:ml-auto ui:mr-2"></i>
         }
       }
     </div>
     <!-- TITLE -->
     <div name="title" class="ui:col-span-5">
-      <a [routerLink]="['/records','documents','detail', item.document.pid]">
-        @if (item.document?.title) {
-          {{ isCollapsed ? (item.document.title | mainTitle | truncateText: 12) : item.document.title | mainTitle }}
+      <a [routerLink]="['/records','documents','detail', item().document.pid]">
+        @if (item().document?.title) {
+          {{ isCollapsed() ? (item().document.title | mainTitle | truncateText: 12) : item().document.title | mainTitle }}
         } @else {
-          @if (document) {
-            {{ document.title[0]._text }}
+          @if (document()) {
+            {{ document().title[0]._text }}
           }
         }
       </a>
-      @if (item.enumerationAndChronology && isCollapsed) {
-        <p-tag severity="info" [value]="item.enumerationAndChronology" />
+      @if (item().enumerationAndChronology && isCollapsed()) {
+        <p-tag severity="info" [value]="item().enumerationAndChronology" />
       }
-      @if (document) {
-        <shared-contribution [contributions]="document?.contribution" />
+      @if (document()) {
+        <shared-contribution [contributions]="document()?.contribution" />
       }
     </div>
     <!-- CIRCULATION INFO -->
     <div name="circ-info" class="ui:col-span-2">
-      @if (item.loan) {
+      @if (item().loan) {
         <ul class="ui:list-none">
-          @switch (item.status) {
+          @switch (item().status) {
             @case ('on_loan') {
               <li>
-                {{ item.status | translate }}
+                {{ item().status | translate }}
                 <i class="fa fa-arrow-right" aria-hidden="true"></i>
-                <span [class.text-warning]="loan && loan.expired">
-                  {{ item.loan.dueDate | dateTranslate :'shortDate' }}
+                <span [class.text-warning]="loan() && loan()!.expired">
+                  {{ item().loan.dueDate | dateTranslate :'shortDate' }}
                 </span>
               </li>
             }
             @case ('in_transit') {
               <li>
-                {{ item.status | translate }}
+                {{ item().status | translate }}
                 @if (getTransitLocationPid() | getRecord: 'locations' | async; as location) {
                     ({{ 'to' | translate }}
-                    @if (item.loan && item.loan.state === 'ITEM_IN_TRANSIT_FOR_PICKUP') {
+                    @if (item().loan && item().loan.state === 'ITEM_IN_TRANSIT_FOR_PICKUP') {
                       {{ $any(location).metadata.pickup_name }}
                     } @else {
                       {{ $any(location).metadata.library.pid | getRecord: 'libraries' : 'field' : 'name' | async }}
@@ -96,46 +96,46 @@
               </li>
             }
             @case ('on_shelf') {
-              <li>{{ item.status | translate }}</li>
+              <li>{{ item().status | translate }}</li>
             }
             @case ('at_desk') {
               <li>
-                {{ item.status | translate }}
-                @if (item.loan && item.loan.pickup_location) {
-                  ({{ item.loan.pickup_location.pickup_name }})
+                {{ item().status | translate }}
+                @if (item().loan && item().loan.pickup_location) {
+                  ({{ item().loan.pickup_location.pickup_name }})
                 }
-                @if (!item.loan && item.pending_loans && item.pending_loans.length > 0 && item.pending_loans[0].pickup_location) {
-                  ({{ item.pending_loans[0].pickup_location.pickup_name }})
+                @if (!item().loan && item().pending_loans && item().pending_loans.length > 0 && item().pending_loans[0].pickup_location) {
+                  ({{ item().pending_loans[0].pickup_location.pickup_name }})
 
                 }
               </li>
             }
             @default {
-              <li>{{ item.status | translate }}</li>
+              <li>{{ item().status | translate }}</li>
             }
           }
           <!-- RENEWALS, FEES, REQUESTS -->
           <li class="ui:mt-1">
-            @if (isCollapsed && item.loan && item.loan.extension_count && (!item.actionDone || item.actionDone !== itemAction.checkin)) {
-              <p-tag [title]="'Renewals'|translate" severity="secondary" styleClass="ui:mr-1">
-                {{ item.loan.extension_count }} <i class="fa fa-refresh ui:ml-1"></i>
+            @if (isCollapsed() && item().loan && item().loan.extension_count && (!item().actionDone || item().actionDone !== itemAction.checkin)) {
+              <p-tag [title]="'Renewals'|translate" severity="secondary" class="ui:mr-1">
+                {{ item().loan.extension_count }} <i class="fa fa-refresh ui:ml-1"></i>
               </p-tag>
             }
-            @if (isCollapsed && totalAmountOfFee > 0) {
-              <p-tag [title]="'Fees'|translate" severity="warn" styleClass="ui:mr-1">
-                {{ totalAmountOfFee | currency: organisation.default_currency }}
+            @if (isCollapsed() && totalAmountOfFee() > 0) {
+              <p-tag [title]="'Fees'|translate" severity="warn" class="ui:mr-1">
+                {{ totalAmountOfFee() | currency: organisation.default_currency }}
               </p-tag>
             }
-            @if (isCollapsed && item.pending_loans && item.pending_loans.length) {
-              <p-tag [title]="'Requests'|translate" severity="secondary" styleClass="ui:mr-1">
+            @if (isCollapsed() && item().pending_loans && item().pending_loans.length) {
+              <p-tag [title]="'Requests'|translate" severity="secondary" class="ui:mr-1">
                 <div class="ui:flex ui:items-start ui:gap-1">
                   <i class="fa fa-shopping-basket ui:mt-1"></i>&nbsp;
                   <a
                     class="ui:truncate"
-                    [title]="item.pending_loans[0].patron.name"
-                    [routerLink]="['/circulation', 'patron', item.pending_loans[0].patron.barcode, 'loan']"
+                    [title]="item().pending_loans[0].patron.name"
+                    [routerLink]="['/circulation', 'patron', item().pending_loans[0].patron.barcode, 'loan']"
                   >
-                    {{ item.pending_loans[0].patron.name }}
+                    {{ item().pending_loans[0].patron.name }}
                   </a>
                 </div>
               </p-tag>
@@ -143,15 +143,15 @@
           </li>
         </ul>
       } @else {
-        {{ item.status | translate }}
+        {{ item().status | translate }}
       }
     </div>
     <!-- ACTION DONE -->
     <div name="action-done" class="ui:col-span-2">
       <div class="ui:flex ui:justify-end">
-        @if (item.actionDone) {
+        @if (item().actionDone) {
           <div class="ui:flex ui:gap-2 p-disabled" pButton severity="secondary" outlined>
-            @switch (item.actionDone) {
+            @switch (item().actionDone) {
               @case (itemAction.checkin) {
                 <i class="fa fa-arrow-circle-o-down text-success" aria-hidden="true"></i>
                 <span translate>checked in</span>
@@ -165,81 +165,81 @@
                 <span translate>renewed</span>
               }
               @default {
-                <span>{{ item.actionDone | translate }}</span>
+                <span>{{ item().actionDone | translate }}</span>
               }
             }
           </div>
         }
-        @if (patron && !item.actionDone) {
+        @if (patron() && !item().actionDone) {
             <p-button
               icon="fa fa-refresh"
               [label]="'Renew'|translate"
               severity="secondary"
               [outlined]="true"
-              [disabled]="!item.actions.includes(itemAction.extend_loan)"
-              [id]="item.barcode | idAttribute:{prefix: 'item', suffix: 'renew-button'}"
+              [disabled]="!item().actions.includes(itemAction.extend_loan)"
+              [id]="item().barcode | idAttribute:{prefix: 'item', suffix: 'renew-button'}"
               (onClick)="extendLoanClick($event)"
             />
         }
       </div>
     </div>
     <!-- COLLAPSED DETAILS -->
-    @if (!isCollapsed) {
+    @if (!isCollapsed()) {
       <div class="ui:col-span-8 ui:col-start-4">
         <dl class="metadata">
           <dt translate>Call number</dt>
           <dd>
-            <shared-inherited-call-number [item]="item" />
+            <shared-inherited-call-number [item]="item()" />
           </dd>
-          @if (item.enumerationAndChronology) {
+          @if (item().enumerationAndChronology) {
             <dt translate>Unit</dt>
             <dd>
-              {{ item.enumerationAndChronology }}
+              {{ item().enumerationAndChronology }}
             </dd>
           }
-          @if (item.location.pid | getRecord: 'locations' | async; as location) {
+          @if (item().location.pid | getRecord: 'locations' | async; as location) {
             <dt translate>Location</dt>
             <dd>
               {{ $any(location).metadata.library.pid | getRecord: 'libraries' : 'field' : 'name' | async }}:
               {{ $any(location).metadata.name }}
             </dd>
           }
-          @if (item.temporary_location) {
+          @if (item().temporary_location) {
             <dt translate>Temporary location</dt>
             <dd>
-              {{ item.temporary_location.name }}
+              {{ item().temporary_location.name }}
             </dd>
           }
-          @if (item.collections && item.collections.length > 0) {
+          @if (item().collections && item().collections.length > 0) {
             <dt translate>Exhibition/course</dt>
             <dd>
-              {{ item.collections.join(', ') }}
+              {{ item().collections.join(', ') }}
             </dd>
           }
-          @if (item.loan && item.loan.extension_count) {
+          @if (item().loan && item().loan.extension_count) {
             <dt translate>Renewals</dt>
             <dd>
-              <p-tag severity="secondary" styleClass="ui:mr-1">
-                {{ item.loan.extension_count }}
+              <p-tag severity="secondary" class="ui:mr-1">
+                {{ item().loan.extension_count }}
                 <i class="fa fa-refresh ui:ml-1"></i>
               </p-tag>
             </dd>
           }
-          @if (item.loan && item.actionDone === 'checkin' && item?.loan?.last_end_date) {
+          @if (item().loan && item().actionDone === 'checkin' && item()?.loan?.last_end_date) {
             <dt translate>Due date</dt>
             <dd>
-              {{ item.loan.last_end_date | dateTranslate :'shortDate' }}
+              {{ item().loan.last_end_date | dateTranslate :'shortDate' }}
             </dd>
           }
-          @if (item.loan && totalAmountOfFee > 0) {
+          @if (item().loan && totalAmountOfFee() > 0) {
             <dt translate>Fees</dt>
             <dd>
-              <p-tag severity="warn" styleClass="ui:mr-1">
-                {{ totalAmountOfFee | currency: organisation.default_currency }}
+              <p-tag severity="warn" class="ui:mr-1">
+                {{ totalAmountOfFee() | currency: organisation.default_currency }}
               </p-tag>
             </dd>
           }
-          @if (item.loan && notifications$ | async; as notifications) {
+          @if (notifications(); as notifications) {
             @if (notifications.length > 0) {
               <dt translate>Notifications</dt>
               <dd>
@@ -261,17 +261,17 @@
               </dd>
             }
           }
-          @if (item.pending_loans) {
+          @if (item().pending_loans) {
             <dt translate>Requests</dt>
             <dd>
-              @if (item.pending_loans.length > 1) {
-                <p-tag severity="secondary" styleClass="ui:mr-1">
-                  {{ item.pending_loans.length }}
+              @if (item().pending_loans.length > 1) {
+                <p-tag severity="secondary" class="ui:mr-1">
+                  {{ item().pending_loans.length }}
                 </p-tag>
                 <i class="fa fa-long-arrow-right ui:px-2"></i>
               }
-              @for (request of item.pending_loans; track request.pid) {
-                <p-tag severity="secondary" styleClass="ui:mr-1">
+              @for (request of item().pending_loans; track request.pid) {
+                <p-tag severity="secondary" class="ui:mr-1">
                   <i class="fa fa-shopping-basket"></i>&nbsp;
                   <a
                     [title]="request.patron.name"
@@ -296,28 +296,28 @@
         </dl>
       </div>
     }
-    @if (canUseDebugMode && !isCollapsed) {
+    @if (canUseDebugMode && !isCollapsed()) {
       <div class="ui:flex ui:justify-end ui:mt-2 ui:col-span-12">
-        <p-button [icon]="debugMode ? 'fa fa-toggle-on' : 'fa fa-toggle-off'" [outlined]="true" severity="warn" (onClick)="debugMode=!debugMode">
+        <p-button [icon]="debugMode() ? 'fa fa-toggle-on' : 'fa fa-toggle-off'" [outlined]="true" severity="warn" (onClick)="debugMode.set(!debugMode())">
           <i class="fa fa-bug"></i>
         </p-button>
       </div>
     }
-    @if (debugMode && !isCollapsed) {
+    @if (debugMode() && !isCollapsed()) {
       <div class="ui:col-span-12">
         <h5 class="text-error"><i class="fa fa-bug"></i>&nbsp;{{ 'Debug' | translate }}</h5>
         <div class="ui:grid ui:grid-cols-12 ui:gap-4">
-          @if (loan) {
+          @if (loan()) {
             <div class="ui:lg:col-span-6 ui:col-span-12">
               <div class="ui:flex ui:flex-col ui:border ui:border-surface ui:rounded-border ui:p-2 ui:bg-white">
                 <h5 translate>Loan</h5>
-                <p-scrollPanel styleClass="ui:w-full" [style]="{ height: '500px' }">
-                  <pre class="ui:text-sm">{{ loan | json }}</pre>
+                <p-scrollPanel class="ui:w-full" [style]="{ height: '500px' }">
+                  <pre class="ui:text-sm">{{ loan() | json }}</pre>
                 </p-scrollPanel>
               </div>
             </div>
             <div class="ui:lg:col-span-6 ui:col-span-12">
-              @if (loan | getLoanCipo | async; as cipo) {
+              @if (loan() | getLoanCipo | async; as cipo) {
                 <div class="ui:flex ui:flex-col ui:border ui:border-surface ui:rounded-border ui:p-2 ui:bg-white">
                   <h5>
                     {{ 'Circulation policy' | translate }}&nbsp;
@@ -325,7 +325,7 @@
                       <i class="fa fa-external-link"></i>
                     </a>
                   </h5>
-                  <p-scrollPanel styleClass="ui:w-full" [style]="{ height: '500px' }">
+                  <p-scrollPanel class="ui:w-full" [style]="{ height: '500px' }">
                     <pre class="ui:text-sm">{{ cipo | json }}</pre>
                   </p-scrollPanel>
                 </div>
@@ -335,8 +335,8 @@
             <div class="ui:col-span-12">
               <div class="ui:flex ui:flex-col ui:border ui:border-surface ui:rounded-border ui:p-2 ui:bg-white">
                 <h5 translate>Item</h5>
-                <p-scrollPanel styleClass="ui:w-full" [style]="{ height: '500px' }">
-                  <pre class="ui:text-sm">{{ item | json }}</pre>
+                <p-scrollPanel class="ui:w-full" [style]="{ height: '500px' }">
+                  <pre class="ui:text-sm">{{ item() | json }}</pre>
                 </p-scrollPanel>
               </div>
             </div>

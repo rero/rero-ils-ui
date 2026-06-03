@@ -14,18 +14,20 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, inject, Input } from '@angular/core';
-import { TranslateService } from '@ngx-translate/core';
-import { IPermissions, PERMISSION_OPERATOR, PERMISSIONS } from '@rero/shared';
+import { Component, inject, input, ChangeDetectionStrategy} from '@angular/core';
+import { TranslateService, TranslatePipe } from '@ngx-translate/core';
+import { IPermissions, PERMISSION_OPERATOR, PERMISSIONS, PermissionsDirective } from '@rero/shared';
 import { DialogService } from 'primeng/dynamicdialog';
 import { CirculationLogsComponent } from './circulation-logs.component';
+import { Bind } from 'primeng/bind';
+import { Button } from 'primeng/button';
 
 @Component({
     selector: 'admin-circulation-logs-dialog',
     template: `
     <p-button
       icon="fa fa-history"
-      id="{{ resourceType }}-circulation-history"
+      id="{{ resourceType() }}-circulation-history"
       [label]="'Circulation history'|translate"
       outlined
       severity="secondary"
@@ -34,7 +36,8 @@ import { CirculationLogsComponent } from './circulation-logs.component';
       (onClick)="openDialog()"
     />
   `,
-    standalone: false
+    imports: [Bind, Button, PermissionsDirective, TranslatePipe],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CirculationLogsDialogComponent {
 
@@ -42,9 +45,9 @@ export class CirculationLogsDialogComponent {
   private translateService: TranslateService = inject(TranslateService);
   // COMPONENT ATTRIBUTES =====================================================
   /** Resource pid */
-  @Input() resourcePid: string;
+  resourcePid = input<string>();
   /** Resource type */
-  @Input() resourceType: 'item'|'loan' = 'item';
+  resourceType = input('item');
 
   /** return all permissions */
   permissions: IPermissions = PERMISSIONS;
@@ -62,8 +65,8 @@ export class CirculationLogsDialogComponent {
       width: '60vw',
       position: 'top',
       data: {
-        resourceType: this.resourceType,
-        resourcePid: this.resourcePid
+        resourceType: this.resourceType(),
+        resourcePid: this.resourcePid()
       }
     });
   }

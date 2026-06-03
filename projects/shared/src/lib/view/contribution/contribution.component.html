@@ -16,20 +16,20 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 
-@if (contributions) {
+@if (displayedContributions()) {
   <ul class="ui:list-none">
-    @for (contributor of contributions; track $index; let last=$last) {
+    @for (contributor of displayedContributions(); track $index; let last=$last) {
       <li class="ui:inline">
-        @if (activateLink || withEntityLink) {
-          @if (withEntityLink && contributor.entity?.pid) {
+        @if (activateLink() || withEntityLink()) {
+          @if (withEntityLink() && contributor.entity?.pid) {
             <a [routerLink]="['/records/', contributor.entity.resource_type+'_entities', 'detail', contributor.entity.pid]">{{ contributor.entity | entityLabel }}</a>
           } @else {
-            @if (view !== 'professional') {
+            @if (view() !== 'professional') {
               <shared-entity-link
               resourceName="contribution"
               [external]="true"
               [entity]="contributor.entity"
-              [routerLinkParams]="['/', view, 'search', 'documents']"
+              [routerLinkParams]="['/', view(), 'search', 'documents']"
             />
             } @else {
               <shared-entity-link
@@ -41,14 +41,14 @@
         } @else {
           {{ contributor.entity | entityLabel }}
         }
-        @if (withRoles && contributor.role && contributor.role.length > 0) {
+        @if (withRoles() && contributor.role && contributor.role.length > 0) {
           <span class="ui:ml-1 ui:text-muted-color">({{ contributor.role | arrayTranslate| join: ', '}})</span>
         }
       </li>
       @if (!last) {
         ;
       }
-      @if (limit) {
+      @if (limit()) {
         …
       }
     }

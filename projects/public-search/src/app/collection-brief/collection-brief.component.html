@@ -15,27 +15,25 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-@if (record) {
-  <h4>
-    <a [href]="detailUrl.link">{{ record.metadata.title }}</a>
-    @if (record.metadata.collection_id) {
-      ({{ record.metadata.collection_id }})
-    }
-  </h4>
-  <div>
-    @if (record.metadata.teachers) {
-      <div>
-        @for (teacher of record.metadata.teachers; track $index; let last = $last) {
-          {{ teacher.name }}{{ last ? '' : ', ' }}
-        }
-      </div>
-    }
-    @if (record.metadata.description) {
-      <div [innerHtml]="record.metadata.description | nl2br"></div>
-    }
+<h4>
+  <a [href]="recordDetailUrl() | safeUrl">{{ record().metadata.title }}</a>
+  @if (record().metadata.collection_id) {
+    ({{ record().metadata.collection_id }})
+  }
+</h4>
+<div>
+  @if (record().metadata.teachers) {
     <div>
-      {{ record.metadata.start_date | dateTranslate: 'mediumDate' }}
-      - {{ record.metadata.end_date | dateTranslate: 'mediumDate' }}
+      @for (teacher of $any(record().metadata.teachers); track $index; let last = $last) {
+        {{ teacher.name }}{{ last ? '' : ', ' }}
+      }
     </div>
+  }
+  @if (record().metadata.description) {
+    <div [innerHtml]="$any(record().metadata.description) | nl2br"></div>
+  }
+  <div>
+    {{ $any(record().metadata.start_date) | dateTranslate: 'mediumDate' }}
+    - {{ $any(record().metadata.end_date) | dateTranslate: 'mediumDate' }}
   </div>
-}
+</div>

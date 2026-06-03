@@ -15,77 +15,92 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { HttpClient } from '@angular/common/http';
-import { Component, EventEmitter, inject, OnInit } from '@angular/core';
-import { AbstractControl, UntypedFormGroup } from '@angular/forms';
-import { FormlyFieldConfig } from '@ngx-formly/core';
-import { TranslateService } from '@ngx-translate/core';
+import { ChangeDetectionStrategy, Component, computed, inject, OnInit, signal } from '@angular/core';
+import { AbstractControl, FormsModule, ReactiveFormsModule, UntypedFormGroup } from '@angular/forms';
+import { FormlyFieldConfig, FormlyModule } from '@ngx-formly/core';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { CONFIG, RecordService } from '@rero/ng-core';
-import { Record } from '@rero/ng-core/lib/record/record';
-import { User, UserService } from '@rero/shared';
+import { AppStore } from '@rero/shared';
 import { MessageService } from 'primeng/api';
+import { Bind } from 'primeng/bind';
+import { Button } from 'primeng/button';
+import { Card } from 'primeng/card';
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
-import { Observable, of } from 'rxjs';
-import { catchError, debounceTime, map, shareReplay, tap } from 'rxjs/operators';
+import { Message } from 'primeng/message';
+import { Observable, of, timer } from 'rxjs';
+import { catchError, map, shareReplay, switchMap, tap } from 'rxjs/operators';
+import { RouterLink } from '@angular/router';
 import { HoldingsService } from '../../../../service/holdings.service';
 import { ItemsService } from '../../../../service/items.service';
 import { LoanService } from '../../../../service/loan.service';
+import { _ } from '@ngx-translate/core';
 
 @Component({
     selector: 'admin-item-request',
     templateUrl: './item-request.component.html',
-    standalone: false
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    imports: [Bind, Button, RouterLink, Card, FormsModule, ReactiveFormsModule, FormlyModule, TranslatePipe, Message],
 })
 export class ItemRequestComponent implements OnInit {
 
-  private userService: UserService = inject(UserService);
+  private appStore = inject(AppStore);
   private recordService: RecordService = inject(RecordService);
   private httpClient: HttpClient = inject(HttpClient);
   private loanService: LoanService = inject(LoanService);
   private translateService: TranslateService = inject(TranslateService);
   private itemService: ItemsService = inject(ItemsService);
   private holdingService: HoldingsService = inject(HoldingsService);
-  private messageService:MessageService = inject(MessageService);
+  private messageService: MessageService = inject(MessageService);
   private dynamicDialogConfig: DynamicDialogConfig = inject(DynamicDialogConfig);
   private dynamicDialogRef: DynamicDialogRef = inject(DynamicDialogRef);
 
   /** Record pid */
-  recordPid: string;
-  /** Record description */
-  description: string;
+  recordPid!: string;
   /** Record type */
-  recordType: string;
+  recordType?: string;
   /** Service */
-  service: any;
+  service!: ItemsService | HoldingsService;
   /** form */
   form: UntypedFormGroup = new UntypedFormGroup({});
   /** form fields */
-  formFields: FormlyFieldConfig[];
+  formFields = signal<FormlyFieldConfig[] | undefined>(undefined);
   /** model */
-  model: FormModel;
+  model = signal<FormModel | undefined>(undefined);
   /** patron record */
-  patron: any;
+  patron = signal<PatronData | null>(null);
+  /** patron display name for card header */
+  patronHeader = computed(() => [this.patron()?.last_name, this.patron()?.first_name].filter(Boolean).join(', '));
+  /** queue message for requested items */
+  queueMessage = computed(() => {
+    const count = this.requestedBy()?.length ?? 0;
+    const key = count < 2 ? _('request in the queue') : _('requests in the queue');
+    return `${count} ${this.translateService.instant(key)}`;
+  });
+  /** blocked message for current patron, null if not blocked */
+  patronBlockedMsg = computed(() => {
+    const p = this.patron() as any;
+    if (!p?.patron?.blocked) return null;
+    return `${this.translateService.instant('This patron is currently blocked.')} ${this.translateService.instant('Reason')}: ${p.patron.blocked_note}`;
+  });
   /** Dynamic message for can_request validator */
-  canRequestMessage: string;
-  /** On submit event */
-  onSubmit = new EventEmitter<any>();
+  canRequestMessage?: string;
   /** Requested item(s) */
-  requestedBy$: Observable<any>;
+  requestedBy = signal<Loan[] | null>(null);
   /** Request in progress */
-  requestInProgress = false;
+  requestInProgress = signal(false);
 
   /** Pickup default $ref */
-  private pickupDefaultValue: string;
-  /** Current user */
-  private currentUser: User;
+  private pickupDefaultValue?: string;
 
   /** OnInit hook */
   ngOnInit() {
-    this.currentUser = this.userService.user;
-    const data: any = this.dynamicDialogConfig.data;
+    const { data } = this.dynamicDialogConfig;
     this.recordPid = data.recordPid;
     this.recordType = data.recordType;
     this.service = (this.recordType === 'item') ? this.itemService : this.holdingService;
-    this.requestedBy$ = (this.recordType === 'item') ?  this.loanService.requestedBy$(this.recordPid) : null;
+    if (this.recordType === 'item') {
+      this.loanService.requestedBy$(this.recordPid).subscribe(v => this.requestedBy.set(v));
+    }
     this.initForm();
   }
 
@@ -94,29 +109,24 @@ export class ItemRequestComponent implements OnInit {
    * @param model - Object
    */
   submit(model: FormModel) {
-    this.requestInProgress = true;
-    let body = {};
-    let key;
-    body = {
-      pickup_location_pid: model.pickup,
-      patron_pid: this.patron.pid,
-      transaction_library_pid: this.currentUser.currentLibrary,
-      transaction_user_pid: this.currentUser.patronLibrarian.pid
-    };
-    if (this.recordType === 'item') {
-      key = 'item_pid';
-      body[key] = this.recordPid;
-    } else if (this.recordType === 'holding') {
-      key = 'holding_pid';
-      body[key] = this.recordPid;
-      key = 'description';
-      body[key] = model.description;
-    }
-    this.httpClient.post(`/api/${this.recordType}/request`, body)
-      .pipe(tap(() => this.requestInProgress = false))
+    const user = this.appStore.user();
+    const libraryPid = this.appStore.currentLibraryPid();
+    if (libraryPid && user?.patronLibrarian?.pid) {
+      this.requestInProgress.set(true);
+      const body: RequestBody = {
+        pickup_location_pid: model.pickup!,
+        patron_pid: this.patron()!.pid,
+        transaction_library_pid: libraryPid,
+        transaction_user_pid: user.patronLibrarian.pid,
+        ...(this.recordType === 'item'
+          ? { item_pid: this.recordPid }
+          : { holding_pid: this.recordPid, description: model.description }
+        )
+      };
+      this.httpClient.post(`/api/${this.recordType}/request`, body)
+      .pipe(tap(() => this.requestInProgress.set(false)))
       .subscribe({
-        next: (_: unknown) => {
-          this.onSubmit.next(undefined);
+        next: () => {
           this.closeModal(true);
           this.messageService.add({
             severity: 'success',
@@ -133,6 +143,7 @@ export class ItemRequestComponent implements OnInit {
           closable: true
         })
       });
+    }
   }
 
   /**
@@ -147,9 +158,9 @@ export class ItemRequestComponent implements OnInit {
    * Init form
    */
   initForm() {
-    if (this.currentUser) {
+    if (this.appStore.user()) {
       this.getPickupLocations().subscribe(pickups => {
-        this.formFields = [
+        this.formFields.set([
           {
             key: 'patronBarcode',
             type: 'input',
@@ -164,36 +175,40 @@ export class ItemRequestComponent implements OnInit {
               }
             },
             asyncValidators: {
-              userExist: {
-                expression: (fc: AbstractControl) =>  {
-                  return  this.getPatron(fc.value).pipe(
-                    map((result: any) => {
-                      this.patron = (result.length === 1)
-                        ? result[0].metadata
-                        : null;
+              patronCheck: {
+                expression: (fc: AbstractControl) => {
+                  return this.getPatron(fc.value).pipe(
+                    switchMap((result: any): Observable<{ valid: boolean }> => {
+                      const found = result.length === 1;
+                      this.patron.set(found ? result[0].metadata : null);
                       fc.markAsTouched();
-                      return result.length === 1;
-                    })
+                      if (!found) {
+                        this.canRequestMessage = undefined;
+                        return of({ valid: false });
+                      }
+                      return this.service.canRequest(this.recordPid, this.appStore.currentLibraryPid(), fc.value).pipe(
+                        catchError((error) => of({ can: false, reasons: { error: error.message } })),
+                        map((canRequest: any): { valid: boolean } => {
+                          if (!canRequest.can) {
+                            this.patron.set(null);
+                            const reasons = canRequest.reasons || { error: 'Not defined error' };
+                            this.canRequestMessage = Object.values(reasons)[0] as string;
+                            return { valid: false };
+                          }
+                          this.canRequestMessage = undefined;
+                          return { valid: true };
+                        })
+                      );
+                    }),
+                    map((state: { valid: boolean }) => state.valid)
                   );
                 },
-                message: () => this.translateService.instant('Patron not found.')
-              },
-              can_request: {
-                expression: (fc: AbstractControl) =>  {
-                  return this.service.canRequest(this.recordPid, this.currentUser.currentLibrary, fc.value).pipe(
-                    catchError((error) => of({ can: false, reasons: { error: error.message } })),
-                    map((result: any) => {
-                      if (!result.can) {
-                        this.patron = null;
-                        const reasons = result.reasons || { error: 'Not defined error' };
-                        this.canRequestMessage = Object.values(reasons)[0] as string;
-                      }
-                      fc.markAsTouched();
-                      return result.can;
-                    })
-                  )
-                },
-                message: () => this.translateService.instant(this.canRequestMessage)
+                message: () => {
+                  if (this.canRequestMessage) {
+                    return this.translateService.instant(this.canRequestMessage);
+                  }
+                  return this.translateService.instant('Patron not found.');
+                }
               }
             }
           },
@@ -209,9 +224,9 @@ export class ItemRequestComponent implements OnInit {
               filter: true
             }
           }
-        ];
+        ]);
         if (this.recordType === 'holding') {
-          this.formFields.push({
+          this.formFields.update(fields => [...(fields ?? []), {
             key: 'description',
             type: 'input',
             props: {
@@ -220,13 +235,13 @@ export class ItemRequestComponent implements OnInit {
               maxLength: 100,
               required: true,
             }
-          });
+          }]);
         }
-        this.model = {
+        this.model.set({
           patronBarcode: null,
           pickup: this.pickupDefaultValue,
-          description: null,
-        };
+          description: undefined,
+        });
       });
     }
   }
@@ -237,11 +252,11 @@ export class ItemRequestComponent implements OnInit {
    * @return observable with pickup locations information (name and pid)
    */
   private getPickupLocations(): Observable<any[]> {
-    const { currentLibrary } = this.currentUser;
+    const currentLibraryPid = this.appStore.currentLibraryPid();
     return this.service.getPickupLocations(this.recordPid).pipe(
       map((locations: any) => locations.map((loc: any) => {
         const libraryPid = loc.library.$ref.split('/').pop();
-        if (this.pickupDefaultValue === undefined && libraryPid === currentLibrary) {
+        if (this.pickupDefaultValue === undefined && libraryPid === currentLibraryPid) {
           this.pickupDefaultValue = loc.pid;
         }
         return {
@@ -257,11 +272,11 @@ export class ItemRequestComponent implements OnInit {
    * @param barcode - string
    * @return observable
    */
-  private getPatron(barcode: string): Observable<Record | Error> {
+  private getPatron(barcode: string): Observable<any[] | Error> {
     const query = `barcode:${barcode}`;
-    return this.recordService.getRecords('patrons', query, 1, 1).pipe(
-      debounceTime(500),
-      map((result: Record) => this.recordService.totalHits(result.hits.total) === 0 ? [] : result.hits.hits),
+    return timer(500).pipe(
+      switchMap(() => this.recordService.getRecords('patrons', { query, page: 1, itemsPerPage: 1 })),
+      map((result: any) => this.recordService.totalHits(result.hits.total) === 0 ? [] : result.hits.hits),
       shareReplay(1)
     );
   }
@@ -271,7 +286,33 @@ export class ItemRequestComponent implements OnInit {
  * Interface to define fields on form
  */
 type FormModel = {
-  patronBarcode: string;
-  pickup: string;
+  patronBarcode: string | null;
+  pickup: string | undefined;
+  description: string | undefined;
+}
+
+type RequestBody = {
+  pickup_location_pid: string;
+  patron_pid: string;
+  transaction_library_pid: string;
+  transaction_user_pid: string;
+  item_pid?: string;
+  holding_pid?: string;
   description?: string;
+}
+
+type PatronData = {
+  pid: string;
+  last_name?: string;
+  first_name?: string;
+  street?: string;
+  postal_code?: string;
+  city?: string;
+  email?: string;
+}
+
+type Loan = {
+  pid: string;
+  state: string;
+  patron_pid?: string;
 }

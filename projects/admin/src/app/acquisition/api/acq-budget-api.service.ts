@@ -16,7 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { inject, Injectable } from '@angular/core';
-import { Record, RecordService } from '@rero/ng-core';
+import type { EsResult } from '@rero/ng-core';
+import { RecordService } from '@rero/ng-core';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { accountDefaultData, IAcqAccount } from '../classes/account';
@@ -39,9 +40,9 @@ export class AcqBudgetApiService {
    */
   getBudgets(query?: string): Observable<AcqBudget[]> {
     query = query || '';
-    return this.recordService.getRecords(this.resourceName, query, 1, RecordService.MAX_REST_RESULTS_SIZE)
+    return this.recordService.getRecords(this.resourceName, { query, page: 1, itemsPerPage: RecordService.MAX_REST_RESULTS_SIZE })
       .pipe(
-        map((result: Record) => this.recordService.totalHits(result.hits.total) === 0 ? [] : result.hits.hits),
+        map((result: EsResult) => +this.recordService.totalHits(result.hits.total) === 0 ? [] : result.hits.hits),
         map((hits: any[]) => hits.map((hit: any) => new AcqBudget(hit.metadata)))
       );
   }
@@ -53,9 +54,13 @@ export class AcqBudgetApiService {
    */
   getBudgetTotalAmount(budgetPid: string): Observable<number> {
     return this.recordService
-      .getRecords('acq_accounts', `budget.pid:${budgetPid} AND depth:0`, 1, RecordService.MAX_REST_RESULTS_SIZE)
+      .getRecords('acq_accounts', {
+        query: `budget.pid:${budgetPid} AND depth:0`,
+        page: 1,
+        itemsPerPage: RecordService.MAX_REST_RESULTS_SIZE
+      })
       .pipe(
-        map((result: Record) => this.recordService.totalHits(result.hits.total) === 0 ? [] : result.hits.hits),
+        map((result: EsResult) => +this.recordService.totalHits(result.hits.total) === 0 ? [] : result.hits.hits),
         map((hits: any[]) => hits.map((hit: any) => ({...accountDefaultData, ...hit.metadata}) )),
         map((accounts: IAcqAccount[]) => accounts.reduce((total, acc) => total + acc.allocated_amount, 0))
       );

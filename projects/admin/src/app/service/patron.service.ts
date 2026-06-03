@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2019-2024 RERO
+ * Copyright (C) 2019-2026 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -17,10 +17,10 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { ApiService, RecordService } from '@rero/ng-core';
-import { Record } from '@rero/ng-core/lib/record/record';
+import type { EsResult } from '@rero/ng-core';
 import { User } from '@rero/shared';
-import { BehaviorSubject, Observable } from 'rxjs';
-import { map, switchMap } from 'rxjs/operators';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { Item } from '../classes/items';
 import { Loan, LoanOverduePreview, LoanState } from '../classes/loans';
 
@@ -33,42 +33,22 @@ export class PatronService {
   private apiService: ApiService = inject(ApiService);
   private recordService: RecordService = inject(RecordService);
 
-  /** Current patron */
-  private currentPatron = new BehaviorSubject<User>(undefined);
-
-  /**
-   * Get Current Patron
-   * @return Observable
-   */
-  get currentPatron$(): Observable<User> {
-    return this.currentPatron.asObservable();
-  }
-
   /**
    * Get patron by barcode
    * @param barcode - string
-   * @return Observable
+   * @return Observable<User | undefined>
    */
-  getPatron(barcode: string): Observable<any> {
+  getPatron(barcode: string): Observable<User | undefined> {
     return this.recordService
-      .getRecords('patrons', `barcode:${barcode}`, 1, 1)
+      .getRecords('patrons', { query: `patron.barcode:${barcode}`, page: 1, itemsPerPage: 1 })
       .pipe(
-        switchMap((response: Record) => {
-          switch (this.recordService.totalHits(response.hits.total)) {
-            case 0: {
-              this.currentPatron.next(undefined);
-              break;
-            }
-            case 1: {
-              const patron = response.hits.hits[0].metadata;
-              this.currentPatron.next(patron);
-              break;
-            }
-            default: {
-              throw new Error('too much results');
-            }
+        map((response: EsResult) => {
+          const total = this.recordService.totalHits(response.hits.total);
+          switch (total) {
+            case 0: return undefined;
+            case 1: return response.hits.hits[0].metadata as unknown as User;
+            default: throw new Error('too much results');
           }
-          return this.currentPatron.asObservable();
         })
       );
   }
@@ -98,7 +78,7 @@ export class PatronService {
     const url = `${itemApiUrl}/loans/${patronPid}?sort=${sort}`;
     return this.httpClient.get<any>(url).pipe(
       map(data => data.hits),
-      map(hits => this.recordService.totalHits(hits.total)  === 0 ? [] : hits.hits),
+      map(hits => this.recordService.totalHits(hits.total) === 0 ? [] : hits.hits),
       map(hits => hits.map((data: any) => this._buildItem(data)))
     );
   }
@@ -206,24 +186,10 @@ export class PatronService {
    */
   private getLoans(query: string, sort?: string) {
     return this.recordService.getRecords(
-      'loans', query, 1, RecordService.MAX_REST_RESULTS_SIZE, [], {}, {Accept: 'application/rero+json'}, sort
+      'loans', { query, page: 1, itemsPerPage: RecordService.MAX_REST_RESULTS_SIZE, aggregationsFilters: [], preFilters: {}, headers: {Accept: 'application/rero+json'}, sort }
     ).pipe(
-      map((data: Record) => data.hits),
-      map(hits => this.recordService.totalHits(hits.total) === 0 ? [] : hits.hits)
+      map((data: EsResult) => data.hits as any),
+      map((hits: any) => +this.recordService.totalHits(hits.total) === 0 ? [] : hits.hits)
     );
-  }
-
-  /**
-   * Get formatted name of a patron
-   * @param patron: the patron to format
-   * @return the formatted name (name[, firstname])
-   */
-  getFormattedName(patron: any): string {
-    return [
-      patron.last_name || null,
-      patron.first_name || null
-    ].filter(el => el !== null) // remove potential empty values
-     .map(el => el.trim())      // trim all values
-     .join(', ');               // join values
   }
 }

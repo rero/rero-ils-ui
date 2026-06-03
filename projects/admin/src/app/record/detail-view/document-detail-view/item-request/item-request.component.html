@@ -14,18 +14,12 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-@defer(when formFields) {
+@defer(when formFields()) {
   <div class="ui:flex ui:gap-2 ui:flex-col">
-  @if (requestedBy$ | async; as requestedBy) {
+  @if (requestedBy(); as requestedBy) {
     @if (requestedBy.length > 0) {
       <div class="ui:flex ui:gap-2 ui:my-1 ui:items-start">
-        <p-message
-          class="ui:grow"
-          [text]="requestedBy.length < 2
-              ? requestedBy.length + ' ' + ('request in the queue' | translate)
-              : requestedBy.length + ' ' + ('requests in the queue' | translate)"
-          showTransitionOptions="0ms"
-        />
+        <p-message class="ui:grow" showTransitionOptions="0ms">{{ queueMessage() }}</p-message>
         <p-button
           outlined
           [routerLink]="['/records', 'items', 'detail', recordPid]"
@@ -35,33 +29,29 @@
       </div>
     }
   }
-  @if (patron) {
-    <p-card [header]="[patron.last_name, patron.first_name].join(', ')" styleClass="ui:bg-surface-100 ui:p-3">
+  @if (patron(); as patron) {
+    <p-card [header]="patronHeader()" class="ui:bg-surface-100 ui:p-3">
       <p class="ui:m-0">
         {{ patron.street }}<br>
         {{ patron.postal_code }} {{ patron.city }}<br>
         {{ patron.email }}
       </p>
-      @if (patron | patronBlockedMessage; as message) {
-        <p-message
-          [text]="message"
-          severity="danger"
-          showTransitionOptions="0ms"
-        />
+      @if (patronBlockedMsg(); as message) {
+        <p-message severity="error" showTransitionOptions="0ms">{{ message }}</p-message>
       }
     </p-card>
   }
-  <form [formGroup]="form" (ngSubmit)="submit(model)">
+  <form [formGroup]="form" (ngSubmit)="submit(model()!)">
     <div class="ui:flex ui:gap-2 ui:flex-col">
-      <formly-form [form]="form" [fields]="formFields" [model]="model" />
+      <formly-form [form]="form" [fields]="formFields()!" [model]="model()!" />
       <div class="ui:flex ui:justify-end">
         <p-button
           id="new-request-button"
           type="submit"
           size="small"
-          [disabled]="!form.valid || requestInProgress"
+          [disabled]="!form.valid || requestInProgress()"
         >
-          @if (!requestInProgress) {
+          @if (!requestInProgress()) {
             {{ 'New request' | translate }}
           } @else {
             <i class="fa fa-spinner fa-spin"></i>&nbsp;
@@ -71,7 +61,7 @@
       </div>
     </div>
   </form>
-</div>
+  </div>
 } @placeholder {
   <i class="fa fa-spin fa-spinner"></i>&nbsp;{{ 'Loading in progress…' | translate }}
 }

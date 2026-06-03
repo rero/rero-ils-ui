@@ -15,8 +15,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { Component, Input } from '@angular/core';
+import { Component, input, ChangeDetectionStrategy} from '@angular/core';
 import { DateTime } from 'luxon';
+import { TranslateDirective } from '@ngx-translate/core';
+import { AsyncPipe } from '@angular/common';
+import { DateTranslatePipe, GetRecordPipe } from '@rero/ng-core';
 
 @Component({
     selector: 'admin-holding-item-temporary-item-type',
@@ -28,8 +31,8 @@ import { DateTime } from 'luxon';
           <i class="fa fa-exclamation-triangle text-warning"></i>
         </dt>
         <dd>
-          {{ record.metadata.temporary_item_type.pid | getRecord:'item_types': 'field':'name' | async }}
-          @if (record.metadata.temporary_item_type.end_date; as endDate) {
+          {{ record().metadata.temporary_item_type.pid | getRecord:'item_types': 'field':'name' | async }}
+          @if (record().metadata.temporary_item_type.end_date; as endDate) {
             &nbsp;<span class="ui:text-sm ui:text-muted-color">
               (<i class="fa fa-long-arrow-right" aria-hidden="true"></i> {{ endDate | dateTranslate :'shortDate' }})
             </span>
@@ -38,17 +41,18 @@ import { DateTime } from 'luxon';
       </dl>
     }
   `,
-    standalone: false
+    imports: [TranslateDirective, AsyncPipe, DateTranslatePipe, GetRecordPipe],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class HoldingItemTemporaryItemTypeComponent {
 
   /** Item record */
-  @Input() record: any;
+  record = input<any>();
 
 
   hasTemporaryItemType(): boolean {
-    if ('temporary_item_type' in this.record.metadata) {
-      const endDateValue = this.record.metadata.temporary_item_type.end_date || undefined;
+    if ('temporary_item_type' in this.record().metadata) {
+      const endDateValue = this.record().metadata.temporary_item_type.end_date || undefined;
       return !(endDateValue && DateTime.fromISO(endDateValue) < DateTime.now());
     }
     return false;

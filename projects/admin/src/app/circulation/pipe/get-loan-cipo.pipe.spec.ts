@@ -45,8 +45,7 @@ describe('GetLoanCipoPipe', () => {
     },
     allow_requests: false,
     is_default: false,
-    policy_library_level: false,
-  };
+    policy_library_level: false };
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -71,7 +70,7 @@ describe('GetLoanCipoPipe', () => {
   });
 
   it('should return the circulation policy', () => {
-    spyOn(loanService, 'getCirculationPolicy').and.returnValue(of(circulationPolicy));
+    vi.spyOn(loanService, 'getCirculationPolicy').mockReturnValue(of(circulationPolicy));
     service.transform(loan)
       .subscribe((result: CircPolicy) => expect(result).toEqual(circulationPolicy));
   });

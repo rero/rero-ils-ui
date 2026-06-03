@@ -14,8 +14,8 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component } from '@angular/core';
-import { FieldWrapper } from '@ngx-formly/core';
+import { Component, ChangeDetectionStrategy} from '@angular/core';
+import { FieldWrapper, FormlyModule } from '@ngx-formly/core';
 
 @Component({
     selector: 'admin-formly-input-no-label-wrapper',
@@ -29,6 +29,7 @@ import { FieldWrapper } from '@ngx-formly/core';
     }
   </div>
   `,
-    standalone: false
+    imports: [FormlyModule],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class InputNoLabelWrapperComponent extends FieldWrapper {}

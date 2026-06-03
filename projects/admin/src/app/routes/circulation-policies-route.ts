@@ -15,140 +15,136 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { FormlyFieldConfig } from '@ngx-formly/core';
-import { _ } from "@ngx-translate/core";
+import { _ } from '@ngx-translate/core';
 import {
+  ActionStatus,
   ComponentCanDeactivateGuard,
-  DetailComponent, EditorComponent, JSONSchema7, Record,
-  RecordSearchPageComponent, RecordService, RouteInterface
+  DetailComponent,
+  EditorComponent,
+  JSONSchema7,
+  RecordData,
+  RecordSearchPageComponent,
+  RecordService,
+  RecordType,
+  RouteDataTypesInterface,
 } from '@rero/ng-core';
-import { PERMISSIONS, PERMISSION_OPERATOR, Tools, User } from '@rero/shared';
+import { PERMISSIONS, PERMISSION_OPERATOR, Tools } from '@rero/shared';
 import { of } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { CAN_ACCESS_ACTIONS, CanAccessGuard } from '../guard/can-access.guard';
-import { PermissionGuard } from '../guard/permission.guard';
+import { ResolveFn, Routes } from '@angular/router';
+import { CAN_ACCESS_ACTIONS, canAccessGuard } from '../guard/can-access.guard';
+import { permissionGuard } from '../guard/permission.guard';
 import { CircPoliciesBriefViewComponent } from '../record/brief-view/circ-policies-brief-view.component';
 import { CircPolicyDetailViewComponent } from '../record/detail-view/circ-policy-detail-view/circ-policy-detail-view.component';
-import { OrganisationService } from '../service/organisation.service';
 import { BaseRoute } from './base-route';
 
-export class CirculationPoliciesRoute extends BaseRoute implements RouteInterface {
+export const circulationPoliciesRouteResolver: ResolveFn<Partial<RecordType>[]> = () =>
+  new CirculationPoliciesRoute().getTypes();
 
+export const circulationPoliciesRoutes: Routes = [
+  {
+    path: '',
+    component: RecordSearchPageComponent,
+    title: _('Circulation policies'),
+    canActivate: [permissionGuard],
+    data: {
+      permissions: [PERMISSIONS.CIPO_ACCESS, PERMISSIONS.CIPO_SEARCH],
+      operator: PERMISSION_OPERATOR.AND,
+    },
+  },
+  {
+    path: 'detail/:pid',
+    component: DetailComponent,
+    title: _('Circulation policy'),
+    canActivate: [canAccessGuard],
+    data: {
+      action: CAN_ACCESS_ACTIONS.READ,
+    },
+  },
+  {
+    path: 'edit/:pid',
+    component: EditorComponent,
+    title: _('Circulation policy'),
+    canActivate: [canAccessGuard],
+    canDeactivate: [ComponentCanDeactivateGuard],
+    data: {
+      action: CAN_ACCESS_ACTIONS.UPDATE,
+    },
+  },
+  {
+    path: 'new',
+    component: EditorComponent,
+    title: _('Circulation policy'),
+    canActivate: [permissionGuard],
+    canDeactivate: [ComponentCanDeactivateGuard],
+    data: {
+      permissions: [PERMISSIONS.CIPO_CREATE],
+    },
+  },
+];
+
+class CirculationPoliciesRoute extends BaseRoute implements RouteDataTypesInterface {
   /** Route name */
   readonly name = 'circ_policies';
 
   /** Record type */
   readonly recordType = 'circ_policies';
 
-  /**
-   * Get Configuration
-   * @return Object
-   */
-  getConfiguration() {
-    return {
-      matcher: (url: any) => this.routeMatcher(url, this.name),
-      children: [
-        {
-          path: '',
-          component: RecordSearchPageComponent,
-          title: _('Circulation policies'),
-          canActivate: [ PermissionGuard ],
-          data: {
-            permissions: [ PERMISSIONS.CIPO_ACCESS, PERMISSIONS.CIPO_SEARCH ],
-            operator: PERMISSION_OPERATOR.AND
-          }
+  getTypes(): Partial<RecordType>[] {
+    return [
+      {
+        key: this.name,
+        label: _('Circulation policies'),
+        editorSettings: {
+          longMode: true,
         },
-        {
-          path: 'detail/:pid',
-          component: DetailComponent,
-          title: _('Circulation policy'),
-          canActivate: [ CanAccessGuard ],
-          data: {
-            action: CAN_ACCESS_ACTIONS.READ
+        component: CircPoliciesBriefViewComponent,
+        detailComponent: CircPolicyDetailViewComponent,
+        searchFilters: [this.expertSearchFilter()],
+        canAdd: () =>
+          of({ can: this.routeToolService.appStore.canAccess(PERMISSIONS.CIPO_CREATE) } as ActionStatus),
+        permissions: (record: RecordData) => this.routeToolService.permissions(record, this.recordType),
+        preCreateRecord: (data) => {
+          if (data.parent == null) {
+            data.organisation = {
+              $ref: this.routeToolService.apiService.getRefEndpoint('organisations', this.routeToolService.appStore.currentOrganisationPid()),
+            };
           }
+          return data;
         },
-        {
-          path: 'edit/:pid',
-          component: EditorComponent,
-          title: _('Circulation policy'),
-          canActivate: [ CanAccessGuard ],
-          canDeactivate: [ ComponentCanDeactivateGuard ],
-          data: {
-            action: CAN_ACCESS_ACTIONS.UPDATE
+        formFieldMap: ((field: FormlyFieldConfig, jsonSchema: JSONSchema7): FormlyFieldConfig => {
+          const formWidget = jsonSchema.widget;
+          if (formWidget?.formlyConfig?.props?.fieldMap) {
+            switch (formWidget.formlyConfig.props.fieldMap) {
+              case 'library':
+                return this._populateLibraryByCurrentUser(field);
+              case 'notification_template':
+                return this._populateTemplate(field);
+              case 'amount':
+                return this._amountSymbol(field);
+              case 'fee_amount':
+                return this._feeAmountSymbol(field);
+            }
           }
-        },
-        {
-          path: 'new',
-          component: EditorComponent,
-          title: _('Circulation policy'),
-          canActivate: [ PermissionGuard ],
-          canDeactivate: [ ComponentCanDeactivateGuard ],
-          data: {
-            permissions: [ PERMISSIONS.CIPO_CREATE ]
-          }
-        }
-      ],
-      data: {
-        types: [
+          return field;
+        }) as any,
+        sortOptions: [
           {
-            key: this.name,
-            label: _('Circulation policies'),
-            editorSettings: {
-              longMode: true
-            },
-            component: CircPoliciesBriefViewComponent,
-            detailComponent: CircPolicyDetailViewComponent,
-            searchFilters: [
-              this.expertSearchFilter()
-            ],
-            canAdd: () => of({ can: this.routeToolService.permissionsService.canAccess(PERMISSIONS.CIPO_CREATE) }),
-            permissions: (record: any) => this.routeToolService.permissions(record, this.recordType),
-            preCreateRecord: (data: any) => {
-              const user: User = this.routeToolService.userService.user;
-              if (data.parent == null) {
-                data.organisation = {
-                  $ref: this.routeToolService.apiService.getRefEndpoint(
-                    'organisations',
-                    user.currentOrganisation
-                  )
-                };
-              }
-              return data;
-            },
-            formFieldMap: (field: FormlyFieldConfig, jsonSchema: JSONSchema7): FormlyFieldConfig => {
-              const formWidget = jsonSchema.widget;
-              if (formWidget?.formlyConfig?.props?.fieldMap) {
-                switch (formWidget.formlyConfig.props.fieldMap) {
-                  case 'library':
-                    return this._populateLibraryByCurrentUser(field);
-                  case 'notification_template':
-                    return this._populateTemplate(field);
-                  case 'amount':
-                    return this._amountSymbol(field);
-                  case 'fee_amount':
-                    return this._feeAmountSymbol(field);
-                }
-              }
-              return field;
-            },
-            sortOptions: [
-              {
-                label: _('Relevance'),
-                value: 'bestmatch',
-                icon: 'fa fa-sort-amount-desc',
-                defaultQuery: true
-              },
-              {
-                label: _('Name'),
-                value: 'name',
-                icon: 'fa fa-sort-alpha-asc',
-                defaultNoQuery: true
-              }
-            ],
-            showFacetsIfNoResults: true
-          }
-        ]
-      }
-    };
+            label: _('Relevance'),
+            value: 'bestmatch',
+            icon: 'fa fa-sort-amount-desc',
+            defaultQuery: true,
+          },
+          {
+            label: _('Name'),
+            value: 'name',
+            icon: 'fa fa-sort-alpha-asc',
+            defaultNoQuery: true,
+          },
+        ],
+        showFacetsIfNoResults: true,
+      },
+    ];
   }
 
   /**
@@ -161,33 +157,23 @@ export class CirculationPoliciesRoute extends BaseRoute implements RouteInterfac
     field.hooks = {
       ...field.hooks,
       afterContentInit: (f: FormlyFieldConfig) => {
-        const {user} = this.routeToolService.userService;
-        const { apiService, recordService } = this.routeToolService;
-        const query = `organisation.pid:${user.currentOrganisation}`;
-        f.props.options = recordService.getRecords(
-          'libraries',
-          query, 1,
-          RecordService.MAX_REST_RESULTS_SIZE,
-          undefined,
-          undefined,
-          undefined,
-          'name'
-        ).pipe(
-          map((result: Record) =>
-            this.routeToolService.recordService.totalHits(result.hits.total) === 0 ? [] : result.hits.hits),
-          map((hits: any) => {
-            return hits.map((hit: any) => {
-              return {
-                label: hit.metadata.name,
-                value: apiService.getRefEndpoint(
-                  'libraries',
-                  hit.metadata.pid
-                )
-              };
-            });
-          })
-        );
-      }
+        const apiService = this.routeToolService.apiService;
+        const recordService: RecordService = this.routeToolService.recordService as RecordService;
+        const query = `organisation.pid:${this.routeToolService.appStore.currentOrganisationPid()}`;
+        f.props!.options = recordService
+          .getRecords('libraries', { query, page: 1, itemsPerPage: RecordService.MAX_REST_RESULTS_SIZE, sort: 'name' })
+          .pipe(
+            map((result: any) => (+recordService.totalHits(result.hits.total) === 0 ? [] : result.hits.hits)),
+            map((hits: any) => {
+              return hits.map((hit: any) => {
+                return {
+                  label: hit.metadata.name,
+                  value: apiService.getRefEndpoint('libraries', hit.metadata.pid),
+                };
+              });
+            })
+          );
+      },
     };
     return field;
   }
@@ -202,16 +188,14 @@ export class CirculationPoliciesRoute extends BaseRoute implements RouteInterfac
     field.hooks = {
       ...field.hooks,
       afterContentInit: (f: FormlyFieldConfig) => {
-        f.props.options = this.routeToolService.httpClient
-          .get('/api/notifications/templates/list')
-          .pipe(
-            map((response: any) => {
-              return response.templates.map((tpl: any) => {
-                return { label: tpl, value: tpl };
-              });
-            })
-          );
-      }
+        f.props!.options = this.routeToolService.httpClient.get('/api/notifications/templates/list').pipe(
+          map((response: any) => {
+            return response.templates.map((tpl: any) => {
+              return { label: tpl, value: tpl };
+            });
+          })
+        );
+      },
     };
     return field;
   }
@@ -222,13 +206,12 @@ export class CirculationPoliciesRoute extends BaseRoute implements RouteInterfac
    * @return FormlyFieldConfig
    */
   private _amountSymbol(field: FormlyFieldConfig): FormlyFieldConfig {
-    const service = this.routeToolService.getInjectorToken(OrganisationService);
-    field.props.addonLeft = [
-      Tools.currencySymbol(
-        this.routeToolService.translateService.currentLang,
-        service.organisation.default_currency
-      )
-    ];
+    const org = this.routeToolService.appStore.organisation();
+    if (org) {
+      field.props!.addonLeft = [
+        Tools.currencySymbol(this.routeToolService.translateService.getCurrentLang(), org.default_currency!),
+      ];
+    }
     return field;
   }
 
@@ -239,9 +222,7 @@ export class CirculationPoliciesRoute extends BaseRoute implements RouteInterfac
    */
   private _feeAmountSymbol(field: FormlyFieldConfig): FormlyFieldConfig {
     field = this._amountSymbol(field);
-    field.props.addonRight = [
-      '/day'
-    ];
+    field.props!.addonRight = ['/day'];
     return field;
   }
 }

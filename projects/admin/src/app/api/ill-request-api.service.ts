@@ -16,7 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { inject, Injectable } from '@angular/core';
-import { Record, RecordService } from '@rero/ng-core';
+import type { EsResult } from '@rero/ng-core';
+import { RecordService } from '@rero/ng-core';
 import { BaseApi } from '@rero/shared';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
@@ -42,11 +43,10 @@ export class IllRequestApiService extends BaseApi {
     // eslint-disable-next-line @typescript-eslint/consistent-indexed-object-style
     filters?: {[key: string]: string},
     sort = '-created'
-  ): Observable<Record | Error> {
+  ): Observable<any> {
     const query = `patron.pid:${patronPid}`;
     return this.recordService
-      .getRecords(this.RESOURCE_NAME, query , 1, RecordService.MAX_REST_RESULTS_SIZE,
-                  undefined, filters, BaseApi.reroJsonheaders, sort)
-      .pipe(map((result: Record) => result.hits.hits));
+      .getRecords(this.RESOURCE_NAME, { query, page: 1, itemsPerPage: RecordService.MAX_REST_RESULTS_SIZE, preFilters: filters, headers: BaseApi.reroJsonheaders, sort })
+      .pipe(map((result: EsResult) => result.hits.hits));
   }
 }

@@ -15,27 +15,27 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-@if (record) {
+@if (library(); as rec) {
   <section id="library-profile" class="ui:flex ui:flex-col ui:gap-2 ui:mb-4">
     <div class="ui:rounded-border ui:border ui:border-surface ui:flex ui:gap-6 ui:p-6">
       <div class="ui:bg-surface-500 ui:rounded-full ui:w-40 ui:h-40 ui:flex ui:items-center ui:justify-center">
         <i class="fa fa-university fa-4x ui:text-white"></i>
       </div>
     <div class="ui:grow">
-        <h1>{{ record.name }}</h1>
+        <h1>{{ rec.name }}</h1>
         <dl class="metadata">
           <dt><i class="fa fa-code"></i>&nbsp;<span translate>Code</span></dt>
-          <dd>{{ record.code }}</dd>
-          @if (record.email) {
+          <dd>{{ rec.code }}</dd>
+          @if (rec.email) {
             <dt><i class="fa fa-at"></i>&nbsp;<span translate>Email</span></dt>
-            <dd>{{ record.email }}</dd>
+            <dd>{{ rec.email }}</dd>
           }
-          @if (record.address) {
+          @if (rec.address) {
             <dt><i class="fa fa-home"></i>&nbsp;<span translate>Address</span></dt>
-            <dd>{{ record.address }}</dd>
+            <dd>{{ rec.address }}</dd>
           }
           <dt><i class="fa fa-language"></i>&nbsp;<span translate>Language</span></dt>
-          <dd>{{ ('lang_' + record.communication_language) | translate | ucfirst }}</dd>
+          <dd>{{ ('lang_' + rec.communication_language) | translate | ucfirst }}</dd>
         </dl>
       </div>
     </div>
@@ -50,23 +50,23 @@
             <i class="fa fa-map-marker"></i>&nbsp;<span translate>Locations</span>
           </div>
           <p-button
-            [hidden]="!(isUserCanAddLocation && locTab.active())"
+            [hidden]="!(isUserCanAddLocation() && locTab.active())"
             icon="fa fa-plus-square-o"
             [label]="'Add'|translate"
             outlined
             [routerLink]="['/', 'records', 'locations', 'new']"
-            [queryParams]="{ library: record.pid }"
+            [queryParams]="{ library: rec.pid }"
             styleClass="ui:ml-2 align-ui:items-right"
           />
 
         </div>
       </p-accordion-header>
       <p-accordion-content>
-        @if (locations) {
+        @if (locations().length > 0) {
           <ul class="ui:list-none">
-            @for (location of locations; track location.metadata.pid; let last=$last) {
+            @for (location of locations(); track location.metadata.pid; let last=$last) {
               <li class="ui:my-2 ui:odd:bg-surface-50">
-                <admin-location [location]="location" [library]="record" (deleteLocation)="deleteLocation($event)" />
+                <admin-location [location]="location" [library]="rec" (deleteLocation)="deleteLocation($event)" />
               </li>
             }
           </ul>
@@ -84,7 +84,7 @@
             <span translate>Opening Hours</span>
           </div>
           <div class="ui:flex ui:gap-1">
-            @for (day of record.opening_hours; track $index) {
+            @for (day of rec.opening_hours; track $index) {
               <i class="fa" [ngClass]="{'fa-times-circle-o text-error': !day.is_open, 'fa-circle text-success': day.is_open}"></i>
             }
           </div>
@@ -92,14 +92,14 @@
       </p-accordion-header>
       <p-accordion-content>
         <div class="ui:mt-2">
-          @for (day of record.opening_hours; track $index) {
+          @for (day of rec.opening_hours; track $index) {
             <admin-day-opening-hours [day]="day" />
           }
         </div>
       </p-accordion-content>
     </p-accordion-panel>
     <!-- exception dates ================================================== -->
-    @if (record.exception_dates) {
+    @if (rec.exception_dates) {
       <p-accordion-panel value="2">
         <p-accordion-header>
           <div class="ui:flex ui:w-full ui:items-center ui:justify-between ui:mr-2">
@@ -107,12 +107,12 @@
             <i class="fa fa-exclamation-triangle"></i>&nbsp;
             <span translate>Exceptions (holidays, etc.)</span>
           </div>
-            <p-badge [value]="record.exception_dates.length" />
+            <p-badge [value]="rec.exception_dates.length" />
         </div>
         </p-accordion-header>
         <p-accordion-content>
           <div class="ui:mt-2">
-            @for (exception of record.exception_dates; track $index) {
+            @for (exception of rec.exception_dates; track $index) {
               <div class="ui:odd:bg-surface-50">
                 <admin-exception-date [exception]="exception" />
               </div>
@@ -131,7 +131,7 @@
       </p-accordion-header>
       <p-accordion-content>
         <div class="ui:mt-2 ui:mx-2">
-          @if (record.notification_settings; as notificationSettings) {
+          @if (rec.notification_settings; as notificationSettings) {
             <dl class="metadata">
               @for (setting of notificationSettings; track $index) {
                 <dt>{{ setting.type | translate | ucfirst }}</dt>
@@ -158,7 +158,7 @@
       </p-accordion-header>
       <p-accordion-content>
         <div class="ui:mt-2 ui:mx-2">
-          @if (record.acquisition_settings; as acquisitionSettings) {
+          @if (rec.acquisition_settings; as acquisitionSettings) {
             <p-divider align="left">
               <div>
                 <i class="fa fa-book"></i>&nbsp;
@@ -178,7 +178,7 @@
               }
             </div>
           }
-          @if (record.serial_acquisition_settings; as acquisitionSettings) {
+          @if (rec.serial_acquisition_settings; as acquisitionSettings) {
             <p-divider align="left">
               <div>
                 <i class="fa fa-newspaper-o"></i>&nbsp;
@@ -202,7 +202,7 @@
       </p-accordion-content>
     </p-accordion-panel>
     <!-- rollover settings ================================================ -->
-    @if (record.rollover_settings) {
+    @if (rec.rollover_settings) {
       <p-accordion-panel value="5">
         <p-accordion-header>
           <div class="ui:flex ui:w-full ui:items-center ui:justify-between ui:mr-2">
@@ -212,8 +212,8 @@
             </div>
             <i class="fa"
                 [ngClass]="{
-                  'fa-times text-error': record.rollover_settings.account_transfer === 'rollover_no_transfer',
-                  'fa-check text-success': record.rollover_settings.account_transfer === 'rollover_allocated_amount'
+                  'fa-times text-error': rec.rollover_settings.account_transfer === 'rollover_no_transfer',
+                  'fa-check text-success': rec.rollover_settings.account_transfer === 'rollover_allocated_amount'
                 }"
             ></i>
           </div>
@@ -222,7 +222,7 @@
           <div class="ui:mt-2 ui:mx-2">
             <dl class="metadata">
               <dt translate>Account transfer</dt>
-              <dd>{{ record.rollover_settings.account_transfer | translate }}</dd>
+              <dd>{{ rec.rollover_settings.account_transfer | translate }}</dd>
             </dl>
           </div>
         </p-accordion-content>

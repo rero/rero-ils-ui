@@ -17,7 +17,7 @@
 
 import { inject, Injectable } from '@angular/core';
 import { RecordService } from '@rero/ng-core';
-import { Record } from '@rero/ng-core/lib/record/record';
+import type { EsResult } from '@rero/ng-core';
 import { map } from 'rxjs/operators';
 
 @Injectable({
@@ -37,11 +37,9 @@ export class LibraryService {
   get count$() {
     return this.recordService.getRecords(
       LibraryService.resource,
-      undefined,
-      1,
-      1
+      { page: 1, itemsPerPage: 1 }
     ).pipe(
-      map((results: Record) => this.recordService.totalHits(results.hits.total))
+      map((results: EsResult) => this.recordService.totalHits(results.hits.total))
     );
   }
 
@@ -60,7 +58,7 @@ export class LibraryService {
    * @return Observable
    */
   findAllOrderBy$(order = 'name') {
-    return this._query(undefined);
+    return this._query(undefined, order);
   }
 
   /**
@@ -70,7 +68,7 @@ export class LibraryService {
    * @return Observable
    */
   findByLibrariesPidAndOrderBy$(pids: string[], order = 'name') {
-    return this._query('pid:' + pids.join(' OR pid:'));
+    return this._query('pid:' + pids.join(' OR pid:'), order);
   }
 
   /**
@@ -80,8 +78,8 @@ export class LibraryService {
    */
   private _query(query: any, order = 'name') {
     return this.recordService.getRecords(
-      LibraryService.resource, query, 1, RecordService.MAX_REST_RESULTS_SIZE,
-      undefined, undefined, undefined, order
+      LibraryService.resource,
+      { query, page: 1, itemsPerPage: RecordService.MAX_REST_RESULTS_SIZE, sort: order }
     );
   }
 }

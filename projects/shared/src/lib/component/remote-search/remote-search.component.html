@@ -14,12 +14,13 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<ng-core-search-autocomplete
-  [placeholder]="placeholder | translate | ucfirst"
-  [value]="value"
-  [recordTypes]="recordTypes"
-  [inputStyleClass]="inputstyleclass"
-  [styleClass]="styleclass"
-  scrollHeight="400px"
-  [hidden]="hideSearchElement"
-  (onSearch)="onSearch($event)" />
+@if (!hideSearchElement()) {
+  <ng-core-search-autocomplete
+    [placeholder]="placeholder() | translate | ucfirst"
+    [value]="value()"
+    [recordTypes]="recordTypes"
+    [inputStyleClass]="inputstyleclass()"
+    [styleClass]="styleclass()"
+    scrollHeight="400px"
+    (searchQuery)="onSearch($event)" />
+}

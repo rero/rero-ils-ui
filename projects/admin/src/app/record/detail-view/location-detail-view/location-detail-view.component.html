@@ -14,7 +14,7 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-@if (record && record.metadata; as data) {
+@if (record()?.metadata; as data) {
   <h1 class="ui:mb-4">{{ data.name | translate }}</h1>
   <article>
       <!-- DETAILS -->

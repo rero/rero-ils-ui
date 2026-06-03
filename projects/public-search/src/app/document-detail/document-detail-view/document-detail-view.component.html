@@ -16,28 +16,28 @@
 -->
 
 <ngx-loading-bar [includeSpinner]="false" height="3px" />
-@let document = documentpid | getRecord: 'documents' | async;
+@let document = documentpid() | getRecord: 'documents' | async;
 @if (document) {
   <p-tabs [scrollable]="true" value="get">
     <p-tablist>
       <p-tab value="get" translate>Get</p-tab>
       <p-tab value="description" translate>Description</p-tab>
-      @if (showinfo !== 'false') {
+      @if (showinfo() !== 'false') {
         <p-tab value="more" translate>More Info</p-tab>
       }
     </p-tablist>
     <p-tabpanels>
       <p-tabpanel value="get">
         <div class="ui:mb-2">
-          <shared-doc-files [documentPid]="$any(document).metadata.pid" [routerPath]="['/', viewcode, 'search', 'documents']" [useHref]="true"/>
+          <shared-doc-files [documentPid]="$any(document).metadata.pid" [routerPath]="['/', viewcode(), 'search', 'documents']" [useHref]="true"/>
         </div>
-        <public-search-holdings [viewcode]="viewcode" [documentPid]="$any(document).metadata.pid" />
-        <public-search-electronic-holdings [viewcode]="viewcode" [documentPid]="$any(document).metadata.pid" />
+        <public-search-holdings [viewcode]="viewcode()" [documentPid]="$any(document).metadata.pid" />
+        <public-search-electronic-holdings [viewcode]="viewcode()" [documentPid]="$any(document).metadata.pid" />
       </p-tabpanel>
       <p-tabpanel value="description">
-        <shared-document-description [record]="document" [viewcode]="viewcode" [isPublicView]="true" />
+        <shared-document-description [record]="document" [viewcode]="viewcode()" [isPublicView]="true" />
       </p-tabpanel>
-      @if (showinfo !== 'false') {
+      @if (showinfo() !== 'false') {
         <p-tabpanel value="more" class="ui:[&_more-info]:!block">
           <ng-content select="more-info" />
         </p-tabpanel>

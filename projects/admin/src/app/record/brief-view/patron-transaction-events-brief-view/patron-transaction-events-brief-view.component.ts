@@ -15,39 +15,46 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, computed, inject, Input, OnInit, signal, WritableSignal } from '@angular/core';
-import { ResultItem } from '@rero/ng-core';
+import { Component, computed, inject, input, OnInit, signal, WritableSignal, ChangeDetectionStrategy} from '@angular/core';
+
 import { PatronTransaction, PatronTransactionEvent, PatronTransactionEventType } from '@app/admin/classes/patron-transaction';
-import { OrganisationService } from '@app/admin/service/organisation.service';
-import { Organisation } from '@app/admin/classes/core';
+import { AppStore } from '@rero/shared';
+
 import { PatronTransactionsService } from '../../../service/patron-transactions.service';
+import { PatronTransactionEventOverdueComponent } from './patron-transaction-event-overdue.component';
+import { PatronTransactionEventDefaultComponent } from './patron-transaction-event-default.component';
+import { Bind } from 'primeng/bind';
+import { Tag } from 'primeng/tag';
+import { CurrencyPipe, DatePipe } from '@angular/common';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
     selector: 'admin-patron-transaction-events-brief-view',
     templateUrl: './patron-transaction-events-brief-view.component.html',
-    standalone: false
+    imports: [PatronTransactionEventOverdueComponent, PatronTransactionEventDefaultComponent, Bind, Tag, CurrencyPipe, DatePipe, TranslatePipe],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class PatronTransactionEventsBriefViewComponent implements ResultItem, OnInit {
+export class PatronTransactionEventsBriefViewComponent implements OnInit {
 
-  private organisationService: OrganisationService = inject(OrganisationService);
+  private appStore = inject(AppStore);
   private patronTransactionService: PatronTransactionsService = inject(PatronTransactionsService);
 
   // COMPONENT ATTRIBUTES =====================================================
   /** Information to build the URL on the record detail view. */
-  @Input() detailUrl: { link: string; external: boolean };
+  detailUrl = input<{ link: string; external: boolean }>();
   /** The record to perform. */
-  @Input() record: any;
+  record = input<any>();
   /** The type of the record. */
-  @Input() type: string;
+  type = input<string>();
 
   /** is all data are loaded */
-  loaded = false;
+  loaded = signal(false);
   /** transaction object representation from record */
   event: WritableSignal<PatronTransactionEvent> = signal(null);
   /** Parent parent transaction */
   parent: PatronTransaction;
   /** current organisation */
-  organisation: Organisation;
+  readonly organisation = computed(() => this.appStore.organisation());
   /** reference to PatronTransactionEventType */
   eventTypes = PatronTransactionEventType;
   severity = computed(() => {
@@ -65,13 +72,12 @@ export class PatronTransactionEventsBriefViewComponent implements ResultItem, On
 
   /** OnInit hook */
   ngOnInit(): void {
-    this.organisation = this.organisationService.organisation;
-    this.event.set(new PatronTransactionEvent(this.record.metadata));
+    this.event.set(new PatronTransactionEvent(this.record().metadata));
     this.patronTransactionService
       .getPatronTransaction(this.event().parent.pid)
       .subscribe((parent: PatronTransaction) => {
         this.parent = parent;
-        this.loaded = true;
+        this.loaded.set(true);
       });
   }
 

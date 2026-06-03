@@ -19,11 +19,9 @@ import { inject, Pipe, PipeTransform } from '@angular/core';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { PatronService } from '../service/patron.service';
+import { formatPatronName } from '../utils/patron.utils';
 
-@Pipe({
-    name: 'patronName',
-    standalone: false
-})
+@Pipe({ name: 'patronName' })
 export class PatronNamePipe implements PipeTransform {
 
   private patronService: PatronService = inject(PatronService);
@@ -35,7 +33,7 @@ export class PatronNamePipe implements PipeTransform {
    */
   transform(patronPid: string): Observable<undefined | string> {
     return this.patronService.getPatronByPid(patronPid).pipe(
-      map((metadata: any) => this.patronService.getFormattedName(metadata))
+      map((metadata: any) => formatPatronName(metadata))
     )
   }
 

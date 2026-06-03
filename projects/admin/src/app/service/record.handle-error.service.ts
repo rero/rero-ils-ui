@@ -38,7 +38,7 @@ export class RecordHandleErrorService extends CoreRecordHandleErrorService {
    * @returns Observable
    */
   handleError(error: HttpErrorResponse, resourceName?: string): Observable<never> {
-    if (resourceName.startsWith('import_')) {
+    if (resourceName?.startsWith('import_')) {
       this.messageService.add({
         severity: 'error',
         summary: this.translateService.instant('Import from the web'),

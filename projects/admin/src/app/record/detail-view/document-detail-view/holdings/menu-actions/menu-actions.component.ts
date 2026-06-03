@@ -14,39 +14,44 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, computed, inject, input, resource } from '@angular/core';
+import { Component, computed, effect, inject, input, signal, ChangeDetectionStrategy} from '@angular/core';
 import { RecordPermissionService } from '@app/admin/service/record-permission.service';
-import { TranslateService } from '@ngx-translate/core';
-import { IPermissions, PERMISSIONS, PermissionsService } from '@rero/shared';
-import { EsRecord } from 'projects/shared/src/public-api';
-import { firstValueFrom, forkJoin } from 'rxjs';
+import { TranslateService, TranslatePipe } from '@ngx-translate/core';
+import { AppStore, IPermissions, PERMISSIONS, PermissionsDirective } from '@rero/shared';
+import { EsRecord } from '@rero/shared';
+import { forkJoin } from 'rxjs';
+import { Bind } from 'primeng/bind';
+import { Button } from 'primeng/button';
+import { Menu } from 'primeng/menu';
 
 @Component({
-  selector: 'admin-menu-actions',
-  standalone: false,
-  templateUrl: './menu-actions.component.html'
+    selector: 'admin-menu-actions',
+    templateUrl: './menu-actions.component.html',
+    imports: [PermissionsDirective, Bind, Button, TranslatePipe, Menu],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class MenuActionsComponent {
 
-  protected permissionsService = inject(PermissionsService);
+  protected appStore = inject(AppStore);
   protected recordPermissionService = inject(RecordPermissionService);
   protected translateService = inject(TranslateService);
 
   document = input.required<EsRecord>();
 
-  permissions = resource({
-    request: () => this.document(),
-    loader: () =>
-      firstValueFrom(
-        forkJoin([
-          this.recordPermissionService.getPermission('holdings'),
-          this.recordPermissionService.getPermission('items'),
-        ])
-      )
-  });
+  permissions = signal<[any, any] | null>(null);
+
+  constructor() {
+    effect(() => {
+      this.document(); // track document changes
+      forkJoin([
+        this.recordPermissionService.getPermission('holdings'),
+        this.recordPermissionService.getPermission('items'),
+      ]).subscribe(p => this.permissions.set(p));
+    });
+  }
 
   canAdd = computed(() => {
-    const p = this.permissions.value();
+    const p = this.permissions();
     if (!p) return false;
 
     const [hold, item] = p;
@@ -57,20 +62,20 @@ export class MenuActionsComponent {
   protected perms: IPermissions = PERMISSIONS;
 
   protected options = computed(() => {
-    const perms = this.permissions.value();
+    const perms = this.permissions();
     if (!perms) return [];
     return [
         {
           label: this.translateService.instant('an item'),
           routerLink: ['/', 'records', 'items', 'new'],
           queryParams: { document: this.document().metadata.pid },
-          visible: this.permissionsService.canAccess(PERMISSIONS.ITEM_CREATE)
+          visible: this.appStore.canAccess(PERMISSIONS.ITEM_CREATE)
         },
         {
           label: this.translateService.instant('a holdings'),
           routerLink: ['/', 'records', 'holdings', 'new'],
           queryParams: { document: this.document().metadata.pid },
-          visible: this.permissionsService.canAccess(PERMISSIONS.HOLD_CREATE)
+          visible: this.appStore.canAccess(PERMISSIONS.HOLD_CREATE)
         }
       ];
   });

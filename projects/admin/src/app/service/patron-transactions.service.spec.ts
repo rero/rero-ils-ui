@@ -18,7 +18,7 @@
 import { TestBed } from "@angular/core/testing";
 import { PatronTransactionsService } from "./patron-transactions.service";
 import { of } from "rxjs";
-import { apiResponse } from "projects/shared/src/tests/api";
+import { apiResponse } from "@rero/shared";
 import { patronTransaction } from "@rero/shared";
 import { RecordService } from "@rero/ng-core";
 import { PatronTransaction } from "../classes/patron-transaction";
@@ -27,8 +27,8 @@ describe('PatronTransactionsService', () => {
   let service: PatronTransactionsService;
 
   const response = {...apiResponse};
-  const recordServiceSpy = jasmine.createSpyObj('RecordService', ['getRecords', 'totalHits']);
-  recordServiceSpy.totalHits.and.returnValue(1);
+  const recordServiceSpy = { getRecords: vi.fn(), totalHits: vi.fn() };
+  recordServiceSpy.totalHits.mockReturnValue(1);
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -48,11 +48,10 @@ describe('PatronTransactionsService', () => {
   it('should return the patron transaction', () => {
     const transaction = {...patronTransaction};
     response.hits.hits = [transaction];
-    recordServiceSpy.getRecords.and.returnValue(of(response));
+    recordServiceSpy.getRecords.mockReturnValue(of(response));
 
     service.getPatronTransaction('1').subscribe((result: any) => {
       expect(result).toBeInstanceOf(PatronTransaction);
-      console.log('result', result);
       expect(result.type).toEqual('overdue');
     });
   });

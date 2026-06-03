@@ -17,10 +17,7 @@
  */
 import { Pipe, PipeTransform } from '@angular/core';
 
-@Pipe({
-    name: 'identifiedByLabel',
-    standalone: false
-})
+@Pipe({ name: 'identifiedByLabel' })
 export class IdentifiedByLabelPipe implements PipeTransform {
 
   /**

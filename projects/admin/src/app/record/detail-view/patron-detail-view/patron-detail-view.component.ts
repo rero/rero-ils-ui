@@ -15,11 +15,20 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { Component, inject, OnDestroy, OnInit } from '@angular/core';
-import { DetailRecord } from '@rero/ng-core/lib/record/detail/view/detail-record';
-import { IPermissions, PERMISSIONS, PermissionsService } from '@rero/shared';
-import { Observable, Subscription } from 'rxjs';
+import { Component, computed, inject, input, ChangeDetectionStrategy } from '@angular/core';
+import { AppStore, IPermissions, PERMISSIONS, PermissionsDirective, LinkPermissionsDirective, JoinPipe } from '@rero/shared';
 import { roleTagSeverity } from '../../../utils/roles';
+import { Bind } from 'primeng/bind';
+import { ButtonDirective } from 'primeng/button';
+import { RouterLink } from '@angular/router';
+import { Accordion, AccordionPanel, AccordionHeader, AccordionContent } from 'primeng/accordion';
+import { Ripple } from 'primeng/ripple';
+import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
+import { NgClass, AsyncPipe, I18nPluralPipe } from '@angular/common';
+import { Tag } from 'primeng/tag';
+import { PatronPermissionsComponent } from './patron-permissions/patron-permissions.component';
+import { DateTranslatePipe, GetRecordPipe, Nl2brPipe } from '@rero/ng-core';
+import { Message } from 'primeng/message';
 
 type PatronPhone = {
   value: string;
@@ -30,71 +39,30 @@ type PatronPhone = {
 @Component({
     selector: 'admin-patron-detail-view',
     templateUrl: './patron-detail-view.component.html',
-    standalone: false
+    imports: [Bind, ButtonDirective, PermissionsDirective, RouterLink, Accordion, AccordionPanel, Ripple, AccordionHeader, AccordionContent, TranslateDirective, NgClass, Tag, LinkPermissionsDirective, PatronPermissionsComponent, AsyncPipe, I18nPluralPipe, TranslatePipe, DateTranslatePipe, GetRecordPipe, JoinPipe, Nl2brPipe, Message],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class PatronDetailViewComponent implements OnInit, DetailRecord, OnDestroy {
+export class PatronDetailViewComponent {
 
-  private permissionsService: PermissionsService = inject(PermissionsService);
+  private appStore = inject(AppStore);
 
-  // COMPONENT ATTRIBUTES =====================================================
-  /** Data from patron we received */
-  record$: Observable<any>;
-  /** the api response record */
-  record: any;
-  /** Current displayed/used patron */
-  patron: any;
-  /** Patron phones */
-  phones: PatronPhone[] = [];
-  /** record type */
-  type: string;
-  /** Load operation logs on show */
-  showOperationLogs = false;
-  /** collapsed sections */
-  sectionCollapsed = {
-    user: false,
-    librarian: true,
-    patron: false,
-    permissions: true,
-    notes: false
-  };
+  readonly record = input<any>();
+  readonly type = input<string>('');
 
-  /** Subscription to (un)follow the record$ Observable */
-  private subscription$ = new Subscription();
+  readonly permissions: IPermissions = PERMISSIONS;
 
-  permissions: IPermissions = PERMISSIONS;
+  readonly patron = computed(() => this.record()?.metadata ?? null);
+  readonly phones = computed(() => {
+    const meta = this.record()?.metadata;
+    return meta ? this._processPhones(meta) : [];
+  });
 
-  get canAccessDisplayPermissions(): boolean {
-    return this.permissionsService.canAccess(PERMISSIONS.PERM_MANAGEMENT);
-  }
+  readonly canAccessDisplayPermissions = computed(() => this.appStore.canAccess(PERMISSIONS.PERM_MANAGEMENT));
 
-  /** OnInit hook */
-  ngOnInit() {
-    this.subscription$ = this.record$.subscribe((record) => {
-      this.record = record;
-      this.patron = record.metadata;
-      this.phones = this.processPhones(record.metadata);
-    });
-  }
-
-  /** OnDestroy hook */
-  ngOnDestroy() {
-    this.subscription$.unsubscribe();
-  }
-
-  // COMPONENTS FUNCTIONS =====================================================
-
-  /**
-   * Get the color badge to apply for a specific role
-   * @param role: the role to check.
-   * @return the primeng badge class to use for this role.
-   */
   getRoleTagSeverity(role: string): string {
     return roleTagSeverity(role);
   }
 
-  /** Get the badge color to use for a note type
-   *  @param noteType - the note type
-   */
   getNoteBadgeColor(noteType: string): string {
     switch (noteType) {
       case 'public_note': return 'info';
@@ -103,7 +71,7 @@ export class PatronDetailViewComponent implements OnInit, DetailRecord, OnDestro
     }
   }
 
-  private processPhones(record: any): PatronPhone[] {
+  private _processPhones(record: any): PatronPhone[] {
     const data: PatronPhone[] = [];
     if (record.mobile_phone) {
       data.push({value: record.mobile_phone, type: 'Mobile', weight: 10});

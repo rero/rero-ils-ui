@@ -33,7 +33,7 @@
 
     @if (holdingType === 'serial') {
     <div class="ui:col-span-2 ui:justify-end ui:flex">
-      @if (permissions) {
+      @if (permissions()) {
       <div class="ui:flex ui:gap-1 ui:mr-4">
         <p-button
           icon="fa fa-eye"
@@ -51,13 +51,13 @@
           class="ui:pointer-events-auto"
           [pTooltip]="cannotRequestTooltipContent"
           tooltipPosition="top"
-          [disabled]="!permissions.canRequest?.can"
-          [tooltipDisabled]="permissions.canRequest?.can"
+          [disabled]="!permissions().canRequest?.can"
+          [tooltipDisabled]="permissions().canRequest?.can"
         />
         <ng-template #cannotRequestTooltipContent>
           <span [innerHTML]="cannotRequestInfoMessage | nl2br"></span>
         </ng-template>
-        @if (permissions?.update?.can) {
+        @if (permissions()?.update?.can) {
         <p-button
           icon="fa fa-pencil"
           outlined
@@ -76,8 +76,8 @@
           (onClick)="delete()"
           [pTooltip]="tooltipContent"
           tooltipPosition="top"
-          [disabled]="!permissions.delete?.can"
-          [tooltipDisabled]="permissions.delete?.can"
+          [disabled]="!permissions().delete?.can"
+          [tooltipDisabled]="permissions().delete?.can"
         />
         <ng-template #tooltipContent>
           <span [innerHTML]="deleteInfoMessage | nl2br"></span>

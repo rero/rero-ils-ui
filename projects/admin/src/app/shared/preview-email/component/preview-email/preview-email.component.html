@@ -18,7 +18,7 @@
 <div class="ui:flex ui:flex-col ui:gap-2">
   <!-- PREVIEW TOP -->
   <ng-content select="[headerMessage]" />
-  @if (previewPosition === 'top') {
+  @if (previewPosition() === 'top') {
     <ng-container
       [ngTemplateOutlet]="messagePreview"
       [ngTemplateOutletContext]="{preview, position: ['previewMessage']}"
@@ -28,7 +28,7 @@
   <h5 translate>Who do you want to send the message to?</h5>
 
   <!-- SUGGESTED EMAILS -->
-  @if (emails.length > 0) {
+  @if (emails().length > 0) {
     <p-panel>
       <ng-template #header>
         <div class="p-panel-title">
@@ -41,7 +41,7 @@
       </div>
       </ng-template>
       <div class="ui:flex ui:gap-1 ui:mb-4 ui:mx-4">
-        @for (email of emails; track $index) {
+        @for (email of emails(); track $index) {
           <p-tag
             pDraggable="emails"
             [style]="{cursor: 'grab'}"
@@ -58,8 +58,8 @@
   <!-- RECIPIENTS -->
   <p-panel [header]="'Recipients' | translate">
     <div class="ui:grid ui:grid-cols-12 ui:gap-4 ui:mt-2 ui:mb-4 ui:mx-4">
-      @for (type of emailTypes; track $index) {
-        <div class="ui:col-span-2" [class.field-required]="mandatoryEmailTypes.includes(type)">
+      @for (type of emailTypes(); track $index) {
+        <div class="ui:col-span-2" [class.field-required]="mandatoryEmailTypes().includes(type)">
           {{ ('email_' + type) | translate }}&nbsp;:
         </div>
         <div class="ui:col-span-10">
@@ -79,7 +79,7 @@
   </p-panel>
 
   <!-- PREVIEW BOTTOM -->
-  @if (previewPosition === 'bottom') {
+  @if (previewPosition() === 'bottom') {
     <ng-container
       [ngTemplateOutlet]="messagePreview"
       [ngTemplateOutletContext]="{preview, position: ['previewBottomMessage']}"
@@ -102,6 +102,6 @@
         </div>
       </div>
     </ng-template>
-    <pre class="ui:max-h-[25rem] ui:text-sm ui:overflow-auto ui:px-5 ui:mb-4" [innerHTML]="preview.trim()"></pre>
+    <pre class="ui:max-h-[25rem] ui:text-sm ui:overflow-auto ui:px-5 ui:mb-4" [innerHTML]="preview().trim()"></pre>
   </p-panel>
 </ng-template>

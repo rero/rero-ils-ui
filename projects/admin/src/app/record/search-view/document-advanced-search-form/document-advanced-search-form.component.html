@@ -16,7 +16,7 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 
-@if (configurationLoaded) {
+@if (configurationLoaded()) {
   <form [formGroup]="form" (ngSubmit)="submit()">
     <formly-form
       [model]="model"

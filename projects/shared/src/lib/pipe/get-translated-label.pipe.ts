@@ -33,8 +33,7 @@ import { TranslateService } from '@ngx-translate/core';
 
 @Pipe({
     name: 'getTranslatedLabel',
-    pure: true,
-    standalone: false
+    pure: true
 })
 export class GetTranslatedLabelPipe implements PipeTransform {
 
@@ -51,7 +50,7 @@ export class GetTranslatedLabelPipe implements PipeTransform {
     if (!Array.isArray(entries)) {
       return null;
     }
-    language = language || this.translateService.currentLang;
+    language = language || this.translateService.getCurrentLang();
     const labels = entries.filter(entry => entry.language === language);
     if (labels.length > 0) {  // We find a correct entry ! Return the label
       return labels[0].label;

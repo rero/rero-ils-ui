@@ -15,21 +15,19 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { provideHttpClientTesting } from '@angular/common/http/testing';
-import { fakeAsync, TestBed, tick } from '@angular/core/testing';
-import { Router, RouterModule } from '@angular/router';
+import { TestBed } from '@angular/core/testing';
+import { NavigationEnd, Router, RouterModule, RouterStateSnapshot } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
-import { UserService } from '@rero/shared';
 import { cloneDeep } from 'lodash-es';
-import { userTestingService } from 'projects/admin/tests/utils';
+import { firstValueFrom, filter } from 'rxjs';
 import { of } from 'rxjs';
 import { ErrorPageComponent } from '../error/error-page/error-page.component';
 import { RecordPermissionService } from '../service/record-permission.service';
-import { CAN_ACCESS_ACTIONS, CanAccessGuard } from './can-access.guard';
+import { CAN_ACCESS_ACTIONS, canAccessGuard } from './can-access.guard';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 
-describe('CanAccessGuard', () => {
-  let guard: CanAccessGuard;
+describe('canAccessGuard', () => {
   let router: Router;
   let recordPermissionService: RecordPermissionService;
 
@@ -52,8 +50,7 @@ describe('CanAccessGuard', () => {
       "can": false,
       "reasons": {
         "links": {
-          "loans": 1,
-        }
+          "loans": 1 }
       }
     },
     "list": {
@@ -68,8 +65,13 @@ describe('CanAccessGuard', () => {
   }
 
 
-  const activatedRouteSnapshotSpy = jasmine.createSpyObj('ActivatedRouteSnapshot', ['']);
+  const activatedRouteSnapshotSpy = { } as any;
   activatedRouteSnapshotSpy.params = { type: 'items', pid: '1' };
+
+  const runGuard = (route: any) =>
+    TestBed.runInInjectionContext(() =>
+      canAccessGuard(route, {} as RouterStateSnapshot)
+    ) as any;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -78,102 +80,106 @@ describe('CanAccessGuard', () => {
         TranslateModule.forRoot()
       ],
       providers: [
-          { provide: UserService, useValue: userTestingService },
           provideHttpClient(withInterceptorsFromDi()),
           provideHttpClientTesting()
       ]
     });
-    guard = TestBed.inject(CanAccessGuard);
     router = TestBed.inject(Router);
     recordPermissionService = TestBed.inject(RecordPermissionService);
   });
 
+  /** Helper to wait until router finishes navigating */
+  async function waitForNavigation(): Promise<void> {
+    await firstValueFrom(
+      router.events.pipe(filter(e => e instanceof NavigationEnd))
+    );
+  }
+
   it('should be created', () => {
-    expect(guard).toBeTruthy();
+    expect(canAccessGuard).toBeTruthy();
   });
 
-  it('should return a 400 error if any parameters are missing', fakeAsync(() => {
+  it('should return a 400 error if any parameters are missing', async () => {
     const activatedRoute = cloneDeep(activatedRouteSnapshotSpy);
     activatedRoute.data = {};
     activatedRoute.params = {};
-    guard.canActivate(activatedRoute).subscribe(() => {
-      tick();
-      expect(router.url).toBe('/errors/400');
-    });
-  }));
+    const navPromise = waitForNavigation();
+    await firstValueFrom(runGuard(activatedRoute));
+    await navPromise;
+    expect(router.url).toBe('/errors/400');
+  });
 
-  it('should return a 400 error if route parameters are missing', fakeAsync(() => {
+  it('should return a 400 error if route parameters are missing', async () => {
     const activatedRoute = cloneDeep(activatedRouteSnapshotSpy);
     activatedRoute.data = { action: CAN_ACCESS_ACTIONS.READ };
     activatedRoute.params = {};
-    guard.canActivate(activatedRoute).subscribe(() => {
-      tick();
-      expect(router.url).toBe('/errors/400');
-    });
-  }));
+    const navPromise = waitForNavigation();
+    await firstValueFrom(runGuard(activatedRoute));
+    await navPromise;
+    expect(router.url).toBe('/errors/400');
+  });
 
-  it('should return a 400 error if data parameters are missing', fakeAsync(() => {
+  it('should return a 400 error if data parameters are missing', async () => {
     const activatedRoute = cloneDeep(activatedRouteSnapshotSpy);
     activatedRoute.data = {};
     activatedRoute.params = { type: 'patrons', pid: 1 };
-    guard.canActivate(activatedRoute).subscribe(() => {
-      tick();
-      expect(router.url).toBe('/errors/400');
-    });
-  }));
+    const navPromise = waitForNavigation();
+    await firstValueFrom(runGuard(activatedRoute));
+    await navPromise;
+    expect(router.url).toBe('/errors/400');
+  });
 
-  it('should return a 400 error if the action parameter is not in the action list', fakeAsync(() => {
+  it('should return a 400 error if the action parameter is not in the action list', async () => {
     const activatedRoute = cloneDeep(activatedRouteSnapshotSpy);
     activatedRoute.data = { action: 'foo' };
     activatedRoute.params = { type: 'patrons', pid: 1 };
-    guard.canActivate(activatedRoute).subscribe(() => {
-      tick();
-      expect(router.url).toBe('/errors/400');
-    });
-  }));
+    const navPromise = waitForNavigation();
+    await firstValueFrom(runGuard(activatedRoute));
+    await navPromise;
+    expect(router.url).toBe('/errors/400');
+  });
 
-  it('should return a 400 error if any parameter of the route is not in the mandatory parameters.', fakeAsync(() => {
+  it('should return a 400 error if any parameter of the route is not in the mandatory parameters.', async () => {
     const activatedRoute = cloneDeep(activatedRouteSnapshotSpy);
-    activatedRoute.data = { action: CAN_ACCESS_ACTIONS.READ };;
+    activatedRoute.data = { action: CAN_ACCESS_ACTIONS.READ };
     activatedRoute.params = { foo: 'bar' };
-    guard.canActivate(activatedRoute).subscribe(() => {
-      tick();
-      expect(router.url).toBe('/errors/400');
-    });
-  }));
+    const navPromise = waitForNavigation();
+    await firstValueFrom(runGuard(activatedRoute));
+    await navPromise;
+    expect(router.url).toBe('/errors/400');
+  });
 
-  it('should return a 403 error, if the permission is not allowed', fakeAsync(() => {
+  it('should return a 403 error, if the permission is not allowed', async () => {
     const activatedRoute = cloneDeep(activatedRouteSnapshotSpy);
     activatedRoute.data = { action: CAN_ACCESS_ACTIONS.READ };
     activatedRoute.params = { type: 'patrons', pid: 1 };
     const perms = cloneDeep(permissions);
-    spyOn(recordPermissionService, 'getPermission').and.returnValue(of(perms));
-    guard.canActivate(activatedRoute).subscribe(() => {
-      tick();
-      expect(router.url).toBe('/errors/403');
-    });
-  }));
+    vi.spyOn(recordPermissionService, 'getPermission').mockReturnValue(of(perms));
+    const navPromise = waitForNavigation();
+    await firstValueFrom(runGuard(activatedRoute));
+    await navPromise;
+    expect(router.url).toBe('/errors/403');
+  });
 
-  it('should return true, if permission is granted', fakeAsync(() => {
+  it('should return true, if permission is granted', async () => {
     const activatedRoute = cloneDeep(activatedRouteSnapshotSpy);
     activatedRoute.data = { action: CAN_ACCESS_ACTIONS.READ };
     activatedRoute.params = { type: 'patrons', pid: 1 };
     const perms = cloneDeep(permissions);
     perms.read.can = true;
-    spyOn(recordPermissionService, 'getPermission').and.returnValue(of(perms));
-    guard.canActivate(activatedRoute).subscribe((access: boolean) => {
-      expect(access).toBeTrue();
-    });
-  }));
+    vi.spyOn(recordPermissionService, 'getPermission').mockReturnValue(of(perms));
+    const access = await firstValueFrom(runGuard(activatedRoute));
+    expect(access).toBe(true);
+  });
 
-  it('should return a 403 error, if the permission on the update action is not allowed', fakeAsync(() => {
+  it('should return a 403 error, if the permission on the update action is not allowed', async () => {
     const activatedRoute = cloneDeep(activatedRouteSnapshotSpy);
     activatedRoute.data = { action: CAN_ACCESS_ACTIONS.UPDATE };
     activatedRoute.params = { type: 'patrons', pid: 1 };
-    spyOn(recordPermissionService, 'getPermission').and.returnValue(of(permissions));
-    guard.canActivate(activatedRoute).subscribe((access: boolean) => {
-      tick();
-      expect(router.url).toBe('/errors/403');
-    });
-  }));
+    vi.spyOn(recordPermissionService, 'getPermission').mockReturnValue(of(permissions));
+    const navPromise = waitForNavigation();
+    await firstValueFrom(runGuard(activatedRoute));
+    await navPromise;
+    expect(router.url).toBe('/errors/403');
+  });
 });

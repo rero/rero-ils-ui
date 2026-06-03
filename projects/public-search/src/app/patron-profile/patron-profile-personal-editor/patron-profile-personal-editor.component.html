@@ -14,13 +14,13 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-@defer (when model) {
+@defer (when model()) {
   <ngx-loading-bar [includeSpinner]="false" height="3px"></ngx-loading-bar>
   <p-toast />
-  <div>
+  <div class="ui:mt-2">
     <form [formGroup]="form" (ngSubmit)="submit()">
       <div class="ui:mb-2">
-        <formly-form [model]="model" [fields]="fields" [form]="form" />
+        <formly-form [model]="model()" [fields]="fields" [form]="form" />
       </div>
       <div class="ui:flex ui:gap-2 ui:justify-end">
         <p-button severity="danger" [label]="'Cancel' | translate" icon="fa fa-times" outlined (onClick)="cancel()" />

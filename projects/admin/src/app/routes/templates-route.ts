@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2020-2025 RERO
+ * Copyright (C) 2020-2026 RERO
  * Copyright (C) 2020-2023 UCLouvain
  *
  * This program is free software: you can redistribute it and/or modify
@@ -15,17 +15,65 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { _ } from "@ngx-translate/core";
-import { ActionStatus, ComponentCanDeactivateGuard, DetailComponent, EditorComponent, RecordSearchPageComponent, RouteInterface } from '@rero/ng-core';
-import { PERMISSIONS, PERMISSION_OPERATOR } from '@rero/shared';
+import { inject } from '@angular/core';
+import { ResolveFn, Routes } from '@angular/router';
+import { _ } from '@ngx-translate/core';
+import {
+  ActionStatus,
+  ComponentCanDeactivateGuard,
+  DetailComponent,
+  EditorComponent,
+  RecordData,
+  RecordSearchPageComponent,
+  RecordType,
+  RouteDataTypesInterface,
+} from '@rero/ng-core';
+import { AppStore, PERMISSIONS, PERMISSION_OPERATOR } from '@rero/shared';
 import { Observable, Subscriber } from 'rxjs';
-import { CAN_ACCESS_ACTIONS, CanAccessGuard } from '../guard/can-access.guard';
-import { PermissionGuard } from '../guard/permission.guard';
+import { CAN_ACCESS_ACTIONS, canAccessGuard } from '../guard/can-access.guard';
+import { permissionGuard } from '../guard/permission.guard';
 import { TemplatesBriefViewComponent } from '../record/brief-view/templates-brief-view.component';
 import { TemplateDetailViewComponent } from '../record/detail-view/template-detail-view/template-detail-view.component';
 import { BaseRoute } from './base-route';
 
-export class TemplatesRoute extends BaseRoute implements RouteInterface {
+export const templatesRouteResolver: ResolveFn<Partial<RecordType>[]> = () =>
+  new TemplatesRoute().getTypes();
+
+export const templatesRoutes: Routes = [
+  {
+    path: '',
+    component: RecordSearchPageComponent,
+    title: _('Templates'),
+    canActivate: [permissionGuard],
+    data: {
+      permissions: [PERMISSIONS.TMPL_ACCESS, PERMISSIONS.TMPL_SEARCH],
+      operator: PERMISSION_OPERATOR.AND,
+    },
+  },
+  {
+    path: 'detail/:pid',
+    component: DetailComponent,
+    title: _('Template'),
+    canActivate: [canAccessGuard],
+    data: {
+      action: CAN_ACCESS_ACTIONS.READ,
+    },
+  },
+  {
+    path: 'edit/:pid',
+    component: EditorComponent,
+    title: _('Template'),
+    canActivate: [canAccessGuard],
+    canDeactivate: [ComponentCanDeactivateGuard],
+    data: {
+      action: CAN_ACCESS_ACTIONS.UPDATE,
+    },
+  },
+];
+
+class TemplatesRoute extends BaseRoute implements RouteDataTypesInterface {
+
+  private appStore = inject(AppStore);
 
   /** Route name */
   readonly name = 'templates';
@@ -33,91 +81,36 @@ export class TemplatesRoute extends BaseRoute implements RouteInterface {
   /** Record type */
   readonly recordType = 'templates';
 
-  /**
-   * Get Configuration
-   * @return Object
-   */
-  getConfiguration() {
-    return {
-      matcher: (url: any) => this.routeMatcher(url, this.name),
-      children: [
-        {
-          path: '',
-          component: RecordSearchPageComponent,
-          title: _('Templates'),
-          canActivate: [ PermissionGuard ],
-          data: {
-            permissions: [ PERMISSIONS.TMPL_ACCESS, PERMISSIONS.TMPL_SEARCH ],
-            operator: PERMISSION_OPERATOR.AND
-          }
-        },
-        {
-          path: 'detail/:pid',
-          component: DetailComponent,
-          title: _('Template'),
-          canActivate: [ CanAccessGuard ],
-          data: {
-            action: CAN_ACCESS_ACTIONS.READ
-          }
-        },
-        {
-          path: 'edit/:pid',
-          component: EditorComponent,
-          title: _('Template'),
-          canActivate: [ CanAccessGuard ],
-          canDeactivate: [ ComponentCanDeactivateGuard ],
-          data: {
-            action: CAN_ACCESS_ACTIONS.UPDATE
-          }
-        }
-      ],
-      data: {
-        types: [
+  getTypes(): Partial<RecordType>[] {
+    return [
+      {
+        key: this.name,
+        label: _('Templates'),
+        component: TemplatesBriefViewComponent,
+        detailComponent: TemplateDetailViewComponent,
+        searchFilters: [this.expertSearchFilter()],
+        canAdd: () => this.routeToolService.canNot(),
+        permissions: (record: RecordData) => this.routeToolService.permissions(record, this.recordType),
+        canUse: (record: RecordData) => this._canUse(record),
+        aggregationsOrder: ['type', 'visibility'],
+        aggregationsExpand: ['type', 'visibility'],
+        sortOptions: [
           {
-            key: this.name,
-            label: _('Templates'),
-            component: TemplatesBriefViewComponent,
-            detailComponent: TemplateDetailViewComponent,
-            searchFilters: [
-              this.expertSearchFilter()
-            ],
-            canAdd: () => this.routeToolService.canNot(),
-            permissions: (record: any) => this.routeToolService.permissions(record, this.recordType),
-            canUse: (record: any) => this._canUse(record),
-            preCreateRecord: (data: any) => this._addDefaultValuesForTemplate(data),
-            redirectUrl: (record: any) => {
-              return this.redirectUrl(
-                record.metadata,
-                '/records/templates/detail'
-              );
-            },
-            aggregationsOrder: [
-              'type',
-              'visibility'
-            ],
-            aggregationsExpand: [
-              'type',
-              'visibility'
-            ],
-            sortOptions: [
-              {
-                label: _('Relevance'),
-                value: 'bestmatch',
-                icon: 'fa fa-sort-amount-desc',
-                defaultQuery: true
-              },
-              {
-                label: _('Name'),
-                value: 'name',
-                icon: 'fa fa-sort-alpha-asc',
-                defaultNoQuery: true
-              }
-            ],
-            showFacetsIfNoResults: true
-          }
-        ]
-      }
-    };
+            label: _('Relevance'),
+            value: 'bestmatch',
+            icon: 'fa fa-sort-amount-desc',
+            defaultQuery: true,
+          },
+          {
+            label: _('Name'),
+            value: 'name',
+            icon: 'fa fa-sort-alpha-asc',
+            defaultNoQuery: true,
+          },
+        ],
+        showFacetsIfNoResults: true,
+      },
+    ];
   }
 
   /**
@@ -139,34 +132,16 @@ export class TemplatesRoute extends BaseRoute implements RouteInterface {
               {
                 queryParams: {
                   source: this.recordType,
-                  pid: record.metadata.pid
-                }
+                  pid: record.metadata.pid,
+                },
               }
             );
-            const url = (this.routeToolService.urlSerializer.serialize(urlTree));
+            const url = this.routeToolService.urlSerializer.serialize(urlTree);
             actionStatus.url = url;
             observer.next(actionStatus);
           }
         });
       }
     });
-  }
-
-  /**
-   * Adds default values when user create a template resource
-   * @param data: the initial data
-   */
-  private _addDefaultValuesForTemplate(data: any) {
-    const { user } = this.routeToolService.userService;
-    if (!Object.hasOwn(data, 'visibility')) {
-      data.visibility = 'private';
-    }
-    data.organisation = {
-      $ref: this.routeToolService.apiService.getRefEndpoint('organisations', user.currentOrganisation)
-    };
-    data.creator = {
-      $ref: this.routeToolService.apiService.getRefEndpoint('patrons', user.patronLibrarian.pid)
-    };
-    return data;
   }
 }

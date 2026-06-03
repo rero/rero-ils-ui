@@ -17,52 +17,52 @@
 -->
 <dl class="metadata">
 <!-- AUTHORIZED ACCESS POINT -->
-@if (record.authorized_access_point) {
+@if (record().authorized_access_point) {
   <dt translate>Authorized access point</dt>
-  <dd>{{ record.authorized_access_point }}</dd>
+  <dd>{{ record().authorized_access_point }}</dd>
 }
 <!-- DATE OF BIRTH -->
-@if (record.date_of_birth) {
+@if (record().date_of_birth) {
   <dt translate>Birth date</dt>
-  <dd>{{ record.date_of_birth }}</dd>
+  <dd>{{ record().date_of_birth }}</dd>
 }
 <!-- DATE OF DEATH -->
-@if (record.date_of_death) {
+@if (record().date_of_death) {
   <dt translate>Death date</dt>
-  <dd>{{ record.date_of_death }}</dd>
+  <dd>{{ record().date_of_death }}</dd>
 }
 <!-- LANGUAGE -->
-@if (record.language) {
+@if (record().language) {
   <dt translate>Language</dt>
   <dd>
     <ul class="ui:list-none">
-      @for (language of record.language; track $index) {
+      @for (language of record().language; track $index) {
         <li>{{ ('lang_' + language) | translate }}</li>
       }
     </ul>
   </dd>
 }
   <!-- GENDER -->
-@if (record.Gender) {
+@if (record().Gender) {
   <dt translate>Gender</dt>
-  <dd>{{ record.Gender }}</dd>
+  <dd>{{ record().Gender }}</dd>
 }
 <!-- BIBLIOGRAPHICAL INFORMATION -->
-@if (record.biographical_information) {
+@if (record().biographical_information) {
   <dt translate>Biographical information</dt>
-  <dd [innerHtml]="record.biographical_information.join('\n') | urlActive | nl2br"></dd>
+  <dd [innerHtml]="record().biographical_information.join('\n') | urlActive | nl2br"></dd>
 }
 <!-- NAME -->
-@if (record.name) {
+@if (record().name) {
   <dt translate>Name</dt>
-  <dd>{{ record.name }}</dd>
+  <dd>{{ record().name }}</dd>
 }
 <!-- VARIANT ACCESS POINT -->
-@if (record.variant_access_point) {
+@if (record().variant_access_point) {
   <dt translate>Variant name</dt>
   <dd>
     <ul class="ui:list-none">
-      @for (variant_name of record.variant_access_point; track $index) {
+      @for (variant_name of record().variant_access_point; track $index) {
         <li>{{ variant_name }}</li>
       }
     </ul>

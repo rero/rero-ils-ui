@@ -23,10 +23,7 @@ import { DomSanitizer } from '@angular/platform-browser';
  *
  * Copied from the SONAR project.
  */
-@Pipe({
-    name: 'highlightJson',
-    standalone: false
-})
+@Pipe({ name: 'highlightJson' })
 export class HighlightJsonPipe implements PipeTransform {
 
   // services

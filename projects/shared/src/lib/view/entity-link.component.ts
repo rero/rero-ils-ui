@@ -14,47 +14,49 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, inject, Input, OnDestroy, OnInit } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit, input, ChangeDetectionStrategy} from '@angular/core';
 import { LangChangeEvent, TranslateService } from '@ngx-translate/core';
 import { Subscription } from 'rxjs';
-import { Entity } from '../class/entity';
+import { Entity } from '../classes/entity';
+import { RouterLink } from '@angular/router';
 
 @Component({
     selector: 'shared-entity-link',
     template: `
-    @if (!external) {
+    @if (!external()) {
       <a
-        [class]="className"
-        [routerLink]="routerLinkParams"
+        [class]="className()"
+        [routerLink]="routerLinkParams()"
         [queryParams]="queryParams"
       >{{ linkName }}</a>
     } @else {
       <a
-        [class]="className"
+        [class]="className()"
         [attr.href]="externalHrefLink"
       >{{ linkName }}</a>
     }
   `,
-    standalone: false
+    imports: [RouterLink],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class EntityLinkComponent implements OnInit, OnDestroy {
 
   private translateService: TranslateService = inject(TranslateService);
 
   /** Entity field metadata */
-  @Input() entity: any;
+  readonly entity = input<any>(undefined);
 
   /** Resource field name */
-  @Input() resourceName: string;
+  readonly resourceName = input<string>(undefined);
 
   /** Link class name */
-  @Input() className: string;
+  readonly className = input<string>(undefined);
 
   /** Router link parameters */
-  @Input() routerLinkParams = ['/records', 'documents'];
+  readonly routerLinkParams = input(['/records', 'documents']);
 
   /** Make link external */
-  @Input() external = false;
+  readonly external = input(false);
 
   /** Link label name */
   linkName: string;
@@ -74,7 +76,7 @@ export class EntityLinkComponent implements OnInit, OnDestroy {
         this.translateEntity(event.lang);
       })
     );
-    this.translateEntity(this.translateService.currentLang);
+    this.translateEntity(this.translateService.getCurrentLang());
   }
 
   ngOnDestroy(): void {
@@ -82,24 +84,26 @@ export class EntityLinkComponent implements OnInit, OnDestroy {
   }
 
   private translateEntity(lang: string): void{
-    this.linkName = `authorized_access_point_${lang}` in this.entity
-      ? this.entity[`authorized_access_point_${lang}`]
-      : this.entity.authorized_access_point;
-    if ('resource_type' in this.entity) {
-      const pid = this.entity.pids[this.entity.resource_type];
+    const entity = this.entity();
+    this.linkName = `authorized_access_point_${lang}` in entity
+      ? entity[`authorized_access_point_${lang}`]
+      : entity.authorized_access_point;
+    const entityValue = this.entity();
+    if ('resource_type' in entityValue) {
+      const pid = entityValue.pids[entityValue.resource_type];
       this.queryParams = {
-        q: `${this.resourceName}.entity.pids.${this.entity.resource_type}:${pid}`,
+        q: `${this.resourceName()}.entity.pids.${entityValue.resource_type}:${pid}`,
         simple: '0',
       };
     } else {
       this.queryParams = {
-        q: `${this.resourceName}.entity.authorized_access_point_${lang}:"${this.linkName}"`,
+        q: `${this.resourceName()}.entity.authorized_access_point_${lang}:"${this.linkName}"`,
         simple: '0',
       }
     }
-    if (this.external) {
+    if (this.external()) {
       // This link is used to redirect to the jinja view of the entity.
-      this.externalHrefLink = Entity.generateHrefLink(this.routerLinkParams, this.queryParams);
+      this.externalHrefLink = Entity.generateHrefLink(this.routerLinkParams(), this.queryParams);
     }
   }
 }

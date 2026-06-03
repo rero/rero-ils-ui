@@ -17,9 +17,9 @@
 import { inject, Injectable } from '@angular/core';
 import { IRemoteAutocomplete } from './i-remote-autocomplete';
 import { ApiService, RecordService } from '@rero/ng-core';
-import { IQueryOptions, ISuggestionItem } from '@rero/ng-core/lib/record/editor/formly/primeng/remote-autocomplete/remote-autocomplete.interface';
+import { IQueryOptions, ISuggestionItem } from '@rero/ng-core';
 import { catchError, map, Observable, of } from 'rxjs';
-import { PatronService } from '@app/admin/service/patron.service';
+import { formatPatronName } from '@app/admin/utils/patron.utils';
 
 @Injectable({
   providedIn: 'root'
@@ -27,26 +27,23 @@ import { PatronService } from '@app/admin/service/patron.service';
 export class PatronsRemoteService implements IRemoteAutocomplete {
 
   private recordService: RecordService = inject(RecordService);
-  private patronService: PatronService = inject(PatronService);
   private apiService: ApiService = inject(ApiService);
 
   getName(): string {
     return 'patrons';
   }
 
-  getSuggestions(query: string, queryOptions: IQueryOptions, currentPid: string): Observable<ISuggestionItem[]> {
+  getSuggestions(query: string, queryOptions: IQueryOptions, _currentPid: string | null): Observable<ISuggestionItem[]> {
     if (!query) {
       return of([]);
     }
 
     return this.recordService.getRecords(
       this.getName(),
-      query,
-      1,
-      queryOptions.maxOfResult
+      { query, page: 1, itemsPerPage: queryOptions.maxOfResult }
     ).pipe(
       map((result: any) => {
-        const patrons = [];
+        const patrons: ISuggestionItem[] = [];
         result.hits.hits.map((hit: any) => patrons.push(this.getPatronsRef(hit.metadata, query)));
 
         return patrons;
@@ -62,21 +59,21 @@ export class PatronsRemoteService implements IRemoteAutocomplete {
     );
   }
   getValueAsHTML(queryOptions: IQueryOptions, item: ISuggestionItem): Observable<string> {
-    const url = item.value.split('/');
-    const pid = url.pop();
+    const url = item.value!.split('/');
+    const pid = url.pop()!;
 
     return this.recordService
-      .getRecord(queryOptions.type, pid, 1)
+      .getRecord(queryOptions.type, pid, { resolve: 1 })
       .pipe(
         map((data: any) =>
-          `<span class="ui:p-2 ui:font-bold">${this.patronService.getFormattedName(data.metadata)}</span>`
+          `<span class="ui:p-2 ui:font-bold">${formatPatronName(data.metadata)}</span>`
         )
       );
   }
 
-  private getPatronsRef(metadata: any, query: string): ISuggestionItem {
+  private getPatronsRef(metadata: any, _query: string): ISuggestionItem {
     return {
-      label: this.patronService.getFormattedName(metadata),
+      label: formatPatronName(metadata),
       value: this.apiService.getRefEndpoint(this.getName(), metadata.pid)
     };
   }

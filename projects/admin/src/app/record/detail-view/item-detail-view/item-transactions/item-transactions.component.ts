@@ -15,61 +15,57 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, EventEmitter, inject, Input, OnDestroy, OnInit, Output } from '@angular/core';
+import { Component, computed, DestroyRef, effect, inject, input, output, signal, ChangeDetectionStrategy } from '@angular/core';
+import { takeUntilDestroyed, toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { LoanService } from '@app/admin/service/loan.service';
-import { TranslateService } from '@ngx-translate/core';
+import { TranslateService, TranslateDirective, TranslatePipe } from '@ngx-translate/core';
 import { CONFIG } from '@rero/ng-core';
-import { IPermissions, PERMISSIONS, UserService } from '@rero/shared';
+import { AppStore, IPermissions, PERMISSIONS, PermissionsDirective } from '@rero/shared';
 import { MessageService } from 'primeng/api';
 import { DialogService } from 'primeng/dynamicdialog';
-import { forkJoin, Subscription } from 'rxjs';
+import { forkJoin, of, switchMap } from 'rxjs';
 import { ItemRequestComponent } from '../../document-detail-view/item-request/item-request.component';
+import { Bind } from 'primeng/bind';
+import { Panel } from 'primeng/panel';
+import { ItemTransactionComponent } from '../item-transaction/item-transaction.component';
+import { Button } from 'primeng/button';
 
 @Component({
     selector: 'admin-item-transactions',
     templateUrl: './item-transactions.component.html',
-    standalone: false
+    imports: [Bind, Panel, PermissionsDirective, TranslateDirective, ItemTransactionComponent, Button, TranslatePipe],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class ItemTransactionsComponent implements OnInit, OnDestroy {
+export class ItemTransactionsComponent {
 
   private messageService: MessageService = inject(MessageService);
   private dialogService: DialogService = inject(DialogService);
   private loanService: LoanService = inject(LoanService);
   private translateService: TranslateService = inject(TranslateService);
-  private userService: UserService = inject(UserService);
+  private appStore = inject(AppStore);
 
-  // COMPONENTS ATTRIBUTES ====================================================
-  /** Item record */
-  @Input() itemPid: string;
+  readonly itemPid = input<string>();
+  readonly requestEvent = output<any>();
 
-  /** Informs parent component that a request has been cancelled */
-  @Output() requestEvent = new EventEmitter<any>();
+  readonly permissions: IPermissions = PERMISSIONS;
 
-  /** Borrowed loan */
-  borrowedBy: any[] = [];
-  /** Requested loan(s) */
-  requestedBy: any[] = [];
+  private readonly _loans = toSignal(
+    toObservable(this.itemPid).pipe(
+      switchMap(pid => pid
+        ? forkJoin([this.loanService.borrowedBy$(pid), this.loanService.requestedBy$(pid)])
+        : of([[], []])
+      )
+    ),
+    { initialValue: [[], []] }
+  );
 
-  /** return all permissions */
-  permissions: IPermissions = PERMISSIONS;
+  readonly borrowedBy = computed(() => this._loans()[0] as any[]);
+  readonly requestedBy = signal<any[]>([]);
 
-  private subscription = new Subscription();
+  private readonly destroyRef = inject(DestroyRef);
 
-  // HOOKS ======================================================
-
-  /** OnInit hook */
-  ngOnInit() {
-    const borrowedBy$ = this.loanService.borrowedBy$(this.itemPid);
-    const requestedBy$ = this.loanService.requestedBy$(this.itemPid);
-    forkJoin([borrowedBy$, requestedBy$])
-      .subscribe(([borrowedLoan, requestedLoans]) => {
-        this.borrowedBy = borrowedLoan;
-        this.requestedBy = requestedLoans;
-      });
-  }
-
-  ngOnDestroy(): void {
-      this.subscription.unsubscribe();
+  constructor() {
+    effect(() => this.requestedBy.set(this._loans()[1] as any[]));
   }
 
   // COMPONENTS FUNCTIONS =====================================================
@@ -82,16 +78,14 @@ export class ItemTransactionsComponent implements OnInit, OnDestroy {
       modal: true,
       width: '40vw',
       closable: true,
-      data: { recordPid: this.itemPid, recordType: 'item' }
+      data: { recordPid: this.itemPid(), recordType: 'item' }
     });
-    this.subscription.add(
-      ref.onClose.subscribe((value: boolean) => {
-        if (value) {
-          this.requestEvent.emit();
-          this._refreshRequestList();
-        }
-      })
-    );
+    ref.onClose.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((value: boolean) => {
+      if (value) {
+        this.requestEvent.emit(null);
+        this._refreshRequestList();
+      }
+    });
   }
 
   /**
@@ -100,15 +94,15 @@ export class ItemTransactionsComponent implements OnInit, OnDestroy {
    */
   cancelRequest(transaction: any): void {
     this.loanService
-      .cancelLoan(this.itemPid, transaction.metadata.pid, this.userService.user.currentLibrary)
-      .subscribe((itemData: any) => {
+      .cancelLoan(this.itemPid(), transaction.metadata.pid, this.appStore.currentLibraryPid())
+      .subscribe((_itemData: any) => {
         this.messageService.add({
           severity: 'warn',
           summary: this.translateService.instant('Request'),
           detail: this.translateService.instant('The pending request has been cancelled.'),
           life: CONFIG.MESSAGE_LIFE
         });
-        this.requestEvent.emit();
+        this.requestEvent.emit(null);
         this._refreshRequestList();
       });
   }
@@ -120,7 +114,7 @@ export class ItemTransactionsComponent implements OnInit, OnDestroy {
   updateRequestPickupLocation(data: any): void {
     this.loanService
       .updateLoanPickupLocation(data.transaction.metadata.pid, data.pickupLocationPid)
-      .subscribe(_ => {
+      .subscribe(_result => {
         this.messageService.add({
           severity: 'success',
           summary: this.translateService.instant('Request'),
@@ -137,9 +131,7 @@ export class ItemTransactionsComponent implements OnInit, OnDestroy {
    */
   private _refreshRequestList(): void {
     this.loanService
-      .requestedBy$(this.itemPid)
-      .subscribe(requestedLoans =>
-        this.requestedBy = requestedLoans
-      );
+      .requestedBy$(this.itemPid())
+      .subscribe(requestedLoans => this.requestedBy.set(requestedLoans));
   }
 }

@@ -14,28 +14,28 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-@if (record) {
-  <h1>{{ record.metadata.name }}</h1>
-  <span [innerHTML]="record.metadata.description | nl2br"></span>
+@if (record(); as rec) {
+  <h1>{{ rec.metadata.name }}</h1>
+  <span [innerHTML]="rec.metadata.description | nl2br"></span>
   <section class="ui:mt-4">
     <dl class="metadata">
       <dt translate>Library</dt>
-      <dd>{{ record.metadata.library.$ref | getRecord: 'libraries' : 'field' : 'name' | async }}</dd>
+      <dd>{{ rec.metadata.library.$ref | getRecord: 'libraries' : 'field' : 'name' | async }}</dd>
 
       <dt translate>Is active</dt>
       <dd>
         <i
           class="fa fa-circle"
-          [ngClass]="{'text-success': record.metadata.is_active, 'text-error': !record.metadata.is_active}"
+          [ngClass]="{'text-success': rec.metadata.is_active, 'text-error': !rec.metadata.is_active}"
         ></i>
       </dd>
       <dt translate>Frequency</dt>
-      <dd>{{ record.metadata.frequency | translate }}</dd>
-      @if (record.metadata.filter_by_libraries?.length > 0) {
+      <dd>{{ rec.metadata.frequency | translate }}</dd>
+      @if (rec.metadata.filter_by_libraries?.length > 0) {
         <dt translate>Filter numbers by libraries</dt>
         <dd>
           <ul class="ui:list-none">
-            @for (lib of record.metadata.filter_by_libraries; track lib.$ref) {
+            @for (lib of rec.metadata.filter_by_libraries; track lib.$ref) {
               <li>
                 {{ lib.$ref| getRecord: 'libraries' : 'field' : 'name' | async }}
               </li>
@@ -51,37 +51,37 @@
       <dl class="metadata">
 
         <dt translate>Category</dt>
-        <dd>{{ record.metadata.category.type | translate }}</dd>
+        <dd>{{ rec.metadata.category.type | translate }}</dd>
 
         <dt translate>Indicator</dt>
-        <dd>{{ record.metadata.category.indicator.type | translate }}</dd>
+        <dd>{{ rec.metadata.category.indicator.type | translate }}</dd>
 
-        @if (record.metadata.category.indicator.period) {
+        @if (rec.metadata.category.indicator.period) {
           <dt translate>Period</dt>
-          <dd>{{ record.metadata.category.indicator.period | translate }}</dd>
+          <dd>{{ rec.metadata.category.indicator.period | translate }}</dd>
         }
 
-        @if (record.metadata.category.indicator.distributions) {
+        @if (rec.metadata.category.indicator.distributions) {
           <dt translate>Distributions</dt>
           <dd>
             <ul class="ui:list-none">
-              @for (dist of record.metadata.category.indicator.distributions; track $index; let last = $last) {
+              @for (dist of rec.metadata.category.indicator.distributions; track $index; let last = $last) {
                 <li class="ui:inline">{{ dist | translate }}{{ last ? '' : ' / ' }}</li>
               }
             </ul>
           </dd>
         }
-        @if (record.metadata.category.indicator.filter) {
+        @if (rec.metadata.category.indicator.filter) {
           <dt translate>Filter</dt>
-          <dd>{{ record.metadata.category.indicator.filter }}</dd>
+          <dd>{{ rec.metadata.category.indicator.filter }}</dd>
         }
-        @if (record.created) {
+        @if (rec.created) {
           <dt translate>Created at</dt>
-          <dd>{{ record.created | dateTranslate: 'medium' }}</dd>
+          <dd>{{ rec.created | dateTranslate: 'medium' }}</dd>
         }
-        @if (record.updated) {
+        @if (rec.updated) {
           <dt translate>Updated at</dt>
-          <dd>{{ record.updated | dateTranslate: 'medium' }}</dd>
+          <dd>{{ rec.updated | dateTranslate: 'medium' }}</dd>
         }
       </dl>
     </p-fieldset>
@@ -91,18 +91,20 @@
     <p-tabs value="report">
       <p-tablist>
         <p-tab value="report" translate>Reports</p-tab>
-        <p-tab value="live" translate (click)="getLiveValues()">Live Values</p-tab>
+        <p-tab value="live" translate (click)="requestLiveValues()">Live Values</p-tab>
       </p-tablist>
       <p-tabpanels>
         <p-tabpanel value="report">
-          <admin-reports-list [pid]="record.metadata.pid" />
+          <admin-reports-list [pid]="rec.metadata.pid" />
         </p-tabpanel>
         <p-tabpanel value="live">
-          @if (liveData) {
-            <admin-report-data [data]="liveData" />
+          @if (liveData.value(); as data) {
+            <admin-report-data [data]="data" />
           }
-          @if (liveDataError) {
-            <p-message [text]="liveDataError" severity="error" showTransitionOptions="0ms" />
+          @if (liveData.error()) {
+            <p-message severity="error" showTransitionOptions="0ms">
+              {{ 'Data loading error' | translate }}
+            </p-message>
           }
         </p-tabpanel>
       </p-tabpanels>

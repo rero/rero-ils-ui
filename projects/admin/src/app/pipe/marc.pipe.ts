@@ -16,10 +16,7 @@
  */
 import { Pipe, PipeTransform } from '@angular/core';
 
-@Pipe({
-    name: 'marc',
-    standalone: false
-})
+@Pipe({ name: 'marc' })
 export class MarcPipe implements PipeTransform {
 
   transform(value: any): any {

@@ -15,51 +15,47 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { _ } from "@ngx-translate/core";
-import { ComponentCanDeactivateGuard, EditorComponent, RouteInterface } from '@rero/ng-core';
-import { CAN_ACCESS_ACTIONS, CanAccessGuard } from '../../guard/can-access.guard';
+import { ResolveFn, Routes } from '@angular/router';
+import { _ } from '@ngx-translate/core';
+import { ComponentCanDeactivateGuard, EditorComponent, RecordType, RouteDataTypesInterface } from '@rero/ng-core';
+import { CAN_ACCESS_ACTIONS, canAccessGuard } from '../../guard/can-access.guard';
 import { BaseRoute } from '../../routes/base-route';
-import { IsBudgetActiveGuard } from './guards/is-budget-active.guard';
+import { isBudgetActiveGuard } from './guards/is-budget-active.guard';
 
-export class ReceiptsRoute extends BaseRoute implements RouteInterface {
+export const receiptsRouteResolver: ResolveFn<Partial<RecordType>[]> = () =>
+  new ReceiptsRoute().getTypes();
 
+export const receiptsRoutes: Routes = [
+  {
+    path: 'edit/:pid',
+    component: EditorComponent,
+    title: _('Receipt'),
+    canActivate: [canAccessGuard, isBudgetActiveGuard],
+    canDeactivate: [ComponentCanDeactivateGuard],
+    data: {
+      action: CAN_ACCESS_ACTIONS.UPDATE,
+    },
+  },
+];
+
+class ReceiptsRoute extends BaseRoute implements RouteDataTypesInterface {
   /** Route name */
   readonly name = 'acq_receipts';
   /** Record type */
   readonly recordType = 'acq_receipts';
 
-  /** Get route configuration */
-  getConfiguration() {
-    return {
-      matcher: (url: any) => this.routeMatcher(url, this.name),
-      children: [
-        {
-          path: 'edit/:pid',
-          component: EditorComponent,
-          title: _('Receipt'),
-          canActivate: [ CanAccessGuard, IsBudgetActiveGuard ],
-          canDeactivate: [ ComponentCanDeactivateGuard ],
-          data: {
-            action: CAN_ACCESS_ACTIONS.UPDATE
-          }
+  getTypes(): Partial<RecordType>[] {
+    return [
+      {
+        key: this.name,
+        label: _('Receipts'),
+        editorSettings: {
+          longMode: true,
         },
-      ],
-      data: {
-        types: [
-          {
-            key: this.name,
-            label: _('Receipts'),
-            editorSettings: {
-              longMode: true,
-            },
-            searchFilters: [
-              this.expertSearchFilter()
-            ],
-            preUpdateRecord: (data: any) => this._cleanRecord(data)
-          }
-        ]
-      }
-    };
+        searchFilters: [this.expertSearchFilter()],
+        preUpdateRecord: (data: any) => this._cleanRecord(data),
+      },
+    ];
   }
 
   private _cleanRecord(data: any): any {

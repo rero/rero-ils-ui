@@ -18,10 +18,7 @@ import { inject, Pipe, PipeTransform } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 
 
-@Pipe({
-    name: 'patronBlockedMessage',
-    standalone: false
-})
+@Pipe({ name: 'patronBlockedMessage' })
 export class PatronBlockedMessagePipe implements PipeTransform {
 
   protected translate: TranslateService = inject(TranslateService);

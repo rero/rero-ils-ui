@@ -15,10 +15,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { inject, Injectable } from "@angular/core";
-import { IRecordType, NgCoreTranslateService, TruncateTextPipe } from "@rero/ng-core";
+import { AutoCompleteRecordType, NgCoreTranslateService, TruncateTextPipe } from "@rero/ng-core";
 import { MainTitlePipe } from "../../pipe/main-title.pipe";
-import { AppSettingsService } from "../../service/app-settings.service";
-import { Entity } from "../../class/entity";
+import { AppStore } from "../../store/app.store";
+import { Entity } from "../../classes/entity";
 
 @Injectable({
   providedIn: null
@@ -28,7 +28,7 @@ export class RemoteSearchConfig {
   protected mainTitlePipe: MainTitlePipe = inject(MainTitlePipe);
   protected truncatePipe: TruncateTextPipe = inject(TruncateTextPipe);
   protected translateService: NgCoreTranslateService = inject(NgCoreTranslateService);
-  protected appSettingsService: AppSettingsService = inject(AppSettingsService);
+  protected appStore = inject(AppStore);
 
   private isAdmin = false;
 
@@ -36,7 +36,7 @@ export class RemoteSearchConfig {
 
   private maxLengthSuggestion: number;
 
-  getConfig(isAdmin: boolean, viewCode?: string, maxLengthSuggestion?: number): IRecordType[] {
+  getConfig(isAdmin: boolean, viewCode?: string, maxLengthSuggestion?: number): AutoCompleteRecordType[] {
     this.isAdmin = isAdmin;
     this.viewCode = viewCode;
     this.maxLengthSuggestion = maxLengthSuggestion || 100;
@@ -123,8 +123,8 @@ export class RemoteSearchConfig {
 
   private getContributionName(metadata: any): string {
     if (metadata.resource_type === 'remote') {
-      const language = this.translateService.currentLang;
-      const order: any = this.appSettingsService.agentLabelOrder;
+      const language = this.translateService.getCurrentLang();
+      const order: any = this.appStore.settings()?.agentLabelOrder;
       const key = (language in order) ? language : 'fallback';
       const agentSources = (key === 'fallback')
         ? order[order[key]]
@@ -136,7 +136,7 @@ export class RemoteSearchConfig {
         }
       }
     } else {
-      const key = `authorized_access_point_${this.translateService.currentLang}`;
+      const key = `authorized_access_point_${this.translateService.getCurrentLang()}`;
       const accessPointKey = Object.keys(metadata).includes(key) ? key : 'authorized_access_point';
       return metadata[accessPointKey];
     }

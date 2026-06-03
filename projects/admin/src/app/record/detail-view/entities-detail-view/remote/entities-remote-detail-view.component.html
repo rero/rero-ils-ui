@@ -15,7 +15,7 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-@if (record$ | async; as record) {
+@if (record(); as record) {
   @let iconType = icon($any(record).metadata.type);
   <h1>
     <i class="fa {{ iconType.class }}" [title]="iconType.title" aria-hidden="true"></i>
@@ -29,7 +29,7 @@
   <!-- SOURCES -->
    <div class="ui:mt-2 ui:flex ui:flex-col ui:gap-2">
     @for (source of $any(record).metadata.sources.sort(); track $index) {
-      <p-panel styleClass="ui:pb-3">
+      <p-panel class="ui:pb-3">
         <ng-template #header>
           <span class="ui:font-medium ui:text-lg">{{ source | translate | uppercase }}</span>
         </ng-template>

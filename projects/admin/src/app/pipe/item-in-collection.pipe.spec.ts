@@ -16,7 +16,7 @@
  */
 import { TestBed } from '@angular/core/testing';
 import { TranslateModule } from '@ngx-translate/core';
-import { RecordModule, RecordService } from '@rero/ng-core';
+import { RecordService } from '@rero/ng-core';
 import { of } from 'rxjs';
 import { ItemInCollectionPipe } from './item-in-collection.pipe';
 
@@ -49,12 +49,11 @@ describe('ItemInCollectionPipe', () => {
     links: {}
   };
 
-  const recordServiceSpy = jasmine.createSpyObj('RecordService', ['getRecords', 'totalHits']);
+  const recordServiceSpy = { getRecords: vi.fn(), totalHits: vi.fn() };
 
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [
-        RecordModule,
         TranslateModule.forRoot()
       ],
       providers: [
@@ -70,14 +69,14 @@ describe('ItemInCollectionPipe', () => {
   });
 
   it('should return a null value if no result', () => {
-    recordServiceSpy.getRecords.and.returnValue(of(emptyRecords));
-    recordServiceSpy.totalHits.and.returnValue(0);
+    recordServiceSpy.getRecords.mockReturnValue(of(emptyRecords));
+    recordServiceSpy.totalHits.mockReturnValue(0);
     pipe.transform('1').subscribe((result: any) => expect(result).toEqual([]));
   });
 
   it('should return an array of results', () => {
-    recordServiceSpy.getRecords.and.returnValue(of(withRecords));
-    recordServiceSpy.totalHits.and.returnValue(1);
+    recordServiceSpy.getRecords.mockReturnValue(of(withRecords));
+    recordServiceSpy.totalHits.mockReturnValue(1);
     pipe.transform('1').subscribe((result: any) => expect(result).toEqual(records));
   });
 });

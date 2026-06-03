@@ -15,33 +15,33 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-@defer (when availability) {
-  <div [class]="class">
+@if (availability(); as data) {
+  <div [class]="class()">
     <i
       class="fa fa-circle ui:mr-1"
-      [ngClass]="{'text-success': availability.available, 'text-error': !availability.available}"
+      [ngClass]="{'text-success': data.available, 'text-error': !data.available}"
     ></i>
-    @switch (recordType) {
+    @switch (recordType()) {
       @case('item') {
-        @switch(availability.status) {
+        @switch(data.status) {
           @case('on_loan') {
             {{ 'due until' | translate }}
-            {{ availability.due_date | dateTranslate :'shortDate' }}
+            {{ data.due_date | dateTranslate :'shortDate' }}
           }
           @default {
-            {{ availability.circulation_message | getTranslatedLabel : language }}
+            {{ data.circulation_message | getTranslatedLabel : language() }}
           }
         }
-        @if (availability.number_of_request > 0) {
-          ({{ availability.number_of_request }} {{ (availability.number_of_request > 1 ? 'requests' : 'request') | translate }})
+        @if (data.number_of_request > 0) {
+          ({{ data.number_of_request }} {{ (data.number_of_request > 1 ? 'requests' : 'request') | translate }})
         }
       }
       @default {
-        {{ (availability.available ? 'available' : 'not available') | translate }}
+        {{ (data.available ? 'available' : 'not available') | translate }}
       }
     }
   </div>
-} @loading {
+} @else {
   <div class="ui:flex ui:my-2">
     <i class="fa fa-spinner"></i>
   </div>

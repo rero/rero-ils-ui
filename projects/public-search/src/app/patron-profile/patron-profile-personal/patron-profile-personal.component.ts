@@ -14,26 +14,32 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, inject, Input } from '@angular/core';
-import { AppSettingsService, IPatron } from '@rero/shared';
+import { NgClass } from '@angular/common';
+import { Component, inject, input, ChangeDetectionStrategy} from '@angular/core';
+import { RouterLink } from '@angular/router';
+import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
+import { DateTranslatePipe } from '@rero/ng-core';
+import { AppStore, IPatron, IUser, JoinPipe } from '@rero/shared';
+import { ButtonModule } from 'primeng/button';
 
 @Component({
     selector: 'public-search-patron-profile-personal',
     templateUrl: './patron-profile-personal.component.html',
-    standalone: false
+    imports: [NgClass, RouterLink, TranslateDirective, TranslatePipe, DateTranslatePipe, JoinPipe, ButtonModule],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class PatronProfilePersonalComponent {
 
-  private appSettingsService: AppSettingsService = inject(AppSettingsService);
+  private appStore = inject(AppStore);
 
   /** User record */
-  @Input() user: any;
+  user = input<IUser>();
 
   /** patron record */
-  @Input() patron: IPatron;
+  patron = input<IPatron>();
 
   /** Current viewcode */
-  @Input() viewcode: string;
+  viewcode = input<string>();
 
   /**
    * Check if the user profile is on read only
@@ -41,6 +47,6 @@ export class PatronProfilePersonalComponent {
    * @returns true if the user settings is read only.
    */
   get disabledButtonOnReadyOnly(): boolean {
-    return !this.appSettingsService.settings.userProfile.readOnly;
+    return !this.appStore.settings().userProfile.readOnly;
   }
 }

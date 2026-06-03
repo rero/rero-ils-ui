@@ -16,10 +16,7 @@
  */
 import { Pipe, PipeTransform } from '@angular/core';
 
-@Pipe({
-    name: 'faIconClass',
-    standalone: false
-})
+@Pipe({ name: 'faIconClass' })
 export class FaIconClassPipe implements PipeTransform {
 
   /**

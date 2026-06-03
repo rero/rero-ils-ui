@@ -19,18 +19,18 @@
   scrollHeight="50vh"
   [fluid]="true"
   [showClear]="true"
-  [options]="accountList"
+  [options]="accountList()"
   [placeholder]="'Select…' | translate"
-  [(ngModel)]="selectedAccount"
+  [ngModel]="selectedAccount()"
   (onChange)="selectAccount($event)"
-  [loading]="loading"
+  [loading]="loading()"
   [filter]="true"
   filterBy="name"
 >
   <ng-template #selectedItem let-account>
     <div class="ui:flex">
       <span class="ui:flex ui:grow ui:gap-2 ui:items-center">
-        {{ selectedAccount.name }}
+        {{ selectedAccount()?.name }}
         @if (account.number) {
           <span class="ui:text-sm">[{{ account.number }}]</span>
         }
@@ -72,6 +72,6 @@
       'text-warning': account.remaining_balance.self < 0
     }"
   >
-    {{ account.remaining_balance.self | currency : defaultCurrency }}
+    {{ account.remaining_balance.self | currency : defaultCurrency() }}
   </span>
 </ng-template>

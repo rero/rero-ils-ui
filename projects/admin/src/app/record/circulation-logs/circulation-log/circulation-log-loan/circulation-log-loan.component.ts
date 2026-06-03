@@ -15,29 +15,37 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, input, output, ChangeDetectionStrategy} from '@angular/core';
+import { CirculationLogComponent } from '../circulation-log.component';
+import { Bind } from 'primeng/bind';
+import { Tag } from 'primeng/tag';
+import { RouterLink } from '@angular/router';
+import { AsyncPipe } from '@angular/common';
+import { TranslatePipe } from '@ngx-translate/core';
+import { GetRecordPipe } from '@rero/ng-core';
 
 @Component({
     selector: 'admin-circulation-log-loan',
     templateUrl: './circulation-log-loan.component.html',
-    standalone: false
+    imports: [CirculationLogComponent, Bind, Tag, RouterLink, AsyncPipe, TranslatePipe, GetRecordPipe],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CirculationLogLoanComponent {
 
   // COMPONENT ATTRIBUTES =====================================================
   /** Operation log record */
-  @Input() record: any;
+  record = input<any>();
   /** Is the log should be highlighted */
-  @Input() isHighlight = false;
+  isHighlight = input(false);
   /** Is the transaction must be separated from sibling elements */
-  @Input() separator = false;
+  separator = input(false);
 
   /** Event for close dialog */
-  @Output() closeDialogEvent  = new EventEmitter();
+  closeDialogEvent = output();
 
   // COMPONENT FUNCTIONS ======================================================
   /** Close dialog */
   closeDialog(): void {
-    this.closeDialogEvent.emit(null);
+    this.closeDialogEvent.emit();
   }
 }

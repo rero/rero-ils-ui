@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2023-2024 RERO
+ * Copyright (C) 2023-2025 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -16,26 +16,20 @@
  */
 import { HttpEvent, HttpHandler, HttpInterceptor, HttpRequest } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
-import { UserService } from '@rero/shared';
+import { AppStore } from '@rero/shared';
 import { Observable } from 'rxjs';
 
 @Injectable()
 export class UserCurrentLibraryInterceptor implements HttpInterceptor {
 
-  private userService: UserService = inject(UserService);
+  private appStore = inject(AppStore);
 
-  /**
-   * Intercept http request
-   * Add current library of the logged user.
-   * @param request - HttpRequest
-   * @param next - HttpHandler
-   * @returns Handle of request
-   */
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<unknown>> {
-    if (this.userService.user?.currentLibrary) {
+    const libraryPid = this.appStore.currentLibraryPid();
+    if (libraryPid) {
       request = request.clone({
         setParams: {
-          'current_library': String(this.userService.user.currentLibrary)
+          'current_library': libraryPid
         }
       });
     }

@@ -16,20 +16,22 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { Component, Input } from '@angular/core';
+import { Component, input, ChangeDetectionStrategy} from '@angular/core';
+import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
 
 @Component({
     selector: 'admin-remote-entities-organisation-detail-view',
     templateUrl: './remote-entities-organisation-detail-view.component.html',
-    standalone: false
+    imports: [TranslateDirective, TranslatePipe],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class RemoteEntitiesOrganisationDetailViewComponent {
 
   /** Record metadata */
-  @Input() record: any;
+  record = input<any>();
 
   /** Record source */
-  @Input() source: string;
+  source = input<string>();
 
   /** Disabled source link */
   disabledSourceLink = ['rero'];

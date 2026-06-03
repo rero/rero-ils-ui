@@ -14,20 +14,20 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-@if (record) {
+@if (record()) {
   <ng-core-detail-button
-    [record]="record"
-    [type]="type"
-    [adminMode]="adminMode"
-    [useStatus]="useStatus"
-    [updateStatus]="updateStatus"
-    [deleteStatus]="deleteStatus"
+    [record]="record()"
+    [type]="type()"
+    [adminMode]="adminMode()"
+    [useStatus]="useStatus()"
+    [updateStatus]="updateStatus()"
+    [deleteStatus]="deleteStatus()"
     (recordEvent)="recordEvent($event)"
     (deleteMessageEvent)="showDeleteMessage($event)"
   >
     <ng-container beforeButton>
       <p-button
-        (onClick)="search(record)"
+        (onClick)="search(record())"
         outlined
         icon="fa fa-search"
         [label]="'Search documents' | translate"
@@ -36,8 +36,8 @@
   </ng-core-detail-button>
 }
 
-@if (error) {
-  <ng-core-error [error]="error" />
+@if (error()) {
+  <ng-core-error [error]="error()" />
 }
 
-<ng-template ngCoreRecordDetail />
+<ng-container #dynamicHost />

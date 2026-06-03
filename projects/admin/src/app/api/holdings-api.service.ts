@@ -15,7 +15,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { inject, Injectable } from '@angular/core';
-import { Error, Record, RecordService, RecordUiService } from '@rero/ng-core';
+import type { EsResult } from '@rero/ng-core';
+import { Error, RecordService, RecordUiService } from '@rero/ng-core';
 import { BaseApi } from '@rero/shared';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
@@ -31,17 +32,11 @@ export class HoldingsApiService {
   /** Resource name */
   readonly RESOURCE_NAME = 'holdings';
 
-  getHoldingsByDocumentPid(documentPid: string): Observable<Record | Error> {
+  getHoldingsByDocumentPid(documentPid: string): Observable<EsResult | Error> {
     const query = `document.pid:${documentPid} AND ((holdings_type:standard AND items_count:[1 TO *]) OR holdings_type:serial OR holdings_type:electronic)`;
     return this.recordService.getRecords(
       this.RESOURCE_NAME,
-      query,
-      1,
-      RecordService.MAX_REST_RESULTS_SIZE,
-      undefined,
-      undefined,
-      BaseApi.reroJsonheaders,
-      'organisation_library_location'
+      { query, page: 1, itemsPerPage: RecordService.MAX_REST_RESULTS_SIZE, headers: BaseApi.reroJsonheaders, sort: 'organisation_library_location' }
     );
   }
 
@@ -50,10 +45,10 @@ export class HoldingsApiService {
     if (filter) {
       query += ` AND (enumerationAndChronology.analyzed:"${filter}" OR call_numbers:(*${filter}*) OR barcode:(*${filter}*))`;
     }
-    return this.recordService.getRecords('items', query, page, size, [], {}, null,'-issue_sort_date').pipe(
-      map((result: Record) => {
+    return this.recordService.getRecords('items', { query, page, itemsPerPage: size, aggregationsFilters: [], preFilters: {}, sort: '-issue_sort_date' }).pipe(
+      map((result: EsResult) => {
         if (markedAsNew) {
-          result.hits.hits[0].new_issue = true;
+          (result.hits.hits[0] as any).new_issue = true;
         }
         return result;
       })
@@ -84,8 +79,8 @@ export class HoldingsApiService {
   ): Observable<any> {
     const query = this._queryOrganisation(documentPid, organisationPid, isCurrentOrganisation);
     return this.recordService.getRecords(
-      this.RESOURCE_NAME, query, page, itemsPerPage, undefined, undefined, BaseApi.reroJsonheaders, order).pipe(
-      map((result: Record) => result.hits.hits)
+      this.RESOURCE_NAME, { query, page, itemsPerPage, headers: BaseApi.reroJsonheaders, sort: order }).pipe(
+      map((result: EsResult) => result.hits.hits)
     );
   }
 
@@ -98,8 +93,8 @@ export class HoldingsApiService {
    */
   getHoldingsCount(documentPid: string, organisationPid: string, isCurrentOrganisation = true): Observable<number> {
     const query = this._queryOrganisation(documentPid, organisationPid, isCurrentOrganisation);
-    return this.recordService.getRecords(this.RESOURCE_NAME, query, 1, 1).pipe(
-      map((result: Record) => this.recordService.totalHits(result.hits.total))
+    return this.recordService.getRecords(this.RESOURCE_NAME, { query, page: 1, itemsPerPage: 1 }).pipe(
+      map((result: EsResult) => +this.recordService.totalHits(result.hits.total))
     );
   }
 

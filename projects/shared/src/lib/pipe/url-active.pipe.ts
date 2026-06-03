@@ -16,10 +16,7 @@
  */
 import { Pipe, PipeTransform } from '@angular/core';
 
-@Pipe({
-    name: 'urlActive',
-    standalone: false
-})
+@Pipe({ name: 'urlActive' })
 export class UrlActivePipe implements PipeTransform {
 
   transform(text: string, target = '_self'): any {

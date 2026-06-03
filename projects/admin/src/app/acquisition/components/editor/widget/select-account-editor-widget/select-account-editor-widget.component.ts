@@ -15,72 +15,71 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, inject, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, OnInit, signal } from '@angular/core';
 import { IAcqAccount } from '@app/admin/acquisition/classes/account';
-import { OrganisationService } from '@app/admin/service/organisation.service';
 import { FieldType } from '@ngx-formly/core';
-import { TranslateService } from '@ngx-translate/core';
+import { TranslateService, TranslatePipe } from '@ngx-translate/core';
 import { ApiService } from '@rero/ng-core';
-import { UserService } from '@rero/shared';
+import { AppStore } from '@rero/shared';
 import { MessageService } from 'primeng/api';
 import { AcqAccountApiService } from '../../../../api/acq-account-api.service';
 import { orderAccountsAsTree } from '../../../../utils/account';
+import { FormsModule } from '@angular/forms';
+import { NgTemplateOutlet, CurrencyPipe } from '@angular/common';
+import { SelectModule } from 'primeng/select';
 
 @Component({
     selector: 'admin-select-account-editor-widget',
     templateUrl: './select-account-editor-widget.component.html',
-    changeDetection: ChangeDetectionStrategy.Default,
-    standalone: false
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    imports: [FormsModule, NgTemplateOutlet, CurrencyPipe, TranslatePipe, SelectModule]
 })
 export class SelectAccountEditorWidgetComponent extends FieldType implements OnInit {
   // services
   private acqAccountApiService: AcqAccountApiService = inject(AcqAccountApiService);
-  private organisationService: OrganisationService = inject(OrganisationService);
   private apiService: ApiService = inject(ApiService);
-  private userService: UserService = inject(UserService);
+  private appStore = inject(AppStore);
   private messageService = inject(MessageService);
   private translateService: TranslateService = inject(TranslateService);
-  private changeDetectorRef: ChangeDetectorRef = inject(ChangeDetectorRef);
 
   // COMPONENT ATTRIBUTES =======================================================
   /** accounts list */
-  accountList: IAcqAccount[] = [];
+  accountList = signal<IAcqAccount[]>([]);
   /** the selected account */
-  selectedAccount: IAcqAccount = null;
-  // loading wheels
-  loading = false;
-  // currency
-  defaultCurrency: string;
+  selectedAccount = signal<IAcqAccount | null>(null);
+  /** loading state */
+  loading = signal(false);
+  /** organisation default currency */
+  readonly defaultCurrency = computed(() => this.appStore.organisation()?.default_currency);
 
   ngOnInit(): void {
-    this.loading = true;
-    const libraryPid = this.userService.user.currentLibrary;
-    this.defaultCurrency = this.organisationService.organisation.default_currency;
+    this.loading.set(true);
+    const libraryPid = this.appStore.currentLibraryPid();
     this.acqAccountApiService.getAccounts(libraryPid).subscribe({
       next: (accounts: IAcqAccount[]) => {
         accounts = orderAccountsAsTree(accounts);
         // filter me and my children to avoid backend recursion errors
         const accountPid = this.field.props?.editorConfig?.pid;
-        if(this.field.props?.filterChildren && accountPid) {
-          const newAccounts = [];
-          const removed = [];
-          accounts.map(account => {
-            if (account.pid !== accountPid && !removed.some(removedAccountPid => removedAccountPid === account?.parent?.pid)) {
+        if (this.field.props?.filterChildren && accountPid) {
+          const newAccounts: IAcqAccount[] = [];
+          const removed: string[] = [];
+          accounts.forEach(account => {
+            if (account.pid !== accountPid && !removed.some(pid => pid === account?.parent?.pid)) {
               newAccounts.push(account);
             } else {
-              removed.push(account.pid);
+              removed.push(account.pid!);
             }
           });
-          this.accountList = newAccounts;
+          this.accountList.set(newAccounts);
         } else {
-          this.accountList = accounts;
+          this.accountList.set(accounts);
         }
 
         if (this.formControl.value) {
           const currentPid = this.formControl.value.substring(this.formControl.value.lastIndexOf('/') + 1);
-          const currentAccount = this.accountList.find((account: IAcqAccount) => account.pid === currentPid);
+          const currentAccount = this.accountList().find((account: IAcqAccount) => account.pid === currentPid);
           if (currentAccount !== undefined) {
-            this.selectedAccount = currentAccount;
+            this.selectedAccount.set(currentAccount);
           }
         }
       },
@@ -92,10 +91,7 @@ export class SelectAccountEditorWidgetComponent extends FieldType implements OnI
           sticky: true,
           closable: true,
         }),
-      complete: () => {
-        this.loading = false;
-        this.changeDetectorRef.markForCheck();
-      },
+      complete: () => this.loading.set(false),
     });
   }
 
@@ -104,14 +100,15 @@ export class SelectAccountEditorWidgetComponent extends FieldType implements OnI
    * Store the selected option, when an option is clicked in the list
    * @param account - The selected account.
    */
-  selectAccount(event): void {
-    const account: IAcqAccount = event.value;
+  selectAccount(event: { value: IAcqAccount | null }): void {
+    const account = event.value;
+    this.selectedAccount.set(account);
     if (account == null) {
       // reset the form control value, default value cannot be used as it is already filled by ngx formly
       this.formControl.reset(null);
       // reset the validators but the required validator
       const errors = this.formControl.errors;
-      this.formControl.setErrors(errors.required? {required: true}: null);
+      this.formControl.setErrors(errors?.required ? { required: true } : null);
       return;
     }
     const accountRef = this.apiService.getRefEndpoint('acq_accounts', account.pid);

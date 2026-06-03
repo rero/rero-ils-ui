@@ -14,7 +14,7 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-@if (loaded) {
+@if (loaded()) {
 <form class="ui:flex ui:flex-col ui:gap-2" [formGroup]="form" (ngSubmit)="onSubmit(model)">
   <!-- FORM HEADER :: title and action buttons -->
   <section class="ui:flex ui:gap-2 ui:justify-between ui:items-center">
@@ -32,13 +32,13 @@
         type="submit"
         size="small"
         [disabled]="!form.valid"
-        [icon]="orderSend ? 'fa fa-spinner fa-pulse' : 'fa fa-save'"
+        [icon]="orderSend() ? 'fa fa-spinner fa-pulse' : 'fa fa-save'"
         [label]="'Save' | translate"
       />
     </div>
   </section>
 
   <!-- FORMLY FORM -->
-    <formly-form [form]="form" [fields]="fields" [model]="model" />
+    <formly-form [form]="form" [fields]="fields()" [model]="model" />
 </form>
 }

@@ -17,27 +17,29 @@
 
 import { provideHttpClient } from "@angular/common/http";
 import { provideHttpClientTesting } from "@angular/common/http/testing";
-import { fakeAsync, TestBed, tick } from "@angular/core/testing";
+import { TestBed } from "@angular/core/testing";
 import { TranslateModule } from "@ngx-translate/core";
-import { Error, Record, RecordUiService } from "@rero/ng-core";
-import { testUserLibrarianWithSettings, User, UserService } from "@rero/shared";
+import { Error, RecordUiService } from "@rero/ng-core";
+import type { EsResult } from "@rero/ng-core";
+import { AppStore, testUserLibrarianWithSettings, User } from "@rero/shared";
 import { ConfirmationService, MessageService } from "primeng/api";
-import { Observable, of } from "rxjs";
+import { Observable, of, Subject } from "rxjs";
 import { HoldingsApiService } from "../../../../../api/holdings-api.service";
 import { HoldingsStore } from "./holdings-store";
 
 describe('Holdings Store', () => {
   beforeEach(() => {
+    vi.useFakeTimers();
     TestBed.configureTestingModule({
       providers: [
         HoldingsStore,
-        RecordUiService,
+        { provide: RecordUiService, useValue: { deleteRecord: vi.fn().mockReturnValue(new Subject()) } },
         ConfirmationService,
         MessageService,
         UserServiceMock,
         HoldingsApiServiceMock,
         { provide: HoldingsApiService, useExisting: HoldingsApiServiceMock },
-        { provide: UserService, useExisting: UserServiceMock },
+        { provide: AppStore, useExisting: UserServiceMock },
         provideHttpClient(),
         provideHttpClientTesting(),
       ],
@@ -47,42 +49,49 @@ describe('Holdings Store', () => {
     });
   });
 
-  it('should return holdings and library filters', fakeAsync((store = TestBed.inject(HoldingsStore)) => {
+  afterEach(() => {
+    vi.useRealTimers();
+  });
+
+  it('should return holdings and library filters', async () => {
+    const store = TestBed.inject(HoldingsStore);
     store.setDocument(document);
-    tick(500);
-    expect(store.holdings()).toHaveSize(12);
+    await vi.advanceTimersByTimeAsync(500);
+    expect(store.holdings()).toHaveLength(12);
     expect(store.total()).toEqual(12);
-    expect(store.isDocumentHarvested()).toBeFalse();
-    expect(store.holdingsCurrentOrganisation()).toHaveSize(9);
-    expect(store.holdingsOtherOrganisation()).toHaveSize(3);
-    expect(store.filter()).toHaveSize(2);
-  }));
+    expect(store.isDocumentHarvested()).toBe(false);
+    expect(store.holdingsCurrentOrganisation()).toHaveLength(9);
+    expect(store.holdingsOtherOrganisation()).toHaveLength(3);
+    expect(store.filter()).toHaveLength(2);
+  });
 
-  it('should return the filtered holdings', fakeAsync((store = TestBed.inject(HoldingsStore)) => {
+  it('should return the filtered holdings', async () => {
+    const store = TestBed.inject(HoldingsStore);
     store.setDocument(document);
-    tick(500);
+    await vi.advanceTimersByTimeAsync(500);
     store.setLibraryFilter({ originalEvent: new Event(''), value: ["1"] });
-    expect(store.holdingsCurrentOrganisation()).toHaveSize(9);
-    expect(store.holdingsOtherOrganisation()).toHaveSize(0);
+    expect(store.holdingsCurrentOrganisation()).toHaveLength(9);
+    expect(store.holdingsOtherOrganisation()).toHaveLength(0);
     store.setLibraryFilter({ originalEvent: new Event(''), value: ["2"] });
-    expect(store.holdingsCurrentOrganisation()).toHaveSize(0);
-    expect(store.holdingsOtherOrganisation()).toHaveSize(3);
+    expect(store.holdingsCurrentOrganisation()).toHaveLength(0);
+    expect(store.holdingsOtherOrganisation()).toHaveLength(3);
     store.setLibraryFilter({ originalEvent: new Event(''), value: ["1", "2"] });
-    expect(store.holdingsCurrentOrganisation()).toHaveSize(9);
-    expect(store.holdingsOtherOrganisation()).toHaveSize(3);
+    expect(store.holdingsCurrentOrganisation()).toHaveLength(9);
+    expect(store.holdingsOtherOrganisation()).toHaveLength(3);
     store.setLibraryFilter({ originalEvent: new Event(''), value: [] });
-    expect(store.holdingsCurrentOrganisation()).toHaveSize(9);
-    expect(store.holdingsOtherOrganisation()).toHaveSize(3);
-  }));
+    expect(store.holdingsCurrentOrganisation()).toHaveLength(9);
+    expect(store.holdingsOtherOrganisation()).toHaveLength(3);
+  });
 
-  it('should remove a holding record', fakeAsync((store = TestBed.inject(HoldingsStore)) => {
+  it('should remove a holding record', async () => {
+    const store = TestBed.inject(HoldingsStore);
     // Do not test the delete dialog
     store.setDocument(document);
-    tick(500);
+    await vi.advanceTimersByTimeAsync(500);
     const record = store.holdings()[2];
     store.delete(record);
     expect(store.record()).toEqual(record);
-  }));
+  });
 });
 
 const document = {
@@ -94,8 +103,7 @@ const document = {
   "metadata": {
     "$schema": "https://bib.rero.ch/schemas/documents/document-v0.0.1.json",
     "adminMetadata": {
-      "encodingLevel": "Minimal level",
-    },
+      "encodingLevel": "Minimal level" },
     "contentMediaCarrier": [
       {
         "carrierType": "rdact:1049",
@@ -237,7 +245,7 @@ const document = {
 }
 
 class HoldingsApiServiceMock {
-  getHoldingsByDocumentPid(documentPid: string): Observable<Record | Error> {
+  getHoldingsByDocumentPid(_documentPid: string): Observable<EsResult | Error> {
     const holdings = [];
 
     for (let i = 0; i < 12; i++) {
@@ -305,9 +313,17 @@ class HoldingsApiServiceMock {
 }
 
 class UserServiceMock {
-  get user() {
+  private readonly _user = (() => {
     const user = new User(testUserLibrarianWithSettings);
-    user.currentOrganisation = "1";
+    user.currentOrganisation = '1';
     return user;
+  })();
+
+  user() {
+    return this._user;
+  }
+
+  currentOrganisationPid() {
+    return '1';
   }
 }

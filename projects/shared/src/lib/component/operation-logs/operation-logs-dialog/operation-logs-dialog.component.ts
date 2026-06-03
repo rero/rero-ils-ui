@@ -14,16 +14,20 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, inject, Input } from '@angular/core';
+import { Component, inject, input, ChangeDetectionStrategy} from '@angular/core';
 import { IPermissions, PERMISSIONS } from '../../../util/permissions';
 import { DialogService } from 'primeng/dynamicdialog';
 import { OperationLogsComponent } from '../operation-logs.component';
-import { TranslateService } from '@ngx-translate/core';
+import { TranslateService, TranslatePipe } from '@ngx-translate/core';
+import { Bind } from 'primeng/bind';
+import { Button } from 'primeng/button';
+import { PermissionsDirective } from '../../../directive/permissions.directive';
 
 @Component({
-    selector: 'shared-operation-logs-dialog',
-    templateUrl: './operation-logs-dialog.component.html',
-    standalone: false
+  selector: 'shared-operation-logs-dialog',
+  templateUrl: './operation-logs-dialog.component.html',
+  imports: [Bind, Button, PermissionsDirective, TranslatePipe],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class OperationLogsDialogComponent {
 
@@ -31,10 +35,10 @@ export class OperationLogsDialogComponent {
   private translateService: TranslateService = inject(TranslateService);
 
   /** Resource type */
-  @Input() resourceType: string;
+  readonly resourceType = input<string>();
 
   /** Resource pid */
-  @Input() resourcePid: string;
+  readonly resourcePid = input<string>();
 
   /** return all permissions */
   permissions: IPermissions = PERMISSIONS;
@@ -48,8 +52,8 @@ export class OperationLogsDialogComponent {
       width: '60vw',
       position: 'top',
       data: {
-        resourceType: this.resourceType,
-        resourcePid: this.resourcePid
+        resourceType: this.resourceType(),
+        resourcePid: this.resourcePid()
       }
     });
   }

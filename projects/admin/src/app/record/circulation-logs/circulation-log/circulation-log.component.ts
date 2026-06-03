@@ -15,31 +15,38 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, EventEmitter, inject, Input, Output } from '@angular/core';
-import { PermissionsService } from '@rero/shared';
+import { Component, inject, input, output, ChangeDetectionStrategy} from '@angular/core';
+import { AppStore, OpenCloseButtonComponent } from '@rero/shared';
+import { Bind } from 'primeng/bind';
+import { Button } from 'primeng/button';
+import { ScrollPanel } from 'primeng/scrollpanel';
+import { JsonPipe } from '@angular/common';
+import { TranslatePipe } from '@ngx-translate/core';
+import { DateTranslatePipe } from '@rero/ng-core';
 
 @Component({
     selector: 'admin-circulation-log',
     templateUrl: './circulation-log.component.html',
-    standalone: false
+    imports: [OpenCloseButtonComponent, Bind, Button, ScrollPanel, JsonPipe, TranslatePipe, DateTranslatePipe],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CirculationLogComponent {
 
-  private permissionsService: PermissionsService = inject(PermissionsService);
+  private appStore = inject(AppStore);
 
   // COMPONENT ATTRIBUTES =====================================================
   /** Operation log record */
-  @Input() record: any;
+  record = input<any>();
   /** Is the log should be highlighted */
-  @Input() isHighlight = false;
+  isHighlight = input(false);
   /** Is the transaction must be separated from sibling elements */
-  @Input() separator = false;
+  separator = input(false);
 
   /** Event for close dialog */
-  @Output() closeDialogEvent = new EventEmitter();
+  closeDialogEvent = output();
 
   /** Event for is collapsed */
-  @Output() isCollapsedEvent = new EventEmitter();
+  isCollapsedEvent = output<boolean>();
 
   /** Circulation information's is collapsed */
   isCollapsed = true;
@@ -53,7 +60,7 @@ export class CirculationLogComponent {
    * @returns True if the debug mode can be enabled and switched
    */
   get canUseDebugMode(): boolean {
-    return this.permissionsService.canAccessDebugMode();
+    return this.appStore.canAccessDebugMode();
   }
 
   // COMPONENT FUNCTIONS ======================================================

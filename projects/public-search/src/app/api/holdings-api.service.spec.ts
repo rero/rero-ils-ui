@@ -74,11 +74,11 @@ describe('HoldingsService', () => {
     description: 'holdings patron request'
   };
 
-  const httpClientSpy = jasmine.createSpyObj('HttpClient', ['get', 'post']);
+  const httpClientSpy = { get: vi.fn(), post: vi.fn() };
 
-  const recordServiceSpy = jasmine.createSpyObj('RecordService', ['getRecords', 'totalHits']);
-  recordServiceSpy.getRecords.and.returnValue(of(apiResponse));
-  recordServiceSpy.totalHits.and.returnValue(1);
+  const recordServiceSpy = { getRecords: vi.fn(), totalHits: vi.fn() };
+  recordServiceSpy.getRecords.mockReturnValue(of(apiResponse));
+  recordServiceSpy.totalHits.mockReturnValue(1);
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -105,19 +105,19 @@ describe('HoldingsService', () => {
   });
 
   it('should return to holdings if it can be requested', () => {
-    httpClientSpy.get.and.returnValue(of(canRequest));
+    httpClientSpy.get.mockReturnValue(of(canRequest));
     service.canRequest('1', '1', '1')
       .subscribe((result: HoldingCanRequest) => expect(result).toEqual(canRequest));
   });
 
   it('', () => {
-    httpClientSpy.post.and.returnValue(of(holdingsPatronRequest));
+    httpClientSpy.post.mockReturnValue(of(holdingsPatronRequest));
     service.request(holdingsPatronRequest)
       .subscribe((response: HoldingPatronRequest) => expect(response).toEqual(holdingsPatronRequest));
   });
 
   it('should return the availability of the holdings', () => {
-    httpClientSpy.get.and.returnValue(of(availability));
+    httpClientSpy.get.mockReturnValue(of(availability));
     service.getAvailability('1')
       .subscribe((response: IAvailability) => expect(response).toEqual(availability));
   });

@@ -15,126 +15,93 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { Component, computed, inject, model, ModelSignal, OnDestroy, OnInit, WritableSignal } from '@angular/core';
-import { Loan, LoanOverduePreview } from '@app/admin/classes/loans';
+import { Component, computed, inject, model, ModelSignal, Signal, signal, ChangeDetectionStrategy } from '@angular/core';
+import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
 import { PatronTransaction, PatronTransactionStatus } from '@app/admin/classes/patron-transaction';
-import { OrganisationService } from '@app/admin/service/organisation.service';
-import { TranslateService } from '@ngx-translate/core';
-import { UserService } from '@rero/shared';
+import { TranslateService, TranslateDirective, TranslatePipe } from '@ngx-translate/core';
+import { AppStore } from '@rero/shared';
 import { MenuItem } from 'primeng/api';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
-import { Subscription } from 'rxjs';
 import { PatronTransactionService } from '../../services/patron-transaction.service';
-import { CirculationStatsService } from '../service/circulation-stats.service';
+import { CirculationStore } from '../../store/circulation.store';
 import { PatronFeeComponent } from './patron-fee/patron-fee.component';
 import { PatronTransactionEventFormComponent } from './patron-transaction-event-form/patron-transaction-event-form.component';
-import { PatronService } from '@app/admin/service/patron.service';
+import { Bind } from 'primeng/bind';
+import { Accordion, AccordionPanel, AccordionHeader, AccordionContent } from 'primeng/accordion';
+import { Ripple } from 'primeng/ripple';
+import { Tag } from 'primeng/tag';
+import { Button } from 'primeng/button';
+import { SplitButton } from 'primeng/splitbutton';
+import { PatronTransactionComponent } from './patron-transaction/patron-transaction.component';
+import { OverdueTransactionComponent } from './overdue-transaction/overdue-transaction.component';
+import { CurrencyPipe } from '@angular/common';
 
 @Component({
     selector: 'admin-patron-transactions',
     templateUrl: './patron-transactions.component.html',
-    standalone: false
+    imports: [Bind, Accordion, AccordionPanel, Ripple, AccordionHeader, TranslateDirective, Tag, AccordionContent, Button, SplitButton, PatronTransactionComponent, OverdueTransactionComponent, CurrencyPipe, TranslatePipe],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class PatronTransactionsComponent implements OnInit, OnDestroy {
+export class PatronTransactionsComponent {
 
   private dialogService: DialogService = inject(DialogService);
-  private organisationService: OrganisationService = inject(OrganisationService);
   private patronTransactionService: PatronTransactionService = inject(PatronTransactionService);
-  private userService: UserService = inject(UserService);
+  private appStore = inject(AppStore);
   private translateService: TranslateService = inject(TranslateService);
-  private patronService: PatronService = inject(PatronService);
-
-  private circulationStatsService: CirculationStatsService = inject(CirculationStatsService);
+  protected store = inject(CirculationStore);
 
   private dynamicDialogRef: DynamicDialogRef | undefined;
 
   activePanel: ModelSignal<undefined | string> = model<undefined | string>(undefined);
 
-  statistics = this.circulationStatsService.statistics;
+  readonly statistics = this.store.statistics;
 
-  // COMPONENTS ATTRIBUTES ===============================================================
-  /** all tab reference array */
   tabs = {
     engagedFees: {
-      transactions: null as WritableSignal<PatronTransaction[]>,
+      transactions: this.store.openTransactions as Signal<PatronTransaction[]>,
     },
     overduePreviewFees: {
-      transactions: null as  WritableSignal<{fees: LoanOverduePreview, loan: Loan}[]>,
+      transactions: this.store.overdueTransactions,
     },
     historyFees: {
-      transactions: null as PatronTransaction[]
+      transactions: signal<PatronTransaction[]>([])
     }
   };
 
-  actions = computed<MenuItem[] | undefined>(() => {
-    return [
-      {
-        label: this.translateService.instant('for my library'),
-        command: () => this.payAllTransactionsInMyLibrary(),
-        disabled: this.myLibraryEngagedFees().length === 0
-      }
-    ];
-  });
-
-  /** Current patron */
-  private patron: any = undefined;
-  /** Component subscriptions */
-  private subscriptions = new Subscription();
-
-
-  // GETTER & SETTER ======================================================================
-  /**
-   * Get current organisation
-   * @return current organisation
-   */
-  get organisation(): any {
-    return this.organisationService.organisation;
-  }
-
-  /**
-   * Get engaged fees related to the current user library
-   * @return the list of corresponding transactions.
-   */
-  myLibraryEngagedFees = computed<PatronTransaction[]>(() => {
-    const libraryPID = this.userService.user.currentLibrary;
-    return this.tabs.engagedFees.transactions().filter(t => t.library != null && t.library.pid === libraryPID);
-  });
-
-  // CONSTRUCTOR & HOOKS ==================================================================
-  /** OnInit hook */
-  ngOnInit(): void {
-    this.activePanel.set("0");
-    this.tabs.overduePreviewFees.transactions = this.circulationStatsService.overdueTransactions;
-    this.tabs.engagedFees.transactions = this.circulationStatsService.engagedTransactions;
-    this.patronService.currentPatron$.subscribe(patron => this.patron = patron);
-    this.subscriptions.add(
-      this.activePanel. subscribe(val => {
-        // lazy loading history
-        if (val === "2") {
-          this.loadFeesHistory();
-        }
-      })
-    );
-  }
-
-  /** OnDestroy hook */
-  ngOnDestroy(): void {
-    this.subscriptions.unsubscribe();
-  }
-
-  // COMPONENT FUNCTIONS ==================================================================
-  /** load all PatronTransactions for the patron without 'status' restriction */
-  loadFeesHistory(): void {
-    if (this.patron) {
-      this.patronTransactionService
-        .patronTransactionsByPatron$(this.patron.pid, undefined, PatronTransactionStatus.CLOSED.toString())
-        .subscribe(transactions => {
-          this.tabs.historyFees.transactions = transactions;
-        });
+  actions = computed<MenuItem[] | undefined>(() => [
+    {
+      label: this.translateService.instant('for my library'),
+      command: () => this.payAllTransactionsInMyLibrary(),
+      disabled: this.myLibraryEngagedFees().length === 0
     }
+  ]);
+
+  myLibraryEngagedFees = computed<PatronTransaction[]>(() => {
+    const libraryPID = this.appStore.currentLibraryPid();
+    return this.store.openTransactions().filter(t => t.library != null && t.library.pid === libraryPID);
+  });
+
+  constructor() {
+    this.activePanel.set("0");
+    toObservable(this.activePanel).pipe(takeUntilDestroyed()).subscribe(val => {
+      if (val === "2") {
+        this.loadFeesHistory();
+      }
+    });
   }
 
-  /** Allow to pay the total of each pending patron transactions */
+  get organisation(): any {
+    return this.appStore.organisation();
+  }
+
+  loadFeesHistory(): void {
+    const pid = this.store.patron()?.pid;
+    if (!pid) return;
+    this.patronTransactionService
+      .patronTransactionsByPatron(pid, undefined, PatronTransactionStatus.CLOSED.toString())
+      .subscribe(transactions => this.tabs.historyFees.transactions.set(transactions));
+  }
+
   payAllTransactions(): void {
     this.dialogService.open(PatronTransactionEventFormComponent, {
       header: this.translateService.instant('Pay'),
@@ -142,15 +109,12 @@ export class PatronTransactionsComponent implements OnInit, OnDestroy {
       focusOnShow: false,
       width: '50vw',
       closable: true,
-      data: {
-        action: 'pay',
-        mode: 'full',
-        transactions: this.tabs.engagedFees.transactions()
-      }
+      data: { action: 'pay', mode: 'full', transactions: this.store.openTransactions() }
+    })?.onClose.subscribe((pid: string | undefined) => {
+      if (pid) this.store.reloadOpenTransactions(pid);
     });
   }
 
-  /** Allow to pay the total of each pending patron transactions */
   payAllTransactionsInMyLibrary(): void {
     this.dialogService.open(PatronTransactionEventFormComponent, {
       header: this.translateService.instant('Pay for my library'),
@@ -158,35 +122,29 @@ export class PatronTransactionsComponent implements OnInit, OnDestroy {
       focusOnShow: false,
       width: '50vw',
       closable: true,
-      data: {
-        action: 'pay',
-        mode: 'full',
-        transactions: this.myLibraryEngagedFees()
-      }
+      data: { action: 'pay', mode: 'full', transactions: this.myLibraryEngagedFees() }
+    })?.onClose.subscribe((pid: string | undefined) => {
+      if (pid) this.store.reloadOpenTransactions(pid);
     });
   }
 
-  /** Opening a modal to manually add a fee. */
   addFee(): void {
+    const patron = this.store.patron() as any;
+    if (!patron) return;
     this.dynamicDialogRef = this.dialogService.open(PatronFeeComponent, {
       header: this.translateService.instant('New fee'),
       modal: true,
       focusOnShow: false,
       width: '30vw',
       closable: true,
-      data: {
-        patron: this.patron,
-        organisationPid: this.patron.organisation.pid
+      data: { patron, organisationPid: patron.organisation?.pid }
+    });
+    this.dynamicDialogRef.onClose.subscribe(() => {
+      const pid = this.store.patron()?.pid;
+      if (pid) {
+        this.store.reloadOpenTransactions(pid);
+        this.store.loadStats(pid);
       }
     });
-    this.subscriptions.add(
-      this.dynamicDialogRef.onClose.subscribe(() => this.reloadEngagedFees())
-    );
-  }
-
-  // PRIVATE COMPONENTS FUNCTIONS =============================================
-  /** Notify than engaged fees for the current patron should be reloaded. */
-  private reloadEngagedFees(): void {
-    this.patronTransactionService.emitPatronTransactionByPatron(this.patron.pid, undefined, 'open');
   }
 }

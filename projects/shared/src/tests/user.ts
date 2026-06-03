@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { IUser } from '../lib/class/user';
+import { IUser } from '../lib/classes/user';
 
 export const testPermissions = [
   "acac-create",

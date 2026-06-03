@@ -18,7 +18,7 @@
 @if (order) {
   <article class="ui:grid ui:grid-cols-12 ui:gap-4">
     <div class="ui:col-span-12 ui:lg:col-span-9">
-      <h5><a [routerLink]="[detailUrl.link]">{{ order.reference }}</a></h5>
+      <h5><a [routerLink]="[detailUrl().link]">{{ order.reference }}</a></h5>
       @let notes = order.notes | notesFilter: [noteType.STAFF_NOTE];
       @if (notes.length > 0) {
         <div class="ui:italic" [innerHTML]="notes[0].content | nl2br"></div>

@@ -15,20 +15,20 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <div>
-  @if (record) {
+  @if (record()) {
     <ng-core-detail-button
-    [record]="record"
-    [type]="type"
-    [adminMode]="adminMode"
-    [useStatus]="useStatus"
-    [updateStatus]="updateStatus"
-    [deleteStatus]="deleteStatus"
+    [record]="record()"
+    [type]="type()"
+    [adminMode]="adminMode()"
+    [useStatus]="useStatus()"
+    [updateStatus]="updateStatus()"
+    [deleteStatus]="deleteStatus()"
     (recordEvent)="recordEvent($event)"
     (deleteMessageEvent)="showDeleteMessage($event)"
   >
     <ng-container beforeButton>
-      @if (record) {
-        @if (recordPermissions?.update?.can && isIssue && isClaimAllowed) {
+      @if (record()) {
+        @if (resolvedRecordPermissions()?.update?.can && isIssue && isClaimAllowed) {
             <p-button
               outlined
               (click)="openClaimEmailDialog()"
@@ -36,15 +36,15 @@
               [label]="'Add a claim' | translate"
             />
         }
-        @if (isEnabledOperationLog && record.metadata.pid) {
-          <shared-operation-logs-dialog resourceType="items" [resourcePid]="record.metadata.pid" />
+        @if (isEnabledOperationLog && record()?.metadata.pid) {
+          <shared-operation-logs-dialog resourceType="items" [resourcePid]="$any(record()?.metadata.pid)" />
         }
       }
     </ng-container>
   </ng-core-detail-button>
   }
-  <admin-item-detail-view ngCoreRecordDetail [record]="record" [recordPermissions]="recordPermissions" />
-  @if (error) {
-    <ng-core-error [error]="error" />
+  @if (error()) {
+    <ng-core-error [error]="error()" />
   }
+  <ng-container #dynamicHost />
 </div>

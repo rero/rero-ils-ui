@@ -14,7 +14,7 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<p-menubar class="ui:relative ui:z-20" [model]="items" [autoDisplay]="false">
+<p-menubar class="ui:relative ui:z-20" [model]="items()" [autoDisplay]="false">
   <ng-template #item let-item let-root="root">
     <a
       pRipple

@@ -21,7 +21,7 @@
   @if (record().metadata.item.enumerationAndChronology && !showAdditionalInformation()) {
     <p-tag [value]="record().metadata.item.enumerationAndChronology" severity="info" />
   }
-  <shared-contribution [contributions]="document()?.contribution" [view]="viewcode" [limitRecord]="3" />
+  <shared-contribution [contributions]="$any(document())?.contribution" [view]="viewcode" [limitRecord]="3" />
   @if (record().metadata && showAdditionalInformation()) {
       <dl class="ui:md:grid ui:grid-cols-4">
         <!-- CALL NUMBER -->

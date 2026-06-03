@@ -15,47 +15,48 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <div>
-  @if (record) {
+  @if (record()) {
     <ng-core-detail-button
-      [record]="record"
-      [type]="type"
-      [adminMode]="adminMode"
-      [useStatus]="useStatus"
-      [updateStatus]="updateStatus"
-      [deleteStatus]="deleteStatus"
+      [record]="record() ?? null"
+      [type]="type()"
+      [adminMode]="adminMode()"
+      [useStatus]="useStatus()"
+      [updateStatus]="updateStatus()"
+      [deleteStatus]="deleteStatus()"
       (recordEvent)="recordEvent($event)"
       (deleteMessageEvent)="showDeleteMessage($event)"
     >
       <ng-container beforeButton>
-        @if (record) {
-          @if (isEnabledOperationLog && record.metadata.pid) {
-            <shared-operation-logs-dialog resourceType="documents" [resourcePid]="record.metadata.pid" />
+        @if (record()) {
+          @if (isEnabledOperationLog && record()?.metadata.pid) {
+            <shared-operation-logs-dialog resourceType="documents" [resourcePid]="$any(record()?.metadata.pid)" />
           }
-          @if (!record.metadata.pid && source) {
+          @if (!record()?.metadata.pid && source) {
             <p-button
               icon="fa fa-cloud-download"
               [label]="'Import'|translate"
               outlined
               [permissions]="permissions.DOC_CREATE"
-              (onClick)="importDocument($event, record, { source: source, pid: pid })"
+              (onClick)="importDocument($event, record(), { source: source, pid: pid() })"
             />
           }
-          @if (record.metadata.pid) {
+          @if (record()?.metadata.pid) {
             <p-button
               icon="fa fa-files-o"
               [label]="'Duplicate'|translate"
               outlined
               [permissions]="permissions.DOC_CREATE"
               [routerLink]="['/records', 'documents', 'duplicate']"
-              [queryParams]="{type: 'documents', pid: record.metadata.pid}"
+              [queryParams]="{type: 'documents', pid: record()?.metadata.pid}"
             />
           }
         }
       </ng-container>
     </ng-core-detail-button>
   }
-  @if (error) {
-    <ng-core-error [error]="error" />
+  @let err = error();
+  @if (err) {
+    <ng-core-error [error]="err" />
   }
-  <ng-template ngCoreRecordDetail />
+  <ng-container #dynamicHost />
 </div>

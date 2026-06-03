@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2020-2024 RERO
+ * Copyright (C) 2020-2025 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -14,35 +14,29 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
-import { inject, Injectable } from '@angular/core';
-import { ActivatedRouteSnapshot } from '@angular/router';
+import { inject } from '@angular/core';
+import { ActivatedRouteSnapshot, CanActivateFn, Router } from '@angular/router';
 import { extractIdOnRef, RecordService } from '@rero/ng-core';
+import { AppStore } from '@rero/shared';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { LibraryGuard } from './library.guard';
+import { checkLibraryAccess } from './library.guard';
 
-@Injectable({
-  providedIn: 'root'
-})
-export class AcqOrderLineGuard extends LibraryGuard {
+/**
+ * Guard that checks if the current user's library matches the library of the
+ * acquisition order referenced by the `order` query param (or `pid` route param).
+ */
+export const acqOrderLineGuard: CanActivateFn = (route: ActivatedRouteSnapshot): Observable<boolean> => {
+  const recordService = inject(RecordService);
+  const appStore = inject(AppStore);
+  const router = inject(Router);
 
-  private recordService: RecordService = inject(RecordService);
+  const orderPid = route.queryParams.order ?? route.params.pid;
+  const owningLibrary$ = recordService.getRecord('acq_orders', orderPid).pipe(
+    map(data => data.metadata || {}),
+    map(metadata => metadata.library || {}),
+    map(library => extractIdOnRef((library as any)?.$ref))
+  );
 
-  /**
-   * Return the library linked to an acquisition order number.
-   * @param route: the current URL route
-   * @return: the library pid linked to the resource from the 'order' query parameters
-   */
-  getOwningLibrary$(route: ActivatedRouteSnapshot): Observable<string> {
-    let orderPid = route.queryParams.order;
-    if (orderPid === undefined) {
-       orderPid = route.params.pid;
-    }
-    return this.recordService.getRecord('acq_orders', orderPid).pipe(
-      map(data => data.metadata || {}),
-      map(metadata => metadata.library || {}),
-      map(library => extractIdOnRef(library.$ref))
-    );
-  }
-}
+  return checkLibraryAccess(owningLibrary$, appStore, router);
+};

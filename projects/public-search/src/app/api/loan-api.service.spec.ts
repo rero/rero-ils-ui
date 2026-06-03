@@ -19,7 +19,7 @@ import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { LoanOverduePreview } from '@app/admin/classes/loans';
 import { TranslateModule } from '@ngx-translate/core';
-import { CoreModule, RecordService } from '@rero/ng-core';
+import { ApiService, RecordService } from '@rero/ng-core';
 import { of } from 'rxjs';
 import { CanExtend, LoanApiService } from './loan-api.service';
 
@@ -75,18 +75,18 @@ describe('LoanApiService', () => {
     total: 1
   };
 
-  const recordServiceSpy = jasmine.createSpyObj('RecordService', ['getRecords', 'totalHits']);
-  recordServiceSpy.getRecords.and.returnValue(of(apiResponse));
-  recordServiceSpy.totalHits.and.returnValue(1);
+  const recordServiceSpy = { getRecords: vi.fn(), totalHits: vi.fn() };
+  recordServiceSpy.getRecords.mockReturnValue(of(apiResponse));
+  recordServiceSpy.totalHits.mockReturnValue(1);
 
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [
         TranslateModule.forRoot(),
-        CoreModule
-      ],
+        ],
       providers: [
         { provide: RecordService, useValue: recordServiceSpy },
+        { provide: ApiService, useValue: { getEndpointByType: vi.fn().mockReturnValue('/api/loan') } },
         provideHttpClient(withInterceptorsFromDi()),
         provideHttpClientTesting()
       ]
@@ -110,25 +110,25 @@ describe('LoanApiService', () => {
   });
 
   it('should extend the loan', () => {
-    spyOn(httpClient, 'get').and.returnValue(of(canExtend));
+    vi.spyOn(httpClient, 'get').mockReturnValue(of(canExtend));
     service.canExtend('1')
       .subscribe((response: CanExtend) => expect(response).toEqual(canExtend));
   });
 
   it('should extend the loan', () => {
-    spyOn(httpClient, 'post').and.returnValue(of(renew));
+    vi.spyOn(httpClient, 'post').mockReturnValue(of(renew));
     service.renew({pid: '1', item_pid: '1', transaction_location_pid: '1', transaction_user_pid: '1'})
       .subscribe((response: any) => expect(response.pid).toEqual('renew'));
   });
 
   it('should cancel the loan', () => {
-    spyOn(httpClient, 'post').and.returnValue(of(cancel));
+    vi.spyOn(httpClient, 'post').mockReturnValue(of(cancel));
     service.cancel({pid: '1', transaction_location_pid: '1', transaction_user_pid: '1'})
       .subscribe((response: any) => expect(response.pid).toEqual('cancel'));
   });
 
   it('should return the list of projected expenses', () => {
-    spyOn(httpClient, 'get').and.returnValue(of(loanOverduePreview));
+    vi.spyOn(httpClient, 'get').mockReturnValue(of(loanOverduePreview));
     service.getPreviewOverdue('1')
       .subscribe((response: LoanOverduePreview) => expect(response).toEqual(loanOverduePreview));
   });

@@ -16,11 +16,12 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { HttpClient } from '@angular/common/http';
-import { inject, Injectable } from '@angular/core';
+import { inject, Injectable, signal } from '@angular/core';
 import { IPreview } from '@app/admin/shared/preview-email/IPreviewInterface';
-import { Record, RecordService, RecordUiService } from '@rero/ng-core';
+import type { EsResult } from '@rero/ng-core';
+import { RecordService, RecordUiService } from '@rero/ng-core';
 import { BaseApi } from '@rero/shared';
-import { Observable, Subject } from 'rxjs';
+import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { Notification } from '../../classes/notification';
 import {
@@ -43,12 +44,8 @@ export class AcqOrderApiService extends BaseApi {
 
   // SERVICES ATTRIBUTES ======================================================
 
-  /** Subject emitted when an order line is deleted. The order line pid will be emitted */
-  private _deletedOrderLineSubject$ = new Subject<IAcqOrderLine>();
-
-  // GETTER AND SETTER ========================================================
-  /** expose _deletedOrderLineSubject$ in 'readonly' mode */
-  get deletedOrderLineSubject$(): Observable<IAcqOrderLine> { return this._deletedOrderLineSubject$.asObservable(); }
+  /** Last deleted order line (null = no deletion yet) */
+  readonly lastDeletedOrderLine = signal<IAcqOrderLine | null>(null);
 
   // SERVICE PUBLIC FUNCTIONS =================================================
   /**
@@ -57,8 +54,8 @@ export class AcqOrderApiService extends BaseApi {
    * @return: the corresponding AcqOrder
    */
   getOrder(orderPid: string, resolve=0): Observable<IAcqOrder> {
-    return this.recordService.getRecord('acq_orders', orderPid, resolve, BaseApi.reroJsonheaders).pipe(
-        map(data => ({...orderDefaultData, ...data.metadata}) )
+    return this.recordService.getRecord('acq_orders', orderPid, { resolve, headers: BaseApi.reroJsonheaders }).pipe(
+        map((data: any) => ({...orderDefaultData, ...data.metadata}) as IAcqOrder)
       );
   }
 
@@ -101,17 +98,20 @@ export class AcqOrderApiService extends BaseApi {
       query += ` ${extraQuery}`;
     }
     return this.recordService
-      .getRecords('acq_order_lines', query, 1, RecordService.MAX_REST_RESULTS_SIZE, undefined, undefined, undefined, 'priority')
+      .getRecords('acq_order_lines', {
+        query,
+        page: 1,
+        itemsPerPage: RecordService.MAX_REST_RESULTS_SIZE,
+        sort: 'priority'
+      })
       .pipe(
-        map((result: Record) => this.recordService.totalHits(result.hits.total) === 0 ? [] : result.hits.hits),
+        map((result: EsResult) => +this.recordService.totalHits(result.hits.total) === 0 ? [] : result.hits.hits),
         map((hits: any[]) => hits.map(hit => ({...orderLineDefaultData, ...hit.metadata})))
       );
   }
 
   /**
    * Allow to delete an order line.
-   * If the order line is correctly deleted, this function emit an event :
-   *   * deletedOrderLineSubject$ : to specify which order line has been deleted
    * @param orderLine: the order line to delete
    */
   deleteOrderLine(orderLine: IAcqOrderLine): void {
@@ -119,7 +119,7 @@ export class AcqOrderApiService extends BaseApi {
       .deleteRecord('acq_order_lines', orderLine.pid)
       .subscribe((success: boolean) => {
           if (success) {
-            this._deletedOrderLineSubject$.next(orderLine);
+            this.lastDeletedOrderLine.set(orderLine);
           }
         }
       );

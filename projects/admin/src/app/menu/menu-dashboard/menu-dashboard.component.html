@@ -15,9 +15,9 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <div class="ui:flex ui:flex-wrap ui:lg:flex-nowrap ui:gap-4">
-  @for (item of items; track item.id) {
+  @for (item of items(); track item.id) {
     <div class="ui:w-full">
-      <p-card styleClass="ui:bg-white">
+      <p-card class="ui:bg-white">
         <ng-template #header>
           <div class="ui:bg-primary-950 ui:text-white ui:gap-1 ui:flex ui:items-center ui:p-4 ui:font-bold ui:rounded-t-lg">
             @if (item.icon) {

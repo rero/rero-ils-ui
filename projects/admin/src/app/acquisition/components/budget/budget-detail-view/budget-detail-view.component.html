@@ -15,14 +15,12 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-@if (record$ | async; as record) {
+@if (record(); as record) {
   <!-- ROLLOVER INFO -->
   @if (!record.metadata.is_active) {
-    <p-message
-      [text]="'Fiscal year closed'|translate"
-      severity="warn"
-      showTransitionOptions="0ms"
-    />
+    <p-message severity="warn" showTransitionOptions="0ms">
+      {{ 'Fiscal year closed'|translate }}
+    </p-message>
   }
   <header class="ui:my-3">
     <h1>{{ record.metadata.name }}</h1>
@@ -30,7 +28,7 @@
   <section>
     <dl class="metadata">
       <dt translate>Total</dt>
-      <dd>{{ totalAmount | currency:currencyCode:'symbol' }}</dd>
+      <dd>{{ totalAmount() | currency:currencyCode:'symbol' }}</dd>
     </dl>
   </section>
 }

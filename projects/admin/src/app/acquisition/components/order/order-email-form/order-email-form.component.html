@@ -15,14 +15,14 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-@if (response) {
+@if (response(); as preview) {
   <admin-preview-email
-    [emails]="suggestions.emails"
+    [emails]="suggestions().emails"
     [emailTypes]="emailTypes"
     [mandatoryEmailTypes]="mandatoryEmailTypes"
-    [preview]="response.preview"
+    [preview]="preview.preview"
     [previewPosition]="'bottom'"
-    [prePopulateRecipients]="suggestions.recipients"
+    [prePopulateRecipients]="suggestions().recipients"
     (closeDialog)="closeDialog()"
     (data)="confirmOrder($event)"
   >

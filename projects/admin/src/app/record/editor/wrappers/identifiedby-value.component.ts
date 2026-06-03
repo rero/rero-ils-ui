@@ -15,14 +15,16 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { ChangeDetectionStrategy, Component, inject, OnInit } from '@angular/core';
-import { _ } from "@ngx-translate/core";
+import { _, TranslatePipe } from "@ngx-translate/core";
 import { FieldWrapper } from '@ngx-formly/core';
-import { Record, RecordService } from '@rero/ng-core';
+import { RecordService } from '@rero/ng-core';
 import issn from 'issn';
 import { combineLatest, Observable, of } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
 import { isbn } from 'simple-isbn';
 import { IdentifierTypes } from '../../../classes/identifiers';
+import { RouterLink } from '@angular/router';
+import { AsyncPipe } from '@angular/common';
 
 @Component({
     selector: 'admin-identifiedby-value',
@@ -43,7 +45,7 @@ import { IdentifierTypes } from '../../../classes/identifiers';
     }
   `,
     changeDetection: ChangeDetectionStrategy.OnPush,
-    standalone: false
+    imports: [RouterLink, AsyncPipe, TranslatePipe]
 })
 export class IdentifiedbyValueComponent extends FieldWrapper implements OnInit {
 
@@ -148,11 +150,11 @@ export class IdentifiedbyValueComponent extends FieldWrapper implements OnInit {
    */
   private _queryCheck(identifierValues: string[]): Observable<any> {
     return this.recordService
-      .getRecords('documents', undefined, 1, 1, undefined, {identifiers: identifierValues})
+      .getRecords('documents', { page: 1, itemsPerPage: 1, preFilters: { identifiers: identifierValues } })
       .pipe(
-        map((result: Record) => {
+        map((result: any) => {
           return (
-            this.recordService.totalHits(result.hits.total) > 0
+            +this.recordService.totalHits(result.hits.total) > 0
             && result.hits.hits[0].metadata.pid !== this.recordPid
           )
             ? result.hits.hits[0].metadata

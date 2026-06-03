@@ -14,25 +14,31 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, inject, Input } from '@angular/core';
+import { Component, DestroyRef, inject, input, ChangeDetectionStrategy} from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ExceptionDates, Library } from '@app/admin/classes/library';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { ExceptionDatesEditComponent } from '../exception-dates-edit/exception-dates-edit.component';
-import { TranslateService } from '@ngx-translate/core';
+import { TranslateService, TranslatePipe } from '@ngx-translate/core';
+import { ExceptionDateComponent } from '../../../detail-view/library-detail-view/exception-date/exception-date.component';
+import { Bind } from 'primeng/bind';
+import { Button } from 'primeng/button';
 
 @Component({
     selector: 'admin-libraries-exception-dates-list',
     templateUrl: './exception-dates-list.component.html',
-    standalone: false
+    imports: [ExceptionDateComponent, Bind, Button, TranslatePipe],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ExceptionDatesListComponent {
 
   private dialogService: DialogService = inject(DialogService);
   private translateService: TranslateService = inject(TranslateService);
 
+  private readonly destroyRef = inject(DestroyRef);
   private dynamicDialogRef: DynamicDialogRef | undefined;
 
-  @Input() exceptionDates = [];
+  exceptionDates = input([]);
 
   editException(index: number): void {
     this.dynamicDialogRef = this.dialogService.open(ExceptionDatesEditComponent, {
@@ -41,18 +47,18 @@ export class ExceptionDatesListComponent {
       width: '50vw',
       closable: false,
       data: {
-        exceptionDate: this.exceptionDates[index]
+        exceptionDate: this.exceptionDates()[index]
       }
     });
-    this.dynamicDialogRef.onClose.subscribe((value?: any) => {
+    this.dynamicDialogRef.onClose.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((value?: any) => {
       if (value) {
-        this.exceptionDates[index] = value;
+        this.exceptionDates()[index] = value;
       }
     });
   }
 
   deleteException(index: number): void {
-    this.exceptionDates.splice(index, 1);
+    this.exceptionDates().splice(index, 1);
   }
 
   isOver(exception: ExceptionDates): boolean {

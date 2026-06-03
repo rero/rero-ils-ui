@@ -32,9 +32,9 @@
     @if (recordsTotal() > 0) {
       @for (record of records(); track $index; let isFirst = $first; let idx = $index) {
         @if (isFirst || !isSamePeriod(record, records()[idx-1])) {
-          <div class="ui:bg-surface-100 ui:p-2 ui:border-surface ui:border-y">
+          <div class="ui:bg-surface-100 ui:p-2 ui:border-surface ui:border-y ui:text-bold">
             <i class="fa fa-calendar"></i>&nbsp;
-            {{ record.metadata.date | dateTranslate :'MMMM Y' | titlecase }}
+            {{ record.metadata.date | dateTranslate :'MMMM y' | titlecase }}
           </div>
         }
         @switch (record.metadata.record.type | circulationLogRecordType) {
