@@ -47,7 +47,7 @@
       <i class="fa fa-list-ul"></i>
       <span translate>Details</span>
     </p-tab>
-    @if (store.isDisplayLocalFieldsTab()) {
+    @if (store.showLocalFieldsTab()) {
       <p-tab value="local" class="ui:flex ui:items-center ui:!gap-2">
         <i class="fa fa-list-ul"></i>
         <span translate>Local fields</span>
@@ -157,9 +157,13 @@
     <p-tabpanel value="detail">
       <admin-holding-detail context="holdings" [holding]="holding()"></admin-holding-detail>
     </p-tabpanel>
-    @if (store.isDisplayLocalFieldsTab()) {
+    @if (store.showLocalFieldsTab()) {
       <p-tabpanel value="local">
-        <admin-local-field [resourceType]="'holdings'" [resourcePid]="$any(holding().metadata.pid)"></admin-local-field>
+        <admin-local-field
+          [resourceType]="'holdings'"
+          [resourcePid]="(holding().metadata.pid)"
+          [resourceLibraryPid]="holding().metadata.library.pid"
+        ></admin-local-field>
       </p-tabpanel>
     }
   </p-tabpanels>

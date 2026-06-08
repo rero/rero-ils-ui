@@ -25,39 +25,43 @@
         </dl>
       }
     </div>
-    <div class="ui:flex ui:gap-1">
-      @if ($any(recordPermissions())?.update?.can) {
+  }
+  @if (!readOnly()) {
+    @if (localFields().length > 0) {
+      <div class="ui:flex ui:gap-1">
+        @if ($any(recordPermissions())?.update?.can) {
+          <p-button
+            icon="fa fa-pencil"
+            [label]="'Edit'|translate"
+            outlined
+            [routerLink]="['/records', 'local_fields', 'edit', pid()]"
+            [queryParams]="{ type: resourceType(), ref: resourcePid() }"
+            size="small"
+          />
+        }
+        @if ($any(recordPermissions())?.delete?.can) {
+          <p-button
+            icon="fa fa-trash"
+            [label]="'Delete'|translate"
+            severity="danger"
+            outlined
+            size="small"
+            (onClick)="delete()"
+          />
+        }
+      </div>
+    } @else if (canAdd()) {
+      <div class="ui:flex ui:justify-end">
         <p-button
-          icon="fa fa-pencil"
-          [label]="'Edit'|translate"
+          icon="fa fa-plus-square-o"
+          [label]="'Add local fields'|translate"
           outlined
-          [routerLink]="['/records', 'local_fields', 'edit', localFieldRecordPid()]"
+          [routerLink]="['/records', 'local_fields', 'new']"
           [queryParams]="{ type: resourceType(), ref: resourcePid() }"
-          size="small"
         />
-      }
-      @if ($any(recordPermissions())?.delete?.can) {
-        <p-button
-          icon="fa fa-trash"
-          [label]="'Delete'|translate"
-          severity="danger"
-          outlined
-          size="small"
-          (onClick)="delete()"
-        />
-      }
-    </div>
-  } @else {
-  <div class="ui:flex ui:justify-end">
-    <p-button
-      icon="fa fa-plus-square-o"
-      [label]="'Add local fields'|translate"
-      outlined
-      [routerLink]="['/records', 'local_fields', 'new']"
-      [queryParams]="{ type: resourceType(), ref: resourcePid() }"
-    />
-  </div>
-}
+      </div>
+    }
+  }
 
 } @placeholder {
   <i class="fa fa-spin fa-spinner"></i>&nbsp;{{ 'Loading in progress…' | translate }}

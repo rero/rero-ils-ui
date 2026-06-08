@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { ChangeDetectionStrategy, Component, effect, inject, input, model, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, effect, inject, input, model, signal } from '@angular/core';
 import { ItemApiService } from '@app/admin/api/item-api.service';
 import { IssueService } from '@app/admin/service/issue.service';
 import { DateTranslatePipe, GetRecordPipe, Nl2brPipe, RecordService } from '@rero/ng-core';
@@ -68,8 +68,6 @@ export class ItemDetailViewComponent {
 
   /** Location record */
   readonly location = signal<any>(null);
-  /** Load operation logs on show */
-  showOperationLogs = false;
   /** reference to ItemIssueStatus */
   issueItemStatus = IssueItemStatus;
 
@@ -82,9 +80,9 @@ export class ItemDetailViewComponent {
     });
   }
 
-  get isDisplayLocalFieldsTab(): boolean {
-    return this.appStore.currentLibraryPid() === this.record()?.metadata.library.pid;
-  }
+  readonly showLocalFieldsTab = computed(() =>
+    this.appStore.canAccess([PERMISSIONS.LOFI_SEARCH, PERMISSIONS.LOFI_CREATE])
+  );
 
   /**
    * Get organisation currency

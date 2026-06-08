@@ -210,7 +210,7 @@
           <i class="fa fa-exchange"></i>
           <span translate>Circulation</span>
         </p-tab>
-        @if (isDisplayLocalFieldsTab) {
+        @if (showLocalFieldsTab()) {
           <p-tab value="field" class="ui:flex ui:items-center ui:!gap-2">
             <i class="fa fa-list-ul ui:mr-1"></i>&nbsp;
             <span translate>Local fields</span>
@@ -250,9 +250,13 @@
             }
           </div>
         </p-tabpanel>
-        @if (isDisplayLocalFieldsTab) {
+        @if (showLocalFieldsTab()) {
           <p-tabpanel value="field">
-            <admin-local-field [resourceType]="'items'" [resourcePid]="$any(record()?.metadata.pid)" />
+            <admin-local-field
+              [resourceType]="'items'"
+              [resourcePid]="$any(record()?.metadata.pid)"
+              [resourceLibraryPid]="record()?.metadata.library.pid"
+            />
           </p-tabpanel>
         }
         @if (record()?.metadata?.issue?.claims) {

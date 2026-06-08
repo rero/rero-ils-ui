@@ -261,13 +261,13 @@
         <i class="fa fa-bars"></i>
         <span translate>Description</span>
       </p-tab>
-      @if (!record().metadata.harvested && record().metadata.pid) {
+      @if (record()?.metadata?.pid && hasRelatedEntities()) {
         <p-tab value="entity" class="ui:flex ui:items-center ui:!gap-2">
           <i class="fa fa-cubes"></i>
           <span translate>Related Entities</span>
         </p-tab>
       }
-      @if (!record().metadata.harvested && record().metadata.pid && showLocalFieldsTab) {
+      @if (record()?.metadata?.pid && showLocalFieldsTab() && (!record()?.metadata?.harvested || hasLocalFields())) {
         <p-tab value="local" class="ui:flex ui:items-center ui:!gap-2">
            <i class="fa fa-list-ul"></i>
           <span translate>Local fields</span>
@@ -298,14 +298,19 @@
       <p-tabpanel value="description">
         <shared-document-description [record]="record()" />
       </p-tabpanel>
-      @if (!record().metadata.harvested && record().metadata.pid) {
+      @if (record()?.metadata?.pid && hasRelatedEntities()) {
         <p-tabpanel value="entity">
           <admin-entities-related [record]="record()" />
         </p-tabpanel>
       }
-      @if (!record().metadata.harvested && record().metadata.pid && showLocalFieldsTab) {
+      @if (record()?.metadata?.pid && showLocalFieldsTab()) {
         <p-tabpanel value="local">
-          <admin-local-field [resourceType]="'documents'" [resourcePid]="$any(record().metadata.pid)" />
+          <admin-local-field
+            [resourceType]="'documents'"
+            [resourcePid]="$any(record()?.metadata?.pid)"
+            [readOnly]="!!record()?.metadata?.harvested"
+            (hasLocalFields)="hasLocalFields.set($event)"
+          />
         </p-tabpanel>
       }
       @if (!record().metadata.harvested && record().metadata.pid && showFilesTab) {
