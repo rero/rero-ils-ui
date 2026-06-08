@@ -15,16 +15,16 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { TestBed } from "@angular/core/testing";
-import { EsRecord, EsResult } from "@rero/shared";
-import { Observable, of, Subject } from "rxjs";
-import { ItemsStore } from "./items-store";
-import { ItemApiService } from "../../../../../api/item-api.service";
 import { provideHttpClient } from "@angular/common/http";
 import { provideHttpClientTesting } from "@angular/common/http/testing";
+import { TestBed } from "@angular/core/testing";
 import { TranslateModule } from "@ngx-translate/core";
-import { ConfirmationService, MessageService } from "primeng/api";
 import { RecordUiService } from "@rero/ng-core";
+import { EsRecord, EsResult } from "@rero/shared";
+import { ConfirmationService, MessageService } from "primeng/api";
+import { Observable, of } from "rxjs";
+import { ItemApiService } from "../../../../../api/item-api.service";
+import { ItemsStore } from "./items-store";
 
 describe('Items Store', () => {
   beforeEach(() => {
@@ -32,7 +32,7 @@ describe('Items Store', () => {
     TestBed.configureTestingModule({
       providers: [
         ItemsStore,
-        { provide: RecordUiService, useValue: { deleteRecord: vi.fn().mockReturnValue(new Subject()) } },
+        { provide: RecordUiService, useValue: { deleteRecord: vi.fn().mockReturnValue(of(true)) } },
         ConfirmationService,
         MessageService,
         ItemApiServiceMock,
@@ -83,12 +83,34 @@ describe('Items Store', () => {
 
   it('should remove a item record', async () => {
     const store = TestBed.inject(ItemsStore);
-    // Do not test the delete dialog
     store.setHoldings(holdings);
     await vi.advanceTimersByTimeAsync(500);
+    expect(store.total()).toEqual(12);
     const record = store.items()[2];
     store.delete(record);
-    expect(store.record()).toEqual(record);
+    await vi.advanceTimersByTimeAsync(0);
+    expect(store.items()).toHaveLength(9);
+    expect(store.total()).toEqual(11);
+    expect(store.filterTotal()).toEqual(11);
+    expect(store.record()).toBeUndefined();
+    expect(store.pager.page()).toEqual(1);
+  });
+
+  it('should go back to previous page when last item on page is deleted', async () => {
+    const store = TestBed.inject(ItemsStore);
+    store.setHoldings(holdings);
+    await vi.advanceTimersByTimeAsync(500);
+    store.setPaginator({ page: 1, first: 11, rows: 10 });
+    await vi.advanceTimersByTimeAsync(500);
+    expect(store.items()).toHaveLength(2);
+    store.delete(store.items()[0]);
+    await vi.advanceTimersByTimeAsync(0);
+    store.delete(store.items()[0]);
+    await vi.advanceTimersByTimeAsync(0);
+    expect(store.items()).toHaveLength(0);
+    expect(store.total()).toEqual(10);
+    expect(store.filterTotal()).toEqual(10);
+    expect(store.pager.page()).toEqual(1);
   });
 });
 

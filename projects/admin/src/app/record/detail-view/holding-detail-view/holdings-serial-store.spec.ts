@@ -119,13 +119,33 @@ describe('Holdings Serial Store', () => {
     expect(store.isPaginatorEnabled()).toBe(false);
   });
 
-  it('should remove a item record', async () => {
+  it('should remove a item record and stay on page 1', async () => {
     const store = TestBed.inject(HoldingsSerialStore);
-    // Do not test the delete dialog
     store.setHoldings(holdings);
     await vi.advanceTimersByTimeAsync(500);
+    store.setPaginator({ rows: 20, page: 0, first: 0 });
+    await vi.advanceTimersByTimeAsync(500);
+    expect(store.pager.rows()).toEqual(20);
     store.deleteItem(store.receivedItems()[1]);
+    await vi.advanceTimersByTimeAsync(500);
     expect(store.receivedItems()).not.toBeNull();
+    expect(store.pager.page()).toEqual(1);
+    expect(store.pager.rows()).toEqual(20);
+    expect(store.pager.rowsPerPageOptions()).toEqual([10, 20, 50]);
+  });
+
+  it('should preserve rows when filter is set', async () => {
+    const store = TestBed.inject(HoldingsSerialStore);
+    store.setHoldings(holdings);
+    await vi.advanceTimersByTimeAsync(500);
+    store.setPaginator({ rows: 20, page: 0, first: 0 });
+    await vi.advanceTimersByTimeAsync(500);
+    expect(store.pager.rows()).toEqual(20);
+    store.setFilter('2022');
+    await vi.advanceTimersByTimeAsync(500);
+    expect(store.pager.page()).toEqual(1);
+    expect(store.pager.rows()).toEqual(20);
+    expect(store.pager.rowsPerPageOptions()).toEqual([10, 20, 50]);
   });
 });
 
