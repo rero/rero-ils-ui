@@ -94,7 +94,7 @@ export const HoldingsSerialStore = signalStore(
       patchState(store, { holdings });
     }),
     setFilter: signalMethod<string>((filter: string) => {
-      patchState(store, { filter, pager: initialPagerConfig });
+      patchState(store, { filter, pager: { ...store.pager(), page: 1, first: 1 } });
     }),
     setPaginator(paginator: PaginatorState) {
       store.changePage(paginator);
@@ -135,7 +135,15 @@ export const HoldingsSerialStore = signalStore(
         switchMap((item: EsRecord) => store.recordUiService.deleteRecord('items', item.metadata.pid)),
         tap((success: boolean) => {
           if (success) {
-            patchState(store, { reload: true, filter: undefined, pager: initialPagerConfig });
+            const rows = store.pager.rows();
+            const newTotal = store.filterTotal() - 1;
+            const lastPage = Math.max(1, Math.ceil(newTotal / rows));
+            const page = Math.min(store.pager.page(), lastPage);
+            patchState(store, {
+              reload: true,
+              filter: undefined,
+              pager: { ...store.pager(), page, first: (page - 1) * rows + 1 }
+            });
           }
         })
       )
@@ -154,7 +162,7 @@ export const HoldingsSerialStore = signalStore(
         catchError(() => undefined),
         tap((result) => {
           if (result) {
-            patchState(store, { quickReceive: true, pager: initialPagerConfig });
+            patchState(store, { quickReceive: true, pager: { ...store.pager(), page: 1, first: 1 } });
           } else {
             store.messageService.add({
               severity: 'error',
