@@ -17,6 +17,7 @@
 
 public-search-holdings {
   .p-accordionheader {
+    user-select: text !important;
     @apply ui:items-start;
     .p-iconwrapper {
       @apply ui:mt-1;
