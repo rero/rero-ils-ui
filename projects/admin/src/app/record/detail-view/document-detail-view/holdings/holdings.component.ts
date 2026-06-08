@@ -29,6 +29,7 @@ import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
 @Component({
     selector: 'admin-holdings',
     templateUrl: './holdings.component.html',
+    styles: `.p-accordionheader { user-select: text !important; }`,
     providers: [HoldingsStore],
     imports: [MenuActionsComponent, Bind, MultiSelect, Accordion, AccordionPanel, Ripple, AccordionHeader, HoldingHeaderComponent, AccordionContent, HoldingContentComponent, TranslateDirective, TranslatePipe],
   changeDetection: ChangeDetectionStrategy.OnPush
