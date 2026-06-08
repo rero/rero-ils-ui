@@ -67,7 +67,7 @@ export const ItemsStore = signalStore(
       patchState(store, { holdings });
     },
     setFilter: signalMethod<string>((filter?: string) => {
-      patchState(store, { filter, pager: initialPagerConfig });
+      patchState(store, { filter, pager: { ...store.pager(), page: 1, first: 1 } });
     }),
     setPaginator(paginator: PaginatorState) {
       store.changePage(paginator);
@@ -105,10 +105,18 @@ export const ItemsStore = signalStore(
         switchMap(() => store.recordUiService.deleteRecord('items', store.record().metadata.pid)),
         tap((success: boolean) => {
           if (success) {
-            patchState(
-              store,
-              { items: store.items().filter((h: EsRecord) => h.metadata.pid !== store.record().metadata.pid), record: null }
-            )
+            const rows = store.pager.rows();
+            const newTotal = store.filterTotal() - 1;
+            const lastPage = Math.max(1, Math.ceil(newTotal / rows));
+            const page = Math.min(store.pager.page(), lastPage);
+            const deletedPid = store.record()?.metadata.pid;
+            patchState(store, {
+              items: store.items().filter((h: EsRecord) => h.metadata.pid !== deletedPid),
+              total: store.total() - 1,
+              filterTotal: newTotal,
+              record: undefined,
+              pager: { ...store.pager(), page, first: (page - 1) * rows + 1 }
+            });
           }
         })
       )
