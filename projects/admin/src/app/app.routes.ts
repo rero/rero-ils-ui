@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2019-2025 RERO
+ * Copyright (C) 2019-2026 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -43,6 +43,7 @@ import { patronsRouteResolver } from './routes/patrons-route';
 import { statisticsCfgRouteResolver } from './routes/statistics-cfg-route';
 import { templatesRouteResolver } from './routes/templates-route';
 import { FrontpageComponent } from './widgets/frontpage/frontpage.component';
+import { organisationsRouteResolver } from './routes/organisations-route';
 
 export const routes: Routes = [
   {
@@ -165,6 +166,11 @@ export const routes: Routes = [
     matcher: recordTypeMatcher('items'),
     loadChildren: () => import('./routes/items-route').then((m) => m.itemsRoutes),
     resolve: { types: itemsRouteResolver },
+  },
+  {
+    matcher: recordTypeMatcher('organisations'),
+    loadChildren: () => import('./routes/organisations-route').then((m) => m.organisationsRoutes),
+    resolve: { types: organisationsRouteResolver },
   },
   {
     // must be after all specific records/ routes — matches external import sources (e.g. records/bnf)
