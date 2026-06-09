@@ -64,7 +64,6 @@ export * from './lib/pipe/provision-activity.pipe';
 export * from './lib/pipe/safe-url.pipe';
 export * from './lib/pipe/url-active.pipe';
 export * from './lib/service/i-availability.service';
-export * from './lib/service/operation-logs.service';
 
 export * from './lib/store/app.store';
 export * from './lib/store/paginator-feature';

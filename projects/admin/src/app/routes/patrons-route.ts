@@ -21,7 +21,6 @@ import { _ } from '@ngx-translate/core';
 import {
   ActionStatus,
   ComponentCanDeactivateGuard,
-  DetailComponent,
   EditorComponent,
   IFilter,
   JSONSchema7,
@@ -29,7 +28,7 @@ import {
   RecordSearchPageComponent,
   RecordService,
   RecordType,
-  RouteDataTypesInterface,
+  RouteDataTypesInterface
 } from '@rero/ng-core';
 import { ILibrary, IPatron, PERMISSION_OPERATOR, PERMISSIONS } from '@rero/shared';
 import { Observable, of } from 'rxjs';
@@ -38,6 +37,7 @@ import { CAN_ACCESS_ACTIONS, canAccessGuard } from '../guard/can-access.guard';
 import { permissionGuard } from '../guard/permission.guard';
 import { PatronsBriefViewComponent } from '../record/brief-view/patrons-brief-view/patrons-brief-view.component';
 import { PatronDetailViewComponent } from '../record/detail-view/patron-detail-view/patron-detail-view.component';
+import { PatronDetailComponent } from '../record/detail-view/patron-detail-view/patron-detail/patron-detail.component';
 import { BaseRoute } from './base-route';
 
 export const patronsRouteResolver: ResolveFn<Partial<RecordType>[]> = () =>
@@ -56,7 +56,7 @@ export const patronsRoutes: Routes = [
   },
   {
     path: 'detail/:pid',
-    component: DetailComponent,
+    component: PatronDetailComponent,
     title: _('Patron'),
     canActivate: [canAccessGuard],
     data: {

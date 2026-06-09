@@ -16,7 +16,7 @@
  */
 import { Component, inject, ChangeDetectionStrategy, OnInit} from '@angular/core';
 import { IdentifierTypes } from '@app/admin/classes/identifiers';
-import { OperationLogsService, OperationLogsDialogComponent, PermissionsDirective } from '@rero/shared';
+import { OperationLogsDialogComponent, PermissionsDirective } from '@rero/shared';
 import { DetailComponent, DetailButtonComponent, ErrorComponent } from '@rero/ng-core';
 import { AppStore, IPermissions, PERMISSIONS } from '@rero/shared';
 import { cloneDeep } from 'lodash-es';
@@ -36,8 +36,7 @@ import { TranslatePipe } from '@ngx-translate/core';
 export class DocumentDetailComponent extends DetailComponent implements OnInit {
 
   private dialogService: DialogService = inject(DialogService);
-  private operationLogsService: OperationLogsService = inject(OperationLogsService);
-  private appStore = inject(AppStore);
+  protected appStore = inject(AppStore);
 
   fileTitle = 'files';
   /** return all available permissions for current user */
@@ -85,13 +84,6 @@ export class DocumentDetailComponent extends DetailComponent implements OnInit {
     return null;
   }
 
-  /**
-   * Is operation log enabled
-   * @return boolean
-   */
-  get isEnabledOperationLog(): boolean {
-    return this.operationLogsService.isLogVisible('documents');
-  }
 
   /**
    * Import document

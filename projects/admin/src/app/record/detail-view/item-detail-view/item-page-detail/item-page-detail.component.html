@@ -36,7 +36,7 @@
               [label]="'Add a claim' | translate"
             />
         }
-        @if (isEnabledOperationLog && record()?.metadata.pid) {
+        @if (appStore.isLogVisible('items') && record()?.metadata.pid) {
           <shared-operation-logs-dialog resourceType="items" [resourcePid]="$any(record()?.metadata.pid)" />
         }
       }

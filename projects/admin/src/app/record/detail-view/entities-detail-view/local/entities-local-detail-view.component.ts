@@ -17,7 +17,7 @@
  */
 import { Component, inject, input, ChangeDetectionStrategy} from '@angular/core';
 import { Router } from '@angular/router';
-import { OperationLogsService } from '@rero/shared';
+import { AppStore } from '@rero/shared';
 import { TranslateService, TranslateDirective, TranslatePipe } from '@ngx-translate/core';
 
 import { Entity, EntityType, EntityTypeIcon } from '@rero/shared';
@@ -40,7 +40,7 @@ export class EntitiesLocalDetailViewComponent {
 
   private translateService: TranslateService = inject(TranslateService);
   private router: Router = inject(Router);
-  private operationLogsService: OperationLogsService = inject(OperationLogsService);
+  protected appStore = inject(AppStore);
 
   readonly record = input<any>();
 
@@ -49,9 +49,6 @@ export class EntitiesLocalDetailViewComponent {
 
   /** Enum of type of Entity */
   entityType = EntityType;
-
-  /** Is operation log enabled */
-  readonly isEnabledOperationLog = this.operationLogsService.isLogVisible('local_entities');
 
   /**
    * Icon

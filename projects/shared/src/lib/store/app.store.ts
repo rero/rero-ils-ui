@@ -24,9 +24,9 @@ import { EMPTY, Observable, pipe } from 'rxjs';
 import { catchError, filter, map, switchMap, tap } from 'rxjs/operators';
 import { UserApiService } from '../api/user-api.service';
 import { Organisation } from '../classes/core';
+import { RecordPermission, RecordPermissions } from '../classes/permissions';
 import { User } from '../classes/user';
 import { PERMISSION_OPERATOR, PERMISSIONS } from '../util/permissions';
-import { RecordPermission, RecordPermissions } from '../classes/permissions';
 import { setError, setFulfilled, setPending, withRequestStatus } from './request-status-feature';
 
 export type ISettings = {
@@ -148,6 +148,18 @@ export const AppStore = signalStore(
         permissions.update = disabledPermission;
       }
       return permissions;
+    },
+
+    isLogVisible(resourceName: string): boolean {
+      return resourceName in (store.settings()?.operationLogs ?? {});
+    },
+
+    getResourceKeyByResourceName(resourceName: string): string {
+      const operationLogs = store.settings()?.operationLogs ?? {};
+      if (!(resourceName in operationLogs)) {
+        throw new Error('Operation logs: Missing resource key');
+      }
+      return operationLogs[resourceName];
     },
   })),
   withHooks((store) => ({

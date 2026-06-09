@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { Component, inject, ChangeDetectionStrategy} from '@angular/core';
-import { OperationLogsService, OperationLogsDialogComponent } from '@rero/shared';
+import { AppStore, OperationLogsDialogComponent } from '@rero/shared';
 import { DetailComponent, DetailButtonComponent, ErrorComponent } from '@rero/ng-core';
 import { Entity } from '@rero/shared';
 import { Bind } from 'primeng/bind';
@@ -30,15 +30,7 @@ import { TranslatePipe } from '@ngx-translate/core';
 })
 export class LocalPageDetailComponent extends DetailComponent {
 
-  private operationLogsService: OperationLogsService = inject(OperationLogsService);
-
-  /**
-   * Is operation log enabled
-   * @return boolean
-   */
-  get isEnabledOperationLog(): boolean {
-    return this.operationLogsService.isLogVisible('local_entities');
-  }
+  protected appStore = inject(AppStore);
 
   /**
    * Launch an expert search on the document view.
