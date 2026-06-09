@@ -26,7 +26,7 @@ import { TableModule } from 'primeng/table';
 import { forkJoin, Observable } from 'rxjs';
 import { finalize } from 'rxjs/operators';
 import { OperationLogsApiService } from '../../api/operation-logs-api.service';
-import { OperationLogsService } from '../../service/operation-logs.service';
+import { AppStore } from '../../store/app.store';
 
 @Component({
     selector: 'shared-operation-logs',
@@ -39,13 +39,13 @@ export class OperationLogsComponent {
   private dynamicDialogRef: DynamicDialogRef = inject(DynamicDialogRef);
   private dynamicDialogConfig: DynamicDialogConfig = inject(DynamicDialogConfig);
   private operationLogsApiService: OperationLogsApiService = inject(OperationLogsApiService);
-  private operationLogService: OperationLogsService = inject(OperationLogsService);
+  private appStore: InstanceType<typeof AppStore> = inject(AppStore);
   private translateService: NgCoreTranslateService = inject(NgCoreTranslateService);
 
   // COMPONENT ATTRIBUTES =====================================================
   private readonly resourceType: string = this.dynamicDialogConfig?.data?.resourceType;
   private readonly resourcePid: string = this.dynamicDialogConfig?.data?.resourcePid;
-  private readonly resourceKey: string = this.operationLogService.getResourceKeyByResourceName(this.resourceType);
+  private readonly resourceKey: string = this.appStore.getResourceKeyByResourceName(this.resourceType);
 
   /** items per pages */
   private readonly itemsPerPage = 5;

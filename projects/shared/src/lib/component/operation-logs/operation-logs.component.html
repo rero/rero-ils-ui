@@ -15,17 +15,21 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-@defer(when records().length > 0) {
+@if (!loadedRecord()) {
+  <i class="fa fa-spinner fa-pulse"></i>
+} @else if (records().length === 0) {
+  <p>{{ "No operation log found." | translate }}</p>
+} @else {
   <p-table stripedRows [value]="records()" [tableStyle]="{ 'min-width': '50rem' }" size="small">
     <ng-template #body let-record>
       <tr>
-          <td class=" ui:text-muted-color">
+          <td class=" ui:text-muted-color ui:w-1/4">
             <i class="fa fa-calendar"></i>&nbsp;{{ record.metadata.date | dateTranslate :'shortDate' }} - {{ record.metadata.date | dateTranslate :'mediumTime' }}
           </td>
-          <td class="ui:font-bold ui:uppercase">
+          <td class="ui:font-bold ui:uppercase ui:w-1/4">
             {{ record.metadata.operation | translate }}
           </td>
-          <td>
+          <td class="ui:w-2/4">
             {{ record.metadata.user_name }}
             @if (record.metadata.library) {
               - {{ record.metadata.library.name }}
@@ -42,7 +46,4 @@
       </div>
     </p-button>
   }
-
-} @placeholder {
-  <i class="fa fa-spinner fa-pulse"></i>
 }

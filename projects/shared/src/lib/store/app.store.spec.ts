@@ -202,4 +202,35 @@ describe('AppStore', () => {
       expect(store.canAccessDebugMode()).toBe(true);
     });
   });
+
+  describe('isLogVisible()', () => {
+    it('should return false when settings are not loaded', () => {
+      expect(store.isLogVisible('documents')).toBe(false);
+    });
+
+    it('should return true for a resource present in operationLogs settings', async () => {
+      await firstValueFrom(store.load());
+      expect(store.isLogVisible('documents')).toBe(true);
+      expect(store.isLogVisible('items')).toBe(true);
+    });
+
+    it('should return false for a resource absent from operationLogs settings', async () => {
+      await firstValueFrom(store.load());
+      expect(store.isLogVisible('patrons')).toBe(false);
+    });
+  });
+
+  describe('getResourceKeyByResourceName()', () => {
+    it('should return the resource key for a known resource', async () => {
+      await firstValueFrom(store.load());
+      expect(store.getResourceKeyByResourceName('documents')).toBe('doc');
+      expect(store.getResourceKeyByResourceName('items')).toBe('item');
+    });
+
+    it('should throw when the resource is not in operationLogs settings', async () => {
+      await firstValueFrom(store.load());
+      expect(() => store.getResourceKeyByResourceName('patrons'))
+        .toThrow(new Error('Operation logs: Missing resource key'));
+    });
+  });
 });

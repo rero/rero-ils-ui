@@ -28,7 +28,7 @@ class FakeLoader implements TranslateLoader {
   getTranslation(_lang: string): Observable<any> { return of({}); }
 }
 import { OperationLogsApiService } from '../../api/operation-logs-api.service';
-import { OperationLogsService } from '../../service/operation-logs.service';
+import { AppStore } from '../../store/app.store';
 import { OperationLogsComponent } from './operation-logs.component';
 
 describe('OperationLogsComponent', () => {
@@ -45,8 +45,7 @@ describe('OperationLogsComponent', () => {
     }
   ];
 
-  const operationLogsServiceSpy = {
-    _setting: vi.fn().mockReturnValue({ documents: 'doc', holdings: 'hold', items: 'item' }),
+  const appStoreSpy = {
     getResourceKeyByResourceName: vi.fn().mockReturnValue('doc')
   };
 
@@ -71,7 +70,7 @@ describe('OperationLogsComponent', () => {
     providers: [
         { provide: LOCALE_ID, useValue: 'en-US' },
         { provide: NgCoreTranslateService, useValue: { instant: vi.fn((x: string) => x) } },
-        { provide: OperationLogsService, useValue: operationLogsServiceSpy },
+        { provide: AppStore, useValue: appStoreSpy },
         { provide: OperationLogsApiService, useValue: operationLogsApiServiceSpy },
         provideHttpClient(withInterceptorsFromDi()),
         provideHttpClientTesting(),
