@@ -435,11 +435,10 @@ export class LoanComponent {
   hasFees(event: boolean): void {
     if (event) {
       this.messageService.add({
-        severity: 'error',
+        severity: 'warn',
         summary: this.translateService.instant('Checkin'),
         detail: this.translateService.instant('The item has fees'),
-        sticky: true,
-        closable: true,
+        life: CONFIG.MESSAGE_LIFE,
       });
     }
   }

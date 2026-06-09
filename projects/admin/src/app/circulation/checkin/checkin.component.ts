@@ -407,11 +407,10 @@ export class CheckinComponent {
   hasFees(event: boolean) {
     if (event) {
       this.messageService.add({
-        severity: 'error',
+        severity: 'warn',
         summary: this.translate.instant('Checkin'),
         detail: this.translate.instant('The item has fees'),
-        sticky: true,
-        closable: true
+        life: CONFIG.MESSAGE_LIFE
       });
     }
   }
