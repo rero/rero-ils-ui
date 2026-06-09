@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2019-2024 RERO
+ * Copyright (C) 2019-2026 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -14,17 +14,17 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, inject, ChangeDetectionStrategy} from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { DetailButtonComponent, DetailComponent, ErrorComponent } from '@rero/ng-core';
 import { AppStore, OperationLogsDialogComponent } from '@rero/shared';
-import { DetailComponent, DetailButtonComponent, ErrorComponent } from '@rero/ng-core';
 
 @Component({
-    selector: 'admin-holding-page-detail',
-    templateUrl: './holding-page-detail.component.html',
-    imports: [DetailButtonComponent, OperationLogsDialogComponent, ErrorComponent],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  selector: 'admin-patron-detail',
+  imports: [DetailButtonComponent, OperationLogsDialogComponent, ErrorComponent],
+  templateUrl: './patron-detail.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class HoldingPageDetailComponent extends DetailComponent {
+export class PatronDetailComponent extends DetailComponent {
 
   protected appStore = inject(AppStore);
 }

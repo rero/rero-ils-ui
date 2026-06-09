@@ -32,7 +32,7 @@
         icon="fa fa-search"
         [label]="'Search documents' | translate"
       />
-      @if (isEnabledOperationLog && record()?.metadata.pid) {
+      @if (appStore.isLogVisible('local_entities') && record()?.metadata.pid) {
         <shared-operation-logs-dialog
           resourceType="local_entities"
           [resourcePid]="$any(record()?.metadata.pid)"

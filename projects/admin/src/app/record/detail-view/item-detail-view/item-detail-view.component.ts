@@ -23,7 +23,7 @@ import { DateTranslatePipe, GetRecordPipe, Nl2brPipe, RecordService } from '@rer
 import { AsyncPipe, CurrencyPipe, JsonPipe, NgClass, NgPlural, NgPluralCase } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
-import { AppStore, AvailabilityComponent, InheritedCallNumberComponent, IPermissions, IssueItemStatus, ItemHoldingsCallNumberPipe, KeyExistsPipe, MainTitlePipe, OperationLogsService, PERMISSION_OPERATOR, PERMISSIONS, PermissionsDirective, SafeUrlPipe } from '@rero/shared';
+import { AppStore, AvailabilityComponent, InheritedCallNumberComponent, IPermissions, IssueItemStatus, ItemHoldingsCallNumberPipe, KeyExistsPipe, MainTitlePipe, PERMISSION_OPERATOR, PERMISSIONS, PermissionsDirective, SafeUrlPipe } from '@rero/shared';
 import { DateTime } from 'luxon';
 import { Badge } from 'primeng/badge';
 import { Bind } from 'primeng/bind';
@@ -53,8 +53,7 @@ export class ItemDetailViewComponent {
   public itemApiService: ItemApiService = inject(ItemApiService);
   private recordService: RecordService = inject(RecordService);
   private holdingService: HoldingsService = inject(HoldingsService);
-  private operationLogsService: OperationLogsService= inject(OperationLogsService);
-  private appStore = inject(AppStore);
+  protected appStore = inject(AppStore);
 
   /** Document record */
   record = model<any>();
@@ -81,14 +80,6 @@ export class ItemDetailViewComponent {
         this.recordService.getRecord('locations', record.metadata.location.pid, { resolve: 1 }).subscribe(data => this.location.set(data));
       }
     });
-  }
-
-  /**
-   * Is operation log enabled
-   * @return boolean
-   */
-  get isEnabledOperationLog(): boolean {
-    return this.operationLogsService.isLogVisible('items');
   }
 
   get isDisplayLocalFieldsTab(): boolean {

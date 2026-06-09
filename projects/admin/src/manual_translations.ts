@@ -256,3 +256,7 @@ _('fiction');
 _('non_fiction');
 _('unspecified');
 
+// Operation logs
+_('create');
+_('update');
+_('delete');

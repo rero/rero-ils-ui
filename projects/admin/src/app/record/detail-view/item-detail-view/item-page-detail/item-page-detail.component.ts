@@ -17,7 +17,7 @@
 import { Component, computed, DestroyRef, inject, signal, ChangeDetectionStrategy} from '@angular/core';
 import { takeUntilDestroyed, toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { IssueService } from '@app/admin/service/issue.service';
-import { OperationLogsService, OperationLogsDialogComponent } from '@rero/shared';
+import { OperationLogsDialogComponent } from '@rero/shared';
 import { RecordPermissionService } from '@app/admin/service/record-permission.service';
 import { DetailComponent, DetailButtonComponent, ErrorComponent } from '@rero/ng-core';
 import { AppStore } from '@rero/shared';
@@ -34,10 +34,9 @@ import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
 })
 export class ItemPageDetailComponent extends DetailComponent {
   private readonly _destroyRef = inject(DestroyRef);
-  private operationLogsService: OperationLogsService = inject(OperationLogsService);
   private issueService: IssueService = inject(IssueService);
   private recordPermissionService: RecordPermissionService = inject(RecordPermissionService);
-  private appStore = inject(AppStore);
+  protected appStore = inject(AppStore);
 
   readonly recordPermissions = toSignal(
     toObservable(this.record as any).pipe(
@@ -73,14 +72,6 @@ export class ItemPageDetailComponent extends DetailComponent {
   /** Allow claim (show button) */
   get isClaimAllowed(): boolean {
     return this.issueService.isClaimAllowed((this.record() as any)?.metadata?.issue?.status);
-  }
-
-  /**
-   * Is operation log enabled
-   * @return boolean
-   */
-  get isEnabledOperationLog(): boolean {
-    return this.operationLogsService.isLogVisible('items');
   }
 
   /** Open claim dialog */
