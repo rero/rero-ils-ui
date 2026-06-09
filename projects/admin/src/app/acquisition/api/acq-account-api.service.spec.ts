@@ -129,11 +129,6 @@ describe('AcqAccountApiService', () => {
     service.getAccounts('1').subscribe((result: any) => expect(result).toEqual(data));
   });
 
-  it('should delete an account', () => {
-    recordServiceSpy.delete.mockReturnValue(of(undefined));
-    service.delete('1').subscribe((result: any) => expect(result).toBeUndefined());
-  });
-
   it('should transfer an amount between 2 accounts', () => {
     httpClientSpy.get.mockReturnValue(of({}));
     service.transferFunds('1', '2', 10000).subscribe((result: any) => expect(result).toEqual({}));

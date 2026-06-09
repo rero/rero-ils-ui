@@ -18,7 +18,7 @@
 
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
-import type { EsResult, Error } from '@rero/ng-core';
+import type { EsResult } from '@rero/ng-core';
 import { RecordService } from '@rero/ng-core';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
@@ -83,15 +83,6 @@ export class AcqAccountApiService {
         map((result: EsResult) => +this.recordService.totalHits(result.hits.total) === 0 ? [] : result.hits.hits),
         map((hits: any[]) => hits.map(hit => ({...accountDefaultData, ...hit.metadata}) ))
       );
-  }
-
-  /**
-   * Try to delete an account
-   * @param pid: the account pid
-   * @return The observable on delete REST call.
-   */
-  delete(pid: string): Observable<void | Error> {
-    return this.recordService.delete(this.resourceName, pid);
   }
 
   /**
