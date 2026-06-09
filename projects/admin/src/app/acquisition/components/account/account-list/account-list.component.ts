@@ -25,9 +25,9 @@ import { IAcqAccount } from '@app/admin/acquisition/classes/account';
 import { exportFormats } from '@app/admin/acquisition/routes/accounts-route';
 import { RecordPermissionService } from '@app/admin/service/record-permission.service';
 import { TranslateDirective, TranslatePipe, TranslateService } from '@ngx-translate/core';
-import { ApiService, CONFIG, ExportButtonComponent, Nl2brPipe, RecordService } from '@rero/ng-core';
+import { ApiService, ExportButtonComponent, Nl2brPipe, RecordService, RecordUiService } from '@rero/ng-core';
 import { AppStore, IPermissions, PERMISSIONS, PermissionsDirective } from '@rero/shared';
-import { MessageService, TreeNode, TreeTableNode } from 'primeng/api';
+import { TreeNode, TreeTableNode } from 'primeng/api';
 import { Bind } from 'primeng/bind';
 import { Button } from 'primeng/button';
 import { TooltipModule } from 'primeng/tooltip';
@@ -48,7 +48,7 @@ export class AccountListComponent {
   private apiService: ApiService = inject(ApiService);
   private translateService: TranslateService = inject(TranslateService);
   private recordPermissionService: RecordPermissionService = inject(RecordPermissionService);
-  private messageService: MessageService = inject(MessageService);
+  private recordUiService = inject(RecordUiService);
 
   // COMPONENT ATTRIBUTES =======================================================
   /** All user permissions */
@@ -138,10 +138,12 @@ export class AccountListComponent {
   // COMPONENT FUNCTIONS ========================================================
   /** Operations to do when an account is deleted */
   accountDelete(node): void {
-    this.acqAccountApiService
-      .delete(node.node.data.pid)
-      .pipe(
-        tap(() => {
+    this.recordUiService.deleteRecord(
+      'acq_accounts',
+      node.node.data.pid
+    ).pipe(
+      tap((success: boolean) => {
+        if (success) {
           if (node.parent) {
             node.parent.children = node.parent.children.filter(
               (account) => account.data.pid !== node.node.data.pid
@@ -153,16 +155,9 @@ export class AccountListComponent {
               accounts.filter((account) => account.data.pid !== node.node.data.pid)
             );
           }
-        })
-      )
-      .subscribe(() => {
-        this.messageService.add({
-          severity: 'success',
-          summary: this.translateService.instant('Account'),
-          detail: this.translateService.instant('Account deleted'),
-          life: CONFIG.MESSAGE_LIFE,
-        });
-      });
+        }
+      })
+    ).subscribe();
   }
 
   deleteInfoMessage(permissions): string {
