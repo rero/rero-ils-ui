@@ -237,6 +237,10 @@ export class RecordPermissionService {
       rolled_over: {
         other: this.translateService.instant("Fiscal year closed"),
       },
+      stats_cfg: {
+        "=1": this.translateService.instant("1 statistics configuration attached."),
+        other: this.translateService.instant("# statistics configurations attached."),
+      },
       templates: {
         "=1": this.translateService.instant("1 template attached."),
         other: this.translateService.instant("# templates attached."),
