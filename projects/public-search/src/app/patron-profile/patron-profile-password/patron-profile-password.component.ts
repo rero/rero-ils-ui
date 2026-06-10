@@ -20,7 +20,7 @@ import { AbstractControl, ReactiveFormsModule, UntypedFormControl, UntypedFormGr
 import { FormlyFieldConfig, FormlyModule } from '@ngx-formly/core';
 import { LoadingBarModule } from '@ngx-loading-bar/core';
 import { _, TranslatePipe, TranslateService } from "@ngx-translate/core";
-import { CONFIG } from '@rero/ng-core';
+import { CONFIG, HttpPendingService } from '@rero/ng-core';
 import { MessageService } from 'primeng/api';
 import { Button } from 'primeng/button';
 import { of } from 'rxjs';
@@ -55,6 +55,7 @@ export class PatronProfilePasswordComponent {
   private userApiService: UserApiService = inject(UserApiService);
   private el: ElementRef = inject(ElementRef);
   private messageService: MessageService = inject(MessageService);
+  readonly httpPending = inject(HttpPendingService);
 
   /** Request referer */
   referer = input<string | null>(null);
@@ -126,6 +127,7 @@ export class PatronProfilePasswordComponent {
 
   /** Submit form */
   submit() {
+    if (this.httpPending.isPending()) { return; }
     this.form.updateValueAndValidity();
     if (this.form.valid === false) {
       this.messageService.add({

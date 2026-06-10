@@ -16,7 +16,8 @@
 -->
 
 <ng-core-search-input [placeholder]="'username or email' | translate" [searchText]="searchText"
-  (searchQuery)="searchValueUpdated($event)" [focus]="false" [displayLabel]="false">
+  (searchQuery)="searchValueUpdated($event)" [focus]="false" [displayLabel]="false"
+  [disabled]="httpPending.isPending()">
 </ng-core-search-input>
 <p-divider></p-divider>
 <!-- ngx-formly -->
@@ -36,6 +37,7 @@
       id="user-editor-save-button"
       size="small"
       icon="fa fa-save"
+      [disabled]="httpPending.isPending()"
       [label]="'Save' | translate"
     />
   </div>

@@ -18,7 +18,7 @@ import { Component, inject, OnInit, signal, ChangeDetectionStrategy} from '@angu
 import { FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { FormlyFieldConfig, FormlyModule } from '@ngx-formly/core';
 import { TranslateService, TranslatePipe } from '@ngx-translate/core';
-import { ApiService, CONFIG, RecordService } from '@rero/ng-core';
+import { ApiService, CONFIG, HttpPendingService, RecordService } from '@rero/ng-core';
 import { AppStore, Tools } from '@rero/shared';
 import { DateTime } from 'luxon';
 import { MessageService } from 'primeng/api';
@@ -43,6 +43,7 @@ export class PatronFeeComponent implements OnInit {
   private appStore = inject(AppStore);
   private patronTransactionApiService: PatronTransactionApiService = inject(PatronTransactionApiService);
   private apiService: ApiService = inject(ApiService);
+  readonly httpPending = inject(HttpPendingService);
 
   /** form */
   form: FormGroup = new FormGroup({});
@@ -67,6 +68,7 @@ export class PatronFeeComponent implements OnInit {
   }
 
   submit(model: FeeFormModel): void {
+    if (this.httpPending.isPending()) { return; }
     if (model.creation_date instanceof Date) {
       model.creation_date = DateTime.fromObject(model.creation_date).toISO();
     }

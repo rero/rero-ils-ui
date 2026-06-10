@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { TitleCasePipe } from '@angular/common';
-import { ChangeDetectionStrategy, Component, inject, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, OnDestroy, OnInit, signal } from '@angular/core';
 import { FormsModule, ReactiveFormsModule, UntypedFormArray, Validators } from '@angular/forms';
 import { TranslateDirective, TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { Bind } from 'primeng/bind';
@@ -40,6 +40,8 @@ export class ExceptionDatesEditComponent implements OnInit, OnDestroy {
   private dynamicDialogRef: DynamicDialogRef = inject(DynamicDialogRef);
   protected formService: LibraryExceptionFormService = inject(LibraryExceptionFormService);
   private translateService: TranslateService = inject(TranslateService);
+
+  readonly isSending = signal(false);
 
   periods: { label: string; value: string }[] = [
     {
@@ -68,6 +70,8 @@ export class ExceptionDatesEditComponent implements OnInit, OnDestroy {
   }
 
   onSubmit(): void {
+    if (this.isSending()) { return; }
+    this.isSending.set(true);
     this.dynamicDialogRef.close(this.formService.getValue());
   }
 

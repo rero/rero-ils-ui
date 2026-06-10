@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, inject, OnInit, ChangeDetectionStrategy} from '@angular/core';
+import { Component, inject, OnInit, signal, ChangeDetectionStrategy} from '@angular/core';
 import { FormControl, FormGroup, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Library } from '@app/admin/classes/library';
 import { DateValidators } from '@app/admin/utils/validators';
@@ -54,6 +54,8 @@ export class FixedDateFormComponent implements OnInit {
     remember: new FormControl<boolean>(false)
   });
 
+  readonly isSending = signal(false);
+
   disabledDays: number[] = [];
 
   today: Date = new Date();
@@ -73,6 +75,8 @@ export class FixedDateFormComponent implements OnInit {
   // FUNCTIONS =================================================
   /** Submit form hook */
   onSubmitForm() {
+    if (this.isSending()) { return; }
+    this.isSending.set(true);
     this.dynamicDialogRef.close({
       action: 'submit',
       content: this.formGroup.value

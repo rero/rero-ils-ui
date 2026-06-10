@@ -112,7 +112,7 @@ export class LoanComponent {
    * @param searchText: value to search for (barcode)
    */
   searchValueUpdated(searchText: string) {
-    if (!searchText) {
+    if (!searchText || this.searchInputDisabled()) {
       return null;
     }
     this.searchText.set(searchText);

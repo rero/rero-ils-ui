@@ -66,6 +66,7 @@
       [label]="'Validate' | translate"
       (onClick)="save()"
       icon="fa fa-check"
+      [disabled]="httpPending.isPending()"
     />
     <p-button
       [outlined]="true"
@@ -74,6 +75,7 @@
       (onClick)="reject()"
       icon="fa fa-trash"
       severity="danger"
+      [disabled]="httpPending.isPending()"
     />
   </div>
 </div>

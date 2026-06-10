@@ -29,7 +29,7 @@ import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { UntypedFormBuilder, UntypedFormGroup, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { TranslateService, TranslateDirective, TranslatePipe } from '@ngx-translate/core';
-import { CONFIG, GetRecordPipe } from '@rero/ng-core';
+import { CONFIG, GetRecordPipe, HttpPendingService } from '@rero/ng-core';
 import { AppStore, Tools } from '@rero/shared';
 import { MessageService } from 'primeng/api';
 import { filter, map, switchMap, take } from 'rxjs';
@@ -63,6 +63,7 @@ export class AccountTransferComponent {
   private router = inject(Router);
   private appStore = inject(AppStore);
   private messageService = inject(MessageService);
+  readonly httpPending = inject(HttpPendingService);
 
   protected readonly organisation = this.appStore.organisation;
 
@@ -133,6 +134,7 @@ export class AccountTransferComponent {
   // PUBLIC FUNCTIONS ===========================================================
   /** Submit the form */
   submit(): void {
+    if (this.httpPending.isPending()) { return; }
     this.acqAccountApiService
       .transferFunds(this.form.value.source.pid, this.form.value.target.pid, this.form.value.amount)
       .subscribe({

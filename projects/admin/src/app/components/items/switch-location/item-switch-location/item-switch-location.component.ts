@@ -22,7 +22,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { ItemApiService } from '@app/admin/api/item-api.service';
 import { LocationService } from '@app/admin/service/location.service';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
-import { Error, extractIdOnRef } from '@rero/ng-core';
+import { Error, extractIdOnRef, HttpPendingService } from '@rero/ng-core';
 import { AppStore } from '@rero/shared';
 import { cloneDeep } from 'lodash-es';
 import { MessageService, SelectItemGroup } from 'primeng/api';
@@ -48,6 +48,7 @@ export class ItemSwitchLocationComponent implements OnInit {
   private translateService: TranslateService = inject(TranslateService);
   private appStore = inject(AppStore);
   private messageService: MessageService = inject(MessageService);
+  readonly httpPending = inject(HttpPendingService);
 
   // COMPONENT ATTRIBUTES =====================================================
   /** Optional item — if not provided, loaded from route params (standalone mode) */
@@ -99,6 +100,7 @@ export class ItemSwitchLocationComponent implements OnInit {
 
   /** Handle form submission */
   submit(): void {
+    if (this.httpPending.isPending()) { return; }
     this.itemApiService
       .updateLocation(this.editableItem(), this.form.value.target)
       .subscribe({

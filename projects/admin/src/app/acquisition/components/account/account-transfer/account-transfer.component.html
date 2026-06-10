@@ -125,7 +125,7 @@
               <p-button
                 type="submit"
                 [label]="'Transfer' | translate"
-                [disabled]="form.invalid"
+                [disabled]="form.invalid || httpPending.isPending()"
               />
             </div>
           </div>

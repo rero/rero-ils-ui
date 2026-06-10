@@ -41,8 +41,9 @@ import { Tab, TabList, TabPanel, TabPanels, Tabs } from 'primeng/tabs';
 import { Tag } from 'primeng/tag';
 import { ToggleSwitch } from 'primeng/toggleswitch';
 import { Tooltip } from 'primeng/tooltip';
+import { finalize } from 'rxjs';
 import { take } from 'rxjs/operators';
-import { ExceptionDates } from '../../../classes/library';
+import { ExceptionDates, Library } from '../../../classes/library';
 import { NotificationType } from '../../../classes/notification';
 import { ExceptionDatesEditComponent } from './exception-dates-edit/exception-dates-edit.component';
 import { ExceptionDatesListComponent } from './exception-dates-list/exception-dates-list.component';
@@ -57,7 +58,7 @@ type SelectOption = { value: string; label: string; disabled?: boolean };
     templateUrl: './library.component.html',
     providers: [LibraryStore, LibraryFormService],
     imports: [TranslateDirective, FormsModule, ReactiveFormsModule, Bind, Accordion, AccordionPanel, Ripple, AccordionHeader, AccordionContent, InputText, InputGroup, InputGroupAddon, Select, NgClass, ToggleSwitch, Button, ExceptionDatesListComponent, InputNumber, Tooltip, Divider, Tabs, TabList, Tab, TabPanels, TabPanel, NgTemplateOutlet, Fieldset, Tag, TitleCasePipe, UpperCaseFirstPipe, TranslatePipe, NotificationTypePipe, Badge],
-  changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class LibraryComponent extends AbstractCanDeactivateComponent {
 
@@ -71,6 +72,11 @@ export class LibraryComponent extends AbstractCanDeactivateComponent {
   private countryCodeTranslatePipe: CountryCodeTranslatePipe = inject(CountryCodeTranslatePipe);
   private messageService: MessageService = inject(MessageService);
   private dialogService: DialogService = inject(DialogService);
+
+  // COMPONENT ATTRIBUTES =====================================================
+  /** The current library. */
+  readonly library = signal<Library | null>(null);
+  /** The angular form to edit the library. */
   private recordService: RecordService = inject(RecordService);
 
   // COMPONENT ATTRIBUTES =====================================================
@@ -103,6 +109,11 @@ export class LibraryComponent extends AbstractCanDeactivateComponent {
 
   /** possible delayed notification types. */
   public delayedNotificationTypes = [NotificationType.AVAILABILITY];
+
+  // Guards against double-click: Angular's HttpClient defers request dispatch via an async scheduler,
+  // so the HTTP interceptor counter is not yet incremented when a second click fires in the same JS tick.
+  // A local signal set synchronously at the top of onSubmit() closes that window.
+  isSaving = false;
 
   /** Can deactivate guard */
   public canDeactivate = false;
@@ -178,6 +189,8 @@ export class LibraryComponent extends AbstractCanDeactivateComponent {
   }
 
   onSubmit() {
+    if (this.isSaving) { return; }
+    this.isSaving = true;
     this.canDeactivate = true;
     const library = this.libraryStore.library()!;
     const formValues = this.libraryForm.getValues();
@@ -187,7 +200,8 @@ export class LibraryComponent extends AbstractCanDeactivateComponent {
 
     if (library.pid) {
       this.recordService
-        .update('libraries', library.pid, cleanDictKeys(library as any))
+        .update('libraries', library.pid, cleanDictKeys(library as any), this.libraryStore.currentLibraryETag())
+        .pipe(finalize(() => this.isSaving = false))
         .subscribe({
           next: () => {
             this.messageService.add({
@@ -198,20 +212,33 @@ export class LibraryComponent extends AbstractCanDeactivateComponent {
             });
             this.router.navigate(['records', 'libraries', 'detail', library.pid]);
           },
-          error: (error) => this.messageService.add({
-            severity: 'error',
-            summary: this.translateService.instant('libraries'),
-            detail: error.title,
-            sticky: true,
-            closable: true
-          })
-        });
+          error: (error) => {
+            this.messageService.add(
+              (error.status === 409 || error.status === 412)
+                ? {
+                    severity: 'warn',
+                    summary: this.translateService.instant('Record conflict'),
+                    detail: this.translateService.instant('This record has been modified by another user. Please reload the page — your local changes will be lost.'),
+                    sticky: true,
+                    closable: true
+                  }
+                : {
+                    severity: 'error',
+                    summary: this.translateService.instant('libraries'),
+                    detail: error.title,
+                    sticky: true,
+                    closable: true
+                  }
+            );
+          }
+      });
     } else {
       library.organisation = { $ref: this.apiService.getRefEndpoint('organisations', this.appStore.currentOrganisationPid()) };
       this.recordService
         .create('libraries', cleanDictKeys(library as any))
+        .pipe(finalize(() => this.isSaving = false))
         .subscribe({
-          next: (record) => {
+          next: (record: any) => {
             this.messageService.add({
               severity: 'success',
               summary: this.translateService.instant('libraries'),
@@ -220,14 +247,16 @@ export class LibraryComponent extends AbstractCanDeactivateComponent {
             });
             this.router.navigate(['records', 'libraries', 'detail', record.metadata.pid]);
           },
-          error: (error) => this.messageService.add({
-            severity: 'error',
-            summary: this.translateService.instant('libraries'),
-            detail: error.title,
-            sticky: true,
-            closable: true
-          })
-        });
+          error: (error) => {
+            this.messageService.add({
+              severity: 'error',
+              summary: this.translateService.instant('libraries'),
+              detail: error.title,
+              sticky: true,
+              closable: true
+            });
+          }
+      });
     }
   }
 

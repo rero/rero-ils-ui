@@ -38,7 +38,7 @@
           <ng-template #footer>
             <div class="ui:flex ui:gap-2 ui:justify-end ui:m-3">
               <p-button [label]="'Cancel'|translate" [outlined]="true" severity="danger" (onClick)="cancel()" />
-              <p-button [label]="'Save'|translate" type="submit" [disabled]="form.invalid" />
+              <p-button [label]="'Save'|translate" type="submit" [disabled]="form.invalid || httpPending.isPending()" />
             </div>
           </ng-template>
         </p-card>

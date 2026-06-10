@@ -19,7 +19,7 @@ import { Component, inject, OnInit, signal, ChangeDetectionStrategy } from '@ang
 import { UntypedFormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { FormlyFieldConfig, FormlyModule } from '@ngx-formly/core';
 import { TranslateService, TranslatePipe } from '@ngx-translate/core';
-import { CONFIG } from '@rero/ng-core';
+import { CONFIG, HttpPendingService } from '@rero/ng-core';
 import { User, UserApiService } from '@rero/shared';
 import { MessageService } from 'primeng/api';
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
@@ -39,6 +39,7 @@ export class ChangePasswordFormComponent implements OnInit {
   private dynamicDialogConfig: DynamicDialogConfig = inject(DynamicDialogConfig);
   private translateService: TranslateService = inject(TranslateService);
   private userApiService: UserApiService = inject(UserApiService);
+  readonly httpPending = inject(HttpPendingService);
 
   patron = signal<User | undefined>(undefined);
   form = signal(new UntypedFormGroup({}));
@@ -76,6 +77,7 @@ export class ChangePasswordFormComponent implements OnInit {
    * @param model - Object
    */
   submit(patron: any) {
+    if (this.httpPending.isPending()) { return; }
     const password = this.form().get('password')?.value;
     if (!password || !this.form().valid) {
       return;

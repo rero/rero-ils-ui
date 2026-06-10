@@ -18,7 +18,7 @@ import { Component, inject, OnInit, signal, ChangeDetectionStrategy} from '@angu
 import { UntypedFormControl, UntypedFormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { FormlyFieldConfig, FormlyModule } from '@ngx-formly/core';
 import { FormlyJsonschema } from '@ngx-formly/core/json-schema';
-import { CONFIG, JSONSchema7, NgCoreTranslateService, processJsonSchema, RecordService, removeEmptyValues, SearchInputComponent } from '@rero/ng-core';
+import { CONFIG, HttpPendingService, JSONSchema7, NgCoreTranslateService, processJsonSchema, RecordService, removeEmptyValues, SearchInputComponent } from '@rero/ng-core';
 import { AppStore } from '@rero/shared';
 import { MessageService } from 'primeng/api';
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
@@ -44,6 +44,7 @@ export class UserIdEditorComponent implements OnInit {
   private formlyJsonschema: FormlyJsonschema = inject(FormlyJsonschema);
   private translateService: NgCoreTranslateService = inject(NgCoreTranslateService);
   private appStore = inject(AppStore);
+  readonly httpPending = inject(HttpPendingService);
 
   searchText = '';
 
@@ -139,6 +140,7 @@ export class UserIdEditorComponent implements OnInit {
    * @param query - username or email to retrieve a User
    */
   searchValueUpdated(query: (string | null)): void {
+    if (this.httpPending.isPending()) { return; }
     if (!query) {
       this.loadedUserID = null;
       this.passwordField.props.required = true;
@@ -207,6 +209,7 @@ export class UserIdEditorComponent implements OnInit {
    * Create if the userID is null else update.
    */
   submit(): void {
+    if (this.httpPending.isPending()) { return; }
     this.form.markAllAsTouched();
     if (!this.form.valid) {
       this.messageService.add({
@@ -225,14 +228,43 @@ export class UserIdEditorComponent implements OnInit {
     }
     if (this.userID != null) {
       data.pid = this.userID;
-      this.recordService.update('users', data.pid, data).subscribe(() => {
-        this.closeDialog(this.userID);
-      });
+      this.recordService.update('users', data.pid, data)
+        .subscribe({
+          next: () => this.closeDialog(this.userID),
+          error: (error: any) => {
+            this.messageService.add(
+              (error.status === 409 || error.status === 412)
+                ? {
+                    severity: 'warn',
+                    summary: this.translateService.instant('Record conflict'),
+                    detail: this.translateService.instant('This record has been modified by another user. Please reload the page — your local changes will be lost.'),
+                    sticky: true,
+                    closable: true
+                  }
+                : {
+                    severity: 'error',
+                    summary: this.translateService.instant('User'),
+                    detail: error.title,
+                    sticky: true,
+                    closable: true
+                  }
+            );
+          }
+        });
     } else {
-      this.recordService.create('users', data).subscribe((res) => {
-        this.userID = res.id;
-        this.closeDialog(this.userID);
-      });
+      this.recordService.create('users', data)
+        .subscribe({
+          next: (res: any) => { this.userID = res.id; this.closeDialog(this.userID); },
+          error: (error: any) => {
+            this.messageService.add({
+              severity: 'error',
+              summary: this.translateService.instant('User'),
+              detail: error.title,
+              sticky: true,
+              closable: true
+            });
+          }
+        });
     }
   }
 
