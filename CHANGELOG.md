@@ -1,5 +1,13 @@
 # Changelog
 
+## [v21.0.0](https://github.com/rero/rero-ils-ui/tree/v21.0.0) (2026-06-10)
+
+[Full Changelog](https://github.com/rero/rero-ils-ui/compare/v19.3.0...v21.0.0)
+
+**Breaking changes:**
+
+- chore: migrate to Angular 21 with NgRx Signal Store and zoneless change detection [#1446](https://github.com/rero/rero-ils-ui/pull/1446) (by @jma & @Garfield-fr)
+
 ## [v19.3.0](https://github.com/rero/rero-ils-ui/tree/v19.3.0) (2026-04-23)
 
 [Full Changelog](https://github.com/rero/rero-ils-ui/compare/v19.2.1...v19.3.0)
