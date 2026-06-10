@@ -106,7 +106,7 @@ class IssuesRoute extends BaseRoute implements RouteDataTypesInterface {
   private processFilterName(filter: IFilter): Observable<string> {
     if(filter.name) { return of(filter.name); }
     switch (filter.aggregationKey) {
-      case 'claims_count': return this.routeToolService.translateService.stream(_('Claim(s)'));
+      case 'claims_count': return this.routeToolService.translateService.stream(_('Claims'));
       case 'item_type': return this.recordService.getRecord<{metadata: {name: string}}>('item_types', filter.key).pipe(map(record => record.metadata.name));
       case 'library': return this.recordService.getRecord<{metadata: {name: string}}>('libraries', filter.key).pipe(map(record => record.metadata.name));
       case 'location': return this.recordService.getRecord<{metadata: {name: string}}>('locations', filter.key).pipe(map(record => record.metadata.name));

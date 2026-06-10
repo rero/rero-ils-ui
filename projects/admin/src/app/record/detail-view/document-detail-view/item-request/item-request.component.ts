@@ -80,7 +80,7 @@ export class ItemRequestComponent implements OnInit {
   patronBlockedMsg = computed(() => {
     const p = this.patron() as any;
     if (!p?.patron?.blocked) return null;
-    return `${this.translateService.instant('This patron is currently blocked.')} ${this.translateService.instant('Reason')}: ${p.patron.blocked_note}`;
+    return `${this.translateService.instant('This patron is currently blocked')} ${this.translateService.instant('Reason')}: ${p.patron.blocked_note}`;
   });
   /** Dynamic message for can_request validator */
   canRequestMessage?: string;
