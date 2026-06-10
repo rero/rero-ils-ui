@@ -24,7 +24,7 @@ import { AbstractCanDeactivateComponent, ApiService, cleanDictKeys, CONFIG, Reco
 import { AppStore } from '@rero/shared';
 import { MessageService } from 'primeng/api';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
-import { Subscription } from 'rxjs';
+import { finalize, Subscription } from 'rxjs';
 import { ExceptionDates, Library } from '../../../classes/library';
 import { NotificationType } from '../../../classes/notification';
 import { ExceptionDatesEditComponent } from './exception-dates-edit/exception-dates-edit.component';
@@ -73,6 +73,10 @@ export class LibraryComponent extends AbstractCanDeactivateComponent implements 
   private dynamicDialogRef: DynamicDialogRef | null = null;
 
   // COMPONENT ATTRIBUTES =====================================================
+  /** ETag of the loaded record for optimistic concurrency control. */
+  private readonly _etag = signal<string | null>(null);
+  /** Guard against double-submit. */
+  readonly isSaving = signal(false);
   /** The current library. */
   readonly library = signal<Library | null>(null);
   /** The angular form to edit the library. */
@@ -127,8 +131,10 @@ export class LibraryComponent extends AbstractCanDeactivateComponent implements 
       }
       this.eventForm = this.libraryForm.create().subscribe((_buildEvent: any) => {
         if (params && params.pid) {
-          this.recordService.getRecord('libraries', params.pid).subscribe(record => {
-            const lib = new Library(record.metadata as any);
+          this.recordService.getRecordWithEtag('libraries', params.pid).subscribe((response) => {
+            this._etag.set(response.headers.get('ETag'));
+            const record = response.body!;
+            const lib = new Library(record.metadata);
             this.library.set(lib);
             this.exceptionDates.set(lib.exception_dates ?? []);
             this.libraryForm.populate(record.metadata as any);
@@ -185,13 +191,16 @@ export class LibraryComponent extends AbstractCanDeactivateComponent implements 
 
   /** Form submission. */
   onSubmit() {
+    if (this.isSaving()) { return; }
+    this.isSaving.set(true);
     this.canDeactivate = true;
     const library = this.library()!;
     this._cleanFormValues(this.libraryForm.getValues());
     library.update(this.libraryForm.getValues());
     if (library.pid) {
       this.recordService
-        .update('libraries', library.pid, cleanDictKeys(library as any))
+        .update('libraries', library.pid, cleanDictKeys(library as any), this._etag())
+        .pipe(finalize(() => this.isSaving.set(false)))
         .subscribe({
           next: () => {
             this.messageService.add({
@@ -202,18 +211,31 @@ export class LibraryComponent extends AbstractCanDeactivateComponent implements 
             });
             this.router.navigate(['records', 'libraries', 'detail', library.pid]);
           },
-          error: (error) => this.messageService.add({
-            severity: 'error',
-            summary: this.translateService.instant('libraries'),
-            detail: error.title,
-            sticky: true,
-            closable: true
-          })
+          error: (error) => {
+            this.messageService.add(
+              (error.status === 409 || error.status === 412)
+                ? {
+                    severity: 'warn',
+                    summary: this.translateService.instant('Record conflict'),
+                    detail: this.translateService.instant('This record has been modified by another user. Please reload the page — your local changes will be lost.'),
+                    sticky: true,
+                    closable: true
+                  }
+                : {
+                    severity: 'error',
+                    summary: this.translateService.instant('libraries'),
+                    detail: error.title,
+                    sticky: true,
+                    closable: true
+                  }
+            );
+          }
       });
     } else {
       library.organisation = { $ref: this.apiService.getRefEndpoint('organisations', this.organisationPid()) };
       this.recordService
         .create('libraries', cleanDictKeys(library as any))
+        .pipe(finalize(() => this.isSaving.set(false)))
         .subscribe({
           next: (record) => {
             this.messageService.add({
@@ -224,13 +246,15 @@ export class LibraryComponent extends AbstractCanDeactivateComponent implements 
             });
             this.router.navigate(['records', 'libraries', 'detail', record.metadata.pid]);
           },
-          error: (error) => this.messageService.add({
-            severity: 'error',
-            summary: this.translateService.instant('libraries'),
-            detail: error.title,
-            sticky: true,
-            closable: true
-          })
+          error: (error) => {
+            this.messageService.add({
+              severity: 'error',
+              summary: this.translateService.instant('libraries'),
+              detail: error.title,
+              sticky: true,
+              closable: true
+            });
+          }
       });
     }
   }
