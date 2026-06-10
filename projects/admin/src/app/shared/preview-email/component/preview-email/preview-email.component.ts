@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, effect, input, output, ChangeDetectionStrategy} from '@angular/core';
+import { Component, effect, input, output, signal, ChangeDetectionStrategy} from '@angular/core';
 import { Tools } from '@rero/shared';
 import { ITypeEmail } from '../../IPreviewInterface';
 import { NgTemplateOutlet } from '@angular/common';
@@ -52,6 +52,8 @@ export class PreviewEmailComponent {
   data = output<ITypeEmail[]>();
   /** Event to allow closing the dialog */
   closeDialog = output<boolean>();
+
+  readonly isSending = signal(false);
 
   /** Email address that is in drag mode */
   draggedEmail: string | null = null;
@@ -110,6 +112,8 @@ export class PreviewEmailComponent {
    * The closing of the dialog takes place in the parent if the transmitted data are valid.
    */
   confirm(): void {
+    if (this.isSending()) { return; }
+    this.isSending.set(true);
     const recipients = [];
     Object.keys(this.recipients).forEach((key: string) => this.recipients[key].every((email: string) => recipients.push({ type: key, address: email })));
     this.data.emit(recipients);

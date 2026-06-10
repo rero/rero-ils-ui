@@ -14,25 +14,21 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { HttpEvent, HttpHandler, HttpInterceptor, HttpRequest } from '@angular/common/http';
-import { inject, Injectable } from '@angular/core';
+import { HttpHandlerFn, HttpRequest } from '@angular/common/http';
+import { inject } from '@angular/core';
 import { AppStore } from '@rero/shared';
-import { Observable } from 'rxjs';
 
-@Injectable()
-export class UserCurrentLibraryInterceptor implements HttpInterceptor {
+export function userCurrentLibraryInterceptor(req: HttpRequest<unknown>, next: HttpHandlerFn) {
+   const appStore = inject(AppStore);
 
-  private appStore = inject(AppStore);
-
-  intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<unknown>> {
-    const libraryPid = this.appStore.currentLibraryPid();
+    const libraryPid = appStore.currentLibraryPid();
     if (libraryPid) {
-      request = request.clone({
+      const request = req.clone({
         setParams: {
           'current_library': libraryPid
         }
       });
+      return next(request);
     }
-    return next.handle(request);
-  }
+    return next(req);
 }

@@ -28,7 +28,7 @@ import { Panel } from 'primeng/panel';
 import { ScrollPanel } from 'primeng/scrollpanel';
 import { Button } from 'primeng/button';
 import { CurrencyPipe } from '@angular/common';
-import { DateTranslatePipe } from '@rero/ng-core';
+import { DateTranslatePipe, HttpPendingService } from '@rero/ng-core';
 
 
 @Component({
@@ -44,6 +44,7 @@ export class PatronTransactionEventFormComponent implements OnInit {
   private translateService: TranslateService = inject(TranslateService);
   private appStore = inject(AppStore);
   private patronTransactionService: PatronTransactionService = inject(PatronTransactionService);
+  readonly httpPending = inject(HttpPendingService);
 
   /** the transactions to perform with this form */
   transactions: PatronTransaction[];
@@ -194,6 +195,7 @@ export class PatronTransactionEventFormComponent implements OnInit {
    * Submit the form and create a new PatronTransactionEvent
    */
   onSubmitForm() {
+    if (this.httpPending.isPending()) { return; }
     const formValues = this.form.value;
     const observables: Observable<void>[] = [];
     if (this.action === 'pay') {

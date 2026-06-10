@@ -31,8 +31,8 @@
       <p-button
         type="submit"
         size="small"
-        [disabled]="!form.valid"
-        [icon]="orderSend() ? 'fa fa-spinner fa-pulse' : 'fa fa-save'"
+        [disabled]="!form.valid || httpPending.isPending()"
+        [icon]="httpPending.isPending() ? 'fa fa-spinner fa-pulse' : 'fa fa-save'"
         [label]="'Save' | translate"
       />
     </div>

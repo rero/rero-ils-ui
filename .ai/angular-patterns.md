@@ -139,3 +139,82 @@ Example:
 @for (item of items(); track item.id) {
   <li>{{ item.label }}</li>
 }
+
+## Double-click guard on submit/save buttons
+
+Three patterns depending on the context.
+
+### Pattern A — Mutating HTTP calls (POST/PUT/PATCH/DELETE)
+
+`HttpPendingService` (ng-core) exposes `isPending()`: a counter incremented/decremented automatically by `httpPendingInterceptor` for every mutating request.
+
+**Registration** (once in `app.config.ts`):
+```typescript
+import { httpPendingInterceptor } from '@rero/ng-core';
+provideHttpClient(withInterceptors([httpPendingInterceptor]), withInterceptorsFromDi())
+```
+
+**In the component**:
+```typescript
+readonly isSaving = signal(false);
+readonly httpPending = inject(HttpPendingService);
+
+submit(): void {
+  if (this.isSaving()) { return; }
+  this.isSaving.set(true);
+  // ...
+  this.recordService.update(...)
+    .pipe(finalize(() => this.isSaving.set(false)))
+    .subscribe({ ... });
+}
+```
+
+**In the template**:
+```html
+<p-button type="submit" [disabled]="form.invalid || isSaving() || httpPending.isPending()" />
+```
+
+> `isSaving` is the primary guard: Angular's `HttpClient` schedules request dispatch asynchronously (via scheduler), so `httpPendingInterceptor` has not yet incremented its counter when a rapid second click fires in the same JS tick. The local signal is set synchronously at the top of `submit()`, immediately blocking any second call. `httpPending.isPending()` serves as a secondary guard against concurrent mutations from other sources.
+
+### Pattern B — Synchronous dialog close (no HTTP)
+
+These components emit an `@Output()` or close a `DynamicDialog` directly — no HTTP request involved. Use a one-shot `isSending` signal that is never reset (the dialog closes before it would matter).
+
+```typescript
+readonly isSending = signal(false);
+
+onSubmit(): void {
+  if (this.isSending()) { return; }
+  this.isSending.set(true);
+  this.dialogRef.close(this.form.value);
+}
+```
+
+```html
+<p-button [disabled]="form.invalid || isSending()" (onClick)="onSubmit()" />
+```
+
+### Pattern C — Scan/search input guard
+
+For components that process barcode scans or async searches, prevent a second scan from triggering while the first is still being processed.
+
+**With a local `searchInputDisabled` signal** (e.g. `loan.component`):
+```typescript
+searchValueUpdated(barcode: string): void {
+  if (!barcode || this.searchInputDisabled()) { return null; }
+  this.searchInputDisabled.set(true);
+  // ... async processing, reset with _resetSearchInput()
+}
+```
+
+**With `HttpPendingService`** (e.g. `user-id-editor`):
+```typescript
+searchValueUpdated(query: string | null): void {
+  if (this.httpPending.isPending()) { return; }
+  // ... GET request
+}
+```
+
+```html
+<ng-core-search-input [disabled]="httpPending.isPending()" ... />
+```

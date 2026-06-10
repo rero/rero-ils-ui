@@ -42,7 +42,7 @@
     </p-scrollPanel>
 
     <div class="ui:flex ui:justify-end">
-      <p-button type="submit" [label]="'Save'|translate" [disabled]="this.form.status !== 'VALID'" />
+      <p-button type="submit" [label]="'Save'|translate" [disabled]="this.form.status !== 'VALID' || httpPending.isPending()" />
     </div>
   </form>
 }

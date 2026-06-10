@@ -27,7 +27,7 @@
         [label]="'Cancel' | translate"
         (onClick)="closeDialog()"
       />
-      <p-button type="submit" icon="fa fa-save" [label]="'Save' | translate" />
+      <p-button type="submit" icon="fa fa-save" [label]="'Save' | translate" [disabled]="httpPending.isPending()" />
     </div>
   </form>
 }

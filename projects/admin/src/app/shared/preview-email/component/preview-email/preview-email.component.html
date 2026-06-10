@@ -89,7 +89,7 @@
 
 <div class="ui:flex ui:justify-end ui:gap-1 ui:mt-2">
   <p-button severity="danger" outlined [label]="'Cancel'|translate" (onClick)="close()" aria-label="Close"/>
-  <p-button [label]="'Confirm'|translate" [disabled]="!formValid()" (onClick)="confirm()" />
+  <p-button [label]="'Confirm'|translate" [disabled]="!formValid() || isSending()" (onClick)="confirm()" />
 </div>
 
 <ng-template #messagePreview let-preview="preview" let-position="position">

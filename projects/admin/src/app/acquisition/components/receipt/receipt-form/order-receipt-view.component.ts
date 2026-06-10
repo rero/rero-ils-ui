@@ -20,9 +20,9 @@ import { UntypedFormGroup, FormsModule, ReactiveFormsModule } from '@angular/for
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormlyFieldConfig, FormlyModule } from '@ngx-formly/core';
 import { TranslateService, TranslateDirective, TranslatePipe } from '@ngx-translate/core';
-import { ApiService, CONFIG } from '@rero/ng-core';
+import { ApiService, CONFIG, HttpPendingService } from '@rero/ng-core';
 import { MessageService } from 'primeng/api';
-import { finalize, tap } from 'rxjs/operators';
+import { tap } from 'rxjs/operators';
 import { AcqReceiptApiService } from '../../../api/acq-receipt-api.service';
 import { AcqReceiptAmountAdjustment, IAcqReceipt } from '../../../classes/receipt';
 import { IAcqReceiptModel, ICreateLineMessage, OrderReceipt } from './order-receipt';
@@ -46,6 +46,7 @@ export class OrderReceiptViewComponent implements OnInit {
   private orderReceiptForm: OrderReceiptForm = inject(OrderReceiptForm);
   private messageService = inject(MessageService);
   private apiService:ApiService = inject(ApiService);
+  readonly httpPending = inject(HttpPendingService);
 
   private readonly _paramMap = toSignal(this.route.paramMap);
   private readonly _queryParamMap = toSignal(this.route.queryParamMap);
@@ -59,8 +60,6 @@ export class OrderReceiptViewComponent implements OnInit {
   orderRecord: any;
   /** Receipt Record */
   private readonly receiptRecord = signal<any>(null);
-  /** is save button has clicked */
-  readonly orderSend = signal(false);
   /** All elements loaded */
   readonly loaded = signal(false);
   /** Formly configuration */
@@ -85,7 +84,7 @@ export class OrderReceiptViewComponent implements OnInit {
    * @param model - ReceiptModel
    */
   onSubmit(model: IAcqReceiptModel): void {
-    this.orderSend.set(true);
+    if (this.httpPending.isPending()) { return; }
     let record: IAcqReceipt = (!this.receiptRecord())
       ? this.orderReceipt.processBaseRecord(model)
       : this.orderReceipt.processExistingRecord(this.receiptRecord());
@@ -95,7 +94,6 @@ export class OrderReceiptViewComponent implements OnInit {
       ? this.acqReceiptApiService.createReceipt(record).pipe(tap(receipt => model.pid = receipt.pid))
       : this.acqReceiptApiService.updateReceipt(record.pid, record);
     receiptApi$
-      .pipe(finalize(() => this.orderSend.set(false)))
       .subscribe({
         next: (receipt: IAcqReceipt) => this.createLinesAndMessage(model, receipt),
         error: (err) => this.messageService.add({

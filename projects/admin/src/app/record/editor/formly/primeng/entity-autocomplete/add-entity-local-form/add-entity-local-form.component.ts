@@ -19,7 +19,7 @@ import { Component, inject, OnDestroy, OnInit, ChangeDetectionStrategy} from '@a
 import { FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { FormlyFieldConfig, FormlyModule } from '@ngx-formly/core';
 import { FormlyJsonschema } from '@ngx-formly/core/json-schema';
-import { NgCoreTranslateService, processJsonSchema, RecordService } from '@rero/ng-core';
+import { HttpPendingService, NgCoreTranslateService, processJsonSchema, RecordService } from '@rero/ng-core';
 import { MessageService } from 'primeng/api';
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { Subscription } from 'rxjs';
@@ -41,6 +41,7 @@ export class AddEntityLocalFormComponent implements OnInit, OnDestroy {
   private recordService: RecordService = inject(RecordService);
   private formlyJsonschema: FormlyJsonschema = inject(FormlyJsonschema);
   private translateService: NgCoreTranslateService = inject(NgCoreTranslateService);
+  readonly httpPending = inject(HttpPendingService);
 
   /** TODO: Find a better solution for next iteration */
   translatedTypes = {
@@ -102,6 +103,7 @@ export class AddEntityLocalFormComponent implements OnInit, OnDestroy {
 
   /** Submit form */
   submit(): void {
+    if (this.httpPending.isPending()) { return; }
     if (this.form.valid) {
       this.subscriptions.add(this.recordService.create('local_entities', this.model).subscribe({
         next: (response: any) => {

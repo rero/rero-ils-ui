@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { APP_BASE_HREF, DatePipe, PlatformLocation } from '@angular/common';
-import { HTTP_INTERCEPTORS, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import {
   ApplicationConfig,
   importProvidersFrom,
@@ -33,6 +33,7 @@ import {
   CoreConfigService,
   RecordHandleErrorService as CoreRecordHandleErrorService,
   CoreTranslateLoader,
+  httpPendingInterceptor,
   NgCoreTranslateService,
   PasswordGeneratorComponent,
   primeNGConfig,
@@ -48,8 +49,7 @@ import { OrderLineTypeComponent } from './acquisition/formly/type/field-order-li
 import { ReceiptLinesTypeComponent } from './acquisition/formly/type/receipt-lines.type';
 import { InputNoLabelWrapperComponent } from './acquisition/formly/wrapper/input-no-label.wrapper';
 import { routes } from './app.routes';
-import { NoCacheHeaderInterceptor } from './interceptor/no-cache-header.interceptor';
-import { UserCurrentLibraryInterceptor } from './interceptor/user-current-library.interceptor';
+import { userCurrentLibraryInterceptor } from './interceptor/user-current-library.interceptor';
 import { CountryCodeTranslatePipe } from './pipe/country-code-translate.pipe';
 import { EntityAutocompleteComponent } from './record/editor/formly/primeng/entity-autocomplete/entity-autocomplete.component';
 import { remoteAutocompleteToken } from './record/editor/formly/primeng/remote-autocomplete/remote-autocomplete-factory.service';
@@ -78,8 +78,6 @@ export const appConfig: ApplicationConfig = {
       useFactory: (s: PlatformLocation) => s.getBaseHrefFromDOM(),
       deps: [PlatformLocation],
     },
-    { provide: HTTP_INTERCEPTORS, useClass: NoCacheHeaderInterceptor, multi: true },
-    { provide: HTTP_INTERCEPTORS, useClass: UserCurrentLibraryInterceptor, multi: true },
     { provide: TranslateService, useExisting: NgCoreTranslateService },
     { provide: RemoteAutocompleteService, useExisting: UiRemoteAutocompleteService },
     { provide: remoteAutocompleteToken, useExisting: DocumentsRemoteService, multi: true },
@@ -99,7 +97,7 @@ export const appConfig: ApplicationConfig = {
     ItemHoldingsCallNumberPipe,
     CountryCodeTranslatePipe,
     { provide: CoreRecordHandleErrorService, useExisting: RecordHandleErrorService },
-    provideHttpClient(withInterceptorsFromDi()),
+    provideHttpClient(withInterceptors([httpPendingInterceptor, userCurrentLibraryInterceptor])),
     provideCore(),
     {
       provide: FORMLY_CONFIG,

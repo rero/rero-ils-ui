@@ -17,7 +17,7 @@
 
 import { Component, computed, ElementRef, inject, input, OnInit, signal, viewChild, ChangeDetectionStrategy} from '@angular/core';
 import { TranslateService, TranslateDirective, TranslatePipe } from '@ngx-translate/core';
-import { RecordSearchStore, RecordService, DateTranslatePipe } from '@rero/ng-core';
+import { DateTranslatePipe, HttpPendingService, RecordSearchStore, RecordService } from '@rero/ng-core';
 import { MessageService } from 'primeng/api';
 import { Bind } from 'primeng/bind';
 import { Inplace } from 'primeng/inplace';
@@ -40,6 +40,7 @@ export class MigrationDataDeduplicationBriefComponent implements OnInit {
   protected recordService = inject(RecordService);
   protected translateService = inject(TranslateService);
   protected searchStore = inject(RecordSearchStore);
+  readonly httpPending = inject(HttpPendingService);
 
   record = input<any>();
   type = input<string>();
@@ -149,6 +150,7 @@ export class MigrationDataDeduplicationBriefComponent implements OnInit {
   }
 
   save(): void {
+    if (this.httpPending.isPending()) { return; }
     this.recordService
       .update('migration_data', `${this.record().id}?migration=${this.record().metadata.migration_id}`, {
         ils_pid: this.ilsPid(),

@@ -57,7 +57,7 @@
 
   <div class="ui:mt-4 ui:flex ui:gap-1 ui:justify-end">
     <p-button [label]="'Cancel' |translate" severity="danger" outlined (onClick)="closeModal()" />
-    <p-button type="submit" [label]="'Apply' |translate" [disabled]="this.formGroup.invalid" />
+    <p-button type="submit" [label]="'Apply' |translate" [disabled]="this.formGroup.invalid || isSending()" />
   </div>
 </form>
 
