@@ -21,13 +21,13 @@ import { filter, switchMap } from 'rxjs';
 import { AppStore } from '@rero/shared';
 import { AcqBudgetApiService } from '../../../api/acq-budget-api.service';
 import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
-import { CurrencyPipe } from '@angular/common';
 import { MessageModule } from 'primeng/message';
+import { CentsCurrencyPipe } from '../../../pipes/cents-currency.pipe';
 
 @Component({
     selector: 'admin-budget-detail-view',
     templateUrl: './budget-detail-view.component.html',
-    imports: [TranslateDirective, CurrencyPipe, TranslatePipe, MessageModule],
+    imports: [TranslateDirective, CentsCurrencyPipe, TranslatePipe, MessageModule],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class BudgetDetailViewComponent {

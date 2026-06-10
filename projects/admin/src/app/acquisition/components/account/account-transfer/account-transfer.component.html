@@ -66,7 +66,7 @@
               </div>
               <div class="ui:col-span-2 ui:text-right">
                 {{
-                  account.allocated_amount | currency : organisation()!.default_currency
+                  account.allocated_amount | centsCurrency : organisation()!.default_currency
                 }}
               </div>
               <div
@@ -79,7 +79,7 @@
               >
                 {{
                   account.remaining_balance?.self
-                    | currency : organisation()!.default_currency
+                    | centsCurrency : organisation()!.default_currency
                 }}
               </div>
               <div class="ui:col-span-1 ui:text-center">

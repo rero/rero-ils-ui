@@ -125,7 +125,7 @@
       <!-- PRICE -->
       @if (record()?.metadata | keyExists:'price') {
         <dt translate>Price</dt>
-        <dd>{{ record()?.metadata.price | currency:organisationCurrency:'symbol' }}</dd>
+        <dd>{{ record()?.metadata.price | centsCurrency:organisationCurrency:'symbol' }}</dd>
       }
       <!-- PAC CODE -->
       @if (record()?.metadata | keyExists:'pac_code') {

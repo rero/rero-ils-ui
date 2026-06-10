@@ -30,7 +30,7 @@
           }
         }
       </div>
-      <div class="ui:col-span-2 ui:flex ui:justify-end">{{ transaction().fees.total | currency: organisation.default_currency }}</div>
+      <div class="ui:col-span-2 ui:flex ui:justify-end">{{ transaction().fees.total | centsCurrency: organisation.default_currency }}</div>
     </div>
     @if (!isCollapsed()) {
       <div class="ui:mt-2">

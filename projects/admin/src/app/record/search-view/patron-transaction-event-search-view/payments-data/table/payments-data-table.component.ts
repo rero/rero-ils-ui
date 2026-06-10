@@ -21,12 +21,12 @@ import { AppStore } from '@rero/shared';
 import { Bind } from 'primeng/bind';
 import { Divider } from 'primeng/divider';
 import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
-import { CurrencyPipe } from '@angular/common';
+import { CentsCurrencyPipe } from '../../../../../acquisition/pipes/cents-currency.pipe';
 
 @Component({
     selector: 'admin-payments-data-table',
     templateUrl: './payments-data-table.component.html',
-    imports: [Bind, Divider, TranslateDirective, CurrencyPipe, TranslatePipe],
+    imports: [Bind, Divider, TranslateDirective, CentsCurrencyPipe, TranslatePipe],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class PaymentsDataTableComponent {

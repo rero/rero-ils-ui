@@ -38,7 +38,7 @@
     <!-- SUBSCRIPTION AMOUNT -->
     @if (record.metadata.subscription_amount) {
       <dt translate>Subscription amount</dt>
-      <dd>{{ record.metadata.subscription_amount | currency: organisation.default_currency }}</dd>
+      <dd>{{ record.metadata.subscription_amount | centsCurrency: organisation.default_currency }}</dd>
     }
   </dl>
     <!-- Limits -->
@@ -136,7 +136,7 @@
           @if (record.metadata.limits.fee_amount_limits) {
             <dl class="metadata ui:ml-7 ui:mb-4">
               <dt translate>Limit</dt>
-              <dd>{{ record.metadata.limits.fee_amount_limits.default_value | currency: organisation.default_currency }}</dd>
+              <dd>{{ record.metadata.limits.fee_amount_limits.default_value | centsCurrency: organisation.default_currency }}</dd>
             </dl>
           }
         </p-panel>

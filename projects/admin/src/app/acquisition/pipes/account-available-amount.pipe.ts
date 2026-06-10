@@ -28,7 +28,7 @@ export class AccountAvailableAmountPipe implements PipeTransform {
    * @returns the available amount
    */
   transform(account: IAcqAccount): number {
-    return account.allocated_amount - account.distribution;
+    return (account.allocated_amount - account.distribution) / 100;
   }
 
 }

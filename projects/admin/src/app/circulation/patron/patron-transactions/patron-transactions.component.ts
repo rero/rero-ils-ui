@@ -34,12 +34,12 @@ import { Button } from 'primeng/button';
 import { SplitButton } from 'primeng/splitbutton';
 import { PatronTransactionComponent } from './patron-transaction/patron-transaction.component';
 import { OverdueTransactionComponent } from './overdue-transaction/overdue-transaction.component';
-import { CurrencyPipe } from '@angular/common';
+import { CentsCurrencyPipe } from '../../../acquisition/pipes/cents-currency.pipe';
 
 @Component({
     selector: 'admin-patron-transactions',
     templateUrl: './patron-transactions.component.html',
-    imports: [Bind, Accordion, AccordionPanel, Ripple, AccordionHeader, TranslateDirective, Tag, AccordionContent, Button, SplitButton, PatronTransactionComponent, OverdueTransactionComponent, CurrencyPipe, TranslatePipe],
+    imports: [Bind, Accordion, AccordionPanel, Ripple, AccordionHeader, TranslateDirective, Tag, AccordionContent, Button, SplitButton, PatronTransactionComponent, OverdueTransactionComponent, CentsCurrencyPipe, TranslatePipe],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class PatronTransactionsComponent {

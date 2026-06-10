@@ -123,7 +123,7 @@
             }
             @if (isCollapsed() && totalAmountOfFee() > 0) {
               <p-tag [title]="'Fees'|translate" severity="warn" class="ui:mr-1">
-                {{ totalAmountOfFee() | currency: organisation.default_currency }}
+                {{ totalAmountOfFee() | centsCurrency: organisation.default_currency }}
               </p-tag>
             }
             @if (isCollapsed() && item().pending_loans && item().pending_loans.length) {
@@ -235,7 +235,7 @@
             <dt translate>Fees</dt>
             <dd>
               <p-tag severity="warn" class="ui:mr-1">
-                {{ totalAmountOfFee() | currency: organisation.default_currency }}
+                {{ totalAmountOfFee() | centsCurrency: organisation.default_currency }}
               </p-tag>
             </dd>
           }

@@ -72,6 +72,6 @@
       'text-warning': account.remaining_balance.self < 0
     }"
   >
-    {{ account.remaining_balance.self | currency : defaultCurrency() }}
+    {{ account.remaining_balance.self | centsCurrency : defaultCurrency() }}
   </span>
 </ng-template>

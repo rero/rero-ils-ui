@@ -32,13 +32,14 @@ import { ReceiptLineComponent } from '../receipt-line/receipt-line.component';
 import { NotesComponent } from '../../notes/notes.component';
 import { CurrencyPipe, I18nPluralPipe } from '@angular/common';
 import { TranslatePipe } from '@ngx-translate/core';
+import { CentsCurrencyPipe } from '../../../pipes/cents-currency.pipe';
 import { NoteBadgeColorPipe } from '../../../pipes/note-badge-color.pipe';
 import { ReceptionDatesPipe } from '../../../pipes/reception-dates.pipe';
 
 @Component({
     selector: 'admin-receipt-summary',
     templateUrl: './receipt-summary.component.html',
-    imports: [OpenCloseButtonComponent, Bind, Tag, ActionButtonComponent, RouterLink, ReceiptLineComponent, NotesComponent, CurrencyPipe, I18nPluralPipe, TranslatePipe, NoteBadgeColorPipe, ReceptionDatesPipe],
+    imports: [OpenCloseButtonComponent, Bind, Tag, ActionButtonComponent, RouterLink, ReceiptLineComponent, NotesComponent, CurrencyPipe, CentsCurrencyPipe, I18nPluralPipe, TranslatePipe, NoteBadgeColorPipe, ReceptionDatesPipe],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ReceiptSummaryComponent {

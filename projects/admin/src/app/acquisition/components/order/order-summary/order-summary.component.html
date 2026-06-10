@@ -78,7 +78,7 @@
     </div>
     <div class="ui:flex ui:flex-wrap ui:text-center">
       <div class="ui:w-full ui:text-2xl ui:font-bold">
-        {{ total | currency : order().currency : "symbol" }}
+        {{ total | centsCurrency : order().currency : "symbol" }}
       </div>
       <div class="ui:w-full ui:text-sm ui:text-muted-color">{{ label }}</div>
     </div>

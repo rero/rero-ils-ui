@@ -31,7 +31,7 @@
     <div>
       <p-tag [severity]="$any(severity())">
         @if (event().type !== eventTypes.DISPUTE) {
-          {{ event().amount | currency : organisation()?.default_currency }}
+          {{ event().amount | centsCurrency : organisation()?.default_currency }}
         } @else {
           {{ 'dispute' | translate }}
         }

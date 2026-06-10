@@ -51,7 +51,7 @@
           }
         </div>
         <div class="ui:col-span-3 ui:flex ui:font-bold ui:justify-end ui:items-center" [class.ui:border-right-1]="recordPermissions() && allowActions()">
-          {{ receipt().total_amount | currency:receipt().currency:'symbol' }}
+          {{ receipt().total_amount | centsCurrency:receipt().currency:'symbol' }}
         </div>
         <!-- ACTION BUTTON COLUMN -->
         @if (recordPermissions() && allowActions()) {
@@ -91,7 +91,7 @@
             </div>
             <div class="ui:col-span-3 ui:flex-col ui:font-bold ui:flex ui:items-end">
               <div>
-                {{ adjustment.amount | currency:receipt().currency:'symbol' }}
+                {{ adjustment.amount | centsCurrency:receipt().currency:'symbol' }}
               </div>
             </div>
           }

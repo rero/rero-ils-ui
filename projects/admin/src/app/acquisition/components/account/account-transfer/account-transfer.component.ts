@@ -38,7 +38,8 @@ import { IAcqAccount } from '../../../classes/account';
 import { orderAccountsAsTree } from '../../../utils/account';
 import { Bind } from 'primeng/bind';
 import { Button } from 'primeng/button';
-import { AsyncPipe, CurrencyPipe } from '@angular/common';
+import { AsyncPipe } from '@angular/common';
+import { CentsCurrencyPipe } from '../../../pipes/cents-currency.pipe';
 import { SelectModule } from 'primeng/select';
 import { CardModule } from 'primeng/card';
 import { RadioButtonModule } from 'primeng/radiobutton';
@@ -51,7 +52,7 @@ import { InputTextModule } from 'primeng/inputtext';
   templateUrl: './account-transfer.component.html',
   imports: [
     TranslateDirective, FormsModule, ReactiveFormsModule, RouterLink,
-    Bind, Button, AsyncPipe, CurrencyPipe, GetRecordPipe, TranslatePipe,
+    Bind, Button, AsyncPipe, CentsCurrencyPipe, GetRecordPipe, TranslatePipe,
     SelectModule, CardModule, RadioButtonModule, InputGroupModule, InputGroupAddonModule, InputTextModule
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,

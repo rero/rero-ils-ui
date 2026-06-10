@@ -32,7 +32,7 @@
   <div class="ui:col-span-3 ui:flex ui:flex-col ui:gap-2 ui:items-end">
     <div class="ui:font-bold">{{ line() | receiptLineTotalAmount | currency:receipt().currency:'symbol' }}</div>
     <div class="ui:text-sm ui:text-muted-color">
-      {{ line().quantity }} x {{ line().amount | currency:receipt().currency:'symbol' }}
+      {{ line().quantity }} x {{ line().amount | centsCurrency:receipt().currency:'symbol' }}
       @if (line().vat_rate) {
       + {{ line().vat_rate }}%
       }

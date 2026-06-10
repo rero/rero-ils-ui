@@ -34,12 +34,13 @@ import { TooltipModule } from 'primeng/tooltip';
 import { TreeTableModule } from 'primeng/treetable';
 import { filter, forkJoin } from 'rxjs';
 import { map, switchMap, tap } from 'rxjs/operators';
+import { CentsCurrencyPipe } from '../../../pipes/cents-currency.pipe';
 import { AccountAvailableAmountPipe } from '../../../pipes/account-available-amount.pipe';
 
 @Component({
     selector: 'admin-account-list',
     templateUrl: './account-list.component.html',
-    imports: [TranslateDirective, Bind, Button, RouterLink, PermissionsDirective, ExportButtonComponent, TreeTableModule, CurrencyPipe, Nl2brPipe, TranslatePipe, AccountAvailableAmountPipe, TooltipModule],
+    imports: [TranslateDirective, Bind, Button, RouterLink, PermissionsDirective, ExportButtonComponent, TreeTableModule, CurrencyPipe, Nl2brPipe, TranslatePipe, AccountAvailableAmountPipe, CentsCurrencyPipe, TooltipModule],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AccountListComponent {

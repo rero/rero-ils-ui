@@ -27,7 +27,8 @@ import { AppStore, ItemStatus, OpenCloseButtonComponent, InheritedCallNumberComp
 import { map } from 'rxjs/operators';
 import { CirculationStore } from '../store/circulation.store';
 import { computeTotalTransactionsAmount } from '../utils/transaction.utils';
-import { NgClass, AsyncPipe, JsonPipe, CurrencyPipe } from '@angular/common';
+import { NgClass, AsyncPipe, JsonPipe } from '@angular/common';
+import { CentsCurrencyPipe } from '../../acquisition/pipes/cents-currency.pipe';
 import { RouterLink } from '@angular/router';
 import { Bind } from 'primeng/bind';
 import { Tag } from 'primeng/tag';
@@ -39,7 +40,7 @@ import { GetLoanCipoPipe } from '../pipe/get-loan-cipo.pipe';
 @Component({
     selector: 'admin-item',
     templateUrl: './item.component.html',
-    imports: [NgClass, OpenCloseButtonComponent, RouterLink, InheritedCallNumberComponent, Bind, Tag, ContributionComponent, ButtonDirective, TranslateDirective, Button, ScrollPanel, AsyncPipe, JsonPipe, CurrencyPipe, DateTranslatePipe, GetRecordPipe, IdAttributePipe, MainTitlePipe, TruncateTextPipe, TranslatePipe, GetLoanCipoPipe],
+    imports: [NgClass, OpenCloseButtonComponent, RouterLink, InheritedCallNumberComponent, Bind, Tag, ContributionComponent, ButtonDirective, TranslateDirective, Button, ScrollPanel, AsyncPipe, JsonPipe, CentsCurrencyPipe, DateTranslatePipe, GetRecordPipe, IdAttributePipe, MainTitlePipe, TruncateTextPipe, TranslatePipe, GetLoanCipoPipe],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ItemComponent {

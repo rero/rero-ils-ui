@@ -27,13 +27,13 @@ import { CardComponent } from '../card/card.component';
 import { Bind } from 'primeng/bind';
 import { Tabs, TabList, Tab } from 'primeng/tabs';
 import { Ripple } from 'primeng/ripple';
-import { CurrencyPipe } from '@angular/common';
+import { CentsCurrencyPipe } from '../../../acquisition/pipes/cents-currency.pipe';
 import { BadgeModule } from 'primeng/badge';
 
 @Component({
     selector: 'admin-main',
     templateUrl: './main.component.html',
-    imports: [CardComponent, Bind, Tabs, TabList, Ripple, Tab, RouterLink, RouterOutlet, CurrencyPipe, TranslatePipe, BadgeModule],
+    imports: [CardComponent, Bind, Tabs, TabList, Ripple, Tab, RouterLink, RouterOutlet, CentsCurrencyPipe, TranslatePipe, BadgeModule],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class MainComponent {

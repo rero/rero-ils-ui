@@ -48,7 +48,7 @@
       @if (displayProvisionalAccountingData) {
         <div class="ui:flex">
           <span class="ui:w-8/12 ui:text-center ui:border-surface ui:border ui:p-2 ui:bg-surface-100 ui:rounded-l ui:font-bold">
-            {{ order.account_statement.provisional.total_amount | currency : order.currency }}
+            {{ order.account_statement.provisional.total_amount | centsCurrency : order.currency }}
           </span>
           <span class="ui:w-4/12 ui:text-center ui:border-surface ui:border ui:p-2 ui:bg-surface-100 ui:rounded-r ui:text-muted-color ui:text-right">
             <i class="fa fa-shopping-cart"></i>&nbsp;{{ order.account_statement.provisional.quantity }}
@@ -58,7 +58,7 @@
       @if (displayExpenditureAccountingData) {
         <div class="ui:flex">
           <span class="ui:w-8/12 ui:text-center ui:border-surface ui:border ui:p-2 ui:bg-surface-100 ui:rounded-l ui:font-bold">
-            {{ order.account_statement.expenditure.total_amount | currency : order.currency }}
+            {{ order.account_statement.expenditure.total_amount | centsCurrency : order.currency }}
           </span>
           <span class="ui:w-4/12 ui:text-center ui:border-surface ui:border ui:p-2 ui:bg-surface-100 ui:rounded-r ui:text-muted-color ui:text-right">
             <i class="fa fa-sign-in"></i>&nbsp;{{ order.account_statement.expenditure.quantity }}

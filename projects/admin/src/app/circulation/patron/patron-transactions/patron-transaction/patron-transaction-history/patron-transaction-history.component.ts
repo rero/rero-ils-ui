@@ -20,14 +20,15 @@ import { TranslateService, TranslatePipe } from '@ngx-translate/core';
 import { AppStore } from '@rero/shared';
 import { Bind } from 'primeng/bind';
 import { Timeline } from 'primeng/timeline';
-import { NgClass, AsyncPipe, CurrencyPipe } from '@angular/common';
+import { NgClass, AsyncPipe } from '@angular/common';
+import { CentsCurrencyPipe } from '../../../../../acquisition/pipes/cents-currency.pipe';
 import { Tag } from 'primeng/tag';
 import { DateTranslatePipe, GetRecordPipe } from '@rero/ng-core';
 
 @Component({
     selector: 'admin-patron-transaction-history',
     templateUrl: './patron-transaction-history.component.html',
-    imports: [Bind, Timeline, NgClass, Tag, AsyncPipe, CurrencyPipe, DateTranslatePipe, GetRecordPipe, TranslatePipe],
+    imports: [Bind, Timeline, NgClass, Tag, AsyncPipe, CentsCurrencyPipe, DateTranslatePipe, GetRecordPipe, TranslatePipe],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class PatronTransactionHistoryComponent {

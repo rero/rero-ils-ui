@@ -28,6 +28,7 @@ import { DialogService } from 'primeng/dynamicdialog';
 import { TranslateService, TranslateDirective, TranslatePipe } from '@ngx-translate/core';
 import { MenuItem } from 'primeng/api';
 import { CurrencyPipe, NgClass, AsyncPipe } from '@angular/common';
+import { CentsCurrencyPipe } from '../../../../acquisition/pipes/cents-currency.pipe';
 import { SelectChangeEvent } from 'primeng/select';
 import { AppStore, OpenCloseButtonComponent } from '@rero/shared';
 import { FormsModule } from '@angular/forms';
@@ -40,7 +41,7 @@ import { Select } from 'primeng/select';
 @Component({
   selector: 'admin-patron-transaction',
   templateUrl: './patron-transaction.component.html',
-  imports: [NgClass, OpenCloseButtonComponent, FormsModule, TranslateDirective, OverdueTransactionDetailComponent, DefaultTransactionDetailComponent, PatronTransactionHistoryComponent, AsyncPipe, CurrencyPipe, DateTranslatePipe, GetRecordPipe, TranslatePipe, Select],
+  imports: [NgClass, OpenCloseButtonComponent, FormsModule, TranslateDirective, OverdueTransactionDetailComponent, DefaultTransactionDetailComponent, PatronTransactionHistoryComponent, AsyncPipe, CurrencyPipe, CentsCurrencyPipe, DateTranslatePipe, GetRecordPipe, TranslatePipe, Select],
   providers: [CurrencyPipe],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
@@ -70,7 +71,7 @@ export class PatronTransactionComponent {
       {
         label: [
           this.translateService.instant('Pay'),
-          this.currencyPipe.transform(t.total_amount, this.appStore.organisation()?.default_currency)
+          this.currencyPipe.transform(t.total_amount / 100, this.appStore.organisation()?.default_currency)
         ].join(' '),
         command: () => this.patronTransactionAction('pay', 'full')
       },

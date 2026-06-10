@@ -23,14 +23,15 @@ import { Panel } from 'primeng/panel';
 import { TranslateDirective } from '@ngx-translate/core';
 import { Tag } from 'primeng/tag';
 import { RouterLink } from '@angular/router';
-import { AsyncPipe, CurrencyPipe } from '@angular/common';
+import { AsyncPipe } from '@angular/common';
+import { CentsCurrencyPipe } from '../../../../acquisition/pipes/cents-currency.pipe';
 import { GetRecordPipe } from '@rero/ng-core';
 import { AppStore } from '@rero/shared';
 
 @Component({
     selector: 'admin-item-fees',
     templateUrl: './item-fees.component.html',
-    imports: [Bind, Panel, TranslateDirective, Tag, RouterLink, AsyncPipe, CurrencyPipe, GetRecordPipe],
+    imports: [Bind, Panel, TranslateDirective, Tag, RouterLink, AsyncPipe, CentsCurrencyPipe, GetRecordPipe],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ItemFeesComponent {

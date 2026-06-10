@@ -34,7 +34,7 @@
           </div>
           <div class="ui:grid ui:grid-cols-12 ui:gap-4">
             <span class="ui:col-span-4" translate>Total amount</span>
-            <span class="ui:col-span-8">{{ transaction.total_amount | currency: organisation.default_currency }}</span>
+            <span class="ui:col-span-8">{{ transaction.total_amount | centsCurrency: organisation.default_currency }}</span>
           </div>
         </div>
       </p-panel>

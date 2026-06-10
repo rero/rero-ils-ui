@@ -21,13 +21,14 @@ import { AppStore } from '@rero/shared';
 import { Bind } from 'primeng/bind';
 import { Panel } from 'primeng/panel';
 import { TableModule } from 'primeng/table';
-import { NgClass, AsyncPipe, CurrencyPipe, I18nPluralPipe, KeyValuePipe } from '@angular/common';
+import { NgClass, AsyncPipe, I18nPluralPipe, KeyValuePipe } from '@angular/common';
+import { CentsCurrencyPipe } from '../../../acquisition/pipes/cents-currency.pipe';
 import { GetRecordPipe } from '@rero/ng-core';
 
 @Component({
     selector: 'admin-circ-policy-detail-view',
     templateUrl: './circ-policy-detail-view.component.html',
-    imports: [TranslateDirective, Bind, Panel, TableModule, NgClass, AsyncPipe, CurrencyPipe, I18nPluralPipe, KeyValuePipe, TranslatePipe, GetRecordPipe],
+    imports: [TranslateDirective, Bind, Panel, TableModule, NgClass, AsyncPipe, CentsCurrencyPipe, I18nPluralPipe, KeyValuePipe, TranslatePipe, GetRecordPipe],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CircPolicyDetailViewComponent {
