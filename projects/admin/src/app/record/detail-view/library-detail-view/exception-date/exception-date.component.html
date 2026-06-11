@@ -34,7 +34,7 @@
       }
       @if (exception().repeat) {
         <i class="fa fa-repeat"></i>&nbsp;
-        {{ exception().repeat.period | translate }}={{ exception().repeat.interval }}
+        {{ exception().repeat?.period | translate }}={{ exception().repeat?.interval }}
       }
     </div>
     <span class="ui:col-span-5">{{ exception().title }}</span>

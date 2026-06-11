@@ -15,52 +15,54 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { ChangeDetectionStrategy, Component, inject, OnDestroy, OnInit, signal } from '@angular/core';
-import { UntypedFormArray, UntypedFormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { NgClass, NgTemplateOutlet, TitleCasePipe } from '@angular/common';
+import { ChangeDetectionStrategy, Component, computed, effect, inject, signal } from '@angular/core';
+import { FormsModule, ReactiveFormsModule, UntypedFormArray, UntypedFormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CountryCodeTranslatePipe } from '@app/admin/pipe/country-code-translate.pipe';
-import { TranslateService, TranslateDirective, TranslatePipe } from '@ngx-translate/core';
+import { TranslateDirective, TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { AbstractCanDeactivateComponent, ApiService, cleanDictKeys, CONFIG, RecordService, removeEmptyValues, UniqueValidator, UpperCaseFirstPipe } from '@rero/ng-core';
 import { AppStore } from '@rero/shared';
+import { Accordion, AccordionContent, AccordionHeader, AccordionPanel } from 'primeng/accordion';
 import { MessageService } from 'primeng/api';
-import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
-import { Subscription } from 'rxjs';
-import { ExceptionDates, Library } from '../../../classes/library';
-import { NotificationType } from '../../../classes/notification';
-import { ExceptionDatesEditComponent } from './exception-dates-edit/exception-dates-edit.component';
-import { LibraryFormService } from './library-form.service';
+import { Badge } from 'primeng/badge';
 import { Bind } from 'primeng/bind';
-import { Accordion, AccordionPanel, AccordionHeader, AccordionContent } from 'primeng/accordion';
-import { Ripple } from 'primeng/ripple';
-import { InputText } from 'primeng/inputtext';
+import { Button } from 'primeng/button';
+import { Divider } from 'primeng/divider';
+import { DialogService } from 'primeng/dynamicdialog';
+import { Fieldset } from 'primeng/fieldset';
 import { InputGroup } from 'primeng/inputgroup';
 import { InputGroupAddon } from 'primeng/inputgroupaddon';
-import { Select } from 'primeng/select';
-import { NgClass, NgTemplateOutlet, TitleCasePipe } from '@angular/common';
-import { ToggleSwitch } from 'primeng/toggleswitch';
-import { Button } from 'primeng/button';
-import { ExceptionDatesListComponent } from './exception-dates-list/exception-dates-list.component';
 import { InputNumber } from 'primeng/inputnumber';
-import { Tooltip } from 'primeng/tooltip';
-import { Divider } from 'primeng/divider';
-import { Tabs, TabList, Tab, TabPanels, TabPanel } from 'primeng/tabs';
-import { Fieldset } from 'primeng/fieldset';
+import { InputText } from 'primeng/inputtext';
+import { Ripple } from 'primeng/ripple';
+import { Select } from 'primeng/select';
+import { Tab, TabList, TabPanel, TabPanels, Tabs } from 'primeng/tabs';
 import { Tag } from 'primeng/tag';
+import { ToggleSwitch } from 'primeng/toggleswitch';
+import { Tooltip } from 'primeng/tooltip';
+import { take } from 'rxjs/operators';
+import { ExceptionDates } from '../../../classes/library';
+import { NotificationType } from '../../../classes/notification';
+import { ExceptionDatesEditComponent } from './exception-dates-edit/exception-dates-edit.component';
+import { ExceptionDatesListComponent } from './exception-dates-list/exception-dates-list.component';
+import { LibraryFormService } from './library-form.service';
+import { LibraryStore } from './library.store';
 import { NotificationTypePipe } from './pipe/notificationType.pipe';
-import { Badge } from 'primeng/badge';
 
 type SelectOption = { value: string; label: string; disabled?: boolean };
 
 @Component({
     selector: 'admin-libraries-library',
     templateUrl: './library.component.html',
+    providers: [LibraryStore, LibraryFormService],
     imports: [TranslateDirective, FormsModule, ReactiveFormsModule, Bind, Accordion, AccordionPanel, Ripple, AccordionHeader, AccordionContent, InputText, InputGroup, InputGroupAddon, Select, NgClass, ToggleSwitch, Button, ExceptionDatesListComponent, InputNumber, Tooltip, Divider, Tabs, TabList, Tab, TabPanels, TabPanel, NgTemplateOutlet, Fieldset, Tag, TitleCasePipe, UpperCaseFirstPipe, TranslatePipe, NotificationTypePipe, Badge],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class LibraryComponent extends AbstractCanDeactivateComponent implements OnInit, OnDestroy {
+export class LibraryComponent extends AbstractCanDeactivateComponent {
 
-  private recordService: RecordService = inject(RecordService);
   private libraryForm: LibraryFormService = inject(LibraryFormService);
+  protected readonly libraryStore = inject(LibraryStore);
   private route: ActivatedRoute = inject(ActivatedRoute);
   private router: Router = inject(Router);
   private appStore = inject(AppStore);
@@ -69,126 +71,120 @@ export class LibraryComponent extends AbstractCanDeactivateComponent implements 
   private countryCodeTranslatePipe: CountryCodeTranslatePipe = inject(CountryCodeTranslatePipe);
   private messageService: MessageService = inject(MessageService);
   private dialogService: DialogService = inject(DialogService);
-
-  private dynamicDialogRef: DynamicDialogRef | null = null;
+  private recordService: RecordService = inject(RecordService);
 
   // COMPONENT ATTRIBUTES =====================================================
-  /** The current library. */
-  readonly library = signal<Library | null>(null);
-  /** The angular form to edit the library. */
+  /** The angular form to edit the library — set once schemas + data are ready. */
   readonly libForm = signal<UntypedFormGroup | null>(null);
-  /** The current organisation pid. */
-  readonly organisationPid = signal('');
-  /** Exception dates (signal for reactivity with OnPush). */
-  readonly exceptionDates = signal<ExceptionDates[]>([]);
+
+  /** Translated options for dropdowns — derived from store data */
+  readonly rolloverAccountTransferOptions = computed<SelectOption[]>(() =>
+    this.libraryStore.rolloverAccountTransferOptions().map(option => ({
+      value: option,
+      label: this.translateService.instant(option),
+    }))
+  );
+
+  readonly availableCommunicationLanguagesOptions = computed<SelectOption[]>(() => {
+    const langs = this.libraryStore.availableCommunicationLanguages();
+    if (!langs.length) return [];
+    return [
+      { value: '', label: this.translateService.instant('Choose a language'), disabled: true },
+      ...langs.map(lang => ({ value: lang, label: this.translateService.instant(`lang_${lang}`), disabled: false })),
+    ];
+  });
+
+  readonly countryIsoCodesOptions = computed<SelectOption[]>(() =>
+    this.libraryStore.countryIsoCodes().map(code => ({
+      value: code,
+      label: this.countryCodeTranslatePipe.transform(code),
+    }))
+  );
 
   /** possible delayed notification types. */
   public delayedNotificationTypes = [NotificationType.AVAILABILITY];
 
-  /** options to use for dropdown list box of the editor */
-  readonly rolloverAccountTransferOptions = signal<SelectOption[]>([]);
-  readonly availableCommunicationLanguagesOptions = signal<SelectOption[]>([]);
-  readonly countryIsoCodesOptions = signal<SelectOption[]>([]);
-
   /** Can deactivate guard */
   public canDeactivate = false;
 
-  /** Form build event subscription to release the memory. */
-  private eventForm!: Subscription;
-
+  /** Expose store signals to template */
+  readonly exceptionDates = this.libraryStore.exceptionDates;
 
   // GETTER & SETTER ==========================================================
-  /** Name of the library. */
   get name() { return this.libraryForm.name; }
-  /** Address of the library. */
   get address() { return this.libraryForm.address; }
-  /** Contact email of the library. */
   get email() { return this.libraryForm.email; }
-  /** Code of the library. */
   get code() { return this.libraryForm.code; }
-  /** Communication language. */
   get communicationLanguage() { return this.libraryForm.communication_language; }
-  /** Country list */
-  get countries_iso_codes() { return this.libraryForm.countries_iso_codes; }
-  /** Hours when the library is open. */
   get openingHours() { return this.libraryForm.opening_hours as UntypedFormArray; }
-  /** Notification settings. */
   get notificationSettings() { return this.libraryForm.notification_settings as UntypedFormArray; }
-  /** Rollover settings */
   get rolloverSettings() { return this.libraryForm.rollover_settings as UntypedFormGroup; }
 
+  constructor() {
+    super();
 
-  /** NgOnInit hook. */
-  ngOnInit() {
-    this.route.params.subscribe( (params) => {
-      const loggedUser = this.appStore.user();
-      if (loggedUser) {
-        this.organisationPid.set(this.appStore.currentOrganisationPid());
+    // When schemas are loaded, build the form then load the record if editing.
+    effect(() => {
+      const notifTypes = this.libraryStore.notificationTypes();
+      if (!notifTypes.length) return;
+
+      this.libraryForm.notificationTypes = notifTypes;
+      this.libraryForm.build();
+
+      const { pid } = this.route.snapshot.params;
+      if (pid) {
+        this.libraryStore.loadLibrary(pid);
+      } else {
+        this.libraryStore.setNewLibrary();
+        this.libForm.set(this.libraryForm.form);
+        this.setAsyncValidator();
       }
-      this.eventForm = this.libraryForm.create().subscribe((_buildEvent: any) => {
-        if (params && params.pid) {
-          this.recordService.getRecord('libraries', params.pid).subscribe(record => {
-            const lib = new Library(record.metadata as any);
-            this.library.set(lib);
-            this.exceptionDates.set(lib.exception_dates ?? []);
-            this.libraryForm.populate(record.metadata as any);
-            this.libForm.set(this.libraryForm.form);
-            this.setAsyncValidator();
-          });
-        } else {
-          const lib = new Library({});
-          this.library.set(lib);
-          this.exceptionDates.set(lib.exception_dates ?? []);
-          this.libForm.set(this.libraryForm.form);
-          this.setAsyncValidator();
-        }
-        this._buildOptions();
-      });
+    });
+
+    // When the library is loaded from the store, populate the form.
+    effect(() => {
+      const lib = this.libraryStore.library();
+      if (!lib || !this.libraryForm.form) return;
+      this.libraryForm.populate(lib);
+      this.libForm.set(this.libraryForm.form);
+      this.setAsyncValidator();
     });
   }
 
   addException(): void {
-    this.dynamicDialogRef = this.dialogService.open(ExceptionDatesEditComponent, {
+    this.dialogService.open(ExceptionDatesEditComponent, {
       header: this.translateService.instant('Exception'),
       modal: true,
       width: '50vw',
       closable: false,
-      data: {
-        exceptionDate: null
-      }
-    });
-    this.dynamicDialogRef?.onClose.subscribe((value?: ExceptionDates) => {
+      data: { exceptionDate: null }
+    })?.onClose.pipe(take(1)).subscribe((value?: ExceptionDates) => {
       if (value) {
-        this.library()!.exception_dates.push(value);
-        this.exceptionDates.update(dates => [...dates, value]);
+        this.libraryStore.addExceptionDate(value);
       }
     });
-  }
-
-  /** NgOnDestroy hook. */
-  ngOnDestroy() {
-    this.eventForm.unsubscribe();
   }
 
   // COMPONENT FUNCTIONS ======================================================
-  /** Create the form async validators. */
   setAsyncValidator() {
-    this.libForm()!.controls.code.setAsyncValidators([
+    this.libForm()!.controls['code'].setAsyncValidators([
       UniqueValidator.createValidator(
         this.recordService,
         'libraries',
         'code',
-        this.library()!.pid
+        this.libraryStore.library()?.pid ?? undefined
       ) as any
     ]);
   }
 
-  /** Form submission. */
   onSubmit() {
     this.canDeactivate = true;
-    const library = this.library()!;
-    this._cleanFormValues(this.libraryForm.getValues());
-    library.update(this.libraryForm.getValues());
+    const library = this.libraryStore.library()!;
+    const formValues = this.libraryForm.getValues();
+    this._cleanFormValues(formValues);
+    formValues.exception_dates = this.libraryStore.exceptionDates();
+    library.update(formValues);
+
     if (library.pid) {
       this.recordService
         .update('libraries', library.pid, cleanDictKeys(library as any))
@@ -209,9 +205,9 @@ export class LibraryComponent extends AbstractCanDeactivateComponent implements 
             sticky: true,
             closable: true
           })
-      });
+        });
     } else {
-      library.organisation = { $ref: this.apiService.getRefEndpoint('organisations', this.organisationPid()) };
+      library.organisation = { $ref: this.apiService.getRefEndpoint('organisations', this.appStore.currentOrganisationPid()) };
       this.recordService
         .create('libraries', cleanDictKeys(library as any))
         .subscribe({
@@ -231,82 +227,31 @@ export class LibraryComponent extends AbstractCanDeactivateComponent implements 
             sticky: true,
             closable: true
           })
-      });
+        });
     }
   }
 
-
-
-  /** Cancel the edition. */
   onCancel() {
     this.canDeactivate = true;
-    this.router.navigate(['/', 'records', 'libraries', 'detail', this.library()!.pid])
+    this.router.navigate(['/', 'records', 'libraries', 'detail', this.libraryStore.library()!.pid]);
   }
 
-  /**
-   * Add new opening hours for a specific day.
-   * @param dayIndex: the day index where to add a period time.
-   */
   addTime(dayIndex: number): void {
     this.libraryForm.addTime(dayIndex);
   }
 
-  /**
-   * Delete an existing opening hours.
-   * @param dayIndex: the day index where to delete.
-   * @param timeIndex: the time period index to delete.
-   */
   deleteTime(dayIndex: number, timeIndex: number): void {
     this.libraryForm.deleteTime(dayIndex, timeIndex);
   }
 
-
-  /**
-   * Clean form values before saving the library
-   * @param formValues: the form values to clean
-   */
   private _cleanFormValues(formValues: any): void {
-    // CLEAN OPENING HOURS : When day is defined as closed, remove all periods/times
     formValues.opening_hours.forEach((day: { is_open: boolean; times: unknown[] }) => {
       if (!day.is_open) {
         day.times = [];
       }
     });
-    // NOTIFICATIONS
     formValues.notification_settings = formValues.notification_settings.filter((element: { email: string }) => element.email !== '');
-    // ACQUISITION SETTINGS
     formValues.acquisition_settings = removeEmptyValues(formValues.acquisition_settings);
     formValues.serial_acquisition_settings = removeEmptyValues(formValues.serial_acquisition_settings);
-  }
-
-  private _buildOptions(): void {
-    // Build the options for rollover settings
-    this.rolloverAccountTransferOptions.set(
-      this.libraryForm.account_transfer_options.map(option => ({
-        value: option,
-        label: this.translateService.instant(option)
-      }))
-    );
-    // Build available communication languages
-    this.availableCommunicationLanguagesOptions.set(
-      [{
-        value: '',
-        label: this.translateService.instant('Choose a language'),
-        disabled: true
-      }].concat(
-        this.libraryForm.available_communication_languages.map(lang => ({
-          value: lang,
-          label: this.translateService.instant(`lang_${lang}`),
-          disabled: false
-        }))
-      )
-    );
-    // Country codes options
-    this.countryIsoCodesOptions.set(
-      this.libraryForm.countries_iso_codes.map(code => ({
-        value: code,
-        label: this.countryCodeTranslatePipe.transform(code)
-      }))
-    );
   }
 }

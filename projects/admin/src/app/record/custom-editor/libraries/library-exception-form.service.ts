@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { inject, Injectable } from '@angular/core';
-import { UntypedFormBuilder, UntypedFormGroup, Validators} from '@angular/forms';
+import { UntypedFormArray, UntypedFormBuilder, UntypedFormGroup, Validators} from '@angular/forms';
 import { TimeValidator } from '@rero/ng-core';
 import { DateTime } from 'luxon';
 
@@ -27,7 +27,7 @@ export class LibraryExceptionFormService {
 
   private fb: UntypedFormBuilder = inject(UntypedFormBuilder);
 
-  public form;
+  public form!: UntypedFormGroup;
 
   constructor() {
     this.build();
@@ -83,20 +83,20 @@ export class LibraryExceptionFormService {
     });
   }
 
-  populate(exception) {
-    this.title.setValue(exception.title);
+  populate(exception: Record<string, any>): void {
+    this.title.setValue(exception['title']);
     if ('end_date' in exception) {
       this.is_period.setValue(true);
       this.dates.setValue([
-        DateTime.fromISO(exception.start_date).toJSDate(),
-        DateTime.fromISO(exception.end_date).toJSDate(),
+        DateTime.fromISO(exception['start_date']).toJSDate(),
+        DateTime.fromISO(exception['end_date']).toJSDate(),
       ]);
     } else {
-      this.date.setValue(DateTime.fromISO(exception.start_date).toJSDate());
+      this.date.setValue(DateTime.fromISO(exception['start_date']).toJSDate());
     }
-    this.is_open.setValue(exception.is_open);
+    this.is_open.setValue(exception['is_open']);
     if ('times' in exception) {
-      exception.times.forEach(
+      (exception['times'] as { start_time: string; end_time: string }[]).forEach(
         time => {
           this.times.push(this.buildTimes(time.start_time, time.end_time));
         }
@@ -104,8 +104,8 @@ export class LibraryExceptionFormService {
     }
     if ('repeat' in exception) {
       this.repeat.setValue(true);
-      this.period.setValue(exception.repeat.period);
-      this.interval.setValue(exception.repeat.interval);
+      this.period.setValue(exception['repeat'].period);
+      this.interval.setValue(exception['repeat'].interval);
       // this.data.setValue(exception.repeat.data)
     }
   }
@@ -114,7 +114,7 @@ export class LibraryExceptionFormService {
     return this.formatDateException(this.form.value);
   }
 
-  formatDateException(data) {
+  formatDateException(data: Record<string, any>): Record<string, any> {
     const dataException: any = {
       title: data.title,
       is_open: data.is_open
@@ -137,14 +137,14 @@ export class LibraryExceptionFormService {
     return dataException;
   }
 
-  get title() { return this.form.get('title'); }
-  get is_period() { return this.form.get('is_period'); }
-  get is_open() { return this.form.get('is_open'); }
-  get date() { return this.form.get('date'); }
-  get dates() { return this.form.get('dates'); }
-  get times() { return this.form.get('times'); }
-  get repeat() { return this.form.get('repeat'); }
-  get interval() { return this.form.get('interval'); }
-  get period() { return this.form.get('period'); }
-  get data() { return this.form.get('data'); }
+  get title() { return this.form.get('title')!; }
+  get is_period() { return this.form.get('is_period')!; }
+  get is_open() { return this.form.get('is_open')!; }
+  get date() { return this.form.get('date')!; }
+  get dates() { return this.form.get('dates')!; }
+  get times() { return this.form.get('times') as UntypedFormArray; }
+  get repeat() { return this.form.get('repeat')!; }
+  get interval() { return this.form.get('interval')!; }
+  get period() { return this.form.get('period')!; }
+  get data() { return this.form.get('data')!; }
 }

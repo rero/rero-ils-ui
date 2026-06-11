@@ -14,19 +14,19 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, inject, OnDestroy, OnInit, ChangeDetectionStrategy} from '@angular/core';
-import { UntypedFormArray, UntypedFormGroup, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
-import { LibraryExceptionFormService } from '../library-exception-form.service';
-import { TranslateService, TranslateDirective, TranslatePipe } from '@ngx-translate/core';
-import { Bind } from 'primeng/bind';
-import { InputText } from 'primeng/inputtext';
-import { Button } from 'primeng/button';
-import { ToggleSwitch } from 'primeng/toggleswitch';
-import { InputNumber } from 'primeng/inputnumber';
-import { Select } from 'primeng/select';
 import { TitleCasePipe } from '@angular/common';
+import { ChangeDetectionStrategy, Component, inject, OnDestroy, OnInit } from '@angular/core';
+import { FormsModule, ReactiveFormsModule, UntypedFormArray, UntypedFormGroup, Validators } from '@angular/forms';
+import { TranslateDirective, TranslatePipe, TranslateService } from '@ngx-translate/core';
+import { Bind } from 'primeng/bind';
+import { Button } from 'primeng/button';
 import { DatePicker } from 'primeng/datepicker';
+import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
+import { InputNumber } from 'primeng/inputnumber';
+import { InputText } from 'primeng/inputtext';
+import { Select } from 'primeng/select';
+import { ToggleSwitch } from 'primeng/toggleswitch';
+import { LibraryExceptionFormService } from '../library-exception-form.service';
 
 @Component({
     selector: 'admin-libraries-exception-dates-edit',
@@ -41,9 +41,9 @@ export class ExceptionDatesEditComponent implements OnInit, OnDestroy {
   private form: LibraryExceptionFormService = inject(LibraryExceptionFormService);
   private translateService: TranslateService = inject(TranslateService);
 
-  public exceptionForm: UntypedFormGroup;
+  public exceptionForm!: UntypedFormGroup;
 
-  periods: any[];
+  periods!: any[];
 
   ngOnInit() {
     this.form.build();
@@ -80,8 +80,8 @@ export class ExceptionDatesEditComponent implements OnInit, OnDestroy {
     this.dynamicDialogRef.close();
   }
 
-  onPeriodChange(event): void {
-    const { target } = event;
+  onPeriodChange(event: Event): void {
+    const target = event.target as HTMLInputElement;
     const value = target.value === 'true';
     this.form.is_period.setValue(value);
     if (value) {
@@ -92,13 +92,14 @@ export class ExceptionDatesEditComponent implements OnInit, OnDestroy {
     }
   }
 
-  onDateStatusChange(event): void {
-    const { target } = event;
+  onDateStatusChange(event: Event): void {
+    const target = event.target as HTMLInputElement;
     const value = target.value === 'true';
     this.form.is_open.setValue(value);
   }
 
-  onRepeatChange(repeat): void {
+  onRepeatChange(event: { checked: boolean }): void {
+    const repeat = event.checked;
     if (repeat) {
       this.form.interval.setValue(1);
       this.form.interval.setValidators([
@@ -118,7 +119,7 @@ export class ExceptionDatesEditComponent implements OnInit, OnDestroy {
     this.form.times.push(this.form.buildTimes());
   }
 
-  deleteTime(timeIndex): void {
+  deleteTime(timeIndex: number): void {
     this.form.times.removeAt(timeIndex);
   }
 
@@ -131,5 +132,5 @@ export class ExceptionDatesEditComponent implements OnInit, OnDestroy {
   get repeat() { return this.form.repeat; }
   get interval() { return this.form.interval; }
   get period() { return this.form.period; }
-  get data() { return this.data as UntypedFormArray; }
+  get data() { return this.form.data as UntypedFormArray; }
 }

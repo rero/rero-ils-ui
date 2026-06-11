@@ -6,13 +6,13 @@ Framework version: Angular 21
 
 This project is migrating incrementally to Angular 21 patterns:
 
-- New components must be standalone.
+- New components are standalone by default (Angular 19+) — do not add `standalone: true` explicitly.
 - Existing NgModules are not removed unless explicitly refactored.
 - New code must not introduce new NgModules.
 
 ## Core rules
 
-- New components must be standalone.
+- Components, directives and pipes are standalone by default since Angular 19 — omit `standalone: true`.
 - Prefer Angular Signals for local state in new components.
 - Avoid RxJS when Signals are sufficient for new code.
 - Use strict TypeScript typing.
@@ -31,7 +31,6 @@ This project is migrating incrementally to Angular 21 patterns:
 Example:
 
 @Component({
-  standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 
@@ -108,3 +107,20 @@ When adding a new cross-project alias, declare it in the root `tsconfig.json` un
 - Avoid the use of `any`.
 - Prefer explicit types.
 - Keep functions small and testable.
+
+## Import order
+
+Always keep imports sorted alphabetically by module path when adding new imports. No grouping required — sort all imports as a single flat list.
+
+Example:
+
+```typescript
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { TranslatePipe } from '@ngx-translate/core';
+import { RecordService } from '@rero/ng-core';
+import { Button } from 'primeng/button';
+import { take } from 'rxjs/operators';
+import { LibraryFormService } from './library-form.service';
+import { LibraryStore } from './library.store';
+```
