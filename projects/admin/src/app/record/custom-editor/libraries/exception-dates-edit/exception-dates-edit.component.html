@@ -14,7 +14,7 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<form [formGroup]="exceptionForm" (ngSubmit)="onSubmit()" style="max-width: 50vw;">
+<form [formGroup]="formService.form" (ngSubmit)="onSubmit()" style="max-width: 50vw;">
   <!-- Title -->
   <div class="ui:grid ui:grid-cols-12 ui:gap-4 ui:flex">
     <label for="title" class="ui:col-span-2">
@@ -27,22 +27,22 @@
         formControlName="title"
         [placeholder]="'Please insert a title' | translate"
       />
-      @if (title.invalid && (title.dirty || title.touched)) {
+      @if (formService.form.get('title')!.invalid && (formService.form.get('title')!.dirty || formService.form.get('title')!.touched)) {
         <div class="text-error">
-          @if (title.errors.required) {
+          @if (formService.form.get('title')!.errors?.required) {
             <div translate>Title is required.</div>
           }
         </div>
       }
     </div>
     <div class="ui:col-span-10 ui:col-start-3">
-      <input type="radio" name="day" value="false" [checked]="is_period.value === false" (change)="onPeriodChange($event)" />
+      <input type="radio" name="day" value="false" [checked]="formService.form.get('is_period')!.value === false" (change)="onPeriodChange($event)" />
       &nbsp;{{ 'Day' | translate }}
-      <input type="radio" name="period" value="true" [checked]="is_period.value === true" (change)="onPeriodChange($event)" />
+      <input type="radio" name="period" value="true" [checked]="formService.form.get('is_period')!.value === true" (change)="onPeriodChange($event)" />
       &nbsp;{{ 'Period' | translate }}
     </div>
 
-    @if (!is_period.value) {
+    @if (!formService.form.get('is_period')!.value) {
       <label for="date" class="ui:col-span-2">
         {{ 'Date' | translate }}&nbsp;*
       </label>
@@ -56,12 +56,12 @@
           [readonlyInput]="false"
           [showIcon]="true"
         />
-        @if (date.invalid && (date.dirty || date.touched)) {
+        @if (formService.form.get('date')!.invalid && (formService.form.get('date')!.dirty || formService.form.get('date')!.touched)) {
           <div class="text-error">
-            @if (date.errors.required) {
+            @if (formService.form.get('date')!.errors?.required) {
               <div translate>Date is required.</div>
             }
-            @if (date.errors.bsDate && date.errors.bsDate.invalid) {
+            @if (formService.form.get('date')!.errors?.bsDate && formService.form.get('date')!.errors?.bsDate.invalid) {
               <div translate>Date is invalid.</div>
             }
           </div>
@@ -69,7 +69,7 @@
       </div>
     }
 
-    @if (is_period.value) {
+    @if (formService.form.get('is_period')!.value) {
       <label for="date" class="ui:col-span-2">
         {{ 'Dates' | translate }}&nbsp;*
       </label>
@@ -85,12 +85,12 @@
           [numberOfMonths]="2"
           [showIcon]="true"
         />
-        @if (dates.invalid && (dates.dirty || dates.touched)) {
+        @if (formService.form.get('dates')!.invalid && (formService.form.get('dates')!.dirty || formService.form.get('dates')!.touched)) {
           <div class="text-error">
-            @if (dates.errors.required) {
+            @if (formService.form.get('dates')!.errors?.required) {
               <div translate>Date range is required.</div>
             }
-            @if (dates.errors.bsDate && dates.errors.bsDate.invalid) {
+            @if (formService.form.get('dates')!.errors?.bsDate && formService.form.get('dates')!.errors?.bsDate.invalid) {
               <div translate>Date range is invalid.</div>
             }
           </div>
@@ -99,14 +99,14 @@
     }
 
     <div class="ui:col-span-10 ui:col-start-3">
-      <input type="radio" name="date-status" value="false" [checked]="is_open.value === false" (change)="onDateStatusChange($event)" />
+      <input type="radio" name="date-status" value="false" [checked]="formService.form.get('is_open')!.value === false" (change)="onDateStatusChange($event)" />
       &nbsp;{{ 'Closed' | translate }}
-      <input type="radio" name="date-status" value="true" [checked]="is_open.value === true" (change)="onDateStatusChange($event)"/>
+      <input type="radio" name="date-status" value="true" [checked]="formService.form.get('is_open')!.value === true" (change)="onDateStatusChange($event)"/>
       &nbsp;{{ 'Open' | translate }}
-      @if (exceptionForm.value && exceptionForm.value.is_open) {
+      @if (formService.form.value && formService.form.value.is_open) {
         <em class="ui:block ui:mt-2" translate>Change the default opening hours for this day</em>
       }
-      @if (exceptionForm.value && !exceptionForm.value.is_open) {
+      @if (formService.form.value && !formService.form.value.is_open) {
         <em class="ui:block ui:mt-2" translate>Change the default closing hours for this day</em>
       }
     </div>
@@ -182,9 +182,9 @@
           </li>
         }
       </ul>
-      @if (exceptionForm.invalid  && (exceptionForm.dirty || exceptionForm.touched)) {
+      @if (formService.form.invalid  && (formService.form.dirty || formService.form.touched)) {
         <div class="text-error">
-          @if (exceptionForm.errors && exceptionForm.errors.rangeLessThan) {
+          @if (formService.form.errors && formService.form.errors.rangeLessThan) {
             <div translate>The two periods are overlapping.</div>
           }
         </div>
@@ -199,7 +199,7 @@
       />
       {{ 'Repetition' | translate | titlecase }}
     </div>
-    @if (repeat.value) {
+    @if (formService.form.get('repeat')!.value) {
       <div class="ui:col-span-10 ui:flex ui:gap-2 ui:items-center">
         <label for="interval"><span translate>Repeat each</span>&nbsp;*</label>
         <div class="ui:flex ui:gap-2">
@@ -210,15 +210,15 @@
             formControlName="period"
           />
         </div>
-        @if (interval.invalid && (interval.dirty || interval.touched)) {
+        @if (formService.form.get('interval')!.invalid && (formService.form.get('interval')!.dirty || formService.form.get('interval')!.touched)) {
           <div class="text-error">
-            @if (interval.errors.required) {
+            @if (formService.form.get('interval')!.errors?.required) {
               <div translate>Interval is required.</div>
             }
-            @if (interval.errors.min) {
+            @if (formService.form.get('interval')!.errors?.min) {
               <div translate>Interval must greater than 0.</div>
             }
-            @if (interval.errors.pattern && !interval.errors.min) {
+            @if (formService.form.get('interval')!.errors?.pattern && !formService.form.get('interval')!.errors?.min) {
               <div translate>Integer only.</div>
             }
           </div>
@@ -228,6 +228,6 @@
   </div>
   <div class="ui:flex ui:gap-1 ui:justify-end ui:mt-3">
     <p-button [label]="'Cancel'|translate" [outlined]="true" severity="danger" (onClick)="cancel()" />
-    <p-button type="submit" [label]="'Save'|translate" (onClick)="onSubmit()" [disabled]="exceptionForm.invalid" />
+    <p-button type="submit" [label]="'Save'|translate" (onClick)="onSubmit()" [disabled]="formService.form.invalid" />
   </div>
 </form>

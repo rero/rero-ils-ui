@@ -15,8 +15,9 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, input, ChangeDetectionStrategy} from '@angular/core';
 import { NgClass } from '@angular/common';
+import { ChangeDetectionStrategy, Component, input } from '@angular/core';
+import { OpeningHours } from '@app/admin/classes/library';
 import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
 
 @Component({
@@ -48,5 +49,5 @@ import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class DayOpeningHoursComponent {
-  day = input<any>();
+  day = input.required<OpeningHours>();
 }

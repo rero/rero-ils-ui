@@ -22,7 +22,6 @@ import { PermissionsDirective } from './permissions.directive';
 @Component({
     // eslint-disable-next-line @angular-eslint/component-selector
     selector: 'permissions-testing-component',
-    standalone: true,
     imports: [PermissionsDirective],
     template: `
   <div id="perm" [permissions]="permissions">Permissions testing</div>`

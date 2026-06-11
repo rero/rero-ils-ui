@@ -15,50 +15,37 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { inject, Injectable, signal } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { AbstractControl, UntypedFormArray, UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
-import { RecordService, TimeValidator } from '@rero/ng-core';
-import { forkJoin, Observable } from 'rxjs';
-import { map, tap } from 'rxjs/operators';
-import { AcquisitionInformations, Library, RolloverSettings } from '../../../classes/library';
+import { TimeValidator } from '@rero/ng-core';
+import { AcquisitionInformationDetail, AcquisitionInformations, Library, NotificationSettings, OpeningHours, RolloverSettings } from '../../../classes/library';
 import { NotificationType } from '../../../classes/notification';
 import { WeekDays } from '../../../classes/week-days';
 
-@Injectable({
-   providedIn: 'root'
-})
+@Injectable()
 export class LibraryFormService {
 
   private fb: UntypedFormBuilder = inject(UntypedFormBuilder);
-  private recordService: RecordService = inject(RecordService);
 
   // SERVICE ATTRIBUTES =======================================================
   /** Angular form group */
-  public form;
+  public form!: UntypedFormGroup;
 
-  /** RERO-ILS notification types */
-  private notificationTypes: NotificationType[] = [];
-  /** RERO-ILS communication languages */
-  private readonly _availableCommunicationLanguages = signal<string[]>([]);
-  /** RERO-ILS countries */
-  private readonly _countryList = signal<string[]>([]);
-  /** Rollover account transfer */
-  private readonly _rolloverAccountTransferOptions = signal<string[]>([]);
+  /** RERO-ILS notification types — set by the store before calling build() */
+  notificationTypes: NotificationType[] = [];
+
   /** Default account transfer */
   private readonly accountDefaultTransferOption = 'rollover_no_transfer';
 
   // GETTER & SETTER ==========================================================
-  get name(): AbstractControl { return this.form.get('name'); }
-  get address(): AbstractControl { return this.form.get('address'); }
-  get email(): AbstractControl { return this.form.get('email'); }
-  get code(): AbstractControl { return this.form.get('code'); }
+  get name(): AbstractControl { return this.form.get('name')!; }
+  get address(): AbstractControl { return this.form.get('address')!; }
+  get email(): AbstractControl { return this.form.get('email')!; }
+  get code(): AbstractControl { return this.form.get('code')!; }
   get opening_hours(): UntypedFormArray { return this.form.get('opening_hours') as UntypedFormArray; }
   get notification_settings(): UntypedFormArray { return this.form.get('notification_settings') as UntypedFormArray; }
-  get communication_language(): AbstractControl { return this.form.get('communication_language'); }
-  get available_communication_languages() { return this._availableCommunicationLanguages(); }
-  get countries_iso_codes() { return this._countryList(); }
-  get rollover_settings(): AbstractControl { return this.form.get('rollover_settings'); }
-  get account_transfer_options() { return this._rolloverAccountTransferOptions(); }
+  get communication_language(): AbstractControl { return this.form.get('communication_language')!; }
+  get rollover_settings(): AbstractControl { return this.form.get('rollover_settings')!; }
 
   // SERVICE FUNCTIONS ========================================================
   /** Build the form structure */
@@ -89,42 +76,6 @@ export class LibraryFormService {
   }
 
   /**
-   * Create the form and load default available values.
-   * Returns an Observable that emits once when the form is ready.
-   */
-  create(): Observable<boolean> {
-    const notificationSchema$ = this.recordService.getSchemaForm('notifications');
-    const librarySchema$ = this.recordService.getSchemaForm('libraries');
-    return forkJoin([librarySchema$, notificationSchema$]).pipe(
-      tap(([libSchema, notifSchema]) => {
-        this._availableCommunicationLanguages.set(
-          (libSchema as any).schema.properties.communication_language.enum
-        );
-        this._countryList.set(
-          (libSchema as any).schema.properties.acquisition_settings.properties.shipping_informations
-            .properties.address.properties.country.enum
-        );
-        this._rolloverAccountTransferOptions.set(
-          (libSchema as any).schema.properties.rollover_settings.properties.account_transfer.enum
-        );
-        // DEV NOTES :: Why remove `acquisition_order` an `claim_issue`
-        //   `this.notificationTypes` is used to build the notification setting form ;
-        //   but we need to remove `acquisition_order` and `claim_issue` from this list because the email
-        //   used to send this kind of notification is selected by manager when it confirms
-        //   and order. Then the email used is either :
-        //      - related vendor email
-        //      - library (serial) acquisition setting email
-        //      - custom email
-        this.notificationTypes = ((notifSchema as any).schema.properties.notification_type.enum as NotificationType[])
-          .filter(type => type !== NotificationType.ACQUISITION_ORDER)
-          .filter(type => type !== NotificationType.CLAIM_ISSUE);
-        this.build();
-      }),
-      map(() => true)
-    );
-  }
-
-  /**
    * Populate the form
    * @param library - The library metadata
    */
@@ -137,9 +88,9 @@ export class LibraryFormService {
       communication_language: library.communication_language
     });
     this._setOpeningHours(library.opening_hours);
-    this._setNotificationSettings(library.notification_settings);
-    this._setAcquisitionSettings('acquisition_settings', library.acquisition_settings);
-    this._setAcquisitionSettings('serial_acquisition_settings', library.serial_acquisition_settings);
+    this._setNotificationSettings(library.notification_settings ?? []);
+    this._setAcquisitionSettings('acquisition_settings', library.acquisition_settings ?? null);
+    this._setAcquisitionSettings('serial_acquisition_settings', library.serial_acquisition_settings ?? null);
     this._setRolloverSettings(library.rollover_settings);
   }
 
@@ -171,9 +122,9 @@ export class LibraryFormService {
    * Build and set default values for opening hours at form initialization
    * @param openingHours - opening hours
    */
-  private _initializeOpeningHours(openingHours = []) {
+  private _initializeOpeningHours(openingHours: OpeningHours[] = []) {
     const days = Object.keys(WeekDays);
-    const hours = this.form.get('opening_hours');
+    const hours = this.form.get('opening_hours') as UntypedFormArray;
     for (let step = 0; step < 7; step++) {
       hours.push(this._buildOpeningHours(false, days[step], this.fb.array([])));
     }
@@ -184,15 +135,15 @@ export class LibraryFormService {
    * Set opening hours from record data
    * @param openingHours - opening hours
    */
-  private _setOpeningHours(openingHours = []) {
+  private _setOpeningHours(openingHours: OpeningHours[] = []) {
     for (let step = 0; step < 7; step++) {
       const atimes = this._getTimesByDayIndex(step);
       const day = openingHours[step];
       if (day !== undefined) {
         if (day.times.length > 0) {
           atimes.removeAt(0);
-          const hours = this.form.get('opening_hours').get(String(step));
-          hours.get('is_open').setValue(day.is_open);
+          const hours = this.form.get('opening_hours')!.get(String(step))!;
+          hours.get('is_open')!.setValue(day.is_open);
           day.times.forEach(time => atimes.push(this._buildTimes(time.start_time, time.end_time)));
         }
       } else {
@@ -207,7 +158,7 @@ export class LibraryFormService {
    * @param day - day
    * @param times - times array
    */
-  private _buildOpeningHours(isOpen: boolean, day, times): UntypedFormGroup {
+  private _buildOpeningHours(isOpen: boolean, day: string, times: UntypedFormArray): UntypedFormGroup {
     return this.fb.group({
       is_open: [isOpen],
       day: [day],
@@ -247,9 +198,9 @@ export class LibraryFormService {
    * @param dayIndex - the day index
    * @return: The corresponding FormArray (at least an empty array)
    */
-  private _getTimesByDayIndex(dayIndex): UntypedFormArray {
-    return this.form.get('opening_hours')
-      .get(String(dayIndex))
+  private _getTimesByDayIndex(dayIndex: number): UntypedFormArray {
+    return this.form.get('opening_hours')!
+      .get(String(dayIndex))!
       .get('times') as UntypedFormArray;
   }
 
@@ -279,7 +230,7 @@ export class LibraryFormService {
       const fieldNames = ['shipping_informations', 'billing_informations'];
       fieldNames.forEach((fieldName) => {
         if (Object.hasOwn(acquisitionSettings, fieldName)) {
-          this._setAcquisitionInformation(blockName, fieldName, acquisitionSettings[fieldName]);
+          this._setAcquisitionInformation(blockName, fieldName, (acquisitionSettings as Record<string, any>)[fieldName]);
         }
       });
     }
@@ -291,17 +242,17 @@ export class LibraryFormService {
    * @param key: the section of acquisition to fill in.
    * @param data: the acquisition information values from record related to the key.
    */
-  private _setAcquisitionInformation(blockName, key, data): void {
-    const formField = this.form.get(blockName).get(key);
-    formField.get('name').setValue(data.name);
-    formField.get('email').setValue(data.email);
-    formField.get('phone').setValue(data.phone);
-    formField.get('extra').setValue(data.extra);
+  private _setAcquisitionInformation(blockName: string, key: string, data: AcquisitionInformationDetail): void {
+    const formField = this.form.get(blockName)!.get(key)!;
+    formField.get('name')!.setValue(data.name);
+    formField.get('email')!.setValue(data.email);
+    formField.get('phone')!.setValue(data.phone);
+    formField.get('extra')!.setValue(data.extra);
     if (data.address) {
-      formField.get('address').get('street').setValue(data.address.street);
-      formField.get('address').get('zip_code').setValue(data.address.zip_code);
-      formField.get('address').get('city').setValue(data.address.city);
-      formField.get('address').get('country').setValue(data.address.country);
+      formField.get('address')!.get('street')!.setValue(data.address.street);
+      formField.get('address')!.get('zip_code')!.setValue(data.address.zip_code);
+      formField.get('address')!.get('city')!.setValue(data.address.city);
+      formField.get('address')!.get('country')!.setValue(data.address.country);
     }
   }
 
@@ -310,7 +261,7 @@ export class LibraryFormService {
    * @param notificationSettings  - notification settings
    */
   private _initializeNotificationSettings(notificationSettings = []) {
-    const settings = this.form.get('notification_settings');
+    const settings = this.form.get('notification_settings') as UntypedFormArray;
     this.notificationTypes.forEach(type => settings.push(this._buildSettingsByType(type)));
     this._setNotificationSettings(notificationSettings);
   }
@@ -334,16 +285,16 @@ export class LibraryFormService {
    * Set values from record
    * @param notificationSettings - notification settings
    */
-  private _setNotificationSettings(notificationSettings = []) {
+  private _setNotificationSettings(notificationSettings: NotificationSettings[] = []) {
     if (notificationSettings.length > 0) {
-      const formSettings = this.form.get('notification_settings');
+      const formSettings = this.form.get('notification_settings')!;
       for (let step = 0; step < formSettings.value.length; step++) {
-        const formSetting = formSettings.get(String(step));
-        const currentSetting = notificationSettings.find(element => element.type === formSetting.get('type').value);
+        const formSetting = formSettings.get(String(step))!;
+        const currentSetting = notificationSettings.find(element => element.type === formSetting.get('type')!.value);
         if (currentSetting !== undefined) {
-          formSetting.get('email').setValue(currentSetting.email);
+          formSetting.get('email')!.setValue(currentSetting.email);
           if (currentSetting.delay !== undefined) {
-            formSetting.get('delay').setValue(currentSetting.delay);
+            formSetting.get('delay')!.setValue(currentSetting.delay);
           }
         }
       }
@@ -355,7 +306,7 @@ export class LibraryFormService {
    * @param settings - rollover settings
    */
   private _setRolloverSettings(settings: RolloverSettings): void {
-    const rolloverSettings = this.form.get('rollover_settings');
-    rolloverSettings.get('account_transfer').setValue(settings.account_transfer);
+    const rolloverSettings = this.form.get('rollover_settings')!;
+    rolloverSettings.get('account_transfer')!.setValue(settings.account_transfer);
   }
 }

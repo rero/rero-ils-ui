@@ -23,7 +23,6 @@ import { ToastModule } from 'primeng/toast';
 @Component({
     selector: 'public-patron-profile-app',
     templateUrl: './app.component.html',
-    standalone: true,
     imports: [RouterOutlet, LoadingBarHttpClientModule, ToastModule]
 })
 export class AppComponent {

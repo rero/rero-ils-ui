@@ -14,6 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+import { NotificationType } from '../../../../classes/notification';
 import { NotificationTypePipe } from './notificationType.pipe';
 
 describe('NotificationPipe', () => {
@@ -24,16 +25,16 @@ describe('NotificationPipe', () => {
 
   it('should return true if key is available on patron type', () => {
     const pipe = new NotificationTypePipe();
-    expect(pipe.transform('availability', 'patron')).toBeTruthy();
+    expect(pipe.transform(NotificationType.AVAILABILITY, 'patron')).toBeTruthy();
   });
 
   it('should return true if key is available on library type', () => {
     const pipe = new NotificationTypePipe();
-    expect(pipe.transform('booking', 'library')).toBeTruthy();
+    expect(pipe.transform(NotificationType.BOOKING, 'library')).toBeTruthy();
   });
 
   it('should return false if key is not available on type', () => {
     const pipe = new NotificationTypePipe();
-    expect(pipe.transform('availability', 'library')).toBeFalsy();
+    expect(pipe.transform(NotificationType.AVAILABILITY, 'library')).toBeFalsy();
   });
 });

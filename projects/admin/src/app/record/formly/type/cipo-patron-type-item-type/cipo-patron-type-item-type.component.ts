@@ -36,7 +36,6 @@ type LibraryRef = {
 };
 
 @Component({
-  standalone: true,
   selector: 'admin-cipo-patron-type-item-type',
   templateUrl: './cipo-patron-type-item-type.component.html',
   imports: [TableModule],

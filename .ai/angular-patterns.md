@@ -2,12 +2,11 @@
 
 ## Standalone component pattern
 
-New components must be standalone with OnPush change detection.
+Components, directives and pipes are standalone by default since Angular 19. Do not add `standalone: true` explicitly — it is redundant.
 
 Example:
 
 @Component({
-  standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [CommonModule, TranslatePipe]
 })
@@ -97,7 +96,6 @@ export const CounterStore = signalStore(
 Usage in component:
 
 @Component({
-  standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CounterComponent {

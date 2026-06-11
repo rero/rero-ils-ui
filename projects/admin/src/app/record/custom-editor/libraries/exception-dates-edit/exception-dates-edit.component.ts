@@ -14,19 +14,19 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, inject, OnDestroy, OnInit, ChangeDetectionStrategy} from '@angular/core';
-import { UntypedFormArray, UntypedFormGroup, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
-import { LibraryExceptionFormService } from '../library-exception-form.service';
-import { TranslateService, TranslateDirective, TranslatePipe } from '@ngx-translate/core';
-import { Bind } from 'primeng/bind';
-import { InputText } from 'primeng/inputtext';
-import { Button } from 'primeng/button';
-import { ToggleSwitch } from 'primeng/toggleswitch';
-import { InputNumber } from 'primeng/inputnumber';
-import { Select } from 'primeng/select';
 import { TitleCasePipe } from '@angular/common';
+import { ChangeDetectionStrategy, Component, inject, OnDestroy, OnInit } from '@angular/core';
+import { FormsModule, ReactiveFormsModule, UntypedFormArray, Validators } from '@angular/forms';
+import { TranslateDirective, TranslatePipe, TranslateService } from '@ngx-translate/core';
+import { Bind } from 'primeng/bind';
+import { Button } from 'primeng/button';
 import { DatePicker } from 'primeng/datepicker';
+import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
+import { InputNumber } from 'primeng/inputnumber';
+import { InputText } from 'primeng/inputtext';
+import { Select } from 'primeng/select';
+import { ToggleSwitch } from 'primeng/toggleswitch';
+import { LibraryExceptionFormService } from '../library-exception-form.service';
 
 @Component({
     selector: 'admin-libraries-exception-dates-edit',
@@ -38,34 +38,29 @@ export class ExceptionDatesEditComponent implements OnInit, OnDestroy {
 
   private dynamicDialogConfig: DynamicDialogConfig = inject(DynamicDialogConfig);
   private dynamicDialogRef: DynamicDialogRef = inject(DynamicDialogRef);
-  private form: LibraryExceptionFormService = inject(LibraryExceptionFormService);
+  protected formService: LibraryExceptionFormService = inject(LibraryExceptionFormService);
   private translateService: TranslateService = inject(TranslateService);
 
-  public exceptionForm: UntypedFormGroup;
-
-  periods: any[];
+  periods: { label: string; value: string }[] = [
+    {
+      label: this.translateService.instant('week'),
+      value: 'weekly'
+    },
+    {
+      label: this.translateService.instant('month'),
+      value: 'monthly'
+    },
+    {
+      label: this.translateService.instant('year'),
+      value: 'yearly'
+    }
+  ];
 
   ngOnInit() {
-    this.form.build();
-    this.exceptionForm = this.form.form;
     const { exceptionDate } = this.dynamicDialogConfig.data;
     if (exceptionDate) {
-      this.form.populate(exceptionDate);
+      this.formService.populate(exceptionDate);
     }
-    this.periods = [
-      {
-        label: this.translateService.instant('week'),
-        value: 'weekly'
-      },
-      {
-        label: this.translateService.instant('month'),
-        value: 'monthly'
-      },
-      {
-        label: this.translateService.instant('year'),
-        value: 'yearly'
-      }
-    ];
   }
 
   ngOnDestroy(): void {
@@ -73,63 +68,52 @@ export class ExceptionDatesEditComponent implements OnInit, OnDestroy {
   }
 
   onSubmit(): void {
-    this.dynamicDialogRef.close(this.form.getValue());
+    this.dynamicDialogRef.close(this.formService.getValue());
   }
 
   cancel(): void {
     this.dynamicDialogRef.close();
   }
 
-  onPeriodChange(event): void {
-    const { target } = event;
+  get times(): UntypedFormArray {
+    return this.formService.form.get('times') as UntypedFormArray;
+  }
+
+  onPeriodChange(event: Event): void {
+    const target = event.target as HTMLInputElement;
     const value = target.value === 'true';
-    this.form.is_period.setValue(value);
+    this.formService.form.get('is_period')!.setValue(value);
     if (value) {
-      for (let i = 0; i < this.form.times.length; i++) {
-        this.form.times.removeAt(i);
-      }
-      this.form.is_open.setValue(false);
+      this.times.clear();
+      this.formService.form.get('is_open')!.setValue(false);
     }
   }
 
-  onDateStatusChange(event): void {
-    const { target } = event;
+  onDateStatusChange(event: Event): void {
+    const target = event.target as HTMLInputElement;
     const value = target.value === 'true';
-    this.form.is_open.setValue(value);
+    this.formService.form.get('is_open')!.setValue(value);
   }
 
-  onRepeatChange(repeat): void {
-    if (repeat) {
-      this.form.interval.setValue(1);
-      this.form.interval.setValidators([
-        Validators.required,
-        Validators.min(1),
-        Validators.pattern('^[0-9]*$')
-      ]);
-      this.form.period.setValue('yearly');
+  onRepeatChange(event: { checked: boolean }): void {
+    const interval = this.formService.form.get('interval')!;
+    const period = this.formService.form.get('period')!;
+    if (event.checked) {
+      interval.setValue(1);
+      interval.setValidators([Validators.required, Validators.min(1), Validators.pattern('^[0-9]*$')]);
+      period.setValue('yearly');
     } else {
-      this.form.interval.clearValidators();
-      this.form.interval.setValue(null);
-      this.form.period.setValue(null);
+      interval.clearValidators();
+      interval.setValue(null);
+      period.setValue(null);
     }
   }
 
   addTime(): void {
-    this.form.times.push(this.form.buildTimes());
+    this.times.push(this.formService.buildTimes());
   }
 
-  deleteTime(timeIndex): void {
-    this.form.times.removeAt(timeIndex);
+  deleteTime(timeIndex: number): void {
+    this.times.removeAt(timeIndex);
   }
-
-  get title() { return this.form.title; }
-  get is_period() { return this.form.is_period; }
-  get is_open() { return this.form.is_open; }
-  get date() { return this.form.date; }
-  get dates() { return this.form.dates; }
-  get times() { return this.form.times as UntypedFormArray; }
-  get repeat() { return this.form.repeat; }
-  get interval() { return this.form.interval; }
-  get period() { return this.form.period; }
-  get data() { return this.data as UntypedFormArray; }
 }

@@ -25,7 +25,6 @@ import { TranslateDirective } from "@ngx-translate/core";
 
 @Component({
     selector: "admin-reports-list",
-    standalone: true,
     templateUrl: "./reports-list.component.html",
     imports: [Bind, TableModule, ButtonDirective, TranslateDirective, DateTranslatePipe],
   changeDetection: ChangeDetectionStrategy.OnPush
