@@ -16,7 +16,7 @@
 -->
 @if (libForm()) {
 <h1 translate>Library</h1>
-<form [formGroup]="libForm()" (ngSubmit)="onSubmit()">
+<form [formGroup]="libForm()!" (ngSubmit)="onSubmit()">
   <p-accordion [value]="['0']" [multiple]="true">
     <!-- DESCRIPTIVE METADATA TAB ===================================== -->
     <p-accordion-panel value="0">
@@ -42,9 +42,9 @@
             />
             @if (code.invalid && (code.dirty || code.touched)) {
             <div class="text-error">
-              @if (code.errors.alreadyTaken) {
+              @if (code.errors?.alreadyTaken) {
               <span translate>Code is already taken.</span>
-              } @if (code.errors.required) {
+              } @if (code.errors?.required) {
               <span translate>Code is required.</span>
               } @if (code.pending) {
               <span translate>Validating…</span>
@@ -67,9 +67,9 @@
             />
             @if (name.invalid && (name.dirty || name.touched)) {
             <div class="text-error">
-              @if (name.errors.required) {
+              @if (name.errors?.required) {
               <span translate>Name is required.</span>
-              } @if (name.errors.minlength) {
+              } @if (name.errors?.minlength) {
               <span translate>Name must be at least 4 characters long.</span>
               }
             </div>
@@ -90,7 +90,7 @@
               />
               @if (address.invalid && (address.dirty || address.touched)) {
               <div class="text-error">
-                @if (address.errors.minlength) {
+                @if (address.errors?.minlength) {
                 <span translate>Address must be at least 4 characters long.</span>
                 }
               </div>
@@ -112,7 +112,7 @@
               />
               @if (email.invalid && (email.dirty || email.touched)) {
               <div class="text-error">
-                @if (email.errors.email) {
+                @if (email.errors?.email) {
                 <span translate>Email format is not correct.</span>
                 }
               </div>
@@ -132,7 +132,7 @@
             @if (communicationLanguage.invalid && (communicationLanguage.dirty ||
             communicationLanguage.touched)) {
             <div class="text-error">
-              @if (communicationLanguage.errors.required) {
+              @if (communicationLanguage.errors?.required) {
               <span translate>Communication language is required.</span>
               }
             </div>
@@ -231,16 +231,16 @@
                         @if (time.controls.start_time.invalid &&
                         (time.controls.start_time.dirty ||
                         time.controls.start_time.touched)) { @if
-                        (time.controls.start_time.errors.required) {
+                        (time.controls.start_time.errors?.required) {
                         <div translate>Start time is required.</div>
-                        } @if (time.controls.start_time.errors.pattern) {
+                        } @if (time.controls.start_time.errors?.pattern) {
                         <div translate>Start time format is not correct.</div>
                         } } @if (time.controls.end_time.invalid &&
                         (time.controls.end_time.dirty ||
                         time.controls.end_time.touched)) { @if
-                        (time.controls.end_time.errors.required) {
+                        (time.controls.end_time.errors?.required) {
                         <div translate>End time is required.</div>
-                        } @if (time.controls.end_time.errors.pattern) {
+                        } @if (time.controls.end_time.errors?.pattern) {
                         <div translate>End time format is not correct.</div>
                         } } @if (time.invalid && (time.dirty || time.touched)) {
                         @if (time.errors && time.errors.lessThan) {
@@ -383,8 +383,8 @@
               <ng-container
                 [ngTemplateOutlet]="contact_block"
                 [ngTemplateOutletContext]="{
-                  formGroup: libForm()
-                    .get('acquisition_settings')
+                  formGroup: libForm()!
+                    .get('acquisition_settings')!
                     .get('shipping_informations'),
                   icon: 'fa-truck',
                   name: 'Shipping informations' | translate,
@@ -394,8 +394,8 @@
               <ng-container
                 [ngTemplateOutlet]="contact_block"
                 [ngTemplateOutletContext]="{
-                  formGroup: libForm()
-                    .get('acquisition_settings')
+                  formGroup: libForm()!
+                    .get('acquisition_settings')!
                     .get('billing_informations'),
                   icon: 'fa-money',
                   name: 'Billing informations' | translate,
@@ -407,8 +407,8 @@
               <ng-container
                 [ngTemplateOutlet]="contact_block"
                 [ngTemplateOutletContext]="{
-                  formGroup: libForm()
-                    .get('serial_acquisition_settings')
+                  formGroup: libForm()!
+                    .get('serial_acquisition_settings')!
                     .get('shipping_informations'),
                   icon: 'fa-truck',
                   name: 'Shipping informations' | translate,
@@ -418,8 +418,8 @@
               <ng-container
                 [ngTemplateOutlet]="contact_block"
                 [ngTemplateOutletContext]="{
-                  formGroup: libForm()
-                    .get('serial_acquisition_settings')
+                  formGroup: libForm()!
+                    .get('serial_acquisition_settings')!
                     .get('billing_informations'),
                   icon: 'fa-money',
                   name: 'Billing informations' | translate,

@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2020-2024 RERO
+ * Copyright (C) 2020-2025 RERO
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -14,14 +14,16 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { ChangeDetectorRef, Component, inject, input, OnInit, output, ChangeDetectionStrategy} from '@angular/core';
-import { RecordPermissionService } from '@app/admin/service/record-permission.service';
-import { RecordUiService } from '@rero/ng-core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, inject, input, output } from '@angular/core';
+import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
 import { RouterLink } from '@angular/router';
-import { Tooltip } from 'primeng/tooltip';
+import { RecordPermissionService } from '@app/admin/service/record-permission.service';
+import { TranslatePipe } from '@ngx-translate/core';
+import { RecordUiService } from '@rero/ng-core';
 import { Bind } from 'primeng/bind';
 import { Button } from 'primeng/button';
-import { TranslatePipe } from '@ngx-translate/core';
+import { Tooltip } from 'primeng/tooltip';
+import { filter, switchMap } from 'rxjs/operators';
 
 @Component({
     selector: 'admin-location',
@@ -29,53 +31,41 @@ import { TranslatePipe } from '@ngx-translate/core';
     imports: [RouterLink, Tooltip, Bind, Button, TranslatePipe],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class LocationComponent implements OnInit {
+export class LocationComponent {
 
   private cdr: ChangeDetectorRef = inject(ChangeDetectorRef);
   private recordUiService: RecordUiService = inject(RecordUiService);
   private recordPermissionService: RecordPermissionService = inject(RecordPermissionService);
 
-  /** The location whose details are displayed */
   location = input<any>();
-
-  /** The parent library of the location */
   library = input<any>();
 
-  /** Delete location event emitter */
   deleteLocation = output<string>();
 
-  /** location record permission */
   permissions: any;
 
-  /**
-   * Init
-   */
-  ngOnInit() {
-    this.recordPermissionService.getPermission('locations', this.location().metadata.pid).subscribe(
-      (permissions) => {
-        this.permissions = permissions;
-        this.cdr.markForCheck();
-      }
-    );
+  constructor() {
+    toObservable(this.location).pipe(
+      filter(loc => !!loc?.metadata?.pid),
+      switchMap(loc => this.recordPermissionService.getPermission('locations', loc.metadata.pid)),
+      takeUntilDestroyed()
+    ).subscribe(permissions => {
+      this.permissions = permissions;
+      this.cdr.markForCheck();
+    });
   }
 
-  /**
-   * Delete the location
-   * @param locationPid - location PID
-   */
   delete(locationPid: string) {
-    this.recordUiService.deleteRecord('locations', locationPid).subscribe((success: boolean) => {
+    this.recordUiService.deleteRecord('locations', locationPid).pipe(
+      takeUntilDestroyed()
+    ).subscribe((success: boolean) => {
       if (success) {
         this.deleteLocation.emit(locationPid);
       }
     });
   }
 
-  /**
-   * Return a message containing the reasons wht the item cannot be requested
-   */
   get deleteInfoMessage(): string {
     return this.recordPermissionService.generateTooltipMessage(this.permissions.delete.reasons, 'delete');
   }
-
 }

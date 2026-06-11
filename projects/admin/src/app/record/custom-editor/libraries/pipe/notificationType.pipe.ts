@@ -20,17 +20,10 @@ import { Notification } from '../../../../classes/notification';
 @Pipe({ name: 'notificationType' })
 export class NotificationTypePipe implements PipeTransform {
 
-  /** type of notification by type */
-  private _notification = Notification.types;
+  private readonly _notification = Notification.types;
 
-  /**
-   * Transform
-   * @param notification - string
-   * @param type - string
-   * @return boolean
-   */
-  transform(notification: string, type: string): boolean {
+  transform(notification: string, type: keyof typeof Notification.types): boolean {
     return Object.keys(this._notification).includes(type)
-      && this._notification[type].includes(notification);
+      && this._notification[type].includes(notification as any);
   }
 }
