@@ -27,7 +27,7 @@ import { MessageService } from 'primeng/api';
 import { Button } from 'primeng/button';
 import { Toast } from 'primeng/toast';
 import { Subscription, forkJoin, of } from 'rxjs';
-import { debounceTime, map, switchMap, tap } from 'rxjs/operators';
+import { debounceTime, finalize, map, switchMap, tap } from 'rxjs/operators';
 
 @Component({
     selector: 'public-search-patron-profile-personal-editor',
@@ -56,6 +56,9 @@ export class PatronProfilePersonalEditorComponent implements OnInit, OnDestroy {
   readonly model = signal<any>(null);
   /** angular form group for ngx-formly */
   form: UntypedFormGroup = new UntypedFormGroup({});
+
+  /** Guard against double-submit. */
+  readonly isSaving = signal(false);
 
   /** all component subscription */
   private _subscriptions = new Subscription();
@@ -178,6 +181,7 @@ export class PatronProfilePersonalEditorComponent implements OnInit, OnDestroy {
   // COMPONENT FUNCTIONS ======================================================
   /** Submit form */
   submit() {
+    if (this.isSaving()) { return; }
     this.form.markAllAsTouched();
     if (this.form.valid === false) {
       this.messageService.add({
@@ -188,11 +192,15 @@ export class PatronProfilePersonalEditorComponent implements OnInit, OnDestroy {
       });
       return;
     }
+    this.isSaving.set(true);
     const data = removeEmptyValues(this.model());
     // Update user record and reload logged user
     this.recordService
       .update('users', this.appStore.user()?.id.toString(), data)
-      .pipe(switchMap(() => this.appStore.load()))
+      .pipe(
+        switchMap(() => this.appStore.load()),
+        finalize(() => this.isSaving.set(false))
+      )
       .subscribe({
         next: () => {
           this.messageService.add({
@@ -203,13 +211,23 @@ export class PatronProfilePersonalEditorComponent implements OnInit, OnDestroy {
           });
           this.redirect();
         },
-        error: (error) => {
-          this.messageService.add({
-            severity: 'error',
-            summary: this.translateService.instant('Error'),
-            detail: this.translateService.instant('An error occurred on the server: ') + error.title,
-            closable: true
-          });
+        error: (error: any) => {
+          this.messageService.add(
+            (error.status === 409 || error.status === 412)
+              ? {
+                  severity: 'warn',
+                  summary: this.translateService.instant('Record conflict'),
+                  detail: this.translateService.instant('This record has been modified by another user. Please reload the page — your local changes will be lost.'),
+                  sticky: true,
+                  closable: true
+                }
+              : {
+                  severity: 'error',
+                  summary: this.translateService.instant('Error'),
+                  detail: this.translateService.instant('An error occurred on the server: ') + error.title,
+                  closable: true
+                }
+          );
         }
       });
   }

@@ -36,6 +36,7 @@
       id="user-editor-save-button"
       size="small"
       icon="fa fa-save"
+      [disabled]="isSaving()"
       [label]="'Save' | translate"
     />
   </div>
