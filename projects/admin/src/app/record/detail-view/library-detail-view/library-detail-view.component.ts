@@ -1,6 +1,6 @@
 /*
  * RERO ILS UI
- * Copyright (C) 2019-2024 RERO
+ * Copyright (C) 2019-2025 RERO
  * Copyright (C) 2019-2023 UCLouvain
  *
  * This program is free software: you can redistribute it and/or modify
@@ -15,38 +15,38 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, computed, effect, inject, input, signal, ChangeDetectionStrategy } from '@angular/core';
-import { toObservable, toSignal } from '@angular/core/rxjs-interop';
-import { RecordService, UpperCaseFirstPipe } from '@rero/ng-core';
-import { AppStore } from '@rero/shared';
-import { map, of, switchMap } from 'rxjs';
-import { Library } from '../../../classes/library';
-import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
-import { Bind } from 'primeng/bind';
-import { Accordion, AccordionPanel, AccordionHeader, AccordionContent } from 'primeng/accordion';
-import { Ripple } from 'primeng/ripple';
-import { Button } from 'primeng/button';
-import { RouterLink } from '@angular/router';
-import { LocationComponent } from './location/location.component';
 import { NgClass, NgTemplateOutlet } from '@angular/common';
-import { DayOpeningHoursComponent } from './day-opening-hours/day-opening-hours.component';
-import { ExceptionDateComponent } from './exception-date/exception-date.component';
+import { ChangeDetectionStrategy, Component, computed, effect, inject, input } from '@angular/core';
+import { RouterLink } from '@angular/router';
+import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
+import { UpperCaseFirstPipe } from '@rero/ng-core';
+import { AppStore } from '@rero/shared';
+import { Accordion, AccordionContent, AccordionHeader, AccordionPanel } from 'primeng/accordion';
+import { Badge } from 'primeng/badge';
+import { Bind } from 'primeng/bind';
+import { Button } from 'primeng/button';
 import { Divider } from 'primeng/divider';
 import { Fieldset } from 'primeng/fieldset';
+import { Ripple } from 'primeng/ripple';
 import { Tag } from 'primeng/tag';
+import { Library } from '../../../classes/library';
 import { CountryCodeTranslatePipe } from '../../../pipe/country-code-translate.pipe';
-import { Badge } from 'primeng/badge';
+import { LibraryStore } from '../../custom-editor/libraries/library.store';
+import { DayOpeningHoursComponent } from './day-opening-hours/day-opening-hours.component';
+import { ExceptionDateComponent } from './exception-date/exception-date.component';
+import { LocationComponent } from './location/location.component';
 
 @Component({
     selector: 'admin-library-detail-view',
     templateUrl: './library-detail-view.component.html',
+    providers: [LibraryStore],
     imports: [TranslateDirective, Bind, Accordion, AccordionPanel, Ripple, AccordionHeader, Button, RouterLink, AccordionContent, LocationComponent, NgClass, DayOpeningHoursComponent, ExceptionDateComponent, Divider, NgTemplateOutlet, Fieldset, Tag, UpperCaseFirstPipe, TranslatePipe, CountryCodeTranslatePipe, Badge],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class LibraryDetailViewComponent {
 
-  private recordService: RecordService = inject(RecordService);
   private appStore = inject(AppStore);
+  protected readonly libraryStore = inject(LibraryStore);
 
   readonly record = input<any>();
   readonly type = input<string>('');
@@ -60,27 +60,19 @@ export class LibraryDetailViewComponent {
     this.appStore.currentLibraryPid() === this.record()?.metadata?.pid
   );
 
-  private readonly _fetchedLocations = toSignal(
-    toObservable(this.record).pipe(
-      switchMap(r => {
-        const pid = r?.metadata?.pid;
-        if (!pid) return of([]);
-        return this.recordService.getRecords('locations', {
-          query: `library.pid:${pid}`, page: 1,
-          itemsPerPage: RecordService.MAX_REST_RESULTS_SIZE, sort: 'name'
-        }).pipe(map((res: any) => res.hits.hits || []));
-      })
-    ),
-    { initialValue: [] }
-  );
-
-  readonly locations = signal<any[]>([]);
+  readonly locations = this.libraryStore.locations;
 
   constructor() {
-    effect(() => this.locations.set(this._fetchedLocations()));
+    // Load locations whenever the record pid changes.
+    effect(() => {
+      const pid = this.record()?.metadata?.pid;
+      if (pid) {
+        this.libraryStore.loadLocations(pid);
+      }
+    });
   }
 
   deleteLocation(deletedLocationPid: string): void {
-    this.locations.update(list => list.filter((location: any) => deletedLocationPid !== location.metadata.pid));
+    this.libraryStore.deleteLocation(deletedLocationPid);
   }
 }

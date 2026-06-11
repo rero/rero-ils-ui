@@ -23,7 +23,6 @@ import { OrderDetailStore } from '../store/order-detail.store';
 @Component({
   selector: 'admin-order-history',
   templateUrl: './order-history.component.html',
-  standalone: true,
   imports: [Timeline, RouterLink],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

@@ -22,7 +22,6 @@ import { LinkPermissionsDirective } from './link-permissions.directive';
 @Component({
     // eslint-disable-next-line @angular-eslint/component-selector
     selector: 'link-permissions-testing-component',
-    standalone: true,
     imports: [LinkPermissionsDirective],
     template: `
   <a href="#" id="link-perm" [linkPermissions]="linkPermissions">Link text</a>`

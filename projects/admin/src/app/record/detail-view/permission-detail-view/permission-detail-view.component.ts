@@ -30,7 +30,6 @@ type IRole = {
 @Component({
   selector: 'admin-permission-detail-view',
   templateUrl: './permission-detail-view.component.html',
-  standalone: true,
   imports: [TranslateDirective, InputText, NgClass, TranslatePipe],
   changeDetection: ChangeDetectionStrategy.OnPush
 })

@@ -14,7 +14,7 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-@if (permissions) {
+@if (permissions()) {
   <div class="ui:flex ui:justify-between ui:items-center ui:gap-2 ui:mx-2">
     <div>
       <a [routerLink]="['/records/locations/detail', location().metadata.pid]">{{ location().metadata.name }}</a>
@@ -45,7 +45,7 @@
     </div>
     <div class="ui:flex ui:gap-1">
       <!-- Edit button -->
-      @if (permissions.update.can) {
+      @if (permissions().update.can) {
         <p-button
           size="small"
           icon="fa fa-pencil"
@@ -65,8 +65,8 @@
           (onClick)="delete(location().metadata.pid)"
           [pTooltip]="tooltipContent"
           tooltipPosition="top"
-          [disabled]="!permissions.delete?.can"
-          [tooltipDisabled]="permissions.delete?.can"
+          [disabled]="!permissions().delete?.can"
+          [tooltipDisabled]="permissions().delete?.can"
         />
         <ng-template #tooltipContent>
           <span [innerHTML]="deleteInfoMessage"></span>

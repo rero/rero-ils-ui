@@ -22,7 +22,6 @@ import { TranslateDirective } from "@ngx-translate/core";
 
 @Component({
     selector: "admin-report-data",
-    standalone: true,
     templateUrl: "./report-data.component.html",
     imports: [Bind, TableModule, TranslateDirective],
   changeDetection: ChangeDetectionStrategy.OnPush
