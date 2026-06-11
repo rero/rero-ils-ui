@@ -102,14 +102,14 @@ describe('Holdings Serial Store', () => {
     store.setHoldings(holdings);
     await vi.advanceTimersByTimeAsync(500);
     expect(store.isAllowIssueCreation()).toBe(true);
-    expect(store.isDisplayLocalFieldsTab()).toBe(true);
+    expect(store.showLocalFieldsTab()).toBe(true);
 
     const newHoldings = {...holdings};
     newHoldings.metadata = {...holdings.metadata, library: { pid: '2', type: 'lib' }};
     store.setHoldings(newHoldings);
     await vi.advanceTimersByTimeAsync(500);
     expect(store.isAllowIssueCreation()).toBe(false);
-    expect(store.isDisplayLocalFieldsTab()).toBe(false);
+    expect(store.showLocalFieldsTab()).toBe(true);
   });
 
   it('should return false, because the paginator is not active', async () => {

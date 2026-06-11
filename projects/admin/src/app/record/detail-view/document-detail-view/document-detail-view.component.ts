@@ -15,12 +15,12 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Component, computed, inject, input, ChangeDetectionStrategy } from '@angular/core';
+import { Component, computed, inject, input, signal, ChangeDetectionStrategy } from '@angular/core';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { TranslateService, TranslateDirective, TranslatePipe } from '@ngx-translate/core';
 import { RecordService, CallbackArrayFilterPipe, RecordData } from '@rero/ng-core';
-import { AppStore, IPermissions, PERMISSIONS, ThumbnailComponent, ContributionComponent, PartOfComponent, OtherEditionComponent, EntityLinkComponent, FilesComponent, DocumentDescriptionComponent, DocumentProvisionActivityPipe, MainTitlePipe } from '@rero/shared';
+import { AppStore, Entity, IPermissions, PERMISSIONS, ThumbnailComponent, ContributionComponent, PartOfComponent, OtherEditionComponent, EntityLinkComponent, FilesComponent, DocumentDescriptionComponent, DocumentProvisionActivityPipe, MainTitlePipe } from '@rero/shared';
 import { of, switchMap } from 'rxjs';
 import { DocumentApiService } from '../../../api/document-api.service';
 import { RelatedResourceComponent } from './related-resource/related-resource.component';
@@ -78,6 +78,19 @@ export class DocumentDetailViewComponent {
 
   readonly relatedResources = computed(() => this._processRelatedResources(this.record()));
   readonly recordMessage = computed(() => this._message(this.record()));
+
+  readonly hasRelatedEntities = computed(() => {
+    const metadata = this.record()?.metadata;
+    if (!metadata) return false;
+    return Entity.FIELDS_WITH_REF.some((field: string) =>
+      field in metadata &&
+      (metadata[field] as any[]).some((e: any) => e.entity?.resource_type)
+    );
+  });
+
+  /** Whether the current (harvested) document has local fields; fed by the local-field component output. */
+  readonly hasLocalFields = signal(false);
+
   readonly activateLink = computed(() =>
     !this.activatedRouter.snapshot.params.type?.startsWith('import_')
   );
@@ -112,9 +125,9 @@ export class DocumentDetailViewComponent {
    * Show local fields tab
    * @return boolean - if False, hide the local fields tab
    */
-  get showLocalFieldsTab(): boolean {
-    return this.appStore.canAccess([PERMISSIONS.LOFI_SEARCH, PERMISSIONS.LOFI_CREATE]);
-  }
+  readonly showLocalFieldsTab = computed(() =>
+    this.appStore.canAccess([PERMISSIONS.LOFI_SEARCH, PERMISSIONS.LOFI_CREATE])
+  );
 
   /**
    * Show or hide files tab

@@ -84,9 +84,8 @@ export const HoldingsSerialStore = signalStore(
     isFilterEnabled: computed(() => store.receivedItemsCount() >= 11 || '' !== store.filter()),
     isPaginatorEnabled: computed(() => store.pager.rows() < store.filterTotal()),
     isAllowIssueCreation: computed(() => store.appStore.currentLibraryPid() === store.holdings().metadata.library.pid),
-    isDisplayLocalFieldsTab: computed(() =>
+    showLocalFieldsTab: computed(() =>
       store.appStore.canAccess(localFieldsPermissions)
-      && store.appStore.currentLibraryPid() === store.holdings().metadata.library.pid
     ),
   })),
   withMethods((store) => ({
