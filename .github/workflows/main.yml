@@ -15,13 +15,47 @@ jobs:
       uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6
       with:
         node-version: 24
+
+    - name: Read ng-core ref
+      id: ng_core
+      run: |
+        VALUE=$(cat .ng-core-ref 2>/dev/null | grep -v '^#' | tr -d '[:space:]' || echo 'published')
+        if [ "$VALUE" = "published" ]; then
+          echo "local=false" >> $GITHUB_OUTPUT
+        else
+          echo "local=true" >> $GITHUB_OUTPUT
+          # support owner/repo@ref or plain ref (defaults to rero/ng-core)
+          if [[ "$VALUE" == *"@"* ]]; then
+            echo "repository=${VALUE%@*}" >> $GITHUB_OUTPUT
+            echo "ref=${VALUE#*@}" >> $GITHUB_OUTPUT
+          else
+            echo "repository=rero/ng-core" >> $GITHUB_OUTPUT
+            echo "ref=$VALUE" >> $GITHUB_OUTPUT
+          fi
+        fi
+
     - name: install package
       run: |
         npm install -g @angular/cli@21
         npm ci
+
+    - name: Checkout ng-core
+      if: steps.ng_core.outputs.local == 'true'
+      uses: actions/checkout@v6
+      with:
+        repository: ${{ steps.ng_core.outputs.repository }}
+        path: ng-core
+        ref: ${{ steps.ng_core.outputs.ref }}
+
+    - name: Build and install local ng-core
+      if: steps.ng_core.outputs.local == 'true'
+      run: |
+        npm ci --prefix ng-core
+        npm run pack --prefix ng-core
+        npm i --no-save ng-core/dist/rero/ng-core
+
     - name: run tests
       run: |
         ./run-tests.sh
-
       env:
         CI: true
