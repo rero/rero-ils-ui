@@ -21,7 +21,7 @@ import { HoldingsApiService } from "@app/admin/api/holdings-api.service";
 import { HoldingsService, PredictionIssue } from "@app/admin/service/holdings.service";
 import { patchState, signalMethod, signalStore, withComputed, withHooks, withMethods, withProps, withState } from "@ngrx/signals";
 import { rxMethod } from "@ngrx/signals/rxjs-interop";
-import { TranslateService } from "@ngx-translate/core";
+import { _, TranslateService } from "@ngx-translate/core";
 import { CONFIG, RecordUiService } from "@rero/ng-core";
 import { AppStore, EsRecord, EsResult, nonNullable, Pager, PERMISSIONS, withPaginator } from "@rero/shared";
 import { MessageService } from "primeng/api";
@@ -166,7 +166,7 @@ export const HoldingsSerialStore = signalStore(
           } else {
             store.messageService.add({
               severity: 'error',
-              summary: store.translateService.instant('Issue creation failed!'),
+              summary: store.translateService.instant(_('Issue creation failed!')),
               sticky: true,
               closable: true
             });
@@ -174,8 +174,8 @@ export const HoldingsSerialStore = signalStore(
         }),
         tap(() => store.messageService.add({
           severity: 'success',
-          summary: store.translateService.instant('Issue'),
-          detail: store.translateService.instant('New issue created.'),
+          summary: store.translateService.instant(_('Issue')),
+          detail: store.translateService.instant(_('New issue created.')),
           life: CONFIG.MESSAGE_LIFE
         })),
         tap(() => patchState(store, { quickReceiveDisableButton: false })),
