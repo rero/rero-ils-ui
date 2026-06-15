@@ -29,7 +29,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
           <span>{{ t.library.pid | getRecord: 'libraries' : 'field' : 'name' | async }}</span>
         }
       </div>
-      <div class="ui:col-span-2 ui:flex ui:justify-end">{{ transactionAmount() | currency: organisation.default_currency }}</div>
+      <div class="ui:col-span-2 ui:flex ui:justify-end">{{ transactionAmount() | centsCurrency: organisation.default_currency }}</div>
       <div class="ui:col-span-2 ui:flex ui:justify-end">
         @if (t.status === patronTransactionStatus.OPEN) {
           <p-select

@@ -15,7 +15,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { AsyncPipe, CurrencyPipe } from '@angular/common';
+import { AsyncPipe } from '@angular/common';
+import { CentsCurrencyPipe } from '../../../../acquisition/pipes/cents-currency.pipe';
 import { ChangeDetectionStrategy, Component, computed, inject, input, signal } from '@angular/core';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { RouterLink } from '@angular/router';
@@ -32,7 +33,7 @@ import { PatronTransactionHistoryComponent } from '../patron-transaction/patron-
 @Component({
   selector: 'admin-overdue-transaction',
   templateUrl: './overdue-transaction.component.html',
-  imports: [OpenCloseButtonComponent, RouterLink, TranslateDirective, InheritedCallNumberComponent, PatronTransactionHistoryComponent, AsyncPipe, CurrencyPipe, DateTranslatePipe, GetRecordPipe, MainTitlePipe, TruncateTextPipe],
+  imports: [OpenCloseButtonComponent, RouterLink, TranslateDirective, InheritedCallNumberComponent, PatronTransactionHistoryComponent, AsyncPipe, CentsCurrencyPipe, DateTranslatePipe, GetRecordPipe, MainTitlePipe, TruncateTextPipe],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class OverdueTransactionComponent {

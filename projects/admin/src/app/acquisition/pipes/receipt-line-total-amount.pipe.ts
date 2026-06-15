@@ -29,7 +29,7 @@ export class ReceiptLineTotalAmountPipe implements PipeTransform {
    */
   transform(receiptLine: IAcqReceiptLine): number {
     const vatRate = (receiptLine.vat_rate !== undefined) ? 1 + receiptLine.vat_rate / 100 : 1;
-    return receiptLine.quantity * receiptLine.amount * vatRate;
+    return receiptLine.quantity * (receiptLine.amount / 100) * vatRate;
   }
 
 }

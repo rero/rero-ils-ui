@@ -25,13 +25,14 @@ import { PatronTransactionEventOverdueComponent } from './patron-transaction-eve
 import { PatronTransactionEventDefaultComponent } from './patron-transaction-event-default.component';
 import { Bind } from 'primeng/bind';
 import { Tag } from 'primeng/tag';
-import { CurrencyPipe, DatePipe } from '@angular/common';
+import { DatePipe } from '@angular/common';
+import { CentsCurrencyPipe } from '../../../acquisition/pipes/cents-currency.pipe';
 import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
     selector: 'admin-patron-transaction-events-brief-view',
     templateUrl: './patron-transaction-events-brief-view.component.html',
-    imports: [PatronTransactionEventOverdueComponent, PatronTransactionEventDefaultComponent, Bind, Tag, CurrencyPipe, DatePipe, TranslatePipe],
+    imports: [PatronTransactionEventOverdueComponent, PatronTransactionEventDefaultComponent, Bind, Tag, CentsCurrencyPipe, DatePipe, TranslatePipe],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class PatronTransactionEventsBriefViewComponent implements OnInit {

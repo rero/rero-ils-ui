@@ -25,6 +25,7 @@ import { RouterLink } from '@angular/router';
 import { NgClass, AsyncPipe, CurrencyPipe } from '@angular/common';
 import { GetRecordPipe } from '@rero/ng-core';
 import { AppStore } from '@rero/shared';
+import { CentsCurrencyPipe } from '../../../pipes/cents-currency.pipe';
 import { NegativeAmountPipe } from '../../../pipes/negative-amount.pipe';
 import { MessageModule } from 'primeng/message';
 import { PanelModule } from 'primeng/panel';
@@ -32,7 +33,7 @@ import { PanelModule } from 'primeng/panel';
 @Component({
     selector: 'admin-acquisition-account-detail-view',
     templateUrl: './account-detail-view.component.html',
-    imports: [TranslateDirective, RouterLink, NgClass, AsyncPipe, CurrencyPipe, GetRecordPipe, TranslatePipe, NegativeAmountPipe, MessageModule, PanelModule],
+    imports: [TranslateDirective, RouterLink, NgClass, AsyncPipe, CurrencyPipe, GetRecordPipe, TranslatePipe, NegativeAmountPipe, CentsCurrencyPipe, MessageModule, PanelModule],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AccountDetailViewComponent {

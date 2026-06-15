@@ -17,7 +17,8 @@
 import { Component, inject, input, ChangeDetectionStrategy} from '@angular/core';
 import { TranslateDirective } from '@ngx-translate/core';
 import { AppStore } from '@rero/shared';
-import { NgClass, AsyncPipe, CurrencyPipe } from '@angular/common';
+import { NgClass, AsyncPipe } from '@angular/common';
+import { CentsCurrencyPipe } from '../../../acquisition/pipes/cents-currency.pipe';
 import { Bind } from 'primeng/bind';
 import { Panel } from 'primeng/panel';
 import { GetRecordPipe } from '@rero/ng-core';
@@ -25,7 +26,7 @@ import { GetRecordPipe } from '@rero/ng-core';
 @Component({
     selector: 'admin-patron-types-detail-view',
     templateUrl: './patron-types-detail-view.component.html',
-    imports: [TranslateDirective, NgClass, Bind, Panel, AsyncPipe, CurrencyPipe, GetRecordPipe],
+    imports: [TranslateDirective, NgClass, Bind, Panel, AsyncPipe, CentsCurrencyPipe, GetRecordPipe],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class PatronTypesDetailViewComponent {

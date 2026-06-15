@@ -27,14 +27,14 @@ import { Bind } from 'primeng/bind';
 import { Panel } from 'primeng/panel';
 import { ScrollPanel } from 'primeng/scrollpanel';
 import { Button } from 'primeng/button';
-import { CurrencyPipe } from '@angular/common';
+import { CentsCurrencyPipe } from '../../../../acquisition/pipes/cents-currency.pipe';
 import { DateTranslatePipe } from '@rero/ng-core';
 
 
 @Component({
     selector: 'admin-patron-transaction-form',
     templateUrl: './patron-transaction-event-form.component.html',
-    imports: [FormsModule, ReactiveFormsModule, FormlyModule, Bind, ScrollPanel, TranslateDirective, Button, CurrencyPipe, DateTranslatePipe, TranslatePipe, Panel],
+    imports: [FormsModule, ReactiveFormsModule, FormlyModule, Bind, ScrollPanel, TranslateDirective, Button, CentsCurrencyPipe, DateTranslatePipe, TranslatePipe, Panel],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class PatronTransactionEventFormComponent implements OnInit {

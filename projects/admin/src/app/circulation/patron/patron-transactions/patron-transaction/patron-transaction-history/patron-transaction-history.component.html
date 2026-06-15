@@ -33,7 +33,7 @@
         <div>{{ eventLabel(event) }}</div>
           @if (event.type !== patronTransactionEventType.DISPUTE) {
             <p-tag
-              [value]="event.amount | currency: organisation.default_currency"
+              [value]="event.amount | centsCurrency: organisation.default_currency"
               [severity]="$any(tagSeverity(event))"
             />
           }
@@ -102,7 +102,7 @@
               <div class="ui:col-span-2">
                 @if (event.type !== patronTransactionEventType.DISPUTE) {
                   <p-tag
-                    [value]="step.amount | currency: organisation.default_currency"
+                    [value]="step.amount | centsCurrency: organisation.default_currency"
                     [severity]="$any(tagSeverity(event))"
                   />
                 }

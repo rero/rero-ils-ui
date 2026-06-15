@@ -26,6 +26,7 @@ import { AcqOrderApiService } from '../../../../api/acq-order-api.service';
 import { AcqOrderLineStatus, IAcqOrderLine } from '../../../../classes/order';
 import { AppStore, OpenCloseButtonComponent, DocumentBriefViewComponent, ActionButtonComponent } from '@rero/shared';
 import { NgClass, CurrencyPipe } from '@angular/common';
+import { CentsCurrencyPipe } from '../../../../pipes/cents-currency.pipe';
 import { Bind } from 'primeng/bind';
 import { OverlayBadge } from 'primeng/overlaybadge';
 import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
@@ -36,7 +37,7 @@ import { NoteBadgeColorPipe } from '../../../../pipes/note-badge-color.pipe';
 @Component({
     selector: 'admin-order-line',
     templateUrl: './order-line.component.html',
-    imports: [OpenCloseButtonComponent, NgClass, DocumentBriefViewComponent, Bind, OverlayBadge, TranslateDirective, NotesComponent, ActionButtonComponent, RouterLink, CurrencyPipe, TranslatePipe, NoteBadgeColorPipe],
+    imports: [OpenCloseButtonComponent, NgClass, DocumentBriefViewComponent, Bind, OverlayBadge, TranslateDirective, NotesComponent, ActionButtonComponent, RouterLink, CurrencyPipe, CentsCurrencyPipe, TranslatePipe, NoteBadgeColorPipe],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class OrderLineComponent {

@@ -25,14 +25,15 @@ import { MessageService } from 'primeng/api';
 import { AcqAccountApiService } from '../../../../api/acq-account-api.service';
 import { orderAccountsAsTree } from '../../../../utils/account';
 import { FormsModule } from '@angular/forms';
-import { NgTemplateOutlet, CurrencyPipe } from '@angular/common';
+import { NgTemplateOutlet } from '@angular/common';
+import { CentsCurrencyPipe } from '../../../../pipes/cents-currency.pipe';
 import { SelectModule } from 'primeng/select';
 
 @Component({
     selector: 'admin-select-account-editor-widget',
     templateUrl: './select-account-editor-widget.component.html',
     changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [FormsModule, NgTemplateOutlet, CurrencyPipe, TranslatePipe, SelectModule]
+    imports: [FormsModule, NgTemplateOutlet, CentsCurrencyPipe, TranslatePipe, SelectModule]
 })
 export class SelectAccountEditorWidgetComponent extends FieldType implements OnInit {
   // services

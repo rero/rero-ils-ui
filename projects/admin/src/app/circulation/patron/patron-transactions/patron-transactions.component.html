@@ -22,7 +22,7 @@
           <h6 class="ui:flex ui:grow" translate>Engaged fees</h6>
           @if (statistics()['feesEngaged'] > 0) {
             <p-tag severity="warn" class="ui:mr-2">
-              {{ statistics()['feesEngaged'] | currency: organisation.default_currency }}
+              {{ statistics()['feesEngaged'] | centsCurrency: organisation.default_currency }}
             </p-tag>
           }
         </div>
@@ -37,7 +37,7 @@
             <div class="ui:col-span-3" translate>Category</div>
             <div class="ui:col-span-3" translate>Library</div>
             <div class="ui:col-span-2 ui:text-right">
-              {{ 'Total amount' | translate }}: {{ statistics()['feesEngaged'] | currency: organisation.default_currency }}
+              {{ 'Total amount' | translate }}: {{ statistics()['feesEngaged'] | centsCurrency: organisation.default_currency }}
             </div>
             <div class="ui:col-span-2 ui:flex ui:justify-end">
               <p-splitButton
@@ -70,7 +70,7 @@
           <h6 class="ui:flex ui:grow" translate>Overdue preview fees</h6>
           @if (statistics().overdueFees > 0) {
             <p-tag severity="secondary" class="ui:mr-2">
-              {{ statistics().overdueFees| currency: organisation.default_currency }}
+              {{ statistics().overdueFees| centsCurrency: organisation.default_currency }}
             </p-tag>
           }
         </div>
@@ -81,7 +81,7 @@
             <div class="ui:col-span-2" translate>Due date</div>
             <div class="ui:col-span-8" translate>Document</div>
             <div class="ui:col-span-2 ui:text-right">
-              {{ 'Total amount' | translate }}: {{ statistics().overdueFees | currency: organisation.default_currency }}
+              {{ 'Total amount' | translate }}: {{ statistics().overdueFees | centsCurrency: organisation.default_currency }}
             </div>
             <div class="ui:col-span-1"></div>
           </div>

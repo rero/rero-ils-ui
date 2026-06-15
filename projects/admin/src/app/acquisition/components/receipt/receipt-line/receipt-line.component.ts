@@ -28,6 +28,7 @@ import { AppStore, DocumentBriefViewComponent, ActionButtonComponent } from '@re
 import { RouterLink } from '@angular/router';
 import { AsyncPipe, CurrencyPipe } from '@angular/common';
 import { TranslatePipe } from '@ngx-translate/core';
+import { CentsCurrencyPipe } from '../../../pipes/cents-currency.pipe';
 import { ReceiptLineTotalAmountPipe } from '../../../pipes/receipt-line-total-amount.pipe';
 
 @Component({
@@ -39,6 +40,7 @@ import { ReceiptLineTotalAmountPipe } from '../../../pipes/receipt-line-total-am
         RouterLink,
         AsyncPipe,
         CurrencyPipe,
+        CentsCurrencyPipe,
         GetRecordPipe,
         TranslatePipe,
         ReceiptLineTotalAmountPipe,

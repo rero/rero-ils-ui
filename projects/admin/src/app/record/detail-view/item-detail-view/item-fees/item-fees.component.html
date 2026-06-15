@@ -23,7 +23,7 @@
       </div>
       <div class="ui:order-2">
         <span class="ui:font-bold" translate>Total</span>&nbsp;
-        <p-tag severity="danger">{{ total() | currency: organisation.default_currency }}</p-tag>
+        <p-tag severity="danger">{{ total() | centsCurrency: organisation.default_currency }}</p-tag>
       </div>
     </div>
   </ng-template>
@@ -41,7 +41,7 @@
                 {{ $any(patron).metadata.last_name }} {{ $any(patron).metadata.first_name }} ({{ $any(patron).metadata.patron.barcode[0] }})
               </a>
             </div>
-            <div>{{ fee.metadata.total_amount | currency: organisation.default_currency }}</div>
+            <div>{{ fee.metadata.total_amount | centsCurrency: organisation.default_currency }}</div>
           </div>
         }
       }

@@ -70,7 +70,7 @@
               <a [title]="rowData.name +' ('+rowData.number+')'" [routerLink]="['/acquisition', 'records', 'acq_accounts', 'detail', rowData.pid]">{{ rowData.name }}</a>
           </td>
           <td class="ui:!text-right">
-            {{ rowData.allocated_amount | currency: organisation().default_currency }}
+            {{ rowData.allocated_amount | centsCurrency: organisation().default_currency }}
           </td>
           <td class="ui:!text-right">
             @let available_amount = rowData | accountAvailableAmount;
@@ -86,19 +86,19 @@
             'text-error': rowData.encumbrance_amount.self > 0,
             ' ui:text-muted-color': rowData.encumbrance_amount.self <= 0
           }">
-            {{ rowData.encumbrance_amount.self | currency: organisation().default_currency }}
+            {{ rowData.encumbrance_amount.self | centsCurrency: organisation().default_currency }}
           </td>
           <td class="ui:!text-right" [class]="{
             'text-error': rowData.expenditure_amount.self > 0,
             ' ui:text-muted-color': rowData.expenditure_amount.self <= 0
           }">
-            {{ rowData.expenditure_amount.self | currency: organisation().default_currency }}
+            {{ rowData.expenditure_amount.self | centsCurrency: organisation().default_currency }}
           </td>
           <td class="ui:!text-right" [class]="{
             ' ui:text-muted-color': rowData.remaining_balance.self === 0,
             'text-warning': rowData.remaining_balance.self < 0
           }">
-            {{ rowData.remaining_balance.self | currency: organisation().default_currency }}
+            {{ rowData.remaining_balance.self | centsCurrency: organisation().default_currency }}
           </td>
           <td>
             <div class="ui:flex ui:gap-1 ui:justify-end ui:flex-wrap">

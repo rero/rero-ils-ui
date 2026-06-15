@@ -21,14 +21,14 @@
     <li>
       <div class="ui:flex">
         <span class="ui:grow">{{ subtype.name | translate }}</span>
-        <span>{{ subtype.total | currency: org_currency: 'symbol' }}</span>
+        <span>{{ subtype.total | centsCurrency: org_currency: 'symbol' }}</span>
       </div>
     </li>
   }
     <p-divider></p-divider>
   <li class="ui:flex ui:font-bold">
     <span class="ui:grow" translate>Total</span>
-    <span>{{ data()?.total | currency: org_currency: 'symbol' }}</span>
+    <span>{{ data()?.total | centsCurrency: org_currency: 'symbol' }}</span>
   </li>
 </ul>
 

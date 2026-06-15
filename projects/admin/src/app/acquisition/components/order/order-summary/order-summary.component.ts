@@ -23,13 +23,14 @@ import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
 import { RouterLink } from '@angular/router';
 import { Bind } from 'primeng/bind';
 import { Tag } from 'primeng/tag';
-import { NgTemplateOutlet, AsyncPipe, CurrencyPipe } from '@angular/common';
+import { NgTemplateOutlet, AsyncPipe } from '@angular/common';
+import { CentsCurrencyPipe } from '../../../pipes/cents-currency.pipe';
 import { DateTranslatePipe, GetRecordPipe } from '@rero/ng-core';
 
 @Component({
     selector: 'admin-order-summary',
     templateUrl: './order-summary.component.html',
-    imports: [TranslateDirective, RouterLink, Bind, Tag, NgTemplateOutlet, AsyncPipe, CurrencyPipe, DateTranslatePipe, GetRecordPipe, TranslatePipe],
+    imports: [TranslateDirective, RouterLink, Bind, Tag, NgTemplateOutlet, AsyncPipe, CentsCurrencyPipe, DateTranslatePipe, GetRecordPipe, TranslatePipe],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class OrderSummaryComponent {
