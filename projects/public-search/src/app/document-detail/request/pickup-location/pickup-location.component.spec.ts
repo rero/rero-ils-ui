@@ -28,7 +28,7 @@ import { HoldingsApiService } from '../../../api/holdings-api.service';
 import { ItemApiService } from '../../../api/item-api.service';
 import { LocationApiService } from '../../../api/location-api.service';
 import { PickupLocationComponent } from './pickup-location.component';
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { provideHttpClient } from '@angular/common/http';
 
 
 describe('PickupLocationComponent', () => {
@@ -66,7 +66,7 @@ describe('PickupLocationComponent', () => {
         { provide: LocationApiService, useValue: locationServiceSpy },
         { provide: ItemApiService, useValue: itemServiceSpy },
         { provide: HoldingsApiService, useValue: {} },
-        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClient(),
         provideHttpClientTesting()
     ]
 })

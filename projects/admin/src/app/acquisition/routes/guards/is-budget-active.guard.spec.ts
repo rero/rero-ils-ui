@@ -23,7 +23,7 @@ import { cloneDeep } from 'lodash-es';
 import { filter, firstValueFrom, of } from 'rxjs';
 import { ErrorPageComponent } from '../../../error/error-page/error-page.component';
 import { isBudgetActiveGuard } from './is-budget-active.guard';
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { provideHttpClient } from '@angular/common/http';
 
 describe('isBudgetActiveGuard', () => {
   let recordService: RecordService;
@@ -69,7 +69,7 @@ describe('isBudgetActiveGuard', () => {
     TestBed.configureTestingModule({
     imports: [RouterModule.forRoot(routes),
         TranslateModule.forRoot()],
-    providers: [provideHttpClient(withInterceptorsFromDi()), provideHttpClientTesting()]
+    providers: [provideHttpClient(), provideHttpClientTesting()]
 });
     recordService = TestBed.inject(RecordService);
     router = TestBed.inject(Router);

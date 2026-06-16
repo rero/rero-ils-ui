@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { provideHttpClient } from '@angular/common/http';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ThumbnailComponent } from './thumbnail.component';
 
@@ -27,7 +27,7 @@ describe('ThumbnailComponent', () => {
   beforeEach(async () => {
     TestBed.configureTestingModule({
     imports: [ThumbnailComponent],
-    providers: [provideHttpClient(withInterceptorsFromDi())]
+    providers: [provideHttpClient()]
 })
     .compileComponents();
   });

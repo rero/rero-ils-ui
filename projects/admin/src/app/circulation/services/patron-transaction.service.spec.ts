@@ -26,7 +26,7 @@ import { AppStore } from "@rero/shared";
 import { RouteToolService } from "@app/admin/routes/route-tool.service";
 import { TranslateModule } from "@ngx-translate/core";
 import { MessageService, ToastMessageOptions } from "primeng/api";
-import { provideHttpClient, withInterceptorsFromDi } from "@angular/common/http";
+import { provideHttpClient } from "@angular/common/http";
 import { provideHttpClientTesting } from "@angular/common/http/testing";
 
 describe('PatronTransactionService', () => {
@@ -109,7 +109,7 @@ describe('PatronTransactionService', () => {
         RecordService,
         { provide: AppStore, useValue: appStoreSpy },
         MessageService,
-        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClient(),
         provideHttpClientTesting()
       ]
     });

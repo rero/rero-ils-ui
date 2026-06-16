@@ -19,7 +19,7 @@ import { TestBed } from '@angular/core/testing';
 import { RecordService } from '@rero/ng-core';
 import { of } from 'rxjs';
 import { OperationLogsApiService } from './operation-logs-api.service';
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { provideHttpClient } from '@angular/common/http';
 
 
 describe('OperationLogsService', () => {
@@ -53,7 +53,7 @@ describe('OperationLogsService', () => {
     imports: [],
     providers: [
         { provide: RecordService, useValue: recordServiceSpy },
-        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClient(),
         provideHttpClientTesting()
     ]
 });

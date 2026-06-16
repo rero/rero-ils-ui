@@ -21,7 +21,7 @@ import { RecordService, RecordUiService } from '@rero/ng-core';
 import { of } from 'rxjs';
 
 import { HoldingsApiService } from './holdings-api.service';
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { provideHttpClient } from '@angular/common/http';
 
 describe('HoldingsApiService', () => {
   let service: HoldingsApiService;
@@ -53,7 +53,7 @@ describe('HoldingsApiService', () => {
     providers: [
         { provide: RecordService, useValue: recordServiceSpy },
         { provide: RecordUiService, useValue: {} },
-        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClient(),
         provideHttpClientTesting(),
     ]
 });

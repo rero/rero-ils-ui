@@ -28,7 +28,7 @@ import { PatronProfileStore } from '../store/patron-profile.store';
 import { PatronApiService } from '../../api/patron-api.service';
 import { PatronProfileFeesComponent } from './patron-profile-fees.component';
 import { PatronProfileFeeComponent } from './patron-profile-fee/patron-profile-fee.component';
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { provideHttpClient } from '@angular/common/http';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
 
 @Component({ selector: 'public-search-patron-profile-fee', template: '' })
@@ -82,7 +82,7 @@ describe('PatronProfileFeeComponent', () => {
         { provide: PatronTransactionApiService, useValue: patronTransactionApiServiceSpy },
         { provide: PatronApiService, useValue: { getOverduePreviewByPatronPid: vi.fn().mockReturnValue(of([])) } },
         { provide: RecordService, useValue: { getRecord: vi.fn().mockReturnValue(of(null)), MAX_REST_RESULTS_SIZE: 1000 } },
-        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClient(),
         provideHttpClientTesting(),
         provideNoopAnimations()
     ]

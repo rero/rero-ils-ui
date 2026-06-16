@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { provideHttpClient } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { RouterModule } from '@angular/router';
@@ -55,7 +55,7 @@ describe('LocalFieldApiService', () => {
         LocalFieldApiService,
         { provide: RecordService, useValue: recordServiceSpy },
         { provide: RecordUiService, useValue: recordUiServiceSpy },
-        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClient(),
         provideHttpClientTesting(),
       ]
     });

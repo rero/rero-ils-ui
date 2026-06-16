@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { provideHttpClient } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
@@ -63,7 +63,7 @@ describe('PatronProfileRequestComponent', () => {
         { provide: LoanApiService, useValue: { cancel: vi.fn().mockReturnValue(of(null)) } },
         { provide: MessageService, useValue: { add: vi.fn() } },
         { provide: RecordService, useValue: { getRecord: vi.fn().mockReturnValue(of({ metadata: {} })), MAX_REST_RESULTS_SIZE: 1000 } },
-        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClient(),
         provideHttpClientTesting()
     ]
 }).compileComponents();

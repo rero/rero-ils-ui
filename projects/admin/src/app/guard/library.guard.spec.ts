@@ -24,7 +24,7 @@ import { cloneDeep } from 'lodash-es';
 import { filter, firstValueFrom } from 'rxjs';
 import { ErrorPageComponent } from '../error/error-page/error-page.component';
 import { libraryGuard } from './library.guard';
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { provideHttpClient } from '@angular/common/http';
 
 
 describe('libraryGuard', () => {
@@ -53,7 +53,7 @@ describe('libraryGuard', () => {
         TranslateModule.forRoot()],
     providers: [
         { provide: AppStore, useValue: appStoreSpy },
-        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClient(),
         provideHttpClientTesting()
     ]
 });

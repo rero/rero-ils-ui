@@ -21,7 +21,7 @@ import { LoanService } from "@app/admin/service/loan.service";
 import { of } from "rxjs";
 import { Loan, LoanState } from "@app/admin/classes/loans";
 import { CircPolicy } from "@app/admin/classes/circ-policy";
-import { provideHttpClient, withInterceptorsFromDi } from "@angular/common/http";
+import { provideHttpClient } from "@angular/common/http";
 import { provideHttpClientTesting } from "@angular/common/http/testing";
 import { TranslateModule } from "@ngx-translate/core";
 import { ConfirmationService } from "primeng/api";
@@ -56,7 +56,7 @@ describe('GetLoanCipoPipe', () => {
         GetLoanCipoPipe,
         LoanService,
         ConfirmationService,
-        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClient(),
         provideHttpClientTesting()
       ]
     });
