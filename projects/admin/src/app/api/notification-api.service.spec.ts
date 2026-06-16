@@ -21,7 +21,7 @@ import { RecordService } from '@rero/ng-core';
 import { of } from 'rxjs';
 
 import { NotificationApiService } from './notification-api.service';
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { provideHttpClient } from '@angular/common/http';
 
 describe('NotificationApiService', () => {
   let service: NotificationApiService;
@@ -56,7 +56,7 @@ describe('NotificationApiService', () => {
     TestBed.configureTestingModule({
       providers: [
           { provide: RecordService, useValue: recordServiceSpy },
-          provideHttpClient(withInterceptorsFromDi()),
+          provideHttpClient(),
           provideHttpClientTesting()
       ]
     });

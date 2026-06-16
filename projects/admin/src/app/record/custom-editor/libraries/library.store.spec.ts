@@ -80,6 +80,11 @@ const mockNotificationSchema = {
 
 const mockLocation = (pid: string) => ({ metadata: { pid, name: `Location ${pid}` } });
 
+const mockEtagResponse = (metadata: any, etag = '"test-etag"') => ({
+  body: { metadata },
+  headers: { get: (key: string) => key === 'ETag' ? etag : null }
+});
+
 const exceptionOlder: ExceptionDates = { title: 'Older', is_open: false, start_date: '2025-01-01' };
 const exceptionNewer: ExceptionDates = { title: 'Newer', is_open: false, start_date: '2025-06-01' };
 const exceptionNewest: ExceptionDates = { title: 'Newest', is_open: false, start_date: '2025-12-01' };
@@ -88,6 +93,7 @@ const exceptionNewest: ExceptionDates = { title: 'Newest', is_open: false, start
 // Setup helper
 // ---------------------------------------------------------------------------
 const recordServiceSpy = {
+  getRecordWithEtag: vi.fn(),
   getRecord: vi.fn(),
   getRecords: vi.fn(),
   getSchemaForm: vi.fn(),
@@ -160,7 +166,7 @@ describe('LibraryStore', () => {
 
     it('should be false when library has a pid', () => {
       const store = setupStore();
-      recordServiceSpy.getRecord.mockReturnValue(of({ metadata: mockLibraryMetadata }));
+      recordServiceSpy.getRecordWithEtag.mockReturnValue(of(mockEtagResponse(mockLibraryMetadata)));
       store.loadLibrary('lib1');
       expect(store.isNewLibrary()).toBe(false);
     });
@@ -183,7 +189,7 @@ describe('LibraryStore', () => {
 
     it('should extract pid from $ref', () => {
       const store = setupStore();
-      recordServiceSpy.getRecord.mockReturnValue(of({ metadata: mockLibraryMetadata }));
+      recordServiceSpy.getRecordWithEtag.mockReturnValue(of(mockEtagResponse(mockLibraryMetadata)));
       store.loadLibrary('lib1');
       expect(store.organisationPid()).toBe('1');
     });
@@ -247,7 +253,7 @@ describe('LibraryStore', () => {
   describe('loadLibrary', () => {
     it('should set library and exceptionDates on success', () => {
       const store = setupStore();
-      recordServiceSpy.getRecord.mockReturnValue(of({ metadata: mockLibraryMetadata }));
+      recordServiceSpy.getRecordWithEtag.mockReturnValue(of(mockEtagResponse(mockLibraryMetadata)));
       store.loadLibrary('lib1');
       expect(store.library()).toBeInstanceOf(Library);
       expect(store.library()!.pid).toBe('lib1');
@@ -258,14 +264,14 @@ describe('LibraryStore', () => {
       const store = setupStore();
       // Use a delayed observable via synchronous test — loading flag is set before switchMap resolves.
       // With synchronous of(), it flips back immediately; just verify final state is false.
-      recordServiceSpy.getRecord.mockReturnValue(of({ metadata: mockLibraryMetadata }));
+      recordServiceSpy.getRecordWithEtag.mockReturnValue(of(mockEtagResponse(mockLibraryMetadata)));
       store.loadLibrary('lib1');
       expect(store.isLoading()).toBe(false);
     });
 
     it('should set error and isLoading=false on failure', () => {
       const store = setupStore();
-      recordServiceSpy.getRecord.mockReturnValue(throwError(() => new Error('not found')));
+      recordServiceSpy.getRecordWithEtag.mockReturnValue(throwError(() => new Error('not found')));
       store.loadLibrary('lib1');
       expect(store.library()).toBeUndefined();
       expect(store.isLoading()).toBe(false);
@@ -275,13 +281,13 @@ describe('LibraryStore', () => {
     it('should ignore empty pid (filter guard)', () => {
       const store = setupStore();
       store.loadLibrary('');
-      expect(recordServiceSpy.getRecord).not.toHaveBeenCalled();
+      expect(recordServiceSpy.getRecordWithEtag).not.toHaveBeenCalled();
     });
 
     it('should initialise exceptionDates from library metadata', () => {
       const store = setupStore();
       const metadata = { ...mockLibraryMetadata, exception_dates: [exceptionOlder] };
-      recordServiceSpy.getRecord.mockReturnValue(of({ metadata }));
+      recordServiceSpy.getRecordWithEtag.mockReturnValue(of(mockEtagResponse(metadata)));
       store.loadLibrary('lib1');
       expect(store.exceptionDates().length).toBe(1);
     });
@@ -344,7 +350,7 @@ describe('LibraryStore', () => {
     it('should reset exceptionDates to empty array', () => {
       const store = setupStore();
       // Pre-load some exceptions
-      recordServiceSpy.getRecord.mockReturnValue(of({ metadata: { ...mockLibraryMetadata, exception_dates: [exceptionOlder] } }));
+      recordServiceSpy.getRecordWithEtag.mockReturnValue(of(mockEtagResponse({ ...mockLibraryMetadata, exception_dates: [exceptionOlder] })));
       store.loadLibrary('lib1');
       expect(store.exceptionDates().length).toBe(1);
 

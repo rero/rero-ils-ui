@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { provideHttpClient, withInterceptorsFromDi } from "@angular/common/http";
+import { provideHttpClient } from "@angular/common/http";
 import { provideHttpClientTesting } from "@angular/common/http/testing";
 import { TestBed } from "@angular/core/testing";
 import { RecordService } from "@rero/ng-core";
@@ -104,7 +104,7 @@ describe('AcqBudgetApiService', () => {
         AcqBudgetApiService,
         AcqAccountApiService,
         { provide: RecordService, useValue: recordServiceSpy },
-        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClient(),
         provideHttpClientTesting(),
       ]
     });

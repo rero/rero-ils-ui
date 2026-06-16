@@ -27,7 +27,7 @@ import { of } from 'rxjs';
 import { LocalFieldApiService } from '../api/local-field-api.service';
 import { ErrorPageComponent } from '../error/error-page/error-page.component';
 import { canAddLocalFieldsGuard } from './can-add-local-fields.guard';
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { provideHttpClient } from '@angular/common/http';
 
 describe('canAddLocalFieldsGuard', () => {
 
@@ -60,7 +60,7 @@ describe('canAddLocalFieldsGuard', () => {
     providers: [
         { provide: AppStore, useValue: appStoreSpy },
         { provide: RecordUiService, useValue: {} },
-        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClient(),
         provideHttpClientTesting()
     ]
 });

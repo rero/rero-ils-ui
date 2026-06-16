@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { HttpClient, HttpErrorResponse, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse, provideHttpClient } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { NavigationEnd, Router, RouterModule, RouterStateSnapshot } from '@angular/router';
@@ -64,7 +64,7 @@ describe('canAddOrderLineGuard', () => {
     TestBed.configureTestingModule({
     imports: [RouterModule.forRoot(routes),
         TranslateModule.forRoot()],
-    providers: [provideHttpClient(withInterceptorsFromDi()), provideHttpClientTesting()]
+    providers: [provideHttpClient(), provideHttpClientTesting()]
 });
     recordService = TestBed.inject(RecordService);
     router = TestBed.inject(Router);

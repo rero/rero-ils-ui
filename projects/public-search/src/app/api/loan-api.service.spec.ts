@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { HttpClient, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { HttpClient, provideHttpClient } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { LoanOverduePreview } from '@app/admin/classes/loans';
@@ -87,7 +87,7 @@ describe('LoanApiService', () => {
       providers: [
         { provide: RecordService, useValue: recordServiceSpy },
         { provide: ApiService, useValue: { getEndpointByType: vi.fn().mockReturnValue('/api/loan') } },
-        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClient(),
         provideHttpClientTesting()
       ]
     });

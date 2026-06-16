@@ -21,7 +21,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { RecordService } from '@rero/ng-core';
 import { of } from 'rxjs';
 import { IllRequestApiService } from './ill-request-api.service';
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { provideHttpClient } from '@angular/common/http';
 
 describe('IllRequestApiService', () => {
   let service: IllRequestApiService;
@@ -106,7 +106,7 @@ describe('IllRequestApiService', () => {
         TranslateModule.forRoot()],
     providers: [
         { provide: RecordService, useValue: recordServiceSpy },
-        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClient(),
         provideHttpClientTesting(),
     ]
 });

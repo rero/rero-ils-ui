@@ -21,7 +21,7 @@ import { of } from 'rxjs';
 import { OrganisationApiService } from './organisation-api.service';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { TranslateModule } from '@ngx-translate/core';
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { provideHttpClient } from '@angular/common/http';
 
 describe('OrganisationApiService', () => {
   let service: OrganisationApiService;
@@ -41,7 +41,7 @@ describe('OrganisationApiService', () => {
       ],
       providers: [
           { provide: RecordService, useValue: recordServiceSpy },
-          provideHttpClient(withInterceptorsFromDi()),
+          provideHttpClient(),
           provideHttpClientTesting()
       ]
     });

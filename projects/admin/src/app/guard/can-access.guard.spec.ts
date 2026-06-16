@@ -24,7 +24,7 @@ import { of } from 'rxjs';
 import { ErrorPageComponent } from '../error/error-page/error-page.component';
 import { RecordPermissionService } from '../service/record-permission.service';
 import { CAN_ACCESS_ACTIONS, canAccessGuard } from './can-access.guard';
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { provideHttpClient } from '@angular/common/http';
 
 
 describe('canAccessGuard', () => {
@@ -80,7 +80,7 @@ describe('canAccessGuard', () => {
         TranslateModule.forRoot()
       ],
       providers: [
-          provideHttpClient(withInterceptorsFromDi()),
+          provideHttpClient(),
           provideHttpClientTesting()
       ]
     });

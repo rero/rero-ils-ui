@@ -28,7 +28,7 @@ import { AcqOrderApiService } from '../../api/acq-order-api.service';
 import { AcqReceiptApiService } from '../../api/acq-receipt-api.service';
 import { AcqOrderStatus } from '../../classes/order';
 import { canOrderReceiptGuard } from './can-order-receipt.guard';
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { provideHttpClient } from '@angular/common/http';
 
 describe('canOrderReceiptGuard', () => {
   let acqOrderApiService: AcqOrderApiService;
@@ -112,7 +112,7 @@ describe('canOrderReceiptGuard', () => {
     providers: [
         { provide: AppStore, useValue: appStoreSpy },
         { provide: RecordUiService, useValue: {} },
-        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClient(),
         provideHttpClientTesting()
     ]
 });

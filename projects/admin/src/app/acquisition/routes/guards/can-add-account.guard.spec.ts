@@ -21,7 +21,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { filter, firstValueFrom } from 'rxjs';
 import { ErrorPageComponent } from '../../../error/error-page/error-page.component';
 import { canAddAccountGuard } from './can-add-account.guard';
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { provideHttpClient } from '@angular/common/http';
 
 describe('canAddAccountGuard', () => {
   let router: Router;
@@ -40,7 +40,7 @@ describe('canAddAccountGuard', () => {
     TestBed.configureTestingModule({
     imports: [RouterModule.forRoot(routes),
         TranslateModule.forRoot()],
-    providers: [provideHttpClient(withInterceptorsFromDi()), provideHttpClientTesting()]
+    providers: [provideHttpClient(), provideHttpClientTesting()]
 });
     router = TestBed.inject(Router);
   });

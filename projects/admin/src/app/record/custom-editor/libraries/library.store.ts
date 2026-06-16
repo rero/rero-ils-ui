@@ -54,6 +54,7 @@ export type LibraryState = {
   notificationTypes: NotificationType[];
   isLoading: boolean;
   error: string | undefined;
+  currentLibraryETag: string | undefined;
 };
 
 const initialState: LibraryState = {
@@ -66,6 +67,7 @@ const initialState: LibraryState = {
   notificationTypes: [],
   isLoading: false,
   error: undefined,
+  currentLibraryETag: undefined,
 };
 
 function sortExceptionDates(dates: ExceptionDates[]): ExceptionDates[] {
@@ -88,13 +90,14 @@ export const LibraryStore = signalStore(
         filter(Boolean),
         tap(() => patchState(store, { isLoading: true, error: undefined })),
         switchMap(pid =>
-          recordService.getRecord('libraries', pid).pipe(
-            tap(record => {
-              const lib = new Library(record.metadata as Record<string, unknown>);
+          recordService.getRecordWithEtag('libraries', pid).pipe(
+            tap(({body, headers}) => {
+              const lib = new Library(body!.metadata);
               patchState(store, {
                 library: lib,
                 exceptionDates: lib.exception_dates ?? [],
                 isLoading: false,
+                currentLibraryETag: headers.get('ETag') ?? undefined,
               });
             }),
             catchError(err => {
