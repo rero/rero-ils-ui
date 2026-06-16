@@ -14,9 +14,9 @@ SPDX-License-Identifier: AGPL-3.0-or-later
         </div>
     </ng-template>
 
-    @defer (when loaded()) {
-      @if (records().length > 0) {
-        @for (record of records(); track $index) {
+    @defer (when store.feesLoaded()) {
+      @if (store.fees().length > 0) {
+        @for (record of store.fees(); track $index) {
           <div class="ui:odd:bg-surface-50 ui:my-1">
             <public-search-patron-profile-fee [record]="record" />
           </div>

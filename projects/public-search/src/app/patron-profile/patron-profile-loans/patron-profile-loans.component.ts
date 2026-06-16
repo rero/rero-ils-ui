@@ -1,31 +1,26 @@
 // SPDX-FileCopyrightText: Fondation RERO+
 // SPDX-License-Identifier: AGPL-3.0-or-later
-import { ChangeDetectionStrategy, Component, effect, inject, signal, untracked } from '@angular/core';
+import { ChangeDetectionStrategy, Component, effect, inject, untracked } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { _, TranslateDirective, TranslateService } from "@ngx-translate/core";
-import { Paginator, ShowMorePagerComponent } from '@rero/shared';
+import { TranslateDirective, TranslatePipe, TranslateService } from '@ngx-translate/core';
+import { ButtonModule } from 'primeng/button';
 import { PanelModule } from 'primeng/panel';
 import { Select } from 'primeng/select';
-import { LoanApiService } from '../../api/loan-api.service';
 import { PatronProfileStore } from '../store/patron-profile.store';
 import { PatronProfileLoanComponent } from './patron-profile-loan/patron-profile-loan.component';
 
 @Component({
     selector: 'public-search-patron-profile-loans',
     templateUrl: './patron-profile-loans.component.html',
-    imports: [FormsModule, TranslateDirective, Select, PanelModule, ShowMorePagerComponent, PatronProfileLoanComponent],
+    imports: [FormsModule, TranslateDirective, TranslatePipe, ButtonModule, Select, PanelModule, PatronProfileLoanComponent],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class PatronProfileLoansComponent {
 
-  private loanApiService = inject(LoanApiService);
-  private store = inject(PatronProfileStore);
+  private readonly loansPerPage = 9999;
+
+  protected store = inject(PatronProfileStore);
   private translateService = inject(TranslateService);
-
-  readonly loaded = signal(false);
-  readonly records = signal<any[]>([]);
-
-  sortCriteria = 'duedate';
 
   get sortOptions() {
     return [
@@ -34,25 +29,7 @@ export class PatronProfileLoansComponent {
     ];
   }
 
-  page = 1;
-  nRecords = 20;
-  paginator: Paginator;
-
   constructor() {
-    this.paginator = new Paginator();
-    this.paginator
-      .setRecordsPerPage(this.nRecords)
-      .setHiddenInfo(
-        _('({{ count }} hidden loan)'),
-        _('({{ count }} hidden loans)')
-      );
-    this.paginator.more$.subscribe((page: number) => {
-      this._loanQuery(page).subscribe((response) => {
-        if (!('hits' in response)) return;
-        this.records.update(r => [...r, ...response.hits.hits]);
-        this.page = page;
-      });
-    });
     effect(() => {
       this.store.currentPatron();
       untracked(() => this._load());
@@ -60,28 +37,23 @@ export class PatronProfileLoansComponent {
   }
 
   selectingSortCriteria(sortCriteria: string): void {
-    this.sortCriteria = sortCriteria;
-    this.paginator.setRecordsPerPage(this.page * this.nRecords);
-    this._loanQuery(1).subscribe((response) => {
+    this.store.changeLoansSortCriteria(sortCriteria);
+    this.store.loadLoans(1, this.loansPerPage).subscribe((response) => {
       if (!('hits' in response)) return;
-      this.records.set(response.hits.hits);
-      this.paginator.setRecordsPerPage(this.nRecords);
-      this.loaded.set(true);
+      this._loadCanExtend(response.hits.hits);
     });
   }
 
-  private _loanQuery(page: number) {
-    const patronPid = this.store.currentPatron()!.pid;
-    return this.loanApiService.getOnLoan(patronPid, page, this.paginator.getRecordsPerPage(), undefined, this.sortCriteria);
+  private _load(): void {
+    this.store.loadLoans(1, this.loansPerPage).subscribe((response) => {
+      if (!('hits' in response)) return;
+      this._loadCanExtend(response.hits.hits);
+    });
   }
 
-  private _load(): void {
-    this.loaded.set(false);
-    this._loanQuery(1).subscribe((response) => {
-      if (!('hits' in response)) return;
-      this.paginator.setPage(1).setRecordsCount(response.hits.total.value);
-      this.records.set(response.hits.hits);
-      this.loaded.set(true);
+  private _loadCanExtend(loans: any[]): void {
+    loans.forEach(loan => {
+      this.store.canExtendLoan(loan.metadata.pid).subscribe();
     });
   }
 }

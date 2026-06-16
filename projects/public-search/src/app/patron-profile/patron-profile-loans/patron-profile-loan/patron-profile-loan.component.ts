@@ -1,7 +1,7 @@
 // SPDX-FileCopyrightText: Fondation RERO+
 // SPDX-License-Identifier: AGPL-3.0-or-later
 import { I18nPluralPipe, NgClass, NgTemplateOutlet } from '@angular/common';
-import { Component, inject, input, OnInit, signal, ChangeDetectionStrategy} from '@angular/core';
+import { Component, computed, inject, input, signal, ChangeDetectionStrategy} from '@angular/core';
 import { TranslateDirective, TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { CONFIG, DateTranslatePipe } from '@rero/ng-core';
 import { ArrayTranslatePipe, IOrganisation, JoinPipe, OpenCloseButtonComponent } from '@rero/shared';
@@ -11,7 +11,7 @@ import { ButtonModule } from 'primeng/button';
 import { TagModule } from 'primeng/tag';
 import { TooltipModule } from 'primeng/tooltip';
 import { finalize } from 'rxjs/operators';
-import { CanExtend, LoanApiService } from '../../../api/loan-api.service';
+import { CanExtend } from '../../../api/loan-api.service';
 import { PatronProfileStore } from '../../store/patron-profile.store';
 import { PatronProfileDocumentComponent } from '../../patron-profile-document/patron-profile-document.component';
 
@@ -35,9 +35,8 @@ import { PatronProfileDocumentComponent } from '../../patron-profile-document/pa
     ],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class PatronProfileLoanComponent implements OnInit {
+export class PatronProfileLoanComponent {
 
-  private loanApiService = inject(LoanApiService);
   private translateService = inject(TranslateService);
   private store = inject(PatronProfileStore);
   private messageService = inject(MessageService);
@@ -55,7 +54,7 @@ export class PatronProfileLoanComponent implements OnInit {
   /** Request in progress */
   readonly renewInProgress = signal(false);
   /** Loan can extend */
-  readonly canExtend = signal<CanExtend>({ can: false, reasons: {} });
+  readonly canExtend = computed<CanExtend>(() => this.record()?.canExtend ?? { can: false, reasons: {} });
   /** Fees */
   fees = 0;
 
@@ -82,37 +81,16 @@ export class PatronProfileLoanComponent implements OnInit {
     return Object.values(this.canExtend()?.reasons || {});
   }
 
-  /** OnInit hook */
-  ngOnInit(): void {
-    this.loanApiService
-      .canExtend(this.record()?.metadata?.pid)
-      .subscribe((response: CanExtend) => this.canExtend.set(response));
-  }
-
   // COMPONENTS FUNCTIONS =====================================================
   /** Renew the current loan */
   renew(): void {
-    const patronPid = this.store.currentPatron()!.pid;
     this.renewInProgress.set(true);
-    const metadata = this.record()?.metadata;
-    this.loanApiService.renew({
-      pid: metadata?.pid,
-      item_pid: metadata?.item.pid,
-      transaction_location_pid: metadata?.item.location.pid,
-      transaction_user_pid: patronPid
-    })
+    this.store.renewLoan(this.record().metadata.pid)
       .pipe(finalize(() => this.renewInProgress.set(false)))
       .subscribe((extendLoan: any) => {
       this.actionDone.set(true);
       if (extendLoan !== undefined) {
         this.actionSuccess.set(true);
-        const metadata = this.record()?.metadata;
-        if (metadata) {
-          ['end_date', 'extension_count', 'is_late', 'due_soon_date'].map(field => metadata[field] = extendLoan[field]);
-          if ('overdue' in metadata) {
-            delete metadata.overdue;
-          }
-        }
         this.messageService.add({
           severity: 'success',
           summary: this.translateService.instant('Success'),

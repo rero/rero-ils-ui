@@ -57,7 +57,7 @@ const initialPagerConfig: Pager = {
 
 export const HoldingsSerialStore = signalStore(
   withState(initialState),
-  withPaginator(initialPagerConfig),
+  withPaginator('pager', initialPagerConfig),
   withProps(() => ({
     holdingsService: inject(HoldingsService),
     holdingsApiService: inject(HoldingsApiService),
@@ -82,7 +82,7 @@ export const HoldingsSerialStore = signalStore(
       patchState(store, { filter, pager: { ...store.pager(), page: 1, first: 1 } });
     }),
     setPaginator(paginator: PaginatorState) {
-      store.changePage(paginator);
+      store.changePager(paginator);
     },
     loadItems: rxMethod<void>(
       pipe(

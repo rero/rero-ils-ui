@@ -3,11 +3,11 @@ SPDX-FileCopyrightText: Fondation RERO+
 SPDX-License-Identifier: AGPL-3.0-or-later
 -->
 <!-- Due date dropdown menu -->
-@if (paginator.getRecordsCount() > 0) {
-  <section class="ui:flex ui:justify-end">
+@if (store.loans().length > 0) {
+  <section class="ui:flex ui:justify-end ui:gap-2">
     <p-select
       [options]="sortOptions"
-      [(ngModel)]="sortCriteria"
+      [ngModel]="store.loansSortCriteria()"
       optionLabel="label"
       optionValue="value"
       (onChange)="selectingSortCriteria($event.value)">
@@ -21,6 +21,14 @@ SPDX-License-Identifier: AGPL-3.0-or-later
   </section>
 }
 
+<section class="ui:flex ui:justify-end ui:mt-2 ui:md:hidden">
+  <p-button
+    [label]="'Renew all' | translate"
+    icon="fa fa-refresh"
+    [disabled]="store.renewableLoans().length === 0 || store.renewingLoans()"
+    (onClick)="store.renewAllLoans()" />
+</section>
+
 <!-- header -->
 <section id="loans-section" class="ui:mt-4">
   <p-panel>
@@ -28,16 +36,20 @@ SPDX-License-Identifier: AGPL-3.0-or-later
       <div class="ui:hidden ui:w-full ui:md:grid ui:grid-cols-12 ui:gap-4 ui:text-lg ui:font-bold ui:items-center">
         <div class="ui:col-span-8" translate>Document</div>
         <div class="ui:col-span-2" translate>Due date</div>
+        <p-button class="ui:md:col-span-2 ui:col-span-12 ui:flex ui:justify-end"
+          [label]="'Renew all' | translate"
+          icon="fa fa-refresh"
+          [disabled]="store.renewableLoans().length === 0 || store.renewingLoans()"
+          (onClick)="store.renewAllLoans()" />
       </div>
     </ng-template>
-  @if (loaded()) {
-    @if (paginator.getRecordsCount() > 0) {
-      @for (loan of records(); track $index) {
+  @if (store.loansLoaded()) {
+    @if (store.loans().length > 0) {
+      @for (loan of store.loans(); track loan.metadata.pid) {
         <div class="ui:odd:bg-surface-50 ui:my-1">
           <public-search-patron-profile-loan [record]="loan" id="loan-{{ loan.metadata.pid }}" />
         </div>
       }
-      <shared-search-show-more-pager id="show-more-loans" [paginator]="paginator" />
     } @else {
         <div class="ui:font-bold ui:mx-2 ui:my-6" translate>No loan</div>
     }

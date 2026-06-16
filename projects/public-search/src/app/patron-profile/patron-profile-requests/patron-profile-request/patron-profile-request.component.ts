@@ -7,7 +7,6 @@ import { CONFIG, DateTranslatePipe, RecordData } from '@rero/ng-core';
 import { OpenCloseButtonComponent } from '@rero/shared';
 import { MessageService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
-import { LoanApiService } from '../../../api/loan-api.service';
 import { PatronProfileStore } from '../../store/patron-profile.store';
 import { PatronProfileDocumentComponent } from '../../patron-profile-document/patron-profile-document.component';
 
@@ -19,7 +18,6 @@ import { PatronProfileDocumentComponent } from '../../patron-profile-document/pa
 })
 export class PatronProfileRequestComponent {
 
-  private loanApiService = inject(LoanApiService);
   private translateService = inject(TranslateService);
   private store = inject(PatronProfileStore);
   private messageService = inject(MessageService);
@@ -48,14 +46,8 @@ export class PatronProfileRequestComponent {
   cancel(): void {
     const patronPid = this.store.currentPatron()!.pid;
     this.cancelInProgress.set(true);
-    const metadata = this.record()?.metadata as any;
-    this.loanApiService.cancel({
-      pid: metadata?.pid,
-      transaction_location_pid: metadata?.item.location.pid,
-      transaction_user_pid: patronPid
-    }).subscribe((cancelLoan: any) => {
+    this.store.cancelPatronRequest(this.record(), patronPid).subscribe(cancelLoan => {
       if (cancelLoan !== undefined) {
-        this.store.cancelRequest(metadata?.pid);
         this.actionDone.set(true);
         this.messageService.add({
           severity: 'success',
