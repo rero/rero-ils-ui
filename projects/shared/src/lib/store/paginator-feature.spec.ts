@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 import { TestBed } from '@angular/core/testing';
 import { signalStore } from '@ngrx/signals';
-import { withPaginator } from './paginator-feature';
+import { nextPager, withPaginator } from './paginator-feature';
 import { Pager } from '../component/paginator/model/paginator-model';
 import { PaginatorState } from 'primeng/paginator';
 
@@ -85,5 +85,23 @@ describe('PaginatorFeature', () => {
     expect(store.pager().page).toBe(3); // 2 + 1
     expect(store.pager().rows).toBe(initialPager.rows); // Should fallback to initialPager.rows (10)
     expect(store.pager().first).toBe(21); // 2 * 10 + 1
+  });
+
+  it('should not mutate the paginator event', () => {
+    const event: PaginatorState = {
+      page: 1,
+      first: 10,
+      rows: 20,
+      pageCount: 3
+    };
+
+    nextPager(initialPager, event);
+
+    expect(event).toEqual({
+      page: 1,
+      first: 10,
+      rows: 20,
+      pageCount: 3
+    });
   });
 });

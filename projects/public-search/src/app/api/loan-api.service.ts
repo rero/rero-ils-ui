@@ -8,6 +8,7 @@ import type { Error, EsResult } from '@rero/ng-core';
 import { BaseApi } from '@rero/shared';
 import { Observable, of } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
+import type { PatronLoan } from '../patron-profile/patron-profile-loans/types';
 
 @Injectable({
   providedIn: 'root'
@@ -30,9 +31,9 @@ export class LoanApiService extends BaseApi {
     patronPid: string, page: number,
     itemsPerPage = 20, headers = BaseApi.reroJsonheaders,
     sort?: string
-  ): Observable<EsResult | Error> {
+  ): Observable<EsResult<PatronLoan['metadata']> | Error> {
     const loanStates = ['ITEM_ON_LOAN'];
-    return this.recordService.getRecords(
+    return this.recordService.getRecords<EsResult<PatronLoan['metadata']>>(
       'loans', { query: this._patronStateQuery(patronPid, loanStates), page, itemsPerPage, headers, sort }
     );
   }

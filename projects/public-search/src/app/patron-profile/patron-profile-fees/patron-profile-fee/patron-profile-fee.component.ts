@@ -5,7 +5,7 @@ import { Component, inject, input, OnDestroy, OnInit, signal, ChangeDetectionStr
 import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
 import { DateTranslatePipe, RecordService } from '@rero/ng-core';
 import { MainTitlePipe, OpenCloseButtonComponent, IOrganisation } from '@rero/shared';
-import { fee } from '../types';
+import { Fee } from '../types';
 import { PanelModule } from 'primeng/panel';
 import { TagModule } from 'primeng/tag';
 import { TimelineModule } from 'primeng/timeline';
@@ -37,7 +37,7 @@ export class PatronProfileFeeComponent<T> implements OnInit, OnDestroy {
   private recordService = inject(RecordService);
 
   /** Fee record */
-  record = input<fee>();
+  record = input<Fee>();
 
   /** Detail collapsed */
   isCollapsed = true;

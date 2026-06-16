@@ -11,6 +11,9 @@ import { cloneDeep } from 'lodash-es';
 import { of } from 'rxjs';
 import { MessageService } from 'primeng/api';
 import { LoanApiService } from '../../../api/loan-api.service';
+import { IllRequestApiService } from '../../../api/ill-request-api.service';
+import { PatronApiService } from '../../../api/patron-api.service';
+import { PatronTransactionApiService } from '../../../api/patron-transaction-api.service';
 import { PatronProfileStore } from '../../store/patron-profile.store';
 import { PatronProfileRequestComponent } from './patron-profile-request.component';
 
@@ -46,8 +49,23 @@ describe('PatronProfileRequestComponent', () => {
     ],
     providers: [
       { provide: AppStore, useValue: appStoreSpy },
-        { provide: LoanApiService, useValue: { cancel: vi.fn().mockReturnValue(of(null)) } },
+        {
+          provide: LoanApiService,
+          useValue: {
+            cancel: vi.fn().mockReturnValue(of(null)),
+            getOnLoan: vi.fn().mockReturnValue(of({ hits: { hits: [], total: { value: 0 } } })),
+            getRequest: vi.fn().mockReturnValue(of({ hits: { hits: [], total: { value: 0 } } })),
+          },
+        },
+        {
+          provide: IllRequestApiService,
+          useValue: {
+            getPublicIllRequest: vi.fn().mockReturnValue(of({ hits: { hits: [], total: { value: 0 } } })),
+          },
+        },
         { provide: MessageService, useValue: { add: vi.fn() } },
+        { provide: PatronTransactionApiService, useValue: { getFees: vi.fn().mockReturnValue(of({ hits: { hits: [] } })) } },
+        { provide: PatronApiService, useValue: { getOverduePreviewByPatronPid: vi.fn().mockReturnValue(of([])) } },
         { provide: RecordService, useValue: { getRecord: vi.fn().mockReturnValue(of({ metadata: {} })), MAX_REST_RESULTS_SIZE: 1000 } },
         provideHttpClient(),
         provideHttpClientTesting()

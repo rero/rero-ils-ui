@@ -11,9 +11,9 @@ SPDX-License-Identifier: AGPL-3.0-or-later
         </div>
       </ng-template>
 
-    @defer (when loaded()) {
-      @if (paginator.getRecordsCount() > 0) {
-        @for (record of records(); track $index) {
+    @if (store.illRequestsLoaded()) {
+      @if (store.illRequestsTotal() > 0) {
+        @for (record of store.illRequests(); track record.metadata.pid) {
           <div class="ui:odd:bg-surface-50">
             <public-search-patron-profile-ill-request
               [record]="record"
@@ -21,12 +21,14 @@ SPDX-License-Identifier: AGPL-3.0-or-later
             />
           </div>
         }
-        <shared-search-show-more-pager id="show-more-ill-requests" [paginator]="paginator" />
+        <shared-paginator
+          [pager]="store.illRequestsPager()"
+          [total]="store.illRequestsTotal()"
+          (pageChange)="onPageChange($event)" />
       } @else {
         <div class="ui:font-bold ui:mx-2 ui:my-6" translate>No ill request</div>
       }
-    }
-    @placeholder {
+    } @else {
       <div class="ui:font-bold ui:mx-2 ui:my-6" translate>Loading in progress</div>
     }
   </p-panel>
