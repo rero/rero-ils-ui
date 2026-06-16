@@ -11,14 +11,17 @@ SPDX-License-Identifier: AGPL-3.0-or-later
       </div>
     </ng-template>
 
-  @defer (when loaded()) {
-    @if (paginator.getRecordsCount() > 0) {
-      @for (request of records(); track $index) {
+  @defer (when store.requestsLoaded()) {
+    @if (store.requestsTotal() > 0) {
+      @for (request of store.requests(); track request.metadata.pid) {
         <div class="ui:odd:bg-surface-50 ui:my-1">
           <public-search-patron-profile-request [record]="request" id="request-{{ request.metadata.pid }}" />
         </div>
       }
-      <shared-search-show-more-pager id="show-more-requests" [paginator]="paginator" />
+      <shared-paginator
+        [pager]="store.requestPager()"
+        [total]="store.requestsTotal()"
+        (pageChange)="onPageChange($event)" />
     } @else {
         <div class="ui:font-bold ui:mx-2 ui:my-6" translate>No request</div>
     }

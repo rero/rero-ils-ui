@@ -5,17 +5,20 @@ import { Component, Input, NO_ERRORS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { TranslateModule } from '@ngx-translate/core';
 
+import { provideHttpClient } from '@angular/common/http';
+import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { RecordService } from '@rero/ng-core';
 import { AppStore, testUserPatronWithSettings, User, UserApiService } from '@rero/shared';
 import { cloneDeep } from 'lodash-es';
+import { MessageService } from 'primeng/api';
 import { of } from 'rxjs';
+import { IllRequestApiService } from '../../api/ill-request-api.service';
+import { LoanApiService } from '../../api/loan-api.service';
+import { PatronApiService } from '../../api/patron-api.service';
 import { PatronTransactionApiService } from '../../api/patron-transaction-api.service';
 import { PatronProfileStore } from '../store/patron-profile.store';
-import { PatronApiService } from '../../api/patron-api.service';
-import { PatronProfileFeesComponent } from './patron-profile-fees.component';
 import { PatronProfileFeeComponent } from './patron-profile-fee/patron-profile-fee.component';
-import { provideHttpClient } from '@angular/common/http';
-import { provideNoopAnimations } from '@angular/platform-browser/animations';
+import { PatronProfileFeesComponent } from './patron-profile-fees.component';
 
 @Component({ selector: 'public-search-patron-profile-fee', template: '' })
 class StubPatronProfileFeeComponent {
@@ -57,27 +60,42 @@ describe('PatronProfileFeeComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-    schemas: [NO_ERRORS_SCHEMA],
-    imports: [
+      schemas: [NO_ERRORS_SCHEMA],
+      imports: [
         TranslateModule.forRoot(),
         PatronProfileFeesComponent
-    ],
-    providers: [
+      ],
+      providers: [
+        PatronProfileStore,
         { provide: UserApiService, useValue: userApiServiceSpy },
         { provide: AppStore, useValue: appStoreSpy },
+        {
+          provide: LoanApiService,
+          useValue: {
+            getOnLoan: vi.fn().mockReturnValue(of({ hits: { hits: [], total: { value: 0 } } })),
+            getRequest: vi.fn().mockReturnValue(of({ hits: { hits: [], total: { value: 0 } } })),
+          },
+        },
         { provide: PatronTransactionApiService, useValue: patronTransactionApiServiceSpy },
         { provide: PatronApiService, useValue: { getOverduePreviewByPatronPid: vi.fn().mockReturnValue(of([])) } },
+        {
+          provide: IllRequestApiService,
+          useValue: {
+            getPublicIllRequest: vi.fn().mockReturnValue(of({ hits: { hits: [], total: { value: 0 } } })),
+          },
+        },
+        { provide: MessageService, useValue: { add: vi.fn() } },
         { provide: RecordService, useValue: { getRecord: vi.fn().mockReturnValue(of(null)), MAX_REST_RESULTS_SIZE: 1000 } },
         provideHttpClient(),
         provideHttpClientTesting(),
         provideNoopAnimations()
-    ]
-})
-    .overrideComponent(PatronProfileFeesComponent, {
-      remove: { imports: [PatronProfileFeeComponent] },
-      add: { imports: [StubPatronProfileFeeComponent] }
+      ]
     })
-    .compileComponents();
+      .overrideComponent(PatronProfileFeesComponent, {
+        remove: { imports: [PatronProfileFeeComponent] },
+        add: { imports: [StubPatronProfileFeeComponent] }
+      })
+      .compileComponents();
   });
 
   beforeEach(() => {

@@ -1,32 +1,31 @@
 // SPDX-FileCopyrightText: Fondation RERO+
 // SPDX-License-Identifier: AGPL-3.0-or-later
 import { APP_BASE_HREF, CurrencyPipe, KeyValue, KeyValuePipe } from '@angular/common';
-import { afterNextRender, Component, effect, inject, model, OnInit, signal, untracked, ChangeDetectionStrategy} from '@angular/core';
+import { afterNextRender, ChangeDetectionStrategy, Component, effect, inject, model, OnInit, signal, untracked } from '@angular/core';
 import { TranslateDirective, TranslatePipe, TranslateService } from '@ngx-translate/core';
-import { RecordService } from '@rero/ng-core';
 import type { EsResult } from '@rero/ng-core';
+import { RecordService } from '@rero/ng-core';
 import { AppStore } from '@rero/shared';
 import JsBarcode from 'jsbarcode';
-import { forkJoin, of } from 'rxjs';
 import { BadgeModule } from 'primeng/badge';
 import { TabsModule } from 'primeng/tabs';
-import { ToastModule } from 'primeng/toast';
 import { TooltipModule } from 'primeng/tooltip';
+import { forkJoin, of } from 'rxjs';
 import { IllRequestApiService } from '../api/ill-request-api.service';
 import { LoanApiService } from '../api/loan-api.service';
 import { OperationLogsApiService } from '../api/operation-logs-api.service';
-import { PatronTransactionApiService } from '../api/patron-transaction-api.service';
 import { PatronApiService } from '../api/patron-api.service';
-import { overdueFee } from './patron-profile-fees/types';
-import { PatronProfileStore } from './store/patron-profile.store';
-import { PatronProfileMenuComponent } from './patron-profile-menu/patron-profile-menu.component';
-import { PatronProfileMessageComponent } from './patron-profile-message/patron-profile-message.component';
-import { PatronProfileLoansComponent } from './patron-profile-loans/patron-profile-loans.component';
-import { PatronProfileRequestsComponent } from './patron-profile-requests/patron-profile-requests.component';
+import { PatronTransactionApiService } from '../api/patron-transaction-api.service';
 import { PatronProfileFeesComponent } from './patron-profile-fees/patron-profile-fees.component';
+import { OverdueFee } from './patron-profile-fees/types';
 import { PatronProfileHistoriesComponent } from './patron-profile-histories/patron-profile-histories.component';
 import { PatronProfileIllRequestsComponent } from './patron-profile-ill-requests/patron-profile-ill-requests.component';
+import { PatronProfileLoansComponent } from './patron-profile-loans/patron-profile-loans.component';
+import { PatronProfileMenuComponent } from './patron-profile-menu/patron-profile-menu.component';
+import { PatronProfileMessageComponent } from './patron-profile-message/patron-profile-message.component';
 import { PatronProfilePersonalComponent } from './patron-profile-personal/patron-profile-personal.component';
+import { PatronProfileRequestsComponent } from './patron-profile-requests/patron-profile-requests.component';
+import { PatronProfileStore } from './store/patron-profile.store';
 
 type Tab = {
   loaded?: boolean;
@@ -48,26 +47,25 @@ type Tabs = {
 }
 
 @Component({
-    selector: 'public-search-patron-profile',
-    templateUrl: './patron-profile.component.html',
-    imports: [
-      CurrencyPipe,
-      KeyValuePipe,
-      TranslateDirective,
-      TranslatePipe,
-      BadgeModule,
-      TabsModule,
-      ToastModule,
-      TooltipModule,
-      PatronProfileMenuComponent,
-      PatronProfileMessageComponent,
-      PatronProfileLoansComponent,
-      PatronProfileRequestsComponent,
-      PatronProfileFeesComponent,
-      PatronProfileHistoriesComponent,
-      PatronProfileIllRequestsComponent,
-      PatronProfilePersonalComponent,
-    ],
+  selector: 'public-search-patron-profile',
+  templateUrl: './patron-profile.component.html',
+  imports: [
+    CurrencyPipe,
+    KeyValuePipe,
+    TranslateDirective,
+    TranslatePipe,
+    BadgeModule,
+    TabsModule,
+    TooltipModule,
+    PatronProfileMenuComponent,
+    PatronProfileMessageComponent,
+    PatronProfileLoansComponent,
+    PatronProfileRequestsComponent,
+    PatronProfileFeesComponent,
+    PatronProfileHistoriesComponent,
+    PatronProfileIllRequestsComponent,
+    PatronProfilePersonalComponent,
+  ],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class PatronProfileComponent implements OnInit {
@@ -76,7 +74,7 @@ export class PatronProfileComponent implements OnInit {
   private loanApiService = inject(LoanApiService);
   private illRequestApiService = inject(IllRequestApiService);
   private appStore = inject(AppStore);
-  private store = inject(PatronProfileStore);
+  protected store = inject(PatronProfileStore);
   private operationLogsApiService = inject(OperationLogsApiService);
   private translateService = inject(TranslateService);
   private patronApiService = inject(PatronApiService);
@@ -221,10 +219,10 @@ export class PatronProfileComponent implements OnInit {
       this.illRequestApiService.getPublicIllRequest(patronPid, 1, 1, undefined, '', { remove_archived: '1' }),
     ]).subscribe((results) => {
       const [loanResponse, requestResponse, feeResponse, overdueResponse, historyResponse, illRequestResponse] =
-        results as [EsResult, EsResult, EsResult, overdueFee[], EsResult, EsResult];
+        results as [EsResult, EsResult, EsResult, OverdueFee[], EsResult, EsResult];
       this.activeTab.set('loan');
       const feeTotal = overdueResponse.reduce(
-        (acc: number, fee: overdueFee) => acc + +fee.fees.total,
+        (acc: number, fee: OverdueFee) => acc + +fee.fees.total,
         (feeResponse.aggregations as any).total.value
       );
       this.tabs.update(t => ({

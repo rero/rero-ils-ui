@@ -39,11 +39,11 @@ SPDX-License-Identifier: AGPL-3.0-or-later
           size="small"
           id="request-cancel-{{ m.pid }}"
           (onClick)="cancel()"
-          [disabled]="cancelInProgress()"
+          [disabled]="store.cancellingRequestPid() !== null"
           [label]="'Cancel' | translate"
           outlined
           severity="danger"
-          [icon]="!(!cancelInProgress() || actionDone()) ? 'fa-solid fa-spinner': 'fa-solid fa-trash-can'"
+          [icon]="cancelInProgress() ? 'fa-solid fa-spinner': 'fa-solid fa-trash-can'"
         />
       }
     </div>

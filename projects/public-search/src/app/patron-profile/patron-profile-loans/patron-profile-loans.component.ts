@@ -1,87 +1,50 @@
 // SPDX-FileCopyrightText: Fondation RERO+
 // SPDX-License-Identifier: AGPL-3.0-or-later
-import { ChangeDetectionStrategy, Component, effect, inject, signal, untracked } from '@angular/core';
+import { ChangeDetectionStrategy, Component, effect, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { _, TranslateDirective, TranslateService } from "@ngx-translate/core";
-import { Paginator, ShowMorePagerComponent } from '@rero/shared';
+import { TranslateDirective, TranslatePipe, TranslateService } from '@ngx-translate/core';
+import { NgxSpinnerComponent, NgxSpinnerService } from 'ngx-spinner';
+import { ButtonModule } from 'primeng/button';
 import { PanelModule } from 'primeng/panel';
 import { Select } from 'primeng/select';
-import { LoanApiService } from '../../api/loan-api.service';
 import { PatronProfileStore } from '../store/patron-profile.store';
 import { PatronProfileLoanComponent } from './patron-profile-loan/patron-profile-loan.component';
 
 @Component({
-    selector: 'public-search-patron-profile-loans',
-    templateUrl: './patron-profile-loans.component.html',
-    imports: [FormsModule, TranslateDirective, Select, PanelModule, ShowMorePagerComponent, PatronProfileLoanComponent],
+  selector: 'public-search-patron-profile-loans',
+  templateUrl: './patron-profile-loans.component.html',
+  imports: [
+    FormsModule,
+    TranslateDirective,
+    TranslatePipe,
+    NgxSpinnerComponent,
+    ButtonModule,
+    Select,
+    PanelModule,
+    PatronProfileLoanComponent,
+  ],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class PatronProfileLoansComponent {
 
-  private loanApiService = inject(LoanApiService);
-  private store = inject(PatronProfileStore);
+  protected store = inject(PatronProfileStore);
   private translateService = inject(TranslateService);
+  private spinner = inject(NgxSpinnerService);
 
-  readonly loaded = signal(false);
-  readonly records = signal<any[]>([]);
-
-  sortCriteria = 'duedate';
+  constructor() {
+    // Spinner when renewing all loans
+    effect(() => {
+      const renewingAll = this.store.renewingLoans() && this.store.renewingLoanPid() === null;
+      void (renewingAll
+        ? this.spinner.show('renew-all-loans')
+        : this.spinner.hide('renew-all-loans'));
+    });
+  }
 
   get sortOptions() {
     return [
       { value: 'duedate', label: this.translateService.instant('Due date (earliest)'), icon: 'fa-solid fa-arrow-down-1-9' },
       { value: '-duedate', label: this.translateService.instant('Due date (latest)'), icon: 'fa-solid fa-arrow-down-9-1' },
     ];
-  }
-
-  page = 1;
-  nRecords = 20;
-  paginator: Paginator;
-
-  constructor() {
-    this.paginator = new Paginator();
-    this.paginator
-      .setRecordsPerPage(this.nRecords)
-      .setHiddenInfo(
-        _('({{ count }} hidden loan)'),
-        _('({{ count }} hidden loans)')
-      );
-    this.paginator.more$.subscribe((page: number) => {
-      this._loanQuery(page).subscribe((response) => {
-        if (!('hits' in response)) return;
-        this.records.update(r => [...r, ...response.hits.hits]);
-        this.page = page;
-      });
-    });
-    effect(() => {
-      this.store.currentPatron();
-      untracked(() => this._load());
-    });
-  }
-
-  selectingSortCriteria(sortCriteria: string): void {
-    this.sortCriteria = sortCriteria;
-    this.paginator.setRecordsPerPage(this.page * this.nRecords);
-    this._loanQuery(1).subscribe((response) => {
-      if (!('hits' in response)) return;
-      this.records.set(response.hits.hits);
-      this.paginator.setRecordsPerPage(this.nRecords);
-      this.loaded.set(true);
-    });
-  }
-
-  private _loanQuery(page: number) {
-    const patronPid = this.store.currentPatron()!.pid;
-    return this.loanApiService.getOnLoan(patronPid, page, this.paginator.getRecordsPerPage(), undefined, this.sortCriteria);
-  }
-
-  private _load(): void {
-    this.loaded.set(false);
-    this._loanQuery(1).subscribe((response) => {
-      if (!('hits' in response)) return;
-      this.paginator.setPage(1).setRecordsCount(response.hits.total.value);
-      this.records.set(response.hits.hits);
-      this.loaded.set(true);
-    });
   }
 }

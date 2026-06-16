@@ -4,6 +4,23 @@ import { patchState, signalMethod, signalStoreFeature, withMethods, withState } 
 import { PaginatorState } from "primeng/paginator";
 import { Pager, Paginator } from "../component/paginator/model/paginator-model";
 
+/**
+ * Build the next pager without modifying the PrimeNG event.
+ * PrimeNG pages are zero-based while API pages and first records are one-based.
+ * Changing the page size returns to the first page.
+ */
+export function nextPager(current: Pager, event: PaginatorState): Pager {
+  const rows = event.rows ?? current.rows;
+  const page = rows !== current.rows ? 0 : (event.page ?? 0);
+
+  return {
+    page: page + 1,
+    first: page * rows + 1,
+    rows,
+    rowsPerPageOptions: current.rowsPerPageOptions
+  };
+}
+
 export function withPaginator(pager: Pager) {
   return signalStoreFeature(
     withState<Paginator>({
@@ -11,17 +28,8 @@ export function withPaginator(pager: Pager) {
     }),
     withMethods(store => ({
       changePage: signalMethod<PaginatorState>(event => {
-        if ((event.rows || pager.rows) !== store.pager.rows()) {
-          event.page = 0;
-          event.first = 1;
-        }
         patchState(store, {
-          pager: {
-            page: event.page + 1,
-            first: event.page * (event.rows || pager.rows) + 1,
-            rows: (event.rows || pager.rows),
-            rowsPerPageOptions: store.pager().rowsPerPageOptions
-          }
+          pager: nextPager(store.pager(), event)
         });
       })
     }))
