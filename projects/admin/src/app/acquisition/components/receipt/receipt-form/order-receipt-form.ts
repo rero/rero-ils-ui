@@ -332,7 +332,7 @@ export class OrderReceiptForm {
             },
             {
               key: 'quantity',
-              type: 'input',
+              type: 'integer',
               className: 'ui:col-span-2',
               wrappers: ['input-no-label'],
               props: {
@@ -342,12 +342,12 @@ export class OrderReceiptForm {
                 label: _('Qty'),
                 required: true,
                 min: 1,
-                inputStep: 1
+                step: 1
               }
             },
             {
               key: 'amount',
-              type: 'input',
+              type: 'number',
               className: 'ui:col-span-2',
               wrappers: ['input-no-label'],
               props: {
@@ -360,7 +360,7 @@ export class OrderReceiptForm {
             },
             {
               key: 'vatRate',
-              type: 'input',
+              type: 'number',
               className: 'ui:col-span-2',
               wrappers: ['input-no-label'],
               props: {
