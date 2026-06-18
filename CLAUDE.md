@@ -1,3 +1,8 @@
+<!--
+SPDX-FileCopyrightText: Fondation RERO+
+SPDX-License-Identifier: AGPL-3.0-or-later
+-->
+
 # Claude Code Instructions
 
 This repository uses Angular 21 and is in active migration from Angular 19 patterns.
