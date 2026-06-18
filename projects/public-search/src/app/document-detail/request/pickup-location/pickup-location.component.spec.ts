@@ -63,6 +63,7 @@ describe('PickupLocationComponent', () => {
     fixture = TestBed.createComponent(PickupLocationComponent);
     component = fixture.componentInstance;
     fixture.componentRef.setInput('record', itemRecord);
+    fixture.componentRef.setInput('recordType', 'item');
     fixture.detectChanges();
   });
 

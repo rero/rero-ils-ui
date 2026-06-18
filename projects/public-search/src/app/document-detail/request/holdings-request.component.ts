@@ -25,9 +25,9 @@ export class HoldingsRequestComponent implements OnInit {
   private appStore = inject(AppStore);
   private translateService = inject(TranslateService);
 
-  record = input<RecordData>();
-  recordType = input<string>();
-  viewcode = input<string>();
+  record = input.required<RecordData>();
+  recordType = input.required<string>();
+  viewcode = input.required<string>();
   holdingsItemsCount = input<number>();
 
   requestDialogEvent = output<boolean>();
