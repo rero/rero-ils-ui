@@ -62,7 +62,8 @@
     "public-search_extract_messages": "ngx-translate-extract -k -c -s -i ./projects/public-search/src -o ./projects/public-search/src/assets/rero-ils-ui/public-search/i18n/en_US.json --fi '  '",
     "public-search_update_catalog": "ngx-translate-extract -k -c -s -i ./projects/public-search/src -o ./projects/public-search/src/assets/rero-ils-ui/public-search/i18n/{de,en,es,fr,it,nl,ar,ta,uk}.json --fi '  '",
     "extract_messages": "npm run shared_extract_messages && npm run public-search_extract_messages && npm run admin_extract_messages",
-    "update_catalog": "npm run shared_update_catalog && npm run public-search_update_catalog && npm run admin_update_catalog"
+    "update_catalog": "npm run shared_update_catalog && npm run public-search_update_catalog && npm run admin_update_catalog",
+    "release": "semantic-release"
   },
   "dependencies": {
     "@angular/animations": "^21.2.3",
@@ -109,6 +110,9 @@
     "@angular/compiler-cli": "^21.2.3",
     "@angular/language-service": "^21.2.3",
     "@ngx-formly/schematics": "^7.1.0",
+    "@semantic-release/changelog": "^6.0.3",
+    "@semantic-release/exec": "^7.1.0",
+    "@semantic-release/git": "^10.0.1",
     "@tailwindcss/postcss": "^4.1.0",
     "@types/lodash-es": "^4.17.12",
     "@vendure/ngx-translate-extract": "^10.1.0",
@@ -119,6 +123,7 @@
     "katex": "^0.16.22",
     "ng-packagr": "^21.2.0",
     "postcss": "^8.5.3",
+    "semantic-release": "^25.0.5",
     "tailwindcss": "^4.1.0",
     "tailwindcss-primeui": "^0.6.1",
     "typescript": "^5.9.3",
