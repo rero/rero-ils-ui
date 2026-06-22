@@ -160,7 +160,7 @@ export class MigrationDataDeduplicationBriefComponent implements OnInit {
         const config = this.searchStore.config();
         this.searchStore.fetchRecords({
           index: this.searchStore.currentIndex(),
-          query: this.searchStore.queryString(),
+          query: this.searchStore.q(),
           page: this.searchStore.page(),
           allowEmptySearch: config.allowEmptySearch,
           itemsPerPage: this.searchStore.size(),
