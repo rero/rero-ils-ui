@@ -52,12 +52,15 @@ export const organisationsRoutes: Routes = [
 class OrganisationsRoute extends BaseRoute implements RouteDataTypesInterface {
   readonly name = 'organisations';
   readonly recordType = 'organisations';
-  
+
   getTypes(): Partial<RecordType>[] {
     return [
       {
         key: this.name,
         label: _('Organisations'),
+        editorSettings: {
+          longMode: true,
+        },
         detailComponent: OrganisationDetailViewComponent,
         permissions: (record: RecordData) => this.routeToolService.permissions(record, this.recordType),
       },

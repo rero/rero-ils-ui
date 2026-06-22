@@ -28,6 +28,30 @@ export type ObjectReference = {
   $ref?: string;
 }
 
+/** Interface to describe a multilingual value entry */
+export type LocalizedValue = {
+  language: string;
+  value: string;
+}
+
+/** Interface to describe the patron cleanup configuration of an `Organisation` */
+export type PatronCleanup = {
+  expiration_years?: number;
+  inactivity_years?: number;
+  excluded_patron_types?: string[];
+}
+
+/** Interface to describe the public homepage configuration of an `Organisation` */
+export type Homepage = {
+  slogan?: LocalizedValue[];
+  placeholder?: LocalizedValue[];
+  blocks?: {
+    left?: LocalizedValue[];
+    center?: LocalizedValue[];
+    right?: LocalizedValue[];
+  };
+}
+
 /** Interface to describe an `Organisation` resource */
 export type Organisation = {
   $schema: string;
@@ -39,4 +63,6 @@ export type Organisation = {
   current_budget_pid?: string;
   online_harvested_source?: string;
   collection_enabled_on_public_view?: boolean;
+  patron_cleanup?: PatronCleanup;
+  homepage?: Homepage;
 }
