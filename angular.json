@@ -38,6 +38,16 @@
                 "glob": "**/*.json",
                 "input": "projects/shared/src/assets",
                 "output": "/assets/"
+              },
+              {
+                "glob": "*.json",
+                "input": "node_modules/@rero/ng-core/src/lib/translate/i18n",
+                "output": "/assets/rero-ils-ui/ng-core/i18n"
+              },
+              {
+                "glob": "*.json",
+                "input": "node_modules/@rero/ng-core/src/lib/translate/languages",
+                "output": "/assets/rero-ils-ui/ng-core/languages"
               }
             ],
             "styles": [
@@ -179,6 +189,16 @@
                 "glob": "**/*.json",
                 "input": "projects/shared/src/assets",
                 "output": "/assets/"
+              },
+              {
+                "glob": "*.json",
+                "input": "node_modules/@rero/ng-core/src/lib/translate/i18n",
+                "output": "/assets/rero-ils-ui/ng-core/i18n"
+              },
+              {
+                "glob": "*.json",
+                "input": "node_modules/@rero/ng-core/src/lib/translate/languages",
+                "output": "/assets/rero-ils-ui/ng-core/languages"
               }
             ],
             "styles": [
@@ -319,6 +339,16 @@
                 "glob": "**/*.json",
                 "input": "projects/shared/src/assets",
                 "output": "/assets/"
+              },
+              {
+                "glob": "*.json",
+                "input": "node_modules/@rero/ng-core/src/lib/translate/i18n",
+                "output": "/assets/rero-ils-ui/ng-core/i18n"
+              },
+              {
+                "glob": "*.json",
+                "input": "node_modules/@rero/ng-core/src/lib/translate/languages",
+                "output": "/assets/rero-ils-ui/ng-core/languages"
               }
             ],
             "styles": [
@@ -463,6 +493,16 @@
                 "glob": "**/*.json",
                 "input": "projects/shared/src/assets",
                 "output": "/assets/"
+              },
+              {
+                "glob": "*.json",
+                "input": "node_modules/@rero/ng-core/src/lib/translate/i18n",
+                "output": "/assets/rero-ils-ui/ng-core/i18n"
+              },
+              {
+                "glob": "*.json",
+                "input": "node_modules/@rero/ng-core/src/lib/translate/languages",
+                "output": "/assets/rero-ils-ui/ng-core/languages"
               }
             ],
             "styles": [
@@ -637,6 +677,16 @@
                 "glob": "**/*.json",
                 "input": "projects/shared/src/assets",
                 "output": "/assets/"
+              },
+              {
+                "glob": "*.json",
+                "input": "node_modules/@rero/ng-core/src/lib/translate/i18n",
+                "output": "/assets/rero-ils-ui/ng-core/i18n"
+              },
+              {
+                "glob": "*.json",
+                "input": "node_modules/@rero/ng-core/src/lib/translate/languages",
+                "output": "/assets/rero-ils-ui/ng-core/languages"
               }
             ],
             "styles": [

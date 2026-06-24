@@ -2,8 +2,8 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 import { inject } from '@angular/core';
 import { NgCoreTranslateService } from '@rero/ng-core';
-import { AppStore, User } from '@rero/shared';
-import { Observable } from 'rxjs';
+import { AppStore, AppTranslateLanguageService, User } from '@rero/shared';
+import { from, Observable } from 'rxjs';
 import { switchMap, tap } from 'rxjs/operators';
 import { AppConfigService } from './app-config.service';
 import { RemoteAutocompleteFactoryService } from '../record/editor/formly/primeng/remote-autocomplete/remote-autocomplete-factory.service';
@@ -13,13 +13,14 @@ export function initializeApp(): Observable<any> {
   const appStore = inject(AppStore);
   const appConfigService = inject(AppConfigService);
   const translateService = inject(NgCoreTranslateService);
+  const translateLanguageService = inject(AppTranslateLanguageService);
   const remoteAutocompleteFactoryService = inject(RemoteAutocompleteFactoryService);
   const librarySwitchStorageService = inject(LibrarySwitchStorageService);
 
   return appStore.load().pipe(
-    tap((user: User) => {
+    tap((user: User | null) => {
       remoteAutocompleteFactoryService.init();
-      if (user.hasAdminUiAccess) {
+      if (user?.hasAdminUiAccess) {
         const libraries = user.patronLibrarian?.libraries ?? [];
         const library = libraries[0];
         if (librarySwitchStorageService.has()) {
@@ -44,11 +45,13 @@ export function initializeApp(): Observable<any> {
       let language = appStore.settings()?.language;
       if (language == null) {
         const browserLang = translateService.getBrowserLang();
-        language = (browserLang && browserLang.match(appConfigService.languages.join('|')))
+        language = (browserLang && appStore.availableLanguageCodes().includes(browserLang))
           ? browserLang
           : appConfigService.defaultLanguage;
       }
-      return translateService.use(language);
+      return from(translateLanguageService.loadLanguageNow(language)).pipe(
+        switchMap(() => translateService.use(language))
+      );
     })
   );
 }

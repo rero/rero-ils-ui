@@ -1,12 +1,12 @@
 // SPDX-FileCopyrightText: Fondation RERO+
 // SPDX-License-Identifier: AGPL-3.0-or-later
-import { HttpClient, provideHttpClient, withInterceptors } from '@angular/common/http';
+import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { ApplicationConfig, importProvidersFrom, inject, LOCALE_ID, provideAppInitializer, provideZonelessChangeDetection } from '@angular/core';
 import { provideRouter } from '@angular/router';
 import { FormlyModule, provideFormlyCore } from '@ngx-formly/core';
-import { TranslateLoader as BaseCoreTranslateLoader, TranslateModule, TranslateService } from '@ngx-translate/core';
-import { CoreConfigService, CoreTranslateLoader, httpPendingInterceptor, NgCoreTranslateService, primeNGConfig, TruncateTextPipe, withNgCoreFormly } from '@rero/ng-core';
-import { MainTitlePipe } from '@rero/shared';
+import { provideTranslateLoader, provideTranslateService, TranslateService } from '@ngx-translate/core';
+import { CoreConfigService, httpPendingInterceptor, NgCoreTranslateService, primeNGConfig, TranslateLanguageService, TruncateTextPipe, withNgCoreFormly } from '@rero/ng-core';
+import { AppTranslateLanguageService, AppTranslateLoader, AppTranslateService, MainTitlePipe } from '@rero/shared';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { providePrimeNG } from 'primeng/config';
 import { AppConfigService } from './app-config.service';
@@ -18,16 +18,9 @@ export const appConfig: ApplicationConfig = {
     provideZonelessChangeDetection(),
     provideRouter(APP_ROUTES),
     provideHttpClient(withInterceptors([httpPendingInterceptor])),
-    importProvidersFrom(
-      TranslateModule.forRoot({
-        loader: {
-          provide: BaseCoreTranslateLoader,
-          useClass: CoreTranslateLoader,
-          deps: [CoreConfigService, HttpClient],
-        },
-        isolate: false,
-      })
-    ),
+    provideTranslateService({
+      loader: provideTranslateLoader(AppTranslateLoader),
+    }),
     provideFormlyCore(withNgCoreFormly() as any),
     importProvidersFrom(FormlyModule.forChild({})),
     providePrimeNG(primeNGConfig),
@@ -37,6 +30,8 @@ export const appConfig: ApplicationConfig = {
     }),
     { provide: CoreConfigService, useClass: AppConfigService },
     { provide: TranslateService, useExisting: NgCoreTranslateService },
+    { provide: NgCoreTranslateService, useExisting: AppTranslateService },
+    { provide: TranslateLanguageService, useExisting: AppTranslateLanguageService },
     { provide: LOCALE_ID, useFactory: (translate: TranslateService) => translate.getCurrentLang(), deps: [TranslateService] },
     MainTitlePipe,
     TruncateTextPipe,

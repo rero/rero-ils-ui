@@ -61,6 +61,16 @@ utils/
 - stores: signal-based state management
 - utils: framework-independent helpers
 
+## Git commit conventions
+
+Follow the [Conventional Commits](https://www.conventionalcommits.org/) specification:
+
+- Format: `type(scope): description`
+- **Title**: 50 characters maximum
+- **Body lines**: 72 characters maximum
+- **Body bullet points**: use `*` (asterisk), not `-` (dash)
+- Common types: `feat`, `fix`, `chore`, `refactor`, `test`, `docs`, `style`
+
 ## Testing philosophy
 
 - Use Karma + Jasmine for tests (current standard).

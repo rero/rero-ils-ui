@@ -33,7 +33,7 @@ export class RemoteSearchComponent implements OnInit, OnDestroy {
   readonly placeholder = input('search');
   readonly viewcode = input<string | undefined>(undefined);
   readonly language = input(undefined);
-  readonly inputstyleclass = input<string | undefined>(undefined);
+  readonly inputstyleclass = input<string|undefined>();
   readonly styleclass = input<string | undefined>(undefined);
   readonly internalRoutingBaseURL = input<string | undefined>(undefined);
 

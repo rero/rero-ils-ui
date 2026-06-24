@@ -5,4 +5,5 @@ export const environment = {
     "/static/node_modules/@rero/rero-ils-ui/dist/search-bar/browser/assets/rero-ils-ui/public-search/i18n/${lang}.json",
     "/api/translations/${lang}.json",
   ],
+  ngCoreAssetsUrl: '/static/node_modules/@rero/rero-ils-ui/dist/search-bar/browser',
 };

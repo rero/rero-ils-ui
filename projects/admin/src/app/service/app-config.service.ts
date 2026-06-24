@@ -21,10 +21,10 @@ export class AppConfigService extends CoreConfigService {
     this.apiBaseUrl = environment.apiBaseUrl;
     this.$refPrefix = environment.$refPrefix;
     this.schemaFormEndpoint = '/schemas';
-    this.languages = environment.languages;
     this.defaultLanguage = environment.defaultLanguage;
     this.adminRoles = environment.adminRoles;
     this.translationsURLs = environment.translationsURLs;
+    this.ngCoreAssetsUrl = environment.ngCoreAssetsUrl ?? '';
     this.librarySwitchCheckParamsUrl = environment.librarySwitchCheckParamsUrl;
   }
 }

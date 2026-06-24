@@ -52,6 +52,9 @@ export * from './lib/pipe/url-active.pipe';
 export * from './lib/service/i-availability.service';
 
 export * from './lib/store/app.store';
+export * from './lib/translate/app-translate-language-service';
+export * from './lib/translate/app-translate-loader';
+export * from './lib/translate/app-translate-service';
 export * from './lib/store/paginator-feature';
 export * from './lib/store/request-status-feature';
 export * from './lib/store/viewcode-feature';

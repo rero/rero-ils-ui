@@ -79,7 +79,7 @@ describe('PatronProfilePersonalComponent', () => {
     fixture = TestBed.createComponent(PatronProfilePersonalComponent);
     component = fixture.componentInstance;
     fixture.componentRef.setInput('patron', testUserPatronWithSettings.patrons[0]);
-    fixture.componentRef.setInput('user', testUserPatronWithSettings);
+    fixture.componentRef.setInput('user', testUserPatronWithSettings.user);
     fixture.detectChanges();
   });
 
@@ -105,7 +105,7 @@ describe('PatronProfilePersonalComponent', () => {
       'The loan history is visible in your patron account.'
     );
 
-    const user = cloneDeep(testUserPatronWithSettings);
+    const user = cloneDeep(testUserPatronWithSettings.user);
     user.keep_history = false;
     fixture.componentRef.setInput('user', user);
     fixture.detectChanges();

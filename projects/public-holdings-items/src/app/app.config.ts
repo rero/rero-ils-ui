@@ -9,7 +9,8 @@ import { withFormlyPrimeNG } from '@ngx-formly/primeng';
 import { provideLoadingBar } from '@ngx-loading-bar/core';
 import { provideLoadingBarInterceptor } from '@ngx-loading-bar/http-client';
 import { TranslateService, provideTranslateLoader, provideTranslateService } from '@ngx-translate/core';
-import { CoreConfigService, CoreTranslateLoader, NgCoreTranslateService, primeNGConfig, provideCore } from '@rero/ng-core';
+import { CoreConfigService, NgCoreTranslateService, TranslateLanguageService, primeNGConfig, provideCore } from '@rero/ng-core';
+import { AppTranslateLanguageService, AppTranslateLoader, AppTranslateService } from '@rero/shared';
 import { providePrimeNG } from 'primeng/config';
 import { AppConfigService } from './app-config-service.service';
 import { AppInitializerService } from './app-initializer.service';
@@ -21,9 +22,11 @@ export const appConfig: ApplicationConfig = {
     provideHttpClient(),
     providePrimeNG(primeNGConfig),
     provideTranslateService({
-      loader: provideTranslateLoader(CoreTranslateLoader),
+      loader: provideTranslateLoader(AppTranslateLoader),
     }),
     { provide: TranslateService, useExisting: NgCoreTranslateService },
+    { provide: NgCoreTranslateService, useExisting: AppTranslateService },
+    { provide: TranslateLanguageService, useExisting: AppTranslateLanguageService },
     provideFormlyCore(withFormlyPrimeNG()),
     provideLoadingBar({}),
     provideLoadingBarInterceptor(),

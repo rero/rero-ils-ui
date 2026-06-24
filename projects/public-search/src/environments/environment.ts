@@ -10,11 +10,11 @@ export const environment = {
   projectTitle: 'RERO ILS',
   apiBaseUrl: "",
   $refPrefix: "https://bib.rero.ch",
-  languages: ["fr", "de", "it", "en"],
   globalViewName: "global",
   translationsURLs: [
     "/assets/rero-ils-ui/shared/i18n/${lang}.json",
     "/assets/rero-ils-ui/public-search/i18n/${lang}.json",
     "/api/translations/${lang}.json",
   ],
+  ngCoreAssetsUrl: '',
 };

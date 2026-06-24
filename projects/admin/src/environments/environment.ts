@@ -10,7 +10,6 @@ export const environment = {
   projectTitle: 'Admin',
   apiBaseUrl: '',
   $refPrefix: 'https://bib.rero.ch',
-  languages: ['fr', 'de', 'it', 'en'],
   defaultLanguage: 'en',
   adminRoles: ['system_librarian', 'librarian'],
   translationsURLs: [
@@ -18,5 +17,6 @@ export const environment = {
     '/assets/rero-ils-ui/admin/i18n/${lang}.json',
     '/api/translations/${lang}.json'
   ],
-  librarySwitchCheckParamsUrl: ['new', 'edit']
+  librarySwitchCheckParamsUrl: ['new', 'edit'],
+  ngCoreAssetsUrl: '',
 };

@@ -5,7 +5,7 @@ import { provideHttpClient } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { TranslateModule } from '@ngx-translate/core';
-import { AppStore } from '@rero/shared';
+import { AppStore, AppTranslateLanguageService } from '@rero/shared';
 import { of } from 'rxjs';
 
 import { AppInitializerService } from './app-initializer.service';
@@ -23,7 +23,8 @@ describe('AppInitializerService', () => {
       providers: [
         provideHttpClient(),
         provideHttpClientTesting(),
-        { provide: AppStore, useValue: { load: vi.fn().mockReturnValue(of(null)), settings: vi.fn().mockReturnValue({ language: 'en' }) } }
+        { provide: AppStore, useValue: { load: vi.fn().mockReturnValue(of(null)), settings: vi.fn().mockReturnValue({ language: 'en' }) } },
+        { provide: AppTranslateLanguageService, useValue: { loadLanguageNow: vi.fn().mockResolvedValue(undefined) } }
       ]
     });
     appInitializerService = TestBed.inject(AppInitializerService);

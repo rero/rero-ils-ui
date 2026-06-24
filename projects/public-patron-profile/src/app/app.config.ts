@@ -13,7 +13,8 @@ import { patronProfileRoutes } from '@app/public-search/routes/patron-profile-ro
 import { FORMLY_CONFIG, provideFormlyCore } from '@ngx-formly/core';
 import { provideLoadingBarInterceptor } from '@ngx-loading-bar/http-client';
 import { TranslateService, provideTranslateLoader, provideTranslateService } from '@ngx-translate/core';
-import { CoreConfigService, CoreTranslateLoader, NgCoreTranslateService, primeNGConfig, registerNgCoreFormlyExtension, withNgCoreFormly } from '@rero/ng-core';
+import { CoreConfigService, NgCoreTranslateService, TranslateLanguageService, primeNGConfig, registerNgCoreFormlyExtension, withNgCoreFormly } from '@rero/ng-core';
+import { AppTranslateLanguageService, AppTranslateLoader, AppTranslateService } from '@rero/shared';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { providePrimeNG } from 'primeng/config';
 import { AppConfigService } from './app-config-service.service';
@@ -46,8 +47,10 @@ export const appConfig: ApplicationConfig = {
     },
     providePrimeNG(primeNGConfig),
     provideTranslateService({
-      loader: provideTranslateLoader(CoreTranslateLoader),
+      loader: provideTranslateLoader(AppTranslateLoader),
     }),
+    { provide: NgCoreTranslateService, useExisting: AppTranslateService },
+    { provide: TranslateLanguageService, useExisting: AppTranslateLanguageService },
     provideLoadingBarInterceptor(),
     provideAppInitializer(() => {
       const appInitializerService = inject(AppInitializerService);

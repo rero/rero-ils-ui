@@ -72,6 +72,10 @@ describe('AppStore', () => {
     it('isAuthenticated should be false', () => {
       expect(store.isAuthenticated()).toBe(false);
     });
+
+    it('availableLanguageCodes should be empty before load', () => {
+      expect(store.availableLanguageCodes()).toEqual([]);
+    });
   });
 
   describe('load()', () => {
@@ -203,6 +207,68 @@ describe('AppStore', () => {
     it('should return false for a resource absent from operationLogs settings', async () => {
       await firstValueFrom(store.load());
       expect(store.isLogVisible('patrons')).toBe(false);
+    });
+  });
+
+  describe('availableLanguageCodes', () => {
+    it('should return codes from settings after load', async () => {
+      await firstValueFrom(store.load());
+      expect(store.availableLanguageCodes()).toEqual(['fr']);
+    });
+
+    it('should reflect multiple languages when settings has several', async () => {
+      userApiServiceSpy.getLoggedUser.mockReturnValue(of({
+        ...testUserLibrarianWithSettings,
+        settings: {
+          ...testUserLibrarianWithSettings.settings,
+          availableLanguages: [
+            { code: 'fr', name: 'French' },
+            { code: 'de', name: 'German' },
+            { code: 'it', name: 'Italian' },
+          ]
+        }
+      }));
+      await firstValueFrom(store.load());
+      expect(store.availableLanguageCodes()).toEqual(['fr', 'de', 'it']);
+    });
+  });
+
+  describe('validateLibraryPermissions()', () => {
+    const fullPermissions = {
+      create: { can: true, reasons: {} },
+      read:   { can: true, reasons: {} },
+      update: { can: true, reasons: {} },
+      delete: { can: true, reasons: {} },
+      list:   { can: true, reasons: {} },
+    };
+
+    it('should not modify permissions when current library matches owner', () => {
+      store.setCurrentLibrary('lib1');
+      const result = store.validateLibraryPermissions({ ...fullPermissions }, 'lib1');
+      expect(result.create.can).toBe(true);
+      expect(result.update.can).toBe(true);
+      expect(result.delete.can).toBe(true);
+    });
+
+    it('should disable create, update and delete when library does not match', () => {
+      store.setCurrentLibrary('lib1');
+      const result = store.validateLibraryPermissions({ ...fullPermissions }, 'lib2');
+      expect(result.create.can).toBe(false);
+      expect(result.update.can).toBe(false);
+      expect(result.delete.can).toBe(false);
+    });
+
+    it('should keep read permission unchanged when library does not match', () => {
+      store.setCurrentLibrary('lib1');
+      const result = store.validateLibraryPermissions({ ...fullPermissions }, 'lib2');
+      expect(result.read.can).toBe(true);
+    });
+
+    it('should disable permissions when no library is set', () => {
+      const result = store.validateLibraryPermissions({ ...fullPermissions }, 'lib1');
+      expect(result.create.can).toBe(false);
+      expect(result.update.can).toBe(false);
+      expect(result.delete.can).toBe(false);
     });
   });
 
