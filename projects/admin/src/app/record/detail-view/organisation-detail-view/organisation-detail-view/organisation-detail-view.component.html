@@ -9,105 +9,143 @@ SPDX-License-Identifier: AGPL-3.0-or-later
       <div class="ui:bg-surface-500 ui:rounded-full ui:w-40 ui:h-40 ui:flex ui:items-center ui:justify-center">
         <i class="fa fa-university fa-4x ui:text-white"></i>
       </div>
-
       <div class="ui:grow">
         <h1>{{ metadata.name }}</h1>
-
         <dl class="metadata">
           @if (metadata.code) {
             <dt><i class="fa fa-code"></i>&nbsp;<span translate>Code</span></dt>
             <dd>{{ metadata.code }}</dd>
           }
-
           @if (metadata.address) {
             <dt><i class="fa fa-home"></i>&nbsp;<span translate>Address</span></dt>
             <dd>{{ metadata.address }}</dd>
           }
-
           @if (metadata.default_currency) {
             <dt><i class="fa fa-money"></i>&nbsp;<span translate>Default currency</span></dt>
             <dd>{{ metadata.default_currency }}</dd>
           }
-
-          <dt><i class="fa fa-user-times"></i>&nbsp;<span translate>Patron cleanup configuration</span></dt>
-          <dd>
-            @if (metadata.patron_cleanup; as cleanup) {
-              <ul class="ui:list-none ui:my-2 ui:ml-5">
-                @if (cleanup.expiration_years) {
-                  <li><span class="ui:font-bold" translate>Expiration threshold (years)</span>:&nbsp;{{ cleanup.expiration_years }}</li>
-                }
-                @if (cleanup.inactivity_years) {
-                  <li><span class="ui:font-bold" translate>Inactivity threshold (years)</span>:&nbsp;{{ cleanup.inactivity_years }}</li>
-                }
-                @if (cleanup.excluded_patron_types?.length) {
-                  <li><span class="ui:font-bold" translate>Excluded patron types</span>:&nbsp;{{ cleanup.excluded_patron_types.join(', ') }}</li>
-                }
-              </ul>
-            } @else {
-              <i class="fa fa-times text-error" aria-hidden="true"></i>
-            }
-          </dd>
         </dl>
-
-        @if (metadata.homepage; as homepage) {
-          <h2 class="ui:text-lg ui:font-semibold ui:mt-4 ui:mb-2">
-            <i class="fa fa-desktop"></i>&nbsp;<span translate>Homepage</span>
-          </h2>
-          <dl class="metadata">
-            @if (homepage.slogan?.length) {
-              <dt><i class="fa fa-bullhorn"></i>&nbsp;<span translate>Slogan</span></dt>
-              <dd>
-                <ul class="ui:list-none ui:my-2 ui:ml-5">
-                  @for (entry of homepage.slogan; track $index) {
-                    <li>
-                      <div class="ui:font-bold ui:w-20 ui:inline-block">
-                        <i class="fa fa-language"></i>&nbsp;({{ entry.language }})
-                      </div>
-                      {{ entry.value }}
-                    </li>
-                  }
-                </ul>
-              </dd>
-            }
-
-            @if (homepage.placeholder?.length) {
-              <dt><i class="fa fa-search"></i>&nbsp;<span translate>Placeholder</span></dt>
-              <dd>
-                <ul class="ui:list-none ui:my-2 ui:ml-5">
-                  @for (entry of homepage.placeholder; track $index) {
-                    <li>
-                      <div class="ui:font-bold ui:w-20 ui:inline-block">
-                        <i class="fa fa-language"></i>&nbsp;({{ entry.language }})
-                      </div>
-                      {{ entry.value }}
-                    </li>
-                  }
-                </ul>
-              </dd>
-            }
-
-            @if (homepage.blocks; as blocks) {
-              @for (block of blockOrder; track block.key) {
-                @if (blocks[block.key]?.length) {
-                  <dt><i class="fa fa-th-large"></i>&nbsp;<span [translate]="block.label"></span></dt>
-                  <dd>
-                    <ul class="ui:list-none ui:my-2 ui:ml-5">
-                      @for (entry of blocks[block.key]; track $index) {
-                        <li>
-                          <div class="ui:font-bold ui:w-20 ui:inline-block ui:align-top">
-                            <i class="fa fa-language"></i>&nbsp;({{ entry.language }})
-                          </div>
-                          <div class="ui:inline-block" [innerHTML]="entry.value"></div>
-                        </li>
-                      }
-                    </ul>
-                  </dd>
-                }
-              }
-            }
-          </dl>
-        }
       </div>
     </div>
   </section>
+
+  @let homepage = metadata.homepage;
+  <p-accordion [multiple]="true" [value]="['patron_cleanup', 'slogan', 'placeholder']">
+    <!-- patron cleanup configuration ====================================== -->
+    <p-accordion-panel value="patron_cleanup">
+      <p-accordion-header>
+        <div class="ui:flex ui:w-full ui:items-center ui:justify-between ui:mr-2">
+          <div>
+            <i class="fa fa-user-times"></i>&nbsp;<span translate>Patron cleanup configuration</span>
+          </div>
+        </div>
+      </p-accordion-header>
+      <p-accordion-content>
+        <div class="ui:mt-2 ui:mx-2">
+          @if (metadata.patron_cleanup; as cleanup) {
+            <dl class="metadata">
+              @if (cleanup.expiration_years) {
+                <dt translate>Expiration threshold (years)</dt>
+                <dd>{{ cleanup.expiration_years }}</dd>
+              }
+              @if (cleanup.inactivity_years) {
+                <dt translate>Inactivity threshold (years)</dt>
+                <dd>{{ cleanup.inactivity_years }}</dd>
+              }
+              @if (cleanup.excluded_patron_types?.length) {
+                <dt translate>Excluded patron types</dt>
+                <dd>{{ cleanup.excluded_patron_types.join(', ') }}</dd>
+              }
+            </dl>
+          } @else {
+            <i class="fa fa-times text-error ui:text-sm" aria-hidden="true"></i>
+          }
+        </div>
+      </p-accordion-content>
+    </p-accordion-panel>
+    @if (homepage) {
+      <!-- slogan ========================================================== -->
+      @if (homepage.slogan?.length) {
+        <p-accordion-panel value="slogan">
+          <p-accordion-header>
+            <div class="ui:flex ui:w-full ui:items-center ui:justify-between ui:mr-2">
+              <div>
+                <i class="fa fa-bullhorn"></i>&nbsp;<span translate>Slogan</span>
+              </div>
+            </div>
+          </p-accordion-header>
+          <p-accordion-content>
+            <div class="ui:mt-2 ui:mx-2">
+              <ul class="ui:list-none ui:flex ui:flex-col ui:gap-2">
+                @for (entry of homepage.slogan; track $index) {
+                  <li class="ui:flex ui:gap-3">
+                    <div class="ui:font-bold ui:w-20 ui:shrink-0">
+                      <i class="fa fa-language"></i>&nbsp;({{ entry.language }})
+                    </div>
+                    <div>{{ entry.value }}</div>
+                  </li>
+                }
+              </ul>
+            </div>
+          </p-accordion-content>
+        </p-accordion-panel>
+      }
+      <!-- placeholder ===================================================== -->
+      @if (homepage.placeholder?.length) {
+        <p-accordion-panel value="placeholder">
+          <p-accordion-header>
+            <div class="ui:flex ui:w-full ui:items-center ui:justify-between ui:mr-2">
+              <div>
+                <i class="fa fa-search"></i>&nbsp;<span translate>Placeholder</span>
+              </div>
+            </div>
+          </p-accordion-header>
+          <p-accordion-content>
+            <div class="ui:mt-2 ui:mx-2">
+              <ul class="ui:list-none ui:flex ui:flex-col ui:gap-2">
+                @for (entry of homepage.placeholder; track $index) {
+                  <li class="ui:flex ui:gap-3">
+                    <div class="ui:font-bold ui:w-20 ui:shrink-0">
+                      <i class="fa fa-language"></i>&nbsp;({{ entry.language }})
+                    </div>
+                    <div>{{ entry.value }}</div>
+                  </li>
+                }
+              </ul>
+            </div>
+          </p-accordion-content>
+        </p-accordion-panel>
+      }
+      <!-- content blocks ================================================== -->
+      @if (homepage.blocks; as blocks) {
+        @for (block of blockOrder; track block.key) {
+          @if (blocks[block.key]?.length) {
+            <p-accordion-panel [value]="block.key">
+              <p-accordion-header>
+                <div class="ui:flex ui:w-full ui:items-center ui:justify-between ui:mr-2">
+                  <div>
+                    <i class="fa fa-th-large"></i>&nbsp;<span [translate]="block.label"></span>
+                  </div>
+                </div>
+              </p-accordion-header>
+              <p-accordion-content>
+                <div class="ui:mt-2 ui:mx-2">
+                  <ul class="ui:list-none ui:flex ui:flex-col ui:gap-2">
+                    @for (entry of blocks[block.key]; track $index) {
+                      <li class="ui:flex ui:gap-3">
+                        <div class="ui:font-bold ui:w-20 ui:shrink-0">
+                          <i class="fa fa-language"></i>&nbsp;({{ entry.language }})
+                        </div>
+                        <div class="ui:grow" [innerHTML]="entry.value"></div>
+                      </li>
+                    }
+                  </ul>
+                </div>
+              </p-accordion-content>
+            </p-accordion-panel>
+          }
+        }
+      }
+    }
+  </p-accordion>
 }
