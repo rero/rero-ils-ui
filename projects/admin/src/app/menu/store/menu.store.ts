@@ -4,7 +4,6 @@ import { HttpClient } from '@angular/common/http';
 import { computed, inject } from '@angular/core';
 import { toObservable } from '@angular/core/rxjs-interop';
 import { TranslateService } from '@ngx-translate/core';
-import { CoreConfigService } from '@rero/ng-core';
 import type { EsResult } from '@rero/ng-core';
 import { AppStore, PERMISSION_OPERATOR } from '@rero/shared';
 import { patchState, signalStore, withComputed, withHooks, withMethods, withState } from '@ngrx/signals';
@@ -107,7 +106,6 @@ export const MenuStore = signalStore(
     librarySwitchStorageService = inject(LibrarySwitchStorageService),
     libraryApiService = inject(LibraryApiService),
     translateService = inject(TranslateService),
-    configService = inject(CoreConfigService),
     httpClient = inject(HttpClient)
   ) => {
     const libraryKeys = ['library', 'owner_library', 'owning_library'];
@@ -188,7 +186,7 @@ export const MenuStore = signalStore(
 
       generateMenuLanguages(): MenuItem[] {
         const currentLanguage = translateService.getCurrentLang();
-        return (configService.languages as string[])
+        return appStore.availableLanguageCodes()
           .map((language: string) => ({
             label: translateService.instant(`ui_language_${language}`),
             translateLabel: `ui_language_${language}`,

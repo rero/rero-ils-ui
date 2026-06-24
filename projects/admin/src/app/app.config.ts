@@ -18,16 +18,16 @@ import {
   ComponentCanDeactivateGuard,
   CoreConfigService,
   RecordHandleErrorService as CoreRecordHandleErrorService,
-  CoreTranslateLoader,
   httpPendingInterceptor,
   NgCoreTranslateService,
   PasswordGeneratorComponent,
   primeNGConfig,
   provideCore,
   RemoteAutocompleteService,
-  TruncateTextPipe,
+  TranslateLanguageService,
+  TruncateTextPipe
 } from '@rero/ng-core';
-import { ItemHoldingsCallNumberPipe, MainTitlePipe } from '@rero/shared';
+import { AppTranslateLanguageService, AppTranslateLoader, AppTranslateService, ItemHoldingsCallNumberPipe, MainTitlePipe } from '@rero/shared';
 import { providePrimeNG } from 'primeng/config';
 import { SelectAccountEditorWidgetComponent } from './acquisition/components/editor/widget/select-account-editor-widget/select-account-editor-widget.component';
 import { registerFormlyExtension } from './acquisition/formly/extension';
@@ -94,7 +94,7 @@ export const appConfig: ApplicationConfig = {
     ComponentCanDeactivateGuard,
     providePrimeNG(primeNGConfig),
     provideTranslateService({
-      loader: provideTranslateLoader(CoreTranslateLoader),
+      loader: provideTranslateLoader(AppTranslateLoader),
     }),
     importProvidersFrom(
       FormlyModule.forChild({
@@ -116,5 +116,7 @@ export const appConfig: ApplicationConfig = {
       }),
       LoadingBarHttpClientModule
     ),
+    { provide: NgCoreTranslateService, useExisting: AppTranslateService },
+    { provide: TranslateLanguageService, useExisting: AppTranslateLanguageService },
   ],
 };

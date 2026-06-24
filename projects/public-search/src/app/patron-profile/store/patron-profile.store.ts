@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 import { computed } from '@angular/core';
 import { patchState, signalMethod, signalStore, withComputed, withMethods, withState } from '@ngrx/signals';
-import { IPatron, IUser } from '@rero/shared';
+import { IPatron, User } from '@rero/shared';
 
 export type IMenu = { value: string; name: string; };
 
@@ -31,7 +31,7 @@ export const PatronProfileStore = signalStore(
     isMultiOrganisation: computed(() => menu().length > 1),
   })),
   withMethods((store) => ({
-    init(user: IUser): void {
+    init(user: User): void {
       const patrons = user.patrons.filter(p => p.roles.includes('patron'));
       const menu = patrons.map(p => ({ value: p.pid, name: p.organisation.name }));
       patchState(store, { patrons, menu, currentPatron: patrons[0] ?? null, currentMenu: menu[0] ?? null });

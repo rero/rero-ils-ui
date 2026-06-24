@@ -10,7 +10,7 @@ import { ExtractSourceFieldPipe } from './extract-source-field.pipe';
 describe('Pipe: ExtractFieldSource', () => {
 
   let extractSourceFieldPipe: ExtractSourceFieldPipe;
-  let settings = testUserPatronWithSettings.settings;
+  const {settings} = testUserPatronWithSettings;
 
   const metadata = {
     idref: {
@@ -43,7 +43,6 @@ describe('Pipe: ExtractFieldSource', () => {
     });
 
     extractSourceFieldPipe = TestBed.inject(ExtractSourceFieldPipe);
-    settings = testUserPatronWithSettings.settings;
   });
 
   it('create an instance', () => {

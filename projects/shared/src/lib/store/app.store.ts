@@ -11,9 +11,16 @@ import { catchError, filter, map, switchMap, tap } from 'rxjs/operators';
 import { UserApiService } from '../api/user-api.service';
 import { Organisation } from '../classes/core';
 import { RecordPermission, RecordPermissions } from '../classes/permissions';
-import { User } from '../classes/user';
+import { IPatron, IUserProfile, User } from '../classes/user';
 import { PERMISSION_OPERATOR, PERMISSIONS } from '../util/permissions';
 import { setError, setFulfilled, setPending, withRequestStatus } from './request-status-feature';
+
+export type LoggedUserResponse = {
+  settings: ISettings;
+  permissions: string[];
+  user?: IUserProfile;
+  patrons?: IPatron[];
+};
 
 export type ISettings = {
   baseUrl: string;
@@ -28,6 +35,7 @@ export type ISettings = {
     readOnly: boolean;
     readOnlyFields: string[];
   };
+  availableLanguages: { code: string; name: string }[];
 };
 
 export type AppState = {
@@ -57,19 +65,22 @@ export const AppStore = signalStore(
   withComputed((store) => ({
     isLogged: () => store.user() !== null,
     isAuthenticated: () => store.user()?.isAuthenticated ?? false,
+    availableLanguageCodes: () => store.settings()?.availableLanguages.map(l => l.code) ?? [],
   })),
   withMethods((store, userApiService = inject(UserApiService), recordService = inject(RecordService)) => ({
-    load(): Observable<User> {
+    load(): Observable<User | null> {
       patchState(store, setPending());
       return userApiService.getLoggedUser().pipe(
-        tap((loggedUser: any) => {
-          const settings: ISettings = loggedUser.settings;
-          const permissions: string[] = loggedUser.permissions ?? [];
-          delete loggedUser['settings'];
-          const user = new User(loggedUser);
+        tap((loggedUser: LoggedUserResponse) => {
+          const { settings, permissions = [], user: profile, patrons = [] } = loggedUser;
+          if (!profile) {
+            patchState(store, { user: null, settings, permissions }, setFulfilled());
+            return;
+          }
+          const user = new User({ user: profile, patrons, permissions });
           patchState(store, { user, settings, permissions }, setFulfilled());
         }),
-        map(() => store.user()!),
+        map(() => store.user()),
         catchError((error: unknown) => {
           patchState(store, setError(String(error)));
           return EMPTY;

@@ -54,7 +54,7 @@ describe('PatronProfileStore', () => {
 
     it('should handle user with no patron role', () => {
       const noPatron = new User({ ...testUserPatronMultipleOrganisationsWithSettings,
-        patrons: [{ ...testUserPatronMultipleOrganisationsWithSettings.patrons[0], roles: ['librarian'] }] });
+        patrons: [{ ...testUserPatronMultipleOrganisationsWithSettings.patrons[0], roles: ['librarian' as const] }] });
       store.init(noPatron);
       expect(store.patrons()).toHaveLength(0);
       expect(store.currentPatron()).toBeNull();

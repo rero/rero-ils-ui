@@ -1,6 +1,10 @@
 // SPDX-FileCopyrightText: Fondation RERO+
 // SPDX-License-Identifier: AGPL-3.0-or-later
-import { IUser } from '../lib/classes/user';
+import { User, UserConstructorData } from '../lib/classes/user';
+
+export function makeUser(data: UserConstructorData): User {
+  return new User(data);
+}
 
 export const testPermissions = [
   "acac-create",
@@ -61,372 +65,217 @@ export const testPermissions = [
 
 /** User with 2 patrons record */
 export const testUserPatronWithSettings = {
-  birth_date: '1969-06-07',
-  business_phone: '+39324993588',
-  city: 'Aosta',
-  country: 'it',
-  email: 'reroilstest+simonetta@gmail.com',
-  first_name: 'Simonetta',
-  gender: 'female',
-  home_phone: '+39324993585',
-  id: 8,
-  keep_history: true,
-  last_name: 'Casalini',
+  settings: {
+    baseUrl: 'https://bib.rero.ch',
+    agentSources: ['idref', 'gnd', 'rero'],
+    agentAgentTypes: { 'bf:Person': 'persons', 'bf:Organisation': 'corporate-bodies' },
+    agentLabelOrder: { de: ['gnd', 'idref', 'rero'], fallback: 'fr', fr: ['idref', 'rero', 'gnd'] },
+    globalView: 'global',
+    language: 'fr',
+    operationLogs: { documents: 'doc', holdings: 'hold', items: 'item' },
+    documentAdvancedSearch: false,
+    userProfile: { readOnly: false, readOnlyFields: [] },
+    availableLanguages: [{ code: 'fr', name: 'French' }]
+  },
+  permissions: testPermissions,
+  user: {
+    id: 8,
+    birth_date: '1969-06-07',
+    business_phone: '+39324993588',
+    city: 'Aosta',
+    country: 'it',
+    email: 'reroilstest+simonetta@gmail.com',
+    first_name: 'Simonetta',
+    gender: 'female',
+    home_phone: '+39324993585',
+    keep_history: true,
+    last_name: 'Casalini',
+    postal_code: '11100',
+    roles: ['patron'],
+    street: 'Via Croix Noire 3',
+    username: 'simonetta',
+  },
   patrons: [
     {
       pid: '1',
-      second_address: {
-        street: 'Rue des Remparts',
-        postal_code: '1950',
-        city: 'Sion',
-        country: 'sw'
-      },
+      second_address: { street: 'Rue des Remparts', postal_code: '1950', city: 'Sion', country: 'sw' },
       patron: {
         barcode: ['2010023488'],
-        type: {
-          pid: '2'
-        },
+        type: { pid: '2' },
         expiration_date: new Date('2024-01-01'),
         communication_channel: 'email',
         communication_language: 'fra',
         blocked: false,
-        libraries: [
-          {
-            pid: '1',
-            organisation: {
-              pid: '2',
-              code: 'org1',
-              name: 'Organisation 1',
-              currency: 'CHF'
-            }
-          }
-        ]
+        libraries: [{ pid: '1', organisation: { pid: '2', code: 'org1', name: 'Organisation 1', currency: 'CHF' } }]
       },
-      organisation: {
-        pid: '2',
-        code: 'org1',
-        name: 'Organisation 1',
-        currency: 'CHF'
-      },
+      organisation: { pid: '2', code: 'org1', name: 'Organisation 1', currency: 'CHF' },
       roles: ['patron']
     },
     {
       pid: '2',
-      libraries: [
-        {
-          organisation: {
-            pid: '1'
-          },
-          pid: '4'
-        }
-      ],
-      organisation: {
-        code: 'aoste',
-        currency: 'EUR',
-        name: 'R\u00e9seau des biblioth\u00e8ques du Canton d\'Aoste',
-        pid: '1'
-      },
-      roles: [
-        'system_librarian',
-        'librarian'
-      ]
+      libraries: [{ organisation: { pid: '1' }, pid: '4' }],
+      organisation: { code: 'aoste', currency: 'EUR', name: 'R\u00e9seau des biblioth\u00e8ques du Canton d\'Aoste', pid: '1' },
+      roles: ['system_librarian', 'librarian']
     }
   ],
-  postal_code: '11100',
-  roles: [
-    'patron'
-  ],
-  settings: {
-    baseUrl: 'https://bib.rero.ch',
-    agentSources: [
-      'idref',
-      'gnd',
-      'rero'
-    ],
-    agentAgentTypes: {
-      'bf:Person': 'persons',
-      'bf:Organisation': 'corporate-bodies'
-    },
-    agentLabelOrder: {
-      de: [
-        'gnd',
-        'idref',
-        'rero'
-      ],
-      fallback: 'fr',
-      fr: [
-        'idref',
-        'rero',
-        'gnd'
-      ]
-    },
-    globalView: 'global',
-    language: 'fr',
-    operationLogs: {
-      documents: 'doc',
-      holdings: 'hold',
-      items: 'item'
-    },
-    documentAdvancedSearch: false,
-    userProfile: {
-      readOnly: false,
-      readOnlyFields: []
-    }
-  },
-  street: 'Via Croix Noire 3',
-  username: 'simonetta',
-  permissions: testPermissions
 };
 
 /** User with 2 patron records (patron and librarian, system_librarian) */
-export const testUserPatronLibrarian: IUser = {
-  id: 1,
-  first_name: 'first_name',
-  last_name: 'last_name',
-  birth_date: '1966-01-01',
-  gender: 'male',
-  username: 'first_last',
-  street: 'Av. de la Gare',
-  postal_code: '1920',
-  city: 'Martigny',
-  country: 'sw',
-  keep_history: false,
-  email: 'foo@bar.com',
-  roles: ['patron'],
+export const testUserPatronLibrarian: UserConstructorData = {
+  user: {
+    id: 1,
+    first_name: 'first_name',
+    last_name: 'last_name',
+    birth_date: '1966-01-01',
+    gender: 'male',
+    username: 'first_last',
+    street: 'Av. de la Gare',
+    postal_code: '1920',
+    city: 'Martigny',
+    country: 'sw',
+    keep_history: false,
+    email: 'foo@bar.com',
+    roles: ['patron'],
+  },
   patrons: [
     {
       pid: '1',
-      second_address: {
-        street: 'Rue des Remparts',
-        postal_code: '1950',
-        city: 'Sion',
-        country: 'sw'
-      },
+      second_address: { street: 'Rue des Remparts', postal_code: '1950', city: 'Sion', country: 'sw' },
       patron: {
         barcode: ['2010023488'],
-        type: {
-          pid: '2'
-        },
+        type: { pid: '2' },
         expiration_date: new Date('2024-01-01'),
         communication_channel: 'email',
         communication_language: 'fra',
         blocked: false,
-        libraries: [
-          {
-            pid: '1',
-            organisation: {
-              pid: '2',
-              code: 'org1',
-              name: 'Organisation 1',
-              currency: 'CHF'
-            }
-          }
-        ]
+        libraries: [{ pid: '1', organisation: { pid: '2', code: 'org1', name: 'Organisation 1', currency: 'CHF' } }]
       },
-      organisation: {
-        pid: '2',
-        code: 'org1',
-        name: 'Organisation 1',
-        currency: 'CHF'
-      },
+      organisation: { pid: '2', code: 'org1', name: 'Organisation 1', currency: 'CHF' },
       roles: ['patron']
     },
     {
       pid: '1',
-      libraries: [
-        {
-          organisation: {
-            pid: '1'
-          },
-          pid: '4'
-        }
-      ],
-      organisation: {
-        code: 'aoste',
-        currency: 'EUR',
-        name: 'R\u00e9seau des biblioth\u00e8ques du Canton d\'Aoste',
-        pid: '1'
-      },
-      roles: [
-        'system_librarian',
-        'librarian'
-      ]
+      libraries: [{ organisation: { pid: '1' }, pid: '4' }],
+      organisation: { code: 'aoste', currency: 'EUR', name: 'R\u00e9seau des biblioth\u00e8ques du Canton d\'Aoste', pid: '1' },
+      roles: ['system_librarian', 'librarian']
     }
   ],
-  permissions: testPermissions
+  permissions: testPermissions,
 };
 
 
 /** User with 2 patrons record (multiple organisation) */
 export const testUserPatronMultipleOrganisationsWithSettings = {
-  birth_date: '1969-06-07',
-  business_phone: '+39324993588',
-  city: 'Aosta',
-  country: 'it',
-  email: 'reroilstest+simonetta@gmail.com',
-  first_name: 'Simonetta',
-  gender: 'female',
-  home_phone: '+39324993585',
-  id: 8,
-  keep_history: true,
-  last_name: 'Casalini',
+  settings: {
+    baseUrl: 'https://bib.rero.ch',
+    agentSources: ['idref', 'gnd', 'rero'],
+    agentAgentTypes: { 'bf:Person': 'persons', 'bf:Organisation': 'corporate-bodies' },
+    agentLabelOrder: { de: ['gnd', 'idref', 'rero'], fallback: 'fr', fr: ['idref', 'rero', 'gnd'] },
+    globalView: 'global',
+    language: 'fr',
+    operationLogs: { documents: 'doc', holdings: 'hold', items: 'item' },
+    documentAdvancedSearch: false,
+    userProfile: { readOnly: false, readOnlyFields: [] },
+    availableLanguages: [{ code: 'fr', name: 'French' }]
+  },
+  permissions: [],
+  user: {
+    id: 8,
+    birth_date: '1969-06-07',
+    business_phone: '+39324993588',
+    city: 'Aosta',
+    country: 'it',
+    email: 'reroilstest+simonetta@gmail.com',
+    first_name: 'Simonetta',
+    gender: 'female',
+    home_phone: '+39324993585',
+    keep_history: true,
+    last_name: 'Casalini',
+    postal_code: '11100',
+    roles: ['patron'],
+    street: 'Via Croix Noire 3',
+    username: 'simonetta',
+  },
   patrons: [
     {
       pid: '1',
-      second_address: {
-        street: 'Rue des Remparts',
-        postal_code: '1950',
-        city: 'Sion',
-        country: 'sw'
-      },
+      second_address: { street: 'Rue des Remparts', postal_code: '1950', city: 'Sion', country: 'sw' },
       patron: {
         barcode: ['2010023488'],
-        type: {
-          pid: '2'
-        },
+        type: { pid: '2' },
         expiration_date: new Date('2024-01-01'),
         communication_channel: 'email',
         communication_language: 'fra',
         blocked: false,
-        libraries: [
-          {
-            pid: '1',
-            organisation: {
-              pid: '2',
-              code: 'org1',
-              name: 'Organisation 1',
-              currency: 'CHF'
-            }
-          }
-        ]
+        libraries: [{ pid: '1', organisation: { pid: '2', code: 'org1', name: 'Organisation 1', currency: 'CHF' } }]
       },
-      organisation: {
-        pid: '2',
-        code: 'org1',
-        name: 'Organisation 1',
-        currency: 'CHF'
-      },
+      organisation: { pid: '2', code: 'org1', name: 'Organisation 1', currency: 'CHF' },
       roles: ['patron']
     },
     {
       pid: '10',
-      second_address: {
-        street: 'Rue des Remparts',
-        postal_code: '1950',
-        city: 'Sion',
-        country: 'sw'
-      },
+      second_address: { street: 'Rue des Remparts', postal_code: '1950', city: 'Sion', country: 'sw' },
       patron: {
         barcode: ['2010023489'],
-        type: {
-          pid: '2'
-        },
+        type: { pid: '2' },
         expiration_date: new Date('2025-01-01'),
         communication_channel: 'email',
         communication_language: 'fra',
         blocked: false,
-        libraries: [
-          {
-            pid: '1',
-            organisation: {
-              pid: '3',
-              code: 'org2',
-              name: 'Organisation 2',
-              currency: 'CHF'
-            }
-          }
-        ]
+        libraries: [{ pid: '1', organisation: { pid: '3', code: 'org2', name: 'Organisation 2', currency: 'CHF' } }]
       },
-      organisation: {
-        pid: '3',
-        code: 'org2',
-        name: 'Organisation 2',
-        currency: 'CHF'
-      },
+      organisation: { pid: '3', code: 'org2', name: 'Organisation 2', currency: 'CHF' },
       roles: ['patron']
     },
   ],
-  postal_code: '11100',
-  roles: [
-    'patron'
-  ],
+};
+
+
+export const testUserLibrarianWithSettings = {
   settings: {
     baseUrl: 'https://bib.rero.ch',
-    agentSources: [
-      'idref',
-      'gnd',
-      'rero'
-    ],
+    agentSources: ['idref', 'gnd', 'rero'],
     agentAgentTypes: {
       'bf:Person': 'persons',
       'bf:Organisation': 'corporate-bodies'
     },
     agentLabelOrder: {
-      de: [
-        'gnd',
-        'idref',
-        'rero'
-      ],
+      de: ['gnd', 'idref', 'rero'],
       fallback: 'fr',
-      fr: [
-        'idref',
-        'rero',
-        'gnd'
-      ]
+      fr: ['idref', 'rero', 'gnd']
     },
     globalView: 'global',
     language: 'fr',
-    operationLogs: {
-      documents: 'doc',
-      holdings: 'hold',
-      items: 'item'
-    },
+    operationLogs: { documents: 'doc', holdings: 'hold', items: 'item' },
     documentAdvancedSearch: false,
-    userProfile: {
-      readOnly: false,
-      readOnlyFields: []
-    }
+    userProfile: { readOnly: false, readOnlyFields: [] },
+    availableLanguages: [{ code: 'fr', name: 'French' }]
   },
-  street: 'Via Croix Noire 3',
-  username: 'simonetta',
-  permissions: []
-};
-
-
-export const testUserLibrarianWithSettings = {
-  birth_date: '1969-06-07',
-  business_phone: '+39324993588',
-  city: 'Aosta',
-  country: 'it',
-  email: 'reroilstest+simonetta@gmail.com',
-  first_name: 'Simonetta',
-  gender: 'female',
-  home_phone: '+39324993585',
-  id: '8',
-  keep_history: true,
-  last_name: 'Casalini',
+  permissions: testPermissions,
+  user: {
+    id: 8,
+    birth_date: '1969-06-07',
+    business_phone: '+39324993588',
+    city: 'Aosta',
+    country: 'it',
+    email: 'reroilstest+simonetta@gmail.com',
+    first_name: 'Simonetta',
+    gender: 'female',
+    home_phone: '+39324993585',
+    keep_history: true,
+    last_name: 'Casalini',
+    postal_code: '11100',
+    roles: ['patron'],
+    street: 'Via Croix Noire 3',
+    username: 'simonetta',
+  },
   patrons: [
     {
       pid: '2',
       libraries: [
-        {
-          organisation: {
-            pid: '1'
-          },
-          pid: '2'
-        },
-        {
-          organisation: {
-            pid: '1'
-          },
-          pid: '3'
-        },
-        {
-          organisation: {
-            pid: '1'
-          },
-          pid: '4'
-        }
+        { organisation: { pid: '1' }, pid: '2' },
+        { organisation: { pid: '1' }, pid: '3' },
+        { organisation: { pid: '1' }, pid: '4' }
       ],
       organisation: {
         code: 'aoste',
@@ -434,55 +283,9 @@ export const testUserLibrarianWithSettings = {
         name: 'R\u00e9seau des biblioth\u00e8ques du Canton d\'Aoste',
         pid: '1'
       },
-      roles: [
-        'librarian'
-      ]
+      roles: ['librarian']
     }
   ],
-  postal_code: '11100',
-  roles: [
-    'patron'
-  ],
-  settings: {
-    baseUrl: 'https://bib.rero.ch',
-    agentSources: [
-      'idref',
-      'gnd',
-      'rero'
-    ],
-    agentAgentTypes: {
-      'bf:Person': 'persons',
-      'bf:Organisation': 'corporate-bodies'
-    },
-    agentLabelOrder: {
-      de: [
-        'gnd',
-        'idref',
-        'rero'
-      ],
-      fallback: 'fr',
-      fr: [
-        'idref',
-        'rero',
-        'gnd'
-      ]
-    },
-    globalView: 'global',
-    language: 'fr',
-    operationLogs: {
-      documents: 'doc',
-      holdings: 'hold',
-      items: 'item'
-    },
-    documentAdvancedSearch: false,
-    userProfile: {
-      readOnly: false,
-      readOnlyFields: []
-    }
-  },
-  street: 'Via Croix Noire 3',
-  username: 'simonetta',
-  permissions: testPermissions
 };
 
 export const testPatron = {

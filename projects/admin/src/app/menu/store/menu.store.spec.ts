@@ -35,6 +35,7 @@ describe('MenuStore', () => {
     canAccess: vi.fn(),
     setCurrentLibrary: vi.fn(),
     permissions: vi.fn(),
+    availableLanguageCodes: vi.fn(),
   };
 
   const libraryApiSpy = {
@@ -66,6 +67,7 @@ describe('MenuStore', () => {
     appStoreSpy.canAccess.mockReturnValue(true);
     appStoreSpy.setCurrentLibrary.mockReset();
     appStoreSpy.permissions.mockReturnValue(testPermissions);
+    appStoreSpy.availableLanguageCodes.mockReturnValue(coreConfigServiceSpy.languages);
     libraryApiSpy.findByLibrariesPidAndOrderBy$.mockReturnValue(of(esResult));
     librarySwitchStorageSpy.has.mockReturnValue(false);
     librarySwitchStorageSpy.save.mockReset();

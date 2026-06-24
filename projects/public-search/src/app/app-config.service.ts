@@ -27,8 +27,8 @@ export class AppConfigService extends CoreConfigService {
     this.projectTitle = environment.projectTitle;
     this.apiBaseUrl = environment.apiBaseUrl;
     this.$refPrefix = environment.$refPrefix;
-    this.languages = environment.languages;
     this.globalViewName = environment.globalViewName;
     this.translationsURLs = environment.translationsURLs;
+    this.ngCoreAssetsUrl = environment.ngCoreAssetsUrl ?? '';
   }
 }

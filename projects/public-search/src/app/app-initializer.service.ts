@@ -4,8 +4,8 @@
 import { inject, Injectable } from '@angular/core';
 import { InterpolatableTranslationObject } from '@ngx-translate/core';
 import { NgCoreTranslateService } from '@rero/ng-core';
-import { AppStore } from '@rero/shared';
-import { Observable } from 'rxjs';
+import { AppStore, AppTranslateLanguageService } from '@rero/shared';
+import { from, Observable } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 import { AppConfigService } from './app-config.service';
 
@@ -15,8 +15,9 @@ import { AppConfigService } from './app-config.service';
 export class AppInitializerService {
 
   private appStore = inject(AppStore);
-  private translateService: NgCoreTranslateService = inject(NgCoreTranslateService);
-  private appConfigService: AppConfigService = inject(AppConfigService);
+  private translateService = inject(NgCoreTranslateService);
+  private translateLanguageService = inject(AppTranslateLanguageService);
+  private appConfigService = inject(AppConfigService);
 
   load(): Observable<InterpolatableTranslationObject> {
     return this.appStore.load().pipe(
@@ -30,11 +31,13 @@ export class AppInitializerService {
       language = this.appConfigService.defaultLanguage;
       const browserLang = this.translateService.getBrowserLang();
       if (browserLang) {
-        language = browserLang.match(this.appConfigService.languages.join('|'))
+        language = this.appStore.availableLanguageCodes().includes(browserLang)
           ? browserLang
           : this.appConfigService.defaultLanguage;
       }
     }
-    return this.translateService.use(language);
+    return from(this.translateLanguageService.loadLanguageNow(language)).pipe(
+      switchMap(() => this.translateService.use(language))
+    );
   }
 }
