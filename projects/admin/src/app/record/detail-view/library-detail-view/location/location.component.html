@@ -57,7 +57,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
           [tooltipDisabled]="permissions().delete?.can"
         />
         <ng-template #tooltipContent>
-          <span [innerHTML]="deleteInfoMessage"></span>
+          <span [innerHTML]="deleteInfoMessage()"></span>
         </ng-template>
     </div>
   </div>
