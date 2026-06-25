@@ -49,6 +49,9 @@ class OrganisationsRoute extends BaseRoute implements RouteDataTypesInterface {
         },
         detailComponent: OrganisationDetailViewComponent,
         permissions: (record: RecordData) => this.routeToolService.permissions(record, this.recordType),
+        redirectUrl: (record: RecordData) => {
+          return this.redirectUrl(record.metadata, '/records/organisations/detail');
+        },
       },
     ];
   }
