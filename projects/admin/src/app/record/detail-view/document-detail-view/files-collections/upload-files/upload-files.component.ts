@@ -25,7 +25,7 @@ type ParentRecord = {
   metadata: Record<string, unknown>;
 };
 
-type UploadedFile = {
+export type UploadedFile = {
   key: string;
   label: string;
   created: string;
@@ -114,7 +114,7 @@ export class UploadFilesComponent {
       return;
     }
     this.fileService
-      .updateMetadata(this.parentRecord()!.id, file.key, { ...(file.metadata ?? {}), metadata: { label } })
+      .updateMetadata(this.parentRecord()!.id, file.key, { metadata: { ...(file.metadata ?? {}), label } })
       .subscribe((res) => {
         const newLabel = res.metadata.label as string;
         this.files.update(files =>
