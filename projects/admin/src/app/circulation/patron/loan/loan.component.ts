@@ -71,6 +71,7 @@ export class LoanComponent {
   constructor() {
     toObservable(this.store.patron).pipe(
       takeUntilDestroyed(),
+      tap(() => this._resetPatronLoanState()),
       filter((patron): patron is User => !!patron?.pid)
     ).subscribe(patron => {
       const loanedItems$ = this.patronService.getItems(patron.pid!, this.sortCriteria());
@@ -460,5 +461,13 @@ export class LoanComponent {
     this.searchInputDisabled.set(false);
     this.searchText.set('');
     setTimeout(() => this.searchInputFocus.set(true));
+  }
+
+  private _resetPatronLoanState(): void {
+    this.checkedOutItems.set([]);
+    this.checkedInItems.set([]);
+    this.pickupItems.set([]);
+    this.searchText.set('');
+    this.searchInputDisabled.set(false);
   }
 }
