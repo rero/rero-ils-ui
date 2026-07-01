@@ -35,4 +35,20 @@ describe('KeyboardShortcutsService', () => {
     service.initializeShortcuts();
     expect(hotkeys.getShortcuts().length > 0).toBe(true);
   });
+
+  it('should define a shortcut to focus the result list search input', () => {
+    service.initializeShortcuts();
+    const shortcuts = hotkeys.getHotkeys();
+    expect(shortcuts.some(shortcut => shortcut.keys === 'q')).toBe(true);
+  });
+
+  it('should focus the search input with the q shortcut', () => {
+    document.body.innerHTML = '<input id="search" />';
+    const input = document.querySelector('#search') as HTMLInputElement;
+
+    service.initializeShortcuts();
+    document.documentElement.dispatchEvent(new KeyboardEvent('keydown', { key: 'q' }));
+
+    expect(document.activeElement).toBe(input);
+  });
 });
