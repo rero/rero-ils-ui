@@ -40,6 +40,18 @@ export class KeyboardShortcutsService {
     });
 
     this.hotKeys.addShortcut({
+      keys: 'q',
+      group: this.translateService.instant('Global shortcuts'),
+      description: this.translateService.instant('Set focus on the result list search input')
+    }).subscribe(_e => {
+      const inputField = document.querySelector(
+        '#search'
+      ) as HTMLInputElement | null;
+
+      inputField?.focus();
+    });
+
+    this.hotKeys.addShortcut({
       keys: 'h',
       group: this.translateService.instant('Global shortcuts'),
       description: this.translateService.instant('Open the global help page')
