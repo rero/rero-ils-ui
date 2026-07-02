@@ -13,6 +13,7 @@ import { cloneDeep } from 'lodash-es';
 import { forkJoin } from 'rxjs';
 import { ItemRequestComponent } from '../../item-request/item-request.component';
 import { RecordMaskedComponent } from '../../../record-masked/record-masked.component';
+import { DocumentDetailStore } from '../../store/document-detail.store';
 import { RouterLink } from '@angular/router';
 import { HoldingItemNoteComponent } from '../holding-item-note/holding-item-note.component';
 import { HoldingItemTemporaryItemTypeComponent } from '../holding-item-temporary-item-type/holding-item-temporary-item-type.component';
@@ -36,6 +37,7 @@ export class DefaultHoldingItemComponent implements OnInit {
   protected appStore = inject(AppStore);
   protected itemService: ItemsService = inject(ItemsService);
   protected translateService: TranslateService = inject(TranslateService);
+  protected documentDetailStore = inject(DocumentDetailStore);
   private dialogService: DialogService = inject(DialogService);
 
   // COMPONENT ATTRIBUTES =====================================================

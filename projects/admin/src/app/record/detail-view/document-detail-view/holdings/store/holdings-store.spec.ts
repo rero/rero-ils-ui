@@ -5,21 +5,33 @@ import { provideHttpClient } from "@angular/common/http";
 import { provideHttpClientTesting } from "@angular/common/http/testing";
 import { TestBed } from "@angular/core/testing";
 import { TranslateModule } from "@ngx-translate/core";
-import { Error, RecordUiService } from "@rero/ng-core";
+import { Error } from "@rero/ng-core";
 import type { EsResult } from "@rero/ng-core";
 import { AppStore, testUserLibrarianWithSettings, User } from "@rero/shared";
 import { ConfirmationService, MessageService } from "primeng/api";
 import { Observable, of, Subject } from "rxjs";
 import { HoldingsApiService } from "../../../../../api/holdings-api.service";
+import { DocumentDetailStore } from "../../store/document-detail.store";
 import { HoldingsStore } from "./holdings-store";
 
 describe('Holdings Store', () => {
+  let deleteResult$: Subject<boolean>;
+  let documentDetailStore: {
+    setHoldingsTotal: ReturnType<typeof vi.fn>;
+    deleteChildRecord: ReturnType<typeof vi.fn>;
+  };
+
   beforeEach(() => {
     vi.useFakeTimers();
+    deleteResult$ = new Subject<boolean>();
+    documentDetailStore = {
+      setHoldingsTotal: vi.fn(),
+      deleteChildRecord: vi.fn().mockReturnValue(deleteResult$),
+    };
     TestBed.configureTestingModule({
       providers: [
         HoldingsStore,
-        { provide: RecordUiService, useValue: { deleteRecord: vi.fn().mockReturnValue(new Subject()) } },
+        { provide: DocumentDetailStore, useValue: documentDetailStore },
         ConfirmationService,
         MessageService,
         UserServiceMock,
@@ -49,6 +61,7 @@ describe('Holdings Store', () => {
     expect(store.holdingsCurrentOrganisation()).toHaveLength(9);
     expect(store.holdingsOtherOrganisation()).toHaveLength(3);
     expect(store.filter()).toHaveLength(2);
+    expect(documentDetailStore.setHoldingsTotal).toHaveBeenCalledWith(12);
   });
 
   it('should return the filtered holdings', async () => {
@@ -77,6 +90,46 @@ describe('Holdings Store', () => {
     const record = store.holdings()[2];
     store.delete(record);
     expect(store.record()).toEqual(record);
+    expect(documentDetailStore.deleteChildRecord).toHaveBeenCalledOnce();
+    expect(documentDetailStore.deleteChildRecord).toHaveBeenCalledWith('holdings', record.metadata.pid);
+  });
+
+  it('should notify document detail when holding delete succeeds', async () => {
+    const store = TestBed.inject(HoldingsStore);
+    store.setDocument(document);
+    await vi.advanceTimersByTimeAsync(500);
+    const record = store.holdings()[2];
+    store.delete(record);
+    deleteResult$.next(true);
+    deleteResult$.complete();
+    expect(store.holdings()).toHaveLength(11);
+    expect(store.total()).toEqual(11);
+    expect(store.record()).toBeUndefined();
+    expect(documentDetailStore.setHoldingsTotal).toHaveBeenCalledWith(11);
+  });
+
+  it('should remove a hidden standard holding and update document holdings total', async () => {
+    const store = TestBed.inject(HoldingsStore);
+    store.setDocument(document);
+    await vi.advanceTimersByTimeAsync(500);
+    expect(store.holdings()).toHaveLength(12);
+    store.removeHiddenStandardHolding(store.holdings()[2].metadata.pid);
+    expect(store.holdings()).toHaveLength(11);
+    expect(store.total()).toEqual(11);
+    expect(documentDetailStore.setHoldingsTotal).toHaveBeenCalledWith(11);
+  });
+
+  it('should not notify document detail when holding delete fails', async () => {
+    const store = TestBed.inject(HoldingsStore);
+    store.setDocument(document);
+    await vi.advanceTimersByTimeAsync(500);
+    const record = store.holdings()[2];
+    store.delete(record);
+    deleteResult$.next(false);
+    deleteResult$.complete();
+    expect(store.holdings()).toHaveLength(12);
+    expect(store.record()).toEqual(record);
+    expect(documentDetailStore.setHoldingsTotal).not.toHaveBeenCalledWith(11);
   });
 });
 

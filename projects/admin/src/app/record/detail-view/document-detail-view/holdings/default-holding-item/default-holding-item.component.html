@@ -127,8 +127,8 @@ SPDX-License-Identifier: AGPL-3.0-or-later
           [title]="'Delete'|translate"
           [pTooltip]="tooltipContent"
           tooltipPosition="top"
-          [disabled]="!permissions().delete?.can"
-          [tooltipDisabled]="permissions().delete?.can"
+          [disabled]="documentDetailStore.isDeletingChild() || !permissions().delete?.can"
+          [tooltipDisabled]="documentDetailStore.isDeletingChild() || permissions().delete?.can"
           (onClick)="delete()"
         />
         <ng-template #tooltipContent>

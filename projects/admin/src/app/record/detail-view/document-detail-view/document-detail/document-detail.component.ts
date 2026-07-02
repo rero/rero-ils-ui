@@ -1,9 +1,12 @@
 // SPDX-FileCopyrightText: Fondation RERO+
 // SPDX-License-Identifier: AGPL-3.0-or-later
-import { Component, inject, ChangeDetectionStrategy, OnInit} from '@angular/core';
+import { Component, inject, ChangeDetectionStrategy, OnInit } from '@angular/core';
+import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { IdentifierTypes } from '@app/admin/classes/identifiers';
+import { RecordPermissions } from '@app/admin/classes/permissions';
+import { RecordPermissionService } from '@app/admin/service/record-permission.service';
 import { OperationLogsDialogComponent, PermissionsDirective } from '@rero/shared';
-import { DetailComponent, DetailButtonComponent, ErrorComponent } from '@rero/ng-core';
+import { ActionStatus, DetailComponent, DetailButtonComponent, ErrorComponent } from '@rero/ng-core';
 import { AppStore, IPermissions, PERMISSIONS } from '@rero/shared';
 import { cloneDeep } from 'lodash-es';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
@@ -12,21 +15,54 @@ import { Bind } from 'primeng/bind';
 import { Button } from 'primeng/button';
 import { RouterLink } from '@angular/router';
 import { TranslatePipe } from '@ngx-translate/core';
+import { combineLatest, filter, map, of, switchMap, tap } from 'rxjs';
+import { DocumentDetailStore } from '../store/document-detail.store';
 
 @Component({
-    selector: 'admin-document-detail',
-    templateUrl: './document-detail.component.html',
-    imports: [DetailButtonComponent, OperationLogsDialogComponent, Bind, Button, PermissionsDirective, RouterLink, ErrorComponent, TranslatePipe],
+  selector: 'admin-document-detail',
+  templateUrl: './document-detail.component.html',
+  providers: [DocumentDetailStore],
+  imports: [DetailButtonComponent, OperationLogsDialogComponent, Bind, Button, PermissionsDirective, RouterLink, ErrorComponent, TranslatePipe],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class DocumentDetailComponent extends DetailComponent implements OnInit {
 
   private dialogService: DialogService = inject(DialogService);
+  private documentDetailStore = inject(DocumentDetailStore);
+  private recordPermissionService = inject(RecordPermissionService);
   protected appStore = inject(AppStore);
 
   fileTitle = 'files';
   /** return all available permissions for current user */
   permissions: IPermissions = PERMISSIONS;
+  private activeDocumentPid: string | null = null;
+
+  readonly refreshedDeleteStatus = toSignal(
+    combineLatest([
+      toObservable(this.record).pipe(
+        tap((record) => this._clearHoldingsTotalOnDocumentChange(record?.metadata?.pid))
+      ),
+      toObservable(this.documentDetailStore.holdingsTotal),
+    ]).pipe(
+      filter(([record, holdingsTotal]) => !record?.metadata?.pid || holdingsTotal != null),
+      switchMap(([record, holdingsTotal]) => {
+        const pid = record?.metadata?.pid;
+        if (!pid) {
+          return of(this.deleteStatus());
+        }
+        if (holdingsTotal! > 0) {
+          return of({
+            can: false,
+            message: this.recordPermissionService.generateTooltipMessage({ links: { holdings: holdingsTotal! } }, 'delete'),
+          });
+        }
+        return this.recordPermissionService
+          .getPermission('documents', String(pid))
+          .pipe(map((permission) => this._deletePermissionToActionStatus(permission)));
+      })
+    ),
+    { initialValue: { can: false, message: '' } }
+  );
 
   /** Mapping types for import */
   private mappingTypes = {
@@ -169,5 +205,23 @@ export class DocumentDetailComponent extends DetailComponent implements OnInit {
       query.push(`identifiedBy.source:"${identifier.source}"`);
     }
     return `(${query.join(' AND ')})`;
+  }
+
+  private _clearHoldingsTotalOnDocumentChange(pid: any): void {
+    const documentPid = pid == null ? null : String(pid);
+    if (documentPid !== this.activeDocumentPid) {
+      this.activeDocumentPid = documentPid;
+      this.documentDetailStore.clearHoldingsTotal();
+    }
+  }
+
+  private _deletePermissionToActionStatus(permission: RecordPermissions): ActionStatus {
+    const canDelete = permission.delete?.can ?? false;
+    return {
+      can: canDelete,
+      message: canDelete
+        ? ''
+        : this.recordPermissionService.generateTooltipMessage(permission.delete?.reasons, 'delete'),
+    };
   }
 }
