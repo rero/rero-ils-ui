@@ -3,6 +3,16 @@ SPDX-FileCopyrightText: Fondation RERO+
 SPDX-License-Identifier: AGPL-3.0-or-later
 -->
 <div>
+  <p-confirmDialog
+    key="document-detail-child-delete"
+    [acceptLabel]="'Delete' | translate"
+    [rejectLabel]="'Cancel' | translate"
+    [message]="'Do you really want to delete this record?' | translate"
+    [header]="'Confirmation' | translate"
+    icon="fa fa-exclamation-triangle fa-2x core:text-red-500"
+    acceptButtonStyleClass="core:bg-red-500 core:border-red-500"
+    rejectButtonStyleClass="p-button-text"
+  />
   @if (record()) {
     <ng-core-detail-button
       [record]="record() ?? null"
@@ -10,7 +20,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
       [adminMode]="adminMode()"
       [useStatus]="useStatus()"
       [updateStatus]="updateStatus()"
-      [deleteStatus]="deleteStatus()"
+      [deleteStatus]="refreshedDeleteStatus()"
       (recordEvent)="recordEvent($event)"
       (deleteMessageEvent)="showDeleteMessage($event)"
     >

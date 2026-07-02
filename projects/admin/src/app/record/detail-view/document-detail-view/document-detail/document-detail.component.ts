@@ -8,24 +8,29 @@ import { DetailButtonComponent, DetailComponent, ErrorComponent } from '@rero/ng
 import { AppStore, IPermissions, OperationLogsDialogComponent, PERMISSIONS, PermissionsDirective } from '@rero/shared';
 import { cloneDeep } from 'lodash-es';
 import { Bind } from 'primeng/bind';
-import { Button, ButtonDirective } from 'primeng/button';
+import { Button } from 'primeng/button';
+import { ConfirmDialog } from 'primeng/confirmdialog';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { DialogImportComponent } from '../dialog-import/dialog-import.component';
+import { DocumentDetailStore } from '../store/document-detail.store';
 
 @Component({
-    selector: 'admin-document-detail',
-    templateUrl: './document-detail.component.html',
-    imports: [DetailButtonComponent, OperationLogsDialogComponent, Bind, Button, PermissionsDirective, RouterLink, ErrorComponent, TranslatePipe, ButtonDirective],
+  selector: 'admin-document-detail',
+  templateUrl: './document-detail.component.html',
+  providers: [DocumentDetailStore],
+  imports: [DetailButtonComponent, OperationLogsDialogComponent, Bind, Button, ConfirmDialog, PermissionsDirective, RouterLink, ErrorComponent, TranslatePipe],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class DocumentDetailComponent extends DetailComponent implements OnInit {
 
   private dialogService: DialogService = inject(DialogService);
+  private documentDetailStore = inject(DocumentDetailStore);
   protected appStore = inject(AppStore);
 
   fileTitle = 'files';
   /** return all available permissions for current user */
   permissions: IPermissions = PERMISSIONS;
+  readonly refreshedDeleteStatus = this.documentDetailStore.refreshedDeleteStatus(this.record, this.deleteStatus);
 
   /** Mapping types for import */
   private mappingTypes = {
@@ -169,4 +174,5 @@ export class DocumentDetailComponent extends DetailComponent implements OnInit {
     }
     return `(${query.join(' AND ')})`;
   }
+
 }
