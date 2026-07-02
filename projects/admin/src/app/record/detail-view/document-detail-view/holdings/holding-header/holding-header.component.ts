@@ -15,6 +15,7 @@ import { RouterLink } from '@angular/router';
 import { Tooltip } from 'primeng/tooltip';
 import { HoldingDetailComponent } from '../holding-detail/holding-detail.component';
 import { Nl2brPipe } from '@rero/ng-core';
+import { DocumentDetailStore } from '../../store/document-detail.store';
 
 @Component({
     selector: 'admin-holding-header',
@@ -28,6 +29,7 @@ export class HoldingHeaderComponent implements OnInit {
   private appStore = inject(AppStore);
   private translateService: TranslateService = inject(TranslateService);
   private dialogService: DialogService = inject(DialogService);
+  protected documentDetailStore = inject(DocumentDetailStore);
 
   holding = input.required<EsRecord>();
   isCurrentOrganisation = input.required<boolean>();

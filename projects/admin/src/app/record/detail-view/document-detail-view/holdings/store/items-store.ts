@@ -4,11 +4,12 @@ import { computed, inject } from "@angular/core";
 import { toObservable } from "@angular/core/rxjs-interop";
 import { patchState, signalMethod, signalStore, withComputed, withHooks, withMethods, withProps, withState } from "@ngrx/signals";
 import { rxMethod } from "@ngrx/signals/rxjs-interop";
-import { RecordUiService } from "@rero/ng-core";
 import { EsRecord, EsResult, nonNullable, Pager, setFulfilled, setPending, withPaginator, withRequestStatus } from "@rero/shared";
 import { PaginatorState } from "primeng/paginator";
 import { debounceTime, pipe, switchMap, tap } from "rxjs";
 import { ItemApiService } from "../../../../../api/item-api.service";
+import { DocumentDetailStore } from "../../store/document-detail.store";
+import { HoldingsStore } from "./holdings-store";
 
 type ItemsState = {
   items: EsRecord[],
@@ -40,7 +41,8 @@ export const ItemsStore = signalStore(
   withPaginator(initialPagerConfig),
   withRequestStatus(),
   withProps(() => ({
-    recordUiService: inject(RecordUiService),
+    documentDetailStore: inject(DocumentDetailStore),
+    holdingsStore: inject(HoldingsStore),
     itemsApiService: inject(ItemApiService),
   })),
   withComputed((store) => ({
@@ -88,21 +90,26 @@ export const ItemsStore = signalStore(
     delete: rxMethod<EsRecord>(
       pipe(
         tap((record: EsRecord) => patchState(store, { record })),
-        switchMap(() => store.recordUiService.deleteRecord('items', store.record().metadata.pid)),
+        switchMap(() => store.documentDetailStore.deleteChildRecord('items', store.record().metadata.pid)),
         tap((success: boolean) => {
           if (success) {
             const rows = store.pager.rows();
+            const total = store.total() - 1;
             const newTotal = store.filterTotal() - 1;
             const lastPage = Math.max(1, Math.ceil(newTotal / rows));
             const page = Math.min(store.pager.page(), lastPage);
             const deletedPid = store.record()?.metadata.pid;
+            const holdingBecomesHidden = store.holdingType() === 'standard' && total === 0;
             patchState(store, {
               items: store.items().filter((h: EsRecord) => h.metadata.pid !== deletedPid),
-              total: store.total() - 1,
+              total,
               filterTotal: newTotal,
               record: undefined,
               pager: { ...store.pager(), page, first: (page - 1) * rows + 1 }
             });
+            if (holdingBecomesHidden) {
+              store.holdingsStore.removeHiddenStandardHolding(store.holdings().metadata.pid);
+            }
           }
         })
       )

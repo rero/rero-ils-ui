@@ -5,20 +5,31 @@ import { provideHttpClient } from "@angular/common/http";
 import { provideHttpClientTesting } from "@angular/common/http/testing";
 import { TestBed } from "@angular/core/testing";
 import { TranslateModule } from "@ngx-translate/core";
-import { RecordUiService } from "@rero/ng-core";
 import { EsRecord, EsResult } from "@rero/shared";
 import { ConfirmationService, MessageService } from "primeng/api";
 import { Observable, of } from "rxjs";
 import { ItemApiService } from "../../../../../api/item-api.service";
+import { DocumentDetailStore } from "../../store/document-detail.store";
+import { HoldingsStore } from "./holdings-store";
 import { ItemsStore } from "./items-store";
 
 describe('Items Store', () => {
+  let documentDetailStore: {
+    deleteChildRecord: ReturnType<typeof vi.fn>;
+  };
+  let holdingsStore: { removeHiddenStandardHolding: ReturnType<typeof vi.fn> };
+
   beforeEach(() => {
     vi.useFakeTimers();
+    documentDetailStore = {
+      deleteChildRecord: vi.fn().mockReturnValue(of(true)),
+    };
+    holdingsStore = { removeHiddenStandardHolding: vi.fn() };
     TestBed.configureTestingModule({
       providers: [
         ItemsStore,
-        { provide: RecordUiService, useValue: { deleteRecord: vi.fn().mockReturnValue(of(true)) } },
+        { provide: DocumentDetailStore, useValue: documentDetailStore },
+        { provide: HoldingsStore, useValue: holdingsStore },
         ConfirmationService,
         MessageService,
         ItemApiServiceMock,
@@ -80,6 +91,35 @@ describe('Items Store', () => {
     expect(store.filterTotal()).toEqual(11);
     expect(store.record()).toBeUndefined();
     expect(store.pager.page()).toEqual(1);
+    expect(holdingsStore.removeHiddenStandardHolding).not.toHaveBeenCalled();
+    expect(documentDetailStore.deleteChildRecord).toHaveBeenCalledOnce();
+    expect(documentDetailStore.deleteChildRecord).toHaveBeenCalledWith('items', record.metadata.pid);
+  });
+
+  it('should remove the hidden holding when last item of a standard holding is deleted', async () => {
+    TestBed.inject(ItemApiServiceMock).itemsCount = 1;
+    const store = TestBed.inject(ItemsStore);
+    store.setHoldings(holdings);
+    await vi.advanceTimersByTimeAsync(500);
+    store.delete(store.items()[0]);
+    await vi.advanceTimersByTimeAsync(0);
+    expect(store.total()).toEqual(0);
+    expect(holdingsStore.removeHiddenStandardHolding).toHaveBeenCalledOnce();
+    expect(holdingsStore.removeHiddenStandardHolding).toHaveBeenCalledWith('199');
+  });
+
+  it('should not notify document detail when item delete fails', async () => {
+    documentDetailStore.deleteChildRecord.mockReturnValue(of(false));
+    const store = TestBed.inject(ItemsStore);
+    store.setHoldings(holdings);
+    await vi.advanceTimersByTimeAsync(500);
+    const record = store.items()[2];
+    store.delete(record);
+    await vi.advanceTimersByTimeAsync(0);
+    expect(store.items()).toHaveLength(10);
+    expect(store.total()).toEqual(12);
+    expect(holdingsStore.removeHiddenStandardHolding).not.toHaveBeenCalled();
+    expect(documentDetailStore.deleteChildRecord).toHaveBeenCalledOnce();
   });
 
   it('should go back to previous page when last item on page is deleted', async () => {
@@ -146,9 +186,11 @@ const holdings = {
 };
 
 class ItemApiServiceMock {
+  itemsCount = 12;
+
   getItemsByHoldings(holdings: Partial<EsRecord>, page: number, itemsPerPage = 10, filter = ''): Observable<EsResult> {
     const items = [];
-    for (let i = 0; i < 12; i++) {
+    for (let i = 0; i < this.itemsCount; i++) {
       items.push({
         "created": "2025-11-03T12:46:25.825446+00:00",
         "id": `${i}`,
