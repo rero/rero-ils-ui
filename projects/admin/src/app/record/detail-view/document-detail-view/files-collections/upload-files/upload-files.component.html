@@ -65,7 +65,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
         (ngModelChange)="filterText.set($event)"
       />
       <p-inputGroupAddon>
-        <i class="fa fa-filter"></i>
+        <i class="fa-solid fa-filter"></i>
       </p-inputGroupAddon>
     </p-inputGroup>
 
@@ -92,7 +92,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
             title="download"
             [href]="toRelative(file.links.content)"
             download
-            >{{ file.key }} <i class="fa fa-download"></i
+            >{{ file.key }} <i class="fa-solid fa-download"></i
           ></a>
         </div>
         <div class="ui:col-span-5">
@@ -114,7 +114,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
               (onClick)="updateLabel(file, inputLabel.value)"
               outlined
               type="button"
-              icon="fa fa-save"
+              icon="fa-solid fa-floppy-disk"
             ></p-button>
           </p-inputGroup>
         </div>
@@ -125,7 +125,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
             severity="danger"
             (onClick)="deleteFile(file)"
             [title]="'remove' | translate"
-            icon="fa fa-trash"
+            icon="fa-solid fa-trash-can"
           />
         </div>
       </div>
@@ -135,5 +135,5 @@ SPDX-License-Identifier: AGPL-3.0-or-later
   } }
 </div>
 } @else {
-<i class="fa fa-spinner fa-spin"></i>
+<i class="fa-solid fa-spinner fa-spin"></i>
 }

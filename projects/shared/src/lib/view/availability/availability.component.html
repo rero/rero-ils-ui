@@ -6,7 +6,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 @if (availability(); as data) {
   <div [class]="class()">
     <i
-      class="fa fa-circle ui:mr-1"
+      class="fa-solid fa-circle ui:mr-1"
       [ngClass]="{'text-success': data.available, 'text-error': !data.available}"
     ></i>
     @switch (recordType()) {
@@ -31,6 +31,6 @@ SPDX-License-Identifier: AGPL-3.0-or-later
   </div>
 } @else {
   <div class="ui:flex ui:my-2">
-    <i class="fa fa-spinner"></i>
+    <i class="fa-solid fa-spinner"></i>
   </div>
 }

@@ -118,13 +118,13 @@ class CirculationPoliciesRoute extends BaseRoute implements RouteDataTypesInterf
           {
             label: _('Relevance'),
             value: 'bestmatch',
-            icon: 'fa fa-sort-amount-desc',
+            icon: 'fa-solid fa-arrow-down-wide-short',
             defaultQuery: true,
           },
           {
             label: _('Name'),
             value: 'name',
-            icon: 'fa fa-sort-alpha-asc',
+            icon: 'fa-solid fa-arrow-down-a-z',
             defaultNoQuery: true,
           },
         ],

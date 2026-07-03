@@ -22,14 +22,14 @@ describe('FaIconClassPipe', () => {
   });
 
   it('should return the class of the pdf icon', () => {
-    expect(pipe.transform('application/pdf', 'file')).toEqual('fa-file-pdf-o');
+    expect(pipe.transform('application/pdf', 'file')).toEqual('fa-regular fa-file-pdf');
   });
 
   it('should return the icon class for an audio file', () => {
-    expect(pipe.transform('audio/mpeg', 'file')).toEqual('fa-file-audio-o');
+    expect(pipe.transform('audio/mpeg', 'file')).toEqual('fa-regular fa-file-audio');
   });
 
   it('should return the default class', () => {
-    expect(pipe.transform('application/page', 'file')).toEqual('fa-file-o');
+    expect(pipe.transform('application/page', 'file')).toEqual('fa-regular fa-file');
   });
 });

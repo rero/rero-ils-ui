@@ -61,7 +61,7 @@ describe('MaskedComponent', () => {
     fixture.detectChanges();
     const icon = fixture.nativeElement.querySelector('i');
     expect(icon.attributes.title.textContent).toContain('Masked');
-    expect(icon.attributes.class.textContent).toContain('fa-eye-slash');
+    expect(icon.attributes.class.textContent).toContain('fa-solid fa-eye-slash');
   });
 
   it('should return a eye green icon (record with flag _masked false)', () => {
@@ -69,7 +69,7 @@ describe('MaskedComponent', () => {
     fixture.detectChanges();
     const icon = fixture.nativeElement.querySelector('i');
     expect(icon.attributes.title.textContent).toContain('No masked');
-    expect(icon.attributes.class.textContent).toContain('fa-eye');
+    expect(icon.attributes.class.textContent).toContain('fa-solid fa-eye');
   });
 
   it('should return a eye gree icon (record without flag _masked)', () => {
@@ -77,7 +77,7 @@ describe('MaskedComponent', () => {
     fixture.detectChanges();
     const icon = fixture.nativeElement.querySelector('i');
     expect(icon.attributes.title.textContent).toContain('No masked');
-    expect(icon.attributes.class.textContent).toContain('fa-eye');
+    expect(icon.attributes.class.textContent).toContain('fa-solid fa-eye');
   });
 
   it('should return a bullet red icon (record with flag _masked true)', () => {
@@ -85,7 +85,7 @@ describe('MaskedComponent', () => {
     fixture.detectChanges();
     const icon = fixture.nativeElement.querySelector('i');
     expect(icon.attributes.title.textContent).toContain('Masked');
-    expect(icon.attributes.class.textContent).toContain('fa fa-eye-slash text-error');
+    expect(icon.attributes.class.textContent).toContain('fa-solid fa-eye-slash text-error');
   });
 
   it('should return a eye green icon (record without flag _masked)', () => {
@@ -93,7 +93,7 @@ describe('MaskedComponent', () => {
     fixture.detectChanges();
     const icon = fixture.nativeElement.querySelector('i');
     expect(icon.attributes.title.textContent).toContain('No masked');
-    expect(icon.attributes.class.textContent).toContain('fa fa-eye text-success');
+    expect(icon.attributes.class.textContent).toContain('fa-solid fa-eye text-success');
   });
 
   it('should return a bullet red icon with label (record with flag _masked true)', () => {

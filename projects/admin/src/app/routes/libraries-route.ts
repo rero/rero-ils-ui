@@ -93,19 +93,19 @@ class LibrariesRoute extends BaseRoute implements RouteDataTypesInterface {
           {
             label: _('Relevance'),
             value: 'bestmatch',
-            icon: 'fa fa-sort-amount-desc',
+            icon: 'fa-solid fa-arrow-down-wide-short',
             defaultQuery: true,
           },
           {
             label: _('Name'),
             value: 'name',
-            icon: 'fa fa-sort-alpha-asc',
+            icon: 'fa-solid fa-arrow-down-a-z',
             defaultNoQuery: true,
           },
           {
             label: _('Code'),
             value: 'code',
-            icon: 'fa fa-sort-alpha-asc',
+            icon: 'fa-solid fa-arrow-down-a-z',
           },
         ],
         showFacetsIfNoResults: true,

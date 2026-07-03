@@ -42,7 +42,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
           @if (!requestInProgress()) {
             {{ 'New request' | translate }}
           } @else {
-            <i class="fa fa-spinner fa-spin"></i>&nbsp;
+            <i class="fa-solid fa-spinner fa-spin"></i>&nbsp;
             {{ 'Request in progress' | translate }}
           }
         </p-button>
@@ -51,5 +51,5 @@ SPDX-License-Identifier: AGPL-3.0-or-later
   </form>
   </div>
 } @placeholder {
-  <i class="fa fa-spin fa-spinner"></i>&nbsp;{{ 'Loading in progress…' | translate }}
+  <i class="fa-solid fa-spin fa-spinner"></i>&nbsp;{{ 'Loading in progress…' | translate }}
 }

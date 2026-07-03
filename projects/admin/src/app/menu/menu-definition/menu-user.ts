@@ -8,7 +8,7 @@ export const MENU_USER: MenuItem[] = [
   {
     label: 'Help',
     translateLabel: 'Help',
-    icon: 'fa fa-info',
+    icon: 'fa-solid fa-circle-question',
     id: MENU_IDS.USER.HELP,
     url: '/help',
     target: '_blank'
@@ -17,27 +17,27 @@ export const MENU_USER: MenuItem[] = [
     label: '$symbolName',
     translateLabel: '$symbolName',
     id: MENU_IDS.USER.MENU,
-    icon: 'fa fa-user',
+    icon: 'fa-solid fa-user',
     items: [
       {
         label: 'Language',
         translateLabel: 'Language',
         id: MENU_IDS.USER.LANGUAGE,
-        icon: 'fa fa-language',
+        icon: 'fa-solid fa-language',
         items: [],
       },
       {
         label: 'Public interface',
         translateLabel: 'Public interface',
         id: MENU_IDS.USER.PUBLIC_INTERFACE,
-        icon: 'fa fa-users',
+        icon: 'fa-solid fa-users',
         url: '/',
       },
       {
         label: 'Logout',
         translateLabel: 'Logout',
         id: MENU_IDS.USER.LOGOUT,
-        icon: 'fa fa-sign-out',
+        icon: 'fa-solid fa-right-from-bracket',
         url: '/signout',
       }
     ]

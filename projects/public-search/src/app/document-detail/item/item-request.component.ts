@@ -22,7 +22,7 @@ import { canRequest } from '../model/can-request-model';
     tooltipPosition="top"
     (onClick)="request.emit(true)"
     >
-    <i class="fa fa-cart-arrow-down ui:mr-2"></i>
+    <i class="fa-solid fa-cart-arrow-down ui:mr-2"></i>
     {{ 'Request' | translate }}
   </p-button>
   `,

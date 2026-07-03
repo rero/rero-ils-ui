@@ -85,7 +85,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
     @if (permissions()) {
       <div class="ui:flex ui:gap-1">
         <p-button
-          icon="fa fa-shopping-basket"
+          icon="fa-solid fa-basket-shopping"
           class="ui:pointer-events-auto"
           size="small"
           [title]="'Item request'|translate"
@@ -102,7 +102,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
         @if (permissions()?.switchLocation?.can) {
           <p-button
-            icon="fa fa-random"
+            icon="fa-solid fa-shuffle"
             size="small"
             [title]="'Switch location'|translate"
             [outlined]="true"
@@ -111,7 +111,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
         }
         @if (permissions()?.update?.can) {
           <p-button
-            icon="fa fa-pencil"
+            icon="fa-solid fa-pencil"
             size="small"
             [title]="'Edit'|translate"
             [outlined]="true"
@@ -119,7 +119,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
           />
         }
         <p-button
-          icon="fa fa-trash"
+          icon="fa-solid fa-trash-can"
           class="ui:pointer-events-auto"
           size="small"
           [outlined]="true"

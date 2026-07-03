@@ -16,17 +16,17 @@ SPDX-License-Identifier: AGPL-3.0-or-later
     <!-- ITEM AVAILABILITY -->
     <dt translate>Items availability</dt>
     <dd>
-      <i class="fa" aria-hidden="true" [ngClass]="{
+      <i class="fa-solid" aria-hidden="true" [ngClass]="{
         'fa-check text-success': !record.metadata.negative_availability,
-        'fa-times text-error': record.metadata.negative_availability
+        'fa-xmark text-error': record.metadata.negative_availability
       }"></i>
     </dd>
     <!-- REMOVE TEMPORARY ITEM TYPE ON SCAN -->
     <dt translate>Remove temporary item type on check-in/checkout</dt>
     <dd>
-      <i class="fa" aria-hidden="true" [ngClass]="{
+      <i class="fa-solid" aria-hidden="true" [ngClass]="{
         'fa-check text-success': record.metadata.remove_temporary_item_type_on_scan,
-        'fa-times text-error': !record.metadata.remove_temporary_item_type_on_scan
+        'fa-xmark text-error': !record.metadata.remove_temporary_item_type_on_scan
       }"></i>
     </dd>
   </dl>
@@ -39,7 +39,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
           @for (status of record.metadata.displayed_status; track $index) {
             <li>
               <div class="ui:font-bold ui:w-20 ui:inline-block">
-                <i class="fa fa-language"></i>&nbsp;({{ status.language }})
+                <i class="fa-solid fa-language"></i>&nbsp;({{ status.language }})
               </div>
               {{ status.label }}
             </li>
@@ -56,7 +56,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
           @for (circulation of record.metadata.circulation_information; track $index) {
             <li>
               <div class="ui:font-bold ui:w-20 ui:inline-block">
-                <i class="fa fa-language"></i> ({{ circulation.language }})
+                <i class="fa-solid fa-language"></i> ({{ circulation.language }})
               </div>
               {{ circulation.label }}
             </li>

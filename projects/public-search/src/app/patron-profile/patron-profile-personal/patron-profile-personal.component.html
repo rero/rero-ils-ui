@@ -85,7 +85,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
     <!-- KEEP HISTORY -->
     <dt translate>Keep history</dt>
     <dd>
-      <i class="fa fa-circle" [ngClass]="{'text-success': u.keep_history, 'text-danger': !u.keep_history}"></i>
+      <i class="fa-solid fa-circle" [ngClass]="{'text-success': u.keep_history, 'text-danger': !u.keep_history}"></i>
       @if (u.keep_history) {
         {{ 'The loan history is visible in your patron account.' | translate }}
       } @else {

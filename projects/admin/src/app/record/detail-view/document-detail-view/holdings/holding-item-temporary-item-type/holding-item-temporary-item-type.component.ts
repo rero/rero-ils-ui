@@ -14,13 +14,13 @@ import { DateTranslatePipe, GetRecordPipe } from '@rero/ng-core';
       <dl class="metadata">
         <dt>
           <span class="text-warning" translate>Temporary item type</span>&nbsp;
-          <i class="fa fa-exclamation-triangle text-warning"></i>
+          <i class="fa-solid fa-triangle-exclamation text-warning"></i>
         </dt>
         <dd>
           {{ record().metadata.temporary_item_type.pid | getRecord:'item_types': 'field':'name' | async }}
           @if (record().metadata.temporary_item_type.end_date; as endDate) {
             &nbsp;<span class="ui:text-sm ui:text-muted-color">
-              (<i class="fa fa-long-arrow-right" aria-hidden="true"></i> {{ endDate | dateTranslate :'shortDate' }})
+              (<i class="fa-solid fa-arrow-right-long" aria-hidden="true"></i> {{ endDate | dateTranslate :'shortDate' }})
             </span>
           }
         </dd>

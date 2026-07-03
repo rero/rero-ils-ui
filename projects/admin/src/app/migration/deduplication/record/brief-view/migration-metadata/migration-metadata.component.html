@@ -24,7 +24,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
       @if(d.link) {
        <td class="ui:align-top">
         <a [routerLink]="d.link.router" [queryParams]="d.link?.params" target="_blank">
-          {{ d.field }}&nbsp;<i class="fa fa-external-link"></i>
+          {{ d.field }}&nbsp;<i class="fa-solid fa-up-right-from-square"></i>
         </a></td>
       } @else {
         <td class="ui:align-top" [innerHTML]="d.field"></td>
@@ -32,7 +32,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
       @if(d?.c_link?.router) {
        <td class="ui:align-top">
         <a [routerLink]="d.c_link.router" [queryParams]="d.c_link?.params" target="_blank">
-          {{ d.c_field }}&nbsp;<i class="fa fa-external-link"></i>
+          {{ d.c_field }}&nbsp;<i class="fa-solid fa-up-right-from-square"></i>
         </a></td>
       } @else {
         <td class="ui:align-top" [innerHTML]="d.c_field"></td>

@@ -13,9 +13,9 @@ import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
       <dt>{{ day().day | translate }}</dt>
       <dd>
         <div class="ui:flex ui:gap-x-3 ui:items-center">
-        <i class="fa" [ngClass]="{
-          'fa-times-circle-o text-error': !day().is_open,
-          'fa-circle text-success': day().is_open
+        <i [ngClass]="{
+          'fa-solid fa-circle-xmark text-error': !day().is_open,
+          'fa-solid fa-circle text-success': day().is_open
         }"></i>
         @if (day().is_open) {
             @for (time of day().times; track $index; let last = $last) {

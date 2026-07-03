@@ -251,7 +251,7 @@ export const MenuStore = signalStore(
       return {
         menu: {
           label: libraryActive.code,
-          icon: 'fa fa-random',
+          icon: 'fa-solid fa-shuffle',
           id: MENU_IDS.LIBRARY_MENU,
           items: libraries
             .slice()

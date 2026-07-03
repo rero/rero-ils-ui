@@ -36,12 +36,12 @@ export class DocumentDetailViewComponent implements OnInit {
     this.appStore.setCurrentViewCode(this.viewcode());
     this.exportItems = [
       {
-        icon: "fa fa-file-code-o",
+        icon: "fa-regular fa-file-code",
         label: this.translateService.instant("JSON Data"),
         url: `/api/documents/${this.documentpid()}?format=json`
       },
       {
-        icon: "fa fa-file-text-o",
+        icon: "fa-regular fa-file-lines",
         label: this.translateService.instant("RIS (Zotero...)"),
         url: `/api/documents/${this.documentpid()}?format=ris`
       }

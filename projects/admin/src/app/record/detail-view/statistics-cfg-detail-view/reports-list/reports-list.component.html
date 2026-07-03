@@ -9,12 +9,12 @@ SPDX-License-Identifier: AGPL-3.0-or-later
         <td>
             <a class="ui:pl-2" target="_blank" [href]="getReportUrl(report.metadata.pid)">
             {{ report.created | dateTranslate: 'longDate' }}
-            <i class="ui:pl-1 fa fa-external-link"></i>
+            <i class="ui:pl-1 fa-solid fa-up-right-from-square"></i>
           </a>
         </td>
         <td class="ui:text-right">
           <a pButton text [href]="getReportUrl(report.metadata.pid)+'?format=csv'">
-            <i class="fa fa-download"></i>
+            <i class="fa-solid fa-file-csv"></i>
           </a>
         </td>
       </tr>

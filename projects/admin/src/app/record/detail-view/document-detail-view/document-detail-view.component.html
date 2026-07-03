@@ -184,7 +184,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
             severity="secondary"
             [title]="subject.entity.type | translate"
           >
-            <i class="fa fa-tag"></i>
+            <i class="fa-solid fa-tag"></i>
             <shared-entity-link
               resourceName="subjects"
               [entity]="subject.entity"
@@ -199,7 +199,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
         <div class="ui:flex ui:gap-1 ui:flex-wrap">
           @for (genre of $any(record()).metadata.genreForm; track $index) {
             <span class="ui:flex ui:gap-1 ui:items-center">
-              <i class="fa fa-tag"></i>
+              <i class="fa-solid fa-tag"></i>
               <shared-entity-link resourceName="genreForm" [entity]="genre.entity" />
             </span>
           }
@@ -221,7 +221,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
             [routerLink]="['/records', 'documents']"
             [queryParams]="{ q: 'partOf.document.pid:' + pid, simple: 0 }"
           >
-            <i class="fa fa-list" aria-hidden="true"></i>&nbsp;
+            <i class="fa-solid fa-list" aria-hidden="true"></i>&nbsp;
             {{ linkedDocumentsCount() }}
             {{
               linkedDocumentsCount()
@@ -241,35 +241,35 @@ SPDX-License-Identifier: AGPL-3.0-or-later
     <p-tablist>
       @if (record().metadata.pid) {
       <p-tab value="get" class="ui:flex ui:items-center ui:!gap-2">
-        <i class="fa fa-list-ul"></i>
+        <i class="fa-solid fa-building-circle-check"></i>
         <span translate>Get</span>
       </p-tab>
       }
       <p-tab value="description" class="ui:flex ui:items-center ui:!gap-2">
-        <i class="fa fa-bars"></i>
+        <i class="fa-solid fa-bars"></i>
         <span translate>Description</span>
       </p-tab>
       @if (record()?.metadata?.pid && hasRelatedEntities()) {
         <p-tab value="entity" class="ui:flex ui:items-center ui:!gap-2">
-          <i class="fa fa-cubes"></i>
+          <i class="fa-solid fa-circle-nodes"></i>
           <span translate>Related Entities</span>
         </p-tab>
       }
       @if (record()?.metadata?.pid && showLocalFieldsTab() && (!record()?.metadata?.harvested || hasLocalFields())) {
         <p-tab value="local" class="ui:flex ui:items-center ui:!gap-2">
-           <i class="fa fa-list-ul"></i>
+           <i class="fa-solid fa-building-columns"></i>
           <span translate>Local fields</span>
         </p-tab>
       }
       @if (!record().metadata.harvested && record().metadata.pid && showFilesTab) {
         <p-tab value="file" class="ui:flex ui:items-center ui:!gap-2">
-          <i class="fa fa-file"></i>
+          <i class="fa-solid fa-folder-tree"></i>
           <span translate>Files</span>
         </p-tab>
       }
       @if (marcRecord) {
         <p-tab value="marc" class="ui:flex ui:items-center ui:!gap-2">
-          <i class="fa fa-list-ul"></i>
+          <i class="fa-solid fa-list-ul"></i>
           <span translate>Marc</span>
         </p-tab>
       }

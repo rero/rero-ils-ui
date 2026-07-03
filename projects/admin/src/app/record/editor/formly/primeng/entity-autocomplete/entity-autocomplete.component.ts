@@ -52,7 +52,7 @@ import { TranslatePipe } from '@ngx-translate/core';
                 @if (data.label === 'local' && isAuthorizedToAddLocalEntity) {
                   {{ "link to local authority" | translate }}&nbsp;
                   <i
-                    class="fa fa-plus-square-o ui:text-xl ui:text-blue-500 ui:hover:text-blue-700 ui:cursor-pointer"
+                    class="fa-regular fa-square-plus ui:text-xl ui:text-blue-500 ui:hover:text-blue-700 ui:cursor-pointer"
                     [title]="'Add local entity'|translate"
                     aria-hidden="true"
                     (click)="addLocalEntity($event)"
@@ -67,7 +67,7 @@ import { TranslatePipe } from '@ngx-translate/core';
                 <div class="ui:flex" [innerHTML]="data.label"></div>
                 @if (data.link) {
                   <a class="ui:ml-1 ui:text-surface-700" (click)="$event.stopPropagation()" [href]="data.link" target="_blank">
-                    <i class="fa fa-external-link"></i>
+                    <i class="fa-solid fa-up-right-from-square"></i>
                   </a>
                 }
                 @if (data.summary) {
@@ -80,7 +80,7 @@ import { TranslatePipe } from '@ngx-translate/core';
       } @else {
         <div class="ui:col-span-12">
           <span [innerHtml]="valueSelected()"></span>
-          <p-button icon="fa fa-trash" severity="secondary" [text]="true" (onClick)="clear()" />
+          <p-button icon="fa-solid fa-trash-can" severity="secondary" [text]="true" (onClick)="clear()" />
         </div>
       }
     </div>`,

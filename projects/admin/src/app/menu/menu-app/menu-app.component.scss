@@ -2,6 +2,13 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 admin-menu-app {
+  // Make sure that Font Awesome 7 icons don't make the top menu too wide.
+  .p-menubar-root-list > .p-menubar-item > .p-menubar-item-content {
+    .p-menubar-item-link {
+      gap: 0.25rem;
+      padding-inline: 0.5rem;
+    }
+  }
   p-menubarsub {
     ul.p-submenu-list {
       min-width: 250px;

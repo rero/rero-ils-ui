@@ -112,32 +112,32 @@ class OrdersRoute extends BaseRoute implements RouteDataTypesInterface {
           label: _('Relevance'),
           value: 'bestmatch',
           defaultQuery: true,
-          icon: 'fa fa-sort-amount-desc',
+          icon: 'fa-solid fa-arrow-down-wide-short',
         },
         {
           label: _('Receipt date (newest)'),
           value: 'receipt_date',
-          icon: 'fa fa-sort-amount-desc',
+          icon: 'fa-solid fa-arrow-down-wide-short',
         },
         {
           label: _('Reference (asc)'),
           value: 'reference_asc',
-          icon: 'fa fa-sort-alpha-asc',
+          icon: 'fa-solid fa-arrow-down-a-z',
         },
         {
           label: _('Reference (desc)'),
           value: 'reference_desc',
-          icon: 'fa fa-sort-alpha-desc',
+          icon: 'fa-solid fa-arrow-down-z-a',
         },
         {
           label: _('Order date (newest)'),
           value: 'order_date_new',
-          icon: 'fa fa-sort-amount-desc',
+          icon: 'fa-solid fa-arrow-down-wide-short',
         },
         {
           label: _('Order date (oldest)'),
           value: 'order_date_old',
-          icon: 'fa fa-sort-amount-asc',
+          icon: 'fa-solid fa-arrow-down-short-wide',
         },
       ],
       exportFormats: [

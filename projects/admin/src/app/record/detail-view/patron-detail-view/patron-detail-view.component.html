@@ -19,7 +19,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
     <!-- MAIN PROFILE SECTION ================================================== -->
     <div class="ui:rounded-border ui:border ui:border-surface ui:flex ui:gap-6 ui:p-6">
         <div class="ui:bg-surface-500 ui:rounded-full ui:w-40 ui:h-40 ui:flex ui:items-center ui:justify-center">
-          <i class="fa fa-user-o fa-4x ui:text-white"></i>
+          <i class="fa-regular fa-user fa-4x ui:text-white"></i>
         </div>
       <div class="ui:grow">
         <div class="ui:flex ui:items-center ui:gap-4 ui:mb-2">
@@ -33,25 +33,25 @@ SPDX-License-Identifier: AGPL-3.0-or-later
               [permissions]="permissions.CIRC_ADMIN"
               [routerLink]="['/circulation', 'patron', p.patron.barcode[0]]"
             >
-              <i class="fa fa-exchange"></i>&nbsp;{{ 'Circulation' | translate }}
+              <i class="fa-solid fa-right-left"></i>&nbsp;{{ 'Circulation' | translate }}
             </a>
           }
         </div>
         <dl class="metadata">
           <dt>
-            <i class="fa fa-calendar-o"></i>&nbsp;{{ 'Date of birth' | translate }}
+            <i class="fa-solid fa-calendar-days"></i>&nbsp;{{ 'Date of birth' | translate }}
           </dt>
           <dd>{{ p.birth_date | dateTranslate:'mediumDate' }}</dd>
           @if (p.email) {
               <dt>
-                <i class="fa fa-envelope"></i>&nbsp;{{ 'Email' | translate }}
+                <i class="fa-solid fa-envelope"></i>&nbsp;{{ 'Email' | translate }}
               </dt>
               <dd>{{ p.email }}</dd>
           }
           @if (phones(); as patronPhones) {
             @if (patronPhones.length > 0) {
               <dt>
-                <i class="fa fa-phone"></i>&nbsp;
+                <i class="fa-solid fa-phone"></i>&nbsp;
                 {{ patronPhones.length | i18nPlural: {'=1': 'Phone' | translate, 'other': 'Phones' | translate} }}
               </dt>
               <dd>
@@ -68,7 +68,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
           }
           @if (p.street || p.postal_code || p.city || p.country) {
             <dt>
-              <i class="fa fa-home"></i>&nbsp;
+              <i class="fa-solid fa-house"></i>&nbsp;
               {{ 'Address' | translate }}
             </dt>
             <dd>
@@ -120,16 +120,16 @@ SPDX-License-Identifier: AGPL-3.0-or-later
             <div class="ui:mt-2">
               <dl class="metadata">
                 <dt>
-                  <i class="fa fa-user"></i>&nbsp;
+                  <i class="fa-solid fa-user"></i>&nbsp;
                   {{ 'Username' | translate }}
                 </dt>
                 <dd>{{ p.username }}</dd>
                 <dt>
-                  <i class="fa fa-history"></i>&nbsp;
+                  <i class="fa-solid fa-clock-rotate-left"></i>&nbsp;
                   {{ 'Keep history' }}
                 </dt>
                 <dd>
-                  <i class="fa" [ngClass]="p.keep_history ? 'fa-check text-success' : 'fa-times text-error'"></i>
+                  <i [ngClass]="p.keep_history ? 'fa-solid fa-check text-success' : 'fa-solid fa-xmark text-error'"></i>
                 </dd>
                 <dt translate>{{ p.roles | i18nPlural: {'=1': 'Role', 'other': 'Roles'} }}</dt>
                 <dd class="ui:flex ui:gap-1 ui:flex-wrap">
@@ -154,7 +154,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
         <div class="ui:mt-2">
           <dl class="metadata">
             <dt>
-              <i class="fa fa-barcode"></i>&nbsp;
+              <i class="fa-solid fa-barcode"></i>&nbsp;
               {{ 'Barcode' | translate }}
             </dt>
             <dd>
@@ -170,7 +170,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
             </dd>
             @if (p.patron.libraries && p.patron.libraries.length > 0) {
               <dt>
-                <i class="fa fa-university"></i>&nbsp;
+                <i class="fa-solid fa-building-columns"></i>&nbsp;
                 {{ 'Affiliation libraries' | translate }}
               </dt>
               <dd>
@@ -193,7 +193,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
             }
             @if (p.second_address) {
               <dt>
-                <i class="fa fa-home"></i>&nbsp;
+                <i class="fa-solid fa-house"></i>&nbsp;
                 {{ 'Second address' | translate }}
               </dt>
               <dd>
@@ -224,7 +224,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
           <div class="ui:mt-2">
             <dl class="metadata">
               <dt>
-                <i class="fa fa-university"></i>&nbsp;
+                <i class="fa-solid fa-building-columns"></i>&nbsp;
                 {{ p.libraries.length | i18nPlural: {'=1': 'Library' | translate, 'other': 'Libraries' | translate} }}
               </dt>
               <dd>

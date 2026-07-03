@@ -18,13 +18,13 @@ export enum EntityType {
 }
 
 export enum EntityTypeIcon {
-  MISSING = 'fa-question-circle',
-  ORGANISATION = 'fa-building-o',
-  PERSON = 'fa-user-o',
-  PLACE = 'fa-map-marker',
-  TEMPORAL = 'fa-calendar',
-  TOPIC = 'fa-tag',
-  WORK = 'fa-book',
+  MISSING = 'fa-solid fa-circle-question',
+  ORGANISATION = 'fa-regular fa-building',
+  PERSON = 'fa-regular fa-user',
+  PLACE = 'fa-solid fa-location-dot',
+  TEMPORAL = 'fa-solid fa-calendar-day',
+  TOPIC = 'fa-solid fa-tag',
+  WORK = 'fa-solid fa-book',
 }
 
 export class Entity {

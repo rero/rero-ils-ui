@@ -30,23 +30,23 @@ SPDX-License-Identifier: AGPL-3.0-or-later
     <div class="ui:flex ui:grow ui:flex-wrap ui:gap-2">
       @if (event().operator) {
         <p-tag severity="secondary">
-          <i class="fa fa-user-circle-o"></i>&nbsp;{{ event().operator.name }}
+          <i class="fa-solid fa-circle-user"></i>&nbsp;{{ event().operator.name }}
         </p-tag>
       }
       @if (event().library) {
         <p-tag severity="secondary">
-          <i class="fa fa-university"></i>&nbsp;{{ event().library.name }}
+          <i class="fa-solid fa-building-columns"></i>&nbsp;{{ event().library.name }}
         </p-tag>
       }
       <p-tag severity="secondary">
-        <i class="fa fa-exchange"></i>&nbsp;{{ parent.type | translate }}
+        <i class="fa-solid fa-right-left"></i>&nbsp;{{ parent.type | translate }}
       </p-tag>
     </div>
 
     <p-tag severity="secondary">
-      <i class="fa fa-clock-o"></i>&nbsp;{{ event().creation_date | date : 'short' }}
+      <i class="fa-regular fa-clock"></i>&nbsp;{{ event().creation_date | date : 'short' }}
     </p-tag>
   </div>
 } @else {
-  <i class="fa fa-spin fa-spinner"></i>&nbsp;{{ 'Loading in progress…' | translate }}
+  <i class="fa-solid fa-spin fa-spinner"></i>&nbsp;{{ 'Loading in progress…' | translate }}
 }

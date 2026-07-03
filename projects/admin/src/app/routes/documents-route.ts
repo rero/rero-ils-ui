@@ -189,18 +189,22 @@ class DocumentsRoute extends BaseRoute {
           label: _('Relevance'),
           value: 'bestmatch',
           defaultQuery: true,
+          icon: 'fa-solid fa-arrow-down-wide-short',
         },
         {
           label: _('Date (newest)'),
           value: 'pub_date_new',
+          icon: 'fa-solid fa-arrow-down-wide-short',
         },
         {
           label: _('Date (oldest)'),
           value: 'pub_date_old',
+          icon: 'fa-solid fa-arrow-down-short-wide',
         },
         {
           label: _('Title'),
           value: 'title',
+          icon: 'fa-solid fa-arrow-down-a-z',
         },
       ],
     };

@@ -10,7 +10,7 @@ import { KeyExistsPipe } from '@rero/shared';
     template: `
     @if (record().metadata | keyExists:'_masked') {
       <i
-        class="fa"
+        class="fa-solid"
         aria-hidden="true"
         title="{{ (record().metadata._masked ? 'Masked' : 'No masked') | translate }}"
         [ngClass]="{ 'fa-eye-slash text-error': record().metadata._masked, 'fa-eye text-success': !record().metadata._masked }"
@@ -19,7 +19,7 @@ import { KeyExistsPipe } from '@rero/shared';
         <span class="ui:ml-1">{{ (record().metadata._masked ? 'Masked' : 'No masked') | translate }}</span>
       }
     } @else {
-      <i class="fa fa-eye text-success" title="No masked" aria-hidden="true"></i>
+      <i class="fa-solid fa-eye text-success" title="No masked" aria-hidden="true"></i>
       @if (withLabel()) {
         <span class="ui:ml-1" translate>No masked</span>
       }

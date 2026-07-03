@@ -9,7 +9,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
     <div class="ui:flex ui:gap-2 ui:flex-wrap">
       <!-- ADD BUTTON -->
       <p-button
-        icon="fa fa-plus"
+        icon="fa-regular fa-square-plus"
         [label]="'Add'|translate"
         [routerLink]="['/acquisition', 'records', 'acq_accounts', 'new']"
         [queryParams]="{ budget: organisation().current_budget_pid }"
@@ -23,7 +23,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
       <!-- END EXPORT BUTTON -->
       <!-- TRANSFER BUTTON -->
       <p-button
-        icon="fa fa-exchange"
+        icon="fa-solid fa-money-bill-transfer"
         outlined
         [label]="'Transfer funds'|translate"
         [routerLink]="['/', 'acquisition', 'accounts', 'transfer']"
@@ -36,8 +36,8 @@ SPDX-License-Identifier: AGPL-3.0-or-later
   <section>
     @if (rootAccounts().length > 0) {
       <div class="ui:flex ui:flex-wrap ui:gap-1 ui:my-4">
-        <p-button size="small" outlined icon="fa fa-plus" [label]="'Expand all' | translate" (onClick)="expandAll()" />
-        <p-button size="small" outlined icon="fa fa-minus" [label]="'Collapse all' | translate" (onClick)="collapseAll()" />
+        <p-button size="small" outlined icon="fa-solid fa-plus" [label]="'Expand all' | translate" (onClick)="expandAll()" />
+        <p-button size="small" outlined icon="fa-solid fa-minus" [label]="'Collapse all' | translate" (onClick)="collapseAll()" />
     </div>
     <p-treeTable autoLayout class="p-treetable-sm" [value]="rootAccounts()">
       <ng-template #header>
@@ -93,7 +93,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
              <!-- EDIT BUTTON -->
              @if (rowData.permissions && rowData.permissions?.update && rowData?.permissions?.update?.can) {
               <p-button
-                icon="fa fa-pencil"
+                icon="fa-solid fa-pencil"
                 outlined
                 size="small"
                 [title]="'Edit account'|translate"
@@ -102,7 +102,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
             }
             <!-- DELETE BUTTON -->
             <p-button
-              icon="fa fa-trash"
+              icon="fa-solid fa-trash-can"
               class="ui:pointer-events-auto"
               severity="danger"
               outlined

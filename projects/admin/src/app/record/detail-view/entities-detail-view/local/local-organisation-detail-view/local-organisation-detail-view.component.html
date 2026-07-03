@@ -40,9 +40,9 @@ SPDX-License-Identifier: AGPL-3.0-or-later
   @if (record().conference) {
     <dt translate>Conference</dt>
     <dd>
-      <i class="fa ui:mr-2" [ngClass]="{
+      <i class="fa-solid ui:mr-2" [ngClass]="{
         'fa-check text-success': record().conference,
-        'fa-times text-error': !record().conference
+        'fa-xmark text-error': !record().conference
       }"></i>
     </dd>
   }

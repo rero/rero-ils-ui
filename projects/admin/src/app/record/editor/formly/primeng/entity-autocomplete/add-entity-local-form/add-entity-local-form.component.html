@@ -11,11 +11,11 @@ SPDX-License-Identifier: AGPL-3.0-or-later
         class="ui:mr-2"
         severity="danger"
         [outlined]="true"
-        icon="fa fa-times"
+        icon="fa-solid fa-xmark"
         [label]="'Cancel' | translate"
         (onClick)="closeDialog()"
       />
-      <p-button type="submit" icon="fa fa-save" [label]="'Save' | translate" [disabled]="httpPending.isPending()" />
+      <p-button type="submit" icon="fa-solid fa-floppy-disk" [label]="'Save' | translate" [disabled]="httpPending.isPending()" />
     </div>
   </form>
 }

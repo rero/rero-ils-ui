@@ -22,7 +22,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
     <div>
       @if (formGroup.controls.endDate.valid || !formGroup.controls.endDate.touched) {
         <span class="text-warning ui:flex ui:gap-1">
-          <i class="fa fa-exclamation-triangle"></i>
+          <i class="fa-solid fa-triangle-exclamation"></i>
           {{ 'This date will override the circulation policy behavior' | translate }}
         </span>
       }
@@ -51,7 +51,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 <ng-template #errorMessage let-message='message'>
   <span class="text-error ui:flex ui:gap-1">
-    <i class="fa fa-times-circle"></i>
+    <i class="fa-solid fa-circle-xmark"></i>
     {{ message }}
   </span>
 </ng-template>

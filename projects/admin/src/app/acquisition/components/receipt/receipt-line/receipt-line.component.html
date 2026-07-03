@@ -10,7 +10,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
       @if (document().record; as doc) {
         <shared-document-brief-view [record]="doc.metadata" />
       } @else if (document().notFound) {
-        <span class="ui:text-muted-color"><i class="fa fa-exclamation-triangle"></i>&nbsp;{{ "Unknown document" | translate }} (pid {{ line().document?.pid }})</span>
+        <span class="ui:text-muted-color"><i class="fa-solid fa-triangle-exclamation"></i>&nbsp;{{ "Unknown document" | translate }} (pid {{ line().document?.pid }})</span>
       }
       @if ($any(line()).acq_account.pid | getRecord: 'acq_accounts' | async; as account) {
       <span class="ui:font-bold ui:text-muted-color ui:text-sm">[{{ $any(account).metadata.number }}]</span>
@@ -33,7 +33,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
         [title]="'Edit' | translate"
         [class]="'btn-outline-primary mr-1'"
         [routerLink]="['/acquisition', 'records', 'acq_receipt_lines', 'edit', line().pid]"
-        icon="fa fa-edit"
+        icon="fa-solid fa-pen"
       />
     }
     <shared-action-button
@@ -41,7 +41,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
       [class]="'btn-outline-danger'"
       severity="danger"
       [message]="deleteInfoMessage"
-      icon="fa fa-trash"
+      icon="fa-solid fa-trash-can"
       [disabled]="!permissions().delete.can"
       (btnClick)="delete()"
     />

@@ -11,13 +11,13 @@ export const MENU_APP: MenuItem[] = [
     name: 'User services',
     translateLabel: 'User services',
     id: MENU_IDS.APP.USER.MENU,
-    icon: 'fa fa-users',
+    icon: 'fa-solid fa-users',
     items: [
       {
         name: 'Checkout/checkin',
         translateLabel: 'Checkout/checkin',
         id: MENU_IDS.APP.USER.CIRCULATION,
-        icon: 'fa fa-exchange',
+        icon: 'fa-solid fa-right-left',
         routerLink: ['/', 'circulation'],
         shortcut: 'c',
         access: {
@@ -28,7 +28,7 @@ export const MENU_APP: MenuItem[] = [
         label: 'Requests',
         translateLabel: 'Requests',
         id: MENU_IDS.APP.USER.REQUEST,
-        icon: 'fa fa-shopping-basket',
+        icon: 'fa-solid fa-basket-shopping',
         routerLink: ['/', 'circulation', 'requests'],
         shortcut: 'r',
         access: {
@@ -39,7 +39,7 @@ export const MENU_APP: MenuItem[] = [
         label: 'ILL requests',
         translateLabel: 'ILL requests',
         id: MENU_IDS.APP.USER.ILL,
-        icon: 'fa fa-truck',
+        icon: 'fa-solid fa-truck-fast',
         routerLink: ['/', 'records', 'ill_requests'],
         queryParams: {
           q: '',
@@ -56,7 +56,7 @@ export const MENU_APP: MenuItem[] = [
         label: 'Users',
         translateLabel: 'Users',
         id: MENU_IDS.APP.USER.USERS,
-        icon: 'fa fa-users',
+        icon: 'fa-solid fa-users-viewfinder',
         routerLink: ['/', 'records', 'patrons'],
         queryParams: {
           q: '',
@@ -73,7 +73,7 @@ export const MENU_APP: MenuItem[] = [
         label: 'Exhibition/course',
         translateLabel: 'Exhibition/course',
         id: MENU_IDS.APP.USER.COLLECTION,
-        icon: 'fa fa-graduation-cap',
+        icon: 'fa-solid fa-graduation-cap',
         routerLink: ['/', 'records', 'collections'],
         queryParams: {
           q: '',
@@ -91,7 +91,7 @@ export const MENU_APP: MenuItem[] = [
         label: 'Current loans',
         translateLabel: 'Current loans',
         id: MENU_IDS.APP.USER.CURRENT_LOANS,
-        icon: 'fa fa-list-ul',
+        icon: 'fa-solid fa-list-check',
         routerLink: ['/', 'records', 'loans'],
         queryParams: {
           q: '',
@@ -111,13 +111,13 @@ export const MENU_APP: MenuItem[] = [
     label: 'Catalog',
     translateLabel: 'Catalog',
     id: MENU_IDS.APP.CATALOG.MENU,
-    icon: 'fa fa-book',
+    icon: 'fa-solid fa-book',
     items: [
       {
         label: 'Documents',
         translateLabel: 'Documents',
         id: MENU_IDS.APP.CATALOG.DOCUMENT,
-        icon: 'fa fa-file-o',
+        icon: 'fa-solid fa-file-lines',
         routerLink: ['/', 'records', 'documents'],
         queryParams: {
           q: '',
@@ -138,7 +138,7 @@ export const MENU_APP: MenuItem[] = [
         label: 'Create a bibliographic record',
         translateLabel: 'Create a bibliographic record',
         id: MENU_IDS.APP.CATALOG.DOCUMENT_ADD,
-        icon: 'fa fa-plus-square',
+        icon: 'fa-solid fa-file-circle-plus',
         routerLink: ['/', 'records', 'documents', 'new'],
         access: {
           permissions: [PERMISSIONS.DOC_CREATE]
@@ -148,7 +148,7 @@ export const MENU_APP: MenuItem[] = [
         label: 'Import from the web',
         translateLabel: 'Import from the web',
         id: MENU_IDS.APP.CATALOG.IMPORT,
-        icon: 'fa fa-cloud-download',
+        icon: 'fa-solid fa-cloud-arrow-down',
         routerLink: ['/', 'records', 'import_bnf'],
         queryParams: {
           q: '',
@@ -163,7 +163,7 @@ export const MENU_APP: MenuItem[] = [
         label: 'Entities',
         translateLabel: 'Entities',
         id: MENU_IDS.APP.CATALOG.ENTITY,
-        icon: 'fa fa-cubes',
+        icon: 'fa-solid fa-circle-nodes',
         routerLink: ['/', 'records', 'entities'],
         queryParams: {
           q: '',
@@ -178,13 +178,13 @@ export const MENU_APP: MenuItem[] = [
     label: 'Acquisitions',
     translateLabel: 'Acquisitions',
     id: MENU_IDS.APP.ACQUISITION.MENU,
-    icon: 'fa fa-university',
+    icon: 'fa-solid fa-cart-arrow-down',
     items: [
       {
         label: 'Vendors',
         translateLabel: 'Vendors',
         id: MENU_IDS.APP.ACQUISITION.VENDOR,
-        icon: 'fa fa-briefcase',
+        icon: 'fa-solid fa-shop',
         routerLink: ['/', 'acquisition', 'records', 'vendors'],
         queryParams: {
           q: '',
@@ -201,7 +201,7 @@ export const MENU_APP: MenuItem[] = [
         label: 'Orders',
         translateLabel: 'Orders',
         id: MENU_IDS.APP.ACQUISITION.ORDER,
-        icon: 'fa fa-shopping-cart',
+        icon: 'fa-solid fa-cart-shopping',
         routerLink: ['/', 'acquisition', 'records', 'acq_orders'],
         queryParams: {
           q: '',
@@ -219,7 +219,7 @@ export const MENU_APP: MenuItem[] = [
         label: 'Budgets',
         translateLabel: 'Budgets',
         id: MENU_IDS.APP.ACQUISITION.BUDGET,
-        icon: 'fa fa-money',
+        icon: 'fa-solid fa-money-bills',
         routerLink: ['/', 'acquisition', 'records', 'budgets'],
         queryParams: {
           q: '',
@@ -235,7 +235,7 @@ export const MENU_APP: MenuItem[] = [
         label: 'Accounts',
         translateLabel: 'Accounts',
         id: MENU_IDS.APP.ACQUISITION.ACCOUNT,
-        icon: 'fa fa-folder-open-o',
+        icon: 'fa-solid fa-wallet',
         routerLink: ['/', 'acquisition', 'accounts'],
         access: {
           permissions: [PERMISSIONS.ACAC_ACCESS]
@@ -245,7 +245,7 @@ export const MENU_APP: MenuItem[] = [
         label: 'Late issues',
         translateLabel: 'Late issues',
         id: MENU_IDS.APP.ACQUISITION.LATE_ISSUE,
-        icon: 'fa fa-envelope-open-o',
+        icon: 'fa-solid fa-calendar-xmark',
         routerLink: ['/', 'records', 'issues'],
         queryParams: {
           q: '',
@@ -265,13 +265,13 @@ export const MENU_APP: MenuItem[] = [
     label: 'Reports & monitoring',
     translateLabel: 'Reports & monitoring',
     id: MENU_IDS.APP.REPORT_MONITORING.MENU,
-    icon: 'fa fa-bar-chart',
+    icon: 'fa-solid fa-chart-bar',
     items: [
       {
         label: 'Inventory list',
         translateLabel: 'Inventory list',
         id: MENU_IDS.APP.REPORT_MONITORING.INVENTORY,
-        icon: 'fa fa-list',
+        icon: 'fa-solid fa-list',
         routerLink: ['/', 'records', 'items'],
         queryParams: {
           q: '',
@@ -288,7 +288,7 @@ export const MENU_APP: MenuItem[] = [
         label: 'Fees',
         translateLabel: 'Fees',
         id: MENU_IDS.APP.REPORT_MONITORING.FEE,
-        icon: 'fa fa-money',
+        icon: 'fa-solid fa-money-bill-wave',
         routerLink: ['/', 'records', 'patron_transaction_events'],
         queryParams: {
           q: '',
@@ -306,7 +306,7 @@ export const MENU_APP: MenuItem[] = [
         label: 'Report configuration',
         translateLabel: 'Report configuration',
         id: MENU_IDS.APP.REPORT_MONITORING.STAT_CONFIG,
-        icon: 'fa fa-cog',
+        icon: 'fa-solid fa-chart-pie',
         routerLink: ['/', 'records', 'stats_cfg'],
         queryParams: {
           q: '',
@@ -327,13 +327,13 @@ export const MENU_APP: MenuItem[] = [
     label: 'Admin',
     translateLabel: 'Admin',
     id: MENU_IDS.APP.ADMIN.MENU,
-    icon: 'fa fa-cogs',
+    icon: 'fa-solid fa-gears',
     items: [
       {
         label: 'Circulation policies',
         translateLabel: 'Circulation policies',
         id: MENU_IDS.APP.ADMIN.CIRCULATION_POLICY,
-        icon: 'fa fa-exchange',
+        icon: 'fa-solid fa-scale-balanced',
         routerLink: ['/', 'records', 'circ_policies'],
         queryParams: {
           q: '',
@@ -350,7 +350,7 @@ export const MENU_APP: MenuItem[] = [
         label: 'Item types',
         translateLabel: 'Item types',
         id: MENU_IDS.APP.ADMIN.ITEM_TYPE,
-        icon: 'fa fa-file-o',
+        icon: 'fa-solid fa-book-bookmark',
         routerLink: ['/', 'records', 'item_types'],
         queryParams: {
           q: '',
@@ -367,7 +367,7 @@ export const MENU_APP: MenuItem[] = [
         label: 'Patron types',
         translateLabel: 'Patron types',
         id:MENU_IDS.APP.ADMIN.PATRON_TYPE,
-        icon: 'fa fa-users',
+        icon: 'fa-solid fa-user-tag',
         routerLink: ['/', 'records', 'patron_types'],
         queryParams: {
           q: '',
@@ -384,7 +384,7 @@ export const MENU_APP: MenuItem[] = [
         label: 'My organisation',
         translateLabel: 'My organisation',
         id: MENU_IDS.APP.ADMIN.MY_ORGANISATION,
-        icon: 'fa fa-university',
+        icon: 'fa-solid fa-sitemap',
         routerLink: ['/', 'records', 'organisations', 'detail', '$currentOrganisation'],
         access: {
           permissions: [PERMISSIONS.ORG_ACCESS]
@@ -394,7 +394,7 @@ export const MENU_APP: MenuItem[] = [
         label: 'My library',
         translateLabel: 'My library',
         id: MENU_IDS.APP.ADMIN.MY_LIBRARY,
-        icon: 'fa fa-university',
+        icon: 'fa-solid fa-building-columns',
         routerLink: ['/', 'records', 'libraries', 'detail', '$currentLibrary'],
         access: {
           permissions: [PERMISSIONS.LIB_ACCESS]
@@ -404,7 +404,7 @@ export const MENU_APP: MenuItem[] = [
         label: 'Libraries',
         translateLabel: 'Libraries',
         id: MENU_IDS.APP.ADMIN.LIBRARY,
-        icon: 'fa fa-users',
+        icon: 'fa-solid fa-city',
         routerLink: ['/', 'records', 'libraries'],
         queryParams: {
           q: '',
@@ -421,7 +421,7 @@ export const MENU_APP: MenuItem[] = [
         label: 'Templates',
         translateLabel: 'Templates',
         id: MENU_IDS.APP.ADMIN.TEMPLATE,
-        icon: 'fa fa-file-code-o',
+        icon: 'fa-solid fa-paste',
         routerLink: ['/', 'records', 'templates'],
         queryParams: {
           q: '',
@@ -438,7 +438,7 @@ export const MENU_APP: MenuItem[] = [
         label: 'Permissions matrix',
         translateLabel: 'Permissions matrix',
         id: MENU_IDS.APP.ADMIN.PERMISSION,
-        icon: 'fa fa-check-square-o',
+        icon: 'fa-solid fa-table-cells',
         routerLink: ['/', 'permissions', 'matrix'],
         access: {
           permissions: [PERMISSIONS.PERM_MANAGEMENT]
@@ -448,7 +448,7 @@ export const MENU_APP: MenuItem[] = [
         name: 'Migrations',
         translateLabel: 'Migrations',
         id: MENU_IDS.APP.ADMIN.MIGRATION,
-        icon: 'fa fa-cloud-upload',
+        icon: 'fa-solid fa-database',
         routerLink: ['/', 'migrations', 'records', 'migrations'],
         access: {
           permissions: [PERMISSIONS.MIG_ACCESS]

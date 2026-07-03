@@ -69,9 +69,9 @@ SPDX-License-Identifier: AGPL-3.0-or-later
           <div class="ui:grid ui:grid-cols-12">
             <div class="ui:col-span-3">
               <div class="ui:flex ui:gap-2">
-                <i class="fa" [ngClass]="{
-                  'fa-angle-double-left': event.type === 'Checkin',
-                  'fa-angle-double-right': event.type === 'Checkout',
+                <i class="fa-solid" [ngClass]="{
+                  'fa-angles-left': event.type === 'Checkin',
+                  'fa-angles-right': event.type === 'Checkout',
                 }"></i>
                 <span>
                   {{ event.type | translate }}
@@ -88,8 +88,8 @@ SPDX-License-Identifier: AGPL-3.0-or-later
         </ng-template>
         <ng-template #opposite let-event>
           <small class="ui:text-muted-color">
-            <i class="fa fa-calendar-o"></i> {{ event.date | dateTranslate: 'shortDate' }}
-            <i class="fa fa-clock-o ui:pl-1"></i> {{ event.date | dateTranslate: 'HH:mm:ss' }}
+            <i class="fa-solid fa-calendar-days"></i> {{ event.date | dateTranslate: 'shortDate' }}
+            <i class="fa-regular fa-clock ui:pl-1"></i> {{ event.date | dateTranslate: 'HH:mm:ss' }}
           </small>
         </ng-template>
       </p-timeline>
@@ -99,7 +99,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 }
 
 <ng-template #logLibrary let-location>
-  <i class="fa fa-map-marker ui:mr-1"></i>
+  <i class="fa-solid fa-location-dot ui:mr-1"></i>
   @if (location.library) {
     {{ location.library.name }}
   } @else {

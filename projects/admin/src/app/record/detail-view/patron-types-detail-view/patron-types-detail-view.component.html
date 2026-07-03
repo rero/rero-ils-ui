@@ -18,9 +18,9 @@ SPDX-License-Identifier: AGPL-3.0-or-later
     <!-- YEARLY SUBSCRIPTION -->
     <dt translate>Yearly subscription</dt>
     <dd>
-      <i class="fa" [ngClass]="{
+      <i class="fa-solid" [ngClass]="{
         'fa-check text-success': record.metadata.subscription_amount > 0,
-        'fa-times text-error': !(record.metadata.subscription_amount > 0)
+        'fa-xmark text-error': !(record.metadata.subscription_amount > 0)
       }" aria-hidden="true"></i>
     </dd>
     <!-- SUBSCRIPTION AMOUNT -->
@@ -37,9 +37,9 @@ SPDX-License-Identifier: AGPL-3.0-or-later
         <p-panel [collapsed]="!record?.metadata?.limits?.checkout_limits">
           <ng-template #header>
             <div class="ui:flex ui:items-center ui:gap-2 ui:px-2">
-              <i class="fa" [ngClass]="{
-                'fa-circle text-success': record.metadata.limits.checkout_limits,
-                'fa-circle-thin': !record.metadata.limits.checkout_limits
+              <i class="fa-circle" [ngClass]="{
+                'fa-solid text-success': record.metadata.limits.checkout_limits,
+                'fa-regular': !record.metadata.limits.checkout_limits
               }"></i>
               <span translate>Limit by checkouts</span>
             </div>
@@ -59,7 +59,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
                     @for (exception of record.metadata.limits.checkout_limits.library_exceptions; track $index) {
                       <li class="ui:grid ui:grid-cols-12 ui:gap-4">
                         <div class="ui:col-span-10">
-                          <i class="fa fa-university"></i>&nbsp;
+                          <i class="fa-solid fa-building-columns"></i>&nbsp;
                           {{ exception.library.pid | getRecord: 'libraries' : 'field' : 'name' | async }}
                         </div>
                         <div class="ui:col-span-2">{{ exception.value }}</div>
@@ -76,9 +76,9 @@ SPDX-License-Identifier: AGPL-3.0-or-later
         <p-panel [collapsed]="!record?.metadata?.limits?.request_limits">
           <ng-template #header>
             <div class="ui:flex ui:items-center ui:gap-2 ui:px-2">
-              <i class="fa" [ngClass]="{
-                'fa-circle text-success': record.metadata.limits.request_limits,
-                'fa-circle-thin': !record.metadata.limits.request_limits
+              <i class="fa-circle" [ngClass]="{
+                'fa-solid text-success': record.metadata.limits.request_limits,
+                'fa-regular': !record.metadata.limits.request_limits
               }"></i>
               <span translate>Number of requests limit</span>
             </div>
@@ -98,7 +98,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
                     @for (exception of record.metadata.limits.request_limits.library_exceptions; track $index) {
                       <li class="ui:grid ui:grid-cols-12 ui:gap-4">
                         <div class="ui:col-span-10">
-                          <i class="fa fa-university"></i>&nbsp;
+                          <i class="fa-solid fa-building-columns"></i>&nbsp;
                           {{ exception.library.pid | getRecord: 'libraries' : 'field' : 'name' | async }}
                         </div>
                         <div class="ui:col-span-2">{{ exception.value }}</div>
@@ -114,9 +114,9 @@ SPDX-License-Identifier: AGPL-3.0-or-later
         <p-panel [collapsed]="!record?.metadata?.limits?.fee_amount_limits">
           <ng-template #header>
             <div class="ui:flex ui:items-center ui:gap-2 ui:px-2">
-              <i class="fa" [ngClass]="{
-                'fa-circle text-success': record.metadata.limits.fee_amount_limits,
-                'fa-circle-thin': !record.metadata.limits.fee_amount_limits
+              <i class="fa-circle" [ngClass]="{
+                'fa-solid text-success': record.metadata.limits.fee_amount_limits,
+                'fa-regular': !record.metadata.limits.fee_amount_limits
               }"></i>
               <span translate>Limit by fee amount</span>
             </div>
@@ -132,9 +132,9 @@ SPDX-License-Identifier: AGPL-3.0-or-later
         <p-panel [collapsed]="!record?.metadata?.limits?.overdue_items_limits">
           <ng-template #header>
             <div class="ui:flex ui:items-center ui:gap-2 ui:px-2">
-              <i class="fa" [ngClass]="{
-                'fa-circle text-success': record.metadata.limits.overdue_items_limits,
-                'fa-circle-thin': !record.metadata.limits.overdue_items_limits
+              <i class="fa-circle" [ngClass]="{
+                'fa-solid text-success': record.metadata.limits.overdue_items_limits,
+                'fa-regular': !record.metadata.limits.overdue_items_limits
               }"></i>
               <span translate>Limit by overdue items</span>
             </div>
@@ -150,9 +150,9 @@ SPDX-License-Identifier: AGPL-3.0-or-later
         <p-panel collapsed>
           <ng-template #header>
             <div class="ui:flex ui:items-center ui:gap-2 ui:px-2">
-              <i class="fa" [ngClass]="{
-                'fa-circle text-success': record.metadata.limits.unpaid_subscription,
-                'fa-circle-thin': !record.metadata.limits.unpaid_subscription
+              <i class="fa-circle" [ngClass]="{
+                'fa-solid text-success': record.metadata.limits.unpaid_subscription,
+                'fa-regular': !record.metadata.limits.unpaid_subscription
               }"></i>
               <span translate>Limit to unpaid subscription</span>
             </div>

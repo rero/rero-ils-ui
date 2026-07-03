@@ -10,8 +10,8 @@ SPDX-License-Identifier: AGPL-3.0-or-later
         <div class="ui:flex ui:gap-2">
         <shared-open-close-button [styleClass]="isHighlight? 'ui:bg-blue-100': 'ui:bg-white'" (status)="isCollapsed = $event; toggleCollapsed()" />
         <div>
-        <div><i class="fa fa-calendar-o"></i>&nbsp;{{ record().metadata.date | dateTranslate :'shortDate' }}</div>
-        <div><i class="fa fa-clock-o"></i>&nbsp;{{ record().metadata.date | dateTranslate :'mediumTime' }}</div>
+        <div><i class="fa-solid fa-calendar-days"></i>&nbsp;{{ record().metadata.date | dateTranslate :'shortDate' }}</div>
+        <div><i class="fa-regular fa-clock"></i>&nbsp;{{ record().metadata.date | dateTranslate :'mediumTime' }}</div>
       </div>
       </div>
       </div>
@@ -31,10 +31,10 @@ SPDX-License-Identifier: AGPL-3.0-or-later
             <!-- debug mode button -->
             @if (canUseDebugMode) {
               <div class="ui:col-span-1 ui:flex ui:justify-end">
-                <p-button [icon]="debugMode ? 'fa fa-toggle-on' : 'fa fa-toggle-off'" severity="warn" [outlined]="!debugMode" size="small"
+                <p-button [icon]="debugMode ? 'fa-solid fa-toggle-on' : 'fa-solid fa-toggle-off'" severity="warn" [outlined]="!debugMode" size="small"
                 (onClick)="debugMode=!debugMode"
                 >
-                  <i class="fa fa-bug"></i>
+                  <i class="fa-solid fa-bug"></i>
                 </p-button>
               </div>
             }
@@ -44,7 +44,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
     </div>
     <!-- debug information -->
     <div class="ui:col-span-12" [hidden]="!debugMode || isCollapsed">
-      <h5 class="text-error"><i class="fa fa-bug"></i>&nbsp;{{ 'Debug' | translate }}</h5>
+      <h5 class="text-error"><i class="fa-solid fa-bug"></i>&nbsp;{{ 'Debug' | translate }}</h5>
       <p-scrollPanel class="ui:w-full" [style]="{ height: '300px' }">
         <pre class="ui:text-sm">{{ record() | json }}</pre>
       </p-scrollPanel>

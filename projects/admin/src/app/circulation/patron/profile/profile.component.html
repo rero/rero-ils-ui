@@ -66,7 +66,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
     }
     <dt translate>Keep history</dt>
     <dd>
-      <i class="fa" [ngClass]="$any(patron()).keep_history ? 'fa-check text-success' : 'fa-times text-error'"
+      <i [ngClass]="$any(patron()).keep_history ? 'fa-solid fa-check text-success' : 'fa-solid fa-xmark text-error'"
         aria-hidden="true">
       </i>
     </dd>

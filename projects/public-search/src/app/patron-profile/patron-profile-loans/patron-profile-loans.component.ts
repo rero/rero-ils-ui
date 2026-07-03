@@ -29,8 +29,8 @@ export class PatronProfileLoansComponent {
 
   get sortOptions() {
     return [
-      { value: 'duedate', label: this.translateService.instant('Due date (earliest)'), icon: 'fa fa-sort-numeric-asc' },
-      { value: '-duedate', label: this.translateService.instant('Due date (latest)'), icon: 'fa fa-sort-numeric-desc' },
+      { value: 'duedate', label: this.translateService.instant('Due date (earliest)'), icon: 'fa-solid fa-arrow-down-1-9' },
+      { value: '-duedate', label: this.translateService.instant('Due date (latest)'), icon: 'fa-solid fa-arrow-down-9-1' },
     ];
   }
 

@@ -3,7 +3,7 @@ SPDX-FileCopyrightText: Fondation RERO+
 SPDX-License-Identifier: AGPL-3.0-or-later
 -->
 @if (isLoading()) {
-  <i class="fa fa-spinner fa-spin"></i>
+  <i class="fa-solid fa-spinner fa-spin"></i>
 }
 
 @else {
@@ -12,7 +12,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
     <div class="ui:flex ui:gap-2">
       @for (collection of collections(); track collection) {
         <p-tag severity="info" [title]="'Digital collection' | translate">
-          <i class="fa fa-bookmark"></i>
+          <i class="fa-solid fa-bookmark"></i>
           @if (useHref()) {
             <a role="link" tabindex="0" [href]="getHref(collection)">{{ collection }}</a>
           } @else {
@@ -29,7 +29,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
           <input id="filter" type="text" pInputText [placeholder]="'filter' | translate" [ngModel]="filterText()"
             (ngModelChange)="filterText.set($event)" />
           <p-inputgroup-addon>
-            <i class="fa fa-filter"></i>
+            <i class="fa-solid fa-filter"></i>
           </p-inputgroup-addon>
         </p-inputgroup>
         <small>
@@ -53,18 +53,18 @@ SPDX-License-Identifier: AGPL-3.0-or-later
                 </div>
               } @else {
                 <div>
-                  <i class="ui:text-muted-color fa fa-4x ui:pb-1" [ngClass]="file.mimetype | faIconClass : 'file'"></i>
+                  <i class="ui:text-muted-color fa-4x ui:pb-1" [ngClass]="file.mimetype | faIconClass : 'file'"></i>
                 </div>
               }
               <div class="ui:flex ui:items-center ui:justify-center ui:gap-2 ui:mt-2">
                 @if (file.preview) {
                   <a [href]="file.label" (click)="preview(file); $event.preventDefault()">
-                    <i class="fa ui:text-muted-color fa-eye ui:mx-1"></i>
+                    <i class="ui:text-muted-color fa-solid fa-eye ui:mx-1"></i>
                   </a>
                 }
                 @if (file.download) {
                   <a [href]="file.download" download>
-                    <i class="fa fa-download ui:text-muted-color ui:mx-1"></i>
+                    <i class="fa-solid fa-download ui:text-muted-color ui:mx-1"></i>
                   </a>
                 }
               </div>

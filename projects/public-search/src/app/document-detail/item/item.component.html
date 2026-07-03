@@ -49,7 +49,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
         <div class="ui:flex ui:flex-col ui:md:flex-row">
           <div class="ui:font-bold ui:md:w-[30%] ui:w-[100%]" translate>Temporary location</div>
           <div>
-            <i class="fa fa-exclamation-triangle text-warning" aria-hidden="true"></i>
+            <i class="fa-solid fa-triangle-exclamation text-warning" aria-hidden="true"></i>
             {{ m.temporary_location.name }}
           </div>
         </div>
@@ -86,7 +86,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
     @if (!showRequestDialog) {
       @if (circulationInformation) {
         <div class="ui:text-right">
-          <i class="fa fa-exclamation-triangle text-warning" aria-hidden="true"></i>
+          <i class="fa-solid fa-triangle-exclamation text-warning" aria-hidden="true"></i>
           {{ circulationInformation }}
         </div>
       }

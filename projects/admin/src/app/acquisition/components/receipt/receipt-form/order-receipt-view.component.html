@@ -13,14 +13,14 @@ SPDX-License-Identifier: AGPL-3.0-or-later
         severity="danger"
         size="small"
         (onClick)="redirectToOrder()"
-        icon="fa fa-times"
+        icon="fa-solid fa-xmark"
         [label]="'Cancel' | translate"
       />
       <p-button
         type="submit"
         size="small"
         [disabled]="!form.valid || httpPending.isPending()"
-        [icon]="httpPending.isPending() ? 'fa fa-spinner fa-pulse' : 'fa fa-save'"
+        [icon]="httpPending.isPending() ? 'fa-solid fa-spinner fa-pulse' : 'fa-solid fa-floppy-disk'"
         [label]="'Save' | translate"
       />
     </div>

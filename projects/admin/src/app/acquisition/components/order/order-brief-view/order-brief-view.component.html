@@ -39,7 +39,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
             {{ order.account_statement.provisional.total_amount | currency : order.currency }}
           </span>
           <span class="ui:w-4/12 ui:text-center ui:border-surface ui:border ui:p-2 ui:bg-surface-100 ui:rounded-r ui:text-muted-color ui:text-right">
-            <i class="fa fa-shopping-cart"></i>&nbsp;{{ order.account_statement.provisional.quantity }}
+            <i class="fa-solid fa-cart-shopping"></i>&nbsp;{{ order.account_statement.provisional.quantity }}
           </span>
         </div>
       }
@@ -49,7 +49,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
             {{ order.account_statement.expenditure.total_amount | currency : order.currency }}
           </span>
           <span class="ui:w-4/12 ui:text-center ui:border-surface ui:border ui:p-2 ui:bg-surface-100 ui:rounded-r ui:text-muted-color ui:text-right">
-            <i class="fa fa-sign-in"></i>&nbsp;{{ order.account_statement.expenditure.quantity }}
+            <i class="fa-solid fa-right-to-bracket"></i>&nbsp;{{ order.account_statement.expenditure.quantity }}
           </span>
         </div>
       }

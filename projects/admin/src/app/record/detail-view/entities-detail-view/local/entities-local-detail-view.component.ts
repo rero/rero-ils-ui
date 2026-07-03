@@ -56,7 +56,7 @@ export class EntitiesLocalDetailViewComponent {
       case EntityType.WORK:
         return { class: EntityTypeIcon.WORK, title: this.translateService.instant('Work') };
       default:
-        return { class: 'fa-question', title: this.translateService.instant('Missing type') };
+        return { class: 'fa-solid fa-question', title: this.translateService.instant('Missing type') };
     }
   }
 

@@ -24,14 +24,14 @@ SPDX-License-Identifier: AGPL-3.0-or-later
       @if (permissions()) {
       <div class="ui:flex ui:gap-1 ui:mr-4">
         <p-button
-          icon="fa fa-eye"
+          icon="fa-solid fa-eye"
           [title]="'Holdings detail'|translate"
           size="small"
           outlined
           [routerLink]="['/', 'records', 'holdings', 'detail', record.metadata.pid]"
         />
         <p-button
-          icon="fa fa-shopping-basket"
+          icon="fa-solid fa-basket-shopping"
           [title]="'Holdings request'|translate"
           outlined
           size="small"
@@ -47,7 +47,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
         </ng-template>
         @if (permissions()?.update?.can) {
         <p-button
-          icon="fa fa-pencil"
+          icon="fa-solid fa-pencil"
           outlined
           size="small"
           [title]="'Edit holdings'|translate"
@@ -55,7 +55,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
         />
         }
         <p-button
-          icon="fa fa-trash"
+          icon="fa-solid fa-trash-can"
           class="ui:pointer-events-auto"
           severity="danger"
           outlined

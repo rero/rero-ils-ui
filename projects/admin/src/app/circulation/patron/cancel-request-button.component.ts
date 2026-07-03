@@ -17,7 +17,7 @@ import { TooltipModule } from 'primeng/tooltip';
     <p-confirmDialog />
     <p-button
       class="ui:pointer-events-auto"
-      icon="fa fa-trash"
+      icon="fa-solid fa-trash-can"
       severity="danger"
       outlined
       [pTooltip]="'The request cannot be cancelled' | translate"
@@ -52,7 +52,7 @@ export class CancelRequestButtonComponent {
       message: this.translateService.instant('Do you really want to cancel the request?'),
       acceptLabel: this.translateService.instant('Yes'),
       rejectLabel: this.translateService.instant('No'),
-      icon: 'fa fa-exclamation-triangle fa-2x core:text-red-500',
+      icon: 'fa-solid fa-triangle-exclamation fa-2x core:text-red-500',
       acceptButtonStyleClass: 'core:bg-red-500 core:border-red-500',
       rejectButtonStyleClass: 'p-button-text',
       accept: () => {

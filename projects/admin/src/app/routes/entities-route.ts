@@ -28,10 +28,10 @@ class EntitiesRoute extends BaseRoute implements RouteDataTypesInterface {
   readonly recordType = 'local_entities';
 
   private _options = [
-    { label: _('Relevance'), value: 'bestmatch', defaultQuery: true },
-    { label: _('Date (newest)'), value: '-created' },
-    { label: _('Date (oldest)'), value: 'created' },
-    { label: _('Name'), value: 'fr_name' },
+    { label: _('Relevance'), value: 'bestmatch', defaultQuery: true, icon: 'fa-solid fa-arrow-down-wide-short' },
+    { label: _('Date (newest)'), value: '-created', icon: 'fa-solid fa-arrow-down-wide-short' },
+    { label: _('Date (oldest)'), value: 'created', icon: 'fa-solid fa-arrow-down-short-wide' },
+    { label: _('Name'), value: 'fr_name', icon: 'fa-solid fa-arrow-down-a-z' },
   ];
 
   getTypes(): Partial<RecordType>[] {

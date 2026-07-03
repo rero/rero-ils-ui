@@ -10,7 +10,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
     <p-accordion-panel value="0">
       <p-accordion-header>
         <div>
-          <i class="fa fa-bars"></i>&nbsp;{{ "Descriptive data" | translate }}
+          <i class="fa-solid fa-bars"></i>&nbsp;{{ "Descriptive data" | translate }}
         </div>
       </p-accordion-header>
       <p-accordion-content>
@@ -67,7 +67,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
           <div class="ui:col-span-9">
             <p-inputgroup>
               <p-inputgroup-addon>
-                <i class="fa fa-home"></i>
+                <i class="fa-solid fa-house"></i>
               </p-inputgroup-addon>
               <input
                 pInputText
@@ -89,7 +89,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
           <div class="ui:col-span-9">
             <p-inputgroup>
               <p-inputgroup-addon>
-                <i class="fa fa-at"></i>
+                <i class="fa-solid fa-at"></i>
               </p-inputgroup-addon>
               <input
                 pInputText
@@ -134,16 +134,15 @@ SPDX-License-Identifier: AGPL-3.0-or-later
       <p-accordion-header>
         <div class="ui:flex ui:w-full ui:items-center ui:justify-between ui:mr-2">
           <div>
-            <i class="fa fa-clock-o"></i>&nbsp;
+            <i class="fa-regular fa-clock"></i>&nbsp;
             <span translate>Opening Hours</span>
           </div>
           <div class="ui:flex ui:gap-1">
             @for (day of openingHours.controls; track $index) {
             <i
-              class="fa"
               [ngClass]="{
-                'fa-times-circle-o text-error': !day.value.is_open,
-                'fa-circle text-success': day.value.is_open
+                'fa-solid fa-circle-xmark text-error': !day.value.is_open,
+                'fa-solid fa-circle text-success': day.value.is_open
               }"
             ></i>
             }
@@ -177,7 +176,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
                         <div class="ui:col-span-10 ui:flex ui:gap-2 ui:my-1">
                           <p-inputgroup>
                             <p-inputgroup-addon>
-                              <i class="fa fa-clock-o"></i>
+                              <i class="fa-regular fa-clock"></i>
                             </p-inputgroup-addon>
                             <input
                               pInputText
@@ -187,7 +186,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
                           </p-inputgroup>
                           <p-inputgroup>
                             <p-inputgroup-addon>
-                              <i class="fa fa-long-arrow-right"></i>
+                              <i class="fa-solid fa-arrow-right-long"></i>
                             </p-inputgroup-addon>
                             <input
                               pInputText
@@ -201,7 +200,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
                             <p-button
                               (onClick)="addTime(i)"
                               outlined
-                              icon="fa fa-plus-square-o"
+                              icon="fa-regular fa-square-plus"
                               [label]="'period' | translate"
                             />
                           }
@@ -210,7 +209,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
                               (onClick)="deleteTime(i, t)"
                               outlined
                               severity="danger"
-                              icon="fa fa-trash"
+                              icon="fa-solid fa-trash-can"
                             />
                           }
                         </div>
@@ -259,7 +258,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
       <p-accordion-header>
         <div class="ui:flex ui:w-full ui:items-center ui:justify-between ui:mr-2">
           <div>
-            <i class="fa fa-exclamation-triangle"></i>&nbsp;
+            <i class="fa-solid fa-triangle-exclamation"></i>&nbsp;
             <span translate>Exceptions (holidays, etc.)</span>
           </div>
 
@@ -269,7 +268,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
               size="small"
               outlined
               (onClick)="$event.stopPropagation(); addException()"
-              icon="fa fa-plus-square-o"
+              icon="fa-regular fa-square-plus"
               [label]="'Add' | translate"
             />
             <p-badge [value]="exceptionDates().length || '0'" />
@@ -284,7 +283,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
     <p-accordion-panel value="3">
       <p-accordion-header>
         <div>
-          <i class="fa fa-envelope-o"></i>&nbsp;
+          <i class="fa-regular fa-envelope"></i>&nbsp;
           <span translate>Notification settings</span>
         </div>
       </p-accordion-header>
@@ -294,7 +293,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
           <div class="ui:grid ui:grid-cols-12 ui:mt-1" [formGroupName]="i">
             <div class="ui:col-span-3 ui:flex ui:gap-3 ui:items-center">
               @if ($any(setting).controls.type.value | notificationType:'patron') {
-                <i class="text-info fa fa-info"></i>
+                <i class="text-info fa-solid fa-info"></i>
               }
               <!-- eslint-disable-next-line @angular-eslint/template/label-has-associated-control -->
               <label class="ui:font-bold">
@@ -304,7 +303,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
             <div class="ui:col-span-9 ui:flex ui:gap-3">
               <p-inputGroup>
                 <p-inputGroupAddon>
-                  <i class="fa fa-at"></i>
+                  <i class="fa-solid fa-at"></i>
                 </p-inputGroupAddon>
                 <input
                   pInputText
@@ -315,7 +314,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
               @if (delayedNotificationTypes.includes($any(setting).controls.type.value)) {
                 <p-inputGroup>
                   <p-inputGroupAddon>
-                    <i class="fa fa-clock-o"></i>
+                    <i class="fa-regular fa-clock"></i>
                   </p-inputGroupAddon>
                   <p-inputNumber
                     inputStyleClass="ui:rounded-l-none"
@@ -337,7 +336,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
             <small translate>Legend</small>
           </p-divider>
           <div class="ui:grid ui:grid-cols-12 ui:gap-4">
-            <i class="fa fa-info text-info ui:col-span-1"></i>
+            <i class="fa-solid fa-info text-info ui:col-span-1"></i>
             <small class="ui:col-span-11 ui:text-muted-color ui:italic" translate>
               The notifications for patrons without e-mail are sent to this
               address.
@@ -350,7 +349,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
     <p-accordion-panel value="4">
       <p-accordion-header>
         <div>
-          <i class="fa fa-university ui:mr-2"></i>&nbsp;
+          <i class="fa-solid fa-cart-arrow-down ui:mr-2"></i>&nbsp;
           <span translate>Acquisition settings</span>
         </div>
       </p-accordion-header>
@@ -358,11 +357,11 @@ SPDX-License-Identifier: AGPL-3.0-or-later
         <p-tabs value="0" formGroupName="acquisition_settings">
           <p-tablist>
             <p-tab class="ui:flex ui:items-center ui:!gap-2" value="0">
-              <i class="fa fa-book"></i>
+              <i class="fa-solid fa-book"></i>
               <span translate>Default acquisition settings</span>
             </p-tab>
             <p-tab class="ui:flex ui:items-center ui:!gap-2" value="1">
-              <i class="fa fa-newspaper-o"></i>
+              <i class="fa-solid fa-newspaper"></i>
               <span translate>Serial acquisition settings</span>
             </p-tab>
           </p-tablist>
@@ -374,7 +373,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
                   formGroup: libForm()!
                     .get('acquisition_settings')!
                     .get('shipping_informations'),
-                  icon: 'fa-truck',
+                  icon: 'fa-solid fa-truck-fast',
                   name: 'Shipping informations' | translate,
                   fieldPrefix: 'shipping'
                 }"
@@ -385,7 +384,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
                   formGroup: libForm()!
                     .get('acquisition_settings')!
                     .get('billing_informations'),
-                  icon: 'fa-money',
+                  icon: 'fa-solid fa-money-bill-wave',
                   name: 'Billing informations' | translate,
                   fieldPrefix: 'billing'
                 }"
@@ -398,7 +397,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
                   formGroup: libForm()!
                     .get('serial_acquisition_settings')!
                     .get('shipping_informations'),
-                  icon: 'fa-truck',
+                  icon: 'fa-solid fa-truck-fast',
                   name: 'Shipping informations' | translate,
                   fieldPrefix: 'shipping'
                 }"
@@ -409,7 +408,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
                   formGroup: libForm()!
                     .get('serial_acquisition_settings')!
                     .get('billing_informations'),
-                  icon: 'fa-money',
+                  icon: 'fa-solid fa-money-bill-wave',
                   name: 'Billing informations' | translate,
                   fieldPrefix: 'billing'
                 }"
@@ -424,12 +423,12 @@ SPDX-License-Identifier: AGPL-3.0-or-later
       <p-accordion-header>
         <div class="ui:flex ui:w-full ui:items-center ui:justify-between ui:mr-2">
           <div>
-            <i class="fa fa-wrench ui:mr-2"></i>&nbsp;
+            <i class="fa-solid fa-wrench ui:mr-2"></i>&nbsp;
             <span translate>Rollover settings</span>
           </div>
-          <i class="fa"
+          <i class="fa-solid"
               [ngClass]="{
-                'fa-times text-error': rolloverSettings.value.account_transfer === 'rollover_no_transfer',
+                'fa-xmark text-error': rolloverSettings.value.account_transfer === 'rollover_no_transfer',
                 'fa-check text-success': rolloverSettings.value.account_transfer === 'rollover_allocated_amount'
               }"
           ></i>
@@ -458,7 +457,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
       severity="danger"
       size="small"
       (onClick)="onCancel()"
-      icon="fa fa-times"
+      icon="fa-solid fa-xmark"
       [label]="'Cancel' | translate"
     />
     <p-button
@@ -466,7 +465,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
       size="small"
       severity="primary"
       [disabled]="libForm()!.invalid || isSaving"
-      icon="fa fa-save"
+      icon="fa-solid fa-floppy-disk"
       [label]="'Save' | translate"
     />
   </div>
@@ -486,7 +485,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
       <ng-template #header>
         <p-tag class="ui:mx-2">
           @if (icon) {
-            <i class="fa {{ icon }}"></i>&nbsp;
+            <i class="{{ icon }}"></i>&nbsp;
           }
           {{ name }}
         </p-tag>
@@ -497,7 +496,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
         <label [for]="fieldPrefix + '_name'" class="ui:col-span-3" translate>Contact name</label>
         <p-inputGroup class="ui:col-span-9">
           <p-inputGroupAddon>
-            <i class="fa fa-user"></i>
+            <i class="fa-solid fa-user"></i>
           </p-inputGroupAddon>
           <input
             pInputText
@@ -509,7 +508,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
         <label [for]="fieldPrefix + '_email'" class="ui:col-span-3" translate>Contact email</label>
         <p-inputGroup class="ui:col-span-9">
           <p-inputGroupAddon>
-            <i class="fa fa-at"></i>
+            <i class="fa-solid fa-at"></i>
           </p-inputGroupAddon>
           <input
             pInputText
@@ -523,7 +522,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
         >
         <p-inputGroup class="ui:col-span-9">
           <p-inputGroupAddon>
-            <i class="fa fa-phone"></i>
+            <i class="fa-solid fa-phone"></i>
           </p-inputGroupAddon>
           <input
             pInputText
@@ -580,7 +579,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
         <label [for]="fieldPrefix + '_extra'" class="ui:col-span-3" translate>Extra information</label>
         <p-inputGroup class="ui:col-span-9">
           <p-inputGroupAddon>
-            <i class="fa fa-sticky-note-o"></i>
+            <i class="fa-regular fa-note-sticky"></i>
           </p-inputGroupAddon>
           <input
             pInputText
