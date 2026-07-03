@@ -65,7 +65,7 @@ export class RemoteEntitiesDetailViewComponent {
         };
       default:
         return {
-          class: 'fa-question',
+          class: 'fa-solid fa-question',
           title: this.translateService.instant('Missing type')
         };
     }

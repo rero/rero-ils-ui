@@ -5,8 +5,8 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 -->
 <div class="ui:grid ui:grid-cols-12 ui:gap-4 ui:py-2">
   <div class="ui:col-span-10">
-    <i class="ui:mr-1 fa"
-       [ngClass]="{'fa-plus-square-o': isCollapsed === true, 'fa-minus-square-o': isCollapsed === false}"
+    <i class="ui:mr-1 fa-regular"
+       [ngClass]="{'fa-square-plus': isCollapsed === true, 'fa-square-minus': isCollapsed === false}"
        tabindex="0"
        (click)="isCollapsed = !isCollapsed"
        (keyup.enter)="isCollapsed = !isCollapsed">
@@ -14,7 +14,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
     {{ permission().name }}
   </div>
   <div class="ui:col-span-2 ui:text-center">
-    <i class="fa fa-square" [ngClass]="{'text-success': permission().can, 'text-error': !permission().can}"></i>
+    <i class="fa-solid fa-square" [ngClass]="{'text-success': permission().can, 'text-error': !permission().can}"></i>
   </div>
   @if(!isCollapsed) {
   <div id="reasons" class="ui:col-span-12 ui:my-1 ui:ml-8">
@@ -24,7 +24,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
           <div class="ui:grid ui:grid-cols-12 ui:gap-4">
             <div class="ui:col-span-6">{{ role.key | translate }}</div>
             <div>
-              <i class="fa fa-square" [ngClass]="{
+              <i class="fa-solid fa-square" [ngClass]="{
                  'text-success': role.value === true,
                  'text-error': role.value === false,
                  ' ui:text-muted-color': role.value === null

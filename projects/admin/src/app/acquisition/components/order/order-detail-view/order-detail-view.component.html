@@ -22,7 +22,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
             (onClick)="placeOrderDialog()"
             severity="primary"
             [disabled]="!store.canPlaceOrder()"
-            icon="fa fa-shopping-cart"
+            icon="fa-solid fa-cart-shopping"
             [label]="'Place order' | translate"
           />
         </section>
@@ -63,7 +63,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
                     @if (store.canAddLine()) {
                       <p-button
                         (click)="$event.stopPropagation()"
-                        icon="fa fa-plus-square-o"
+                        icon="fa-regular fa-square-plus"
                         size="small"
                         [outlined]="true"
                         [label]="'Add' | translate"

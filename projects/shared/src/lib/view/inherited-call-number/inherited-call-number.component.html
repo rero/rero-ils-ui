@@ -7,7 +7,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
     @case ('first') {
       @if (itemMetadata | itemHoldingsCallNumber | async; as callNumber) {
         @if (callNumber.first.source === 'holding') {
-          <i class="fa fa-link text-warning" [title]="'inherited' | translate" aria-hidden="true"></i>
+          <i class="fa-solid fa-link text-warning" [title]="'inherited' | translate" aria-hidden="true"></i>
         }
         {{ callNumber.first.value }}
 

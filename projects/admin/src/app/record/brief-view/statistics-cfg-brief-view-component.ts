@@ -12,7 +12,7 @@ import { TruncateTextPipe } from '@rero/ng-core';
     template: `
   <h5>
     <i
-      class="fa fa-circle"
+      class="fa-solid fa-circle"
       [title]="activeLabel"
       [ngClass]="{'text-success': record().metadata.is_active, 'text-error': !record().metadata.is_active}"
     ></i>&nbsp;<a [routerLink]="[detailUrl().link]">{{ record().metadata.name }}</a>

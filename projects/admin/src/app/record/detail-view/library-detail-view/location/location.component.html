@@ -11,21 +11,21 @@ SPDX-License-Identifier: AGPL-3.0-or-later
     <div class="ui:flex ui:gap-2 ui:items-center">
       @if (location().metadata.is_pickup) {
         <i
-          class="fa fa-truck"
+          class="fa-solid fa-truck-fast"
           [pTooltip]="'Pickup location'|translate"
           tooltipPosition="top"
         ></i>
       }
       @if (location().metadata.is_ill_pickup) {
         <i
-          class="fa fa-truck ui:text-primary"
+          class="fa-solid fa-truck-fast ui:text-primary"
           [pTooltip]="'ILL pickup location'|translate"
           tooltipPosition="top"
         ></i>
       }
       @if (location().metadata.is_online) {
         <i
-          class="fa fa-globe"
+          class="fa-solid fa-globe"
           [pTooltip]="'Online location'|translate"
           tooltipPosition="top"
         ></i>
@@ -36,7 +36,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
       @if (permissions().update.can) {
         <p-button
           size="small"
-          icon="fa fa-pencil"
+          icon="fa-solid fa-pencil"
           [title]="'Edit'|translate"
           [outlined]="true"
           [routerLink]="['/records', 'locations', 'edit', location().metadata.pid]"
@@ -46,7 +46,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
         <p-button
           size="small"
           class="ui:pointer-events-auto"
-          icon="fa fa-trash"
+          icon="fa-solid fa-trash-can"
           severity="danger"
           [title]="'Delete'|translate"
           [outlined]="true"

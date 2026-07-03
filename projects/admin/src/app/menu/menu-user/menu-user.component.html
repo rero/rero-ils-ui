@@ -51,7 +51,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
         }
         <span>{{ item.label }}</span>
         @if (!item.disabled && item.items) {
-          <i [ngClass]="['ui:ml-auto fa', root ? 'fa-angle-down ui:ml-2' : 'fa-angle-right']"></i>
+          <i [ngClass]="['ui:ml-auto', root ? 'fa-solid fa-angle-down fa-xs' : 'fa-solid fa-angle-right fa-xs']"></i>
         }
       </div>
     }

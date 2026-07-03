@@ -20,7 +20,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
             <a [routerLink]="['/records','items','detail', item().pid]">{{ item().barcode }}</a>
           </div>
           @if (getCirculationNoteForAction().length > 0) {
-            <i class="fa fa-sticky-note-o text-warning" [title]="'Note' | translate"></i>
+            <i class="fa-solid fa-bell text-warning" [title]="'Note' | translate"></i>
           }
         </div>
         @if (isCollapsed()) {
@@ -30,11 +30,11 @@ SPDX-License-Identifier: AGPL-3.0-or-later
       @if (item().actionDone) {
         @if ((item().actionDone === itemAction.checkin && item().getNote('checkin_note')) ||
         (item().actionDone === itemAction.checkout && item().getNote('checkout_note'))) {
-          <i class="fa fa-exclamation-triangle text-warning ui:mt-1 ui:ml-auto ui:mr-2"></i>
+          <i class="fa-solid fa-triangle-exclamation text-warning ui:mt-1 ui:ml-auto ui:mr-2"></i>
         }
       } @else {
         @if (!item().actions) {
-          <i class="fa fa-exclamation-triangle text-warning ui:mt-1 ui:ml-auto ui:mr-2"></i>
+          <i class="fa-solid fa-triangle-exclamation text-warning ui:mt-1 ui:ml-auto ui:mr-2"></i>
         }
       }
     </div>
@@ -64,7 +64,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
             @case ('on_loan') {
               <li>
                 {{ item().status | translate }}
-                <i class="fa fa-arrow-right" aria-hidden="true"></i>
+                <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
                 <span [class.text-warning]="loan() && loan()!.expired">
                   {{ item().loan.dueDate | dateTranslate :'shortDate' }}
                 </span>
@@ -106,7 +106,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
           <li class="ui:mt-1">
             @if (isCollapsed() && item().loan && item().loan.extension_count && (!item().actionDone || item().actionDone !== itemAction.checkin)) {
               <p-tag [title]="'Renewals'|translate" severity="secondary" class="ui:mr-1">
-                {{ item().loan.extension_count }} <i class="fa fa-refresh ui:ml-1"></i>
+                {{ item().loan.extension_count }} <i class="fa-solid fa-arrows-rotate ui:ml-1"></i>
               </p-tag>
             }
             @if (isCollapsed() && totalAmountOfFee() > 0) {
@@ -117,7 +117,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
             @if (isCollapsed() && item().pending_loans && item().pending_loans.length) {
               <p-tag [title]="'Requests'|translate" severity="secondary" class="ui:mr-1">
                 <div class="ui:flex ui:items-start ui:gap-1">
-                  <i class="fa fa-shopping-basket ui:mt-1"></i>&nbsp;
+                  <i class="fa-solid fa-basket-shopping ui:mt-1"></i>&nbsp;
                   <a
                     class="ui:truncate"
                     [title]="item().pending_loans[0].patron.name"
@@ -141,15 +141,15 @@ SPDX-License-Identifier: AGPL-3.0-or-later
           <div class="ui:flex ui:gap-2 p-disabled" pButton severity="secondary" outlined>
             @switch (item().actionDone) {
               @case (itemAction.checkin) {
-                <i class="fa fa-arrow-circle-o-down text-success" aria-hidden="true"></i>
+                <i class="fa-solid fa-circle-down text-success" aria-hidden="true"></i>
                 <span translate>checked in</span>
               }
               @case (itemAction.checkout) {
-                <i class="fa fa-arrow-circle-o-right text-success" aria-hidden="true"></i>
+                <i class="fa-solid fa-circle-right text-success" aria-hidden="true"></i>
                 <span translate>checked out</span>
               }
               @case (itemAction.extend_loan) {
-                <i class="fa fa-refresh text-success" aria-hidden="true"></i>
+                <i class="fa-solid fa-arrows-rotate text-success" aria-hidden="true"></i>
                 <span translate>renewed</span>
               }
               @default {
@@ -160,7 +160,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
         }
         @if (patron() && !item().actionDone) {
             <p-button
-              icon="fa fa-refresh"
+              icon="fa-solid fa-arrows-rotate"
               [label]="'Renew'|translate"
               severity="secondary"
               [outlined]="true"
@@ -209,7 +209,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
             <dd>
               <p-tag severity="secondary" class="ui:mr-1">
                 {{ item().loan.extension_count }}
-                <i class="fa fa-refresh ui:ml-1"></i>
+                <i class="fa-solid fa-arrows-rotate ui:ml-1"></i>
               </p-tag>
             </dd>
           }
@@ -256,11 +256,11 @@ SPDX-License-Identifier: AGPL-3.0-or-later
                 <p-tag severity="secondary" class="ui:mr-1">
                   {{ item().pending_loans.length }}
                 </p-tag>
-                <i class="fa fa-long-arrow-right ui:px-2"></i>
+                <i class="fa-solid fa-arrow-right-long ui:px-2"></i>
               }
               @for (request of item().pending_loans; track request.pid) {
                 <p-tag severity="secondary" class="ui:mr-1">
-                  <i class="fa fa-shopping-basket"></i>&nbsp;
+                  <i class="fa-solid fa-basket-shopping"></i>&nbsp;
                   <a
                     [title]="request.patron.name"
                     [routerLink]="['/circulation', 'patron', request.patron.barcode, 'loan']"
@@ -272,7 +272,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
           @for (note of getCirculationNoteForAction(); track $index) {
             <dt>
-              <i class="fa fa-sticky-note-o text-warning ui:mr-1"></i>
+              <i class="fa-solid fa-bell text-warning ui:mr-1"></i>
               @if (note.type !== NOTEAPI) {
                 {{ note.type | translate }}
               } @else {
@@ -286,14 +286,14 @@ SPDX-License-Identifier: AGPL-3.0-or-later
     }
     @if (canUseDebugMode && !isCollapsed()) {
       <div class="ui:flex ui:justify-end ui:mt-2 ui:col-span-12">
-        <p-button [icon]="debugMode() ? 'fa fa-toggle-on' : 'fa fa-toggle-off'" [outlined]="true" severity="warn" (onClick)="debugMode.set(!debugMode())">
-          <i class="fa fa-bug"></i>
+        <p-button [icon]="debugMode() ? 'fa-solid fa-toggle-on' : 'fa-solid fa-toggle-off'" [outlined]="true" severity="warn" (onClick)="debugMode.set(!debugMode())">
+          <i class="fa-solid fa-bug"></i>
         </p-button>
       </div>
     }
     @if (debugMode() && !isCollapsed()) {
       <div class="ui:col-span-12">
-        <h5 class="text-error"><i class="fa fa-bug"></i>&nbsp;{{ 'Debug' | translate }}</h5>
+        <h5 class="text-error"><i class="fa-solid fa-bug"></i>&nbsp;{{ 'Debug' | translate }}</h5>
         <div class="ui:grid ui:grid-cols-12 ui:gap-4">
           @if (loan()) {
             <div class="ui:lg:col-span-6 ui:col-span-12">
@@ -310,7 +310,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
                   <h5>
                     {{ 'Circulation policy' | translate }}&nbsp;
                     <a [routerLink]="['/records', 'circ_policies', 'detail', cipo.pid]" target="_circulation">
-                      <i class="fa fa-external-link"></i>
+                      <i class="fa-solid fa-up-right-from-square"></i>
                     </a>
                   </h5>
                   <p-scrollPanel class="ui:w-full" [style]="{ height: '500px' }">

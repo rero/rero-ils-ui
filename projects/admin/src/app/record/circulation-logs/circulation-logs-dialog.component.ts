@@ -12,7 +12,7 @@ import { Button } from 'primeng/button';
     selector: 'admin-circulation-logs-dialog',
     template: `
     <p-button
-      icon="fa fa-history"
+      icon="fa-solid fa-clock-rotate-left"
       id="{{ resourceType() }}-circulation-history"
       [label]="'Circulation history'|translate"
       outlined

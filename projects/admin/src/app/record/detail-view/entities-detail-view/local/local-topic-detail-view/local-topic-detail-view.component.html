@@ -15,9 +15,9 @@ SPDX-License-Identifier: AGPL-3.0-or-later
   @if (record().genreForm) {
     <dt translate>Genre form</dt>
     <dd>
-      <i class="fa" [ngClass]="{
+      <i class="fa-solid" [ngClass]="{
         'fa-check text-success': record().genreForm,
-        'fa-times text-error': !record().genreForm
+        'fa-xmark text-error': !record().genreForm
       }"></i>
     </dd>
   }

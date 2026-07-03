@@ -85,11 +85,11 @@ SPDX-License-Identifier: AGPL-3.0-or-later
                   <div class="ui:text-muted-color ui:text-sm ui:justify-items-end">
                     <div class="ui:md:flex ui:md:flex-row ui:flex-col ui:justify-items-end">
                       <div class="ui:flex ui:gap-1 ui:items-center">
-                        <i class="fa fa-calendar-o"></i>
+                        <i class="fa-solid fa-calendar-days"></i>
                         {{ event.createdAt | dateTranslate: 'shortDate' }}
                       </div>
                       <div class="ui:flex ui:gap-1 ui:items-center">
-                        <i class="fa fa-clock-o ui:pl-1"></i>
+                        <i class="fa-regular fa-clock ui:pl-1"></i>
                         {{ event.createdAt | dateTranslate: 'HH:mm' }}
                       </div>
                     </div>
@@ -99,7 +99,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
                   <span
                     class="ui:flex ui:items-center ui:justify-center ui:text-white ui:rounded-full ui:z-10 ui:shadow-sm ui:bg-red-500 ui:w-[1.3rem] ui:h-[1.3rem]"
                   >
-                    <i class="fa fa-check"></i>
+                    <i class="fa-solid fa-check"></i>
                   </span>
                 </ng-template>
             </p-timeline>

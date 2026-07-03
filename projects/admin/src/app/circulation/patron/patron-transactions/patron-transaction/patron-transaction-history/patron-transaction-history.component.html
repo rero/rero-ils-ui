@@ -27,7 +27,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
           }
           @if (event.pid) {
             <i
-              class="fa"
+              class="fa-solid"
               [ngClass]="{'fa-eye': hideShowEye('event-' + event.pid), 'fa-eye-slash': !hideShowEye('event-' + event.pid)}"
               tabindex="0"
               (click)="hideShowEvent('event-' + event.pid)"
@@ -39,7 +39,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
         @if (event.note) {
           <div class="ui:grid ui:grid-cols-12 ui:gap-4">
             <div class="ui:col-span-4">
-              <i class="fa fa-comment-o"></i>&nbsp;
+              <i class="fa-regular fa-note-sticky"></i>&nbsp;
               {{ 'Note' | translate }}
             </div>
             <div class="ui:col-span-8">{{ event.note }}</div>
@@ -49,7 +49,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
           @if (event.operator.pid | getRecord:'patrons' | async; as operator) {
             <div class="ui:grid ui:grid-cols-12 ui:gap-4">
               <div class="ui:col-span-4">
-                <i class="fa fa-user"></i>&nbsp;
+                <i class="fa-solid fa-user"></i>&nbsp;
                 {{ 'Operator' | translate }}
               </div>
               <div class="ui:col-span-8">
@@ -70,7 +70,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
           @if (event.library.pid | getRecord:'libraries' | async; as library) {
             <div class="ui:grid ui:grid-cols-12 ui:gap-4">
               <div class="ui:col-span-4">
-                <i class="fa fa-map-marker"></i>&nbsp;
+                <i class="fa-solid fa-location-dot"></i>&nbsp;
                 {{ 'Library' | translate }}
               </div>
               <div class="ui:col-span-8">{{ $any(library).metadata.name }}</div>
@@ -82,7 +82,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
             <div class="ui:grid ui:grid-cols-12 ui:gap-4 ui:mb-1">
               <div class="ui:col-span-4">
                 @if (first) {
-                  <i class="fa fa-cubes"></i>&nbsp;
+                  <i class="fa-solid fa-cubes"></i>&nbsp;
                   {{ 'Steps' | translate }}
                 }
               </div>
@@ -103,8 +103,8 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
   <ng-template #opposite let-event>
     <small class="ui:text-muted-color">
-      <i class="fa fa-calendar-o"></i> {{ event.creation_date | dateTranslate: 'shortDate' }}
-      <i class="fa fa-clock-o ui:pl-1"></i> {{ event.creation_date | dateTranslate: 'HH:mm:ss' }}
+      <i class="fa-solid fa-calendar-days"></i> {{ event.creation_date | dateTranslate: 'shortDate' }}
+      <i class="fa-regular fa-clock ui:pl-1"></i> {{ event.creation_date | dateTranslate: 'HH:mm:ss' }}
     </small>
   </ng-template>
 </p-timeline>

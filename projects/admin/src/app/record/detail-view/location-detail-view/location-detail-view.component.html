@@ -33,7 +33,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
                   @for (note of data.public_note; track $index) {
                     <li>
                       <div class="ui:font-bold ui:w-20 ui:inline-block">
-                        <i class="fa fa-language" aria-hidden="true"></i>&nbsp;({{ note.language }})
+                        <i class="fa-solid fa-language" aria-hidden="true"></i>&nbsp;({{ note.language }})
                       </div>
                       {{ note.label }}
                     </li>
@@ -46,8 +46,8 @@ SPDX-License-Identifier: AGPL-3.0-or-later
           <dl class="ui:grid ui:grid-cols-12 ui:gap-4 ui:mb-1">
             <dt class="ui:col-span-3" translate>Is online</dt>
             <dd class="ui:col-span-7 ui:mb-0">
-              <i class="fa"
-                  [ngClass]="(data.is_online) ? 'fa-check' : 'fa-times'"
+              <i
+                  [ngClass]="(data.is_online) ? 'fa-solid fa-check' : 'fa-solid fa-xmark'"
                   [ngStyle]="{'color': (data.is_online) ? 'green' : 'red'}"
                   aria-hidden="true">
               </i>
@@ -57,8 +57,8 @@ SPDX-License-Identifier: AGPL-3.0-or-later
           <dl class="ui:grid ui:grid-cols-12 ui:gap-4 ui:mb-1">
               <dt class="ui:col-span-3" translate>Is pickup</dt>
               <dd class="ui:col-span-7 ui:mb-0">
-                <i class="fa"
-                    [ngClass]="(data.is_pickup) ? 'fa-check' : 'fa-times'"
+                <i
+                    [ngClass]="(data.is_pickup) ? 'fa-solid fa-check' : 'fa-solid fa-xmark'"
                     [ngStyle]="{'color': (data.is_pickup) ? 'green' : 'red'}"
                     aria-hidden="true">
                 </i>
@@ -76,8 +76,8 @@ SPDX-License-Identifier: AGPL-3.0-or-later
           <dl class="ui:grid ui:grid-cols-12 ui:gap-4 ui:mb-1">
             <dt class="ui:col-span-3" translate>Allow request</dt>
             <dd class="ui:col-span-7 ui:mb-0">
-              <i class="fa"
-                  [ngClass]="(data.allow_request) ? 'fa-check' : 'fa-times'"
+              <i
+                  [ngClass]="(data.allow_request) ? 'fa-solid fa-check' : 'fa-solid fa-xmark'"
                   [ngStyle]="{'color': (data.allow_request) ? 'green' : 'red'}"
                   aria-hidden="true">
               </i>
@@ -88,8 +88,8 @@ SPDX-License-Identifier: AGPL-3.0-or-later
             <dl class="ui:grid ui:grid-cols-12 ui:gap-4 ui:mb-1">
               <dt class="ui:col-span-3" translate>Send notification</dt>
               <dd class="ui:col-span-7 ui:mb-0">
-                <i class="fa"
-                    [ngClass]="(data.send_notification) ? 'fa-check' : 'fa-times'"
+                <i
+                    [ngClass]="(data.send_notification) ? 'fa-solid fa-check' : 'fa-solid fa-xmark'"
                     [ngStyle]="{'color': (data.send_notification) ? 'green' : 'red'}"
                     aria-hidden="true">
                 </i>

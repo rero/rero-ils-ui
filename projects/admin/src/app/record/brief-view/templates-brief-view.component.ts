@@ -13,7 +13,7 @@ import { TruncateTextPipe, GetRecordPipe } from '@rero/ng-core';
     <div class="ui:flex ui:gap-3 ui:items-center">
       <a [routerLink]="[detailUrl().link]">{{ record().metadata.name }}</a>
       @if (record().metadata.visibility === 'private') {
-        <i [title]="'private'|translate" class="fa fa-lock ui:text-muted-color" aria-hidden="true"></i>
+        <i [title]="'private'|translate" class="fa-solid fa-lock ui:text-muted-color" aria-hidden="true"></i>
       }
     </div>
   </h5>

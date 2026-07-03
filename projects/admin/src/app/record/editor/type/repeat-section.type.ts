@@ -18,7 +18,7 @@ import { Button } from 'primeng/button';
             <p-button
               (onClick)="remove(i)"
               severity="danger"
-              icon="fa fa-trash"
+              icon="fa-solid fa-trash-can"
               [rounded]="true"
               [text]="true"
             />
@@ -26,7 +26,7 @@ import { Button } from 'primeng/button';
           @if (field.parent.props.maxItems > field.parent.fieldGroup.length && field.parent.fieldGroup.length -1 === i) {
             <p-button
               (onClick)="add()"
-              icon="fa fa-plus-circle"
+              icon="fa-solid fa-circle-plus"
               [rounded]="true"
               [text]="true"
             />

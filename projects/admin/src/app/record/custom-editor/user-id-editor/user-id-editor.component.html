@@ -17,14 +17,14 @@ SPDX-License-Identifier: AGPL-3.0-or-later
       size="small"
       id="user-editor-delete-button"
       (onClick)="closeDialog()"
-      icon="fa fa-times"
+      icon="fa-solid fa-xmark"
       [label]="'Cancel' | translate"
     />
     <p-button
       type="submit"
       id="user-editor-save-button"
       size="small"
-      icon="fa fa-save"
+      icon="fa-solid fa-floppy-disk"
       [disabled]="httpPending.isPending()"
       [label]="'Save' | translate"
     />

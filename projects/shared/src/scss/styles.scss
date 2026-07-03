@@ -13,10 +13,9 @@
 
 
 .rero-ils-external-link:after {
-  font-family: "FontAwesome";
   @apply ui:text-sm;
   vertical-align: top;
-  content: " \f08e";
+  content: " \2197"; // ↗ external link indicator
 }
 
 p-accordion-header {

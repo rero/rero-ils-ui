@@ -17,7 +17,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
       @if (circulationAccess && record().metadata.patron) {
         <p-button
           [title]="'Circulation' | translate"
-          icon="fa fa-exchange"
+          icon="fa-solid fa-right-left"
           class="ui:my-0 ui:py-0"
           outlined
           (onClick)="goToCirculation(record().metadata.patron.barcode[0])"

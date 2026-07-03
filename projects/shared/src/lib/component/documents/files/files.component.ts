@@ -160,18 +160,18 @@ export class FilesComponent {
 
   getIcon(file: any): string {
     const { mimetype } = file;
-    if (mimetype == null) return 'fa-file-o';
+    if (mimetype == null) return 'fa-regular fa-file';
     switch (true) {
-      case mimetype.startsWith('image/'): return 'fa-file-image-o';
-      case mimetype.startsWith('audio/'): return 'fa-file-audio-o';
-      case mimetype.startsWith('text/'): return 'fa-file-text-o';
-      case mimetype.startsWith('video/'): return 'fa-file-video-o';
-      case mimetype.startsWith('application/vnd.openxmlformats-officedocument.presentationml'): return 'fa-file-powerpoint-o';
-      case mimetype.startsWith('application/vnd.openxmlformats-officedocument.wordprocessingml'): return 'fa-file-word-o';
-      case mimetype.startsWith('application/vnd.openxmlformats-officedocument.spreadsheetml'): return 'fa-file-excel-o';
-      case mimetype.startsWith('application/pdf'): return 'fa-file-pdf-o';
+      case mimetype.startsWith('image/'): return 'fa-regular fa-file-image';
+      case mimetype.startsWith('audio/'): return 'fa-regular fa-file-audio';
+      case mimetype.startsWith('text/'): return 'fa-regular fa-file-lines';
+      case mimetype.startsWith('video/'): return 'fa-regular fa-file-video';
+      case mimetype.startsWith('application/vnd.openxmlformats-officedocument.presentationml'): return 'fa-regular fa-file-powerpoint';
+      case mimetype.startsWith('application/vnd.openxmlformats-officedocument.wordprocessingml'): return 'fa-regular fa-file-word';
+      case mimetype.startsWith('application/vnd.openxmlformats-officedocument.spreadsheetml'): return 'fa-regular fa-file-excel';
+      case mimetype.startsWith('application/pdf'): return 'fa-regular fa-file-pdf';
     }
-    return 'fa-file-o';
+    return 'fa-regular fa-file';
   }
 
   preview(file: File): void {

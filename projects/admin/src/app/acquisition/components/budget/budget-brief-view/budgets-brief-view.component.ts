@@ -12,7 +12,7 @@ import { RouterLink } from '@angular/router';
     template: `
     <h5>
       <i
-        class="fa fa-circle ui:mr-2"
+        class="fa-solid fa-circle ui:mr-2"
         [title]="title"
         [ngClass]="{'text-success': record().metadata.is_active, 'text-error': !record().metadata.is_active}"
       ></i>&nbsp;

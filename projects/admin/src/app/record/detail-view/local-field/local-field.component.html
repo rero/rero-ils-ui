@@ -19,7 +19,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
       <div class="ui:flex ui:gap-1">
         @if ($any(recordPermissions())?.update?.can) {
           <p-button
-            icon="fa fa-pencil"
+            icon="fa-solid fa-pencil"
             [label]="'Edit'|translate"
             outlined
             [routerLink]="['/records', 'local_fields', 'edit', pid()]"
@@ -29,7 +29,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
         }
         @if ($any(recordPermissions())?.delete?.can) {
           <p-button
-            icon="fa fa-trash"
+            icon="fa-solid fa-trash-can"
             [label]="'Delete'|translate"
             severity="danger"
             outlined
@@ -41,7 +41,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
     } @else if (canAdd()) {
       <div class="ui:flex ui:justify-end">
         <p-button
-          icon="fa fa-plus-square-o"
+          icon="fa-regular fa-square-plus"
           [label]="'Add local fields'|translate"
           outlined
           [routerLink]="['/records', 'local_fields', 'new']"
@@ -52,5 +52,5 @@ SPDX-License-Identifier: AGPL-3.0-or-later
   }
 
 } @placeholder {
-  <i class="fa fa-spin fa-spinner"></i>&nbsp;{{ 'Loading in progress…' | translate }}
+  <i class="fa-solid fa-spin fa-spinner"></i>&nbsp;{{ 'Loading in progress…' | translate }}
 }

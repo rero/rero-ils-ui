@@ -59,12 +59,12 @@ export class MainRequestComponent {
   // COMPONENT ATTRIBUTES ==================================================================
   /** options used for auto-refresh select box */
   readonly refreshOptions: RefreshOption[] = [
-    {value: '15000', label: '15 s', icon: 'fa fa-clock-o'},
-    {value: '30000', label: '30 s', icon: 'fa fa-clock-o'},
-    {value: '60000', label: '1 m', icon: 'fa fa-clock-o'},
-    {value: '300000', label: '5 m', icon: 'fa fa-clock-o'},
-    {value: '600000', label: '10 m', icon: 'fa fa-clock-o'},
-    {value: '3000000', label: '30 m', icon: 'fa fa-clock-o'}
+    {value: '15000', label: '15 s', icon: 'fa-regular fa-clock'},
+    {value: '30000', label: '30 s', icon: 'fa-regular fa-clock'},
+    {value: '60000', label: '1 m', icon: 'fa-regular fa-clock'},
+    {value: '300000', label: '5 m', icon: 'fa-regular fa-clock'},
+    {value: '600000', label: '10 m', icon: 'fa-regular fa-clock'},
+    {value: '3000000', label: '30 m', icon: 'fa-regular fa-clock'}
   ];
 
   /** options used to sort requested items list */
@@ -79,14 +79,14 @@ export class MainRequestComponent {
   readonly sortingCriteria = computed<SortOption[]>(() => {
     this.currentLanguage();
     return [
-      {value: 'requestdate', label: this.translateService.instant('Request date'), icon: 'fa fa-sort-numeric-asc'},
-      {value: '-requestdate', label: this.translateService.instant('Request date (desc)'), icon: 'fa fa-sort-numeric-desc'},
-      {value: 'callnumber', label: this.translateService.instant('Call number'), icon: 'fa fa-sort-alpha-asc'},
-      {value: '-callnumber', label: this.translateService.instant('Call number (desc)'), icon: 'fa fa-sort-alpha-desc'},
-      {value: 'location', label: this.translateService.instant('Location'), icon: 'fa fa-sort-alpha-asc'},
-      {value: '-location', label: this.translateService.instant('Location (desc)'), icon: 'fa fa-sort-alpha-desc'},
-      {value: 'pickuplocation', label: this.translateService.instant('Pick-up location'), icon: 'fa fa-sort-alpha-asc'},
-      {value: '-pickuplocation', label: this.translateService.instant('Pick-up location (desc)'), icon: 'fa fa-sort-alpha-desc'},
+      {value: 'requestdate', label: this.translateService.instant('Request date'), icon: 'fa-solid fa-arrow-down-1-9'},
+      {value: '-requestdate', label: this.translateService.instant('Request date (desc)'), icon: 'fa-solid fa-arrow-down-9-1'},
+      {value: 'callnumber', label: this.translateService.instant('Call number'), icon: 'fa-solid fa-arrow-down-a-z'},
+      {value: '-callnumber', label: this.translateService.instant('Call number (desc)'), icon: 'fa-solid fa-arrow-down-z-a'},
+      {value: 'location', label: this.translateService.instant('Location'), icon: 'fa-solid fa-arrow-down-a-z'},
+      {value: '-location', label: this.translateService.instant('Location (desc)'), icon: 'fa-solid fa-arrow-down-z-a'},
+      {value: 'pickuplocation', label: this.translateService.instant('Pick-up location'), icon: 'fa-solid fa-arrow-down-a-z'},
+      {value: '-pickuplocation', label: this.translateService.instant('Pick-up location (desc)'), icon: 'fa-solid fa-arrow-down-z-a'},
     ];
   });
 

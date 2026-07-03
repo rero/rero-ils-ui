@@ -7,16 +7,17 @@ SPDX-License-Identifier: AGPL-3.0-or-later
     <div class="ui:grid ui:grid-cols-12 ui:gap-4 ui:mt-2 ui:border-t ui:border-b ui:border-surface ui:ui:rounded-md">
       <div class="ui:col-span-8 ui:flex ui:gap-4 ui:py-2 ui:pl-2 ui:border-l ui:border-surface">
         <shared-open-close-button (status)="isCollapsed = $event" />
-        <i class="fa ui:mt-1"
+        <i class="ui:mt-1"
             title="{{ orderLine().status | translate }}"
             [ngClass]="{
-          'fa-envelope-open-o': orderLine().status === orderLineStatus.APPROVED,
-          'fa-envelope-o': orderLine().status === orderLineStatus.ORDERED,
+          'fa-regular': orderLine().status === orderLineStatus.APPROVED || orderLine().status === orderLineStatus.ORDERED || orderLine().status === orderLineStatus.CANCELLED,
+          'fa-envelope-open': orderLine().status === orderLineStatus.APPROVED,
+          'fa-envelope': orderLine().status === orderLineStatus.ORDERED,
           'ui:text-muted-color': orderLine().status === orderLineStatus.APPROVED || orderLine().status === orderLineStatus.ORDERED,
-          'fa-sign-in': orderLine().status === orderLineStatus.RECEIVED || orderLine().status === orderLineStatus.PARTIALLY_RECEIVED,
+          'fa-solid fa-right-to-bracket': orderLine().status === orderLineStatus.RECEIVED || orderLine().status === orderLineStatus.PARTIALLY_RECEIVED,
           'text-success': orderLine().status === orderLineStatus.RECEIVED,
           'text-warning': orderLine().status === orderLineStatus.PARTIALLY_RECEIVED,
-          'fa-window-close-o text-error': orderLine().status === orderLineStatus.CANCELLED
+          'fa-rectangle-xmark text-error': orderLine().status === orderLineStatus.CANCELLED
         }"></i>
         <div class="ui:flex ui:items-start ui:flex-col ui:w-full">
           <div class="ui:flex ui:w-full ui:justify-between">
@@ -24,21 +25,21 @@ SPDX-License-Identifier: AGPL-3.0-or-later
               @if (document()) {
                 <shared-document-brief-view [record]="document().metadata" />
               } @else if (document() === null) {
-                <span class="ui:text-muted-color"><i class="fa fa-exclamation-triangle"></i>&nbsp;{{ "Unknown document" | translate }} (pid {{ orderLine().document.pid }})</span>
+                <span class="ui:text-muted-color"><i class="fa-solid fa-triangle-exclamation"></i>&nbsp;{{ "Unknown document" | translate }} (pid {{ orderLine().document.pid }})</span>
               }
             </div>
             <div class="ui:flex ui:pt-2 ui:gap-2">
               @if (orderLine().notes.length > 0) {
                 <div class="ui:flex ui:gap-1">
                   @for (note of orderLine().notes; track $index) {
-                    <i class="fa fa-circle fa-bullet text-{{ note | noteBadgeColor }}" [title]="note.type | translate"></i>
+                    <i class="fa-solid fa-circle fa-bullet text-{{ note | noteBadgeColor }}" [title]="note.type | translate"></i>
                   }
                 </div>
               }
               @if (orderLine().priority > 0) {
                 <div class="ui:flex">
                   <p-overlaybadge [value]="orderLine().priority" [severity]="$any(severity())">
-                    <i class="fa fa-tachometer" style="font-size: 1.2rem"></i>
+                    <i class="fa-solid fa-gauge-high" style="font-size: 1.2rem"></i>
                   </p-overlaybadge>
                 </div>
               }
@@ -76,14 +77,14 @@ SPDX-License-Identifier: AGPL-3.0-or-later
       <div class="ui:col-span-2 ui:flex ui:gap-1 ui:justify-end ui:py-2 ui:pr-2 ui:border-r ui:border-surface">
         @if (recordPermissions()?.update?.can) {
           <shared-action-button
-            icon="fa fa-pencil"
+            icon="fa-solid fa-pencil"
             [title]="'Edit'|translate"
             [routerLink]="['/acquisition', 'records', 'acq_order_lines', 'edit', orderLine().pid]"
           />
         }
         @if (recordPermissions()) {
           <shared-action-button
-            icon="fa fa-trash"
+            icon="fa-solid fa-trash-can"
             [title]="'Delete'|translate"
             severity="danger"
             [disabled]="!recordPermissions().delete.can"
@@ -95,6 +96,6 @@ SPDX-License-Identifier: AGPL-3.0-or-later
     </div>
   } @else {
     <div class="ui:my-3">
-      <i class="fa fa-spinner ui:animate-spin"></i>&nbsp;{{ "Loading in progress…" | translate }}
+      <i class="fa-solid fa-spinner ui:animate-spin"></i>&nbsp;{{ "Loading in progress…" | translate }}
     </div>
   }

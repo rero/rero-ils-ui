@@ -9,7 +9,7 @@ import { Button } from 'primeng/button';
     template: `
   <p-button
     [styleClass]="styleClass()"
-    [icon]="internalStatus ? 'fa fa-caret-right' : 'fa fa-caret-down'"
+    [icon]="internalStatus ? 'fa-solid fa-caret-right' : 'fa-solid fa-caret-down'"
     outlined
     [rounded]="true"
     severity="secondary"

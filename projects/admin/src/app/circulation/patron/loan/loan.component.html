@@ -25,7 +25,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
           @for (setting of store.settings(); track $index) {
             <p-tag [severity]="$any(setting.extra?.severity || 'warn')">
               {{ setting.label }}
-              <i class="fa fa-times-circle ui:ml-2" tabindex="0" (click)="removeCheckoutSettings(setting.key)" (keyup.enter)="removeCheckoutSettings(setting.key)"></i>
+              <i class="fa-solid fa-circle-xmark ui:ml-2" tabindex="0" (click)="removeCheckoutSettings(setting.key)" (keyup.enter)="removeCheckoutSettings(setting.key)"></i>
             </p-tag>
           }
         </div>
@@ -36,12 +36,12 @@ SPDX-License-Identifier: AGPL-3.0-or-later
       <p-select
         [ngModel]="sortCriteria()" (ngModelChange)="sortCriteria.set($event)"
         [options]="[
-          {value:'-transaction_date', label:'Transaction date (desc)' | translate, icon:'fa fa-sort-numeric-desc'},
-          {value:'transaction_date', label:'Transaction date' | translate, icon:'fa fa-sort-numeric-asc'},
-          {value:'-due_date', label:'Due date (desc)' | translate, icon:'fa fa-sort-numeric-desc'},
-          {value:'due_date', label:'Due date' | translate, icon:'fa fa-sort-numeric-asc'},
-          {value:'-location', label:'Location (desc)' | translate, icon: 'fa fa-sort-numeric-desc'},
-          {value:'location', label:'Location' | translate, icon: 'fa fa-sort-numeric-asc'}
+          {value:'-transaction_date', label:'Transaction date (desc)' | translate, icon:'fa-solid fa-arrow-down-9-1'},
+          {value:'transaction_date', label:'Transaction date' | translate, icon:'fa-solid fa-arrow-down-1-9'},
+          {value:'-due_date', label:'Due date (desc)' | translate, icon:'fa-solid fa-arrow-down-9-1'},
+          {value:'due_date', label:'Due date' | translate, icon:'fa-solid fa-arrow-down-1-9'},
+          {value:'-location', label:'Location (desc)' | translate, icon: 'fa-solid fa-arrow-down-9-1'},
+          {value:'location', label:'Location' | translate, icon: 'fa-solid fa-arrow-down-1-9'}
         ]"
         (onChange)="selectingSortCriteria($event)"
       >

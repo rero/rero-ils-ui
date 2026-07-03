@@ -77,23 +77,23 @@ export const MIGRATION_ROUTES: Routes = [
             {
               label: _('Relevance'),
               value: '_score',
-              icon: 'fa fa-sort-amount-desc',
+              icon: 'fa-solid fa-arrow-down-wide-short',
               defaultQuery: true,
             },
             {
               label: _('Modification date (newest)'),
               value: '-updated_at',
-              icon: 'fa fa-sort-amount-desc'
+              icon: 'fa-solid fa-arrow-down-wide-short'
             },
             {
               label: _('Modification date (oldest)'),
               value: 'updated_at',
-              icon: 'fa fa-sort-amount-asc',
+              icon: 'fa-solid fa-arrow-down-short-wide',
             },
             {
               label: _('Identifier'),
               value: '-_id',
-              icon: 'fa fa-sort-alpha-asc'
+              icon: 'fa-solid fa-arrow-down-a-z'
             },
           ],
         },
@@ -143,23 +143,23 @@ export const MIGRATION_ROUTES: Routes = [
             {
               label: _('Relevance'),
               value: '_score',
-              icon: 'fa fa-sort-amount-desc',
+              icon: 'fa-solid fa-arrow-down-wide-short',
               defaultQuery: true,
             },
             {
               label: _('Modification date (newest)'),
               value: '-updated_at',
-              icon: 'fa fa-sort-amount-desc'
+              icon: 'fa-solid fa-arrow-down-wide-short'
             },
             {
               label: _('Modification date (oldest)'),
               value: 'updated_at',
-              icon: 'fa fa-sort-amount-asc',
+              icon: 'fa-solid fa-arrow-down-short-wide',
             },
             {
               label: _('Score'),
               value: '-deduplication.candidates.score',
-              icon: 'fa fa-sort-amount-desc',
+              icon: 'fa-solid fa-arrow-down-wide-short',
               defaultNoQuery: true,
             },
           ],

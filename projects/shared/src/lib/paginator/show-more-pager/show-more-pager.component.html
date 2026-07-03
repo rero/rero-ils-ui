@@ -9,7 +9,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
     [text]="true"
     (onClick)="paginator().next()"
   >
-  <i class="fa fa-plus-square-o"></i>&nbsp;{{ 'Show more' | translate }}
+  <i class="fa-regular fa-square-plus"></i>&nbsp;{{ 'Show more' | translate }}
   @if(paginator().getHiddenInfo()) {
     &nbsp;<small [translate]="paginator().getHiddenInfo()" [translateParams]="{ count: paginator().getHiddenCount() }"></small>
   }

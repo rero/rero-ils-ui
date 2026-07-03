@@ -62,7 +62,7 @@ export class RemoteSearchConfig {
         originalLabel: text,
         index: 'documents',
         link: this.generateDocumentLink(title),
-        iconClass: 'fa fa-file-o',
+        iconClass: 'fa-solid fa-book',
       });
     });
 

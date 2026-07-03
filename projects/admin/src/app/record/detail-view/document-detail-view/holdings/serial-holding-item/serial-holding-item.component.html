@@ -35,7 +35,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
           <div class="ui:flex ui:gap-1 ui:justify-end">
             <p-button
               class="ui:pointer-events-auto"
-              icon="fa fa-shopping-basket"
+              icon="fa-solid fa-basket-shopping"
               size="small"
               [title]="'Item request'|translate"
               outlined
@@ -50,7 +50,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
             </ng-template>
             @if (permissions().update && permissions().update.can) {
               <p-button
-                icon="fa fa-pencil"
+                icon="fa-solid fa-pencil"
                 size="small"
                 [title]="'Edit'|translate"
                 outlined
@@ -58,7 +58,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
               />
             }
             <p-button
-              icon="fa fa-trash"
+              icon="fa-solid fa-trash-can"
               class="ui:pointer-events-auto"
               size="small"
               severity="danger"

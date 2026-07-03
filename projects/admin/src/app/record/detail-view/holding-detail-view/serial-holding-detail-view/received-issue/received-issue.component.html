@@ -12,7 +12,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
             <shared-open-close-button (status)="isCollapsed = $event" />
           </div>
             @if (isCollapsed) {
-              <i class="fa ui:mr-2" [ngClass]="getIcon()" [title]="iconTitle"></i>
+              <i class="ui:mr-2" [ngClass]="getIcon()" [title]="iconTitle"></i>
             }
         </div>
         <div class="ui:col-span-8">
@@ -23,11 +23,11 @@ SPDX-License-Identifier: AGPL-3.0-or-later
             <p-tag severity="info" [value]="'New' | translate" />
           }
           @if (issue().metadata.notes) {
-            <i class="fa fa-sticky-note-o text-warning"></i>
+            <i class="fa-regular fa-note-sticky text-warning"></i>
           }
           <shared-inherited-call-number class="ui:px-2" [item]="issue" />
           @if (issue().metadata?.issue?.claims?.counter > 0 && isCollapsed) {
-            <i class="fa fa-exclamation-triangle text-warning" aria-hidden="true"></i>
+            <i class="fa-solid fa-triangle-exclamation text-warning" aria-hidden="true"></i>
           }
         </div>
         @if (isCollapsed) {
@@ -41,13 +41,13 @@ SPDX-License-Identifier: AGPL-3.0-or-later
               @if (issue().metadata._masked) {
                 <dt></dt>
                 <dd class="text-error">
-                  <i class="fa fa-eye-slash"></i>&nbsp;
+                  <i class="fa-solid fa-eye-slash"></i>&nbsp;
                   {{ 'This issue has been marked as masked' | translate }}
                 </dd>
               }
               <dt translate>Status</dt>
               <dd>
-                <i class="fa" [class]="getIcon(true)"></i>&nbsp;
+                <i [class]="getIcon(true)"></i>&nbsp;
                 {{ issue().metadata.issue.status | translate }}
                 <span class="ui:text-sm  ui:text-muted-color">
                   ({{ 'Assigned on' | translate }} {{ issue().metadata.issue.status_date | dateTranslate }})
@@ -87,7 +87,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
       @if (recordPermissions()?.update?.can) {
         @if (isClaimAllowed) {
           <p-button
-            icon="fa fa-gavel"
+            icon="fa-solid fa-gavel"
             size="small"
             [title]="'Claim'|translate"
             outlined
@@ -96,7 +96,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
         }
         <!-- EDIT BUTTON -->
         <p-button
-          icon="fa fa-pencil"
+          icon="fa-solid fa-pencil"
           size="small"
           [title]="'Edit'|translate"
           outlined
@@ -109,7 +109,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
       <p-button
         class="ui:pointer-events-auto"
         size="small"
-        icon="fa fa-trash"
+        icon="fa-solid fa-trash-can"
         severity="danger"
         [title]="'Delete'|translate"
         outlined

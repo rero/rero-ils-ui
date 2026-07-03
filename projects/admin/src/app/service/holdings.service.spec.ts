@@ -47,10 +47,10 @@ describe('HoldingsService', () => {
   });
 
   it('should return the icon classes', () => {
-    expect(service.getIcon(IssueItemStatus.DELETED)).toEqual('fa-circle text-error');
-    expect(service.getIcon(IssueItemStatus.RECEIVED)).toEqual('fa-circle text-success');
-    expect(service.getIcon(IssueItemStatus.LATE)).toEqual('fa-envelope-open-o text-warning');
-    expect(service.getIcon(IssueItemStatus.EXPECTED)).toEqual('fa-circle text-secondary');
+    expect(service.getIcon(IssueItemStatus.DELETED)).toEqual('fa-solid fa-circle text-error');
+    expect(service.getIcon(IssueItemStatus.RECEIVED)).toEqual('fa-solid fa-circle text-success');
+    expect(service.getIcon(IssueItemStatus.LATE)).toEqual('fa-regular fa-envelope-open text-warning');
+    expect(service.getIcon(IssueItemStatus.EXPECTED)).toEqual('fa-solid fa-circle text-secondary');
   });
 
   it('should return true on the possibility of making a request', () => {

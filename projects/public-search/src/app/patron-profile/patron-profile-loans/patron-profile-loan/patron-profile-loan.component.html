@@ -43,7 +43,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
       (onClick)="renew()"
       [disabled]="renewInProgress() || actionDone() || !canExtend().can"
       [label]="'Renew' | translate"
-      [icon]="renewInProgress() ? 'fa fa-spin fa-spinner': 'fa fa-refresh'"
+      [icon]="renewInProgress() ? 'fa-solid fa-spin fa-spinner': 'fa-solid fa-arrows-rotate'"
     />
   </div>
 </div>

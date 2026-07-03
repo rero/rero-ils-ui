@@ -21,7 +21,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
           }
           @if (!record()?.metadata.pid && source) {
             <p-button
-              icon="fa fa-cloud-download"
+              icon="fa-solid fa-cloud-arrow-down"
               [label]="'Import'|translate"
               outlined
               [permissions]="permissions.DOC_CREATE"
@@ -30,7 +30,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
           }
           @if (record()?.metadata.pid) {
             <p-button
-              icon="fa fa-files-o"
+              icon="fa-regular fa-copy"
               [label]="'Duplicate'|translate"
               outlined
               [permissions]="permissions.DOC_CREATE"

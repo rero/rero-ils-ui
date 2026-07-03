@@ -43,7 +43,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
           [label]="'Cancel' | translate"
           outlined
           severity="danger"
-          [icon]="!(!cancelInProgress() || actionDone()) ? 'fa fa-spinner': 'fa fa-trash'"
+          [icon]="!(!cancelInProgress() || actionDone()) ? 'fa-solid fa-spinner': 'fa-solid fa-trash-can'"
         />
       }
     </div>
@@ -54,7 +54,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
   @let ms = $any(record()?.metadata);
   <!-- ITEM AT DESK -->
   @if (ms?.state === 'ITEM_AT_DESK') {
-    <i class="fa fa-check text-success"  title="{{ 'item at desk' | translate }}" aria-hidden="true"></i>
+    <i class="fa-solid fa-check text-success"  title="{{ 'item at desk' | translate }}" aria-hidden="true"></i>
     {{ 'to pick up' | translate }}
     @if (ms?.request_expire_date) {
       {{ 'until' | translate }} {{ ms.request_expire_date | dateTranslate: 'shortDate'}}
@@ -62,7 +62,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
   }
   <!-- PENDING OR ITEM IN TRANSIT FOR PICKUP -->
   @if (['PENDING', 'ITEM_IN_TRANSIT_FOR_PICKUP'].includes(ms?.state)) {
-    <i class="fa fa-ellipsis-h ui:pr-1"  title="{{ 'pending' | translate }}" aria-hidden="true"></i>
+    <i class="fa-solid fa-ellipsis ui:pr-1"  title="{{ 'pending' | translate }}" aria-hidden="true"></i>
     <!-- TODO: Add expired date and remove "waiting" text
     expected availability 00.00.0000  -->
     {{ 'waiting' | translate }}

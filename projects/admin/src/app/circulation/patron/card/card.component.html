@@ -8,7 +8,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
       <div class="ui:col-span-6">
         <div class="ui:flex ui:w-full">
           <div class="ui:flex ui:mr-6 ui:items-center">
-            <i class="fa fa-user fa-5x" aria-hidden="true"></i>
+            <i class="fa-solid fa-user fa-5x" aria-hidden="true"></i>
           </div>
           <div class="ui:flex ui:w-full">
             <div class="ui:w-full">
@@ -28,7 +28,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
                       ({{ patronAge() }} {{ 'years old' | translate }})
                       @if (isBirthday()) {
                         &nbsp;
-                        <i class="fa fa-birthday-cake text-warning ui:animate-pulse"></i>
+                        <i class="fa-solid fa-cake-candles text-warning ui:animate-pulse"></i>
                       }
                     }
                   </div>
@@ -45,7 +45,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
           </div>
           @if (clearPatronButton()) {
             <div class="ui:flex">
-              <p-button icon="fa fa-close" severity="danger" outlined (onClick)="clear()"></p-button>
+              <p-button icon="fa-solid fa-xmark" severity="danger" outlined (onClick)="clear()"></p-button>
             </div>
           }
         </div>

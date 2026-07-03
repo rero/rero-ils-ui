@@ -77,7 +77,7 @@ export class DocumentsRemoteService implements IRemoteAutocomplete {
           `<span class="ui:p-2"><strong>${this.mainTitlePipe.transform(data.metadata.title)}</strong></span>`
         ),
         catchError(() => of(
-          `<span class="ui:text-muted-color"><i class="fa fa-exclamation-triangle"></i>&nbsp;${this.translateService.instant('Unknown document')} (pid ${pid})</span>`
+          `<span class="ui:text-muted-color"><i class="fa-solid fa-triangle-exclamation"></i>&nbsp;${this.translateService.instant('Unknown document')} (pid ${pid})</span>`
         ))
       );
   }
@@ -106,7 +106,7 @@ export class DocumentsRemoteService implements IRemoteAutocomplete {
     contributions.map((contribution: any) => {
       const keys = Object.keys(contribution.entity);
       if (contribution.entity && (keys.includes(key) || keys.includes(authorized))) {
-        const icon = `<i class="fa ${Entity.getIcon(contribution.entity.type)}" title="${this.translateService.instant(contribution.entity.type)}"></i>`;
+        const icon = `<i class="${Entity.getIcon(contribution.entity.type)}" title="${this.translateService.instant(contribution.entity.type)}"></i>`;
         if (keys.includes(key)) {
           contrib.push(`${icon} ` + contribution.entity[keys.includes(key) ? key : authorized]);
         }

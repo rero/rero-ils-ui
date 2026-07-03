@@ -38,7 +38,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
             @for (role of roles(); track role.name) {
               <td [ngClass]="roleClass(role.type)">
                 <span title="{{ role.name | translate }}">
-                  <i class="fa fa-square" [ngClass]="permissionClass(globalPermissions()![role.name].actions[permissionName])"></i>
+                  <i class="fa-solid fa-square" [ngClass]="permissionClass(globalPermissions()![role.name].actions[permissionName])"></i>
                 </span>
               </td>
             }

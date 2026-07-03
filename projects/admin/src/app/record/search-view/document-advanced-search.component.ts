@@ -16,7 +16,7 @@ import { DocumentAdvancedSearchFormComponent } from './document-advanced-search-
       <p-button
         [label]="'Build advanced query' | translate"
         outlined
-        icon="fa fa-search"
+        icon="fa-solid fa-magnifying-glass"
         iconPos="right"
         (onClick)="openModalBox()"
       />

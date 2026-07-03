@@ -9,12 +9,12 @@ SPDX-License-Identifier: AGPL-3.0-or-later
       <h5 class="ui:grow">{{ record().metadata.document.title | mainTitle }}</h5>
           <!-- ACTIONS BUTTON -->
       <div class="ui:flex ui:gap-1">
-        <p-button icon="fa fa-history" severity="secondary" outlined size="small"  (onClick)="openTransactionHistoryDialog(record().metadata.pid)" />
+        <p-button icon="fa-solid fa-clock-rotate-left" severity="secondary" outlined size="small"  (onClick)="openTransactionHistoryDialog(record().metadata.pid)" />
         @if (canUseDebugMode) {
-          <p-button [icon]="debugMode ? 'fa fa-toggle-on' : 'fa fa-toggle-off'" severity="warn" [outlined]="!debugMode" size="small"
+          <p-button [icon]="debugMode ? 'fa-solid fa-toggle-on' : 'fa-solid fa-toggle-off'" severity="warn" [outlined]="!debugMode" size="small"
             (onClick)="debugMode=!debugMode"
           >
-            <i class="fa fa-bug"></i>
+            <i class="fa-solid fa-bug"></i>
           </p-button>
         }
       </div>
@@ -60,7 +60,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
     <!-- DEBUG PANEL -->
     @if (debugMode) {
-      <h5 class="text-error"><i class="fa fa-bug"></i>&nbsp;{{ 'Debug' | translate }}</h5>
+      <h5 class="text-error"><i class="fa-solid fa-bug"></i>&nbsp;{{ 'Debug' | translate }}</h5>
       <div class="ui:border-1 ui:border-surface ui:p-2">
         <p-scrollPanel [style]="{ height: '500px' }">
           <pre class="ui:text-sm ui:text-wrap">{{ record().metadata | json }}</pre>

@@ -47,7 +47,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
               </div>
               <div class="ui:col-span-12 ui:md:col-span-3">
                 @if (holding.metadata.holdings_type === 'serial') {
-                    <i class="fa fa-circle text-warning"></i>
+                    <i class="fa-solid fa-circle text-warning"></i>
                     {{ 'see collections and items' | translate }}
                 } @else {
                   <shared-availability recordType="holding" [record]="holding" [apiService]="holdingsApiService" />
@@ -146,7 +146,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
           pButton
           [outlined]="true"
           size="small"
-          icon="fa fa-truck"
+          icon="fa-solid fa-truck-fast"
           href="/{{ viewcode() }}/ill_requests/new?record_pid={{ documentPid() }}"
           translate
         >

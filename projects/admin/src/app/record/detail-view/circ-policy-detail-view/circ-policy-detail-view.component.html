@@ -22,7 +22,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
             <ul class="ui:list-none">
               @for (library of rec.metadata.libraries; track $index) {
                 <li>
-                  <i class="fa fa-university"></i>&nbsp;
+                  <i class="fa-solid fa-building-columns"></i>&nbsp;
                   {{ library.pid | getRecord: 'libraries' : 'field' : 'name' | async }}
                 </li>
               }
@@ -42,16 +42,16 @@ SPDX-License-Identifier: AGPL-3.0-or-later
           <dt translate>Is default</dt>
           <dd>
             @if (rec.metadata.is_default) {
-              <i id="cipo-is-default" class="fa fa-check  text-success" aria-hidden="true"></i>
+              <i id="cipo-is-default" class="fa-solid fa-check  text-success" aria-hidden="true"></i>
             } @else {
-              <i id="cipo-is-default" class="fa fa-times text-error" aria-hidden="true"></i>
+              <i id="cipo-is-default" class="fa-solid fa-xmark text-error" aria-hidden="true"></i>
             }
           </dd>
           <!-- CHECKOUT SETTINGS-->
           <dt translate>Allow checkout</dt>
           @if (checkoutIsAllowed()) {
             <dd class="ui:flex ui:gap-2">
-              <i id="cipo-allow-checkout" class="fa fa-check text-success" aria-hidden="true"></i>
+              <i id="cipo-allow-checkout" class="fa-solid fa-check text-success" aria-hidden="true"></i>
             <dl class="metadata" style="padding-top: 0 !important;">
             <dt translate>Checkout duration</dt>
             <dd id="cipo-checkout-duration">
@@ -70,24 +70,24 @@ SPDX-License-Identifier: AGPL-3.0-or-later
             <dt translate>Automatic renewal</dt>
             <dd id="cipo-auto-renewal">
               @if (rec.metadata.automatic_renewal) {
-                <i class="fa fa-check text-success" aria-hidden="true"></i>
+                <i class="fa-solid fa-check text-success" aria-hidden="true"></i>
               } @else {
-                <i class="fa fa-times text-error" aria-hidden="true"></i>
+                <i class="fa-solid fa-xmark text-error" aria-hidden="true"></i>
               }
             </dd>
             </dl>
             </dd>
           } @else {
             <dd>
-              <i id="cipo-allow-checkout" class="fa fa-times text-error" aria-hidden="true"></i>
+              <i id="cipo-allow-checkout" class="fa-solid fa-xmark text-error" aria-hidden="true"></i>
             </dd>
           }
           <dt translate>Allow requests</dt>
           <dd>
             @if (rec.metadata.allow_requests) {
-              <i id="cipo-allow-request" class="fa fa-check  text-success" aria-hidden="true"></i>
+              <i id="cipo-allow-request" class="fa-solid fa-check  text-success" aria-hidden="true"></i>
             } @else {
-              <i id="cipo-allow-request" class="fa fa-times text-error" aria-hidden="true"></i>
+              <i id="cipo-allow-request" class="fa-solid fa-xmark text-error" aria-hidden="true"></i>
             }
           </dd>
         </dl>
@@ -111,9 +111,9 @@ SPDX-License-Identifier: AGPL-3.0-or-later
               <tr>
                 <td>{{ reminder.type | translate }}</td>
                 <td>
-                  <i class="fa" [ngClass]="{
-                    'fa-calendar-minus-o': reminder.type === 'due_soon',
-                    'fa-calendar-plus-o': reminder.type === 'overdue'
+                  <i class="fa-solid" [ngClass]="{
+                    'fa-calendar-minus': reminder.type === 'due_soon',
+                    'fa-calendar-plus': reminder.type === 'overdue'
                   }"></i>
                   {{ reminder.days_delay }}
                 </td>
@@ -147,7 +147,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
               <tr>
                 <td class="ui:pl-2">
                   {{ overdue.from }}
-                  <i class="fa fa-long-arrow-right ui:px-2"></i>
+                  <i class="fa-solid fa-arrow-right-long ui:px-2"></i>
                   @if (overdue.to) {
                     {{ overdue.to }}
                   } @else {
@@ -191,7 +191,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
                   <td class="ui:text-center">
                     @for (currentItemType of setting.value; track $index) {
                       @if (itemType === currentItemType) {
-                        <i id="ptty-{{setting.key}}-itty-{{currentItemType}}" class="fa fa-check text-success" aria-hidden="true"></i>
+                        <i id="ptty-{{setting.key}}-itty-{{currentItemType}}" class="fa-solid fa-check text-success" aria-hidden="true"></i>
                       }
                     }
                   </td>

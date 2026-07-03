@@ -4,7 +4,7 @@ SPDX-FileCopyrightText: UCLouvain
 SPDX-License-Identifier: AGPL-3.0-or-later
 -->
 @if (!loadedRecord()) {
-  <i class="fa fa-spinner fa-pulse"></i>
+  <i class="fa-solid fa-spinner fa-pulse"></i>
 } @else if (records().length === 0) {
   <p>{{ "No operation log found." | translate }}</p>
 } @else {
@@ -12,7 +12,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
     <ng-template #body let-record>
       <tr>
           <td class=" ui:text-muted-color ui:w-1/4">
-            <i class="fa fa-calendar"></i>&nbsp;{{ record.metadata.date | dateTranslate :'shortDate' }} - {{ record.metadata.date | dateTranslate :'mediumTime' }}
+            <i class="fa-solid fa-calendar-days"></i>&nbsp;{{ record.metadata.date | dateTranslate :'shortDate' }} - {{ record.metadata.date | dateTranslate :'mediumTime' }}
           </td>
           <td class="ui:font-bold ui:uppercase ui:w-1/4">
             {{ record.metadata.operation | translate }}
@@ -29,7 +29,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
   @if (isLinkShowMore()) {
     <p-button severity="secondary" [text]="true" (onClick)="showMore()">
       <div>
-        <i class="fa fa-plus-square-o"></i>&nbsp;{{ "Show more" | translate }}&nbsp;
+        <i class="fa-regular fa-square-plus"></i>&nbsp;{{ "Show more" | translate }}&nbsp;
         <small>({{ hiddenOperationLogs() }})</small>
       </div>
     </p-button>

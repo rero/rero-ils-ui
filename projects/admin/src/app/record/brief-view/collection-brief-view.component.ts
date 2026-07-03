@@ -11,7 +11,7 @@ import { DateTranslatePipe, Nl2brPipe } from '@rero/ng-core';
     template: `
     <div class="ui:flex ui:flex-col ui:gap-1">
       <h5>
-        <i class="fa fa-circle ui:mr-1" [ngClass]="{'text-success': record().metadata.published, 'text-error': !record().metadata.published}" aria-hidden="true"></i>
+        <i class="fa-solid fa-circle ui:mr-1" [ngClass]="{'text-success': record().metadata.published, 'text-error': !record().metadata.published}" aria-hidden="true"></i>
         <a id="collection-link" [routerLink]="[detailUrl().link]">{{ record().metadata.title }}</a>
         @if (record().metadata.collection_id) {
           ({{ record().metadata.collection_id }})

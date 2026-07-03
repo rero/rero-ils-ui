@@ -43,11 +43,13 @@ class CollectionsRoute {
             label: _('Relevance'),
             value: 'bestmatch',
             defaultQuery: true,
+            icon: 'fa-solid fa-arrow-down-wide-short',
           },
           {
             label: _('Title'),
             value: 'title',
             defaultNoQuery: true,
+            icon: 'fa-solid fa-arrow-down-a-z',
           },
         ],
       },

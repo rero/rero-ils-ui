@@ -21,7 +21,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
       @for (record of records(); track $index; let isFirst = $first; let idx = $index) {
         @if (isFirst || !isSamePeriod(record, records()[idx-1])) {
           <div class="ui:bg-surface-100 ui:p-2 ui:border-surface ui:border-y ui:text-bold">
-            <i class="fa fa-calendar"></i>&nbsp;
+            <i class="fa-solid fa-calendar-days"></i>&nbsp;
             {{ record.metadata.date | dateTranslate :'MMMM y' | titlecase }}
           </div>
         }
@@ -61,7 +61,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
   @if (loadedRecord() && isLinkShowMore()) {
     <p-button
       id="show-more-items-{{ resourcePid }}"
-      icon="fa fa-arrow-circle-o-down"
+      icon="fa-regular fa-circle-down"
       [label]="'Show more'|translate"
       [text]="true"
       (onClick)="showMore()"
