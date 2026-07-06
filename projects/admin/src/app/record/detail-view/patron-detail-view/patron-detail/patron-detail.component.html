@@ -17,7 +17,12 @@ SPDX-License-Identifier: AGPL-3.0-or-later
       <ng-container beforeButton>
         @if (record()) {
           @if (appStore.isLogVisible('patrons') && record()!.metadata.pid) {
-            <shared-operation-logs-dialog resourceType="patrons" [resourcePid]="$any(record()!.metadata.pid)" />
+            <shared-operation-logs-dialog
+              resourceType="patrons"
+              [resourcePid]="$any(record()!.metadata.pid)"
+              [sortCriteria]="sortCriteria()"
+              [sortOptions]="sortOptions()"
+            />
           }
         }
       </ng-container>
