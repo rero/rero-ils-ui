@@ -10,6 +10,7 @@ import { provideHttpClient } from '@angular/common/http';
 
 describe('OperationLogsService', () => {
   let service: OperationLogsApiService;
+  let recordServiceSpy: any;
 
   const responseRecords = {
     aggregations: {},
@@ -29,12 +30,11 @@ describe('OperationLogsService', () => {
     links: {}
   };
 
-  const recordServiceSpy = {
-    getRecords: vi.fn().mockReturnValue(of(responseRecords)),
-    totalHits: vi.fn().mockReturnValue(0)
-  };
-
   beforeEach(() => {
+    recordServiceSpy = {
+      getRecords: vi.fn().mockReturnValue(of(responseRecords)),
+      totalHits: vi.fn().mockReturnValue(0)
+    };
     TestBed.configureTestingModule({
     imports: [],
     providers: [
@@ -52,9 +52,41 @@ describe('OperationLogsService', () => {
 
   it('should return a list of operations on a record', () => {
     service
-      .getLogs('documents', '1', 'create', 1)
+      .getLogs('documents', '1', 1)
       .subscribe({
         next: (response: any) => expect(response).toEqual(responseRecords)
+    });
+  });
+
+  it('should return resource operation logs sorted by most recent', () => {
+    service
+      .getLogs('documents', '1', 1)
+      .subscribe({
+        next: (response: any) => expect(response).toEqual(responseRecords)
+    });
+
+    expect(recordServiceSpy.getRecords).toHaveBeenCalledWith('operation_logs', {
+      query: 'record.type:documents AND record.value:1',
+      page: 1,
+      itemsPerPage: 10,
+      headers: OperationLogsApiService.reroJsonheaders,
+      sort: 'mostrecent'
+    });
+  });
+
+  it('should return resource operation logs with a custom sort', () => {
+    service
+      .getLogs('documents', '1', 2, 20, 'created')
+      .subscribe({
+        next: (response: any) => expect(response).toEqual(responseRecords)
+    });
+
+    expect(recordServiceSpy.getRecords).toHaveBeenCalledWith('operation_logs', {
+      query: 'record.type:documents AND record.value:1',
+      page: 2,
+      itemsPerPage: 20,
+      headers: OperationLogsApiService.reroJsonheaders,
+      sort: 'created'
     });
   });
 

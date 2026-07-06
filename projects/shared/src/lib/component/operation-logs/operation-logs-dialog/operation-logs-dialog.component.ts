@@ -3,8 +3,8 @@
 import { Component, inject, input, ChangeDetectionStrategy} from '@angular/core';
 import { IPermissions, PERMISSIONS } from '../../../util/permissions';
 import { DialogService } from 'primeng/dynamicdialog';
-import { OperationLogsComponent } from '../operation-logs.component';
-import { TranslateService, TranslatePipe } from '@ngx-translate/core';
+import { OperationLogsComponent, sortOptionType } from '../operation-logs.component';
+import { TranslateService, TranslatePipe, _ } from '@ngx-translate/core';
 import { Bind } from 'primeng/bind';
 import { Button } from 'primeng/button';
 import { PermissionsDirective } from '../../../directive/permissions.directive';
@@ -26,6 +26,13 @@ export class OperationLogsDialogComponent {
   /** Resource pid */
   readonly resourcePid = input<string>();
 
+  readonly sortCriteria = input<string>('mostrecent');
+
+  readonly sortOptions = input<sortOptionType[]>([
+    { value: 'mostrecent', label: _('Date (newest)'), icon: 'fa fa-sort-amount-desc' },
+    { value: 'created', label: _('Date (oldest)'), icon: 'fa fa-sort-amount-asc' }
+  ]);
+
   /** return all permissions */
   permissions: IPermissions = PERMISSIONS;
 
@@ -36,10 +43,13 @@ export class OperationLogsDialogComponent {
       modal: true,
       closable: true,
       width: '60vw',
+      contentStyle: { 'min-height': '10rem' },
       position: 'top',
       data: {
         resourceType: this.resourceType(),
-        resourcePid: this.resourcePid()
+        resourcePid: this.resourcePid(),
+        sortCriteria: this.sortCriteria(),
+        sortOptions: this.sortOptions()
       }
     });
   }
