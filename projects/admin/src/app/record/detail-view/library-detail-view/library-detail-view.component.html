@@ -52,7 +52,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
       <p-accordion-content>
         @if (locations().length > 0) {
           <ul class="ui:list-none">
-            @for (location of locations(); track location.metadata.pid; let last=$last) {
+            @for (location of locations(); track location.metadata.pid) {
               <li class="ui:my-2 ui:odd:bg-surface-50">
                 <admin-location [location]="location" [library]="rec" (deleteLocation)="deleteLocation($event)" />
               </li>
