@@ -9,7 +9,7 @@ import { RecordUiService } from '@rero/ng-core';
 import { Bind } from 'primeng/bind';
 import { Button } from 'primeng/button';
 import { Tooltip } from 'primeng/tooltip';
-import { filter, switchMap, take } from 'rxjs/operators';
+import { filter, switchMap } from 'rxjs/operators';
 
 @Component({
     selector: 'admin-location',
@@ -39,12 +39,11 @@ export class LocationComponent {
   );
 
   delete(locationPid: string) {
-    this.recordUiService.deleteRecord('locations', locationPid).pipe(
-      take(1)
-    ).subscribe((success: boolean) => {
-      if (success) {
-        this.deleteLocation.emit(locationPid);
-      }
-    });
+    this.recordUiService.deleteRecord('locations', locationPid)
+      .subscribe((success: boolean) => {
+        if (success) {
+          this.deleteLocation.emit(locationPid);
+        }
+      });
   }
 }
