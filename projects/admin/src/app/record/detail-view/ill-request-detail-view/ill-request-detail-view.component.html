@@ -73,13 +73,15 @@ SPDX-License-Identifier: AGPL-3.0-or-later
       }
       <dt translate>Requester</dt>
       <dd>
-        @if (requester() && requester().patron && requester().patron.barcode[0]) {
-          <a [routerLink]="['/circulation', 'patron', requester().patron.barcode[0]]">
-            <span id="patron-last-name">{{ requester().last_name }}</span>
-            @if (requester().first_name; as firstName) {
-              <span id="patron-first-name">, {{ firstName }}</span>
-            }
-          </a>
+        @if (requester(); as req) {
+          @if (req.patron?.barcode?.[0]; as barcode) {
+            <a [routerLink]="['/circulation', 'patron', barcode]">
+              <span id="patron-last-name">{{ req.last_name }}</span>
+              @if (req.first_name; as firstName) {
+                <span id="patron-first-name">, {{ firstName }}</span>
+              }
+            </a>
+          }
         }
       </dd>
       <dt translate>Request date</dt>
@@ -100,9 +102,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
       }
       <dt translate>Pickup location</dt>
       <dd>
-        @if (rec.metadata.pickup_location.pid | getRecord:'locations':'field':'ill_pickup_name' | async; as location_name) {
-          {{ location_name }}
-        }
+        {{ pickupName() || 'Unknown' | translate }}
       </dd>
       <dt translate>Scope</dt>
       <dd>
