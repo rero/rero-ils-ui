@@ -1,6 +1,6 @@
 // SPDX-FileCopyrightText: Fondation RERO+
 // SPDX-License-Identifier: AGPL-3.0-or-later
-import { Component, inject, OnDestroy, OnInit, ChangeDetectionStrategy} from '@angular/core';
+import { Component, inject, OnDestroy, OnInit, ChangeDetectionStrategy, ChangeDetectorRef} from '@angular/core';
 import { AbstractCanDeactivateComponent, removeEmptyValues, EditorComponent } from '@rero/ng-core';
 import { BehaviorSubject, of, Subscription } from 'rxjs';
 import { catchError, debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
@@ -21,6 +21,7 @@ import { SlicePipe } from '@angular/common';
 })
 export class HoldingEditorComponent extends AbstractCanDeactivateComponent implements OnInit, OnDestroy {
 
+  private cdr: ChangeDetectorRef = inject(ChangeDetectorRef);
   private editorService: EditorService = inject(EditorService);
 
   /** Can deactivate from editor component */
@@ -72,6 +73,7 @@ export class HoldingEditorComponent extends AbstractCanDeactivateComponent imple
       if (predictions && predictions.length > 0) {
         this.serialPreviewExamples = predictions;
       }
+      this.cdr.markForCheck();
     });
   }
 
