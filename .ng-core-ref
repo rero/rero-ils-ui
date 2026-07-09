@@ -2,4 +2,4 @@
 #   published                    — use published npm version (default, staging)
 #   feat/my-branch               — branch on rero/ng-core
 #   owner/ng-core@branch-or-sha  — fork + branch or SHA
-staging
+anouillz/ng-core@goa-facet-counts

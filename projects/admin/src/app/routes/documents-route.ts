@@ -169,6 +169,7 @@ class DocumentsRoute extends BaseRoute {
         'acquisition',
         'status',
       ],
+      aggregationsHideCount: ['organisation'],
       aggregationsExpand: () => {
         const expand = ['document_type', 'fiction_statement'];
         const { queryParams } = this.routeToolService.activatedRoute.snapshot;
