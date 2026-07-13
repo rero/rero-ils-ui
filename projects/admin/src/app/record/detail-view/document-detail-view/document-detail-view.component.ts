@@ -8,7 +8,7 @@ import { TranslateService, TranslateDirective, TranslatePipe } from '@ngx-transl
 import { RecordService, CallbackArrayFilterPipe, RecordData } from '@rero/ng-core';
 import { AppStore, Entity, IPermissions, PERMISSIONS, ThumbnailComponent, ContributionComponent, PartOfComponent, OtherEditionComponent, EntityLinkComponent, FilesComponent, DocumentDescriptionComponent, DocumentProvisionActivityPipe, MainTitlePipe } from '@rero/shared';
 import { of, switchMap } from 'rxjs';
-import { DocumentApiService } from '../../../api/document-api.service';
+import { DocumentApiService } from '@rero/shared';
 import { RelatedResourceComponent } from './related-resource/related-resource.component';
 import { Bind } from 'primeng/bind';
 import { Tag } from 'primeng/tag';
@@ -89,6 +89,16 @@ export class DocumentDetailViewComponent {
       )
     ),
     { initialValue: 0 }
+  );
+
+  readonly fulltextIndexingIncomplete = toSignal(
+    toObservable(this.record).pipe(
+      switchMap(() => this.pid
+        ? this.documentApiService.isFulltextIndexingIncomplete(this.pid)
+        : of(false)
+      )
+    ),
+    { initialValue: false }
   );
 
   /** External identifier for imported record. */

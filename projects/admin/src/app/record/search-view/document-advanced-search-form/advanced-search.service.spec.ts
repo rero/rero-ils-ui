@@ -2,7 +2,7 @@
 // SPDX-FileCopyrightText: UCLouvain
 // SPDX-License-Identifier: AGPL-3.0-or-later
 import { TestBed } from '@angular/core/testing';
-import { DocumentApiService } from '@app/admin/api/document-api.service';
+import { DocumentApiService } from '@rero/shared';
 import { cloneDeep } from 'lodash-es';
 import { of } from 'rxjs';
 import { AdvancedSearchService } from './advanced-search.service';

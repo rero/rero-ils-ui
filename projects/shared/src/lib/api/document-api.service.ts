@@ -4,24 +4,40 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import type { EsResult } from '@rero/ng-core';
-import { RecordService } from '@rero/ng-core';
-import { IAvailability, IAvailabilityService } from '@rero/shared';
+import { CoreConfigService as AppConfigService, RecordService } from '@rero/ng-core';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { AppConfigService } from '../service/app-config.service';
-import { IAdvancedSearchConfig } from '../record/search-view/document-advanced-search-form/i-advanced-search-config-interface';
+import { IAvailability } from '../interface/i-availability';
+import { IAdvancedSearchConfig } from '../interface/i-advanced-search-config-interface';
+import { IAvailabilityService } from '../service/i-availability.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class DocumentApiService implements IAvailabilityService {
 
+  private documentRecordService = inject(RecordService);
   private recordService: RecordService = inject(RecordService);
   private httpClient: HttpClient = inject(HttpClient);
   private appConfigService: AppConfigService = inject(AppConfigService);
 
   /** Resource name */
   readonly RESOURCE_NAME = 'documents';
+
+  /**
+   * Check whether some file content was excluded from full-text indexing.
+   * @param documentPid - document pid
+   * @returns Observable<boolean>
+   */
+  isFulltextIndexingIncomplete(documentPid: string): Observable<boolean> {
+    return this.documentRecordService.getRecords(this.RESOURCE_NAME, {
+      query: `pid:${documentPid}`,
+      page: 1,
+      itemsPerPage: 1
+    }).pipe(map((result: EsResult) =>
+      result.hits.hits[0]?.metadata?.fulltext_indexing_incomplete === true
+    ));
+  }
 
   /**
    * Get count of linked document(s) from current document (partOf)
