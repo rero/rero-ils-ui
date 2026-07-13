@@ -2,7 +2,7 @@
 // SPDX-FileCopyrightText: UCLouvain
 // SPDX-License-Identifier: AGPL-3.0-or-later
 import { Component, effect, inject, input, ChangeDetectionStrategy} from '@angular/core';
-import { DocumentApiService } from '@app/admin/api/document-api.service';
+import { DocumentApiService } from '@rero/shared';
 import { ThumbnailComponent, ContributionComponent, PartOfComponent, AvailabilityComponent, MainTitlePipe } from '@rero/shared';
 import { RouterLink } from '@angular/router';
 

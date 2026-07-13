@@ -12,7 +12,7 @@ import { Button } from 'primeng/button';
 import { DynamicDialogRef } from 'primeng/dynamicdialog';
 import { BehaviorSubject } from 'rxjs';
 import { AdvancedSearchService } from './advanced-search.service';
-import { IFieldsData, IFieldsType, ISearchModel } from './i-advanced-search-config-interface';
+import { IFieldsData, IFieldsType, ISearchModel } from '@rero/shared';
 
 @Component({
   selector: 'admin-document-advanced-search-form',

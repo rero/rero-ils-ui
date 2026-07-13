@@ -1,18 +1,20 @@
 // SPDX-FileCopyrightText: Fondation RERO+
+// SPDX-FileCopyrightText: UCLouvain
 // SPDX-License-Identifier: AGPL-3.0-or-later
 import { HttpClient } from '@angular/common/http';
 import { TestBed } from '@angular/core/testing';
-import { TranslateModule } from '@ngx-translate/core';
-import { RecordService } from '@rero/ng-core';
-import { AppConfigService } from '../service/app-config.service';
-import { IAvailability } from '@rero/shared';
+import { CoreConfigService, RecordService } from '@rero/ng-core';
 import { of } from 'rxjs';
-import { IAdvancedSearchConfig } from '../record/search-view/document-advanced-search-form/i-advanced-search-config-interface';
+import { IAvailability } from '../interface/i-availability';
+import { IAdvancedSearchConfig } from '../interface/i-advanced-search-config-interface';
 import { DocumentApiService } from './document-api.service';
 
 describe('DocumentApiService', () => {
   let service: DocumentApiService;
   let recordService: RecordService;
+
+  const httpClientSpy = { get: vi.fn() };
+  const recordServiceSpy = { getRecords: vi.fn() };
 
   const response = {
     aggregations: {},
@@ -49,17 +51,12 @@ describe('DocumentApiService', () => {
       rdaMediaType: [] }
   };
 
-  const httpClientSpy = { get: vi.fn() };
-
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [
-        TranslateModule.forRoot()
-      ],
       providers: [
         { provide: HttpClient, useValue: httpClientSpy },
-        { provide: RecordService, useValue: { getRecords: vi.fn(), totalHits: vi.fn() } },
-        { provide: AppConfigService, useValue: {} }
+        { provide: RecordService, useValue: recordServiceSpy },
+        { provide: CoreConfigService, useValue: {} }
       ]
     });
     service = TestBed.inject(DocumentApiService);
@@ -68,6 +65,23 @@ describe('DocumentApiService', () => {
 
   it('should be created', () => {
     expect(service).toBeTruthy();
+  });
+
+  it('should return whether full-text indexing is incomplete', () => {
+    recordServiceSpy.getRecords.mockReturnValue(of({
+      hits: {
+        hits: [{ metadata: { fulltext_indexing_incomplete: true } }]
+      }
+    }));
+
+    service.isFulltextIndexingIncomplete('1')
+      .subscribe((response: boolean) => expect(response).toBe(true));
+
+    expect(recordServiceSpy.getRecords).toHaveBeenCalledWith('documents', {
+      query: 'pid:1',
+      page: 1,
+      itemsPerPage: 1
+    });
   });
 
   it('should return the number of linked documents', () => {

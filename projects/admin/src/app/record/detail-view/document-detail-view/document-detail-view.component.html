@@ -277,6 +277,11 @@ SPDX-License-Identifier: AGPL-3.0-or-later
     <p-tabpanels>
       <p-tabpanel #tabGet value="get">
         <div class="ui:mb-2">
+          @if (fulltextIndexingIncomplete()) {
+            <p-message severity="warn" styleClass="ui:mb-2" translate>
+              The text of one or more attached files was not indexed because the full-text indexing limit was exceeded. Searches within file content may therefore be incomplete.
+            </p-message>
+          }
           @if (tabGet.active()) {
             <shared-doc-files [documentPid]="$any(record().metadata.pid)" [routerPath]="['/','records', 'documents']" />
           }

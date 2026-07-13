@@ -1,6 +1,7 @@
 // SPDX-FileCopyrightText: Fondation RERO+
 // SPDX-License-Identifier: AGPL-3.0-or-later
 export * from './lib/api/base-api';
+export * from './lib/api/document-api.service';
 export * from './lib/classes/permissions';
 export * from './lib/api/operation-logs-api.service';
 export * from './lib/api/user-api.service';
@@ -26,6 +27,7 @@ export * from './lib/component/remote-search/remote-search.component';
 export * from './lib/directive/link-permissions.directive';
 export * from './lib/directive/permissions.directive';
 export * from './lib/directive/rero-template.directive';
+export * from './lib/interface/i-advanced-search-config-interface';
 export * from './lib/interface/i-availability';
 export * from './lib/model/es-result-model';
 
@@ -74,4 +76,3 @@ export * from './tests/loan';
 export * from './tests/organisation';
 export * from './tests/permission';
 export * from './tests/user';
-
