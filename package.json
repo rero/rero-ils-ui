@@ -85,7 +85,7 @@
     "@ngx-loading-bar/router": "^7.0.0",
     "@ngx-translate/core": "^17.0.0",
     "@primeuix/themes": "^2.0.3",
-    "@rero/ng-core": "^21.1.0",
+    "@rero/ng-core": "^21.1.1",
     "chart.js": "^4.4.7",
     "crypto-js": "^4.2.0",
     "easymde": "^2.20.0",
