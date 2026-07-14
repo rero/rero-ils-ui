@@ -118,6 +118,7 @@
     "@vendure/ngx-translate-extract": "^10.1.0",
     "angular-eslint": "^21.2.0",
     "bootstrap": "^4.5.3",
+    "conventional-changelog-conventionalcommits": "^8.0.0",
     "eslint": "^9.39.0",
     "jsdom": "^29.0.0",
     "katex": "^0.16.22",
