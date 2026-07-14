@@ -1,5 +1,36 @@
 # Changelog
 
+## [21.1.0](https://github.com/rero/rero-ils-ui/compare/v21.0.0...v21.1.0) (2026-07-14)
+
+### ⚠ BREAKING CHANGES
+
+* **homepage:** in
+https://github.com/rero/ng-core/commit/be4d13ec7f62a5f5cc282d5b4955d8a4c9fe1007
+
+Co-Authored-by: Pascal Repond <pascal.repond@rero.ch>
+
+### Features
+
+* centralize double-submit prevention and clean up HTTP interceptors ([1f494e2](https://github.com/rero/rero-ils-ui/commit/1f494e2433e346c2dd699503e516f15feb4fa25e))
+* **holding:** header texts selectable ([0a87ad8](https://github.com/rero/rero-ils-ui/commit/0a87ad85fa1f2b06d20c5695346025b701629481))
+* **homepage-editor:** add my organization view ([1695356](https://github.com/rero/rero-ils-ui/commit/169535680e81999e323aafc16710ce3a533855ad))
+* **homepage:** display the new fields in the organisation detailed view ([d0c0c9f](https://github.com/rero/rero-ils-ui/commit/d0c0c9f6a637b42e3985aa6f6048a2ccc22280e3))
+* **library:** migrate library editor and detail view to NgRx Signal Store ([6f294ca](https://github.com/rero/rero-ils-ui/commit/6f294ca86f9e734c6292b6160734f58395bfe11b))
+* **organisation:** enhance the organisation detailed view ([d6ec81e](https://github.com/rero/rero-ils-ui/commit/d6ec81e59145db285de52029e5d2a6e77dc9f22d))
+* **patron:** add operation log history ([139fccd](https://github.com/rero/rero-ils-ui/commit/139fccd326d1774ab5b37896900699705d8aa2da))
+
+### Bug Fixes
+
+* **alert-type:** change to warn ([31bbf47](https://github.com/rero/rero-ils-ui/commit/31bbf4789cb9de1b7a7c764994668c35ff5cbf1e))
+* **files:** nest label under metadata when updating a file ([7a7bdc9](https://github.com/rero/rero-ils-ui/commit/7a7bdc9886be8db1a11bfff47092e88d37a74e73))
+* **holdings-editor:** predictions preview ([a984f15](https://github.com/rero/rero-ils-ui/commit/a984f155fc1baff0d2a925f6c96bcb8fb3a9783f))
+* **holdings:** keep pagination settings when deleting an item ([b63295c](https://github.com/rero/rero-ils-ui/commit/b63295cfc757a3c92a6928e75cca2eb8dc4824dc))
+* **holdings:** wrap translate keys with marker for extraction in NgRx store ([f6c0d53](https://github.com/rero/rero-ils-ui/commit/f6c0d5315e313c9966d8cb0417cb9705496212c8))
+* **local-fields:** align tab visibility and permissions with backend ([abd3f78](https://github.com/rero/rero-ils-ui/commit/abd3f78e9b56f42097360d0160efb598b4430dae)), closes [rero/rero-ils#4092](https://github.com/rero/rero-ils/issues/4092)
+* **location:** fix location list not updating after deletion ([d92739d](https://github.com/rero/rero-ils-ui/commit/d92739d7a26601d38385a53aab6d09c5d876eae0))
+* **location:** invoke deleteInfoMessage signal in template ([e5f1da7](https://github.com/rero/rero-ils-ui/commit/e5f1da73a8c273861064b5ae129624a36a46948d))
+* **permissions:** add missing resource translations ([0819374](https://github.com/rero/rero-ils-ui/commit/0819374f3d62b67389418ca57d42fee1c406c770))
+
 ## [v21.0.0](https://github.com/rero/rero-ils-ui/tree/v21.0.0) (2026-06-10)
 
 [Full Changelog](https://github.com/rero/rero-ils-ui/compare/v19.3.0...v21.0.0)
