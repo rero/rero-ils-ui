@@ -3,12 +3,12 @@
 
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
-import { NavigationEnd, Router, RouterModule, RouterStateSnapshot } from '@angular/router';
+import { Router, RouterModule, RouterStateSnapshot, UrlTree } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 import { RecordUiService } from '@rero/ng-core';
 import { AppStore } from '@rero/shared';
 import { cloneDeep } from 'lodash-es';
-import { filter, firstValueFrom } from 'rxjs';
+import { firstValueFrom } from 'rxjs';
 import { of } from 'rxjs';
 import { LocalFieldApiService } from '../api/local-field-api.service';
 import { ErrorPageComponent } from '../error/error-page/error-page.component';
@@ -54,24 +54,17 @@ describe('canAddLocalFieldsGuard', () => {
     router = TestBed.inject(Router);
   });
 
-  async function waitForNavigation(): Promise<void> {
-    await firstValueFrom(
-      router.events.pipe(filter(e => e instanceof NavigationEnd))
-    );
-  }
-
   it('should create a service', () => {
     expect(canAddLocalFieldsGuard).toBeTruthy();
   });
 
-  it('should return a 400 error if any parameters are missing', async () => {
+  it('should return a 400 UrlTree if any parameters are missing', () => {
     const activatedRoute = cloneDeep(activatedRouteSnapshotSpy);
     activatedRoute.queryParams = {};
     vi.spyOn(localFieldApiService, 'getByResourceTypeAndResourcePidAndOrganisationId').mockReturnValue(of(record));
-    const navPromise = waitForNavigation();
-    await firstValueFrom(runGuard(activatedRoute));
-    await navPromise;
-    expect(router.url).toBe('/errors/400');
+    const result = runGuard(activatedRoute);
+    expect(result instanceof UrlTree).toBeTruthy();
+    expect(router.serializeUrl(result as UrlTree)).toBe('/errors/400');
   });
 
   it('should return false if the current document has a local fields', async () => {
@@ -81,13 +74,12 @@ describe('canAddLocalFieldsGuard', () => {
     expect(access).toBeFalsy();
   });
 
-  it('should return a 400 error if the type is not correct', async () => {
+  it('should return a 400 UrlTree if the type is not correct', () => {
     const activatedRoute = cloneDeep(activatedRouteSnapshotSpy);
     activatedRoute.queryParams = { type: 'foo', ref: '240' };
     vi.spyOn(localFieldApiService, 'getByResourceTypeAndResourcePidAndOrganisationId').mockReturnValue(of(record));
-    const navPromise = waitForNavigation();
-    await firstValueFrom(runGuard(activatedRoute));
-    await navPromise;
-    expect(router.url).toBe('/errors/400');
+    const result = runGuard(activatedRoute);
+    expect(result instanceof UrlTree).toBeTruthy();
+    expect(router.serializeUrl(result as UrlTree)).toBe('/errors/400');
   });
 });
