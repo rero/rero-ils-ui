@@ -3,7 +3,6 @@
 import { inject } from '@angular/core';
 import { ActivatedRouteSnapshot, CanActivateFn, Router } from '@angular/router';
 import { AppStore } from '@rero/shared';
-import { Observable, of } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { LocalFieldApiService } from '../api/local-field-api.service';
 
@@ -17,21 +16,19 @@ const typeMap: Record<string, string> = {
  * Guard that prevents adding a local field record when one already exists for
  * the current organisation. Redirects to /errors/400 on missing params or unknown type.
  */
-export const canAddLocalFieldsGuard: CanActivateFn = (route: ActivatedRouteSnapshot): Observable<boolean> => {
+export const canAddLocalFieldsGuard: CanActivateFn = (route: ActivatedRouteSnapshot) => {
   const appStore = inject(AppStore);
   const localFieldsApiService = inject(LocalFieldApiService);
   const router = inject(Router);
 
   const { type, ref } = route.queryParams;
   if (!type || !ref) {
-    router.navigate(['/errors/400'], { skipLocationChange: true });
-    return of(false);
+    return router.createUrlTree(['/errors/400']);
   }
 
   const mappedType = typeMap[type];
   if (!mappedType) {
-    router.navigate(['/errors/400'], { skipLocationChange: true });
-    return of(false);
+    return router.createUrlTree(['/errors/400']);
   }
 
   return localFieldsApiService

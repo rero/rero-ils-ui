@@ -4,7 +4,6 @@ import { inject } from '@angular/core';
 import { ActivatedRouteSnapshot, CanActivateFn, Router } from '@angular/router';
 import { extractIdOnRef, RecordService } from '@rero/ng-core';
 import { AppStore } from '@rero/shared';
-import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { checkLibraryAccess } from './library.guard';
 
@@ -12,7 +11,7 @@ import { checkLibraryAccess } from './library.guard';
  * Guard that checks if the current user's library matches the library of the
  * acquisition order referenced by the `order` query param (or `pid` route param).
  */
-export const acqOrderLineGuard: CanActivateFn = (route: ActivatedRouteSnapshot): Observable<boolean> => {
+export const acqOrderLineGuard: CanActivateFn = (route: ActivatedRouteSnapshot) => {
   const recordService = inject(RecordService);
   const appStore = inject(AppStore);
   const router = inject(Router);

@@ -14,19 +14,15 @@ export function checkLibraryAccess(
   owningLibrary$: Observable<string>,
   appStore: InstanceType<typeof AppStore>,
   router: Router
-): Observable<boolean> {
+) {
   return owningLibrary$.pipe(
     map((owningLibrary: string) => {
       if (owningLibrary !== appStore.currentLibraryPid()) {
-        router.navigate(['/errors/403'], { skipLocationChange: true });
-        return false;
+        return router.createUrlTree(['/errors/403']);
       }
       return true;
     }),
-    catchError(() => {
-      router.navigate(['/errors/500'], { skipLocationChange: true });
-      return of(false);
-    })
+    catchError(() => of(router.createUrlTree(['/errors/500'])))
   );
 }
 
@@ -34,7 +30,7 @@ export function checkLibraryAccess(
  * Guard that checks if the current user belongs to the library passed via the
  * `library` query parameter. Redirects to /errors/403 if denied, /errors/500 on error.
  */
-export const libraryGuard: CanActivateFn = (route: ActivatedRouteSnapshot): Observable<boolean> => {
+export const libraryGuard: CanActivateFn = (route: ActivatedRouteSnapshot) => {
   const appStore = inject(AppStore);
   const router = inject(Router);
   return checkLibraryAccess(of(route.queryParams.library), appStore, router);
