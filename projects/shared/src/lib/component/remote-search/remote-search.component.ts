@@ -1,11 +1,12 @@
 // SPDX-FileCopyrightText: Fondation RERO+
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-import { ChangeDetectionStrategy, Component, DOCUMENT, OnDestroy, OnInit, inject, input, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DOCUMENT, OnDestroy, OnInit, computed, inject, input, signal } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, NavigationEnd, Router, UrlSegment } from '@angular/router';
 import type { AutoCompleteRecordType } from '@rero/ng-core';
 import { SearchAutocompleteComponent, UpperCaseFirstPipe } from '@rero/ng-core';
-import { TranslatePipe, TranslateService } from '@ngx-translate/core';
+import { TranslateService } from '@ngx-translate/core';
 import { filter, Subscription } from 'rxjs';
 import { AppStore } from '../../store/app.store';
 import { RemoteSearchConfig } from './remote-search-config.service';
@@ -14,7 +15,7 @@ import { RemoteSearchConfig } from './remote-search-config.service';
   selector: 'shared-remote-search',
   templateUrl: './remote-search.component.html',
   providers: [RemoteSearchConfig],
-  imports: [SearchAutocompleteComponent, TranslatePipe, UpperCaseFirstPipe],
+  imports: [SearchAutocompleteComponent, UpperCaseFirstPipe],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class RemoteSearchComponent implements OnInit, OnDestroy {
@@ -35,6 +36,22 @@ export class RemoteSearchComponent implements OnInit, OnDestroy {
   readonly inputstyleclass = input<string | undefined>(undefined);
   readonly styleclass = input<string | undefined>(undefined);
   readonly internalRoutingBaseURL = input<string | undefined>(undefined);
+
+  /** Bumped on every language switch so the placeholder re-resolves. */
+  private languageChange = toSignal(this.translateService.onLangChange, { initialValue: null });
+
+  /**
+   * The placeholder can be provided as a translation key (the default `search`
+   * used in the admin view) or as an already-localized string coming from the DB
+   * (public homepage config). `instant()` handles both — known keys are translated,
+   * unknown strings are returned verbatim — and, unlike the `translate` pipe's async
+   * `get()`, it never yields an empty value while the web component is still loading.
+   */
+  readonly translatedPlaceholder = computed(() => {
+    this.languageChange();
+    const value = this.placeholder();
+    return value ? this.translateService.instant(value) : value;
+  });
 
   admin = false;
   hideSearchElement = signal(false);
