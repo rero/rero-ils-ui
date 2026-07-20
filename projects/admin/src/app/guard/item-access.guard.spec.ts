@@ -4,17 +4,23 @@
 import { TestBed } from "@angular/core/testing";
 import { itemAccessGuard } from "./item-access.guard";
 import { AppStore } from "@rero/shared";
-import { of } from "rxjs";
+import { firstValueFrom, of } from "rxjs";
 import { apiResponse } from "@rero/shared";
 import { RecordService } from "@rero/ng-core";
 import { TranslateModule } from "@ngx-translate/core";
 import { MessageService, ToastMessageOptions } from "primeng/api";
-import { ActivatedRouteSnapshot, RouterStateSnapshot } from "@angular/router";
+import { ActivatedRouteSnapshot, Router, RouterModule, RouterStateSnapshot, UrlTree } from "@angular/router";
+import { ErrorPageComponent } from "../error/error-page/error-page.component";
 
 describe('itemAccessGuard', () => {
   let route: ActivatedRouteSnapshot;
   let routerState: RouterStateSnapshot;
   let messageService: MessageService;
+  let router: Router;
+
+  const routes = [
+    { path: '', component: ErrorPageComponent }
+  ];
 
   const item = {
     metadata: {
@@ -48,6 +54,7 @@ describe('itemAccessGuard', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [
+        RouterModule.forRoot(routes),
         TranslateModule.forRoot()
       ],
       providers: [
@@ -62,6 +69,7 @@ describe('itemAccessGuard', () => {
     route = TestBed.inject(ActivatedRouteSnapshot);
     routerState = TestBed.inject(RouterStateSnapshot);
     messageService = TestBed.inject(MessageService);
+    router = TestBed.inject(Router);
 
     apiResponse.hits.hits = [holdings];
     recordServiceSpy.getRecords.mockReturnValue(of(apiResponse));
@@ -71,12 +79,16 @@ describe('itemAccessGuard', () => {
     expect(itemAccessGuard).toBeTruthy();
   });
 
-  it('should display a message if access is denied', () => {
+  it('should display a message and return a UrlTree if access is denied', async () => {
     messageService.messageObserver
       .subscribe((message: ToastMessageOptions) => {
         expect(message.severity).toEqual('warn');
         expect(message.detail).toEqual('Access denied');
       });
-    TestBed.runInInjectionContext(() => itemAccessGuard(route, routerState));
+    const result = await firstValueFrom(
+      TestBed.runInInjectionContext(() => itemAccessGuard(route, routerState)) as any
+    );
+    expect(result instanceof UrlTree).toBeTruthy();
+    expect(router.serializeUrl(result as UrlTree)).toBe('/');
   });
 });

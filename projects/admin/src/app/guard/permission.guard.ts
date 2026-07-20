@@ -20,7 +20,7 @@ import { AppStore, PERMISSION_OPERATOR } from '@rero/shared';
  *   }
  * }
  */
-export const permissionGuard: CanActivateFn = (route: ActivatedRouteSnapshot): boolean => {
+export const permissionGuard: CanActivateFn = (route: ActivatedRouteSnapshot) => {
   const appStore = inject(AppStore);
   const router = inject(Router);
 
@@ -29,8 +29,7 @@ export const permissionGuard: CanActivateFn = (route: ActivatedRouteSnapshot): b
 
   const result = appStore.canAccess(permissions, operator);
   if (!result) {
-    router.navigate(['/errors/403'], { skipLocationChange: true });
-    return false;
+    return router.createUrlTree(['/errors/403']);
   }
 
   return true;
