@@ -4,13 +4,14 @@
 
 import { Component, ChangeDetectionStrategy, computed, inject } from '@angular/core';
 import { RecordSearchComponent, RecordSearchPageComponent, RecordSearchStore } from '@rero/ng-core';
+import { TranslateDirective } from '@ngx-translate/core';
 import { DocumentAdvancedSearchComponent } from '../document-advanced-search.component';
 import { AppStore } from '@rero/shared';
 
 @Component({
   selector: 'admin-document-record-search',
   templateUrl: './document-record-search.component.html',
-  imports: [RecordSearchComponent, DocumentAdvancedSearchComponent],
+  imports: [RecordSearchComponent, DocumentAdvancedSearchComponent, TranslateDirective],
   providers: [RecordSearchStore],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
