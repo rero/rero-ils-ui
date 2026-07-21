@@ -1,6 +1,6 @@
 // SPDX-FileCopyrightText: Fondation RERO+
 // SPDX-License-Identifier: AGPL-3.0-or-later
-import { Component, inject, input, OnInit, ChangeDetectionStrategy} from '@angular/core';
+import { Component, effect, inject, input, ChangeDetectionStrategy} from '@angular/core';
 import { EsRecord } from '@rero/shared';
 import { HoldingsStore } from './store/holdings-store';
 import { MenuActionsComponent } from './menu-actions/menu-actions.component';
@@ -20,13 +20,13 @@ import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
     imports: [MenuActionsComponent, Bind, MultiSelect, Accordion, AccordionPanel, Ripple, AccordionHeader, HoldingHeaderComponent, AccordionContent, HoldingContentComponent, TranslateDirective, TranslatePipe],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class HoldingsComponent implements OnInit {
+export class HoldingsComponent {
 
   protected store = inject(HoldingsStore);
 
   protected document = input.required<EsRecord>();
 
-  ngOnInit(): void {
-    this.store.setDocument(this.document());
+  constructor() {
+    effect(() => this.store.setDocument(this.document()));
   }
 }
