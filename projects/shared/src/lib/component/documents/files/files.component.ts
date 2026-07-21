@@ -21,6 +21,7 @@ import { Paginator } from 'primeng/paginator';
 import { Dialog } from 'primeng/dialog';
 import { InputGroup } from 'primeng/inputgroup';
 import { InputGroupAddon } from 'primeng/inputgroupaddon';
+import { InputText } from 'primeng/inputtext';
 import { FaIconClassPipe } from '../../../pipe/fa-icon-class.pipe';
 
 // file interface
@@ -39,7 +40,7 @@ export type File = {
 @Component({
     selector: 'shared-doc-files',
     templateUrl: './files.component.html',
-    imports: [Bind, Tag, RouterLink, FormsModule, Carousel, NgClass, Paginator, Dialog, InputGroup, InputGroupAddon, AsyncPipe, TranslatePipe, FaIconClassPipe],
+    imports: [Bind, Tag, RouterLink, FormsModule, Carousel, NgClass, Paginator, Dialog, InputGroup, InputGroupAddon, InputText, AsyncPipe, TranslatePipe, FaIconClassPipe],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class FilesComponent {
