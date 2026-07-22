@@ -147,6 +147,12 @@ class OrdersRoute extends BaseRoute implements RouteDataTypesInterface {
           endpoint: this.routeToolService.apiService.getExportEndpointByType(this.recordType),
           disableMaxRestResultsSize: true,
         },
+        {
+          label: 'XLSX',
+          format: 'xlsx',
+          endpoint: this.routeToolService.apiService.getExportEndpointByType(this.recordType),
+          disableMaxRestResultsSize: true,
+        },
       ],
     };
     return [orderType];
