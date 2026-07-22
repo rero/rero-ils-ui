@@ -96,6 +96,12 @@ class PatronTransactionEventsRoute extends BaseRoute implements RouteDataTypesIn
             endpoint: this.routeToolService.apiService.getExportEndpointByType(this.recordType),
             disableMaxRestResultsSize: true,
           },
+          {
+            label: 'XLSX',
+            format: 'xlsx',
+            endpoint: this.routeToolService.apiService.getExportEndpointByType(this.recordType),
+            disableMaxRestResultsSize: true,
+          },
         ],
         showFacetsIfNoResults: true,
       },
