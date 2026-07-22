@@ -56,6 +56,7 @@ class DocumentsRoute {
         },
         showFacetsIfNoResults: true,
         aggregationsOrder: this.aggregationsOrder(viewcode),
+        aggregationsHideCount: ['organisation', 'library'],
         aggregationsExpand: () => {
           const expand = ['document_type', 'fiction_statement'];
           const { queryParams } = this.activatedRoute.snapshot;
