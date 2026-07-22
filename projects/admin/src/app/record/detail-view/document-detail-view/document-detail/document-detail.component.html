@@ -16,6 +16,16 @@ SPDX-License-Identifier: AGPL-3.0-or-later
     >
       <ng-container beforeButton>
         @if (record()) {
+          <a
+            pButton
+            icon="fa-solid fa-users"
+            severity="secondary"
+            outlined
+            href="/{{ appStore.settings.globalView() }}/documents/{{ $any(record()).metadata.pid }}"
+            translate
+          >
+            See in public interface
+          </a>
           @if (appStore.isLogVisible('documents') && record()?.metadata.pid) {
             <shared-operation-logs-dialog resourceType="documents" [resourcePid]="$any(record()?.metadata.pid)" />
           }

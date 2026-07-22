@@ -1,22 +1,21 @@
 // SPDX-FileCopyrightText: Fondation RERO+
 // SPDX-License-Identifier: AGPL-3.0-or-later
-import { Component, inject, ChangeDetectionStrategy, OnInit} from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, OnInit } from '@angular/core';
+import { RouterLink } from '@angular/router';
 import { IdentifierTypes } from '@app/admin/classes/identifiers';
-import { OperationLogsDialogComponent, PermissionsDirective } from '@rero/shared';
-import { DetailComponent, DetailButtonComponent, ErrorComponent } from '@rero/ng-core';
-import { AppStore, IPermissions, PERMISSIONS } from '@rero/shared';
+import { TranslatePipe } from '@ngx-translate/core';
+import { DetailButtonComponent, DetailComponent, ErrorComponent } from '@rero/ng-core';
+import { AppStore, IPermissions, OperationLogsDialogComponent, PERMISSIONS, PermissionsDirective } from '@rero/shared';
 import { cloneDeep } from 'lodash-es';
+import { Bind } from 'primeng/bind';
+import { Button, ButtonDirective } from 'primeng/button';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { DialogImportComponent } from '../dialog-import/dialog-import.component';
-import { Bind } from 'primeng/bind';
-import { Button } from 'primeng/button';
-import { RouterLink } from '@angular/router';
-import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
     selector: 'admin-document-detail',
     templateUrl: './document-detail.component.html',
-    imports: [DetailButtonComponent, OperationLogsDialogComponent, Bind, Button, PermissionsDirective, RouterLink, ErrorComponent, TranslatePipe],
+    imports: [DetailButtonComponent, OperationLogsDialogComponent, Bind, Button, PermissionsDirective, RouterLink, ErrorComponent, TranslatePipe, ButtonDirective],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class DocumentDetailComponent extends DetailComponent implements OnInit {
