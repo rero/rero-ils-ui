@@ -8,7 +8,7 @@ import { Tools } from '@app/admin/shared/preview-email/utils/tools';
 import { CONFIG, NgCoreTranslateService, RecordService } from '@rero/ng-core';
 import { MessageService } from 'primeng/api';
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
-import { PreviewEmailComponent } from '../../../shared/preview-email/component/preview-email/preview-email.component';
+import { PreviewEmailComponent, RecipientType } from '@app/admin/shared/preview-email/component/preview-email/preview-email.component';
 import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
 import { Message } from 'primeng/message';
 
@@ -30,10 +30,10 @@ export class IssueEmailComponent {
   private record = this.dynamicDialogConfig.data.record;
 
   /** Available recipient types */
-  readonly emailTypes = ['to', 'cc', 'bcc', 'reply_to'];
+  readonly emailTypes: RecipientType[] = ['to', 'cc', 'bcc', 'reply_to'];
 
   /** Mandatory email types */
-  readonly mandatoryEmailTypes = ['to', 'reply_to'];
+  readonly mandatoryEmailTypes: RecipientType[] = ['to', 'reply_to'];
 
   /** Suggested emails and pre-populated recipients */
   suggestions = signal<ISuggestions>({ emails: [], recipients: [] });

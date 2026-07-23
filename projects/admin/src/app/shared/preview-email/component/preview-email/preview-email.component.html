@@ -20,7 +20,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
     <p-panel>
       <ng-template #header>
         <div class="p-panel-title">
-        @if (emails.length < 2) {
+        @if (emails().length < 2) {
           {{ 'Suggested email address' | translate }}
         } @else {
           {{ 'Suggested email addresses' | translate }}
@@ -57,7 +57,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
             [typeahead]="false"
             [inputId]="type"
             pDroppable="emails"
-            (onDrop)="drop($event)"
+            (onDrop)="drop($event, type)"
             (onBlur)="onBlur($event)"
             [(ngModel)]="recipients[type]"
           />
