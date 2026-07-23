@@ -1,18 +1,20 @@
 // SPDX-FileCopyrightText: Fondation RERO+
 // SPDX-FileCopyrightText: UCLouvain
 // SPDX-License-Identifier: AGPL-3.0-or-later
-import { Component, effect, input, output, signal, ChangeDetectionStrategy} from '@angular/core';
-import { Tools } from '@rero/shared';
-import { ITypeEmail } from '../../IPreviewInterface';
 import { NgTemplateOutlet } from '@angular/common';
+import { ChangeDetectionStrategy, Component, effect, input, output, signal } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
+import { Tools } from '@rero/shared';
+import { AutoComplete } from 'primeng/autocomplete';
 import { Bind } from 'primeng/bind';
+import { Button } from 'primeng/button';
+import { Draggable, Droppable } from 'primeng/dragdrop';
 import { Panel } from 'primeng/panel';
 import { Tag } from 'primeng/tag';
-import { Draggable, Droppable } from 'primeng/dragdrop';
-import { AutoComplete } from 'primeng/autocomplete';
-import { FormsModule } from '@angular/forms';
-import { Button } from 'primeng/button';
+import { ITypeEmail } from '../../IPreviewInterface';
+
+export type RecipientType = 'to' | 'cc' | 'bcc' | 'reply_to';
 
 @Component({
     selector: 'admin-preview-email',
@@ -23,15 +25,15 @@ import { Button } from 'primeng/button';
 export class PreviewEmailComponent {
 
   /** Suggested emails */
-  emails = input<string[]>();
+  emails = input<string[]>([]);
   /** Email body text preview */
   preview = input<string>();
   /** Preview position */
   previewPosition = input('top');
   /** Available types of destination */
-  emailTypes = input(['to', 'cc', 'bcc', 'reply_to']);
+  emailTypes = input<RecipientType[]>(['to', 'cc', 'bcc', 'reply_to']);
   /** Mandatory types */
-  mandatoryEmailTypes = input(['to']);
+  mandatoryEmailTypes = input<RecipientType[]>(['to']);
   /** Allows to pre-populate the recipients */
   prePopulateRecipients = input<ITypeEmail[]>();
   /** Event to transmit email address recipients */
@@ -45,18 +47,21 @@ export class PreviewEmailComponent {
   draggedEmail: string | null = null;
 
   /** Recipients */
-  recipients = { to: [], cc: [], bcc: [], reply_to: [] };
+  recipients: Record<RecipientType, string[]> = { to: [], cc: [], bcc: [], reply_to: [] };
 
   constructor() {
     effect(() => {
       const rep = this.prePopulateRecipients();
       if (rep) {
-        const keys = Object.keys(this.recipients);
+        const keys = Object.keys(this.recipients) as RecipientType[];
+        const recipients: Record<RecipientType, string[]> = { to: [], cc: [], bcc: [], reply_to: [] };
         rep.forEach((el: ITypeEmail) => {
-          if (keys.includes(el.type)) {
-            this.recipients[el.type].push(el.address);
+          const type = el.type as RecipientType;
+          if (keys.includes(type) && !recipients[type].includes(el.address)) {
+            recipients[type].push(el.address);
           }
         });
+        this.recipients = recipients;
       }
     });
   }
@@ -76,13 +81,15 @@ export class PreviewEmailComponent {
 
   /**
    * Adding the email address to a specific recipient.
-   * @param field - DragEvent
+   * @param event - DragEvent
+   * @param type - Recipient type the email is dropped onto
    */
-  drop(field: DragEvent): void {
+  drop(event: DragEvent, type: RecipientType): void {
     if (this.draggedEmail) {
-      const fieldId = field.target['id'];
-      if (fieldId && !this.recipients[fieldId].some((email: string) => email === this.draggedEmail)) {
-        this.recipients[fieldId].push(this.draggedEmail);
+      event.preventDefault();
+      const recipients = this.recipients[type];
+      if (!recipients.some((email: string) => email === this.draggedEmail)) {
+        this.recipients[type] = [...recipients, this.draggedEmail];
       }
     }
   }
@@ -100,8 +107,8 @@ export class PreviewEmailComponent {
   confirm(): void {
     if (this.isSending()) { return; }
     this.isSending.set(true);
-    const recipients = [];
-    Object.keys(this.recipients).forEach((key: string) => this.recipients[key].every((email: string) => recipients.push({ type: key, address: email })));
+    const recipients: ITypeEmail[] = [];
+    (Object.keys(this.recipients) as RecipientType[]).forEach((key) => this.recipients[key].every((email: string) => recipients.push({ type: key, address: email })));
     this.data.emit(recipients);
   }
 
@@ -111,11 +118,11 @@ export class PreviewEmailComponent {
    */
   formValid(): boolean {
     // Validation of the mandatory types
-    if (!this.mandatoryEmailTypes().every((key: string) => this.recipients[key].length > 0)) {
+    if (!this.mandatoryEmailTypes().every((key: RecipientType) => this.recipients[key].length > 0)) {
       return false;
     }
     // Validation of all email addresses of each recipient
-    return Object.keys(this.recipients).every((key: string) => this.recipients[key].every(email => Tools.validateEmail(email)));
+    return (Object.keys(this.recipients) as RecipientType[]).every((key) => this.recipients[key].every(email => Tools.validateEmail(email)));
   }
 
   onBlur(event: Event): void {
