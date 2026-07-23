@@ -2,11 +2,11 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 import { AsyncPipe, NgClass } from '@angular/common';
-import { Component, inject, input, OnInit, ChangeDetectionStrategy} from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, input, OnInit } from '@angular/core';
 import { LoadingBarModule } from '@ngx-loading-bar/core';
 import { TranslateDirective, TranslateService } from '@ngx-translate/core';
-import { AppStore, DocumentDescriptionComponent, FilesComponent } from '@rero/shared';
 import { GetRecordPipe } from '@rero/ng-core';
+import { AppStore, DocumentDescriptionComponent, FilesComponent } from '@rero/shared';
 import { MenuItem } from 'primeng/api';
 import { Ripple } from 'primeng/ripple';
 import { Tab, TabList, TabPanel, TabPanels, Tabs } from 'primeng/tabs';
@@ -23,12 +23,12 @@ export class DocumentDetailViewComponent implements OnInit {
   private appStore = inject(AppStore);
   private translateService: TranslateService = inject(TranslateService);
 
-  viewcode = input<string>();
-  documentpid = input<string>();
+  viewcode = input.required<string>();
+  documentpid = input.required<string>();
   showinfo = input('false');
 
   document = null;
-  exportItems: MenuItem[];
+  exportItems: MenuItem[] = [];
 
   /** OnInit hook */
   ngOnInit(): void {

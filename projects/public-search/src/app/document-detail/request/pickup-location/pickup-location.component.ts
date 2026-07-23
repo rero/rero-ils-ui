@@ -1,15 +1,19 @@
 // SPDX-FileCopyrightText: Fondation RERO+
 // SPDX-License-Identifier: AGPL-3.0-or-later
-import { Component, inject, input, OnInit, output, signal, ChangeDetectionStrategy} from '@angular/core';
-import { UntypedFormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
+
+import { HttpErrorResponse } from '@angular/common/http';
+import { ChangeDetectionStrategy, Component, inject, input, OnInit, output, signal } from '@angular/core';
+import { FormsModule, ReactiveFormsModule, UntypedFormGroup } from '@angular/forms';
+import { HoldingPatronRequest } from '@app/public-search/classes/holdings';
 import { FormlyFieldConfig, FormlyModule } from '@ngx-formly/core';
-import { TranslateService, TranslatePipe } from '@ngx-translate/core';
-import { tap } from 'rxjs/operators';
+import { _, TranslatePipe, TranslateService } from '@ngx-translate/core';
+import { Button } from 'primeng/button';
+import { Message } from 'primeng/message';
+import { Observable } from 'rxjs';
+import { finalize } from 'rxjs/operators';
 import { HoldingsApiService } from '../../../api/holdings-api.service';
 import { ItemApiService } from '../../../api/item-api.service';
 import { LocationApiService } from '../../../api/location-api.service';
-import { Message } from 'primeng/message';
-import { Button } from 'primeng/button';
 
 @Component({
     selector: 'public-search-pickup-location',
@@ -25,13 +29,10 @@ export class PickupLocationComponent implements OnInit {
   private translateService: TranslateService = inject(TranslateService);
 
   /** Record: item or holding */
-  record = input<any>();
+  record = input.required<any>();
 
   /** Record type */
-  recordType = input<string>();
-
-  /** View code */
-  viewcode = input<string>();
+  recordType = input.required<string>();
 
   /** Item count */
   itemCount = input(0);
@@ -54,7 +55,7 @@ export class PickupLocationComponent implements OnInit {
   requested = false;
 
   /** Record API request */
-  apiRequest = null;
+  apiRequest?: Observable<HoldingPatronRequest>;
 
   /** User message */
   readonly requestMessage = signal<{success: boolean, message: string} | null>(null);
@@ -64,7 +65,7 @@ export class PickupLocationComponent implements OnInit {
     this.locationApiService
       .getPickupLocationsByRecordId(this.recordType(), this.record()?.metadata?.pid)
       .subscribe((pickups: any) => {
-        const options = [];
+        const options: {label: string, value: string}[] = [];
         pickups.forEach((pickup: any) => {
           options.push({label: pickup.name, value: pickup.pid });
         });
@@ -119,26 +120,28 @@ export class PickupLocationComponent implements OnInit {
       });
     }
 
-    this.apiRequest.pipe(
-      tap(() => {
-        this.showForm = false;
-        this.requestInProgress = false;
-        this.requested = true;
-      }),
-      tap(() => this.closeDialog()),
-    ).subscribe(
-      () => {
-        this.requestMessage.set({
-          success: true,
-          message: this.translateService.instant('Your request has been placed.')
-        });
-      },
-      () => {
-        this.requestMessage.set({
-          success: false,
-          message: this.translateService.instant('Error on this request.')
-        });
-      }
-    );
+    if (this.apiRequest) {
+      this.apiRequest.pipe(
+        finalize(() => {
+          this.showForm = false;
+          this.requestInProgress = false;
+          this.requested = true;
+        })
+      ).subscribe({
+        next: () => {
+          this.requestMessage.set({
+            success: true,
+            message: this.translateService.instant('Your request has been placed.')
+          });
+        },
+        error: (err: HttpErrorResponse) => {
+          const message = (err.error?.message) ? err.error.message : _('Error on this request.');
+          this.requestMessage.set({
+            success: false,
+            message: this.translateService.instant(message)
+          });
+        }
+      });
+    }
   }
 }

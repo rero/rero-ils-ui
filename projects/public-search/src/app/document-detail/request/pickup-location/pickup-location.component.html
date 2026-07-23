@@ -43,8 +43,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
     </form>
   </div>
 }
-
-@if (requested && !showForm) {
+@if (requestMessage()) {
   <div class="ui:p-2">
     <p-message
       [severity]="requestMessage()?.success ? 'success' : 'error'"
