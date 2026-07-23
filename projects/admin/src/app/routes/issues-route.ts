@@ -82,8 +82,9 @@ class IssuesRoute extends BaseRoute implements RouteDataTypesInterface {
     if(bucket.name) { return of(bucket.name); }
     switch (bucket.aggregationKey) {
       case 'claims_count': {
-        const claims_label = Number(bucket.doc_count) < 2 ? _('{{count}} claim') : _('{{count}} claims');
-        return this.routeToolService.translateService.stream(claims_label, {count: bucket.doc_count});
+        const count = Number(bucket.key);
+        const key = count < 2 ? _('{{count}} claim') : _('{{count}} claims');
+        return this.routeToolService.translateService.stream(key, { count });
       };
       default: return this.routeToolService.translateService.stream(bucket.key);
     }
