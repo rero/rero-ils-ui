@@ -1,20 +1,20 @@
 // SPDX-FileCopyrightText: Fondation RERO+
 // SPDX-FileCopyrightText: UCLouvain
 // SPDX-License-Identifier: AGPL-3.0-or-later
+import { HttpErrorResponse } from '@angular/common/http';
 import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { HttpErrorResponse } from '@angular/common/http';
 import { AcqOrderApiService } from '@app/admin/acquisition/api/acq-order-api.service';
 import { IAcqOrder } from '@app/admin/acquisition/classes/order';
 import { Notification } from '@app/admin/classes/notification';
+import { PreviewEmailComponent, RecipientType } from '@app/admin/shared/preview-email/component/preview-email/preview-email.component';
 import { IPreview, ITypeEmail } from '@app/admin/shared/preview-email/IPreviewInterface';
 import { Tools } from '@app/admin/shared/preview-email/utils/tools';
-import { TranslateService, TranslateDirective } from '@ngx-translate/core';
+import { TranslateDirective, TranslateService } from '@ngx-translate/core';
 import { CONFIG } from '@rero/ng-core';
 import { MessageService } from 'primeng/api';
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { switchMap, tap } from 'rxjs/operators';
-import { PreviewEmailComponent } from '../../../../shared/preview-email/component/preview-email/preview-email.component';
 
 @Component({
     selector: 'admin-order-email-form',
@@ -32,8 +32,8 @@ export class OrderEmailFormComponent {
 
   readonly order: IAcqOrder = this.dynamicDialogConfig.data.order;
 
-  readonly emailTypes = ['to', 'cc', 'bcc', 'reply_to'];
-  readonly mandatoryEmailTypes = ['to', 'reply_to'];
+  readonly emailTypes: RecipientType[] = ['to', 'cc', 'bcc', 'reply_to'];
+  readonly mandatoryEmailTypes: RecipientType[] = ['to', 'reply_to'];
 
   readonly response = toSignal<IPreview | undefined>(
     this.acqOrderApiService.getOrderPreview(this.order.pid!)
