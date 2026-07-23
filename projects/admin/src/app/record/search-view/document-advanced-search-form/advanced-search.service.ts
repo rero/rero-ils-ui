@@ -2,11 +2,10 @@
 // SPDX-FileCopyrightText: UCLouvain
 // SPDX-License-Identifier: AGPL-3.0-or-later
 import { inject, Injectable } from '@angular/core';
-import { DocumentApiService } from '@app/admin/api/document-api.service';
+import { DocumentApiService, IAdvancedSearchConfig, IFieldsData, IFieldsType, ILabelValue, ILabelValueField, ISearch, ISearchModel, ISelectOptions } from '@rero/shared';
 import { _ } from "@ngx-translate/core";
 import { Observable, of } from 'rxjs';
 import { tap } from 'rxjs/operators';
-import { IAdvancedSearchConfig, IFieldsData, IFieldsType, ILabelValue, ILabelValueField, ISearch, ISearchModel, ISelectOptions } from './i-advanced-search-config-interface';
 
 @Injectable({
   providedIn: 'root'
