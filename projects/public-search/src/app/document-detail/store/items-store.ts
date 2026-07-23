@@ -35,7 +35,7 @@ const initialPagerConfig: Pager = {
 
 export const ItemsStore = signalStore(
   withState(itemsInitialState),
-  withPaginator(initialPagerConfig),
+  withPaginator('pager', initialPagerConfig),
   withViewCode(),
   withComputed((store) => ({
     isFilterEnabled: computed(() => store.total() > 10 || '' !== store.filter()),
@@ -49,7 +49,7 @@ export const ItemsStore = signalStore(
       patchState(store, { filter, pager: initialPagerConfig });
     }),
     setPaginator(paginator: PaginatorState) {
-      store.changePage(paginator);
+      store.changePager(paginator);
     },
     load: rxMethod<void>(
       pipe(

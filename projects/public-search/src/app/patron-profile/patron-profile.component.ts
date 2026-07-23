@@ -10,8 +10,8 @@ import JsBarcode from 'jsbarcode';
 import { forkJoin, of } from 'rxjs';
 import { BadgeModule } from 'primeng/badge';
 import { TabsModule } from 'primeng/tabs';
-import { ToastModule } from 'primeng/toast';
 import { TooltipModule } from 'primeng/tooltip';
+import { NgxSpinnerComponent } from 'ngx-spinner';
 import { IllRequestApiService } from '../api/ill-request-api.service';
 import { LoanApiService } from '../api/loan-api.service';
 import { OperationLogsApiService } from '../api/operation-logs-api.service';
@@ -57,8 +57,8 @@ type Tabs = {
       TranslatePipe,
       BadgeModule,
       TabsModule,
-      ToastModule,
       TooltipModule,
+      NgxSpinnerComponent,
       PatronProfileMenuComponent,
       PatronProfileMessageComponent,
       PatronProfileLoansComponent,
@@ -76,7 +76,7 @@ export class PatronProfileComponent implements OnInit {
   private loanApiService = inject(LoanApiService);
   private illRequestApiService = inject(IllRequestApiService);
   private appStore = inject(AppStore);
-  private store = inject(PatronProfileStore);
+  protected store = inject(PatronProfileStore);
   private operationLogsApiService = inject(OperationLogsApiService);
   private translateService = inject(TranslateService);
   private patronApiService = inject(PatronApiService);

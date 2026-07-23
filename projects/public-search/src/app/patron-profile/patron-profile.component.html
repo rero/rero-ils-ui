@@ -3,6 +3,9 @@ SPDX-FileCopyrightText: Fondation RERO+
 SPDX-License-Identifier: AGPL-3.0-or-later
 -->
 @if (user) { @if (user.isAuthenticated && user.isPatron) {
+<ngx-spinner name="renew-all-loans" color="#fff" size="medium" type="ball-zig-zag" [fullScreen]="true">
+  <p class="ui:text-white" translate>Loading…</p>
+</ngx-spinner>
 <div class="ui:flex ui:flex-col ui:sm:flex-row ui:mt-1">
   <h3 class="ui:flex-grow">{{ fullname }}</h3>
   <svg class="ui:w-xs ui:h-30 ui:md:w-3xs ui:md:h-20" id="barcode"></svg>
@@ -11,7 +14,6 @@ SPDX-License-Identifier: AGPL-3.0-or-later
   <public-search-patron-profile-menu [patronPid]="patron.pid" />
 </section>
 <section class="ui:mt-4">
-  <p-toast />
   <public-search-patron-profile-message />
 </section>
 

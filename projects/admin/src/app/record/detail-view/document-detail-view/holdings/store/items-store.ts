@@ -37,7 +37,7 @@ const initialPagerConfig: Pager = {
 
 export const ItemsStore = signalStore(
   withState<ItemsState>(itemsInitialState),
-  withPaginator(initialPagerConfig),
+  withPaginator('pager', initialPagerConfig),
   withRequestStatus(),
   withProps(() => ({
     recordUiService: inject(RecordUiService),
@@ -56,7 +56,7 @@ export const ItemsStore = signalStore(
       patchState(store, { filter, pager: { ...store.pager(), page: 1, first: 1 } });
     }),
     setPaginator(paginator: PaginatorState) {
-      store.changePage(paginator);
+      store.changePager(paginator);
     },
     load: rxMethod<void>(
       pipe(

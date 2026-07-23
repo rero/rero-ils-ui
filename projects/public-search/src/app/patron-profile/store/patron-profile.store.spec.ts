@@ -1,7 +1,15 @@
 // SPDX-FileCopyrightText: Fondation RERO+
 // SPDX-License-Identifier: AGPL-3.0-or-later
 import { TestBed } from '@angular/core/testing';
+import { TranslateService } from '@ngx-translate/core';
+import { NgxSpinnerService } from 'ngx-spinner';
+import { MessageService } from 'primeng/api';
 import { testUserPatronMultipleOrganisationsWithSettings, User } from '@rero/shared';
+import { of } from 'rxjs';
+import { IllRequestApiService } from '../../api/ill-request-api.service';
+import { LoanApiService } from '../../api/loan-api.service';
+import { PatronApiService } from '../../api/patron-api.service';
+import { PatronTransactionApiService } from '../../api/patron-transaction-api.service';
 import { PatronProfileStore } from './patron-profile.store';
 
 describe('PatronProfileStore', () => {
@@ -9,19 +17,45 @@ describe('PatronProfileStore', () => {
   const user = new User(testUserPatronMultipleOrganisationsWithSettings);
 
   beforeEach(() => {
-    store = TestBed.configureTestingModule({ providers: [PatronProfileStore] })
+    store = TestBed.configureTestingModule({
+      providers: [
+        PatronProfileStore,
+        { provide: LoanApiService, useValue: {} },
+        {
+          provide: PatronTransactionApiService,
+          useValue: { getFees: vi.fn().mockReturnValue(of({ hits: { hits: [] } })) },
+        },
+        {
+          provide: PatronApiService,
+          useValue: { getOverduePreviewByPatronPid: vi.fn().mockReturnValue(of([])) },
+        },
+        { provide: IllRequestApiService, useValue: {} },
+        { provide: NgxSpinnerService, useValue: {} },
+        { provide: TranslateService, useValue: { instant: vi.fn((value: string) => value) } },
+        { provide: MessageService, useValue: { add: vi.fn() } },
+      ],
+    })
       .inject(PatronProfileStore);
   });
 
   it('should have correct initial state', () => {
     expect(store.patrons()).toEqual([]);
     expect(store.currentPatron()).toBeNull();
+    expect(store.patronPid()).toBeNull();
     expect(store.menu()).toEqual([]);
-    expect(store.currentMenu()).toBeNull();
     expect(store.isMultiOrganisation()).toBe(false);
     expect(store.activeTab()).toBeNull();
-    expect(store.loanFeesTotal()).toBe(0);
     expect(store.cancelledRequestPid()).toBeNull();
+    expect(store.loans()).toEqual([]);
+    expect(store.loansLoaded()).toBe(false);
+    expect(store.loansSortCriteria()).toBe('duedate');
+    expect(store.renewingLoans()).toBe(false);
+    expect(store.requests()).toEqual([]);
+    expect(store.requestsLoaded()).toBe(false);
+    expect(store.fees()).toEqual([]);
+    expect(store.feesLoaded()).toBe(false);
+    expect(store.illRequests()).toEqual([]);
+    expect(store.illRequestsLoaded()).toBe(false);
   });
 
   describe('init()', () => {
@@ -34,10 +68,10 @@ describe('PatronProfileStore', () => {
       ]);
     });
 
-    it('should set currentPatron and currentMenu to first entries', () => {
+    it('should set currentPatron to first entry', () => {
       store.init(user);
       expect(store.currentPatron()?.pid).toBe('1');
-      expect(store.currentMenu()?.value).toBe('1');
+      expect(store.patronPid()).toBe('1');
     });
 
     it('should set isMultiOrganisation to true for multiple patrons', () => {
@@ -58,7 +92,6 @@ describe('PatronProfileStore', () => {
       store.init(noPatron);
       expect(store.patrons()).toHaveLength(0);
       expect(store.currentPatron()).toBeNull();
-      expect(store.currentMenu()).toBeNull();
     });
   });
 
@@ -68,7 +101,7 @@ describe('PatronProfileStore', () => {
     it('should switch to second patron', () => {
       store.changePatron('10');
       expect(store.currentPatron()?.pid).toBe('10');
-      expect(store.currentMenu()?.value).toBe('10');
+      expect(store.patronPid()).toBe('10');
     });
 
     it('should switch back to first patron', () => {
@@ -80,7 +113,7 @@ describe('PatronProfileStore', () => {
     it('should set null for unknown patronPid', () => {
       store.changePatron('unknown');
       expect(store.currentPatron()).toBeNull();
-      expect(store.currentMenu()).toBeNull();
+      expect(store.patronPid()).toBeNull();
     });
   });
 
@@ -97,45 +130,4 @@ describe('PatronProfileStore', () => {
     });
   });
 
-  describe('cancelRequest()', () => {
-    it('should set cancelledRequestPid', () => {
-      store.cancelRequest('pid-123');
-      expect(store.cancelledRequestPid()).toBe('pid-123');
-    });
-
-    it('should overwrite previous cancelled pid', () => {
-      store.cancelRequest('pid-1');
-      store.cancelRequest('pid-2');
-      expect(store.cancelledRequestPid()).toBe('pid-2');
-    });
-  });
-
-  describe('addLoanFees()', () => {
-    it('should accumulate fees', () => {
-      store.addLoanFees(10.5);
-      store.addLoanFees(5);
-      expect(store.loanFeesTotal()).toBe(15.5);
-    });
-
-    it('should handle zero fees', () => {
-      store.addLoanFees(0);
-      expect(store.loanFeesTotal()).toBe(0);
-    });
-  });
-
-  describe('resetLoanFees()', () => {
-    it('should reset total and cancelledRequestPid', () => {
-      store.addLoanFees(20);
-      store.cancelRequest('pid-x');
-      store.resetLoanFees();
-      expect(store.loanFeesTotal()).toBe(0);
-      expect(store.cancelledRequestPid()).toBeNull();
-    });
-
-    it('should be idempotent on initial state', () => {
-      store.resetLoanFees();
-      expect(store.loanFeesTotal()).toBe(0);
-      expect(store.cancelledRequestPid()).toBeNull();
-    });
-  });
 });

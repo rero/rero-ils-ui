@@ -12,10 +12,14 @@ import { of } from 'rxjs';
 import { PatronTransactionApiService } from '../../api/patron-transaction-api.service';
 import { PatronProfileStore } from '../store/patron-profile.store';
 import { PatronApiService } from '../../api/patron-api.service';
+import { LoanApiService } from '../../api/loan-api.service';
+import { IllRequestApiService } from '../../api/ill-request-api.service';
 import { PatronProfileFeesComponent } from './patron-profile-fees.component';
 import { PatronProfileFeeComponent } from './patron-profile-fee/patron-profile-fee.component';
 import { provideHttpClient } from '@angular/common/http';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
+import { NgxSpinnerService } from 'ngx-spinner';
+import { MessageService } from 'primeng/api';
 
 @Component({ selector: 'public-search-patron-profile-fee', template: '' })
 class StubPatronProfileFeeComponent {
@@ -63,10 +67,15 @@ describe('PatronProfileFeeComponent', () => {
         PatronProfileFeesComponent
     ],
     providers: [
+        PatronProfileStore,
         { provide: UserApiService, useValue: userApiServiceSpy },
         { provide: AppStore, useValue: appStoreSpy },
+        { provide: LoanApiService, useValue: {} },
         { provide: PatronTransactionApiService, useValue: patronTransactionApiServiceSpy },
         { provide: PatronApiService, useValue: { getOverduePreviewByPatronPid: vi.fn().mockReturnValue(of([])) } },
+        { provide: IllRequestApiService, useValue: {} },
+        { provide: NgxSpinnerService, useValue: {} },
+        { provide: MessageService, useValue: { add: vi.fn() } },
         { provide: RecordService, useValue: { getRecord: vi.fn().mockReturnValue(of(null)), MAX_REST_RESULTS_SIZE: 1000 } },
         provideHttpClient(),
         provideHttpClientTesting(),
