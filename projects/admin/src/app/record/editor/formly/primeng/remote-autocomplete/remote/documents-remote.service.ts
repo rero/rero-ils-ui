@@ -29,7 +29,7 @@ export class DocumentsRemoteService implements IRemoteAutocomplete {
       return of([]);
     }
 
-    let queryString = `((autocomplete_title:${query})^2 OR ${query})`;
+    let queryString = `((autocomplete_title:"${query}")^2 OR "${query}")`;
     const additionalQuery = [];
     if (queryOptions.filter) {
       additionalQuery.push(queryOptions.filter);
