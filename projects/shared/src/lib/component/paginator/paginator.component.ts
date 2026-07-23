@@ -9,8 +9,8 @@ import { Pager } from './model/paginator-model';
   imports: [Paginator],
   template: `
     <p-paginator
-      dropdownAppendTo="body"
-      alwaysShow="false"
+      appendTo="body"
+      [alwaysShow]="alwaysShow()"
       [first]="pager().first"
       [rows]="pager().rows"
       [totalRecords]="total()"
@@ -24,6 +24,8 @@ export class PaginatorComponent {
   pager = input.required<Pager>();
 
   total = input.required<number>();
+
+  alwaysShow = input<boolean>(false);
 
   pageChange = output<PaginatorState>();
 }

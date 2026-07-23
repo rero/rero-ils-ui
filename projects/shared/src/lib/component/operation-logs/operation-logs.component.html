@@ -3,11 +3,32 @@ SPDX-FileCopyrightText: Fondation RERO+
 SPDX-FileCopyrightText: UCLouvain
 SPDX-License-Identifier: AGPL-3.0-or-later
 -->
-@if (!loadedRecord()) {
+@if (!operationLogsResult()) {
   <i class="fa-solid fa-spinner fa-pulse"></i>
 } @else if (records().length === 0) {
   <p>{{ "No operation log found." | translate }}</p>
 } @else {
+  <div class="ui:flex ui:justify-end ui:mb-2">
+    <p-select
+      appendTo="body"
+      [ngModel]="sortCriteria()"
+      [options]="sortOptions()"
+      (onChange)="sortChange($event)"
+    >
+      <ng-template #selectedItem let-item>
+        <div class="ui:flex ui:items-center ui:gap-2">
+          <i [class]="item.icon"></i>
+          <span>{{ item.label | translate }}</span>
+        </div>
+      </ng-template>
+      <ng-template #item let-item>
+        <div class="ui:flex ui:items-center ui:gap-2">
+          <i [class]="item.icon"></i>
+          <span>{{ item.label | translate }}</span>
+        </div>
+      </ng-template>
+    </p-select>
+  </div>
   <p-table stripedRows [value]="records()" [tableStyle]="{ 'min-width': '50rem' }" size="small">
     <ng-template #body let-record>
       <tr>
@@ -26,12 +47,10 @@ SPDX-License-Identifier: AGPL-3.0-or-later
       </tr>
     </ng-template>
   </p-table>
-  @if (isLinkShowMore()) {
-    <p-button severity="secondary" [text]="true" (onClick)="showMore()">
-      <div>
-        <i class="fa-regular fa-square-plus"></i>&nbsp;{{ "Show more" | translate }}&nbsp;
-        <small>({{ hiddenOperationLogs() }})</small>
-      </div>
-    </p-button>
-  }
+  <shared-paginator
+    [pager]="pager()"
+    [total]="recordTotals()"
+    (pageChange)="pageChange($event)"
+  />
+
 }

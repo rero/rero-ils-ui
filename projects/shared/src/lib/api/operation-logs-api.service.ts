@@ -17,20 +17,20 @@ export class OperationLogsApiService extends BaseApi {
   private recordService: RecordService = inject(RecordService);
 
   /**
-   * Get Operation logs by resource type and resource pid
+   * Get resource operation logs by resource type and resource pid.
    * @param resourceType - string
    * @param resourcePid - string
-   * @param action - string
    * @param page - number
-   * @param itemPerPage - number
+   * @param itemsPerPage - number
    * @param sort - string
    * @return Observable
    */
   getLogs(
-    resourceType: string, resourcePid: string, action: 'create'|'update',
-    page: number, itemPerPage = 5, sort = 'mostrecent'): Observable<EsResult | Error> {
-    const query = `record.type:${resourceType} AND record.value:${resourcePid} AND operation:${action}`;
-    return this.recordService.getRecords('operation_logs', { query, page, itemsPerPage: itemPerPage, headers: BaseApi.reroJsonheaders, sort });
+    resourceType: string, resourcePid: string, page: number,
+    itemsPerPage = 10, sort = 'mostrecent'): Observable<EsResult | Error> {
+    const query = `record.type:${resourceType} AND record.value:${resourcePid}`;
+    return this.recordService.getRecords(
+      'operation_logs', { query, page, itemsPerPage, headers: BaseApi.reroJsonheaders, sort });
   }
 
   /**
