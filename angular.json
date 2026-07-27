@@ -17,7 +17,6 @@
         "build": {
           "builder": "@angular/build:application",
           "options": {
-            "preserveSymlinks": true,
             "allowedCommonJsDependencies": [
               "crypto-js",
               "easymde",
@@ -164,7 +163,6 @@
         "build": {
           "builder": "@angular/build:application",
           "options": {
-            "preserveSymlinks": true,
             "allowedCommonJsDependencies": [
               "crypto-js",
               "easymde",
@@ -317,7 +315,6 @@
         "build": {
           "builder": "@angular/build:application",
           "options": {
-            "preserveSymlinks": true,
             "allowedCommonJsDependencies": [
               "crypto-js",
               "easymde",
@@ -468,7 +465,6 @@
         "build": {
           "builder": "@angular/build:application",
           "options": {
-            "preserveSymlinks": true,
             "allowedCommonJsDependencies": [
               "crypto-js",
               "easymde",
@@ -651,7 +647,6 @@
         "build": {
           "builder": "@angular/build:application",
           "options": {
-            "preserveSymlinks": true,
             "allowedCommonJsDependencies": [
               "crypto-js",
               "easymde",
