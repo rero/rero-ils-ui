@@ -89,19 +89,6 @@ Prefer:
 - Synchronous assertions (synchronous `of(...)` observables complete synchronously — no tick needed)
 - `async/await` with `await vi.advanceTimersByTimeAsync(0)` for effects (see NgRx section below)
 
-## Migration patterns (Jasmine → Vitest)
-
-| Before | After |
-|---|---|
-| `waitForAsync(() => {` | `async () => {` |
-| `fakeAsync(() => {` | `async () => {` |
-| `tick(N)` | `await new Promise(r => setTimeout(r, N))` |
-| `tick()` | `await Promise.resolve()` |
-| `.compileComponents()` | remove (no-op in Angular 14+) |
-| `fail('msg')` | `throw new Error('msg')` |
-| `jasmine.createSpy` | `vi.fn()` |
-| `spyOn(obj, 'method')` | `vi.spyOn(obj, 'method')` |
-
 - Spy types: use `any` instead of `MockedObject<T>` for partial mocks
 - Remove `.mockName('...')` from `vi.fn()` chains (causes TS errors)
 

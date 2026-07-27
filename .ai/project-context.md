@@ -4,20 +4,12 @@
 
 - Angular 21
 - TypeScript strict mode
-- Zone.js (zoneless migration planned but not yet done)
+- Zoneless (`provideZonelessChangeDetection()`) — no Zone.js
 - NgRx Signal Store for application state
 - Signals preferred over RxJS for new code
-- Karma + Jasmine for testing (Vitest migration planned)
+- Vitest for testing (all projects, via `@angular/build:unit-test`)
+- pnpm for package management
 - Node 20+
-
-## Migration status
-
-This project is in active migration from Angular 19 to Angular 21 patterns:
-
-- NgModules still present — migration to standalone components in progress
-- Zone.js still active — zoneless migration not yet started
-- Karma/Jasmine still used — Vitest migration planned for a later phase
-- New code should follow Angular 21 patterns (standalone, signals, inject())
 
 ## Architecture
 
@@ -73,9 +65,8 @@ Follow the [Conventional Commits](https://www.conventionalcommits.org/) specific
 
 ## Testing philosophy
 
-- Use Karma + Jasmine for tests (current standard).
+- Use Vitest for tests — see `.ai/testing-rules.md` for details.
 - Use TestBed when Angular integration is required.
-- Vitest migration will happen in a later phase — do not introduce it now.
 
 ## State management
 
