@@ -37,11 +37,11 @@ pnpm run build-shared
 
 Build a specific app:
 
-ng build admin --configuration production
-ng build public-search --configuration production
-ng build public-patron-profile --configuration production
-ng build public-holdings-items --configuration production
-ng build search-bar --configuration production
+pnpm exec ng build admin --configuration production
+pnpm exec ng build public-search --configuration production
+pnpm exec ng build public-patron-profile --configuration production
+pnpm exec ng build public-holdings-items --configuration production
+pnpm exec ng build search-bar --configuration production
 
 ## Tests
 
@@ -51,9 +51,9 @@ pnpm test
 
 Run tests for a specific project:
 
-ng test shared
-ng test admin
-ng test public-search
+pnpm exec ng test shared
+pnpm exec ng test admin
+pnpm exec ng test public-search
 
 ## Lint
 

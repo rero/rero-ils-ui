@@ -7,17 +7,10 @@ Framework version: Angular 21
 - Always use dot notation (`obj.prop`) over bracket notation (`obj['prop']`).
 - Avoid `Record<string, any>` — use a proper typed interface or type alias instead.
 
-## Migration rules
-
-This project is migrating incrementally to Angular 21 patterns:
-
-- New components are standalone by default (Angular 19+) — do not add `standalone: true` explicitly.
-- Existing NgModules are not removed unless explicitly refactored.
-- New code must not introduce new NgModules.
-
 ## Core rules
 
 - Components, directives and pipes are standalone by default since Angular 19 — omit `standalone: true`.
+- Do not introduce NgModules.
 - Prefer Angular Signals for local state in new components.
 - Avoid RxJS when Signals are sufficient for new code.
 - Use strict TypeScript typing.
