@@ -34,10 +34,10 @@ jobs:
           fi
         fi
 
+    - name: Enable Corepack
+      run: corepack enable
     - name: install package
-      run: |
-        npm install -g @angular/cli@21
-        npm ci
+      run: pnpm install --frozen-lockfile
 
     - name: Checkout ng-core
       if: steps.ng_core.outputs.local == 'true'
@@ -50,12 +50,12 @@ jobs:
     - name: Build and install local ng-core
       if: steps.ng_core.outputs.local == 'true'
       run: |
-        npm ci --prefix ng-core
-        npm run pack --prefix ng-core
-        npm i --no-save ng-core/dist/rero/ng-core
+        pnpm install --frozen-lockfile --dir ng-core
+        pnpm --dir ng-core run pack
+        pnpm add ng-core/dist/rero/ng-core
 
     - name: run tests
-      run: |
-        ./run-tests.sh
+      run: pnpm exec ./run-tests.sh
       env:
         CI: true
+        ALLOW_LOCAL_LINKS: ${{ steps.ng_core.outputs.local == 'true' && '@rero/ng-core' || '' }}

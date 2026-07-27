@@ -1,0 +1,11 @@
+allowBuilds:
+  '@parcel/watcher': true
+  esbuild: true
+  lmdb: true
+  msgpackr-extract: true
+
+# overrides:
+# >> Override with a link
+#   '@rero/ng-core': link:../ng-core/dist/rero/ng-core
+# >> Override with a pack
+#   '@rero/ng-core': 'file:../ng-core/rero-ng-core-21.1.1.tgz'

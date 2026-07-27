@@ -37,13 +37,13 @@
     [
       "@semantic-release/exec",
       {
-        "prepareCmd": "npm version ${nextRelease.version} --no-git-tag-version --allow-same-version"
+        "prepareCmd": "pnpm version ${nextRelease.version} --no-git-tag-version --no-git-checks --allow-same-version"
       }
     ],
     [
       "@semantic-release/git",
       {
-        "assets": ["package.json", "package-lock.json", "CHANGELOG.md"],
+        "assets": ["package.json", "pnpm-lock.yaml", "CHANGELOG.md"],
         "message": "chore(release): v${nextRelease.version}\n\n${nextRelease.notes}"
       }
     ],

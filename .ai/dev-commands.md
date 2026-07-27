@@ -5,35 +5,35 @@ LLM tools should prefer these commands instead of inventing new ones.
 
 ## Install dependencies
 
-npm install
+pnpm install
 
 ## Development servers
 
 Start the admin app:
 
-npm run start-admin-proxy
+pnpm run start-admin-proxy
 
 Start the public search app:
 
-npm run start-public-search-proxy
+pnpm run start-public-search-proxy
 
 Start the patron profile app:
 
-npm run start-public-patron-profile-proxy
+pnpm run start-public-patron-profile-proxy
 
 Start the holdings/items app:
 
-npm run start-public-holdings-items-proxy
+pnpm run start-public-holdings-items-proxy
 
 ## Build
 
 Build the shared library first, then apps:
 
-npm run build
+pnpm run build
 
 Build only the shared library:
 
-npm run build-shared
+pnpm run build-shared
 
 Build a specific app:
 
@@ -47,7 +47,7 @@ ng build search-bar --configuration production
 
 Run all tests:
 
-npm test
+pnpm test
 
 Run tests for a specific project:
 
@@ -59,20 +59,20 @@ ng test public-search
 
 Run ESLint:
 
-npm run lint
+pnpm run lint
 
 ## Translations
 
 Extract messages (all projects):
 
-npm run extract_messages
+pnpm run extract_messages
 
 Update translation catalogs (all projects):
 
-npm run update_catalog
+pnpm run update_catalog
 
 Extract messages for a specific project:
 
-npm run shared_extract_messages
-npm run admin_extract_messages
-npm run public-search_extract_messages
+pnpm run shared_extract_messages
+pnpm run admin_extract_messages
+pnpm run public-search_extract_messages
