@@ -49,7 +49,7 @@ describe('HoldingsService', () => {
   it('should return the icon classes', () => {
     expect(service.getIcon(IssueItemStatus.DELETED)).toEqual('fa-solid fa-circle text-error');
     expect(service.getIcon(IssueItemStatus.RECEIVED)).toEqual('fa-solid fa-circle text-success');
-    expect(service.getIcon(IssueItemStatus.LATE)).toEqual('fa-regular fa-envelope-open text-warning');
+    expect(service.getIcon(IssueItemStatus.LATE)).toEqual('fa-solid fa-hourglass-half text-warning');
     expect(service.getIcon(IssueItemStatus.EXPECTED)).toEqual('fa-solid fa-circle text-secondary');
   });
 

@@ -67,9 +67,9 @@ SPDX-License-Identifier: AGPL-3.0-or-later
     @if (record().metadata.issue.status; as status) {
       <dt translate>Issue status</dt>
       <dd>
-        <i class="text-warning" [ngClass]="{
-          'fa-solid fa-envelope': status === issueItemStatus.EXPECTED,
-          'fa-regular fa-envelope-open': status === issueItemStatus.LATE
+        <i [ngClass]="{
+          'fa-solid fa-envelope ui:text-muted-color': status === issueItemStatus.EXPECTED,
+          'fa-solid fa-hourglass-half text-warning': status === issueItemStatus.LATE
         }"
         ></i>
       {{ status | translate }} [{{ record().metadata.issue.status_date | dateTranslate }}]

@@ -43,7 +43,8 @@ SPDX-License-Identifier: AGPL-3.0-or-later
       [ngTemplateOutletContext]="{
         quantity: order().account_statement.provisional.quantity,
         total: order().account_statement.provisional.total_amount,
-        label: 'Ordered' | translate
+        label: 'Ordered' | translate,
+        icon: 'fa-cart-shopping'
       }"
     />
     @if (order().account_statement.expenditure.quantity > 0) {
@@ -52,17 +53,18 @@ SPDX-License-Identifier: AGPL-3.0-or-later
       [ngTemplateOutletContext]="{
         quantity: order().account_statement.expenditure.quantity,
         total: order().account_statement.expenditure.total_amount,
-        label: 'Received' | translate
+        label: 'Received' | translate,
+        icon: 'fa-circle-check'
       }"
     />
     }
   </div>
 </section>
 }
-<ng-template #totalAmount let-quantity="quantity" let-total="total" let-label="label">
+<ng-template #totalAmount let-quantity="quantity" let-total="total" let-label="label" let-icon="icon">
   <div class="ui:bg-surface-50 ui:py-4 ui:border ui:rounded-border ui:border-surface ui:relative">
     <div class="ui:absolute ui:bg-surface-200 ui:text-muted-color ui:rounded-l-md ui:rounded-r-md ui:border-l ui:border-b ui:border-surface ui:py-2 ui:px-6 ui:top-0 ui:right-0">
-      <i class="fa-solid fa-cart-shopping"></i>&nbsp;{{ quantity }}
+      <i class="fa-solid" [class]="icon"></i>&nbsp;{{ quantity }}
     </div>
     <div class="ui:flex ui:flex-wrap ui:text-center">
       <div class="ui:w-full ui:text-2xl ui:font-bold">

@@ -13,7 +13,7 @@ import { AcqOrderLineStatus, IAcqOrderLine } from '../../../../classes/order';
 import { AppStore, OpenCloseButtonComponent, DocumentBriefViewComponent, ActionButtonComponent } from '@rero/shared';
 import { NgClass, CurrencyPipe } from '@angular/common';
 import { Bind } from 'primeng/bind';
-import { OverlayBadge } from 'primeng/overlaybadge';
+import { Tag } from 'primeng/tag';
 import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
 import { NotesComponent } from '../../../notes/notes.component';
 import { RouterLink } from '@angular/router';
@@ -22,7 +22,7 @@ import { NoteBadgeColorPipe } from '../../../../pipes/note-badge-color.pipe';
 @Component({
     selector: 'admin-order-line',
     templateUrl: './order-line.component.html',
-    imports: [OpenCloseButtonComponent, NgClass, DocumentBriefViewComponent, Bind, OverlayBadge, TranslateDirective, NotesComponent, ActionButtonComponent, RouterLink, CurrencyPipe, TranslatePipe, NoteBadgeColorPipe],
+    imports: [OpenCloseButtonComponent, NgClass, DocumentBriefViewComponent, Bind, Tag, TranslateDirective, NotesComponent, ActionButtonComponent, RouterLink, CurrencyPipe, TranslatePipe, NoteBadgeColorPipe],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class OrderLineComponent {
@@ -63,13 +63,13 @@ export class OrderLineComponent {
     this.acqOrderApiService.deleteOrderLine(this.orderLine());
   }
 
-  severity(): string {
+  severity(): 'success' | 'secondary' | 'info' | 'warn' | 'danger' {
     switch (this.orderLine().priority) {
-      case 2: return 'primary';
+      case 2: return 'success';
       case 3: return 'info';
       case 4: return 'warn';
       case 5: return 'danger';
-      default: return 'success';
+      default: return 'secondary';
     }
   }
 }
