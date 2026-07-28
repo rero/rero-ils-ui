@@ -37,7 +37,7 @@ jobs:
     - name: Enable Corepack
       run: corepack enable
     - name: install package
-      run: pnpm install --frozen-lockfile
+      run: pnpm ci
 
     - name: Checkout ng-core
       if: steps.ng_core.outputs.local == 'true'
@@ -50,7 +50,7 @@ jobs:
     - name: Build and install local ng-core
       if: steps.ng_core.outputs.local == 'true'
       run: |
-        pnpm install --frozen-lockfile --dir ng-core
+        pnpm ci --dir ng-core
         pnpm --dir ng-core run pack
         pnpm add ng-core/dist/rero/ng-core
 
