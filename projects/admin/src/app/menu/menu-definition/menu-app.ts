@@ -245,7 +245,7 @@ export const MENU_APP: MenuItem[] = [
         label: 'Late issues',
         translateLabel: 'Late issues',
         id: MENU_IDS.APP.ACQUISITION.LATE_ISSUE,
-        icon: 'fa-solid fa-calendar-xmark',
+        icon: 'fa-solid fa-hourglass-half',
         routerLink: ['/', 'records', 'issues'],
         queryParams: {
           q: '',

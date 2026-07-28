@@ -13,6 +13,13 @@ SPDX-License-Identifier: AGPL-3.0-or-later
       }
       <span class="ui:font-bold ui:text-muted-color ui:text-sm">
         [
+        <i class="fa-solid" [title]="order.status | translate" [ngClass]="{
+          'fa-inbox': order.status === orderStatus.PENDING,
+          'fa-paper-plane': order.status === orderStatus.ORDERED,
+          'fa-box-open text-warning': order.status === orderStatus.PARTIALLY_RECEIVED,
+          'fa-circle-check text-success': order.status === orderStatus.RECEIVED,
+          'fa-ban text-error': order.status === orderStatus.CANCELLED
+        }"></i>
         {{ order.status | translate }}
         @switch (order.status) {
           @case (orderStatus.ORDERED) {
@@ -49,7 +56,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
             {{ order.account_statement.expenditure.total_amount | currency : order.currency }}
           </span>
           <span class="ui:w-4/12 ui:text-center ui:border-surface ui:border ui:p-2 ui:bg-surface-100 ui:rounded-r ui:text-muted-color ui:text-right">
-            <i class="fa-solid fa-right-to-bracket"></i>&nbsp;{{ order.account_statement.expenditure.quantity }}
+            <i class="fa-solid fa-circle-check"></i>&nbsp;{{ order.account_statement.expenditure.quantity }}
           </span>
         </div>
       }

@@ -6,7 +6,7 @@ import { Component, input, OnInit, ChangeDetectionStrategy} from '@angular/core'
 import { AcqNoteType } from '../../../classes/common';
 import { AcqOrderStatus, IAcqOrder, orderDefaultData } from '../../../classes/order';
 import { RouterLink } from '@angular/router';
-import { AsyncPipe, CurrencyPipe } from '@angular/common';
+import { AsyncPipe, CurrencyPipe, NgClass } from '@angular/common';
 import { DateTranslatePipe, GetRecordPipe, Nl2brPipe, TruncateTextPipe } from '@rero/ng-core';
 import { NotesFilterPipe } from '@rero/shared';
 import { TranslatePipe } from '@ngx-translate/core';
@@ -14,7 +14,7 @@ import { TranslatePipe } from '@ngx-translate/core';
 @Component({
     selector: 'admin-acquisition-order-brief-view',
     templateUrl: './order-brief-view.component.html',
-    imports: [RouterLink, AsyncPipe, CurrencyPipe, DateTranslatePipe, GetRecordPipe, Nl2brPipe, NotesFilterPipe, TruncateTextPipe, TranslatePipe],
+    imports: [RouterLink, AsyncPipe, CurrencyPipe, NgClass, DateTranslatePipe, GetRecordPipe, Nl2brPipe, NotesFilterPipe, TruncateTextPipe, TranslatePipe],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class OrderBriefViewComponent implements OnInit {

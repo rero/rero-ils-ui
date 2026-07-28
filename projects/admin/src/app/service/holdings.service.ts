@@ -68,7 +68,7 @@ export class HoldingsService {
     switch (status) {
       case IssueItemStatus.DELETED: return 'fa-solid fa-circle text-error';
       case IssueItemStatus.RECEIVED: return 'fa-solid fa-circle text-success';
-      case IssueItemStatus.LATE: return 'fa-regular fa-envelope-open text-warning';
+      case IssueItemStatus.LATE: return 'fa-solid fa-hourglass-half text-warning';
       case IssueItemStatus.EXPECTED: return 'fa-solid fa-circle text-secondary';
       default: return 'fa-solid fa-circle text-dark';
     }

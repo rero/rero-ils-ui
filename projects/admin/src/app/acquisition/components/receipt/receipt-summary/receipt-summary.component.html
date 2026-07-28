@@ -25,14 +25,14 @@ SPDX-License-Identifier: AGPL-3.0-or-later
           @if (receipt().notes.length > 0 && isCollapsed) {
             <span class="ui:flex ui:gap-1">
               @for (note of receipt().notes; track $index) {
-                <i class="fa-solid fa-circle text-{{ note | noteBadgeColor }}" aria-hidden="true" [title]="note.type | translate"></i>
+                <i class="fa-regular fa-note-sticky text-{{ note | noteBadgeColor }}" aria-hidden="true" [title]="note.type | translate"></i>
               }
             </span>
           }
         </div>
           @if (receipt().quantity) {
               <p-tag severity="info">
-                <i class="fa-solid fa-right-to-bracket"></i>&nbsp;
+                <i class="fa-solid fa-circle-check"></i>&nbsp;
                 {{ receipt().quantity }}
                 {{ receipt().quantity | i18nPlural: {'=1': 'item', 'other': 'items'} | translate }}
               </p-tag>

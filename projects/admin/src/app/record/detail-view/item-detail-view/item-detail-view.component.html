@@ -206,7 +206,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
         }
         @if (record()?.metadata?.issue?.claims) {
           <p-tab value="claim" class="ui:flex ui:items-center ui:!gap-2">
-            <i class="fa-solid fa-gavel"></i>
+            <i class="fa-solid fa-bell-concierge"></i>
             <span [ngPlural]="record()?.metadata.issue.claims.counter">
               <ng-template ngPluralCase="=0">{{ 'Claim' | translate }}</ng-template>
               <ng-template ngPluralCase="=1">{{ 'Claim' | translate }}</ng-template>
