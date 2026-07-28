@@ -18,123 +18,104 @@ Professional interface (admin): \
 Shared: \
 [![Translation status](https://hosted.weblate.org/widgets/rero_plus/-/rero-ils-shared/svg-badge.svg)](https://hosted.weblate.org/engage/rero_plus/?utm_source=widget)
 
-*Copyright (C) 2020 RERO*
-*Copyright (C) 2020 UCLouvain*
+*Copyright (C) 2020-2026 RERO*
+*Copyright (C) 2020-2024 UCLouvain*
 
 [1]: https://github.com/rero/rero-ils-ui
 
 ## Introduction
 
-**Rero-ils-ui** is a part of [RERO21 project](https://rero21.ch/about/).
+**Rero-ils-ui** is a part of [RERO ILS](https://www.rero.ch/en/products/ils).
 
 It's a Web UI (User Interface) of [rero-ils](https://ils.test.rero.ch/) for libraries management.
 
-This interface aims to be simple and clear. It's made with [Angular CLI](https://github.com/angular/angular-cli).
+This interface aims to be simple and clear. It's made with [Angular](https://angular.dev) 21.
 
 ## Requirements
 
-We strongly recommend the use of [nvm](https://github.com/nvm-sh/nvm).
-
-And then:
-
-  * npm
-  * angular-cli
+  * [Node.js 24](https://nodejs.org/)
+  * [Angular 21](https://angular.dev)
+  * [pnpm 11](https://pnpm.io/) (managed via [Corepack](https://nodejs.org/api/corepack.html), see `packageManager` in `package.json`)
   * [rero-ils](https://github.com/rero/rero-ils/blob/master/INSTALL.rst) installed and [running](https://github.com/rero/rero-ils/blob/master/INSTALL.rst#running)
 
-Optionnaly, for development purposes, you can install an IDE such as Visual Studio Code, Atom, WebStorm, etc.
+Optionally, for development purposes, you can install an IDE such as Visual Studio Code, WebStorm, etc.
 
 ## Quick start
 
 After [having launched RERO-ILS server](https://github.com/rero/rero-ils/blob/master/INSTALL.rst#running):
 
 ```bash
-# Install nvm
-$ wget -qO- https://raw.githubusercontent.com/nvm-sh/nvm/v0.35.1/install.sh | bash
-# reload shell environment to activate nvm
-$ source ~/.bashrc
-# Install npm
-$ nvm install lts/erbium
+# Install Node.js 24 (nvm is recommended: https://github.com/nvm-sh/nvm)
+$ nvm install 24
 
-# Get RERO-ILS-UI and use specific npm
-$ git clone https://github.com/rero/rero-ils-ui.git/
+# Enable Corepack (ships with Node.js, manages the pnpm version pinned in package.json)
+$ corepack enable
+
+# Get RERO-ILS-UI
+$ git clone https://github.com/rero/rero-ils-ui.git
 $ cd rero-ils-ui
-$ nvm use lts/erbium
-# Install angular-cli
-$ npm i -g @angular/cli@8.3.28
-# Project npm dependencies
-$ npm i
-# Build shared library
-$ ng build shared --watch
+
+# Project dependencies (also cleans an existing node_modules)
+$ pnpm ci
+
+# Build the shared library in watch mode (required, other projects depend on it)
+# Keep this running in a separate terminal so changes rebuild automatically
+$ pnpm exec ng build shared --watch
+
 # Launch a local server using a proxy for https://localhost:5000 (rero-ils server)
-$ npm run start-admin-proxy
-```
-
-### How to update Node version with nvm
-
-In case you're updating Node version with nvm:
-
-```bash
-# First check you node version
-node --version # here, 10.16.3
-nvm install lts/erbium --reinstall-packages-from=10.16.3
-nvm uninstall 10.16.3
+$ pnpm run start-admin-proxy
 ```
 
 ## Development server
 
-Run the `rero-ils` dev server on `https://localhost:5000` and run `npm run start-admin-proxy` or `npm run start-public-search-proxy` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
+Run the `rero-ils` dev server on `https://localhost:5000` and run one of the `pnpm run start-*-proxy` scripts (see `.ai/dev-commands.md`) for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
 
 ## Production mode
 
-To run all applications in production, just do:
+To build all applications in production, just do:
 
 ```bash
-npm run build
+pnpm run build
 ```
 
-It generates all needed files in **dist** directory.
+It generates all needed files in the **dist** directory.
 
 ## Running unit tests
 
-Run `./run-tests.sh` to execute linting and the unit tests via [Karma](https://karma-runner.github.io).
+All projects use [Vitest](https://vitest.dev) (`@angular/build:unit-test`).
 
-This will do **headless browser** tests (no Graphical User Interface).
+Run all tests:
 
-To **check test in live**, do: `ng test [project_name]`
+```bash
+pnpm test
+```
+
+Run tests for a specific project:
+
+```bash
+pnpm exec ng test [project_name]
+```
 
 where **project\_name** is one of:
 
   * admin
   * public-search
+  * public-patron-profile
+  * public-holdings-items
   * search-bar
-
-### Run only one test
-
-For example with **projects/admin/src/app/menu/menu.component.spec.ts** file:
-
-```bash
-ng test --main projects/admin/src/app/menu/menu.component.spec.ts
-```
-
-### Tip: Chromium users
-
-For Chromium users, it would be necessary to set **CHROME\_BIN** variable:
-
-```
-CHROME_BIN=`which chromium` ./run-tests.sh
-```
+  * shared
 
 ## Further help
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI README](https://github.com/angular/angular-cli/blob/master/README.md).
+To get more help on the Angular CLI use `pnpm exec ng help` or go check out the [Angular CLI README](https://github.com/angular/angular-cli/blob/master/README.md).
 
 ## Translations
 
 Commands:
 
-  * `npm run admin_extract_messages`: will extract all strings in **admin** project and put them in **en\_US.json** file (source file)
-  * `npm run admin_update_catalog`: will extract all string in source file and put them into **de/en/fr/it** json files for translation
-  * `npm run public-search_extract_messages`: same as admin, but for **public-search** project
-  * `npm run public-search_update_catalog`: same as admin, but for **public-search** project
-  * `npm run extract_messages`: launches **admin\_extract\_messages** and **public-search\_extract\_messages** commands
-  * `npm run update_catalog`: launches **public-search\_update\_catalog** and **admin\_update\_catalog** commands
+  * `pnpm run admin_extract_messages`: will extract all strings in **admin** project and put them in **en\_US.json** file (source file)
+  * `pnpm run admin_update_catalog`: will extract all string in source file and put them into **de/en/fr/it** json files for translation
+  * `pnpm run public-search_extract_messages`: same as admin, but for **public-search** project
+  * `pnpm run public-search_update_catalog`: same as admin, but for **public-search** project
+  * `pnpm run extract_messages`: launches extract-messages commands for all projects
+  * `pnpm run update_catalog`: launches update-catalog commands for all projects
