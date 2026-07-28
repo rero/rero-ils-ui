@@ -74,7 +74,6 @@ export const documentsRoutes: Routes = [
 
 class DocumentsRoute extends BaseRoute {
   protected recordService = inject(RecordService);
-  protected appStore = inject(AppStore);
 
   /** Route name */
   readonly name = 'documents';
@@ -222,7 +221,7 @@ class DocumentsRoute extends BaseRoute {
       // Required for saving templates in the document editor
       {
         key: 'templates',
-        preCreateRecord: (data) => this._addDefaultValuesForTemplate(data),
+        preCreateRecord: (data) => this.addDefaultValuesForTemplate(data),
         redirectUrl: (record: RecordData) => {
           return this.redirectUrl(record.metadata, '/records/templates/detail');
         },
@@ -254,18 +253,5 @@ class DocumentsRoute extends BaseRoute {
       case 'language': return this.routeToolService.translateService.stream(`lang_${bucket.key}`);
       default: return this.routeToolService.translateService.stream(bucket.key);
     }
-  }
-
-  private _addDefaultValuesForTemplate(data: any) {
-    if (!Object.hasOwn(data, 'visibility')) {
-      data.visibility = 'private';
-    }
-    data.organisation = {
-      $ref: this.routeToolService.apiService.getRefEndpoint('organisations', this.appStore.currentOrganisationPid()),
-    };
-    data.creator = {
-      $ref: this.routeToolService.apiService.getRefEndpoint('patrons', this.appStore.user().patronLibrarian.pid),
-    };
-    return data;
   }
 }

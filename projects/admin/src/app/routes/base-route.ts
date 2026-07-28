@@ -4,7 +4,8 @@ import { Location } from '@angular/common';
 import { inject } from '@angular/core';
 import { UrlSegment } from '@angular/router';
 import { _ } from "@ngx-translate/core";
-import { ActionStatus, extractIdOnRef } from '@rero/ng-core';
+import { ActionStatus, extractIdOnRef, RecordData } from '@rero/ng-core';
+import { AppStore } from '@rero/shared';
 import { Observable, of } from 'rxjs';
 import { RouteToolService } from './route-tool.service';
 
@@ -12,6 +13,7 @@ export class BaseRoute {
 
   protected routeToolService = inject(RouteToolService);
   protected location = inject(Location);
+  protected appStore = inject(AppStore);
 
   /** Disabled action */
   readonly DISABLED = (): Observable<ActionStatus> => of({
@@ -133,6 +135,22 @@ export class BaseRoute {
     return of({ can: organisationPid === recordOrganisationPid, message: '' });
   }
 
+  protected addDefaultValuesForTemplate(data: any) {
+    if (!Object.hasOwn(data, 'visibility')) {
+      data.visibility = 'private';
+    }
+    data.organisation = {
+      $ref: this.routeToolService.apiService.getRefEndpoint('organisations', this.appStore.currentOrganisationPid()),
+    };
+    const patronLibrarian = this.appStore.user()?.patronLibrarian;
+    if (patronLibrarian) {
+      data.creator = {
+        $ref: this.routeToolService.apiService.getRefEndpoint('patrons', patronLibrarian.pid),
+      };
+    }
+    return data;
+  }
+
   /**
    * Expert search link
    * @return string, link of help page
@@ -147,6 +165,6 @@ export class BaseRoute {
     return (this.routeToolService.translateService.getCurrentLang() in availableLanguages)
       ? searchPaths[this.routeToolService.translateService.getCurrentLang()]
       : defaultPath;
-    }
+  }
  }
 

@@ -17,7 +17,7 @@ import {
   RecordType,
   RouteDataTypesInterface,
 } from '@rero/ng-core';
-import { IssueItemStatus, PERMISSIONS, PERMISSION_OPERATOR } from '@rero/shared';
+import { AppStore, IssueItemStatus, PERMISSIONS, PERMISSION_OPERATOR } from '@rero/shared';
 import { Observable, of } from 'rxjs';
 import { filter, map, take } from 'rxjs/operators';
 import { ItemType } from '../classes/items';
@@ -237,6 +237,14 @@ class ItemsRoute extends BaseRoute implements RouteDataTypesInterface {
           },
         ],
       },
+      {
+        key: 'templates',
+        preCreateRecord: (data) => this.addDefaultValuesForTemplate(data),
+        redirectUrl: (record: RecordData) => {
+          return this.redirectUrl(record.metadata, '/records/templates/detail');
+        },
+        hideInTabs: true,
+      }
     ];
 
     // TODO: Refactor this after the change of AppInitializer service with user.
