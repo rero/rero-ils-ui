@@ -111,6 +111,14 @@ class HoldingsRoute extends BaseRoute implements RouteDataTypesInterface {
           }
         },
       },
+      {
+        key: 'templates',
+        preCreateRecord: (data) => this.addDefaultValuesForTemplate(data),
+        redirectUrl: (record: RecordData) => {
+          return this.redirectUrl(record.metadata, '/records/templates/detail');
+        },
+        hideInTabs: true,
+      }
     ];
   }
 

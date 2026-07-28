@@ -1,7 +1,6 @@
 // SPDX-FileCopyrightText: Fondation RERO+
 // SPDX-FileCopyrightText: UCLouvain
 // SPDX-License-Identifier: AGPL-3.0-or-later
-import { inject } from '@angular/core';
 import { ResolveFn, Routes } from '@angular/router';
 import { _ } from '@ngx-translate/core';
 import {
@@ -14,7 +13,7 @@ import {
   RecordType,
   RouteDataTypesInterface,
 } from '@rero/ng-core';
-import { AppStore, PERMISSIONS, PERMISSION_OPERATOR } from '@rero/shared';
+import { PERMISSIONS, PERMISSION_OPERATOR } from '@rero/shared';
 import { Observable, Subscriber } from 'rxjs';
 import { CAN_ACCESS_ACTIONS, canAccessGuard } from '../guard/can-access.guard';
 import { permissionGuard } from '../guard/permission.guard';
@@ -58,8 +57,6 @@ export const templatesRoutes: Routes = [
 ];
 
 class TemplatesRoute extends BaseRoute implements RouteDataTypesInterface {
-
-  private appStore = inject(AppStore);
 
   /** Route name */
   readonly name = 'templates';
