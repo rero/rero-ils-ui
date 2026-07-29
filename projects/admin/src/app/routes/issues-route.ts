@@ -63,6 +63,12 @@ class IssuesRoute extends BaseRoute implements RouteDataTypesInterface {
             endpoint: this.routeToolService.apiService.getEndpointByType('item/inventory'),
             disableMaxRestResultsSize: true,
           },
+          {
+            label: 'Excel',
+            format: 'xml',
+            endpoint: this.routeToolService.apiService.getEndpointByType('item/inventory'),
+            disableMaxRestResultsSize: true,
+          },
         ],
         showFacetsIfNoResults: true,
       },

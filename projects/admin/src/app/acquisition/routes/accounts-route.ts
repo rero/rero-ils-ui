@@ -28,6 +28,11 @@ export const exportFormats = [
     format: 'csv',
     disableMaxRestResultsSize: true,
   },
+  {
+    label: 'Excel',
+    format: 'xml',
+    disableMaxRestResultsSize: true,
+  },
 ];
 
 export const accountsRouteResolver: ResolveFn<Partial<RecordType>[]> = () =>

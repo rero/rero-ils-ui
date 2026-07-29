@@ -16,6 +16,9 @@ SPDX-License-Identifier: AGPL-3.0-or-later
           <a pButton text [href]="getReportUrl(report.metadata.pid)+'?format=csv'">
             <i class="fa-solid fa-file-csv"></i>
           </a>
+          <a pButton text [href]="getReportUrl(report.metadata.pid)+'?format=xml'">
+            <i class="fa-regular fa-file-excel"></i>
+          </a>
         </td>
       </tr>
     </ng-template>
