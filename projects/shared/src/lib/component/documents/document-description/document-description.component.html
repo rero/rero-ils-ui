@@ -59,6 +59,9 @@ SPDX-License-Identifier: AGPL-3.0-or-later
       <ng-container content>
         @for (lang of $any(record().metadata.language); track $index; let isLast = $last) {
           {{ lang.value | translateLanguage: currentLanguage }}
+          @if (lang.note) {
+            ({{ lang.note }})
+          }
           @if (!isLast) {, }
         }
       </ng-container>
@@ -181,7 +184,15 @@ SPDX-License-Identifier: AGPL-3.0-or-later
       <ng-container content>
         <ul class="ui:list-none">
           @for (scale of $any(record().metadata.scale); track $index) {
-            <li>{{ scale.label }}</li>
+            <li>
+              {{ scale.label }}
+              @if (scaleRatios(scale); as ratios) {
+                <span class="ui:text-muted-color">({{ ratios }})</span>
+              }
+              @if (scale.type) {
+                <p-tag class="ui:ml-1 ui:text-sm" [value]="scale.type | translate" severity="secondary" />
+              }
+            </li>
           }
         </ul>
       </ng-container>
@@ -205,7 +216,27 @@ SPDX-License-Identifier: AGPL-3.0-or-later
               @if (cartographic.coordinates && cartographic.coordinates.label) {
                 {{ cartographic.coordinates.label }}
               }
+              @if (cartographic.equinox) {
+                @if (cartographic.projection || cartographic.coordinates?.label) {
+                  ;
+                }
+                {{ 'Equinox' | translate }}: {{ cartographic.equinox }}
+              }
             </li>
+          }
+        </ul>
+      </ng-container>
+    </shared-description-zone>
+  }
+
+  <!-- TEMPORAL COVERAGE -->
+  @if (temporalCoverages.length > 0) {
+    <shared-description-zone>
+      <ng-container label>{{ 'Temporal coverage' | translate }}</ng-container>
+      <ng-container content>
+        <ul class="ui:list-none">
+          @for (coverage of temporalCoverages; track $index) {
+            <li>{{ coverage }}</li>
           }
         </ul>
       </ng-container>
@@ -224,7 +255,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
               @if (classification.subdivision) {
                 - {{ classification.subdivision.join(' - ') }}
               }
-              ({{ classification.type | translate }})
+              ({{ classificationQualifiers(classification) }})
             </li>
           }
         </ul>
@@ -329,6 +360,22 @@ SPDX-License-Identifier: AGPL-3.0-or-later
         }
       </ng-container>
     </shared-description-zone>
+  }
+
+  <!-- PROVISION ACTIVITY NOTE (ALL TYPES, INCLUDING PUBLICATION) -->
+  @if (provisionActivityNotes) {
+    @for (provisionNote of provisionActivityNotes | keyvalue; track $index) {
+      <shared-description-zone>
+        <ng-container label>{{ provisionNote.key | translate }} ({{ 'Note' | translate }})</ng-container>
+        <ng-container content>
+          <ul class="ui:list-none">
+            @for (note of provisionNote.value; track $index) {
+              <li>{{ note }}</li>
+            }
+          </ul>
+        </ng-container>
+      </shared-description-zone>
+    }
   }
 
   <!-- COPYRIGHT DATE -->
@@ -479,5 +526,57 @@ SPDX-License-Identifier: AGPL-3.0-or-later
         {{ $any(record().metadata.issuance).main_type | translate }} / {{ $any(record().metadata.issuance).subtype | translate }}
       </ng-container>
     </shared-description-zone>
+  }
+
+  <!-- -------------- ADMIN METADATA (PROFESSIONAL INTERFACE ONLY) -------------- -->
+  <!-- `encodingLevel` and `note` are already reported by the detail view header banner. -->
+  @if (!isPublicView()) {
+    @let adminMetadata = $any(record().metadata.adminMetadata);
+
+    <!-- CATALOGUING SOURCE -->
+    @if (adminMetadata?.source) {
+      <shared-description-zone>
+        <ng-container label>{{ 'Cataloguing source' | translate }}</ng-container>
+        <ng-container content>{{ adminMetadata.source }}</ng-container>
+      </shared-description-zone>
+    }
+
+    <!-- DESCRIPTION MODIFIER -->
+    @if (adminMetadata?.descriptionModifier) {
+      <shared-description-zone>
+        <ng-container label>{{ 'Description modifier' | translate }}</ng-container>
+        <ng-container content>
+          <ul class="ui:list-none">
+            @for (modifier of adminMetadata.descriptionModifier; track $index) {
+              <li>{{ modifier }}</li>
+            }
+          </ul>
+        </ng-container>
+      </shared-description-zone>
+    }
+
+    <!-- LANGUAGE OF CATALOGUING -->
+    @if (adminMetadata?.descriptionLanguage) {
+      <shared-description-zone>
+        <ng-container label>{{ 'Language of cataloguing' | translate }}</ng-container>
+        <ng-container content>
+          {{ adminMetadata.descriptionLanguage | translateLanguage: currentLanguage }}
+        </ng-container>
+      </shared-description-zone>
+    }
+
+    <!-- DESCRIPTION CONVENTIONS -->
+    @if (adminMetadata?.descriptionConventions) {
+      <shared-description-zone>
+        <ng-container label>{{ 'Description conventions' | translate }}</ng-container>
+        <ng-container content>
+          <ul class="ui:list-none">
+            @for (convention of adminMetadata.descriptionConventions; track $index) {
+              <li>{{ convention }}</li>
+            }
+          </ul>
+        </ng-container>
+      </shared-description-zone>
+    }
   }
 </div>

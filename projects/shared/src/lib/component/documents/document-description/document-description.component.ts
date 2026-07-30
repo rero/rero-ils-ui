@@ -13,6 +13,21 @@ import { DocumentProvisionActivityPipe } from '../../../pipe/document-provision-
 import { IdAttributePipe } from '../../../pipe/id-attribute.pipe';
 import { SafeUrlPipe } from '../../../pipe/safe-url.pipe';
 
+/** A provision activity of a document, as described by the `provisionActivity` field. */
+type ProvisionActivity = {
+  type: string;
+  note?: string;
+};
+
+/** A temporal content coverage of a document, as described by MARC 045. */
+type TemporalCoverage = {
+  type: string;
+  date?: string;
+  start_date?: string;
+  end_date?: string;
+  period_code?: string[];
+};
+
 @Component({
     selector: 'shared-document-description',
     templateUrl: './document-description.component.html',
@@ -41,8 +56,12 @@ export class DocumentDescriptionComponent implements OnInit {
   notesExceptGeneral: Record<string, string[]>;
   /** General notes only */
   notesGeneral: Record<string, string[]>;
+  /** Provision activity notes, grouped by provision activity type */
+  provisionActivityNotes: Record<string, string[]>;
   /** Provision activity original date */
   provisionActivityOriginalDate: any[] = [];
+  /** Temporal coverages, formatted for display */
+  temporalCoverages: string[] = [];
   /** Title variants */
   titleVariants: any = {};
   /** Work access point */
@@ -63,7 +82,9 @@ export class DocumentDescriptionComponent implements OnInit {
     this.processIdentifiedBy();
     this.processNotesExceptGeneral();
     this.processNotesGeneral();
+    this.processProvisionActivityNote();
     this.processProvisionActivityOriginalDate();
+    this.processTemporalCoverage();
     this.processTitleVariants();
     this.processWorkAccessPoint();
   }
@@ -77,12 +98,40 @@ export class DocumentDescriptionComponent implements OnInit {
     return ('key' in element && element.key !== 'bf:Publication');
   }
 
+  /**
+   * Format the qualifiers of a classification: type, edition and assigning agency.
+   * @param classification - the classification to format
+   * @returns the available qualifiers, joined by a comma
+   */
+  classificationQualifiers(classification: { type: string, edition?: string, assigner?: string }): string {
+    return [
+      this.translateService.instant(classification.type),
+      classification.edition,
+      classification.assigner
+    ].filter((qualifier: string) => qualifier).join(', ');
+  }
+
+  /**
+   * Format the linear ratios of a scale.
+   * @param scale - the scale to format
+   * @returns the horizontal and vertical ratios, or null when neither is set
+   */
+  scaleRatios(scale: { ratio_linear_horizontal?: string, ratio_linear_vertical?: string }): string | null {
+    const ratios = [scale.ratio_linear_horizontal, scale.ratio_linear_vertical]
+      .filter((ratio: string) => ratio);
+    return ratios.length > 0 ? ratios.join(' / ') : null;
+  }
+
   /** Process cartographic attributes */
   private processCartographicAttributes(): void {
     const metadata = this.record()?.metadata;
     if ('cartographicAttributes' in metadata) {
       metadata.cartographicAttributes.forEach((attribute: any) => {
-        if ('projection' in attribute || ('coordinates' in attribute && 'label' in attribute.coordinates)) {
+        if (
+          'projection' in attribute
+          || 'equinox' in attribute
+          || ('coordinates' in attribute && 'label' in attribute.coordinates)
+        ) {
           this.cartographicAttributes.push(attribute);
         }
       });
@@ -158,6 +207,23 @@ export class DocumentDescriptionComponent implements OnInit {
     }
   }
 
+  /** Process provision activity notes.*/
+  private processProvisionActivityNote(): void {
+    const metadata = this.record()?.metadata;
+    if ('provisionActivity' in metadata) {
+      const notesByType: Record<string, string[]> = {};
+      metadata.provisionActivity
+        .filter((provision: ProvisionActivity) => provision.note)
+        .forEach((provision: ProvisionActivity) => {
+          notesByType[provision.type] ??= [];
+          notesByType[provision.type].push(provision.note);
+        });
+      if (Object.keys(notesByType).length > 0) {
+        this.provisionActivityNotes = notesByType;
+      }
+    }
+  }
+
   /** Process provision activity original date */
   private processProvisionActivityOriginalDate(): void {
     const metadata = this.record()?.metadata;
@@ -165,6 +231,32 @@ export class DocumentDescriptionComponent implements OnInit {
       this.provisionActivityOriginalDate = metadata.provisionActivity
       .filter((element: any) => element.key !== 'bf:Publication')
       .filter((provision: any) => 'original_date' in provision)
+    }
+  }
+
+  /** Process temporal coverage.*/
+  private processTemporalCoverage(): void {
+    const metadata = this.record()?.metadata;
+    if ('temporalCoverage' in metadata) {
+      metadata.temporalCoverage.forEach((coverage: TemporalCoverage) => {
+        const parts: string[] = [];
+        if (coverage.date) {
+          parts.push(this._formatTemporalDate(coverage.date));
+        } else if (coverage.start_date || coverage.end_date) {
+          parts.push(
+            [coverage.start_date, coverage.end_date]
+              .filter((date: string) => date)
+              .map((date: string) => this._formatTemporalDate(date))
+              .join(' - ')
+          );
+        }
+        if (coverage.period_code?.length) {
+          parts.push(`(${coverage.period_code.join(', ')})`);
+        }
+        if (parts.length > 0) {
+          this.temporalCoverages.push(parts.join(' '));
+        }
+      });
     }
   }
 
@@ -276,6 +368,9 @@ export class DocumentDescriptionComponent implements OnInit {
             });
           });
         }
+        if (workAccess.form_subdivision) {
+          agentFormatted += workAccess.form_subdivision.join('. ') + '. ';
+        }
         if (workAccess.miscellaneous_information) {
           agentFormatted += workAccess.miscellaneous_information + '. ';
         }
@@ -297,6 +392,16 @@ export class DocumentDescriptionComponent implements OnInit {
         this.workAccessPoint.push(agentFormatted.trim());
       });
     }
+  }
+
+  /**
+   * Strip the leading '+' of a temporal coverage date.
+   * The '-' sign of BCE dates is kept.
+   * @param date - the raw date, i.e. '+1945-05-08'
+   * @returns the date without its leading '+'
+   */
+  private _formatTemporalDate(date: string): string {
+    return date.startsWith('+') ? date.slice(1) : date;
   }
 
   /**
