@@ -189,7 +189,13 @@ class ItemsRoute extends BaseRoute implements RouteDataTypesInterface {
           {
             label: 'CSV',
             format: 'csv',
-            endpoint: this.routeToolService.apiService.getEndpointByType('item/inventory'),
+            endpoint: this.routeToolService.apiService.getExportEndpointByType(this.recordType),
+            disableMaxRestResultsSize: true,
+          },
+          {
+            label: 'Excel',
+            format: 'xlsx',
+            endpoint: this.routeToolService.apiService.getExportEndpointByType(this.recordType),
             disableMaxRestResultsSize: true,
           },
         ],

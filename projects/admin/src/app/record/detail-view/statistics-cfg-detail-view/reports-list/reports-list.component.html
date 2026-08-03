@@ -13,8 +13,21 @@ SPDX-License-Identifier: AGPL-3.0-or-later
           </a>
         </td>
         <td class="ui:text-right">
-          <a pButton text [href]="getReportUrl(report.metadata.pid)+'?format=csv'">
+          <a
+            pButton
+            text
+            [href]="getReportUrl(report.metadata.pid)+'?format=csv'"
+            [attr.aria-label]="'Export to CSV' | translate"
+          >
             <i class="fa-solid fa-file-csv"></i>
+          </a>
+          <a
+            pButton
+            text
+            [href]="getReportUrl(report.metadata.pid)+'?format=xlsx'"
+            [attr.aria-label]="'Export to Excel' | translate"
+          >
+            <i class="fa-regular fa-file-excel"></i>
           </a>
         </td>
       </tr>
