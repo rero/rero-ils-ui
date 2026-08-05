@@ -8,6 +8,8 @@
 export type IAcqBaseResource = {
   $schema?: string;
   pid?: string;
+  created?: string;
+  updated?: string;
   organisation: IObjectReference;
   library?: IObjectReference;
 }

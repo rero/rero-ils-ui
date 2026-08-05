@@ -77,6 +77,7 @@ export type IAcqOrderLine = {
     title: string,
     identifiers: string[],
   };
+  documentTitle?: string;
 } & IAcqBaseResource & IAcqResourceWithNotes
 
 /** Default values */
