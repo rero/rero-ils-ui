@@ -3,6 +3,8 @@ allowBuilds:
   esbuild: true
   lmdb: true
   msgpackr-extract: true
+minimumReleaseAgeExclude:
+  - '@rero/ng-core@21.2.0'
 
 # overrides:
 # >> Override with a link
