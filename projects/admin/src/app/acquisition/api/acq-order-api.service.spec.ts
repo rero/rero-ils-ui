@@ -72,6 +72,8 @@ describe('AcqOrderApiService', () => {
 
   const orderLines = [
     {
+      created: '2025-04-01T00:00:00+00:00',
+      updated: '2025-04-17T00:00:00+00:00',
       metadata: {
         pid: '1',
         status: AcqOrderLineStatus.APPROVED,
@@ -97,6 +99,16 @@ describe('AcqOrderApiService', () => {
       }
     }
   ];
+
+  const orderWithDenormalizedLines = {
+    metadata: {
+      pid: '1',
+      order_lines: [
+        { pid: '1', document: { pid: '1', title: 'Title 1' } },
+        { pid: '2', document: { pid: '2' } },
+      ]
+    }
+  };
 
   const recordServiceSpy = { getRecord: vi.fn(), getRecords: vi.fn(), totalHits: vi.fn() };
   recordServiceSpy.totalHits.mockReturnValue(1);
@@ -157,11 +169,34 @@ describe('AcqOrderApiService', () => {
   it('should return a list of lines in an order', () => {
     apiResponse.hits.hits = orderLines;
     recordServiceSpy.getRecords.mockReturnValue(of(apiResponse));
-    const data = [{...orderLineDefaultData, ...orderLines[0].metadata}];
+    const data = [{
+      ...orderLineDefaultData,
+      ...orderLines[0].metadata,
+      created: orderLines[0].created,
+      updated: orderLines[0].updated
+    }];
     service.getOrderLines('1').subscribe((result: any) => {
         expect(result).toEqual(data);
         expect(result[0].quantity).toEqual(2);
       });
+  });
+
+  it('should return an empty document titles map when the order has no hits', () => {
+    recordServiceSpy.totalHits.mockReturnValueOnce(0);
+    apiResponse.hits.hits = [];
+    recordServiceSpy.getRecords.mockReturnValue(of(apiResponse));
+    service.getOrderLinesDocumentTitles('1').subscribe((result: Map<string, string>) => {
+      expect(result.size).toBe(0);
+    });
+  });
+
+  it('should return a map of document titles keyed by order line pid', () => {
+    apiResponse.hits.hits = [orderWithDenormalizedLines];
+    recordServiceSpy.getRecords.mockReturnValue(of(apiResponse));
+    service.getOrderLinesDocumentTitles('1').subscribe((result: Map<string, string>) => {
+      expect(result.get('1')).toBe('Title 1');
+      expect(result.get('2')).toBe('');
+    });
   });
 
   it('should update lastDeletedOrderLine signal on deleteOrderLine', () => {

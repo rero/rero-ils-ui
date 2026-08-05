@@ -2,11 +2,12 @@
 // SPDX-FileCopyrightText: UCLouvain
 // SPDX-License-Identifier: AGPL-3.0-or-later
 import { I18nPluralPipe, NgClass, ViewportScroller } from '@angular/common';
-import { ChangeDetectionStrategy, Component, DestroyRef, effect, inject, input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, DestroyRef, effect, inject, input } from '@angular/core';
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
+import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { TranslateDirective, TranslatePipe, TranslateService } from '@ngx-translate/core';
-import { extractIdOnRef, Nl2brPipe } from '@rero/ng-core';
+import { extractIdOnRef, fixOverlayTouchScroll, Nl2brPipe } from '@rero/ng-core';
 
 import { AcqOrderStatus, IAcqOrder } from '@app/admin/acquisition/classes/order';
 import { NotesComponent } from '@app/admin/acquisition/components/notes/notes.component';
@@ -22,18 +23,25 @@ import { Button } from 'primeng/button';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { Message } from 'primeng/message';
 import { Ripple } from 'primeng/ripple';
+import { SelectModule } from 'primeng/select';
 import { Tab, TabList, TabPanel, TabPanels, Tabs } from 'primeng/tabs';
 import { Tag } from 'primeng/tag';
 import { TooltipModule } from 'primeng/tooltip';
-import { map } from 'rxjs/operators';
+import { map, startWith } from 'rxjs/operators';
 import { OrderHistoryComponent } from './order-history/order-history.component';
 import { OrderLinesComponent } from './order-lines/order-lines.component';
 import { OrderDetailStore } from './store/order-detail.store';
 
+type SortOption = {
+  value: string;
+  label: string;
+  icon: string;
+};
+
 @Component({
     selector: 'admin-acquisition-order-detail-view',
     templateUrl: './order-detail-view.component.html',
-    imports: [NgClass, Bind, Button, OrderSummaryComponent, TranslateDirective, Tag, Tabs, TabList, Ripple, Tab, TabPanels, TabPanel, Accordion, AccordionPanel, AccordionHeader, RouterLink, AccordionContent, OrderLinesComponent, OrderHistoryComponent, NotesComponent, ReceiptListComponent, I18nPluralPipe, Nl2brPipe, TranslatePipe, NoteBadgeColorPipe, TooltipModule, Message, Badge, SharedModule],
+    imports: [NgClass, Bind, Button, OrderSummaryComponent, TranslateDirective, Tag, Tabs, TabList, Ripple, Tab, TabPanels, TabPanel, Accordion, AccordionPanel, AccordionHeader, RouterLink, AccordionContent, OrderLinesComponent, OrderHistoryComponent, NotesComponent, ReceiptListComponent, I18nPluralPipe, Nl2brPipe, TranslatePipe, NoteBadgeColorPipe, TooltipModule, Message, Badge, SharedModule, SelectModule, FormsModule],
     providers: [OrderDetailStore],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
@@ -60,6 +68,30 @@ export class OrderDetailViewComponent {
     { initialValue: 'order' }
   );
 
+  private readonly currentLanguage = toSignal(
+    this.translateService.onLangChange.pipe(
+      map(() => this.translateService.getCurrentLang()),
+      startWith(this.translateService.getCurrentLang())
+    ),
+    { initialValue: this.translateService.getCurrentLang() }
+  );
+
+  readonly sortingCriteria = computed<SortOption[]>(() => {
+    this.currentLanguage();
+    return [
+      { value: 'documenttitle', label: this.translateService.instant('Title'), icon: 'fa-solid fa-arrow-down-a-z' },
+      { value: '-documenttitle', label: this.translateService.instant('Title (desc)'), icon: 'fa-solid fa-arrow-down-z-a' },
+      { value: 'priority', label: this.translateService.instant('Priority'), icon: 'fa-solid fa-arrow-down-1-9' },
+      { value: '-priority', label: this.translateService.instant('Priority (desc)'), icon: 'fa-solid fa-arrow-down-9-1' },
+      { value: 'status', label: this.translateService.instant('Status'), icon: 'fa-solid fa-arrow-down-a-z' },
+      { value: '-status', label: this.translateService.instant('Status (desc)'), icon: 'fa-solid fa-arrow-down-z-a' },
+      { value: 'created', label: this.translateService.instant('Created'), icon: 'fa-solid fa-arrow-down-1-9' },
+      { value: '-created', label: this.translateService.instant('Created (desc)'), icon: 'fa-solid fa-arrow-down-9-1' },
+      { value: 'updated', label: this.translateService.instant('Updated'), icon: 'fa-solid fa-arrow-down-1-9' },
+      { value: '-updated', label: this.translateService.instant('Updated (desc)'), icon: 'fa-solid fa-arrow-down-9-1' },
+    ];
+  });
+
   constructor() {
     effect(() => this.store.setFromRecord(this.record()));
   }
@@ -78,6 +110,10 @@ export class OrderDetailViewComponent {
   scrollTo(e: Event, anchorId: string): void {
     e.preventDefault();
     this.scroller.scrollToAnchor(anchorId);
+  }
+
+  onSortSelectShow(): void {
+    fixOverlayTouchScroll('.p-select-overlay');
   }
 
   placeOrderDialog(): void {

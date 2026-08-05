@@ -52,6 +52,24 @@ describe('OrderDetailStore', () => {
     notes: [],
   };
 
+  const mockOrderLineA: IAcqOrderLine = {
+    ...mockOrderLine,
+    pid: 'lineA',
+    status: AcqOrderLineStatus.ORDERED,
+    priority: 3,
+    created: '2025-01-02T00:00:00+00:00',
+    updated: '2025-02-02T00:00:00+00:00',
+  };
+
+  const mockOrderLineB: IAcqOrderLine = {
+    ...mockOrderLine,
+    pid: 'lineB',
+    status: AcqOrderLineStatus.APPROVED,
+    priority: 1,
+    created: '2025-01-01T00:00:00+00:00',
+    updated: '2025-02-03T00:00:00+00:00',
+  };
+
   const mockReceipt: IAcqReceipt = {
     pid: 'receipt1',
     acq_order: { pid: '1' },
@@ -74,6 +92,7 @@ describe('OrderDetailStore', () => {
   const acqOrderServiceSpy = {
     getOrder: vi.fn(),
     getOrderLines: vi.fn(),
+    getOrderLinesDocumentTitles: vi.fn(),
     getOrderHistory: vi.fn(),
     lastDeletedOrderLine,
   };
@@ -98,6 +117,7 @@ describe('OrderDetailStore', () => {
     lastDeletedReceipt.set(null);
     acqOrderServiceSpy.getOrder.mockReturnValue(of(mockOrder));
     acqOrderServiceSpy.getOrderLines.mockReturnValue(of([mockOrderLine]));
+    acqOrderServiceSpy.getOrderLinesDocumentTitles.mockReturnValue(of(new Map()));
     acqOrderServiceSpy.getOrderHistory.mockReturnValue(of([]));
     acqReceiptServiceSpy.getReceiptsForOrder.mockReturnValue(of([mockReceipt]));
     recordPermissionServiceSpy.getPermission.mockReturnValue(of({ ...mockPermissions }));
@@ -322,6 +342,118 @@ describe('OrderDetailStore', () => {
       acqOrderServiceSpy.getOrderLines.mockReturnValue(throwError(() => new Error('fail')));
       store['loadOrderLines']('1');
       expect(store.orderLines()).toEqual([]);
+    });
+
+    it('should still populate orderLines when getOrderLinesDocumentTitles fails', () => {
+      const store = setupStore();
+      acqOrderServiceSpy.getOrderLinesDocumentTitles.mockReturnValue(throwError(() => new Error('fail')));
+      store['loadOrderLines']('1');
+      expect(store.orderLines()).toEqual([{ ...mockOrderLine, documentTitle: undefined }]);
+    });
+
+    it('should merge document titles returned by getOrderLinesDocumentTitles', () => {
+      const store = setupStore();
+      acqOrderServiceSpy.getOrderLines.mockReturnValue(of([mockOrderLineA, mockOrderLineB]));
+      acqOrderServiceSpy.getOrderLinesDocumentTitles.mockReturnValue(
+        of(new Map([['lineA', 'Title A']]))
+      );
+      store['loadOrderLines']('1');
+      expect(store.orderLines().find(l => l.pid === 'lineA')?.documentTitle).toBe('Title A');
+      expect(store.orderLines().find(l => l.pid === 'lineB')?.documentTitle).toBeUndefined();
+    });
+  });
+
+  // ---------------------------------------------------------------------------
+  // setSortCriteria
+  // ---------------------------------------------------------------------------
+  describe('setSortCriteria', () => {
+    it('should update the linesSortCriteria state', () => {
+      const store = setupStore();
+      expect(store.linesSortCriteria()).toBe('priority');
+      store.setSortCriteria('-priority');
+      expect(store.linesSortCriteria()).toBe('-priority');
+    });
+  });
+
+  // ---------------------------------------------------------------------------
+  // Computed: sortedOrderLines
+  // ---------------------------------------------------------------------------
+  describe('sortedOrderLines', () => {
+    const setupSortedStore = () => {
+      const store = setupStore();
+      acqOrderServiceSpy.getOrderLines.mockReturnValue(of([mockOrderLineA, mockOrderLineB]));
+      acqOrderServiceSpy.getOrderLinesDocumentTitles.mockReturnValue(
+        of(new Map([['lineA', 'Zebra'], ['lineB', 'Alpha']]))
+      );
+      store['loadOrderLines']('1');
+      return store;
+    };
+
+    it('should sort by priority ascending by default', () => {
+      const store = setupSortedStore();
+      expect(store.sortedOrderLines().map(l => l.pid)).toEqual(['lineB', 'lineA']);
+    });
+
+    it('should sort by priority descending', () => {
+      const store = setupSortedStore();
+      store.setSortCriteria('-priority');
+      expect(store.sortedOrderLines().map(l => l.pid)).toEqual(['lineA', 'lineB']);
+    });
+
+    it('should sort by document title ascending', () => {
+      const store = setupSortedStore();
+      store.setSortCriteria('documenttitle');
+      expect(store.sortedOrderLines().map(l => l.pid)).toEqual(['lineB', 'lineA']);
+    });
+
+    it('should sort by document title descending', () => {
+      const store = setupSortedStore();
+      store.setSortCriteria('-documenttitle');
+      expect(store.sortedOrderLines().map(l => l.pid)).toEqual(['lineA', 'lineB']);
+    });
+
+    it('should sort by status ascending', () => {
+      const store = setupSortedStore();
+      store.setSortCriteria('status');
+      expect(store.sortedOrderLines().map(l => l.pid)).toEqual(['lineB', 'lineA']);
+    });
+
+    it('should sort by status descending', () => {
+      const store = setupSortedStore();
+      store.setSortCriteria('-status');
+      expect(store.sortedOrderLines().map(l => l.pid)).toEqual(['lineA', 'lineB']);
+    });
+
+    it('should sort by created ascending', () => {
+      const store = setupSortedStore();
+      store.setSortCriteria('created');
+      expect(store.sortedOrderLines().map(l => l.pid)).toEqual(['lineB', 'lineA']);
+    });
+
+    it('should sort by created descending', () => {
+      const store = setupSortedStore();
+      store.setSortCriteria('-created');
+      expect(store.sortedOrderLines().map(l => l.pid)).toEqual(['lineA', 'lineB']);
+    });
+
+    it('should sort by updated ascending', () => {
+      const store = setupSortedStore();
+      store.setSortCriteria('updated');
+      expect(store.sortedOrderLines().map(l => l.pid)).toEqual(['lineA', 'lineB']);
+    });
+
+    it('should sort by updated descending', () => {
+      const store = setupSortedStore();
+      store.setSortCriteria('-updated');
+      expect(store.sortedOrderLines().map(l => l.pid)).toEqual(['lineB', 'lineA']);
+    });
+
+    it('should not mutate the original orderLines array', () => {
+      const store = setupSortedStore();
+      const before = store.orderLines().map(line => line.pid);
+      store.setSortCriteria('-priority');
+      store.sortedOrderLines();
+      expect(store.orderLines().map(line => line.pid)).toEqual(before);
     });
   });
 

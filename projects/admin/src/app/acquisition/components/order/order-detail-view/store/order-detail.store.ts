@@ -5,7 +5,7 @@ import { computed, effect, inject, untracked } from '@angular/core';
 import { patchState, signalStore, withComputed, withHooks, withMethods, withState } from '@ngrx/signals';
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
 import { AppStore, RecordPermissions } from '@rero/shared';
-import { EMPTY, pipe } from 'rxjs';
+import { EMPTY, forkJoin, of, pipe } from 'rxjs';
 import { catchError, filter, map, switchMap, tap } from 'rxjs/operators';
 import { AcqOrderApiService } from '../../../../api/acq-order-api.service';
 import { AcqReceiptApiService } from '../../../../api/acq-receipt-api.service';
@@ -23,6 +23,7 @@ export type OrderDetailState = {
   order: IAcqOrder | undefined;
   orderPermissions: RecordPermissions | undefined;
   orderLines: IAcqOrderLine[];
+  linesSortCriteria: string;
   receipts: IAcqReceipt[];
   receiptPermissions: RecordPermissions | undefined;
   historyVersions: AcqOrderHistoryVersion[];
@@ -33,6 +34,7 @@ export const OrderDetailStore = signalStore(
     order: undefined,
     orderPermissions: undefined,
     orderLines: [],
+    linesSortCriteria: 'priority',
     receipts: [],
     receiptPermissions: undefined,
     historyVersions: [],
@@ -48,6 +50,26 @@ export const OrderDetailStore = signalStore(
       [AcqOrderStatus.PENDING, AcqOrderStatus.CANCELLED].some(s => s === store.order()?.status),
     canAddReceipt: () =>
       [AcqOrderStatus.ORDERED, AcqOrderStatus.PARTIALLY_RECEIVED].some(s => s === store.order()?.status),
+    sortedOrderLines: (): IAcqOrderLine[] => {
+      const linesSortCriteria = store.linesSortCriteria();
+      const desc = linesSortCriteria.startsWith('-');
+      const field = desc ? linesSortCriteria.slice(1) : linesSortCriteria;
+      const direction = desc ? -1 : 1;
+      return [...store.orderLines()].sort((a, b) => {
+        switch (field) {
+          case 'documenttitle':
+            return direction * (a.documentTitle ?? '').localeCompare(b.documentTitle ?? '');
+          case 'status':
+            return direction * a.status.localeCompare(b.status);
+          case 'created':
+            return direction * (a.created ?? '').localeCompare(b.created ?? '');
+          case 'updated':
+            return direction * (a.updated ?? '').localeCompare(b.updated ?? '');
+          default:
+            return direction * (a.priority - b.priority);
+        }
+      });
+    },
   })),
   withMethods((store,
     acqOrderService = inject(AcqOrderApiService),
@@ -63,6 +85,10 @@ export const OrderDetailStore = signalStore(
 
     updateOrder(order: IAcqOrder): void {
       patchState(store, { order });
+    },
+
+    setSortCriteria(linesSortCriteria: string): void {
+      patchState(store, { linesSortCriteria });
     },
 
     orderCreateInfoMessage(): string {
@@ -90,7 +116,16 @@ export const OrderDetailStore = signalStore(
       pipe(
         filter(Boolean),
         switchMap(pid =>
-          acqOrderService.getOrderLines(pid).pipe(
+          forkJoin([
+            acqOrderService.getOrderLines(pid),
+            acqOrderService.getOrderLinesDocumentTitles(pid).pipe(catchError(() => of(new Map<string, string>()))),
+          ]).pipe(
+            map(([orderLines, documentTitles]) =>
+              orderLines.map(orderLine => ({
+                ...orderLine,
+                documentTitle: documentTitles.get(orderLine.pid ?? ''),
+              }))
+            ),
             tap(orderLines => patchState(store, { orderLines })),
             catchError(() => EMPTY)
           )

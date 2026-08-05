@@ -46,6 +46,29 @@ export class AcqOrderApiService extends BaseApi {
   }
 
   /**
+   * Get the denormalized order lines (pid + document title) as indexed on
+   * the order search index. This data is only available on the ES index
+   * (populated at indexing time), not on the plain record REST endpoint.
+   * @param orderPid: the order pid
+   */
+  getOrderLinesDocumentTitles(orderPid: string): Observable<Map<string, string>> {
+    return this.recordService
+      .getRecords('acq_orders', {
+        query: `pid:${orderPid}`,
+        page: 1,
+        itemsPerPage: 1
+      })
+      .pipe(
+        map((result: EsResult): { pid: string, document?: { title?: string } }[] =>
+          +this.recordService.totalHits(result.hits.total) === 0 ? [] : (result.hits.hits[0] as any).metadata.order_lines ?? []
+        ),
+        map(orderLines =>
+          new Map(orderLines.map(orderLine => [orderLine.pid, orderLine.document?.title ?? '']))
+        )
+      );
+  }
+
+  /**
    * Get an order preview.
    * @param orderPid: the order pid
    */
@@ -92,7 +115,12 @@ export class AcqOrderApiService extends BaseApi {
       })
       .pipe(
         map((result: EsResult) => +this.recordService.totalHits(result.hits.total) === 0 ? [] : result.hits.hits),
-        map((hits: any[]) => hits.map(hit => ({...orderLineDefaultData, ...hit.metadata})))
+        map((hits: any[]) => hits.map(hit => ({
+          ...orderLineDefaultData,
+          ...hit.metadata,
+          created: hit.created,
+          updated: hit.updated
+        })))
       );
   }
 

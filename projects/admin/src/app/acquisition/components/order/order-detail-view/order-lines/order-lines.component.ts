@@ -16,5 +16,5 @@ export class OrderLinesComponent {
 
   protected readonly store = inject(OrderDetailStore);
   protected readonly order = this.store.order;
-  protected readonly orderLines = this.store.orderLines;
+  protected readonly orderLines = this.store.sortedOrderLines;
 }
