@@ -1,6 +1,7 @@
 // SPDX-FileCopyrightText: Fondation RERO+
 // SPDX-License-Identifier: AGPL-3.0-or-later
 import { Component, effect, inject, input, ChangeDetectionStrategy} from '@angular/core';
+import { FormsModule } from '@angular/forms';
 import { EsRecord } from '@rero/shared';
 import { HoldingsStore } from './store/holdings-store';
 import { MenuActionsComponent } from './menu-actions/menu-actions.component';
@@ -17,7 +18,7 @@ import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
     templateUrl: './holdings.component.html',
     styles: `.p-accordionheader { user-select: text !important; }`,
     providers: [HoldingsStore],
-    imports: [MenuActionsComponent, Bind, MultiSelect, Accordion, AccordionPanel, Ripple, AccordionHeader, HoldingHeaderComponent, AccordionContent, HoldingContentComponent, TranslateDirective, TranslatePipe],
+    imports: [MenuActionsComponent, Bind, FormsModule, MultiSelect, Accordion, AccordionPanel, Ripple, AccordionHeader, HoldingHeaderComponent, AccordionContent, HoldingContentComponent, TranslateDirective, TranslatePipe],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class HoldingsComponent {

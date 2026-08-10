@@ -81,17 +81,17 @@ SPDX-License-Identifier: AGPL-3.0-or-later
   </dd>
 }
 <!-- EXACT MATCH -->
-@if (record().exactMatch) {
+@if (exactMatch().length > 0) {
   <ng-container
     [ngTemplateOutlet]="match"
-    [ngTemplateOutletContext]="{ item: {match: exactMatch, title: 'Exact match' | translate } }"
+    [ngTemplateOutletContext]="{ item: {match: exactMatch(), title: 'Exact match' | translate } }"
   ></ng-container>
 }
 <!-- CLOSE MATCH -->
-@if (record().closeMatch) {
+@if (closeMatch().length > 0) {
   <ng-container
     [ngTemplateOutlet]="match"
-    [ngTemplateOutletContext]="{ item: {match: closeMatch, title: 'Close match' | translate } }"
+    [ngTemplateOutletContext]="{ item: {match: closeMatch(), title: 'Close match' | translate } }"
   ></ng-container>
 }
 </dl>
@@ -100,19 +100,17 @@ SPDX-License-Identifier: AGPL-3.0-or-later
   <dt translate>{{ item.title }}</dt>
   <dd>
     <ul  class="ui:list-none">
-      @if (item.match) {
-        @for(match of item.match; track $index) {
-          <li>
-            {{ match.source }}:
-            @if (match.uri) {
-              <a class="rero-ils-external-link" href="{{ match.uri }}" title="{{ match.uri }}" target="_blank">
-                {{ match.authorized_access_point }}
-              </a>
-            } @else {
+      @for(match of item.match; track $index) {
+        <li>
+          {{ match.source }}:
+          @if (match.uri) {
+            <a class="rero-ils-external-link" href="{{ match.uri }}" title="{{ match.uri }}" target="_blank">
               {{ match.authorized_access_point }}
-            }
-          </li>
-        }
+            </a>
+          } @else {
+            {{ match.authorized_access_point }}
+          }
+        </li>
       }
     </ul>
   </dd>

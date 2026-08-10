@@ -1,7 +1,7 @@
 // SPDX-FileCopyrightText: Fondation RERO+
 // SPDX-FileCopyrightText: UCLouvain
 // SPDX-License-Identifier: AGPL-3.0-or-later
-import { Component, computed, inject, input, signal, ChangeDetectionStrategy } from '@angular/core';
+import { Component, computed, inject, input, linkedSignal, ChangeDetectionStrategy } from '@angular/core';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { TranslateService, TranslateDirective, TranslatePipe } from '@ngx-translate/core';
@@ -18,6 +18,7 @@ import { Tabs, TabList, Tab, TabPanels, TabPanel } from 'primeng/tabs';
 import { Ripple } from 'primeng/ripple';
 import { HoldingsComponent } from './holdings/holdings.component';
 import { EntitiesRelatedComponent } from './entities-related/entities-related.component';
+import { RawRelatedEntity } from './entities-related/entities-related.interface';
 import { LocalFieldComponent } from '../local-field/local-field.component';
 import { UploadFilesComponent } from './files-collections/upload-files/upload-files.component';
 import { TableModule } from 'primeng/table';
@@ -70,12 +71,22 @@ export class DocumentDetailViewComponent {
     if (!metadata) return false;
     return Entity.FIELDS_WITH_REF.some((field: string) =>
       field in metadata &&
-      (metadata[field] as any[]).some((e: any) => e.entity?.resource_type)
+      (metadata[field] as RawRelatedEntity[]).some((related: RawRelatedEntity) => related.entity.resource_type)
     );
   });
 
-  /** Whether the current (harvested) document has local fields; fed by the local-field component output. */
-  readonly hasLocalFields = signal(false);
+  /**
+   * Whether the current (harvested) document has local fields; fed by the local-field
+   * component output. As this view is reused, and not recreated, when navigating to a
+   * linked document, it is reset on each document pid: the local-field component refetches
+   * on its own — its `resourcePid` input changed — and the tab of the previous document
+   * must not stay visible until it emits again.
+   */
+  readonly hasLocalFields = linkedSignal({
+    source: () => this.record()?.metadata?.pid,
+    // Back to false on each new pid, until the local-field component sets it again
+    computation: (): boolean => false
+  });
 
   readonly activateLink = computed(() =>
     !this.activatedRouter.snapshot.params.type?.startsWith('import_')

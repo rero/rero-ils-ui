@@ -4,30 +4,30 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 -->
 <div class="ui:*:odd:bg-surface-50 ui:*:block">
   <!-- FICTION STATEMENT -->
-  @if (record().metadata.fiction_statement) {
+  @if (metadata().fiction_statement) {
     <shared-description-zone>
       <ng-container label>{{ 'Fiction statement' | translate }}</ng-container>
       <ng-container content>
-        {{ $any(record().metadata).fiction_statement | translate }}
+        {{ metadata().fiction_statement | translate }}
       </ng-container>
     </shared-description-zone>
   }
 
   <!-- -------------- WORK / EXPRESSION -------------- -->
   <!-- SUPPLEMENT, RELATED TO -->
-  @if (record().metadata.supplement) {
-    <shared-other-edition [fieldLabel]="'Supplement' | translate" [field]="record().metadata.supplement" [viewcode]="viewcode()" [isPublicView]="isPublicView()" />
+  @if (metadata().supplement) {
+    <shared-other-edition [fieldLabel]="'Supplement' | translate" [field]="metadata().supplement" [viewcode]="viewcode()" [isPublicView]="isPublicView()" />
   }
-  @if (record().metadata.relatedTo) {
-    <shared-other-edition [fieldLabel]="'Related to' | translate" [field]="record().metadata.relatedTo" [viewcode]="viewcode()" [isPublicView]="isPublicView()" />
+  @if (metadata().relatedTo) {
+    <shared-other-edition [fieldLabel]="'Related to' | translate" [field]="metadata().relatedTo" [viewcode]="viewcode()" [isPublicView]="isPublicView()" />
   }
 
   <!-- NOTE (TYPE GENERAL) -->
-  @if (notesGeneral) {
+  @if (notesGeneral()) {
     <shared-description-zone>
       <ng-container label>{{ 'General note' | translate }}</ng-container>
       <ng-container content>
-        @for (noteType of notesGeneral | keyvalue; track $index) {
+        @for (noteType of notesGeneral() | keyvalue; track $index) {
           <ul class="ui:list-none">
             @for (note of noteType.value; track $index) {
               <li>{{ note }}</li>
@@ -39,12 +39,12 @@ SPDX-License-Identifier: AGPL-3.0-or-later
   }
 
   <!--CREDITS -->
-  @if (record().metadata.credits) {
+  @if (metadata().credits) {
     <shared-description-zone>
       <ng-container label>{{ 'Other responsibilities' | translate }}</ng-container>
       <ng-container content>
         <ul class="ui:list-none">
-          @for (credit of $any(record().metadata).credits; track $index) {
+          @for (credit of metadata().credits; track $index) {
             <li>{{ credit }}</li>
           }
         </ul>
@@ -53,11 +53,11 @@ SPDX-License-Identifier: AGPL-3.0-or-later
   }
 
   <!-- LANGUAGE -->
-  @if (record().metadata.language && $any(record().metadata.language).length > 0) {
+  @if (metadata().language && metadata().language.length > 0) {
     <shared-description-zone>
       <ng-container label>{{ 'Language' | translate }}</ng-container>
       <ng-container content>
-        @for (lang of $any(record().metadata.language); track $index; let isLast = $last) {
+        @for (lang of metadata().language; track $index; let isLast = $last) {
           {{ lang.value | translateLanguage: currentLanguage }}
           @if (lang.note) {
             ({{ lang.note }})
@@ -69,11 +69,11 @@ SPDX-License-Identifier: AGPL-3.0-or-later
   }
 
   <!-- ORIGINAL LANGUAGE -->
-  @if (record().metadata.originalLanguage) {
+  @if (metadata().originalLanguage) {
     <shared-description-zone>
       <ng-container label>{{ 'Original language' | translate }}</ng-container>
       <ng-container content>
-        @for (lang of $any(record().metadata.originalLanguage); track $index; let isLast = $last) {
+        @for (lang of metadata().originalLanguage; track $index; let isLast = $last) {
             {{ lang | translateLanguage: currentLanguage }}
             @if (!isLast) {, }
         }
@@ -82,12 +82,12 @@ SPDX-License-Identifier: AGPL-3.0-or-later
   }
 
   <!-- ORIGINAL TITLE -->
-  @if (record().metadata.originalTitle) {
+  @if (metadata().originalTitle) {
     <shared-description-zone>
       <ng-container label>{{ 'Original title' | translate }}</ng-container>
       <ng-container content>
         <ul class="ui:list-none">
-          @for (title of $any(record().metadata.originalTitle); track $index) {
+          @for (title of metadata().originalTitle; track $index) {
             <li>{{ title }}</li>
           }
         </ul>
@@ -96,28 +96,26 @@ SPDX-License-Identifier: AGPL-3.0-or-later
   }
 
   <!-- WORK ACCESS POINT -->
-  @if (workAccessPoint; as works) {
-    @if (works.length > 0) {
-      <shared-description-zone>
-        <ng-container label>{{ 'Work' | translate }}</ng-container>
-        <ng-container content>
-          <ul class="ui:list-none">
-            @for (work of works; track $index) {
-              <li>{{ work }}</li>
-            }
-          </ul>
-        </ng-container>
-      </shared-description-zone>
-    }
+  @if (workAccessPoint().length > 0) {
+    <shared-description-zone>
+      <ng-container label>{{ 'Work' | translate }}</ng-container>
+      <ng-container content>
+        <ul class="ui:list-none">
+          @for (work of workAccessPoint(); track $index) {
+            <li>{{ work }}</li>
+          }
+        </ul>
+      </ng-container>
+    </shared-description-zone>
   }
 
   <!-- TABLE OF CONTENTS -->
-  @if (record().metadata.tableOfContents) {
+  @if (metadata().tableOfContents) {
     <shared-description-zone>
       <ng-container label>{{ 'Contents' | translate }}</ng-container>
       <ng-container content>
         <ul class="ui:list-none">
-          @for (table of $any(record().metadata.tableOfContents); track $index) {
+          @for (table of metadata().tableOfContents; track $index) {
             <li>{{ table }}</li>
           }
         </ul>
@@ -126,12 +124,12 @@ SPDX-License-Identifier: AGPL-3.0-or-later
   }
 
   <!-- DISSERTATION -->
-  @if (record().metadata.dissertation) {
+  @if (metadata().dissertation) {
     <shared-description-zone>
       <ng-container label>{{ 'Thesis' | translate }}</ng-container>
       <ng-container content>
         <ul class="ui:list-none">
-          @for (dissertation of $any(record().metadata.dissertation); track $index) {
+          @for (dissertation of metadata().dissertation; track $index) {
             @for (label of dissertation.label; track $index) {
               <li>{{ label.value }}</li>
             }
@@ -142,11 +140,11 @@ SPDX-License-Identifier: AGPL-3.0-or-later
   }
 
   <!-- INTENDED AUDIENCE -->
-  @if (record().metadata.intendedAudience) {
+  @if (metadata().intendedAudience) {
     <shared-description-zone>
       <ng-container label>{{ 'Intended audience' | translate }}</ng-container>
       <ng-container content>
-        @for (audience of $any(record().metadata.intendedAudience); track $index; let isLast = $last) {
+        @for (audience of metadata().intendedAudience; track $index; let isLast = $last) {
           {{ audience.value | translate }}
           @if (!isLast) {, }
         }
@@ -155,21 +153,21 @@ SPDX-License-Identifier: AGPL-3.0-or-later
   }
 
   <!-- ILLUSTRATIVE CONTENT -->
-  @if (record().metadata.illustrativeContent) {
+  @if (metadata().illustrativeContent) {
     <shared-description-zone>
       <ng-container label>{{ 'Illustrations' | translate }}</ng-container>
       <ng-container content>
-        {{ $any(record().metadata.illustrativeContent).join(', ') }}
+        {{ metadata().illustrativeContent.join(', ') }}
       </ng-container>
     </shared-description-zone>
   }
 
   <!-- COLOR CONTENT -->
-  @if (record().metadata.colorContent) {
+  @if (metadata().colorContent) {
     <shared-description-zone>
       <ng-container label>{{ 'Colors' | translate }}</ng-container>
       <ng-container content>
-        @for (color of $any(record().metadata.colorContent); track $index; let isLast = $last) {
+        @for (color of metadata().colorContent; track $index; let isLast = $last) {
           {{ color | translate }}
           @if (!isLast) {, }
         }
@@ -178,12 +176,12 @@ SPDX-License-Identifier: AGPL-3.0-or-later
   }
 
   <!-- SCALE -->
-  @if (record().metadata.scale) {
+  @if (metadata().scale) {
     <shared-description-zone>
       <ng-container label>{{ 'Scale' | translate }}</ng-container>
       <ng-container content>
         <ul class="ui:list-none">
-          @for (scale of $any(record().metadata.scale); track $index) {
+          @for (scale of metadata().scale; track $index) {
             <li>
               {{ scale.label }}
               @if (scaleRatios(scale); as ratios) {
@@ -200,12 +198,12 @@ SPDX-License-Identifier: AGPL-3.0-or-later
   }
 
   <!-- CARTOGRAPHIC ATTRIBUTES -->
-  @if (cartographicAttributes.length > 0) {
+  @if (cartographicAttributes().length > 0) {
     <shared-description-zone>
       <ng-container label>{{ 'Cartographic data' | translate }}</ng-container>
       <ng-container content>
         <ul class="ui:list-none">
-          @for (cartographic of cartographicAttributes; track $index) {
+          @for (cartographic of cartographicAttributes(); track $index) {
             <li>
               @if (cartographic.projection) {
                 {{ cartographic.projection }}
@@ -230,12 +228,12 @@ SPDX-License-Identifier: AGPL-3.0-or-later
   }
 
   <!-- TEMPORAL COVERAGE -->
-  @if (temporalCoverages.length > 0) {
+  @if (temporalCoverages().length > 0) {
     <shared-description-zone>
       <ng-container label>{{ 'Temporal coverage' | translate }}</ng-container>
       <ng-container content>
         <ul class="ui:list-none">
-          @for (coverage of temporalCoverages; track $index) {
+          @for (coverage of temporalCoverages(); track $index) {
             <li>{{ coverage }}</li>
           }
         </ul>
@@ -244,12 +242,12 @@ SPDX-License-Identifier: AGPL-3.0-or-later
   }
 
   <!-- CLASSIFICATION -->
-  @if (record().metadata.classification) {
+  @if (metadata().classification) {
     <shared-description-zone>
       <ng-container label>{{ 'Classification' | translate }}</ng-container>
       <ng-container content>
         <ul class="ui:list-none">
-          @for (classification of $any(record().metadata.classification); track $index) {
+          @for (classification of metadata().classification; track $index) {
             <li>
               {{ classification.classificationPortion }}
               @if (classification.subdivision) {
@@ -266,12 +264,12 @@ SPDX-License-Identifier: AGPL-3.0-or-later
   <!-- -------------- MANIFESTATION -------------- -->
 
   <!-- USAGE AND ACCESS POLICY -->
-  @if (record().metadata.usageAndAccessPolicy) {
+  @if (metadata().usageAndAccessPolicy) {
     <shared-description-zone>
       <ng-container label>{{ 'Use and access condition' | translate }}</ng-container>
       <ng-container content>
         <ul class="ui:list-none">
-          @for (usage of $any(record().metadata.usageAndAccessPolicy); track $index) {
+          @for (usage of metadata().usageAndAccessPolicy; track $index) {
             <li>{{ usage.label }}</li>
           }
         </ul>
@@ -280,39 +278,37 @@ SPDX-License-Identifier: AGPL-3.0-or-later
   }
 
   <!-- OTHER EDITION, OTHER PHYSICAL FORMAT, HAS REPRODUCTION -->
-  @if (record().metadata.otherEdition) {
-    <shared-other-edition [fieldLabel]="'Other edition' | translate" [field]="record().metadata.otherEdition" [viewcode]="viewcode()" [isPublicView]="isPublicView()" />
+  @if (metadata().otherEdition) {
+    <shared-other-edition [fieldLabel]="'Other edition' | translate" [field]="metadata().otherEdition" [viewcode]="viewcode()" [isPublicView]="isPublicView()" />
   }
-  @if (record().metadata.otherPhysicalFormat) {
-    <shared-other-edition [fieldLabel]="'Also issued as' | translate" [field]="record().metadata.otherPhysicalFormat" [viewcode]="viewcode()" [isPublicView]="isPublicView()" />
+  @if (metadata().otherPhysicalFormat) {
+    <shared-other-edition [fieldLabel]="'Also issued as' | translate" [field]="metadata().otherPhysicalFormat" [viewcode]="viewcode()" [isPublicView]="isPublicView()" />
   }
-  @if (record().metadata.hasReproduction) {
-    <shared-other-edition [fieldLabel]="'Reproduced as' | translate" [field]="record().metadata.hasReproduction" [viewcode]="viewcode()" [isPublicView]="isPublicView()" />
+  @if (metadata().hasReproduction) {
+    <shared-other-edition [fieldLabel]="'Reproduced as' | translate" [field]="metadata().hasReproduction" [viewcode]="viewcode()" [isPublicView]="isPublicView()" />
   }
 
   <!-- TITLE (KEY TITLE, ABBREVIATED TITLE, VARIANT TITLE)-->
-  @if (titleVariants !== {}) {
-    @for (title of titleVariants | keyvalue; track $index) {
-      <shared-description-zone>
-        <ng-container label>{{ $any(title).key | translate | ucfirst }}</ng-container>
-        <ng-container content>
-          <ul class="ui:list-none">
-            @for (value of $any(title).value; track $index) {
-              <li>{{ value }}</li>
-            }
-          </ul>
-        </ng-container>
-      </shared-description-zone>
-    }
+  @for (title of titleVariants() | keyvalue; track $index) {
+    <shared-description-zone>
+      <ng-container label>{{ title.key | translate | ucfirst }}</ng-container>
+      <ng-container content>
+        <ul class="ui:list-none">
+          @for (value of title.value; track $index) {
+            <li>{{ value }}</li>
+          }
+        </ul>
+      </ng-container>
+    </shared-description-zone>
   }
 
   <!-- RESPONSIBILITY STATEMENT -->
-  @if (record().metadata.ui_responsibilities) {
+  @if (metadata().ui_responsibilities) {
     <shared-description-zone>
       <ng-container label>{{ 'Statement of responsibility' | translate }}</ng-container>
       <ng-container content>
         <ul class="ui:list-none">
-          @for (responsibility of $any(record().metadata.ui_responsibilities); track $index) {
+          @for (responsibility of metadata().ui_responsibilities; track $index) {
             <li>{{ responsibility }}</li>
           }
         </ul>
@@ -321,12 +317,12 @@ SPDX-License-Identifier: AGPL-3.0-or-later
   }
 
   <!-- SERIES STATEMENT -->
-  @if (record().metadata.seriesStatement) {
+  @if (seriesStatement().length > 0) {
     <shared-description-zone>
       <ng-container label>{{ 'Series statement' | translate }}</ng-container>
       <ng-container content>
         <ul class="ui:list-none">
-          @for (serie of seriesStatement; track $index) {
+          @for (serie of seriesStatement(); track $index) {
             <li>{{ serie.value }}</li>
           }
         </ul>
@@ -335,7 +331,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
   }
 
   <!-- PROVISION ACTIVITY STATEMENT (TYPES PRODUCTION, DIFFUSION/DISTRIBUTION, FABRICATION) -->
-  @if (record().metadata.provisionActivity | documentProvisionActivity | keyvalue | callbackArrayFilter: filterNotPublicationProvisionActivity;as provisionActivity) {
+  @if (metadata().provisionActivity | documentProvisionActivity | keyvalue | callbackArrayFilter: filterNotPublicationProvisionActivity;as provisionActivity) {
     @for (provision of provisionActivity; track $index) {
       <shared-description-zone>
         <ng-container label>{{ provision.key | translate }}</ng-container>
@@ -351,11 +347,11 @@ SPDX-License-Identifier: AGPL-3.0-or-later
   }
 
   <!-- PROVISION ACTIVITY ORIGINAL DATE (TYPES PRODUCTION, DIFFUSION/DISTRIBUTION, FABRICATION) -->
-  @if (provisionActivityOriginalDate.length > 0) {
+  @if (provisionActivityOriginalDate().length > 0) {
     <shared-description-zone>
       <ng-container label>{{ 'Date of the original' | translate }}</ng-container>
       <ng-container content>
-        @for (provision of provisionActivityOriginalDate; track $index; let isLast = $last) {
+        @for (provision of provisionActivityOriginalDate(); track $index; let isLast = $last) {
           {{ provision.original_date }}@if (!isLast) {, }
         }
       </ng-container>
@@ -363,8 +359,8 @@ SPDX-License-Identifier: AGPL-3.0-or-later
   }
 
   <!-- PROVISION ACTIVITY NOTE (ALL TYPES, INCLUDING PUBLICATION) -->
-  @if (provisionActivityNotes) {
-    @for (provisionNote of provisionActivityNotes | keyvalue; track $index) {
+  @if (provisionActivityNotes()) {
+    @for (provisionNote of provisionActivityNotes() | keyvalue; track $index) {
       <shared-description-zone>
         <ng-container label>{{ provisionNote.key | translate }} ({{ 'Note' | translate }})</ng-container>
         <ng-container content>
@@ -379,51 +375,51 @@ SPDX-License-Identifier: AGPL-3.0-or-later
   }
 
   <!-- COPYRIGHT DATE -->
-  @if (record().metadata.copyrightDate) {
+  @if (metadata().copyrightDate) {
     <shared-description-zone>
       <ng-container label>{{ 'Copyright date' | translate }}</ng-container>
       <ng-container content>
-        {{ $any(record().metadata.copyrightDate).join(", ") }}
+        {{ metadata().copyrightDate.join(", ") }}
       </ng-container>
     </shared-description-zone>
   }
 
   <!-- SEQUENCE NUMBERING -->
-  @if (record().metadata.sequence_numbering) {
+  @if (metadata().sequence_numbering) {
     <shared-description-zone>
       <ng-container label>{{ 'Numbering' | translate }}</ng-container>
       <ng-container content>
-        {{ record().metadata.sequence_numbering }}
+        {{ metadata().sequence_numbering }}
       </ng-container>
     </shared-description-zone>
   }
 
   <!-- DIMENSIONS -->
-  @if (record().metadata.dimensions) {
+  @if (metadata().dimensions) {
     <shared-description-zone>
       <ng-container label>{{ 'Dimensions' | translate }}</ng-container>
       <ng-container content>
-        {{ $any(record().metadata.dimensions).join(", ") }}
+        {{ metadata().dimensions.join(", ") }}
       </ng-container>
     </shared-description-zone>
   }
 
   <!-- BOOK FORMAT -->
-  @if (record().metadata.bookFormat) {
+  @if (metadata().bookFormat) {
     <shared-description-zone>
       <ng-container label>{{ 'Format' | translate }}</ng-container>
       <ng-container content>
-        {{ $any(record().metadata.bookFormat).join(", ") }}
+        {{ metadata().bookFormat.join(", ") }}
       </ng-container>
     </shared-description-zone>
   }
 
   <!-- PRODUCTION METHOD -->
-  @if (record().metadata.productionMethod) {
+  @if (metadata().productionMethod) {
     <shared-description-zone>
       <ng-container label>{{ 'Production method' | translate }}</ng-container>
       <ng-container content>
-        @for (method of $any(record().metadata.productionMethod); track $index; let isLast = $last) {
+        @for (method of metadata().productionMethod; track $index; let isLast = $last) {
           {{ method | translate }}@if (!isLast) {, }
         }
       </ng-container>
@@ -431,8 +427,8 @@ SPDX-License-Identifier: AGPL-3.0-or-later
   }
 
   <!-- NOTE (TYPE: CITED BY, OTHER PHYSICAL DETAILS, ACCOMPANYING MATERIAL) -->
-  @if (notesExceptGeneral) {
-    @for (noteType of notesExceptGeneral | keyvalue; track $index) {
+  @if (notesExceptGeneral()) {
+    @for (noteType of notesExceptGeneral() | keyvalue; track $index) {
       <shared-description-zone>
         <ng-container label>{{ noteType.key | translate | ucfirst }}</ng-container>
         <ng-container content>
@@ -447,12 +443,12 @@ SPDX-License-Identifier: AGPL-3.0-or-later
   }
 
   <!-- SUPPLEMENTARY CONTENT -->
-  @if (record().metadata.supplementaryContent) {
+  @if (metadata().supplementaryContent) {
     <shared-description-zone>
       <ng-container label>{{ 'Supplementary content' | translate }}</ng-container>
       <ng-container content>
         <ul class="ui:list-none">
-          @for (sup of $any(record().metadata.supplementaryContent); track $index) {
+          @for (sup of metadata().supplementaryContent; track $index) {
             <li>{{ sup }}</li>
           }
         </ul>
@@ -461,12 +457,12 @@ SPDX-License-Identifier: AGPL-3.0-or-later
   }
 
   <!-- ACQUISITION TERMS -->
-  @if (record().metadata.acquisitionTerms) {
+  @if (metadata().acquisitionTerms) {
     <shared-description-zone>
       <ng-container label>{{ 'Terms of availability' | translate }}</ng-container>
       <ng-container content>
         <ul class="ui:list-none">
-          @for (term of $any(record().metadata.acquisitionTerms); track $index) {
+          @for (term of metadata().acquisitionTerms; track $index) {
             <li>{{ term }}</li>
           }
         </ul>
@@ -475,12 +471,12 @@ SPDX-License-Identifier: AGPL-3.0-or-later
   }
 
   <!-- IDENTIFIED BY -->
-  @if (identifiedBy && identifiedBy.length > 0) {
+  @if (identifiedBy().length > 0) {
     <shared-description-zone>
       <ng-container label>{{ 'Identifier' | translate }}</ng-container>
       <ng-container content>
         <ul class="ui:list-none">
-          @for (identifier of identifiedBy; track $index; let i = $index) {
+          @for (identifier of identifiedBy(); track $index; let i = $index) {
             <li [attr.id]="i | idAttribute:{prefix: 'doc-identifier'}">
               @if (identifier.type === 'uri') {
                 <a class="rero-ils-external-link" [href]="identifier.value | safeUrl">{{ identifier.value }}</a>
@@ -501,11 +497,11 @@ SPDX-License-Identifier: AGPL-3.0-or-later
   <!-- -------------- TYPOLOGY -------------- -->
 
   <!-- CONTENT MEDIA CARRIER -->
-  @if (record().metadata.contentMediaCarrier) {
+  @if (metadata().contentMediaCarrier) {
     <shared-description-zone>
       <ng-container label>{{ 'Carrier and content type' | translate }}</ng-container>
       <ng-container content>
-        @for (content of $any(record().metadata.contentMediaCarrier); track $index; let isLastL1 = $last) {
+        @for (content of metadata().contentMediaCarrier; track $index; let isLastL1 = $last) {
             {{ content.carrierType | translate }}
             @if (content.contentType) {
               (@for (type of content.contentType; track $index; let isLast = $last) {
@@ -519,11 +515,11 @@ SPDX-License-Identifier: AGPL-3.0-or-later
   }
 
   <!-- ISSUANCE -->
-  @if (record().metadata.issuance) {
+  @if (metadata().issuance) {
     <shared-description-zone>
       <ng-container label>{{ 'Mode of issuance' | translate }}</ng-container>
       <ng-container content>
-        {{ $any(record().metadata.issuance).main_type | translate }} / {{ $any(record().metadata.issuance).subtype | translate }}
+        {{ metadata().issuance.main_type | translate }} / {{ metadata().issuance.subtype | translate }}
       </ng-container>
     </shared-description-zone>
   }
@@ -531,7 +527,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
   <!-- -------------- ADMIN METADATA (PROFESSIONAL INTERFACE ONLY) -------------- -->
   <!-- `encodingLevel` and `note` are already reported by the detail view header banner. -->
   @if (!isPublicView()) {
-    @let adminMetadata = $any(record().metadata.adminMetadata);
+    @let adminMetadata = metadata().adminMetadata;
 
     <!-- CATALOGUING SOURCE -->
     @if (adminMetadata?.source) {

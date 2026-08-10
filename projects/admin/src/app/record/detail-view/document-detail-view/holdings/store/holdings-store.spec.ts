@@ -68,18 +68,49 @@ describe('Holdings Store', () => {
     const store = TestBed.inject(HoldingsStore);
     store.setDocument(document);
     await vi.advanceTimersByTimeAsync(500);
-    store.setLibraryFilter({ originalEvent: new Event(''), value: ["1"] });
+    store.setLibraryFilter({ originalEvent: new Event('change'), value: ["1"] });
     expect(store.holdingsCurrentOrganisation()).toHaveLength(9);
     expect(store.holdingsOtherOrganisation()).toHaveLength(0);
-    store.setLibraryFilter({ originalEvent: new Event(''), value: ["2"] });
+    store.setLibraryFilter({ originalEvent: new Event('change'), value: ["2"] });
     expect(store.holdingsCurrentOrganisation()).toHaveLength(0);
     expect(store.holdingsOtherOrganisation()).toHaveLength(3);
-    store.setLibraryFilter({ originalEvent: new Event(''), value: ["1", "2"] });
+    store.setLibraryFilter({ originalEvent: new Event('change'), value: ["1", "2"] });
     expect(store.holdingsCurrentOrganisation()).toHaveLength(9);
     expect(store.holdingsOtherOrganisation()).toHaveLength(3);
-    store.setLibraryFilter({ originalEvent: new Event(''), value: [] });
+    store.setLibraryFilter({ originalEvent: new Event('change'), value: [] });
     expect(store.holdingsCurrentOrganisation()).toHaveLength(9);
     expect(store.holdingsOtherOrganisation()).toHaveLength(3);
+  });
+
+  it('should drop the state of the previous document', async () => {
+    const store = TestBed.inject(HoldingsStore);
+    const holdingsApiService = TestBed.inject(HoldingsApiServiceMock);
+    store.setDocument(document);
+    await vi.advanceTimersByTimeAsync(500);
+    store.setLibraryFilter({ originalEvent: new Event('change'), value: ["2"] });
+    expect(store.holdingsCurrentOrganisation()).toHaveLength(0);
+    // Navigating to a linked document only rebinds the inputs of the detail view:
+    // this store is reused, so the previous holdings and filter have to be dropped.
+    store.setDocument({ ...document, metadata: { ...document.metadata, pid: '263' } });
+    expect(store.filteredLibrary()).toEqual([]);
+    expect(store.holdings()).toEqual([]);
+    expect(store.total()).toEqual(0);
+    await vi.advanceTimersByTimeAsync(500);
+    expect(store.holdingsCurrentOrganisation()).toHaveLength(9);
+    expect(holdingsApiService.requestedPids).toEqual(['262', '263']);
+  });
+
+  it('should keep the library filter when the same document is refreshed', async () => {
+    const store = TestBed.inject(HoldingsStore);
+    const holdingsApiService = TestBed.inject(HoldingsApiServiceMock);
+    store.setDocument(document);
+    await vi.advanceTimersByTimeAsync(500);
+    store.setLibraryFilter({ originalEvent: new Event('change'), value: ["1"] });
+    store.setDocument({ ...document });
+    await vi.advanceTimersByTimeAsync(500);
+    expect(store.filteredLibrary()).toEqual(["1"]);
+    expect(store.holdings()).toHaveLength(12);
+    expect(holdingsApiService.requestedPids).toEqual(['262', '262']);
   });
 
   it('should remove a holding record', async () => {
@@ -284,7 +315,12 @@ const document = {
 }
 
 class HoldingsApiServiceMock {
-  getHoldingsByDocumentPid(_documentPid: string): Observable<EsResult | Error> {
+
+  /** Document pid of every request, in call order */
+  readonly requestedPids: string[] = [];
+
+  getHoldingsByDocumentPid(documentPid: string): Observable<EsResult | Error> {
+    this.requestedPids.push(documentPid);
     const holdings = [];
 
     for (let i = 0; i < 12; i++) {
