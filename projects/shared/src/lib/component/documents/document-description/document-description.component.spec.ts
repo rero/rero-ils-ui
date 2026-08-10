@@ -32,6 +32,66 @@ describe('DocumentDescriptionComponent', () => {
     expect(component).toBeTruthy();
   });
 
+  describe('series statement', () => {
+    it('should display the default language first', () => {
+      withMetadata({
+        seriesStatement: [{
+          _text: [
+            { language: 'fre', value: 'Collection Folio' },
+            { language: 'default', value: 'Folio' }
+          ]
+        }]
+      });
+      expect(component.seriesStatement.map(statement => statement.value))
+        .toEqual(['Folio', 'Collection Folio']);
+    });
+
+    it('should keep every statement', () => {
+      withMetadata({
+        seriesStatement: [
+          { _text: [{ language: 'default', value: 'Folio' }] },
+          { _text: [{ language: 'default', value: 'Classiques' }] }
+        ]
+      });
+      expect(component.seriesStatement).toHaveLength(2);
+    });
+
+    it('should ignore a statement without text', () => {
+      withMetadata({ seriesStatement: [{ seriesTitle: [{ value: 'Folio' }] }] });
+      expect(component.seriesStatement).toEqual([]);
+    });
+
+    it('should stay empty without any series statement', () => {
+      withMetadata({});
+      expect(component.seriesStatement).toEqual([]);
+    });
+  });
+
+  describe('provision activity original date', () => {
+    it('should keep the original date of the activities that are not a publication', () => {
+      withMetadata({
+        provisionActivity: [
+          { type: 'bf:Production', original_date: '1789' },
+          { type: 'bf:Manufacture', original_date: '1791' }
+        ]
+      });
+      expect(component.provisionActivityOriginalDate.map(provision => provision.original_date))
+        .toEqual(['1789', '1791']);
+    });
+
+    it('should discard the publication activities', () => {
+      withMetadata({
+        provisionActivity: [{ type: 'bf:Publication', original_date: '1789' }]
+      });
+      expect(component.provisionActivityOriginalDate).toEqual([]);
+    });
+
+    it('should discard the activities without original date', () => {
+      withMetadata({ provisionActivity: [{ type: 'bf:Production', startDate: 1789 }] });
+      expect(component.provisionActivityOriginalDate).toEqual([]);
+    });
+  });
+
   describe('provision activity notes', () => {
     it('should group notes by provision activity type', () => {
       withMetadata({
