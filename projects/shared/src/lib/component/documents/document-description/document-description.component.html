@@ -326,7 +326,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
       <ng-container label>{{ 'Series statement' | translate }}</ng-container>
       <ng-container content>
         <ul class="ui:list-none">
-          @for (serie of editionStatement; track $index) {
+          @for (serie of seriesStatement; track $index) {
             <li>{{ serie.value }}</li>
           }
         </ul>

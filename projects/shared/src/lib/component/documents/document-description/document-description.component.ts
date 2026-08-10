@@ -48,8 +48,8 @@ export class DocumentDescriptionComponent implements OnInit {
   readonly isPublicView = input(false);
   /** Cartographic attributes */
   cartographicAttributes: any[] = [];
-  /** Edition statement */
-  editionStatement: any[] = [];
+  /** Series statement */
+  seriesStatement: any[] = [];
   /** Identified bye */
   identifiedBy: any[] = [];
   /** All notes without general */
@@ -78,12 +78,12 @@ export class DocumentDescriptionComponent implements OnInit {
   /** On init hook */
   ngOnInit(): void {
     this.processCartographicAttributes();
-    this.processEditionStatement();
     this.processIdentifiedBy();
     this.processNotesExceptGeneral();
     this.processNotesGeneral();
     this.processProvisionActivityNote();
     this.processProvisionActivityOriginalDate();
+    this.processSeriesStatement();
     this.processTemporalCoverage();
     this.processTitleVariants();
     this.processWorkAccessPoint();
@@ -133,28 +133,6 @@ export class DocumentDescriptionComponent implements OnInit {
           || ('coordinates' in attribute && 'label' in attribute.coordinates)
         ) {
           this.cartographicAttributes.push(attribute);
-        }
-      });
-    }
-  }
-
-  /** Process edition statement */
-  private processEditionStatement(): void {
-    const metadata = this.record()?.metadata;
-    if ('seriesStatement' in metadata) {
-      metadata.seriesStatement.forEach((element: any) => {
-        if ('_text' in element) {
-          const elementText = element._text;
-          const keys = Object.keys(elementText);
-          const indexDefault = keys.indexOf('default');
-          if (indexDefault > -1) {
-            this.editionStatement.push(elementText.default);
-            keys.splice(indexDefault, 1);
-          }
-
-          keys.forEach(key => {
-            this.editionStatement.push(elementText[key]);
-          });
         }
       });
     }
@@ -224,13 +202,34 @@ export class DocumentDescriptionComponent implements OnInit {
     }
   }
 
-  /** Process provision activity original date */
+  /**
+   * Process provision activity original date, for every type but publication.
+   * The raw provision activities carry a `type`, the `key` of the template filters
+   * only exists once they have been grouped by the `documentProvisionActivity` pipe.
+   */
   private processProvisionActivityOriginalDate(): void {
     const metadata = this.record()?.metadata;
     if ('provisionActivity' in metadata) {
       this.provisionActivityOriginalDate = metadata.provisionActivity
-      .filter((element: any) => element.key !== 'bf:Publication')
+      .filter((provision: any) => provision.type !== 'bf:Publication')
       .filter((provision: any) => 'original_date' in provision)
+    }
+  }
+
+  /**
+   * Process series statement.
+   * The statement of the 'default' language comes first, the translations follow.
+   */
+  private processSeriesStatement(): void {
+    const metadata = this.record()?.metadata;
+    if ('seriesStatement' in metadata) {
+      metadata.seriesStatement.forEach((statement: any) => {
+        const texts = statement._text ?? [];
+        this.seriesStatement.push(
+          ...texts.filter((text: any) => text.language === 'default'),
+          ...texts.filter((text: any) => text.language !== 'default')
+        );
+      });
     }
   }
 
