@@ -20,7 +20,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
             <a [routerLink]="['/records','items','detail', item().pid]">{{ item().barcode }}</a>
           </div>
           @if (getCirculationNoteForAction().length > 0) {
-            <i class="fa-solid fa-bell text-warning" [title]="'Note' | translate"></i>
+            <i class="fa-regular fa-note-sticky text-warning" [title]="'Note' | translate"></i>
           }
         </div>
         @if (isCollapsed()) {
@@ -272,7 +272,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
           @for (note of getCirculationNoteForAction(); track $index) {
             <dt>
-              <i class="fa-solid fa-bell text-warning ui:mr-1"></i>
+              <i class="fa-regular fa-note-sticky text-warning ui:mr-1"></i>
               @if (note.type !== NOTEAPI) {
                 {{ note.type | translate }}
               } @else {
