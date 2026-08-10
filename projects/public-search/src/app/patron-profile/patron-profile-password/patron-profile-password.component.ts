@@ -1,7 +1,8 @@
 // SPDX-FileCopyrightText: Fondation RERO+
 // SPDX-License-Identifier: AGPL-3.0-or-later
 import { Location } from '@angular/common';
-import { ChangeDetectionStrategy, Component, ElementRef, inject, input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, ElementRef, inject, input } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { AbstractControl, ReactiveFormsModule, UntypedFormControl, UntypedFormGroup } from '@angular/forms';
 import { FormlyFieldConfig, FormlyModule } from '@ngx-formly/core';
 import { LoadingBarModule } from '@ngx-loading-bar/core';
@@ -9,8 +10,8 @@ import { _, TranslatePipe, TranslateService } from "@ngx-translate/core";
 import { CONFIG, HttpPendingService } from '@rero/ng-core';
 import { MessageService } from 'primeng/api';
 import { Button } from 'primeng/button';
-import { of } from 'rxjs';
-import { catchError, debounceTime, map } from 'rxjs/operators';
+import { merge, of } from 'rxjs';
+import { catchError, debounceTime, map, take } from 'rxjs/operators';
 import { UserApiService } from '../../api/user-api.service';
 
 export function fieldPasswordMatchValidator(control: AbstractControl) {
@@ -41,6 +42,7 @@ export class PatronProfilePasswordComponent {
   private userApiService: UserApiService = inject(UserApiService);
   private el: ElementRef = inject(ElementRef);
   private messageService: MessageService = inject(MessageService);
+  private readonly destroyRef = inject(DestroyRef);
   readonly httpPending = inject(HttpPendingService);
 
   /** Request referer */
@@ -102,7 +104,7 @@ export class PatronProfilePasswordComponent {
   }];
 
   /** Matching fields between invenio and Angular */
-  private fieldsMatching = {
+  private fieldsMatching: Record<PasswordApiField, PasswordFormField> = {
     password: 'password',
     new_password: 'newPassword',
     new_password_confirm: 'confirmPassword'
@@ -116,12 +118,7 @@ export class PatronProfilePasswordComponent {
     if (this.httpPending.isPending()) { return; }
     this.form.updateValueAndValidity();
     if (this.form.valid === false) {
-      this.messageService.add({
-        severity: 'error',
-        summary: this.translateService.instant('Error'),
-        detail: this.translateService.instant('The form contains errors.'),
-        closable: true
-      });
+      this.showFormError();
       return;
     }
 
@@ -132,7 +129,7 @@ export class PatronProfilePasswordComponent {
     };
 
     this.userApiService.updatePassword(data).pipe(
-      catchError((err: any) =>  of({ success: false, message: err.message, error: err.error?.errors[0] }))
+      catchError((err: any) =>  of({ success: false, message: err.message, error: err.error?.errors?.at(0) }))
     ).subscribe((response: IPasswordResponse) => {
       if (!('success' in response)) {
         this.messageService.add({
@@ -144,9 +141,30 @@ export class PatronProfilePasswordComponent {
         // Close password form and show personal data
         this._redirect();
       } else {
-        // Set error on field
-        const formField = this.fieldsMatching[response.error.field];
-        this.form.get(formField).setErrors({ invalid: { message: response.error.message } });
+        if (!response.error) {
+          this.showFormError();
+          return;
+        }
+
+        // Same-password errors are reported on `password` by the API, but belong to the new password field.
+        const isSamePasswordError = response.error.field === 'password'
+          && data.password === data.new_password;
+        const formField = isSamePasswordError
+          ? 'newPassword'
+          : this.fieldsMatching[response.error.field];
+        const formControl = this.form.get(formField);
+        if (!formControl) {
+          this.showFormError();
+          return;
+        }
+
+        formControl.setErrors({
+          ...formControl.errors,
+          invalid: { message: response.error.message }
+        });
+        if (isSamePasswordError) {
+          this.clearSamePasswordErrorOnChange();
+        }
         // Make focus on error field
         this.el.nativeElement.querySelector(`#${formField}`).focus();
       }
@@ -179,14 +197,44 @@ export class PatronProfilePasswordComponent {
     this._redirect();
   }
 
+  /** Display a generic form-level error. */
+  private showFormError(): void {
+    this.messageService.add({
+      severity: 'error',
+      summary: this.translateService.instant('Error'),
+      detail: this.translateService.instant('The form contains errors.'),
+      closable: true
+    });
+  }
+
+  /** Remove only the same-password server error when either new password field changes. */
+  private clearSamePasswordErrorOnChange(): void {
+    const newPasswordControl = this.form.get('newPassword');
+    const confirmPasswordControl = this.form.get('confirmPassword');
+    if (!newPasswordControl || !confirmPasswordControl) {
+      return;
+    }
+
+    merge(newPasswordControl.valueChanges, confirmPasswordControl.valueChanges)
+      .pipe(take(1), takeUntilDestroyed(this.destroyRef))
+      .subscribe(() => {
+        const errors = { ...newPasswordControl.errors };
+        delete errors.invalid;
+        newPasswordControl.setErrors(Object.keys(errors).length > 0 ? errors : null);
+      });
+  }
+
   /** Redirect to external project */
   private _redirect(): void {
     this.location.back();
   }
 }
 
+type PasswordApiField = 'password' | 'new_password' | 'new_password_confirm';
+type PasswordFormField = 'password' | 'newPassword' | 'confirmPassword';
+
 type IPasswordResponse = {
   success?: boolean;
   message: string;
-  error?: { field: string, message: string };
+  error?: { field: PasswordApiField, message: string };
 }
