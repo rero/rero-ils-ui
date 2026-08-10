@@ -1,10 +1,12 @@
 // SPDX-FileCopyrightText: Fondation RERO+
 // SPDX-License-Identifier: AGPL-3.0-or-later
-import { Component, inject, OnDestroy, OnInit, input, ChangeDetectionStrategy} from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, input, Signal } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { Params, RouterLink } from '@angular/router';
 import { LangChangeEvent, TranslateService } from '@ngx-translate/core';
-import { Subscription } from 'rxjs';
+import { map } from 'rxjs';
 import { Entity } from '../classes/entity';
-import { RouterLink } from '@angular/router';
+import { EntityLinkEntity } from './model/entity-link-model';
 
 @Component({
     selector: 'shared-entity-link',
@@ -13,24 +15,24 @@ import { RouterLink } from '@angular/router';
       <a
         [class]="className()"
         [routerLink]="routerLinkParams()"
-        [queryParams]="queryParams"
-      >{{ linkName }}</a>
+        [queryParams]="queryParams()"
+      >{{ linkName() }}</a>
     } @else {
       <a
         [class]="className()"
-        [attr.href]="externalHrefLink"
-      >{{ linkName }}</a>
+        [attr.href]="externalHrefLink()"
+      >{{ linkName() }}</a>
     }
   `,
     imports: [RouterLink],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class EntityLinkComponent implements OnInit, OnDestroy {
+export class EntityLinkComponent {
 
   private translateService: TranslateService = inject(TranslateService);
 
   /** Entity field metadata */
-  readonly entity = input<any>(undefined);
+  readonly entity = input<EntityLinkEntity | undefined>(undefined);
 
   /** Resource field name */
   readonly resourceName = input<string>(undefined);
@@ -44,52 +46,35 @@ export class EntityLinkComponent implements OnInit, OnDestroy {
   /** Make link external */
   readonly external = input(false);
 
-  /** Link label name */
-  linkName: string;
+  /** Current interface language */
+  private readonly language = toSignal(
+    this.translateService.onLangChange.pipe(map((event: LangChangeEvent) => event.lang)),
+    { initialValue: this.translateService.getCurrentLang() }
+  );
 
-  /** External link href */
-  externalHrefLink: string;
+  /**
+   * Link label, in the current interface language when the entity provides it.
+   * Derived from the `entity` input and not computed once: this component is rendered
+   * inside `@for` blocks tracked by index, so navigating to another record only rebinds
+   * the input, without recreating the component.
+   */
+  readonly linkName: Signal<string> = computed(() => {
+    const entity: EntityLinkEntity = this.entity() ?? {};
+    const accessPoint = `authorized_access_point_${this.language()}`;
+    return accessPoint in entity ? entity[accessPoint] : entity.authorized_access_point;
+  });
 
-  /** Query params */
-  queryParams: object = {};
+  /** Query params of the search this link points to */
+  readonly queryParams: Signal<Params> = computed(() => {
+    const entity: EntityLinkEntity = this.entity() ?? {};
+    const query = 'resource_type' in entity
+      ? `${this.resourceName()}.entity.pids.${entity.resource_type}:${entity.pids[entity.resource_type]}`
+      : `${this.resourceName()}.entity.authorized_access_point_${this.language()}:"${this.linkName()}"`;
+    return { q: query, simple: '0' };
+  });
 
-  subscriptions: Subscription = new Subscription();
-
-  /** OnInit hook */
-  ngOnInit(): void {
-    this.subscriptions.add(
-      this.translateService.onLangChange.subscribe((event: LangChangeEvent) => {
-        this.translateEntity(event.lang);
-      })
-    );
-    this.translateEntity(this.translateService.getCurrentLang());
-  }
-
-  ngOnDestroy(): void {
-    this.subscriptions.unsubscribe();
-  }
-
-  private translateEntity(lang: string): void{
-    const entity = this.entity();
-    this.linkName = `authorized_access_point_${lang}` in entity
-      ? entity[`authorized_access_point_${lang}`]
-      : entity.authorized_access_point;
-    const entityValue = this.entity();
-    if ('resource_type' in entityValue) {
-      const pid = entityValue.pids[entityValue.resource_type];
-      this.queryParams = {
-        q: `${this.resourceName()}.entity.pids.${entityValue.resource_type}:${pid}`,
-        simple: '0',
-      };
-    } else {
-      this.queryParams = {
-        q: `${this.resourceName()}.entity.authorized_access_point_${lang}:"${this.linkName}"`,
-        simple: '0',
-      }
-    }
-    if (this.external()) {
-      // This link is used to redirect to the jinja view of the entity.
-      this.externalHrefLink = Entity.generateHrefLink(this.routerLinkParams(), this.queryParams);
-    }
-  }
+  /** External link href, used to redirect to the jinja view of the entity */
+  readonly externalHrefLink: Signal<string> = computed(() =>
+    Entity.generateHrefLink(this.routerLinkParams(), this.queryParams())
+  );
 }
