@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 import { APP_BASE_HREF, PlatformLocation } from '@angular/common';
-import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { ApplicationConfig, inject, provideAppInitializer, provideZonelessChangeDetection } from '@angular/core';
 import { provideRouter } from '@angular/router';
 import { registerFormlyExtension } from '@app/admin/acquisition/formly/extension';
@@ -24,7 +24,7 @@ export const appConfig: ApplicationConfig = {
   providers: [
     provideZonelessChangeDetection(),
     provideRouter(patronProfileRoutes),
-    provideHttpClient(),
+    provideHttpClient(withInterceptorsFromDi()),
     provideFormlyCore([
       ...withNgCoreFormly() as any,
       {
