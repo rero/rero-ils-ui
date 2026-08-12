@@ -1,7 +1,7 @@
 // SPDX-FileCopyrightText: Fondation RERO+
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { ApplicationConfig, inject, provideAppInitializer, provideZonelessChangeDetection } from '@angular/core';
 import { provideRouter } from '@angular/router';
 import { provideFormlyCore } from '@ngx-formly/core';
@@ -19,7 +19,7 @@ export const appConfig: ApplicationConfig = {
   providers: [
     provideZonelessChangeDetection(),
     provideRouter([]),
-    provideHttpClient(),
+    provideHttpClient(withInterceptorsFromDi()),
     providePrimeNG(primeNGConfig),
     provideTranslateService({
       loader: provideTranslateLoader(AppTranslateLoader),

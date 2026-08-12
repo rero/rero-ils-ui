@@ -3,13 +3,13 @@
 
 import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { LoadingBarHttpClientModule } from '@ngx-loading-bar/http-client';
+import { LoadingBarModule } from '@ngx-loading-bar/core';
 import { ToastModule } from 'primeng/toast';
 
 @Component({
     selector: 'public-patron-profile-app',
     templateUrl: './app.component.html',
-    imports: [RouterOutlet, LoadingBarHttpClientModule, ToastModule]
+    imports: [RouterOutlet, LoadingBarModule, ToastModule]
 })
 export class AppComponent {
 

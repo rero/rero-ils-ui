@@ -1,9 +1,10 @@
 // SPDX-FileCopyrightText: Fondation RERO+
 // SPDX-License-Identifier: AGPL-3.0-or-later
-import { provideHttpClient, withInterceptors } from '@angular/common/http';
+import { provideHttpClient, withInterceptors, withInterceptorsFromDi } from '@angular/common/http';
 import { ApplicationConfig, importProvidersFrom, inject, LOCALE_ID, provideAppInitializer, provideZonelessChangeDetection } from '@angular/core';
 import { provideRouter } from '@angular/router';
 import { FormlyModule, provideFormlyCore } from '@ngx-formly/core';
+import { provideLoadingBarInterceptor } from '@ngx-loading-bar/http-client';
 import { provideTranslateLoader, provideTranslateService, TranslateService } from '@ngx-translate/core';
 import { CoreConfigService, httpPendingInterceptor, NgCoreTranslateService, primeNGConfig, TranslateLanguageService, TruncateTextPipe, withNgCoreFormly } from '@rero/ng-core';
 import { AppTranslateLanguageService, AppTranslateLoader, AppTranslateService, MainTitlePipe } from '@rero/shared';
@@ -17,7 +18,8 @@ export const appConfig: ApplicationConfig = {
   providers: [
     provideZonelessChangeDetection(),
     provideRouter(APP_ROUTES),
-    provideHttpClient(withInterceptors([httpPendingInterceptor])),
+    provideHttpClient(withInterceptors([httpPendingInterceptor]), withInterceptorsFromDi()),
+    provideLoadingBarInterceptor(),
     provideTranslateService({
       loader: provideTranslateLoader(AppTranslateLoader),
     }),
