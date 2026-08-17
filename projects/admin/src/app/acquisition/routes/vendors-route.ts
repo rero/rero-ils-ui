@@ -94,13 +94,13 @@ class VendorsRoute extends BaseRoute implements RouteDataTypesInterface {
             icon: 'fa-solid fa-arrow-down-wide-short',
           },
           {
-            label: _('Name (asc)'),
+            label: _('Name (A-Z)'),
             value: 'name_asc',
             defaultNoQuery: true,
             icon: 'fa-solid fa-arrow-down-a-z',
           },
           {
-            label: _('Name (desc)'),
+            label: _('Name (Z-A)'),
             value: 'name_desc',
             icon: 'fa-solid fa-arrow-down-z-a',
           },
