@@ -3,7 +3,7 @@
 import { computed, inject, type Signal } from '@angular/core';
 import { patchState, signalStoreFeature, type, withComputed, withHooks, withMethods, withState } from '@ngrx/signals';
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
-import { TranslateService } from '@ngx-translate/core';
+import { _, TranslateService } from '@ngx-translate/core';
 import { CONFIG } from '@rero/ng-core';
 import { MessageService } from 'primeng/api';
 import { catchError, concatMap, exhaustMap, finalize, forkJoin, from, map, of, pipe, switchMap, tap, toArray } from 'rxjs';
@@ -106,19 +106,34 @@ export function withLoansFeature<_>() {
         if (success) {
           messageService.add({
             severity: 'success',
-            summary: translateService.instant('Success'),
-            detail: translateService.instant('The item has been renewed.'),
+            summary: translateService.instant(_('Success')),
+            detail: translateService.instant(_('The item has been renewed.')),
             life: CONFIG.MESSAGE_LIFE,
           });
         } else {
           messageService.add({
             severity: 'error',
-            summary: translateService.instant('Error'),
-            detail: translateService.instant('Error during the renewal of the item.'),
+            summary: translateService.instant(_('Error')),
+            detail: translateService.instant(_('Error during the renewal of the item.')),
             closable: true,
           });
         }
       };
+
+      /**
+       * Sentences reporting a bulk renewal outcome.
+       * One key per grammatical number, as everywhere else in the catalogue:
+       * ngx-translate has no plural support, only interpolation.
+       */
+      const renewedSentence = (count: number) => translateService.instant(
+        count === 1 ? _('{{ count }} item was renewed.') : _('{{ count }} items were renewed.'),
+        { count }
+      );
+
+      const notRenewedSentence = (count: number) => translateService.instant(
+        count === 1 ? _('{{ count }} item could not be renewed.') : _('{{ count }} items could not be renewed.'),
+        { count }
+      );
 
       /**
        * Load all loans, then enrich each loan with its renewal permission.
@@ -241,10 +256,10 @@ export function withLoansFeature<_>() {
                 const success = failedCount === 0;
                 messageService.add({
                   severity: success ? 'success' : 'warn',
-                  summary: translateService.instant(success ? 'Success' : 'Warning'),
+                  summary: translateService.instant(success ? _('Success') : _('Warning')),
                   detail: success
-                    ? `${renewedCount} items were renewed.`
-                    : `${renewedCount} items were renewed ; ${failedCount} items could not be renewed.`,
+                    ? renewedSentence(renewedCount)
+                    : `${renewedSentence(renewedCount)} ${notRenewedSentence(failedCount)}`,
                   life: success ? CONFIG.MESSAGE_LIFE : undefined,
                   closable: !success,
                 });
@@ -252,8 +267,8 @@ export function withLoansFeature<_>() {
               catchError(() => {
                 messageService.add({
                   severity: 'error',
-                  summary: translateService.instant('Error'),
-                  detail: translateService.instant('Error during the renewal of the items.'),
+                  summary: translateService.instant(_('Error')),
+                  detail: translateService.instant(_('Error during the renewal of the items.')),
                   closable: true,
                 });
                 return of([]);
