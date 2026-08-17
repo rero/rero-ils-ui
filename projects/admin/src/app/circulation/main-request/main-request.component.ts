@@ -79,14 +79,14 @@ export class MainRequestComponent {
   readonly sortingCriteria = computed<SortOption[]>(() => {
     this.currentLanguage();
     return [
-      {value: 'requestdate', label: this.translateService.instant('Request date'), icon: 'fa-solid fa-arrow-down-1-9'},
-      {value: '-requestdate', label: this.translateService.instant('Request date (desc)'), icon: 'fa-solid fa-arrow-down-9-1'},
-      {value: 'callnumber', label: this.translateService.instant('Call number'), icon: 'fa-solid fa-arrow-down-a-z'},
-      {value: '-callnumber', label: this.translateService.instant('Call number (desc)'), icon: 'fa-solid fa-arrow-down-z-a'},
-      {value: 'location', label: this.translateService.instant('Location'), icon: 'fa-solid fa-arrow-down-a-z'},
-      {value: '-location', label: this.translateService.instant('Location (desc)'), icon: 'fa-solid fa-arrow-down-z-a'},
-      {value: 'pickuplocation', label: this.translateService.instant('Pick-up location'), icon: 'fa-solid fa-arrow-down-a-z'},
-      {value: '-pickuplocation', label: this.translateService.instant('Pick-up location (desc)'), icon: 'fa-solid fa-arrow-down-z-a'},
+      {value: 'requestdate', label: this.translateService.instant('Request date (oldest)'), icon: 'fa-solid fa-arrow-down-1-9'},
+      {value: '-requestdate', label: this.translateService.instant('Request date (newest)'), icon: 'fa-solid fa-arrow-down-9-1'},
+      {value: 'callnumber', label: this.translateService.instant('Call number (A-Z)'), icon: 'fa-solid fa-arrow-down-a-z'},
+      {value: '-callnumber', label: this.translateService.instant('Call number (Z-A)'), icon: 'fa-solid fa-arrow-down-z-a'},
+      {value: 'location', label: this.translateService.instant('Location (A-Z)'), icon: 'fa-solid fa-arrow-down-a-z'},
+      {value: '-location', label: this.translateService.instant('Location (Z-A)'), icon: 'fa-solid fa-arrow-down-z-a'},
+      {value: 'pickuplocation', label: this.translateService.instant('Pick-up location (A-Z)'), icon: 'fa-solid fa-arrow-down-a-z'},
+      {value: '-pickuplocation', label: this.translateService.instant('Pick-up location (Z-A)'), icon: 'fa-solid fa-arrow-down-z-a'},
     ];
   });
 

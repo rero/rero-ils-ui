@@ -79,16 +79,13 @@ export class OrderDetailViewComponent {
   readonly sortingCriteria = computed<SortOption[]>(() => {
     this.currentLanguage();
     return [
-      { value: 'documenttitle', label: this.translateService.instant('Title'), icon: 'fa-solid fa-arrow-down-a-z' },
-      { value: '-documenttitle', label: this.translateService.instant('Title (desc)'), icon: 'fa-solid fa-arrow-down-z-a' },
-      { value: 'priority', label: this.translateService.instant('Priority'), icon: 'fa-solid fa-arrow-down-1-9' },
-      { value: '-priority', label: this.translateService.instant('Priority (desc)'), icon: 'fa-solid fa-arrow-down-9-1' },
-      { value: 'status', label: this.translateService.instant('Status'), icon: 'fa-solid fa-arrow-down-a-z' },
-      { value: '-status', label: this.translateService.instant('Status (desc)'), icon: 'fa-solid fa-arrow-down-z-a' },
-      { value: 'created', label: this.translateService.instant('Created'), icon: 'fa-solid fa-arrow-down-1-9' },
-      { value: '-created', label: this.translateService.instant('Created (desc)'), icon: 'fa-solid fa-arrow-down-9-1' },
-      { value: 'updated', label: this.translateService.instant('Updated'), icon: 'fa-solid fa-arrow-down-1-9' },
-      { value: '-updated', label: this.translateService.instant('Updated (desc)'), icon: 'fa-solid fa-arrow-down-9-1' },
+      { value: 'documenttitle', label: this.translateService.instant('Title (A-Z)'), icon: 'fa-solid fa-arrow-down-a-z' },
+      { value: '-priority', label: this.translateService.instant('Priority (highest)'), icon: 'fa-solid fa-arrow-down-9-1' },
+      { value: 'status', label: this.translateService.instant('Status (A-Z)'), icon: 'fa-solid fa-arrow-down-a-z' },
+      { value: 'created', label: this.translateService.instant('Created (oldest)'), icon: 'fa-solid fa-arrow-down-1-9' },
+      { value: '-created', label: this.translateService.instant('Created (newest)'), icon: 'fa-solid fa-arrow-down-9-1' },
+      { value: 'updated', label: this.translateService.instant('Updated (oldest)'), icon: 'fa-solid fa-arrow-down-1-9' },
+      { value: '-updated', label: this.translateService.instant('Updated (newest)'), icon: 'fa-solid fa-arrow-down-9-1' },
     ];
   });
 

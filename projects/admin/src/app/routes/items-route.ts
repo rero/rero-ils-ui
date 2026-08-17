@@ -201,32 +201,32 @@ class ItemsRoute extends BaseRoute implements RouteDataTypesInterface {
             icon: 'fa-solid fa-arrow-down-wide-short',
           },
           {
-            label: _('Barcode'),
+            label: _('Barcode (A-Z)'),
             value: 'barcode',
             icon: 'fa-solid fa-arrow-down-a-z',
           },
           {
-            label: _('Barcode (desc)'),
+            label: _('Barcode (Z-A)'),
             value: '-barcode',
             icon: 'fa-solid fa-arrow-down-z-a',
           },
           {
-            label: _('Call number'),
+            label: _('Call number (A-Z)'),
             value: 'call_number',
             icon: 'fa-solid fa-arrow-down-a-z',
           },
           {
-            label: _('Call number (desc)'),
+            label: _('Call number (Z-A)'),
             value: '-call_number',
             icon: 'fa-solid fa-arrow-down-z-a',
           },
           {
-            label: _('Second call number'),
+            label: _('Second call number (A-Z)'),
             value: 'second_call_number',
             icon: 'fa-solid fa-arrow-down-a-z',
           },
           {
-            label: _('Second call number (desc)'),
+            label: _('Second call number (Z-A)'),
             value: '-second_call_number',
             icon: 'fa-solid fa-arrow-down-z-a',
           },
