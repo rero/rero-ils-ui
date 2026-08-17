@@ -1,0 +1,97 @@
+# Continuous localization buffer. The CI owns the three message templates
+# (projects/<app>/translations/messages.json), Weblate owns the language files
+# (projects/<app>/src/assets/rero-ils-ui/<app>/i18n/<lang>.json): disjoint file
+# sets, so a CI<->Weblate conflict is impossible by construction.
+#
+# Keep the templates OUTSIDE src/assets/ -- inside the Weblate filemask they need
+# a language_regex workaround, and under src/assets/ they ship in dist/ and in the
+# npm package for nothing. Do not add update_catalog: Weblate derives the string
+# list from the template, and the "Remove blank strings" add-on gives the runtime
+# fallback to English.
+#
+# The buffer is squash-merged into `staging` once per release, and `staging` must
+# be merged straight back into `translations` -- until that resync lands, the merge
+# base is stale and the next nightly run conflicts on the language files.
+#
+# No rebase, no force-push, no branch lock.
+
+name: Extract translations
+
+on:
+  schedule:
+    - cron: '0 2 * * *' # every day at 02:00 UTC (aligns with Weblate's 24h commit window)
+  workflow_dispatch:
+
+concurrency:
+  group: extract-translations # one run at a time -> no CI<->CI race
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  extract:
+    # Never run on forks: the job pushes to rero/rero-ils-ui and would always fail
+    # elsewhere. Skipped (not failed) on any other repository.
+    if: github.repository == 'rero/rero-ils-ui'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: translations
+          fetch-depth: 0
+          persist-credentials: false # token is configured just before the push (see below)
+
+      # Merge before installing, so the extraction runs against staging's code
+      # *and* staging's lockfile.
+      - name: Bring staging code into the buffer
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git fetch origin staging
+          git merge --no-edit origin/staging # MERGE (never rebase) -> translations is never rewritten
+
+      - name: Set up Node.js
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v6
+        with:
+          node-version: 24
+
+      - name: Enable Corepack
+        run: corepack enable
+
+      # No .ng-core-ref dance (unlike build): extraction only parses this
+      # repository's own sources, so the published @rero/ng-core is enough.
+      - name: Install dependencies
+        run: pnpm ci
+
+      - name: Extract message templates
+        run: pnpm run extract_messages # regenerates the 3 messages.json (source keys only; Weblate owns <lang>.json)
+
+      - name: Commit & push if a template changed
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          TEMPLATES=(
+            'projects/shared/translations/messages.json'
+            'projects/admin/translations/messages.json'
+            'projects/public-search/translations/messages.json'
+          )
+          # Unlike pybabel, ngx-translate-extract writes no timestamp header, so a
+          # plain diff is enough to skip content-free commits.
+          if git diff --quiet -- "${TEMPLATES[@]}"; then
+            echo "No template changes."; exit 0
+          fi
+          git add -- "${TEMPLATES[@]}"
+          git commit -m "chore(i18n): extract messages"
+          # Set the token only now, so it is never in git config during dependency install.
+          git remote set-url origin "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
+          # Absorb any concurrent Weblate commit (merge, never rebase), then push; retry the race.
+          for i in 1 2 3; do
+            git fetch origin translations \
+              && git merge --no-edit origin/translations \
+              && git push origin translations && exit 0
+            git merge --abort 2>/dev/null || true
+            echo "attempt $i failed, retrying"; sleep 5
+          done
+          echo "::error::failed to push to translations after 3 attempts"; exit 1

@@ -3,7 +3,7 @@
 import { computed, inject, type Signal } from '@angular/core';
 import { patchState, signalStoreFeature, type, withHooks, withMethods, withState } from '@ngrx/signals';
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
-import { TranslateService } from '@ngx-translate/core';
+import { _, TranslateService } from '@ngx-translate/core';
 import { CONFIG } from '@rero/ng-core';
 import { nextPager, Pager } from '@rero/shared';
 import { MessageService } from 'primeng/api';
@@ -42,15 +42,15 @@ const notifyCancellation = (
   if (success) {
     messageService.add({
       severity: 'success',
-      summary: translateService.instant('Success'),
-      detail: translateService.instant('The request has been cancelled.'),
+      summary: translateService.instant(_('Success')),
+      detail: translateService.instant(_('The request has been cancelled.')),
       life: CONFIG.MESSAGE_LIFE,
     });
   } else {
     messageService.add({
       severity: 'error',
-      summary: translateService.instant('Error'),
-      detail: translateService.instant('Error during the cancellation of the request.'),
+      summary: translateService.instant(_('Error')),
+      detail: translateService.instant(_('Error during the cancellation of the request.')),
       closable: true,
     });
   }
