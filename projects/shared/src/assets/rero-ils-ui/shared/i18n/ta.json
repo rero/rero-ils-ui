@@ -66,8 +66,6 @@
   "request": "கோரிக்கை",
   "requests": "கோரிக்கைகள்",
   "vol": "தொகுதி",
-  "{{ counter }} hidden operation log": "{{ counter }} மறைக்கப்பட்ட செயல்பாட்டு பதிவு",
-  "{{ counter }} hidden operation logs": "{{ counter }} மறைக்கப்பட்ட செயல்பாட்டு பதிவுகள்",
   "{{ total }} results": "{{ total }} முடிவுகள்",
   "{{ total }} results of {{ remoteTotal }}": "{{{{ total }}}} முடிவுகள்"
 }

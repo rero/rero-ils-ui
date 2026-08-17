@@ -66,8 +66,6 @@
   "request": "Bestellung",
   "requests": "Bestellungen",
   "vol": "Bd",
-  "{{ counter }} hidden operation log": "{{ counter }} versteckt Bedienprotokoll",
-  "{{ counter }} hidden operation logs": "{{ counter }} versteckte Bedienprotkolle",
   "{{ total }} results": "{{ total }} Ergebnisse",
   "{{ total }} results of {{ remoteTotal }}": "{{ total }} Ergebnisse von {{ remoteTotal }}"
 }

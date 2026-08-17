@@ -66,8 +66,6 @@
   "request": "request",
   "requests": "requests",
   "vol": "vol",
-  "{{ counter }} hidden operation log": "{{ counter }} hidden operation log",
-  "{{ counter }} hidden operation logs": "{{ counter }} hidden operation logs",
   "{{ total }} results": "{{ total }} results",
   "{{ total }} results of {{ remoteTotal }}": "{{ total }} results of {{ remoteTotal }}"
 }
