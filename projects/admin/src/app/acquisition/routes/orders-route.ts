@@ -120,14 +120,9 @@ class OrdersRoute extends BaseRoute implements RouteDataTypesInterface {
           icon: 'fa-solid fa-arrow-down-wide-short',
         },
         {
-          label: _('Reference (asc)'),
+          label: _('Reference (A-Z)'),
           value: 'reference_asc',
           icon: 'fa-solid fa-arrow-down-a-z',
-        },
-        {
-          label: _('Reference (desc)'),
-          value: 'reference_desc',
-          icon: 'fa-solid fa-arrow-down-z-a',
         },
         {
           label: _('Order date (newest)'),

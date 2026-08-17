@@ -84,10 +84,10 @@ class PatronTransactionEventsRoute extends BaseRoute implements RouteDataTypesIn
           Accept: 'application/rero+json',
         },
         sortOptions: [
-          { label: _('Amount (desc)'), value: '-amount', icon: 'fa-solid fa-arrow-down-9-1' },
-          { label: _('Amount (asc)'), value: 'amount', icon: 'fa-solid fa-arrow-down-1-9' },
-          { label: _('Transaction date (desc)'), value: '-created', defaultQuery: true, icon: 'fa-solid fa-arrow-down-wide-short' },
-          { label: _('Transaction date (asc)'), value: 'created', icon: 'fa-solid fa-arrow-down-short-wide' },
+          { label: _('Amount (highest)'), value: '-amount', icon: 'fa-solid fa-arrow-down-9-1' },
+          { label: _('Amount (lowest)'), value: 'amount', icon: 'fa-solid fa-arrow-down-1-9' },
+          { label: _('Transaction date (newest)'), value: '-created', defaultQuery: true, icon: 'fa-solid fa-arrow-down-wide-short' },
+          { label: _('Transaction date (oldest)'), value: 'created', icon: 'fa-solid fa-arrow-down-short-wide' },
         ],
         exportFormats: [
           {
