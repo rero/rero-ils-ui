@@ -7,12 +7,12 @@ import { map } from "rxjs/operators";
 import { Bind } from "primeng/bind";
 import { TableModule } from "primeng/table";
 import { ButtonDirective } from "primeng/button";
-import { TranslateDirective } from "@ngx-translate/core";
+import { TranslateDirective, TranslatePipe } from "@ngx-translate/core";
 
 @Component({
     selector: "admin-reports-list",
     templateUrl: "./reports-list.component.html",
-    imports: [Bind, TableModule, ButtonDirective, TranslateDirective, DateTranslatePipe],
+    imports: [Bind, TableModule, ButtonDirective, TranslateDirective, TranslatePipe, DateTranslatePipe],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ReportsListComponent {
