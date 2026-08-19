@@ -5,7 +5,7 @@ import { ChangeDetectionStrategy, Component, computed, effect, inject, Injector,
 import { FormsModule } from '@angular/forms';
 import { _, TranslatePipe } from "@ngx-translate/core";
 import type { EsResult, RecordData } from '@rero/ng-core';
-import { DateTranslatePipe } from '@rero/ng-core';
+import { DateTranslatePipe, searchTotalValue } from '@rero/ng-core';
 import { Bind } from 'primeng/bind';
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { PaginatorState } from 'primeng/paginator';
@@ -59,7 +59,7 @@ export class OperationLogsComponent implements OnInit {
   readonly operationLogsResult = signal<EsResult | undefined>(undefined);
 
   /** Total of records */
-  readonly recordTotals = computed(() => this.operationLogsResult()?.hits.total.value ?? 0);
+  readonly recordTotals = computed(() => searchTotalValue(this.operationLogsResult()?.hits.total));
   /** Array of records */
   readonly records = computed<RecordData[]>(() => this.operationLogsResult()?.hits.hits ?? []);
 
