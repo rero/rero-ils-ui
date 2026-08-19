@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 import { ChangeDetectionStrategy, Component, effect, inject, OnInit, signal, untracked } from '@angular/core';
 import { _, TranslateDirective } from "@ngx-translate/core";
+import { searchTotalValue } from '@rero/ng-core';
 import { Paginator, ShowMorePagerComponent } from '@rero/shared';
 import { PanelModule } from 'primeng/panel';
 import { OperationLogsApiService } from '../../api/operation-logs-api.service';
@@ -65,7 +66,7 @@ export class PatronProfileHistoriesComponent implements OnInit {
     if (!this.paginator) return;
     this._historyQuery(1).subscribe((response) => {
       if (!('hits' in response)) return;
-      this.paginator.setRecordsCount(response.hits.total.value);
+      this.paginator.setRecordsCount(searchTotalValue(response.hits.total));
       this.records.set(response.hits.hits);
       this.loaded.set(true);
     });

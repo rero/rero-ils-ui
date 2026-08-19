@@ -4,7 +4,7 @@ import { computed, inject, type Signal } from '@angular/core';
 import { patchState, signalStoreFeature, type, withHooks, withMethods, withState } from '@ngrx/signals';
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
 import { _, TranslateService } from '@ngx-translate/core';
-import { CONFIG } from '@rero/ng-core';
+import { CONFIG, searchTotalValue } from '@rero/ng-core';
 import { nextPager, Pager } from '@rero/shared';
 import { MessageService } from 'primeng/api';
 import { PaginatorState } from 'primeng/paginator';
@@ -107,7 +107,7 @@ export function withRequestsFeature<_>() {
                 if (!('hits' in response)) return;
                 patchState(store, {
                   requests: response.hits.hits,
-                  requestsTotal: response.hits.total.value,
+                  requestsTotal: searchTotalValue(response.hits.total),
                 });
               }),
               catchError(error => {

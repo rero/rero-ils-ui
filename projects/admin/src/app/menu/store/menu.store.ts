@@ -5,6 +5,7 @@ import { computed, inject } from '@angular/core';
 import { toObservable } from '@angular/core/rxjs-interop';
 import { TranslateService } from '@ngx-translate/core';
 import type { EsResult } from '@rero/ng-core';
+import { searchTotalValue } from '@rero/ng-core';
 import { AppStore, PERMISSION_OPERATOR } from '@rero/shared';
 import { patchState, signalStore, withComputed, withHooks, withMethods, withState } from '@ngrx/signals';
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
@@ -209,7 +210,7 @@ export const MenuStore = signalStore(
             return of([] as LibraryRecord[]);
           }
           return libraryApiService.findByLibrariesPidAndOrderBy$(pids).pipe(
-            map((results: EsResult) => results.hits.total.value > 0
+            map((results: EsResult) => searchTotalValue(results.hits.total) > 0
               ? results.hits.hits.map((library) => ({
                 metadata: {
                   pid: String(library.metadata['pid']),
