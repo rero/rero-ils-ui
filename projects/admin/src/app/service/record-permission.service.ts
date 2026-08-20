@@ -64,7 +64,7 @@ export class RecordPermissionService {
         Object.keys(reasons.links).forEach(link => {
           const message = (link in pluralDict)
             ? translatePlural.transform(reasons.links[link], pluralDict[link], this.translateService.getCurrentLang())
-            : `${reasons.links[link][link]} ${link}`;
+            : `${reasons.links[link]} ${link}`;
           messages.push('- ' + message);
         });
       }
@@ -152,10 +152,6 @@ export class RecordPermissionService {
         "=1": this.translateService.instant("1 acquisition account attached."),
         other: this.translateService.instant("# acquisition accounts attached."),
       },
-      budgets: {
-        "=1": this.translateService.instant("1 budget attached."),
-        other: this.translateService.instant("# budgets attached."),
-      },
       circ_policies: {
         "=1": this.translateService.instant("1 circulation policy attached."),
         other: this.translateService.instant("# circulation policies attached."),
@@ -180,9 +176,9 @@ export class RecordPermissionService {
         "=1": this.translateService.instant("1 holding attached."),
         other: this.translateService.instant("# holdings attached."),
       },
-      item_types: {
-        "=1": this.translateService.instant("1 item type attached."),
-        other: this.translateService.instant("# item types attached."),
+      ill_requests: {
+        "=1": this.translateService.instant("1 ILL request attached."),
+        other: this.translateService.instant("# ILL requests attached."),
       },
       items: {
         "=1": this.translateService.instant("1 item attached."),
@@ -204,13 +200,9 @@ export class RecordPermissionService {
         "=1": this.translateService.instant("1 location attached."),
         other: this.translateService.instant("# locations attached."),
       },
-      organisations: {
-        "=1": this.translateService.instant("1 organisation attached."),
-        other: this.translateService.instant("# organisations attached."),
-      },
-      patron_types: {
-        "=1": this.translateService.instant("1 patron type attached."),
-        other: this.translateService.instant("# patron types attached."),
+      migrations: {
+        "=1": this.translateService.instant("1 migration attached."),
+        other: this.translateService.instant("# migrations attached."),
       },
       patrons: {
         "=1": this.translateService.instant("1 patron attached."),
