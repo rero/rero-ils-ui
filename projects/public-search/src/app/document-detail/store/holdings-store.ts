@@ -13,7 +13,7 @@ type HoldingsState = {
   holdings: EsRecord[],
   total: number;
   documentPid: string;
-  filteredLibrary: number[];
+  filteredLibrary: string[];
 };
 
 

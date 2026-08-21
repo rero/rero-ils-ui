@@ -15,6 +15,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
       [fluid]="true"
       [maxSelectedLabels]="2"
       [placeholder]="'Filter by library'|translate"
+      [ngModel]="store.filteredLibrary()"
       (onChange)="store.setLibraryFilter($event)"
     />
   </div>

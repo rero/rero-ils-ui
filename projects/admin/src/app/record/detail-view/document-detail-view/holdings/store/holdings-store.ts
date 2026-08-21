@@ -15,7 +15,7 @@ type HoldingsState = {
   record: EsRecord | undefined;
   holdings: EsRecord[];
   total: number;
-  filteredLibrary: number[];
+  filteredLibrary: string[];
 }
 
 export const initialHoldingsState: HoldingsState = {
@@ -71,8 +71,19 @@ export const HoldingsStore = signalStore(
     })
   })),
   withMethods((store) => ({
+    /**
+     * Set the document whose holdings are displayed.
+     * The store outlives the navigation to another document, as the detail view only
+     * rebinds its inputs: every document related state has to be dropped explicitly,
+     * otherwise the holdings and the library filter of the previous document remain.
+     * @param document - the document to display the holdings of
+     */
     setDocument(document: EsRecord) {
-      patchState(store, { document });
+      const isAnotherDocument = store.document()?.metadata?.pid !== document?.metadata?.pid;
+      patchState(store, isAnotherDocument
+        ? { ...initialHoldingsState, document }
+        : { document }
+      );
     },
     setLibraryFilter(filter: MultiSelectChangeEvent) {
       patchState(store, { filteredLibrary: filter.value });

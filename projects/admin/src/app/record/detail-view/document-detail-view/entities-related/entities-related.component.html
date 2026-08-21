@@ -3,7 +3,7 @@ SPDX-FileCopyrightText: Fondation RERO+
 SPDX-License-Identifier: AGPL-3.0-or-later
 -->
 <div class="ui:py-2">
-  @for (field of entities | keyvalue; track $index) {
+  @for (field of entities() | keyvalue; track $index) {
     <dl class="metadata ui:odd:bg-surface-50">
       <dt>{{ field.key | translate |ucfirst }}</dt>
       <dd>

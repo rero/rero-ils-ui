@@ -18,7 +18,7 @@ import { CirculationItemScanComponent } from './circulation-log/circulation-item
 import { CirculationLogLoanComponent } from './circulation-log/circulation-log-loan/circulation-log-loan.component';
 import { Button } from 'primeng/button';
 import { TitleCasePipe } from '@angular/common';
-import { DateTranslatePipe } from '@rero/ng-core';
+import { DateTranslatePipe, searchTotalValue } from '@rero/ng-core';
 import { CirculationLogRecordTypePipe } from './pipe/circulation-log-record-type.pipe';
 
 @Component({
@@ -84,7 +84,7 @@ export class CirculationLogsComponent implements OnInit, OnDestroy {
         switchMap(() => this.circulationLogsQuery(1))
       ).subscribe((response: EsResult) => {
         this.page.set(1);
-        this.recordsTotal.set(response.hits.total.value);
+        this.recordsTotal.set(searchTotalValue(response.hits.total));
         this.records.set(response.hits.hits);
         this.loadedRecord.set(true);
       })
