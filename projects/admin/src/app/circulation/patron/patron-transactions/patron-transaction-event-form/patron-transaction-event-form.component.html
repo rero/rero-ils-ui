@@ -3,10 +3,15 @@ SPDX-FileCopyrightText: Fondation RERO+
 SPDX-License-Identifier: AGPL-3.0-or-later
 -->
 @if (transactions) {
-  <form [formGroup]="form" (ngSubmit)="onSubmitForm()">
+  <form class="ui:block ui:w-full" [formGroup]="form" (ngSubmit)="onSubmitForm()">
     <formly-form [form]="form" [fields]="formFields" [model]="model" />
 
-    <p-scrollPanel class="ui:my-6 ui:w-full ui:max-h-[500px]">
+    <div
+      class="ui:my-6 ui:w-full ui:max-h-[500px] ui:overflow-x-hidden ui:overflow-y-auto"
+      tabindex="0"
+      role="region"
+      [attr.aria-label]="'Transaction details' | translate"
+    >
     @for (transaction of transactions; track transaction.pid) {
       <p-panel class="ui:mb-2" [header]="transaction.type|translate">
         <div class="ui:ml-4 ui:mb-2">
@@ -27,11 +32,10 @@ SPDX-License-Identifier: AGPL-3.0-or-later
         </div>
       </p-panel>
     }
-    </p-scrollPanel>
+    </div>
 
-    <div class="ui:flex ui:justify-end">
+    <div class="ui:flex ui:w-full ui:justify-end">
       <p-button type="submit" [label]="'Save'|translate" [disabled]="this.form.status !== 'VALID' || httpPending.isPending()" />
     </div>
   </form>
 }
-
