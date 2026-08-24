@@ -11,10 +11,15 @@ SPDX-License-Identifier: AGPL-3.0-or-later
           {{ t.creation_date | dateTranslate :'shortDate' }}
         </div>
       </div>
-      <div class="ui:col-span-3">{{ t.type | translate }}</div>
-      <div class="ui:col-span-3">
+      <div class="ui:col-span-2">{{ t.type | translate }}</div>
+      <div class="ui:col-span-2">
         @if (t.library) {
           <span>{{ t.library.pid | getRecord: 'libraries' : 'field' : 'name' | async }}</span>
+        }
+      </div>
+      <div class="ui:col-span-2">
+        @if (t.transaction_library && t.transaction_library?.pid !== t.library?.pid) {
+          <span>{{ t.transaction_library.pid | getRecord: 'libraries' : 'field' : 'name' | async }}</span>
         }
       </div>
       <div class="ui:col-span-2 ui:flex ui:justify-end">{{ transactionAmount() | currency: organisation.default_currency }}</div>
@@ -54,4 +59,3 @@ SPDX-License-Identifier: AGPL-3.0-or-later
     }
   </div>
 }
-

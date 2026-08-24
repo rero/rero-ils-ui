@@ -27,6 +27,7 @@ export class PatronTransaction {
   note?: string = null;
   document?: any = null;
   library?: any = null;
+  transaction_library?: any = null;
   loan?: any = null;
   patron: any = null;
 
