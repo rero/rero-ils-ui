@@ -201,13 +201,14 @@ export const OrderDetailStore = signalStore(
           store.loadHistory(pid);
         });
 
-        // Remove deleted order line from state optimistically.
+        // Remove deleted order line from state and reload the order to refresh financial data.
         effect(() => {
           const line = acqOrderService.lastDeletedOrderLine();
           if (!line) return;
           patchState(store, {
             orderLines: untracked(() => store.orderLines()).filter(l => l.pid !== line.pid),
           });
+          store.reloadOrder(untracked(() => store.order()?.pid));
         });
 
         // Remove deleted receipt from state and reload the order to refresh financial data.

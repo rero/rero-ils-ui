@@ -576,14 +576,16 @@ describe('OrderDetailStore', () => {
       expect(store.orderLines()).toEqual([]);
     });
 
-    it('should leave account_statement unchanged (server reload will update it)', () => {
+    it('should call reloadOrder after order line deletion', () => {
       const store = setupStore();
       store.setFromRecord({ metadata: mockOrder });
-      TestBed.tick();
+      TestBed.tick(); // let order-change effect run first
+      vi.clearAllMocks(); // reset call counts before the deletion
+      acqOrderServiceSpy.getOrder.mockReturnValue(of(mockOrder));
 
       lastDeletedOrderLine.set(mockOrderLine);
       TestBed.tick();
-      expect(store.order()?.account_statement.provisional.total_amount).toBe(100);
+      expect(acqOrderServiceSpy.getOrder).toHaveBeenCalledWith('1', 1);
     });
   });
 

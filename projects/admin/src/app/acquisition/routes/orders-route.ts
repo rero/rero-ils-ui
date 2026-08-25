@@ -2,6 +2,7 @@
 // SPDX-FileCopyrightText: UCLouvain
 // SPDX-License-Identifier: AGPL-3.0-or-later
 import { inject } from '@angular/core';
+import { toObservable } from '@angular/core/rxjs-interop';
 import { ResolveFn, Routes } from '@angular/router';
 import { _ } from '@ngx-translate/core';
 import {
@@ -16,11 +17,13 @@ import {
   RouteDataTypesInterface,
 } from '@rero/ng-core';
 import { PERMISSIONS, PERMISSION_OPERATOR } from '@rero/shared';
-import { Observable, map, of } from 'rxjs';
+import { Observable, filter, map, merge, of, skip, switchMap } from 'rxjs';
 import { acqOrderLineGuard } from '../../guard/acq-order-line.guard';
 import { CAN_ACCESS_ACTIONS, canAccessGuard } from '../../guard/can-access.guard';
 import { permissionGuard } from '../../guard/permission.guard';
 import { BaseRoute } from '../../routes/base-route';
+import { AcqReceiptApiService } from '../api/acq-receipt-api.service';
+import { IAcqReceipt } from '../classes/receipt';
 import { OrderBriefViewComponent } from '../components/order/order-brief-view/order-brief-view.component';
 import { OrderDetailViewComponent } from '../components/order/order-detail-view/order-detail-view.component';
 import { OrderReceiptViewComponent } from '../components/receipt/receipt-form/order-receipt-view.component';
@@ -78,8 +81,12 @@ export const ordersRoutes: Routes = [
   },
 ];
 
-class OrdersRoute extends BaseRoute implements RouteDataTypesInterface {
+export class OrdersRoute extends BaseRoute implements RouteDataTypesInterface {
   protected recordService = inject(RecordService);
+  private readonly deletedReceipt$ = toObservable(inject(AcqReceiptApiService).lastDeletedReceipt).pipe(
+    skip(1),
+    filter((receipt): receipt is IAcqReceipt => receipt !== null)
+  );
 
   /** Route name */
   readonly name = 'acq_orders';
@@ -94,7 +101,14 @@ class OrdersRoute extends BaseRoute implements RouteDataTypesInterface {
       detailComponent: OrderDetailViewComponent,
       searchFilters: [this.expertSearchFilter()],
       canAdd: () => of({ can: this.routeToolService.appStore.canAccess(PERMISSIONS.ACOR_CREATE), message: '' }),
-      permissions: (record: RecordData) => this.routeToolService.permissions(record, this.recordType, true),
+      permissions: (record: RecordData) => merge(
+        of(null),
+        this.deletedReceipt$.pipe(
+          filter((receipt) => receipt.acq_order.pid === record.metadata['pid'])
+        )
+      ).pipe(
+        switchMap(() => this.routeToolService.permissions(record, this.recordType, true))
+      ),
       processFilterName: (filter: IFilter) => this.processFilterName(filter),
       preCreateRecord: (data: any) => this._addDefaultInformation(data),
       preUpdateRecord: (data: any) => this._cleanRecord(data),
