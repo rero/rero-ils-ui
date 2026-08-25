@@ -2,20 +2,20 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 import { ChangeDetectionStrategy, Component, computed, inject, Injector, linkedSignal, signal } from '@angular/core';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
-import { _, TranslateDirective, TranslatePipe } from "@ngx-translate/core";
-import { TranslateService } from '@ngx-translate/core';
+import { FormsModule } from '@angular/forms';
+import { _, TranslateDirective, TranslatePipe, TranslateService } from "@ngx-translate/core";
 import { CONFIG, SearchInputComponent } from '@rero/ng-core';
 import { AppStore } from '@rero/shared';
 import { DateTime } from 'luxon';
 import { MessageService } from 'primeng/api';
+import { Bind } from 'primeng/bind';
+import { SelectModule } from 'primeng/select';
+import { ToggleSwitch } from 'primeng/toggleswitch';
 import { interval, of } from 'rxjs';
 import { map, startWith, switchMap } from 'rxjs/operators';
+import { LoanState } from '../../classes/loans';
 import { ItemsService } from '../../service/items.service';
-import { Bind } from 'primeng/bind';
-import { ToggleSwitch } from 'primeng/toggleswitch';
-import { FormsModule } from '@angular/forms';
 import { RequestedItemsListComponent } from './requested-items-list/requested-items-list.component';
-import { SelectModule } from 'primeng/select';
 
 type RefreshOption = {
   value: string;
@@ -34,6 +34,7 @@ type RequestedLoanItem = {
   location: { name: string };
   loan: {
     pid: string;
+    state: LoanState;
     transaction_date: string;
     pickup_location: {
       pickup_name?: string;
@@ -44,9 +45,9 @@ type RequestedLoanItem = {
 };
 
 @Component({
-    selector: 'admin-circulation-main-request',
-    templateUrl: './main-request.component.html',
-    imports: [SearchInputComponent, Bind, ToggleSwitch, FormsModule, TranslateDirective, RequestedItemsListComponent, TranslatePipe, SelectModule],
+  selector: 'admin-circulation-main-request',
+  templateUrl: './main-request.component.html',
+  imports: [SearchInputComponent, Bind, ToggleSwitch, FormsModule, TranslateDirective, RequestedItemsListComponent, TranslatePipe, SelectModule],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class MainRequestComponent {
@@ -59,12 +60,12 @@ export class MainRequestComponent {
   // COMPONENT ATTRIBUTES ==================================================================
   /** options used for auto-refresh select box */
   readonly refreshOptions: RefreshOption[] = [
-    {value: '15000', label: '15 s', icon: 'fa-regular fa-clock'},
-    {value: '30000', label: '30 s', icon: 'fa-regular fa-clock'},
-    {value: '60000', label: '1 m', icon: 'fa-regular fa-clock'},
-    {value: '300000', label: '5 m', icon: 'fa-regular fa-clock'},
-    {value: '600000', label: '10 m', icon: 'fa-regular fa-clock'},
-    {value: '3000000', label: '30 m', icon: 'fa-regular fa-clock'}
+    { value: '15000', label: '15 s', icon: 'fa-regular fa-clock' },
+    { value: '30000', label: '30 s', icon: 'fa-regular fa-clock' },
+    { value: '60000', label: '1 m', icon: 'fa-regular fa-clock' },
+    { value: '300000', label: '5 m', icon: 'fa-regular fa-clock' },
+    { value: '600000', label: '10 m', icon: 'fa-regular fa-clock' },
+    { value: '3000000', label: '30 m', icon: 'fa-regular fa-clock' }
   ];
 
   /** options used to sort requested items list */
@@ -79,14 +80,14 @@ export class MainRequestComponent {
   readonly sortingCriteria = computed<SortOption[]>(() => {
     this.currentLanguage();
     return [
-      {value: 'requestdate', label: this.translateService.instant('Request date (oldest)'), icon: 'fa-solid fa-arrow-down-1-9'},
-      {value: '-requestdate', label: this.translateService.instant('Request date (newest)'), icon: 'fa-solid fa-arrow-down-9-1'},
-      {value: 'callnumber', label: this.translateService.instant('Call number (A-Z)'), icon: 'fa-solid fa-arrow-down-a-z'},
-      {value: '-callnumber', label: this.translateService.instant('Call number (Z-A)'), icon: 'fa-solid fa-arrow-down-z-a'},
-      {value: 'location', label: this.translateService.instant('Location (A-Z)'), icon: 'fa-solid fa-arrow-down-a-z'},
-      {value: '-location', label: this.translateService.instant('Location (Z-A)'), icon: 'fa-solid fa-arrow-down-z-a'},
-      {value: 'pickuplocation', label: this.translateService.instant('Pick-up location (A-Z)'), icon: 'fa-solid fa-arrow-down-a-z'},
-      {value: '-pickuplocation', label: this.translateService.instant('Pick-up location (Z-A)'), icon: 'fa-solid fa-arrow-down-z-a'},
+      { value: 'requestdate', label: this.translateService.instant('Request date (oldest)'), icon: 'fa-solid fa-arrow-down-1-9' },
+      { value: '-requestdate', label: this.translateService.instant('Request date (newest)'), icon: 'fa-solid fa-arrow-down-9-1' },
+      { value: 'callnumber', label: this.translateService.instant('Call number (A-Z)'), icon: 'fa-solid fa-arrow-down-a-z' },
+      { value: '-callnumber', label: this.translateService.instant('Call number (Z-A)'), icon: 'fa-solid fa-arrow-down-z-a' },
+      { value: 'location', label: this.translateService.instant('Location (A-Z)'), icon: 'fa-solid fa-arrow-down-a-z' },
+      { value: '-location', label: this.translateService.instant('Location (Z-A)'), icon: 'fa-solid fa-arrow-down-z-a' },
+      { value: 'pickuplocation', label: this.translateService.instant('Pick-up location (A-Z)'), icon: 'fa-solid fa-arrow-down-a-z' },
+      { value: '-pickuplocation', label: this.translateService.instant('Pick-up location (Z-A)'), icon: 'fa-solid fa-arrow-down-z-a' },
     ];
   });
 
@@ -147,6 +148,15 @@ export class MainRequestComponent {
     return [...items].sort((a: RequestedLoanItem, b: RequestedLoanItem) => {
       const aTime = DateTime.fromISO(a.loan.transaction_date);
       const bTime = DateTime.fromISO(b.loan.transaction_date);
+      const aIsValidated = a.loan.state !== LoanState.PENDING;
+      const bIsValidated = b.loan.state !== LoanState.PENDING;
+      if (aIsValidated !== bIsValidated) {
+        return aIsValidated ? -1 : 1;
+      }
+      if (aIsValidated) {
+        return bTime.toMillis() - aTime.toMillis();
+      }
+
       switch (sortCriteria) {
         case '-requestdate': return bTime.toMillis() - aTime.toMillis();
         case 'callnumber':
@@ -159,22 +169,26 @@ export class MainRequestComponent {
             : 1;
         case 'location':
         case '-location':
-          { const locA = a.library.name + ' ' + a.location.name;
-          const locB = b.library.name + ' ' + b.location.name;
-          return (sortCriteria === 'location')
-            ? locA.localeCompare(locB)
-            : locB.localeCompare(locA); }
+          {
+            const locA = a.library.name + ' ' + a.location.name;
+            const locB = b.library.name + ' ' + b.location.name;
+            return (sortCriteria === 'location')
+              ? locA.localeCompare(locB)
+              : locB.localeCompare(locA);
+          }
         case 'pickuplocation':
         case '-pickuplocation':
-          { const pickA = (a.loan.pickup_location.pickup_name)
-            ? a.loan.pickup_location.pickup_name
-            : a.loan.pickup_location.library_name + ' ' + a.loan.pickup_location.name;
-          const pickB = (b.loan.pickup_location.pickup_name)
-            ? b.loan.pickup_location.pickup_name
-            : b.loan.pickup_location.library_name + ' ' + b.loan.pickup_location.name;
-          return (sortCriteria === 'pickuplocation')
-            ? pickA.localeCompare(pickB)
-            : pickB.localeCompare(pickA); }
+          {
+            const pickA = (a.loan.pickup_location.pickup_name)
+              ? a.loan.pickup_location.pickup_name
+              : a.loan.pickup_location.library_name + ' ' + a.loan.pickup_location.name;
+            const pickB = (b.loan.pickup_location.pickup_name)
+              ? b.loan.pickup_location.pickup_name
+              : b.loan.pickup_location.library_name + ' ' + b.loan.pickup_location.name;
+            return (sortCriteria === 'pickuplocation')
+              ? pickA.localeCompare(pickB)
+              : pickB.localeCompare(pickA);
+          }
         default: return aTime.toMillis() - bTime.toMillis();
       }
     });
@@ -187,7 +201,7 @@ export class MainRequestComponent {
    * @param searchText: the entered search text
    */
   searchValueUpdated(searchText: string) {
-    if (! searchText) {
+    if (!searchText) {
       return null;
     }
     this.searchInputFocus.set(false);
@@ -253,5 +267,8 @@ export class MainRequestComponent {
   private _resetSearchInput(): void {
     this.searchInputDisabled.set(false);
     this.searchText.set('');
+    setTimeout(() => {
+      this.searchInputFocus.set(true);
+    });
   }
 }
