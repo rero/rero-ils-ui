@@ -3,12 +3,12 @@
 import { ChangeDetectionStrategy, Component, inject, OnInit } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { IdentifierTypes } from '@app/admin/classes/identifiers';
-import { TranslatePipe } from '@ngx-translate/core';
+import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
 import { DetailButtonComponent, DetailComponent, ErrorComponent } from '@rero/ng-core';
 import { AppStore, IPermissions, OperationLogsDialogComponent, PERMISSIONS, PermissionsDirective } from '@rero/shared';
 import { cloneDeep } from 'lodash-es';
 import { Bind } from 'primeng/bind';
-import { Button } from 'primeng/button';
+import { Button, ButtonDirective } from 'primeng/button';
 import { ConfirmDialog } from 'primeng/confirmdialog';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { DialogImportComponent } from '../dialog-import/dialog-import.component';
@@ -18,7 +18,7 @@ import { DocumentDetailStore } from '../store/document-detail.store';
   selector: 'admin-document-detail',
   templateUrl: './document-detail.component.html',
   providers: [DocumentDetailStore],
-  imports: [DetailButtonComponent, OperationLogsDialogComponent, Bind, Button, ConfirmDialog, PermissionsDirective, RouterLink, ErrorComponent, TranslatePipe],
+  imports: [DetailButtonComponent, OperationLogsDialogComponent, Bind, Button, ButtonDirective, ConfirmDialog, PermissionsDirective, RouterLink, ErrorComponent, TranslateDirective, TranslatePipe],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class DocumentDetailComponent extends DetailComponent implements OnInit {
