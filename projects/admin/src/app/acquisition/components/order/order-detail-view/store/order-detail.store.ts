@@ -34,7 +34,7 @@ export const OrderDetailStore = signalStore(
     order: undefined,
     orderPermissions: undefined,
     orderLines: [],
-    linesSortCriteria: 'priority',
+    linesSortCriteria: '-priority',
     receipts: [],
     receiptPermissions: undefined,
     historyVersions: [],
