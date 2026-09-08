@@ -28,10 +28,7 @@ describe('ItemService', () => {
   const apiResponse = {
     aggregations: {},
     hits: {
-      total: {
-        relation: 'eq',
-        value: 1
-      },
+      total: 1,
       hits: [
         record
       ]
@@ -56,9 +53,8 @@ describe('ItemService', () => {
     status: 'on_loan'
   }
 
-  const recordServiceSpy = { getRecords: vi.fn(), totalHits: vi.fn() };
+  const recordServiceSpy = { getRecords: vi.fn() };
   recordServiceSpy.getRecords.mockReturnValue(of(apiResponse));
-  recordServiceSpy.totalHits.mockReturnValue(1);
 
   const httpClientSpy = { get: vi.fn(), post: vi.fn() };
 

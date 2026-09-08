@@ -137,7 +137,7 @@ export class DocumentDetailComponent extends DetailComponent implements OnInit {
       this.recordService.getRecords(
         'documents', { query, page: 1, headers: { accept: 'application/rero+json' } }
       ).subscribe((response: any) => {
-        if (this.recordService.totalHits(response.hits.total) === 0 && !warning) {
+        if (response.hits.total === 0 && !warning) {
           this.router.navigate(route, { queryParams: data });
         } else {
           const dynamicDialogRef: DynamicDialogRef = this.dialogService.open(DialogImportComponent, {

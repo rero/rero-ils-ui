@@ -8,9 +8,8 @@ import {
 } from '@app/admin/classes/patron-transaction';
 import { RouteToolService } from '@app/admin/routes/route-tool.service';
 import { TranslateService } from '@ngx-translate/core';
-import type { EsResult } from '@rero/ng-core';
 import { CONFIG, RecordService } from '@rero/ng-core';
-import { AppStore } from '@rero/shared';
+import { AppStore, EsResult } from '@rero/shared';
 import { MessageService } from 'primeng/api';
 import { Observable, of } from 'rxjs';
 import { catchError, map, tap } from 'rxjs/operators';
@@ -44,7 +43,7 @@ export class PatronTransactionService {
       { query, page: 1, itemsPerPage: RecordService.MAX_REST_RESULTS_SIZE, sort }
     ).pipe(
       map((data: EsResult) => data.hits as any),
-      map((hits: any) => +this.recordService.totalHits(hits.total) === 0 ? [] : hits.hits),
+      map((hits: any) => hits.total === 0 ? [] : hits.hits),
       map((hits: any[]) => hits.map((hit: any) => new PatronTransaction(hit.metadata)))
     );
   }
@@ -56,7 +55,7 @@ export class PatronTransactionService {
     const query = this._buildQuery(undefined, loanPid, type, status);
     return this.recordService.getRecords('patron_transactions', { query, page: 1, itemsPerPage: RecordService.MAX_REST_RESULTS_SIZE }).pipe(
       map((data: EsResult) => data.hits as any),
-      map((hits: any) => +this.recordService.totalHits(hits.total) === 0 ? [] : hits.hits),
+      map((hits: any) => hits.total === 0 ? [] : hits.hits),
       map((hits: any[]) => hits.map((hit: any) => new PatronTransaction(hit.metadata)))
     );
   }
@@ -85,7 +84,7 @@ export class PatronTransactionService {
     const query = `parent.pid:${transaction.pid}`;
     return this.recordService.getRecords('patron_transaction_events', { query, page: 1, itemsPerPage: RecordService.MAX_REST_RESULTS_SIZE }).pipe(
       map((data: EsResult) => data.hits as any),
-      map((hits: any) => +this.recordService.totalHits(hits.total) === 0 ? [] : hits.hits),
+      map((hits: any) => hits.total === 0 ? [] : hits.hits),
       map((hits: any[]) => hits.map((hit: any) => new PatronTransactionEvent(hit.metadata)))
     );
   }

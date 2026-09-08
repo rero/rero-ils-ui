@@ -22,8 +22,8 @@ describe('PatronProfileStore', () => {
         {
           provide: LoanApiService,
           useValue: {
-            getOnLoan: vi.fn().mockReturnValue(of({ hits: { hits: [], total: { value: 0 } } })),
-            getRequest: vi.fn().mockReturnValue(of({ hits: { hits: [], total: { value: 0 } } })),
+            getOnLoan: vi.fn().mockReturnValue(of({ hits: { hits: [], total: 0 } })),
+            getRequest: vi.fn().mockReturnValue(of({ hits: { hits: [], total: 0 } })),
           },
         },
         {
@@ -37,7 +37,7 @@ describe('PatronProfileStore', () => {
         {
           provide: IllRequestApiService,
           useValue: {
-            getPublicIllRequest: vi.fn().mockReturnValue(of({ hits: { hits: [], total: { value: 0 } } })),
+            getPublicIllRequest: vi.fn().mockReturnValue(of({ hits: { hits: [], total: 0 } })),
           },
         },
         { provide: TranslateService, useValue: { instant: vi.fn((value: string) => value) } },

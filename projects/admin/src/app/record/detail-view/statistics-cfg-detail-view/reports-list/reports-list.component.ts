@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 import { Component, inject, input, ChangeDetectionStrategy } from "@angular/core";
 import { rxResource } from "@angular/core/rxjs-interop";
-import { ApiService, RecordService, DateTranslatePipe } from "@rero/ng-core";
+import { ApiService, DateTranslatePipe, RecordService } from "@rero/ng-core";
 import { map } from "rxjs/operators";
 import { Bind } from "primeng/bind";
 import { TableModule } from "primeng/table";
@@ -31,7 +31,7 @@ export class ReportsListComponent {
         .getRecords("stats", { query: `config.pid:${pid}`, page: 1, itemsPerPage: 100 })
         .pipe(
           map((result) =>
-            this.recordService.totalHits(result.hits.total) === 0
+            result.hits.total === 0
               ? []
               : result.hits.hits
           )

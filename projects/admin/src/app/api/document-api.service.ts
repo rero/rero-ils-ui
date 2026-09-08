@@ -3,9 +3,8 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
-import type { EsResult } from '@rero/ng-core';
-import { RecordService, searchTotalValue } from '@rero/ng-core';
-import { IAvailability, IAvailabilityService } from '@rero/shared';
+import { RecordService } from '@rero/ng-core';
+import { EsResult, IAvailability, IAvailabilityService } from '@rero/shared';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { AppConfigService } from '../service/app-config.service';
@@ -31,7 +30,7 @@ export class DocumentApiService implements IAvailabilityService {
   getLinkedDocumentsCount(documentPid: string): Observable<number> {
     return this.recordService.getRecords(
       this.RESOURCE_NAME, { query: `partOf.document.pid:${documentPid}`, page: 1, itemsPerPage: 1 }
-    ).pipe(map((result: EsResult) => searchTotalValue(result.hits.total)));
+    ).pipe(map((result: EsResult) => result.hits.total));
   }
 
   /**

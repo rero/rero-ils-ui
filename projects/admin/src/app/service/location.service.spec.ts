@@ -13,9 +13,8 @@ describe('LocationService', () => {
 
   const response = {...apiResponse};
 
-  const recordServiceSpy = { getRecords: vi.fn(), totalHits: vi.fn() };
+  const recordServiceSpy = { getRecords: vi.fn() };
 
-  recordServiceSpy.totalHits.mockReturnValue(1);
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -34,6 +33,7 @@ describe('LocationService', () => {
 
   it('should return a list of locations in relation to libraries', () => {
     response.hits.hits = [{...location}];
+    response.hits.total = response.hits.hits.length;
     recordServiceSpy.getRecords.mockReturnValue(of(response));
     service.getLocationsByLibraries$(['1'])
       .subscribe((result: any) => expect(result).toEqual([location]));

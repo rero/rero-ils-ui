@@ -103,7 +103,7 @@ class HoldingsApiServiceMock {
             updated: "2025-10-23T05:30:43.803060+00:00"
           }
         ],
-        total: { relation: 'eq', value: 3 }
+        total: 3
       },
       links: { self: '' }
     })

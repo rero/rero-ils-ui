@@ -18,11 +18,11 @@ describe('LibraryService', () => {
   };
   const response = {...apiResponse};
   response.hits.hits = [library];
+  response.hits.total = response.hits.hits.length;
 
-  const recordServiceSpy = { getRecords: vi.fn(), getRecord: vi.fn(), totalHits: vi.fn() };
+  const recordServiceSpy = { getRecords: vi.fn(), getRecord: vi.fn() };
   recordServiceSpy.getRecords.mockReturnValue(of(response));
   recordServiceSpy.getRecord.mockReturnValue(of(response.hits.hits[0]));
-  recordServiceSpy.totalHits.mockReturnValue(1);
 
   beforeEach(() => {
     TestBed.configureTestingModule({

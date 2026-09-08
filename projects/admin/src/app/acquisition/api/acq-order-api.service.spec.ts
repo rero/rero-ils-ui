@@ -110,8 +110,7 @@ describe('AcqOrderApiService', () => {
     }
   };
 
-  const recordServiceSpy = { getRecord: vi.fn(), getRecords: vi.fn(), totalHits: vi.fn() };
-  recordServiceSpy.totalHits.mockReturnValue(1);
+  const recordServiceSpy = { getRecord: vi.fn(), getRecords: vi.fn() };
 
   const recordUiServiceSpy = { deleteRecord: vi.fn() };
   recordUiServiceSpy.deleteRecord.mockReturnValue(of(true));
@@ -168,6 +167,7 @@ describe('AcqOrderApiService', () => {
 
   it('should return a list of lines in an order', () => {
     apiResponse.hits.hits = orderLines;
+    apiResponse.hits.total = apiResponse.hits.hits.length;
     recordServiceSpy.getRecords.mockReturnValue(of(apiResponse));
     const data = [{
       ...orderLineDefaultData,
@@ -182,8 +182,8 @@ describe('AcqOrderApiService', () => {
   });
 
   it('should return an empty document titles map when the order has no hits', () => {
-    recordServiceSpy.totalHits.mockReturnValueOnce(0);
     apiResponse.hits.hits = [];
+    apiResponse.hits.total = apiResponse.hits.hits.length;
     recordServiceSpy.getRecords.mockReturnValue(of(apiResponse));
     service.getOrderLinesDocumentTitles('1').subscribe((result: Map<string, string>) => {
       expect(result.size).toBe(0);
@@ -192,6 +192,7 @@ describe('AcqOrderApiService', () => {
 
   it('should return a map of document titles keyed by order line pid', () => {
     apiResponse.hits.hits = [orderWithDenormalizedLines];
+    apiResponse.hits.total = apiResponse.hits.hits.length;
     recordServiceSpy.getRecords.mockReturnValue(of(apiResponse));
     service.getOrderLinesDocumentTitles('1').subscribe((result: Map<string, string>) => {
       expect(result.get('1')).toBe('Title 1');

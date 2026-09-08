@@ -31,6 +31,7 @@ describe('LibraryApiService', () => {
 
     service = TestBed.inject(LibraryApiService);
     apiResponse.hits.hits = [library];
+    apiResponse.hits.total = apiResponse.hits.hits.length;
     recordServiceSpy.getRecords.mockReturnValue(of(apiResponse));
   });
 

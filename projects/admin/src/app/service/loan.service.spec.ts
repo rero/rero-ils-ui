@@ -46,6 +46,7 @@ describe('LoanService', () => {
 
   it('should return a borrowed loan records', () => {
     response.hits.hits = [{...loanPending}];
+    response.hits.total = response.hits.hits.length;
     recordServiceSpy.getRecords.mockReturnValue(of(response));
     service.borrowedBy$('1').subscribe((result: any) => {
       expect(result.length).toEqual(1);
@@ -55,6 +56,7 @@ describe('LoanService', () => {
 
   it('should return a requested loan records', () => {
     response.hits.hits = [{...loanPending}];
+    response.hits.total = response.hits.hits.length;
     recordServiceSpy.getRecords.mockReturnValue(of(response));
     service.requestedBy$('1').subscribe((result: any) => {
       expect(result.length).toEqual(1);

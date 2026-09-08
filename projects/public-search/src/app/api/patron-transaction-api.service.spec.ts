@@ -22,10 +22,7 @@ describe('PatronTranslationApiService', () => {
   const apiResponse = {
     aggregations: {},
     hits: {
-      total: {
-        relation: 'eq',
-        value: 1
-      },
+      total: 1,
       hits: [
         record
       ]
@@ -33,9 +30,8 @@ describe('PatronTranslationApiService', () => {
     links: {}
   };
 
-  const recordServiceSpy = { getRecords: vi.fn(), totalHits: vi.fn() };
+  const recordServiceSpy = { getRecords: vi.fn() };
   recordServiceSpy.getRecords.mockReturnValue(of(apiResponse));
-  recordServiceSpy.totalHits.mockReturnValue(1);
 
   beforeEach(() => {
     TestBed.configureTestingModule({

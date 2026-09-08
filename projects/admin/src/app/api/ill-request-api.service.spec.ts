@@ -74,17 +74,13 @@ describe('IllRequestApiService', () => {
           "updated": "2023-04-27T06:25:11.821222+00:00"
         }
       ],
-      "total": {
-        "relation": "eq",
-        "value": 1
-      }
+      "total": 1
     },
     "links": {}
   };
 
-  const recordServiceSpy = { getRecords: vi.fn(), totalHits: vi.fn() };
+  const recordServiceSpy = { getRecords: vi.fn() };
   recordServiceSpy.getRecords.mockReturnValue(of(response));
-  recordServiceSpy.totalHits.mockReturnValue(1);
 
   beforeEach(() => {
     TestBed.configureTestingModule({

@@ -3,7 +3,8 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 import { inject, Injectable } from '@angular/core';
 import { RecordService } from '@rero/ng-core';
-import type { Error, EsResult } from '@rero/ng-core';
+import type { Error } from '@rero/ng-core';
+import type { EsResult } from '../model/es-result-model';
 import { BaseApi } from '../api/base-api';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
@@ -96,7 +97,7 @@ export class OperationLogsApiService extends BaseApi {
     const query = `_exists_:loan AND loan.pid:${loanPid} AND loan.trigger:${type} AND record.type:loan`;
     return this.recordService.getRecords('operation_logs', { query, page: 1, itemsPerPage: 1, headers: BaseApi.reroJsonheaders })
       .pipe(map((result: any) => {
-        return this.recordService.totalHits(result.hits.total) === 1
+        return result.hits.total === 1
           ? result.hits.hits[0]
           : {};
       }));

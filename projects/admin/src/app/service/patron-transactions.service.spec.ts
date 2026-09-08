@@ -13,8 +13,7 @@ describe('PatronTransactionsService', () => {
   let service: PatronTransactionsService;
 
   const response = {...apiResponse};
-  const recordServiceSpy = { getRecords: vi.fn(), totalHits: vi.fn() };
-  recordServiceSpy.totalHits.mockReturnValue(1);
+  const recordServiceSpy = { getRecords: vi.fn() };
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -34,6 +33,7 @@ describe('PatronTransactionsService', () => {
   it('should return the patron transaction', () => {
     const transaction = {...patronTransaction};
     response.hits.hits = [transaction];
+    response.hits.total = response.hits.hits.length;
     recordServiceSpy.getRecords.mockReturnValue(of(response));
 
     service.getPatronTransaction('1').subscribe((result: any) => {

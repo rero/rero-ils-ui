@@ -69,7 +69,7 @@ describe('Holdings Serial Store', () => {
     await vi.advanceTimersByTimeAsync(500);
     store.quickIssueReceive();
     await vi.advanceTimersByTimeAsync(500);
-    expect(store.receivedItems()[0].new_issue).toBe(true);
+    expect((store.receivedItems()[0] as any).new_issue).toBe(true);
   });
 
   it('should return only one result with a filter', async () => {
@@ -498,10 +498,7 @@ class holdingsApiServiceMock {
                     "updated": "2025-11-18T14:00:01.079129+00:00"
                 }
             ],
-            "total": {
-                "relation": "eq",
-                "value": 3
-            }
+            "total": 3
         },
         "links": {
             "create": "https://localhost:5000/api/items/",
@@ -509,10 +506,11 @@ class holdingsApiServiceMock {
         }
     };
     if (markedAsNew) {
-      result.hits.hits[0].new_issue = true;
+      (result.hits.hits[0] as any).new_issue = true;
     }
     if (filter) {
       result.hits.hits = result.hits.hits.filter(i => i.metadata.enumerationAndChronology.indexOf(filter) > -1);
+      result.hits.total = result.hits.hits.length;
     }
     return of(result);
   }
