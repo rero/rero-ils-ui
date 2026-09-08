@@ -4,9 +4,8 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable, signal } from '@angular/core';
 import { IPreview } from '@app/admin/shared/preview-email/IPreviewInterface';
-import type { EsResult } from '@rero/ng-core';
 import { RecordService, RecordUiService } from '@rero/ng-core';
-import { BaseApi } from '@rero/shared';
+import { BaseApi, EsResult } from '@rero/shared';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { Notification } from '../../classes/notification';
@@ -60,7 +59,7 @@ export class AcqOrderApiService extends BaseApi {
       })
       .pipe(
         map((result: EsResult): { pid: string, document?: { title?: string } }[] =>
-          +this.recordService.totalHits(result.hits.total) === 0 ? [] : (result.hits.hits[0] as any).metadata.order_lines ?? []
+          result.hits.total === 0 ? [] : (result.hits.hits[0] as any).metadata.order_lines ?? []
         ),
         map(orderLines =>
           new Map(orderLines.map(orderLine => [orderLine.pid, orderLine.document?.title ?? '']))
@@ -114,7 +113,7 @@ export class AcqOrderApiService extends BaseApi {
         sort: 'priority'
       })
       .pipe(
-        map((result: EsResult) => +this.recordService.totalHits(result.hits.total) === 0 ? [] : result.hits.hits),
+        map((result: EsResult) => result.hits.total === 0 ? [] : result.hits.hits),
         map((hits: any[]) => hits.map(hit => ({
           ...orderLineDefaultData,
           ...hit.metadata,

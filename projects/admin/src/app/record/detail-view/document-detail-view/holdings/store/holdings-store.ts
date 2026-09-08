@@ -102,7 +102,7 @@ export const HoldingsStore = signalStore(
         tap(() => patchState(store, setPending())),
         switchMap(() => store.holdingsApiService.getHoldingsByDocumentPid(store.document().metadata.pid)),
         tap((result: any) => {
-          const total = result.hits.total.value;
+          const total = result.hits.total;
           patchState(store, { holdings: result.hits.hits, total }, setFulfilled());
           store.documentDetailStore.setHoldingsTotal(total);
         })

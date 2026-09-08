@@ -15,10 +15,7 @@ describe('OperationLogsService', () => {
   const responseRecords = {
     aggregations: {},
     hits: {
-      total: {
-        relation: 'eq',
-        value: 1
-      },
+      total: 1,
       hits: [
         {
           date: '2021-01-26 09:30:00',
@@ -33,7 +30,6 @@ describe('OperationLogsService', () => {
   beforeEach(() => {
     recordServiceSpy = {
       getRecords: vi.fn().mockReturnValue(of(responseRecords)),
-      totalHits: vi.fn().mockReturnValue(0)
     };
     TestBed.configureTestingModule({
     imports: [],

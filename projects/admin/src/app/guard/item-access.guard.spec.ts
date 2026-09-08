@@ -40,9 +40,8 @@ describe('itemAccessGuard', () => {
   };
   const appStoreSpy = { currentLibraryPid: vi.fn(() => '10') } as any;
 
-  const recordServiceSpy = { getRecord: vi.fn(), getRecords: vi.fn(), totalHits: vi.fn() };
+  const recordServiceSpy = { getRecord: vi.fn(), getRecords: vi.fn() };
   recordServiceSpy.getRecord.mockReturnValue(of(item));
-  recordServiceSpy.totalHits.mockReturnValue(1);
 
   const activatedRouteSnapshotSpy = { } as any;
   activatedRouteSnapshotSpy.params = {
@@ -72,6 +71,7 @@ describe('itemAccessGuard', () => {
     router = TestBed.inject(Router);
 
     apiResponse.hits.hits = [holdings];
+    apiResponse.hits.total = apiResponse.hits.hits.length;
     recordServiceSpy.getRecords.mockReturnValue(of(apiResponse));
   });
 

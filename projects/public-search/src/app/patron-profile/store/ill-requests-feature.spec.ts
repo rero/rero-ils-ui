@@ -74,8 +74,8 @@ describe('IllRequestsFeature', () => {
     const request = { metadata: { pid: 'ill-1' } };
     const secondRequest = { metadata: { pid: 'ill-2' } };
     illRequestApiService.getPublicIllRequest
-      .mockReturnValueOnce(of({ hits: { hits: [request], total: { value: 2 } } }))
-      .mockReturnValueOnce(of({ hits: { hits: [secondRequest], total: { value: 2 } } }));
+      .mockReturnValueOnce(of({ hits: { hits: [request], total: 2 } }))
+      .mockReturnValueOnce(of({ hits: { hits: [secondRequest], total: 2 } }));
 
     store.setPatronPid('patron-1');
     store.setActiveTab('illRequest');

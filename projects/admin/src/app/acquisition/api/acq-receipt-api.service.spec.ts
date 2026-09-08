@@ -47,8 +47,7 @@ describe('AcqReceiptApiService', () => {
     }
   }
 
-  const recordServiceSpy = { create: vi.fn(), update: vi.fn(), getRecord: vi.fn(), getRecords: vi.fn(), totalHits: vi.fn() };
-  recordServiceSpy.totalHits.mockReturnValue(1);
+  const recordServiceSpy = { create: vi.fn(), update: vi.fn(), getRecord: vi.fn(), getRecords: vi.fn() };
 
   const httpClientSpy = { get: vi.fn(), post: vi.fn() };
 
@@ -84,6 +83,7 @@ describe('AcqReceiptApiService', () => {
   it('should return a list of receptions depending on whether a query', () => {
     const data = [{...receiptDefaultData, ...receipt.metadata}];
     apiResponse.hits.hits = [receipt];
+    apiResponse.hits.total = apiResponse.hits.hits.length;
     recordServiceSpy.getRecords.mockReturnValue(of(apiResponse));
     service.searchReceipts('pid:1').subscribe((result: IAcqReceipt[]) => expect(result).toEqual(data));
   });
@@ -91,6 +91,7 @@ describe('AcqReceiptApiService', () => {
   it('should return a list of receptions for an order', () => {
     const data = [{...receiptDefaultData, ...receipt.metadata}];
     apiResponse.hits.hits = [receipt];
+    apiResponse.hits.total = apiResponse.hits.hits.length;
     recordServiceSpy.getRecords.mockReturnValue(of(apiResponse));
     service.getReceiptsForOrder('1').subscribe((result: IAcqReceipt[]) => expect(result).toEqual(data));
   });
@@ -98,6 +99,7 @@ describe('AcqReceiptApiService', () => {
   it('should return a list of receptions', () => {
     const data = [{...receiptLineDefaultData, ...receiptLine.metadata}];
     apiResponse.hits.hits = [receiptLine];
+    apiResponse.hits.total = apiResponse.hits.hits.length;
     recordServiceSpy.getRecords.mockReturnValue(of(apiResponse));
     service.getReceiptLines('1').subscribe((result: IAcqReceiptLine[]) => expect(result).toEqual(data));
   });

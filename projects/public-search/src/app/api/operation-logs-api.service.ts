@@ -3,8 +3,8 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 import { inject, Injectable } from '@angular/core';
 import { RecordService } from '@rero/ng-core';
-import type { Error, EsResult } from '@rero/ng-core';
-import { BaseApi } from '@rero/shared';
+import type { Error } from '@rero/ng-core';
+import { BaseApi, EsResult } from '@rero/shared';
 import { DateTime } from 'luxon';
 import { Observable } from 'rxjs';
 

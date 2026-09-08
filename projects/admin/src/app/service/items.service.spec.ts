@@ -25,8 +25,7 @@ describe('ItemsService', () => {
   };
   appStoreSpy.user = vi.fn(() => user);
 
-  const recordServiceSpy = { getRecords: vi.fn(), totalHits: vi.fn() };
-  recordServiceSpy.totalHits.mockReturnValue(1);
+  const recordServiceSpy = { getRecords: vi.fn() };
 
   const item = {
     pid: '1',
@@ -96,6 +95,7 @@ describe('ItemsService', () => {
   it('should return a list of items', () => {
     const items = [{ pid: '1' }];
     apiResponse.hits.hits = items;
+    apiResponse.hits.total = apiResponse.hits.hits.length;
     recordServiceSpy.getRecords.mockReturnValue(of(apiResponse));
     service.getByPidFromEs('1')
       .subscribe((result: any) => expect(result).toEqual(items[0]))
@@ -110,6 +110,7 @@ describe('ItemsService', () => {
         pid: '1'
       }
     }];
+    apiResponse.hits.total = apiResponse.hits.hits.length;
     const response = [{
       loan: {
         pid: '1'

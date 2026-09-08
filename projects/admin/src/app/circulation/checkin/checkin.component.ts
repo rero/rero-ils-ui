@@ -220,7 +220,7 @@ export class CheckinComponent {
     forkJoin([patronQuery, itemQuery])
     .subscribe({
       next: ([patron, item]: any[]) => {
-        if (patron.total.value === 0 && item.total.value === 0) {
+        if (patron.total === 0 && item.total === 0) {
           this.messageService.add({
             severity: 'warn',
             summary: this.translate.instant('Checkin'),
@@ -228,7 +228,7 @@ export class CheckinComponent {
             life: CONFIG.MESSAGE_LIFE
           });
         }
-        if (patron.total.value > 1 && item.total.value === 0) {
+        if (patron.total > 1 && item.total === 0) {
           this.messageService.add({
             severity: 'warn',
             summary: this.translate.instant('Checkin'),
@@ -236,7 +236,7 @@ export class CheckinComponent {
             life: CONFIG.MESSAGE_LIFE
           });
         }
-        if (patron.total.value === 1 && item.total.value === 1) {
+        if (patron.total === 1 && item.total === 1) {
           const ref: DynamicDialogRef = this.dialogService.open(CheckinActionComponent, {
             header: this.translate.instant('Circulation action'),
             modal: true,
@@ -261,7 +261,7 @@ export class CheckinComponent {
               }
             }
           });
-        } else if (item.total.value === 1) {
+        } else if (item.total === 1) {
             this.item = item.hits[0].metadata;
             // Check if the item is already into the item list. If it happens,
             // just notify the user and clear the form.
@@ -276,7 +276,7 @@ export class CheckinComponent {
             } else {
               this.checkin(barcode);
             }
-        } else if (patron.total.value === 1) {
+        } else if (patron.total === 1) {
             this.router.navigate(
               ['/circulation', 'patron', barcode, 'loan']
             );

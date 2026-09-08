@@ -45,7 +45,7 @@ export class DocumentsRemoteService implements IRemoteAutocomplete {
       .getRecords(this.getName(), { query: queryString, page: 1, itemsPerPage: queryOptions.maxOfResult })
       .pipe(
         map((result: any) => {
-          if (result.hits.total.value == 0) {
+          if (result.hits.total === 0) {
             return [];
           }
           const hits: ISuggestionItem[] = [];

@@ -4,7 +4,7 @@ import { inject } from '@angular/core';
 import { ResolveFn, Routes } from '@angular/router';
 import { FormlyFieldConfig } from '@ngx-formly/core';
 import { _ } from '@ngx-translate/core';
-import type { ActionStatus, EsResult, IFilter } from '@rero/ng-core';
+import type { ActionStatus, IFilter } from '@rero/ng-core';
 import {
   DetailComponent,
   EditorComponent,
@@ -15,7 +15,7 @@ import {
   RecordType,
   RouteDataTypesInterface,
 } from '@rero/ng-core';
-import { PERMISSIONS, PERMISSION_OPERATOR } from '@rero/shared';
+import { EsResult, PERMISSION_OPERATOR, PERMISSIONS } from '@rero/shared';
 import { Observable, of } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { CAN_ACCESS_ACTIONS, canAccessGuard } from '../guard/can-access.guard';
@@ -146,7 +146,7 @@ class StatisticsCfgRoute extends BaseRoute implements RouteDataTypesInterface {
             })
             .pipe(
               map((result: EsResult) =>
-                this.routeToolService.recordService.totalHits(result.hits.total) === 0 ? [] : result.hits.hits
+                result.hits.total === 0 ? [] : result.hits.hits
               ),
               map((hits: any) =>
                 hits.map((hit: any) => {

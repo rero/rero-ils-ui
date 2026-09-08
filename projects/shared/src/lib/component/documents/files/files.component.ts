@@ -7,8 +7,8 @@ import { Component, computed, inject, input, signal, Signal, ChangeDetectionStra
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { TranslateService, TranslatePipe } from '@ngx-translate/core';
-import { ApiService, RecordService } from '@rero/ng-core';
-import type { EsResult } from '@rero/ng-core';
+import { ApiService } from '@rero/ng-core';
+import type { EsResult } from '../../../model/es-result-model';
 import { DialogService } from 'primeng/dynamicdialog';
 import { catchError, forkJoin, map, Observable, of, switchMap, tap } from 'rxjs';
 import { Bind } from 'primeng/bind';
@@ -47,7 +47,6 @@ export class FilesComponent {
 
   protected httpService: HttpClient = inject(HttpClient);
   protected translateService: TranslateService = inject(TranslateService);
-  protected recordService: RecordService = inject(RecordService);
   protected apiService: ApiService = inject(ApiService);
   protected sanitizer: DomSanitizer = inject(DomSanitizer);
   protected breakpointObserver: BreakpointObserver = inject(BreakpointObserver);
@@ -90,7 +89,7 @@ export class FilesComponent {
         const baseUrl = this.apiService.getEndpointByType('records');
         return this.httpService.get(`${baseUrl}?q=metadata.document.pid:${pid}`).pipe(
           map((result: EsResult) =>
-            +this.recordService.totalHits(result.hits.total) === 0 ? [] : result.hits.hits
+            result.hits.total === 0 ? [] : result.hits.hits
           ),
           switchMap((hits: any[]) => {
             const collections = Array.from(new Set(

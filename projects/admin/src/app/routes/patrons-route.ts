@@ -14,7 +14,7 @@ import {
   RecordSearchPageComponent,
   RecordService,
   RecordType,
-  RouteDataTypesInterface
+  RouteDataTypesInterface,
 } from '@rero/ng-core';
 import { ILibrary, IPatron, PERMISSION_OPERATOR, PERMISSIONS } from '@rero/shared';
 import { Observable, of } from 'rxjs';
@@ -231,7 +231,7 @@ class PatronsRoute extends BaseRoute implements RouteDataTypesInterface {
               sort: 'name',
             })
             .pipe(
-              map((result: any) => (+recordService.totalHits(result.hits.total) === 0 ? [] : result.hits.hits)),
+              map((result: any) => (result.hits.total === 0 ? [] : result.hits.hits)),
               map((hits: any) => {
                 return hits.map((hit: any) => {
                   return {

@@ -48,9 +48,8 @@ describe('OperationLogsComponent', () => {
     operationLogsApiServiceSpy = {
       getLogs: vi.fn().mockReturnValue(of({
         aggregations: [],
-        hits: { total: { value: 1 }, hits: records },
-        links: [],
-        total: { value: 1 }
+        hits: { total: 1, hits: records },
+        links: []
       }))
     };
     dynamicDialogConfig = {
@@ -146,9 +145,8 @@ describe('OperationLogsComponent', () => {
   it('should display the paginator when operation logs exceed one page', async () => {
     operationLogsApiServiceSpy.getLogs.mockReturnValueOnce(of({
       aggregations: [],
-      hits: { total: { value: 11 }, hits: records },
-      links: [],
-      total: { value: 11 }
+      hits: { total: 11, hits: records },
+      links: []
     }));
 
     createComponent();
@@ -179,9 +177,8 @@ describe('OperationLogsComponent', () => {
     operationLogsApiServiceSpy.getLogs.mockClear();
     operationLogsApiServiceSpy.getLogs.mockReturnValueOnce(of({
       aggregations: [],
-      hits: { total: { value: 11 }, hits: nextRecords },
-      links: [],
-      total: { value: 11 }
+      hits: { total: 11, hits: nextRecords },
+      links: []
     }));
     component.pageChange({ page: 1, first: 10, rows: 10, pageCount: 2 });
     expect(component.pager().page).toBe(2);
@@ -208,9 +205,8 @@ describe('OperationLogsComponent', () => {
     await fixture.whenStable();
     operationLogsApiServiceSpy.getLogs.mockReturnValueOnce(of({
       aggregations: [],
-      hits: { total: { value: 11 }, hits: oldestRecords },
-      links: [],
-      total: { value: 11 }
+      hits: { total: 11, hits: oldestRecords },
+      links: []
     }));
     component.pageChange({ page: 1, first: 10, rows: 10, pageCount: 2 });
     TestBed.tick();
@@ -218,9 +214,8 @@ describe('OperationLogsComponent', () => {
     await fixture.whenStable();
     operationLogsApiServiceSpy.getLogs.mockReturnValueOnce(of({
       aggregations: [],
-      hits: { total: { value: 11 }, hits: oldestRecords },
-      links: [],
-      total: { value: 11 }
+      hits: { total: 11, hits: oldestRecords },
+      links: []
     }));
 
     component.sortChange({ originalEvent: undefined, value: 'created' });
@@ -239,9 +234,8 @@ describe('OperationLogsComponent', () => {
   it('should support empty results', async () => {
     operationLogsApiServiceSpy.getLogs.mockReturnValueOnce(of({
       aggregations: [],
-      hits: { total: { value: 0 }, hits: [] },
-      links: [],
-      total: { value: 0 }
+      hits: { total: 0, hits: [] },
+      links: []
     }));
 
     createComponent();

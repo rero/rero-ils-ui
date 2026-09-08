@@ -4,10 +4,7 @@
 export const apiResponse = {
   aggregations: {},
   hits: {
-    total: {
-      relation: 'eq',
-      value: 1
-    },
+    total: 1,
     hits: []
   },
   links: {}
