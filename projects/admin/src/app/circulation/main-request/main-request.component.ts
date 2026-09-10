@@ -4,7 +4,7 @@ import { ChangeDetectionStrategy, Component, computed, inject, Injector, linkedS
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { _, TranslateDirective, TranslatePipe, TranslateService } from "@ngx-translate/core";
-import { CONFIG, SearchInputComponent } from '@rero/ng-core';
+import { CONFIG, ExportButtonComponent, IExportOption, SearchInputComponent } from '@rero/ng-core';
 import { AppStore } from '@rero/shared';
 import { DateTime } from 'luxon';
 import { MessageService } from 'primeng/api';
@@ -47,7 +47,7 @@ type RequestedLoanItem = {
 @Component({
   selector: 'admin-circulation-main-request',
   templateUrl: './main-request.component.html',
-  imports: [SearchInputComponent, Bind, ToggleSwitch, FormsModule, TranslateDirective, RequestedItemsListComponent, TranslatePipe, Select],
+  imports: [SearchInputComponent, Bind, ToggleSwitch, FormsModule, TranslateDirective, RequestedItemsListComponent, TranslatePipe, Select, ExportButtonComponent],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class MainRequestComponent {
@@ -92,7 +92,7 @@ export class MainRequestComponent {
   });
 
   /** the placeholder string used on the */
-  readonly placeholder = _('Please enter an item barcode.');
+  readonly placeholder = _('Scan an item barcode to validate a request');
   /** search text used into the search input component */
   readonly searchText = signal('');
   /** the interval (in millis) between 2 calls of requested items (0 = no refresh) */
@@ -107,6 +107,22 @@ export class MainRequestComponent {
   private readonly injector = inject(Injector);
 
   readonly libraryPid = computed(() => this.appStore.currentLibraryPid());
+
+  /** the export formats offered by the `export as` button */
+  readonly exportOptions = computed<IExportOption[]>(() => {
+    const libraryPid = this.libraryPid();
+    if (!libraryPid) {
+      return [];
+    }
+    return [
+      { label: 'JSON', format: 'json' },
+      { label: 'CSV', format: 'csv' },
+      { label: 'Excel', format: 'xlsx' },
+    ].map(({ label, format }) => ({
+      label,
+      url: `/api/loan/requests/${libraryPid}?format=${format}`,
+    }));
+  });
 
   private readonly rawItems = toSignal(
     toObservable(this.libraryPid, { injector: this.injector }).pipe(
