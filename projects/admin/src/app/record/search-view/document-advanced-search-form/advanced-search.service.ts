@@ -31,7 +31,7 @@ export class AdvancedSearchService {
   public fieldData: IFieldsData;
 
   /** Fields mapping */
-  private fieldMappingMap: Map<string, string>;
+  private fieldMappingMap: Map<string, string | null>;
 
   /** Fields searchType mapping */
   private fieldsSearchType: IFieldsType = {};
@@ -68,11 +68,12 @@ export class AdvancedSearchService {
    * @param field - the field name
    * @returns the field config
    */
-  fieldMapping(field: string): string {
-    if (!this.fieldMappingMap.has(field)) {
+  fieldMapping(field: string): string | null {
+    const mapping = this.fieldMappingMap.get(field);
+    if (mapping === undefined) {
       throw new SyntaxError(`Field mapping does not exist (${field})`);
     }
-    return this.fieldMappingMap.get(field);
+    return mapping;
   }
 
   /**
@@ -108,16 +109,11 @@ export class AdvancedSearchService {
    * @returns a query string
    */
   generateQueryByModel(model: ISearchModel): string {
-    const query = [];
-    let field: string = this.protectStar(this.fieldMapping(model.field));
-    let term: string = this.protectTerm(model.term, model.searchType);
-    query.push(`${field}:${term}`);
+    const query = [this.generateClause(model.field, model.term, model.searchType)];
     model.search.forEach((search: ISearch) => {
       if (search.term) {
         query.push(search.operator);
-        field = this.protectStar(this.fieldMapping(search.field));
-        term = this.protectTerm(search.term, search.searchType);
-        query.push(`${field}:${term}`);
+        query.push(this.generateClause(search.field, search.term, search.searchType));
       }
     });
     return query.join(' ');
@@ -129,7 +125,7 @@ export class AdvancedSearchService {
    */
   private process(config: IAdvancedSearchConfig): void {
     this.fieldData = config.fieldsData;
-    const fieldMapping = [];
+    const fieldMapping: [string, string | null][] = [];
     config.fieldsConfig.forEach((field: ILabelValueField) => {
       if (field?.options?.search_type) {
         this.fieldsSearchType[field.value] = field.options.search_type;
@@ -137,7 +133,20 @@ export class AdvancedSearchService {
       fieldMapping.push([field.value, field.field]);
       this.fieldOptions.push({label: field.label, value: field.value});
     });
-    this.fieldMappingMap = new Map(fieldMapping);
+    this.fieldMappingMap = new Map<string, string | null>(fieldMapping);
+  }
+
+  /**
+   * Generate a query clause.
+   * @param fieldKey - The field configuration key
+   * @param term - The search term
+   * @param searchType - The search type
+   * @returns a field-qualified or unqualified query clause
+   */
+  private generateClause(fieldKey: string, term: string, searchType: string): string {
+    const protectedTerm = this.protectTerm(term, searchType);
+    const field = this.fieldMapping(fieldKey);
+    return field === null ? protectedTerm : `${this.protectStar(field)}:${protectedTerm}`;
   }
 
   /**
