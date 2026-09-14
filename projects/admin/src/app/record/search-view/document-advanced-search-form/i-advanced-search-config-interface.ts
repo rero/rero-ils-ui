@@ -15,7 +15,7 @@ export type IFieldsData = {
 }
 
 export type ILabelValueField = {
-  field: string
+  field: string | null
   options: {
     search_type: ILabelValue[];
   }
