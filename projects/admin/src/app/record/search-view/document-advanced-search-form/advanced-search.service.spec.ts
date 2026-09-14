@@ -13,6 +13,15 @@ describe('AdvancedSearchService', () => {
   const apiResponse = {
     fieldsConfig: [
       {
+        field: null,
+        label: "Everywhere",
+        value: "everywhere",
+        options: {
+          search_type: [
+            { label: "contains", value: AdvancedSearchService.SEARCH_TYPE_CONTAINS },
+            { label: "exact", value: AdvancedSearchService.SEARCH_TYPE_CONTAINS_PHRASE },
+          ]} },
+      {
         field: "title.*",
         label: "Title",
         value: "title",
@@ -70,6 +79,7 @@ describe('AdvancedSearchService', () => {
 
   it('should return the fields configuration', () => {
     const response = [
+      { label: "Everywhere", value: "everywhere" },
       { label: "Title", value: "title" },
       { label: "Country", value: "country" },
     ];
@@ -84,6 +94,10 @@ describe('AdvancedSearchService', () => {
 
   it('should return the fields search type data', () => {
     const response = {
+      everywhere: [
+        { label: "contains", value: AdvancedSearchService.SEARCH_TYPE_CONTAINS },
+        { label: "exact", value: AdvancedSearchService.SEARCH_TYPE_CONTAINS_PHRASE },
+      ],
       title: [
         { label: "contains", value: AdvancedSearchService.SEARCH_TYPE_CONTAINS },
         { label: "exact", value: AdvancedSearchService.SEARCH_TYPE_CONTAINS_PHRASE },
@@ -108,6 +122,7 @@ describe('AdvancedSearchService', () => {
 
   it('should return the mapping', () => {
     service.load().subscribe();
+    expect(service.fieldMapping('everywhere')).toBeNull();
     expect(service.fieldMapping('title')).toEqual('title.*');
   });
 
@@ -124,6 +139,34 @@ describe('AdvancedSearchService', () => {
       field: 'title',
       term: 'flamand',
       searchType: AdvancedSearchService.SEARCH_TYPE_CONTAINS,
+      search: [{
+        operator: AdvancedSearchService.OPERATOR_AND,
+        field: 'title',
+        term: '',
+        searchType: AdvancedSearchService.SEARCH_TYPE_CONTAINS
+      }] };
+    expect(service.generateQueryByModel(model)).toEqual(searchString);
+
+    // EVERYWHERE: CONTAINS
+    searchString = '(flamand)';
+    model = {
+      field: 'everywhere',
+      term: 'flamand',
+      searchType: AdvancedSearchService.SEARCH_TYPE_CONTAINS,
+      search: [{
+        operator: AdvancedSearchService.OPERATOR_AND,
+        field: 'title',
+        term: '',
+        searchType: AdvancedSearchService.SEARCH_TYPE_CONTAINS
+      }] };
+    expect(service.generateQueryByModel(model)).toEqual(searchString);
+
+    // EVERYWHERE: PHRASE
+    searchString = '"flamand primitif"';
+    model = {
+      field: 'everywhere',
+      term: 'flamand primitif',
+      searchType: AdvancedSearchService.SEARCH_TYPE_CONTAINS_PHRASE,
       search: [{
         operator: AdvancedSearchService.OPERATOR_AND,
         field: 'title',
@@ -189,6 +232,34 @@ describe('AdvancedSearchService', () => {
         },
         {
           operator: AdvancedSearchService.OPERATOR_OR,
+          field: 'country',
+          term: 'abc',
+          searchType: AdvancedSearchService.SEARCH_TYPE_CONTAINS_PHRASE
+        }
+      ] };
+    expect(service.generateQueryByModel(model)).toEqual(searchString);
+
+    // MULTIPLE SEARCH WITH EVERYWHERE
+    searchString = '(flamand) AND title.\\*:"primitif" OR "art moderne" AND NOT provisionActivity.place.country:"abc"';
+    model = {
+      field: 'everywhere',
+      term: 'flamand',
+      searchType: AdvancedSearchService.SEARCH_TYPE_CONTAINS,
+      search: [
+        {
+          operator: AdvancedSearchService.OPERATOR_AND,
+          field: 'title',
+          term: 'primitif',
+          searchType: AdvancedSearchService.SEARCH_TYPE_CONTAINS_PHRASE
+        },
+        {
+          operator: AdvancedSearchService.OPERATOR_OR,
+          field: 'everywhere',
+          term: 'art moderne',
+          searchType: AdvancedSearchService.SEARCH_TYPE_CONTAINS_PHRASE
+        },
+        {
+          operator: AdvancedSearchService.OPERATOR_NOT,
           field: 'country',
           term: 'abc',
           searchType: AdvancedSearchService.SEARCH_TYPE_CONTAINS_PHRASE
