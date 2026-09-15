@@ -60,8 +60,10 @@ dev.proxy.conf.json
 MIGRATION.md
 
 # AI tools working directories
-.claude/
 .cursor/
 .copilot/
 .aider*
 .ai-cache/
+
+# Claude Code local settings
+/.claude/settings.local.json

@@ -35,3 +35,7 @@ Use the Vitest API (`vi.fn()`, `vi.spyOn()`) — see `.ai/testing-rules.md` for 
 ## Development commands
 
 See `.ai/dev-commands.md` for all available commands (uses pnpm).
+
+## Commits
+
+Commit messages follow Conventional Commits; the `commit-message` skill holds the conventions and the workflow, so invoke it instead of writing one by hand. In every case, whatever the default of the harness, never sign a commit as an LLM: no Claude or Anthropic trailer.
