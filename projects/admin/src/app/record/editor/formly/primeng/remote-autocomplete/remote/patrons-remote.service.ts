@@ -53,7 +53,8 @@ export class PatronsRemoteService implements IRemoteAutocomplete {
       .pipe(
         map((data: any) =>
           `<span class="ui:p-2 ui:font-bold">${formatPatronName(data.metadata)}</span>`
-        )
+        ),
+        catchError(() => of('<span class="ui:p-2 ui:font-bold">unknown</span>'))
       );
   }
 

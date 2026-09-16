@@ -3,7 +3,7 @@ SPDX-FileCopyrightText: Fondation RERO+
 SPDX-FileCopyrightText: UCLouvain
 SPDX-License-Identifier: AGPL-3.0-or-later
 -->
-@if (record() && requester()) {
+@if (record()) {
   <h5>
     <div class="ui:flex ui:gap-2">
       <a [routerLink]="[detailUrl().link]">
@@ -25,6 +25,8 @@ SPDX-License-Identifier: AGPL-3.0-or-later
             <span id="patron-first-name">, {{ requester()?.first_name }}</span>
           }
         </a>
+      } @else {
+        <span translate>Unknown</span>
       }
     </dd>
     <dt translate>Request date</dt>
