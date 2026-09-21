@@ -89,6 +89,12 @@ describe('ItemApiService', () => {
     });
   });
 
+  it('should request the item with the rero+json representation', () => {
+    service.getItemRecord('1').subscribe((result: any) => expect(result).toEqual(record));
+    expect(recordServiceSpy.getRecord).toHaveBeenCalledWith(
+      'items', '1', { resolve: 1, headers: { Accept: 'application/rero+json' } });
+  });
+
   it('should return the item\'s updated location', () => {
     const itemUpdated = {...item};
     itemUpdated.location = { $ref: 'api/locations/2' };

@@ -3,7 +3,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
-import { ApiService, Error, RecordService } from '@rero/ng-core';
+import { ApiService, Error, RecordData, RecordService } from '@rero/ng-core';
 import { BaseApi, EsResult, esResultInitialState, IAvailability, IAvailabilityService } from '@rero/shared';
 import { Observable, of } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
@@ -69,6 +69,18 @@ export class ItemApiService implements IAvailabilityService {
       .pipe(
         map((result: any) => result.metadata)
       );
+  }
+
+  /**
+   * Get an item record through the REST-API.
+   *
+   * @param pid - the item pid
+   * @param resolve - resolve the `$ref` links of the record
+   * @returns an `Observable` on the REST-API item record
+   */
+  getItemRecord(pid: string, resolve = 1): Observable<RecordData> {
+    return this.recordService.getRecord(
+      ItemApiService.RESOURCE_NAME, pid, { resolve, headers: BaseApi.reroJsonheaders });
   }
 
   /**

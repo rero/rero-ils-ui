@@ -4,7 +4,7 @@
 import { ChangeDetectionStrategy, Component, computed, effect, inject, input, model, signal } from '@angular/core';
 import { ItemApiService } from '@app/admin/api/item-api.service';
 import { IssueService } from '@app/admin/service/issue.service';
-import { DateTranslatePipe, GetRecordPipe, Nl2brPipe, RecordService } from '@rero/ng-core';
+import { DateTranslatePipe, GetRecordPipe, Nl2brPipe, RecordData, RecordService } from '@rero/ng-core';
 
 import { AsyncPipe, CurrencyPipe, JsonPipe, NgClass, NgPlural, NgPluralCase } from '@angular/common';
 import { RouterLink } from '@angular/router';
@@ -108,8 +108,8 @@ export class ItemDetailViewComponent {
 
   /** Update item status */
   updateItemStatus(): void {
-    this.recordService.getRecord('items', this.record()?.metadata.pid, { resolve: 1 })
-      .subscribe((item: any) => this.record.set(item));
+    this.itemApiService.getItemRecord(this.record()?.metadata.pid)
+      .subscribe((item: RecordData) => this.record.set(item));
   }
 
   /**
