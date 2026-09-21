@@ -4,7 +4,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 -->
 
 <ngx-loading-bar [includeSpinner]="false" height="3px" />
-@let document = documentpid() | getRecord: 'documents' | async;
+@let document = documentResource.value();
 @if (document) {
   <p-tabs [scrollable]="true" value="get">
     <p-tablist>

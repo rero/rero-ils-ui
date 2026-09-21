@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
+import { RecordData, RecordService } from '@rero/ng-core';
 import { BaseApi, IAvailability, IAvailabilityService } from '@rero/shared';
 import { Observable } from 'rxjs';
 import { AppConfigService } from '../app-config.service';
@@ -13,7 +14,20 @@ import { AppConfigService } from '../app-config.service';
 export class DocumentApiService extends BaseApi implements IAvailabilityService {
 
   private httpClient: HttpClient = inject(HttpClient);
+  private recordService: RecordService = inject(RecordService);
   private appConfigService: AppConfigService = inject(AppConfigService);
+
+  /**
+   * Get a document record.
+   *
+   * @param pid - document pid
+   * @param resolve - resolve the `$ref` links of the record
+   * @returns Observable of the document record
+   */
+  getDocument(pid: string, resolve = 1): Observable<RecordData> {
+    return this.recordService.getRecord(
+      'documents', pid, { resolve, headers: BaseApi.reroJsonheaders });
+  }
 
   /**
    * Get availability by document pid

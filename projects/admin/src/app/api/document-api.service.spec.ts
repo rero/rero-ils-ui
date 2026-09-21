@@ -55,7 +55,7 @@ describe('DocumentApiService', () => {
       ],
       providers: [
         { provide: HttpClient, useValue: httpClientSpy },
-        { provide: RecordService, useValue: { getRecords: vi.fn() } },
+        { provide: RecordService, useValue: { getRecord: vi.fn(), getRecords: vi.fn() } },
         { provide: AppConfigService, useValue: {} }
       ]
     });
@@ -65,6 +65,14 @@ describe('DocumentApiService', () => {
 
   it('should be created', () => {
     expect(service).toBeTruthy();
+  });
+
+  it('should request the document with the rero+json representation', () => {
+    const record = { metadata: { pid: '1' } };
+    vi.spyOn(recordService, 'getRecord').mockReturnValue(of(record) as any);
+    service.getDocument('1').subscribe((response) => expect(response).toEqual(record));
+    expect(recordService.getRecord).toHaveBeenCalledWith(
+      'documents', '1', { resolve: 1, headers: { Accept: 'application/rero+json' } });
   });
 
   it('should return the number of linked documents', () => {
