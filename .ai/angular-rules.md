@@ -6,6 +6,20 @@ Framework version: Angular 21
 
 - Always use dot notation (`obj.prop`) over bracket notation (`obj['prop']`).
 - Avoid `Record<string, any>` — use a proper typed interface or type alias instead.
+- Prefer object destructuring when accessing and using a property, instead of repeating `obj.prop`.
+
+```typescript
+// BAD
+function transform(transaction: TransactionRecord): TransactionStatus {
+  if (isScanItemMetadata(transaction.metadata)) { /* ... */ }
+}
+
+// GOOD
+function transform(transaction: TransactionRecord): TransactionStatus {
+  const { metadata } = transaction;
+  if (isScanItemMetadata(metadata)) { /* ... */ }
+}
+```
 
 ## Core rules
 

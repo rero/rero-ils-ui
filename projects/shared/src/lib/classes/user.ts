@@ -79,6 +79,10 @@ export class User {
     return this._patronRoles;
   }
 
+  get fullname(): string {
+    return (this.profile.first_name + ' ' + this.profile.last_name).trim();
+  }
+
   constructor({ user, patrons, permissions }: UserConstructorData) {
     this.profile = user;
     this.patrons = patrons;

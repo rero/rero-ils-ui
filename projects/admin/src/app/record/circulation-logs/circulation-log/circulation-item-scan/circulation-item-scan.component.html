@@ -2,12 +2,13 @@
 SPDX-FileCopyrightText: Fondation RERO+
 SPDX-License-Identifier: AGPL-3.0-or-later
 -->
+@let status = record() | transactionStatus;
 <admin-circulation-log
   [record]="record()"
   [isHighlight]="isHighlight()"
   [separator]="separator()"
 >
-  <p-tag badge translate>Scan Item</p-tag>
+  <p-tag badge severity="info" [icon]="status.icon" [value]="status.label | translate" />
   <div collapsedContent class="ui:grid ui:grid-cols-12 ui:gap-4">
     <div class="ui:col-span-8">
       <i class="fa-solid fa-globe"></i>&nbsp;

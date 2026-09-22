@@ -64,7 +64,6 @@ export const appConfig: ApplicationConfig = {
       useFactory: (s: PlatformLocation) => s.getBaseHrefFromDOM(),
       deps: [PlatformLocation],
     },
-    { provide: TranslateService, useExisting: NgCoreTranslateService },
     { provide: RemoteAutocompleteService, useExisting: UiRemoteAutocompleteService },
     { provide: remoteAutocompleteToken, useExisting: DocumentsRemoteService, multi: true },
     { provide: remoteAutocompleteToken, useExisting: ItemsRemoteService, multi: true },
@@ -116,6 +115,7 @@ export const appConfig: ApplicationConfig = {
       }),
       LoadingBarHttpClientModule
     ),
+    { provide: TranslateService, useExisting: NgCoreTranslateService },
     { provide: NgCoreTranslateService, useExisting: AppTranslateService },
     { provide: TranslateLanguageService, useExisting: AppTranslateLanguageService },
   ],

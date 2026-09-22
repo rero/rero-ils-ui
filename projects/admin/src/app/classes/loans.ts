@@ -49,6 +49,7 @@ export class Loan {
   pickup_location_pid?: string;
   item_destination?: LoanDestination;
   transaction_location_pid?: string;
+  extension_count?: number;
 
   /**
    * Constructor

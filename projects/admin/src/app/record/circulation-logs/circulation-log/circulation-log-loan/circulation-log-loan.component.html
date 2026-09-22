@@ -3,12 +3,13 @@ SPDX-FileCopyrightText: Fondation RERO+
 SPDX-FileCopyrightText: UCLouvain
 SPDX-License-Identifier: AGPL-3.0-or-later
 -->
+@let status = record() | transactionStatus;
 <admin-circulation-log
   [record]="record()"
   [isHighlight]="isHighlight()"
   [separator]="separator()"
 >
-  <p-tag badge>{{ record().metadata.loan.trigger | translate }}</p-tag>
+  <p-tag badge severity="info" [icon]="status.icon" [value]="status.label | translate" />
   <div collapsedContent class="ui:grid ui:grid-cols-12 ui:gap-4">
     <!-- Location -->
     <div class="ui:col-span-8">

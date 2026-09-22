@@ -17,11 +17,12 @@ import { PatronService } from '../../service/patron.service';
 import { CheckinActionComponent } from './checkin-action/checkin-action.component';
 import { CardComponent } from '../patron/card/card.component';
 import { ItemsListComponent } from '../items-list/items-list.component';
+import { TransactionsHistoryDialogComponent } from '../transactions-history/transactions-history-dialog/transactions-history-dialog.component';
 
 @Component({
     selector: 'admin-circulation-checkout',
     templateUrl: './checkin.component.html',
-    imports: [TranslateDirective, SearchInputComponent, CardComponent, ItemsListComponent, TranslatePipe],
+    imports: [TranslateDirective, SearchInputComponent, CardComponent, ItemsListComponent, TranslatePipe, TransactionsHistoryDialogComponent],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CheckinComponent {
