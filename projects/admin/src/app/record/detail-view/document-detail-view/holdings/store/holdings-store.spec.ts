@@ -6,8 +6,7 @@ import { provideHttpClientTesting } from "@angular/common/http/testing";
 import { TestBed } from "@angular/core/testing";
 import { TranslateModule } from "@ngx-translate/core";
 import { Error } from "@rero/ng-core";
-import type { EsResult } from "@rero/ng-core";
-import { AppStore, testUserLibrarianWithSettings, User } from "@rero/shared";
+import { AppStore, EsResult, testUserLibrarianWithSettings, User } from "@rero/shared";
 import { ConfirmationService, MessageService } from "primeng/api";
 import { Observable, of, Subject } from "rxjs";
 import { HoldingsApiService } from "../../../../../api/holdings-api.service";
@@ -375,10 +374,7 @@ class HoldingsApiServiceMock {
       aggregations: {},
       hits: {
         hits: holdings,
-        total: {
-          relation: "eq",
-          value: holdings.length
-        }
+        total: holdings.length
       },
       links: {
         self: ''

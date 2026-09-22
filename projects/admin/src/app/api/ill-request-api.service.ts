@@ -2,9 +2,8 @@
 // SPDX-FileCopyrightText: UCLouvain
 // SPDX-License-Identifier: AGPL-3.0-or-later
 import { inject, Injectable } from '@angular/core';
-import type { EsResult } from '@rero/ng-core';
 import { RecordService } from '@rero/ng-core';
-import { BaseApi } from '@rero/shared';
+import { BaseApi, EsResult } from '@rero/shared';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 

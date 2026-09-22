@@ -3,9 +3,7 @@
 import { APP_BASE_HREF, CurrencyPipe, KeyValue, KeyValuePipe } from '@angular/common';
 import { afterNextRender, ChangeDetectionStrategy, Component, effect, inject, model, OnInit, signal, untracked } from '@angular/core';
 import { TranslateDirective, TranslatePipe, TranslateService } from '@ngx-translate/core';
-import type { EsResult } from '@rero/ng-core';
-import { RecordService } from '@rero/ng-core';
-import { AppStore } from '@rero/shared';
+import { AppStore, EsResult } from '@rero/shared';
 import JsBarcode from 'jsbarcode';
 import { BadgeModule } from 'primeng/badge';
 import { TabsModule } from 'primeng/tabs';
@@ -70,7 +68,6 @@ type Tabs = {
 })
 export class PatronProfileComponent implements OnInit {
   private patronTransactionApiService = inject(PatronTransactionApiService);
-  private recordService = inject(RecordService);
   private loanApiService = inject(LoanApiService);
   private illRequestApiService = inject(IllRequestApiService);
   private appStore = inject(AppStore);
@@ -187,7 +184,7 @@ export class PatronProfileComponent implements OnInit {
               if (!('hits' in r)) return;
               this.tabs.update(t => ({
                 ...t,
-                history: { ...t.history, loaded: false, count: +this.recordService.totalHits(r.hits.total) },
+                history: { ...t.history, loaded: false, count: r.hits.total },
               }));
             });
           }
@@ -227,11 +224,11 @@ export class PatronProfileComponent implements OnInit {
       );
       this.tabs.update(t => ({
         ...t,
-        loan: { ...t.loan, loaded: false, count: +this.recordService.totalHits(loanResponse.hits.total) },
-        request: { ...t.request, loaded: false, count: +this.recordService.totalHits(requestResponse.hits.total) },
+        loan: { ...t.loan, loaded: false, count: loanResponse.hits.total },
+        request: { ...t.request, loaded: false, count: requestResponse.hits.total },
         fee: { ...t.fee, loaded: false, feeTotal },
-        illRequest: { ...t.illRequest, loaded: false, count: +this.recordService.totalHits(illRequestResponse.hits.total) },
-        history: { ...t.history, loaded: false, count: historyResponse?.hits?.total ? +this.recordService.totalHits(historyResponse.hits.total) : t.history.count },
+        illRequest: { ...t.illRequest, loaded: false, count: illRequestResponse.hits.total },
+        history: { ...t.history, loaded: false, count: historyResponse?.hits ? historyResponse.hits.total : t.history.count },
         personalDetails: { ...t.personalDetails, loaded: false },
       }));
     });

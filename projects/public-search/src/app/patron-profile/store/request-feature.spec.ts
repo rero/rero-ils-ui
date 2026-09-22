@@ -79,7 +79,7 @@ describe('RequestsFeature', () => {
   });
 
   it('resets request state', () => {
-    loanApiService.getRequest.mockReturnValue(of({ hits: { hits: [request], total: { value: 1 } } }));
+    loanApiService.getRequest.mockReturnValue(of({ hits: { hits: [request], total: 1 } }));
     activateRequests();
     store.changeRequestPager({
       page: 1,
@@ -99,8 +99,8 @@ describe('RequestsFeature', () => {
   it('loads the selected request page', () => {
     const secondRequest = { metadata: { pid: 'request-2' } };
     loanApiService.getRequest
-      .mockReturnValueOnce(of({ hits: { hits: [request], total: { value: 2 } } }))
-      .mockReturnValueOnce(of({ hits: { hits: [secondRequest], total: { value: 2 } } }));
+      .mockReturnValueOnce(of({ hits: { hits: [request], total: 2 } }))
+      .mockReturnValueOnce(of({ hits: { hits: [secondRequest], total: 2 } }));
 
     activateRequests();
     store.changeRequestPager({ page: 1, first: 10, rows: 10 });
@@ -114,7 +114,7 @@ describe('RequestsFeature', () => {
   });
 
   it('cancels a request through the API and removes it from state', () => {
-    loanApiService.getRequest.mockReturnValue(of({ hits: { hits: [request], total: { value: 1 } } }));
+    loanApiService.getRequest.mockReturnValue(of({ hits: { hits: [request], total: 1 } }));
     loanApiService.cancel.mockReturnValue(of({ pid: 'request-1' }));
     activateRequests();
 
@@ -138,7 +138,7 @@ describe('RequestsFeature', () => {
   });
 
   it('handles an error while cancelling a request', () => {
-    loanApiService.getRequest.mockReturnValue(of({ hits: { hits: [request], total: { value: 1 } } }));
+    loanApiService.getRequest.mockReturnValue(of({ hits: { hits: [request], total: 1 } }));
     loanApiService.cancel.mockReturnValue(throwError(() => new Error('Cancellation failed')));
     activateRequests();
 

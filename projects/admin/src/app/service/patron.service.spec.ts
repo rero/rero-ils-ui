@@ -15,7 +15,7 @@ describe('PatronService', () => {
 
   const httpClientSpy = { get: vi.fn() };
 
-  const recordServiceSpy = { getRecords: vi.fn(), getRecord: vi.fn(), totalHits: vi.fn() };
+  const recordServiceSpy = { getRecords: vi.fn(), getRecord: vi.fn() };
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -36,16 +36,17 @@ describe('PatronService', () => {
 
   it('should not return a patron', () => {
     const response = {...apiResponse};
+    response.hits.hits = [];
+    response.hits.total = 0;
     recordServiceSpy.getRecords.mockReturnValue(of(response));
-    recordServiceSpy.totalHits.mockReturnValue(0);
     service.getPatron('2010023488').subscribe((result: any) => expect(result).toBeUndefined());
   });
 
   it('should return a patron', () => {
     const response = {...apiResponse};
     response.hits.hits = [{...testPatron}];
+    response.hits.total = response.hits.hits.length;
     recordServiceSpy.getRecords.mockReturnValue(of(response));
-    recordServiceSpy.totalHits.mockReturnValue(1);
     service.getPatron('2010023488').subscribe((result: any) => {
       expect(result).toEqual(testPatron.metadata);
     });
@@ -54,7 +55,6 @@ describe('PatronService', () => {
   it('should return a patron by its pid', () => {
     const patron = {...testPatron};
     recordServiceSpy.getRecord.mockReturnValue(of(patron));
-    recordServiceSpy.totalHits.mockReturnValue(1);
     service.getPatronByPid('1')
       .subscribe((result: any) => expect(result).toEqual(patron.metadata));
   });
@@ -65,8 +65,8 @@ describe('PatronService', () => {
       {item: { barcode: '10000000406', 'organisation_pid': '1', pid: '406'}},
       {item: { barcode: '10000000423', 'organisation_pid': '1', pid: '423'}}
     ];
+    response.hits.total = response.hits.hits.length;
     httpClientSpy.get.mockReturnValue(of(response));
-    recordServiceSpy.totalHits.mockReturnValue(2);
     service.getItems('1').subscribe((result: any[]) => {
       expect(result[0]).toBeInstanceOf(Item);
       expect(result[0].barcode).toEqual('10000000406');
@@ -85,8 +85,8 @@ describe('PatronService', () => {
   it('should return the requested items', () => {
     const response = {...apiResponse};
     response.hits.hits = [{...loanPending}];
+    response.hits.total = response.hits.hits.length;
     recordServiceSpy.getRecords.mockReturnValue(of(response));
-    recordServiceSpy.totalHits.mockReturnValue(1);
     service.getItemsRequested('1')
       .subscribe((result: any) => expect(result).toEqual(response.hits.hits));
   });
@@ -94,8 +94,8 @@ describe('PatronService', () => {
   it('should return the pickup items', () => {
     const response = {...apiResponse};
     response.hits.hits = [{...loanPending}];
+    response.hits.total = response.hits.hits.length;
     recordServiceSpy.getRecords.mockReturnValue(of(response));
-    recordServiceSpy.totalHits.mockReturnValue(1);
     service.getItemsPickup('1')
       .subscribe((result: any) => expect(result).toEqual(response.hits.hits));
   });
@@ -103,8 +103,8 @@ describe('PatronService', () => {
   it('should return the history', () => {
     const response = {...apiResponse};
     response.hits.hits = [{...loanPending}];
+    response.hits.total = response.hits.hits.length;
     recordServiceSpy.getRecords.mockReturnValue(of(response));
-    recordServiceSpy.totalHits.mockReturnValue(1);
     service.getHistory('1')
       .subscribe((result: any) => expect(result).toEqual(response.hits.hits));
   });

@@ -17,10 +17,7 @@ describe('DocumentApiService', () => {
   const response = {
     aggregations: {},
     hits: {
-      total: {
-        relation: 'eq',
-        value: 2
-      },
+      total: 2,
       hits: [{
         metadata: {
           pid: 1
@@ -58,7 +55,7 @@ describe('DocumentApiService', () => {
       ],
       providers: [
         { provide: HttpClient, useValue: httpClientSpy },
-        { provide: RecordService, useValue: { getRecords: vi.fn(), totalHits: vi.fn() } },
+        { provide: RecordService, useValue: { getRecords: vi.fn() } },
         { provide: AppConfigService, useValue: {} }
       ]
     });

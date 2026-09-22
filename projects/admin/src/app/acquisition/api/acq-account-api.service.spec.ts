@@ -68,10 +68,7 @@ describe('AcqAccountApiService', () => {
   const response = {
     aggregations: {},
     hits: {
-      total: {
-        relation: 'eq',
-        value: 1
-      },
+      total: 1,
       hits: [
         { metadata: record },
         { metadata: record2 }
@@ -81,8 +78,7 @@ describe('AcqAccountApiService', () => {
   };
 
   const httpClientSpy = { get: vi.fn() };
-  const recordServiceSpy = { getRecords: vi.fn(), totalHits: vi.fn(), delete: vi.fn() };
-  recordServiceSpy.totalHits.mockReturnValue(2);
+  const recordServiceSpy = { getRecords: vi.fn(), delete: vi.fn() };
 
   beforeEach(() => {
     TestBed.configureTestingModule({

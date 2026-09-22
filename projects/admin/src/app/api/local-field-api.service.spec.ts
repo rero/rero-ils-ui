@@ -16,18 +16,14 @@ describe('LocalFieldApiService', () => {
   const emptyRecords = {
     aggregations: {},
     hits: {
-      total: {
-        relation: 'eq',
-        value: 0
-      },
+      total: 0,
       hits: []
     },
     links: {}
   };
 
-  const recordServiceSpy = { getRecords: vi.fn(), totalHits: vi.fn() };
+  const recordServiceSpy = { getRecords: vi.fn() };
   recordServiceSpy.getRecords.mockReturnValue(of(emptyRecords));
-  recordServiceSpy.totalHits.mockReturnValue(0);
 
   const recordUiServiceSpy = { deleteRecord: vi.fn() };
   recordUiServiceSpy.deleteRecord.mockReturnValue(of(true));

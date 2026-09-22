@@ -183,7 +183,7 @@ class CollectionsRoute extends BaseRoute implements RouteDataTypesInterface {
             sort: 'name',
           })
           .pipe(
-            map((result: any) => (+recordService.totalHits(result.hits.total) === 0 ? [] : result.hits.hits)),
+            map((result: any) => (result.hits.total === 0 ? [] : result.hits.hits)),
             map((hits: any) => {
               return hits.map((hit: any) => {
                 return {

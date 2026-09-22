@@ -260,7 +260,7 @@ class ItemApiServiceMock {
       aggregations: {},
       hits: {
         hits: itemsHits,
-        total: { relation: 'eq', value: count }
+        total: count
       },
       links: {
         self: ''

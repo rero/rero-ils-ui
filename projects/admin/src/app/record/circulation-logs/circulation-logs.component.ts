@@ -4,8 +4,7 @@
 import { Component, computed, inject, OnDestroy, OnInit, signal, ChangeDetectionStrategy} from '@angular/core';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { _, TranslateService, TranslatePipe } from "@ngx-translate/core";
-import type { EsResult } from '@rero/ng-core';
-import { OperationLogsApiService } from '@rero/shared';
+import { EsResult, OperationLogsApiService } from '@rero/shared';
 import { DateTime } from 'luxon';
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { Observable, Subscription } from 'rxjs';
@@ -18,7 +17,7 @@ import { CirculationItemScanComponent } from './circulation-log/circulation-item
 import { CirculationLogLoanComponent } from './circulation-log/circulation-log-loan/circulation-log-loan.component';
 import { Button } from 'primeng/button';
 import { TitleCasePipe } from '@angular/common';
-import { DateTranslatePipe, searchTotalValue } from '@rero/ng-core';
+import { DateTranslatePipe } from '@rero/ng-core';
 import { CirculationLogRecordTypePipe } from './pipe/circulation-log-record-type.pipe';
 
 @Component({
@@ -84,7 +83,7 @@ export class CirculationLogsComponent implements OnInit, OnDestroy {
         switchMap(() => this.circulationLogsQuery(1))
       ).subscribe((response: EsResult) => {
         this.page.set(1);
-        this.recordsTotal.set(searchTotalValue(response.hits.total));
+        this.recordsTotal.set(response.hits.total);
         this.records.set(response.hits.hits);
         this.loadedRecord.set(true);
       })

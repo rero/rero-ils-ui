@@ -3,7 +3,7 @@
 
 import { inject, Injectable } from '@angular/core';
 import { RecordService } from '@rero/ng-core';
-import type { EsResult } from '@rero/ng-core';
+import type { EsResult } from '@rero/shared';
 import { map } from 'rxjs/operators';
 
 @Injectable({
@@ -25,7 +25,7 @@ export class LibraryService {
       LibraryService.resource,
       { page: 1, itemsPerPage: 1 }
     ).pipe(
-      map((results: EsResult) => this.recordService.totalHits(results.hits.total))
+      map((results: EsResult) => results.hits.total)
     );
   }
 

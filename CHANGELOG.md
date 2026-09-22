@@ -1,5 +1,47 @@
 # Changelog
 
+## [21.2.0](https://github.com/rero/rero-ils-ui/compare/v21.1.0...v21.2.0) (2026-09-08)
+
+### Features
+
+* **acquisition:** add sortable order lines list ([52b9fa0](https://github.com/rero/rero-ils-ui/commit/52b9fa095f243751cd6058da5da393fa12a5b7ff))
+* **document:** add link to public view ([7411d56](https://github.com/rero/rero-ils-ui/commit/7411d56550965bb414a403de56f3f999d9240fad))
+* **documents:** display missing metadata ([0404921](https://github.com/rero/rero-ils-ui/commit/04049213e199ab78d99864bdb6f26a4c88475860))
+* **exports:** add XLSX exports ([5db8be6](https://github.com/rero/rero-ils-ui/commit/5db8be6f4e0f05ff072a382c7cae0c462d6b3298)), closes [rero/rero-ils#4168](https://github.com/rero/rero-ils/issues/4168)
+* migrate to Font Awesome Free v7 ([9e245e9](https://github.com/rero/rero-ils-ui/commit/9e245e99c87f86b7adbfeb01ac9ba8f382615b52))
+* **operation-log:** sort and add paginator ([9f5234e](https://github.com/rero/rero-ils-ui/commit/9f5234ea49be0e90dbfd3c29df948ad262388158))
+* **patron-profile:** renew all loans ([88f3e6f](https://github.com/rero/rero-ils-ui/commit/88f3e6f410bb1ceac474182d4ddcdfa70f6f5397))
+* **routes:** add templates creation for holdings and items ([b9c97ab](https://github.com/rero/rero-ils-ui/commit/b9c97ab56b0b6c4d658655112da83da0ab6b79fb))
+* **shortcut:** add result list search shortcut ([b0f86d6](https://github.com/rero/rero-ils-ui/commit/b0f86d6fad24fc381f87518a570af11c4a632e6c))
+* **ssl:** serve proxy scripts over https with a dev certificate ([f7aed02](https://github.com/rero/rero-ils-ui/commit/f7aed02763a9ab7540749546d7e749b51ed665de))
+* **translate:** allow language config override ([5abd9d9](https://github.com/rero/rero-ils-ui/commit/5abd9d92451b55fe1a76db7f155ee4114e3e1a6b))
+
+### Bug Fixes
+
+* **acquisition:** restore the default order lines sort option ([3f6b38f](https://github.com/rero/rero-ils-ui/commit/3f6b38fa1c3c864cf8cf4628c3d47d556a9473e9))
+* **acquisitions:** use integer/number field types to enable step validator ([4083133](https://github.com/rero/rero-ils-ui/commit/4083133880234cb45da00761b877da8854a2a4f0))
+* **circulation:** requests validation interactions ([fb49836](https://github.com/rero/rero-ils-ui/commit/fb498369d4b4e1631fbba42bd5263bede498be4c)), closes [rero/rero-ils#4208](https://github.com/rero/rero-ils/issues/4208)
+* clean up the reasons not to delete warnings ([582ea29](https://github.com/rero/rero-ils-ui/commit/582ea298c725b13caac2990588d5cbb977a616ff))
+* **document:** remove whitespace ([e5c1c23](https://github.com/rero/rero-ils-ui/commit/e5c1c23e699db869814f05b028f8b0918c5690a4)), closes [rero/rero-ils#4244](https://github.com/rero/rero-ils/issues/4244)
+* **documents:** correct two description fields ([20483c8](https://github.com/rero/rero-ils-ui/commit/20483c81f50a38c192e11ab2d89402befbcf0aa1))
+* **documents:** malformed button to public view ([3263989](https://github.com/rero/rero-ils-ui/commit/32639895aed8b7babb1c13221854040c984cdce7))
+* **documents:** refresh delete status ([eda5a15](https://github.com/rero/rero-ils-ui/commit/eda5a15602fd48cd4102e6350464f2fbce2d5975))
+* **editor:** use phrase match for title autocomplete ([3b8000e](https://github.com/rero/rero-ils-ui/commit/3b8000e4b87d0e269ff4d672f87ad394cfcee19a)), closes [rero/rero-ils#3016](https://github.com/rero/rero-ils/issues/3016)
+* **files-filter:** restore files filter border ([7f87859](https://github.com/rero/rero-ils-ui/commit/7f87859e0997bbb6b4d67cf328452705def9a712)), closes [rero/rero-ils#4175](https://github.com/rero/rero-ils/issues/4175)
+* **holdings:** reload on document change ([28195d7](https://github.com/rero/rero-ils-ui/commit/28195d73f4516e5b80f376bf79356c6cce803240))
+* **icons:** harmonize acquisition and serial icons ([668bc00](https://github.com/rero/rero-ils-ui/commit/668bc00e0e3b464135fab4caa67ee9b5d517a8a2))
+* **issues:** fix claims count label ([8aec312](https://github.com/rero/rero-ils-ui/commit/8aec3123709af0ad864a6e6c99b5d3468c665b12))
+* **preview-email:** fix drag and drop of suggested emails ([bca97fd](https://github.com/rero/rero-ils-ui/commit/bca97fd6259182e98153f8f55da368001eaf5c13))
+* **public-search:** fix pickup location request message ([2fcd4fb](https://github.com/rero/rero-ils-ui/commit/2fcd4fb0354bdcd1dca0ba705cd2d24b8641a5bf)), closes [rero/rero-ils#3986](https://github.com/rero/rero-ils/issues/3986)
+* **public-search:** restore loading bar ([ed81f87](https://github.com/rero/rero-ils-ui/commit/ed81f875c3221bb743be83acd1eb561708ad176b)), closes [rero/rero-ils#4211](https://github.com/rero/rero-ils/issues/4211)
+* **pwd-edit:** refresh password validation error ([544960d](https://github.com/rero/rero-ils-ui/commit/544960da5fc3606a2325d6c0a2e82b4df63d7249)), closes [rero/rero-ils#2773](https://github.com/rero/rero-ils/issues/2773)
+* refresh record state ([bef525e](https://github.com/rero/rero-ils-ui/commit/bef525e20d4339d61b96f4142bf8b9c8a1af702b)), closes [rero/rero-ils#4222](https://github.com/rero/rero-ils/issues/4222)
+* refresh values derived from a rebound input ([a7894c8](https://github.com/rero/rero-ils-ui/commit/a7894c8d4e7b15f8055be0db5258cf7c5c8439b7))
+* **remote-search:** display correct admin/public placeholder ([b8b7f3f](https://github.com/rero/rero-ils-ui/commit/b8b7f3f3427cf8a5a181065cbb182fd217bfb620))
+* **search:** fix missing translation "Expand to all orgs" ([f89253a](https://github.com/rero/rero-ils-ui/commit/f89253a090bf32c599cfb7b14162ec44715dbe35))
+* **search:** read the hits total through searchTotalValue ([4942c64](https://github.com/rero/rero-ils-ui/commit/4942c643b6f025894f44f0a549fc5cdd6c30974d))
+* **sort:** make sort options names clearer ([62c09c3](https://github.com/rero/rero-ils-ui/commit/62c09c3d29dfcd75090b62770ad3cea9047e337f))
+
 ## [21.1.0](https://github.com/rero/rero-ils-ui/compare/v21.0.0...v21.1.0) (2026-07-14)
 
 ### ⚠ BREAKING CHANGES

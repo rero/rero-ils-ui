@@ -369,9 +369,9 @@ describe('OrderDetailStore', () => {
   describe('setSortCriteria', () => {
     it('should update the linesSortCriteria state', () => {
       const store = setupStore();
-      expect(store.linesSortCriteria()).toBe('priority');
-      store.setSortCriteria('-priority');
       expect(store.linesSortCriteria()).toBe('-priority');
+      store.setSortCriteria('priority');
+      expect(store.linesSortCriteria()).toBe('priority');
     });
   });
 
@@ -389,15 +389,15 @@ describe('OrderDetailStore', () => {
       return store;
     };
 
-    it('should sort by priority ascending by default', () => {
+    it('should sort by priority descending by default', () => {
       const store = setupSortedStore();
-      expect(store.sortedOrderLines().map(l => l.pid)).toEqual(['lineB', 'lineA']);
+      expect(store.sortedOrderLines().map(l => l.pid)).toEqual(['lineA', 'lineB']);
     });
 
-    it('should sort by priority descending', () => {
+    it('should sort by priority ascending', () => {
       const store = setupSortedStore();
-      store.setSortCriteria('-priority');
-      expect(store.sortedOrderLines().map(l => l.pid)).toEqual(['lineA', 'lineB']);
+      store.setSortCriteria('priority');
+      expect(store.sortedOrderLines().map(l => l.pid)).toEqual(['lineB', 'lineA']);
     });
 
     it('should sort by document title ascending', () => {
@@ -576,14 +576,16 @@ describe('OrderDetailStore', () => {
       expect(store.orderLines()).toEqual([]);
     });
 
-    it('should leave account_statement unchanged (server reload will update it)', () => {
+    it('should call reloadOrder after order line deletion', () => {
       const store = setupStore();
       store.setFromRecord({ metadata: mockOrder });
-      TestBed.tick();
+      TestBed.tick(); // let order-change effect run first
+      vi.clearAllMocks(); // reset call counts before the deletion
+      acqOrderServiceSpy.getOrder.mockReturnValue(of(mockOrder));
 
       lastDeletedOrderLine.set(mockOrderLine);
       TestBed.tick();
-      expect(store.order()?.account_statement.provisional.total_amount).toBe(100);
+      expect(acqOrderServiceSpy.getOrder).toHaveBeenCalledWith('1', 1);
     });
   });
 

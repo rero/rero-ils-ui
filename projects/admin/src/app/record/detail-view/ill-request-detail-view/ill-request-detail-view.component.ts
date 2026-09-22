@@ -32,7 +32,10 @@ export class IllRequestDetailViewComponent {
       switchMap(r => {
         const pid = r?.metadata?.patron?.pid;
         if (!pid) return of(null);
-        return this.recordService.getRecord('patrons', pid).pipe(map((p: any) => p.metadata));
+        return this.recordService.getRecord('patrons', pid).pipe(
+          map((p: any) => p.metadata),
+          catchError(() => of(null))
+        );
       })
     ),
     { initialValue: null }

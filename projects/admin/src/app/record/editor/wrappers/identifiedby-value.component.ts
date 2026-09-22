@@ -140,7 +140,7 @@ export class IdentifiedbyValueComponent extends FieldWrapper implements OnInit {
       .pipe(
         map((result: any) => {
           return (
-            +this.recordService.totalHits(result.hits.total) > 0
+            result.hits.total > 0
             && result.hits.hits[0].metadata.pid !== this.recordPid
           )
             ? result.hits.hits[0].metadata

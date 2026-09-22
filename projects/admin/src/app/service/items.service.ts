@@ -39,7 +39,7 @@ export class ItemsService {
     const url = `${itemApiUrl}/requested_loans/${libraryPid}`;
     return this.httpClient.get<any>(url).pipe(
       map(data => data.hits),
-      map(hits => +this.recordService.totalHits(hits.total) === 0 ? [] : hits.hits),
+      map(hits => hits.total === 0 ? [] : hits.hits),
       map(hits => hits.map(
         data => {
           const { item } = data;

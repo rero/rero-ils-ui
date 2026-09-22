@@ -19,7 +19,7 @@ const libraryRecords = [
 
 const esResult = {
   hits: {
-    total: { value: 2 },
+    total: 2,
     hits: libraryRecords
   }
 };

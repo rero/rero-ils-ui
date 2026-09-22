@@ -3,33 +3,33 @@ SPDX-FileCopyrightText: Fondation RERO+
 SPDX-FileCopyrightText: UCLouvain
 SPDX-License-Identifier: AGPL-3.0-or-later
 -->
-@if (item && ((item().metadata.issue && item().metadata.issue.status !== itemIssueStatus.DELETED) || item().metadata.type === 'provisional')) {
+@if (editableItem() && ((editableItem().metadata.issue && editableItem().metadata.issue.status !== itemIssueStatus.DELETED) || editableItem().metadata.type === 'provisional')) {
     <div class="ui:grid ui:grid-cols-12 ui:gap-x-4 ui:py-1 ui:px-1 ui:grow ui:items-center">
       <div class="ui:col-span-3 ui:flex">
-        @if (item().metadata._masked) {
-          <admin-record-masked [record]="item()" />
+        @if (editableItem().metadata._masked) {
+          <admin-record-masked [record]="editableItem()" />
         }
         @if (permissions()) {
-          <a [routerLink]="['/records', 'items', 'detail', item().metadata.pid]" name="barcode">
-            {{ item().metadata.barcode }}
+          <a [routerLink]="['/records', 'items', 'detail', editableItem().metadata.pid]" name="barcode">
+            {{ editableItem().metadata.barcode }}
           </a>
         } @else {
-          {{ item().metadata.barcode }}
+          {{ editableItem().metadata.barcode }}
         }
       </div>
       <div class="ui:col-span-3">
         <shared-availability
           recordType="item"
-          [record]="item()"
+          [record]="editableItem()"
           [apiService]="itemApiService"
         />
       </div>
       <div class="ui:col-span-3">
-        {{ item().metadata.enumerationAndChronology }}
+        {{ editableItem().metadata.enumerationAndChronology }}
       </div>
       <div class="ui:col-span-3 ui:flex ui:items-center">
         <div class="ui:grow">
-          <shared-inherited-call-number class-="ui:grow" [item]="item()" />
+          <shared-inherited-call-number class-="ui:grow" [item]="editableItem()" />
         </div>
         @if (permissions()) {
           <div class="ui:flex ui:gap-1 ui:justify-end">
@@ -39,7 +39,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
               size="small"
               [title]="'Item request'|translate"
               outlined
-              (onClick)="addRequest(item().metadata.pid, 'item')"
+              (onClick)="addRequest(editableItem().metadata.pid, 'item')"
               [pTooltip]="cannotRequestTooltipContent"
               tooltipPosition="top"
               [disabled]="!permissions().canRequest?.can"
@@ -54,7 +54,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
                 size="small"
                 [title]="'Edit'|translate"
                 outlined
-                [routerLink]="['/records', 'items', 'edit', item().metadata.pid]"
+                [routerLink]="['/records', 'items', 'edit', editableItem().metadata.pid]"
               />
             }
             <p-button
@@ -78,22 +78,22 @@ SPDX-License-Identifier: AGPL-3.0-or-later
       </div>
       <div class="ui:col-span-12 ui:pt-0">
         @if (permissions()) {
-          @for (note of item().metadata.notes; track $index) {
+          @for (note of editableItem().metadata.notes; track $index) {
             <admin-holding-item-note [note]="note" />
           }
-          <admin-holding-item-temporary-item-type [record]="item()" />
+          <admin-holding-item-temporary-item-type [record]="editableItem()" />
         }
         <!-- TEMPORARY LOCATION -->
-        @if (permissions() && item().metadata.temporary_location) {
+        @if (permissions() && editableItem().metadata.temporary_location) {
           <dl class="metadata">
             <dt translate>Temporary location</dt>
             <dd>
-              {{ item().metadata.temporary_location.pid | getRecord: 'locations' : 'field': 'name' | async }}
+              {{ editableItem().metadata.temporary_location.pid | getRecord: 'locations' : 'field': 'name' | async }}
             </dd>
           </dl>
         }
         <!-- ITEM IN COLLECTION -->
-        @let itemPid = item().metadata.pid;
+        @let itemPid = editableItem().metadata.pid;
         @if (permissions() && itemPid) {
           @let collections = itemPid | itemInCollection | async;
           @if (collections && collections.length > 0) {

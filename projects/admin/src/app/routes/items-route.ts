@@ -297,7 +297,7 @@ class ItemsRoute extends BaseRoute implements RouteDataTypesInterface {
           f.props!.options = recordService
             .getRecords('locations', { query, page: 1, itemsPerPage: RecordService.MAX_REST_RESULTS_SIZE, sort: 'name' })
             .pipe(
-              map((result: any) => (+recordService.totalHits(result.hits.total) === 0 ? [] : result.hits.hits)),
+              map((result: any) => (result.hits.total === 0 ? [] : result.hits.hits)),
               map((hits: any[]) =>
                 hits.map((hit: any) => {
                   return {

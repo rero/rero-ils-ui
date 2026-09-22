@@ -55,7 +55,7 @@ export const HoldingsStore = signalStore(
         )),
         tap((result: EsResult) => patchState(store, {
           holdings: result.hits.hits,
-          total: result.hits.total.value
+          total: result.hits.total
         }))
       )
     )

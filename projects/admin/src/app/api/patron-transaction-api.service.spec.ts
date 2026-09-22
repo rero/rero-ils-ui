@@ -43,10 +43,7 @@ describe('PatronTransactionApiService', () => {
   const response = {
     aggregations: {},
     hits: {
-      total: {
-        relation: 'eq',
-        value: 1
-      },
+      total: 1,
       hits: [{
         metadata: {
           creation_date: '2025-03-31T06:30:35.415610+00:00',

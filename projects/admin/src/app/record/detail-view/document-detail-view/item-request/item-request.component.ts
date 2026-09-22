@@ -262,7 +262,7 @@ export class ItemRequestComponent implements OnInit {
     const query = `barcode:${barcode}`;
     return timer(500).pipe(
       switchMap(() => this.recordService.getRecords('patrons', { query, page: 1, itemsPerPage: 1 })),
-      map((result: any) => this.recordService.totalHits(result.hits.total) === 0 ? [] : result.hits.hits),
+      map((result: any) => result.hits.total === 0 ? [] : result.hits.hits),
       shareReplay(1)
     );
   }

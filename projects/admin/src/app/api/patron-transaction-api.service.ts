@@ -2,8 +2,8 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
-import type { EsResult } from '@rero/ng-core';
 import { ApiService, RecordService } from '@rero/ng-core';
+import type { EsResult } from '@rero/shared';
 import { Observable, map } from 'rxjs';
 import { FeeFormModel } from '../circulation/patron/patron-transactions/patron-fee/patron-fee.component';
 

@@ -74,13 +74,13 @@ export const ItemsStore = signalStore(
           if (store.filter()) {
             patchState(
               store,
-              { items: result.hits.hits, filterTotal: result.hits.total.value },
+              { items: result.hits.hits, filterTotal: result.hits.total },
               setFulfilled()
             );
           } else {
             patchState(
               store,
-              { items: result.hits.hits, total: result.hits.total.value, filterTotal: result.hits.total.value },
+              { items: result.hits.hits, total: result.hits.total, filterTotal: result.hits.total },
               setFulfilled()
             );
           }

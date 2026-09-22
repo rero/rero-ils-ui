@@ -81,8 +81,7 @@ describe('AcqBudgetApiService', () => {
       }
     };
 
-  const recordServiceSpy = { getRecords: vi.fn(), totalHits: vi.fn() };
-  recordServiceSpy.totalHits.mockReturnValue(2);
+  const recordServiceSpy = { getRecords: vi.fn() };
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -104,6 +103,7 @@ describe('AcqBudgetApiService', () => {
 
   it('should return a budget list', () => {
     apiResponse.hits.hits = [{metadata: budgetRecord}]
+    apiResponse.hits.total = apiResponse.hits.hits.length;
     recordServiceSpy.getRecords.mockReturnValue(of(apiResponse));
     service.getBudgets().subscribe((result: any[]) => {
       expect(result[0]).toBeInstanceOf(AcqBudget);
@@ -116,6 +116,7 @@ describe('AcqBudgetApiService', () => {
       {metadata: {...accountDefaultData, ...accountRecord}},
       {metadata: {...accountDefaultData, ...accountRecord2}}
     ];
+    apiResponse.hits.total = apiResponse.hits.hits.length;
     recordServiceSpy.getRecords.mockReturnValue(of(apiResponse));
     service.getBudgetTotalAmount('1').subscribe((result: number) => expect(result).toEqual(62600));
   });

@@ -504,9 +504,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
         @for (content of metadata().contentMediaCarrier; track $index; let isLastL1 = $last) {
             {{ content.carrierType | translate }}
             @if (content.contentType) {
-              (@for (type of content.contentType; track $index; let isLast = $last) {
-                {{ type | translate }}@if (!isLast) {, }
-              })
+              (@for (type of content.contentType; track $index; let isLast = $last) {{{type | translate }}@if (!isLast) {, }})
             }
             @if (!isLastL1) {, }
         }

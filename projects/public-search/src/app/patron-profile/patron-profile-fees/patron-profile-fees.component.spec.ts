@@ -33,10 +33,7 @@ describe('PatronProfileFeeComponent', () => {
   const apiResponse = {
     aggregations: {},
     hits: {
-      total: {
-        relation: 'eq',
-        value: 1
-      },
+      total: 1,
       hits: [
         {
           metadata: {
@@ -72,8 +69,8 @@ describe('PatronProfileFeeComponent', () => {
         {
           provide: LoanApiService,
           useValue: {
-            getOnLoan: vi.fn().mockReturnValue(of({ hits: { hits: [], total: { value: 0 } } })),
-            getRequest: vi.fn().mockReturnValue(of({ hits: { hits: [], total: { value: 0 } } })),
+            getOnLoan: vi.fn().mockReturnValue(of({ hits: { hits: [], total: 0 } })),
+            getRequest: vi.fn().mockReturnValue(of({ hits: { hits: [], total: 0 } })),
           },
         },
         { provide: PatronTransactionApiService, useValue: patronTransactionApiServiceSpy },
@@ -81,7 +78,7 @@ describe('PatronProfileFeeComponent', () => {
         {
           provide: IllRequestApiService,
           useValue: {
-            getPublicIllRequest: vi.fn().mockReturnValue(of({ hits: { hits: [], total: { value: 0 } } })),
+            getPublicIllRequest: vi.fn().mockReturnValue(of({ hits: { hits: [], total: 0 } })),
           },
         },
         { provide: MessageService, useValue: { add: vi.fn() } },

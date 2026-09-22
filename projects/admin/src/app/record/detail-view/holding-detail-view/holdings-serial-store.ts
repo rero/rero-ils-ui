@@ -96,11 +96,11 @@ export const HoldingsSerialStore = signalStore(
         )),
         tap((result: EsResult) => {
           if (!store.filter()) {
-            patchState(store, { receivedItemsCount: result.hits.total.value });
+            patchState(store, { receivedItemsCount: result.hits.total });
           }
           patchState(store, {
             receivedItems: result.hits.hits,
-            filterTotal: result.hits.total.value,
+            filterTotal: result.hits.total,
             quickReceive: false
           });
         }),

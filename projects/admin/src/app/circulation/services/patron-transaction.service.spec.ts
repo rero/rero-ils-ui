@@ -111,6 +111,7 @@ describe('PatronTransactionService', () => {
 
   it('should return a list of patron transactions', () => {
     apiResponse.hits.hits = [patronTransaction];
+    apiResponse.hits.total = apiResponse.hits.hits.length;
     vi.spyOn(recordService, 'getRecords').mockReturnValue(of(apiResponse));
 
     service.patronTransactionsByLoan('1')
@@ -123,6 +124,7 @@ describe('PatronTransactionService', () => {
 
   it('should return a list of patron transactions for a patron', () => {
     apiResponse.hits.hits = [patronTransaction];
+    apiResponse.hits.total = apiResponse.hits.hits.length;
     vi.spyOn(recordService, 'getRecords').mockReturnValue(of(apiResponse));
     service.patronTransactionsByPatron('1')
       .subscribe((result: PatronTransaction[]) => {
@@ -132,6 +134,7 @@ describe('PatronTransactionService', () => {
 
   it('should add events to a patron transaction', () => {
     apiResponse.hits.hits = [patronTransactionEvent];
+    apiResponse.hits.total = apiResponse.hits.hits.length;
     vi.spyOn(recordService, 'getRecords').mockReturnValue(of(apiResponse));
     const transaction = new PatronTransaction(patronTransaction.metadata);
     expect(transaction.events.length).toEqual(0);

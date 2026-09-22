@@ -13,10 +13,7 @@ describe('PatronTypeApiService', () => {
   const response = {
     aggregations: {},
     hits: {
-      total: {
-        relation: 'eq',
-        value: 1
-      },
+      total: 1,
       hits: [
         {
           metadata: {

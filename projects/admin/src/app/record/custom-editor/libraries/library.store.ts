@@ -3,7 +3,8 @@
 import { computed, inject } from '@angular/core';
 import { patchState, signalStore, withComputed, withHooks, withMethods, withState } from '@ngrx/signals';
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
-import { EsResult, extractIdOnRef, RecordService } from '@rero/ng-core';
+import { extractIdOnRef, RecordService } from '@rero/ng-core';
+import type { EsResult } from '@rero/shared';
 import { DateTime } from 'luxon';
 import { EMPTY, forkJoin, pipe } from 'rxjs';
 import { catchError, filter, map, switchMap, tap } from 'rxjs/operators';

@@ -69,8 +69,8 @@ importers:
         specifier: ^2.0.3
         version: 2.0.3
       '@rero/ng-core':
-        specifier: ^21.2.0
-        version: 21.2.0(64e43663cb284f3f98ee2d27fe3b93a4)
+        specifier: ^21.3.0
+        version: 21.3.0(64e43663cb284f3f98ee2d27fe3b93a4)
       chart.js:
         specifier: ^4.4.7
         version: 4.5.1
@@ -2343,8 +2343,8 @@ packages:
     resolution: {integrity: sha512-pmEbSfP0Phf9W9RweiM66zXnkn73ZeKyYINElbX3uZ2+stzzaba2svLAl3B1pHVcRw5t43O0VciaGe4ye2EXKw==}
     engines: {node: '>=12.11.0'}
 
-  '@rero/ng-core@21.2.0':
-    resolution: {integrity: sha512-Wih67jz3FqeAuhDSztBWfsPqguzT5xIPC93mhBmJh1Dj/+uEk4FFFgotJf8DRuxi4+8/LqrBZ/j+lTrndIslzQ==}
+  '@rero/ng-core@21.3.0':
+    resolution: {integrity: sha512-OMm93xo9gXSsOjUqMCqyNwwCevuiQFdTY5KzYtcaPaBQ7f0QHgkpQl8deIcDgdzf3AAXLZHhSGnVXLVPOOnicw==}
     peerDependencies:
       '@angular/cdk': ^21.2.1
       '@angular/common': ^21.2.1
@@ -3636,6 +3636,7 @@ packages:
 
   crypto-js@4.2.0:
     resolution: {integrity: sha512-KALDyEYgpY+Rlob/iriUtjV6d5Eq+Y191A5g4UqLAi8CyGP9N1+FdVbkc1SxKc2r4YAYqG8JzO2KGL+AizD70Q==}
+    deprecated: Active development of CryptoJS has been discontinued. This library is no longer maintained.
 
   crypto-random-string@4.0.0:
     resolution: {integrity: sha512-x8dy3RnvYdlUcPOjkEHqozhiwzKNSq7GcPuXFbnyMOCHxX8V3OgIg/pYuabl2sbUPfIJaeAQB7PMOK8DFIdoRA==}
@@ -3922,6 +3923,7 @@ packages:
   eslint@9.39.5:
     resolution: {integrity: sha512-DgZS62aPLXKlnxILS/AYCoRvHaZeXceIzlXPkkGGzJWSow1aEk0lbTlxUSlyjC8jcaKxAdOnTDz+o1JFSBsyjw==}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
+    deprecated: This version is no longer supported. Please see https://eslint.org/version-support for other options.
     hasBin: true
     peerDependencies:
       jiti: '*'
@@ -9241,7 +9243,7 @@ snapshots:
 
   '@primeuix/utils@0.7.2': {}
 
-  '@rero/ng-core@21.2.0(64e43663cb284f3f98ee2d27fe3b93a4)':
+  '@rero/ng-core@21.3.0(64e43663cb284f3f98ee2d27fe3b93a4)':
     dependencies:
       '@angular/cdk': 21.2.14(@angular/common@21.2.18(@angular/core@21.2.18(@angular/compiler@21.2.18)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@21.2.18(@angular/compiler@21.2.18)(rxjs@7.8.2))(@angular/platform-browser@21.2.18(@angular/animations@21.2.18(@angular/core@21.2.18(@angular/compiler@21.2.18)(rxjs@7.8.2)))(@angular/common@21.2.18(@angular/core@21.2.18(@angular/compiler@21.2.18)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@21.2.18(@angular/compiler@21.2.18)(rxjs@7.8.2)))(rxjs@7.8.2)
       '@angular/common': 21.2.18(@angular/core@21.2.18(@angular/compiler@21.2.18)(rxjs@7.8.2))(rxjs@7.8.2)

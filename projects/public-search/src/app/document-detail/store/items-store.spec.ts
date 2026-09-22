@@ -115,13 +115,13 @@ class ItemApiServiceMock {
       aggregations: {},
       hits: {
         hits: [],
-        total: { relation: 'eq', value: element }
+        total: element
       },
       links: { self: '' }
     };
 
     response.hits.hits = (!filter) ? items : items.filter((item: any) => item.metadata.barcode === filter);
-    response.hits.total.value = response.hits.hits.length;
+    response.hits.total = response.hits.hits.length;
 
     return of(response);
   }

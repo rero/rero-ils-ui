@@ -3,8 +3,8 @@
 import { inject, type Signal } from '@angular/core';
 import { patchState, signalStoreFeature, type, withHooks, withMethods, withState } from '@ngrx/signals';
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
-import type { EsResult } from '@rero/ng-core';
 import { RecordService } from '@rero/ng-core';
+import type { EsResult } from '@rero/shared';
 import { catchError, finalize, forkJoin, of, pipe, switchMap, tap } from 'rxjs';
 import { PatronApiService } from '../../api/patron-api.service';
 import { PatronTransactionApiService } from '../../api/patron-transaction-api.service';

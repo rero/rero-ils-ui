@@ -6,7 +6,6 @@ import { TestBed } from '@angular/core/testing';
 import { RecordService } from '@rero/ng-core';
 import { EsRecord, EsResult, IAvailability } from '@rero/shared';
 import { of } from 'rxjs';
-import { QueryResponse } from '../record';
 import { HoldingsApiService } from './holdings-api.service';
 import { HoldingCanRequest, HoldingPatronRequest } from '../classes/holdings';
 
@@ -31,10 +30,7 @@ describe('HoldingsService', () => {
   const apiResponse = {
     aggregations: {},
     hits: {
-      total: {
-        relation: 'eq',
-        value: 1
-      },
+      total: 1,
       hits: [
         record
       ]
@@ -62,9 +58,8 @@ describe('HoldingsService', () => {
 
   const httpClientSpy = { get: vi.fn(), post: vi.fn() };
 
-  const recordServiceSpy = { getRecords: vi.fn(), totalHits: vi.fn() };
+  const recordServiceSpy = { getRecords: vi.fn() };
   recordServiceSpy.getRecords.mockReturnValue(of(apiResponse));
-  recordServiceSpy.totalHits.mockReturnValue(1);
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -87,7 +82,7 @@ describe('HoldingsService', () => {
 
   it('should return a set of Electronics Holdings', () => {
     service.getElectronicHoldingsByDocumentPidAndViewcode('1', 'global', 1)
-      .subscribe((result: QueryResponse) => expect(result.hits[0]).toEqual(record));
+      .subscribe((result: EsResult['hits']) => expect(result.hits[0]).toEqual(record));
   });
 
   it('should return to holdings if it can be requested', () => {

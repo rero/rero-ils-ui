@@ -4,9 +4,8 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable, signal } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-import type { EsResult } from '@rero/ng-core';
 import { RecordService, RecordUiService } from '@rero/ng-core';
-import { BaseApi } from '@rero/shared';
+import { BaseApi, EsResult } from '@rero/shared';
 import { Observable, of } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { IAcqReceipt, IAcqReceiptLine, receiptDefaultData, receiptLineDefaultData } from '../classes/receipt';
@@ -69,7 +68,7 @@ export class AcqReceiptApiService {
         sort: options.sort
       })
       .pipe(
-        map((result: EsResult) => +this.apiService.totalHits(result.hits.total) === 0 ? [] : result.hits.hits),
+        map((result: EsResult) => result.hits.total === 0 ? [] : result.hits.hits),
         map((hits: any[]) => hits.map(hit => ({...receiptDefaultData, ...hit.metadata}) ))
       );
   }
@@ -99,7 +98,7 @@ export class AcqReceiptApiService {
         sort: 'receipt_date'
       })
       .pipe(
-        map((result: EsResult) => +this.apiService.totalHits(result.hits.total) === 0 ? [] : result.hits.hits),
+        map((result: EsResult) => result.hits.total === 0 ? [] : result.hits.hits),
         map((hits: any[]) => hits.map(hit => ({...receiptLineDefaultData, ...hit.metadata}) ))
       );
   }

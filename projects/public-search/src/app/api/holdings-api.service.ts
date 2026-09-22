@@ -9,7 +9,6 @@ import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { AppConfigService } from '../app-config.service';
 import { HoldingCanRequest, HoldingPatronRequest } from '../classes/holdings';
-import { QueryResponse } from '../record';
 
 @Injectable({
   providedIn: 'root'
@@ -45,7 +44,7 @@ export class HoldingsApiService extends BaseApi implements IAvailabilityService 
    * @return Observable
    */
     getElectronicHoldingsByDocumentPidAndViewcode(
-      documentPid: string, viewcode: string, page: number, itemsPerPage = 5): Observable<QueryResponse> {
+      documentPid: string, viewcode: string, page: number, itemsPerPage = 5): Observable<EsResult['hits']> {
       const query = `document.pid:${documentPid} AND  holdings_type:electronic NOT _masked:true`;
       return this.recordService
       .getRecords('holdings', {

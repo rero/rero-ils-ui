@@ -12,12 +12,11 @@ describe('IllRequestApiService', () => {
   const record = { medatadata: { pid: '1', name: 'item name' } };
   const apiResponse = {
     aggregations: {},
-    hits: { total: { relation: 'eq', value: 1 }, hits: [record] },
+    hits: { total: 1, hits: [record] },
     links: {}
   };
-  const recordServiceSpy = { getRecords: vi.fn(), totalHits: vi.fn() };
+  const recordServiceSpy = { getRecords: vi.fn() };
   recordServiceSpy.getRecords.mockReturnValue(of(apiResponse));
-  recordServiceSpy.totalHits.mockReturnValue(1);
 
   beforeEach(() => {
     TestBed.configureTestingModule({

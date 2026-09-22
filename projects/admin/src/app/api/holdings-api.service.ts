@@ -1,9 +1,8 @@
 // SPDX-FileCopyrightText: Fondation RERO+
 // SPDX-License-Identifier: AGPL-3.0-or-later
 import { inject, Injectable } from '@angular/core';
-import type { EsResult } from '@rero/ng-core';
 import { Error, RecordService, RecordUiService } from '@rero/ng-core';
-import { BaseApi } from '@rero/shared';
+import { BaseApi, EsResult } from '@rero/shared';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
@@ -80,7 +79,7 @@ export class HoldingsApiService {
   getHoldingsCount(documentPid: string, organisationPid: string, isCurrentOrganisation = true): Observable<number> {
     const query = this._queryOrganisation(documentPid, organisationPid, isCurrentOrganisation);
     return this.recordService.getRecords(this.RESOURCE_NAME, { query, page: 1, itemsPerPage: 1 }).pipe(
-      map((result: EsResult) => +this.recordService.totalHits(result.hits.total))
+      map((result: EsResult) => result.hits.total)
     );
   }
 

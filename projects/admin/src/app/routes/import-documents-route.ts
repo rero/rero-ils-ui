@@ -76,7 +76,7 @@ class ImportDocumentsRoute extends BaseRoute {
    * @returns string representation of the number of results.
    */
   getResultsText(hits: any): string {
-    const total = this.routeToolService.recordService.totalHits(hits.total) || 0;
+    const total = hits.total || 0;
     return total === 0
       ? this.translateService.instant('no result')
       : this.translateService.instant('{{ total }} results of {{ remoteTotal }}', {

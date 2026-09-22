@@ -9,7 +9,7 @@ import { RouterLink } from '@angular/router';
 import { Bind } from 'primeng/bind';
 import { Tag } from 'primeng/tag';
 import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
-import { map, of, switchMap } from 'rxjs';
+import { catchError, map, of, switchMap } from 'rxjs';
 
 type IllRequestRecord = {
   created?: string;
@@ -65,7 +65,8 @@ export class IllRequestsBriefViewComponent {
           return of(null);
         }
         return this.recordService.getRecord('patrons', pid).pipe(
-          map((patron: PatronRecord) => patron.metadata ?? null)
+          map((patron: PatronRecord) => patron.metadata ?? null),
+          catchError(() => of(null))
         );
       })
     ),

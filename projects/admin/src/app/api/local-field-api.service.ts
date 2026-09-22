@@ -2,8 +2,8 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 import { inject, Injectable } from '@angular/core';
-import type { EsResult } from '@rero/ng-core';
 import { RecordService, RecordUiService } from '@rero/ng-core';
+import type { EsResult } from '@rero/shared';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
@@ -29,7 +29,7 @@ export class LocalFieldApiService {
       .getRecords('local_fields', { query, page: 1, itemsPerPage: 1 })
       .pipe(
         map((result: EsResult) => {
-          return +this.recordService.totalHits(result.hits.total) === 0
+          return result.hits.total === 0
             ? {}
             : result.hits.hits[0];
         })

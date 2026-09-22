@@ -3,8 +3,8 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 import { inject, Injectable } from '@angular/core';
-import type { EsResult } from '@rero/ng-core';
 import { Error, RecordService } from '@rero/ng-core';
+import type { EsResult } from '@rero/shared';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
@@ -40,7 +40,7 @@ export class LocationService {
     const query = libraryPids.map(pid => `library.pid:${pid}`).join(' OR ');
     return this._query(query).pipe(
       map((data: EsResult) => data.hits as any),
-      map((hits: {hits: any[], total: any}) => +this.recordService.totalHits(hits.total) === 0 ? [] : hits.hits),
+      map((hits: {hits: any[], total: any}) => hits.total === 0 ? [] : hits.hits),
     );
   }
 

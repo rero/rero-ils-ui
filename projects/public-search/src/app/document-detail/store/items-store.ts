@@ -63,12 +63,12 @@ export const ItemsStore = signalStore(
         )),
         tap((result: EsResult) => {
           if (store.filter()) {
-            patchState(store, { items: result.hits.hits, filterTotal: result.hits.total.value })
+            patchState(store, { items: result.hits.hits, filterTotal: result.hits.total })
           } else {
             patchState(store, {
               items: result.hits.hits,
-              total: result.hits.total.value,
-              filterTotal: result.hits.total.value
+              total: result.hits.total,
+              filterTotal: result.hits.total
             });
           }
         }),

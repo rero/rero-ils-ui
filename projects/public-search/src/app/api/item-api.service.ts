@@ -25,7 +25,7 @@ export class ItemApiService extends BaseApi implements IAvailabilityService {
    * @param viewcode - string: the view to filter
    * @param page - number: page number
    * @param itemsPerPage - number: number of item to return
-   * @return Observable<QueryResponse>
+   * @return Observable<EsResult>
    */
   getItemsByHoldingsAndViewcode(
     holdings: Partial<EsRecord>, viewcode: string, page: number, itemsPerPage = 9999, filter = ''): Observable<EsResult> {

@@ -72,7 +72,7 @@ describe('LoansFeature', () => {
   });
 
   it('loads the first page of loans into store state', () => {
-    loanApiService.getOnLoan.mockReturnValue(of({ hits: { hits: [loan], total: { value: 1 } } }));
+    loanApiService.getOnLoan.mockReturnValue(of({ hits: { hits: [loan], total: 1 } }));
 
     store.setPatronPid('patron-1');
     TestBed.tick();
@@ -84,7 +84,7 @@ describe('LoansFeature', () => {
 
   it('stores can-extend results on the matching loan', () => {
     const result = { can: true, reasons: {} };
-    loanApiService.getOnLoan.mockReturnValue(of({ hits: { hits: [loan], total: { value: 1 } } }));
+    loanApiService.getOnLoan.mockReturnValue(of({ hits: { hits: [loan], total: 1 } }));
     loanApiService.canExtend.mockReturnValue(of(result));
 
     store.setPatronPid('patron-1');
@@ -97,7 +97,7 @@ describe('LoansFeature', () => {
 
   it('updates the matching loan after a successful renewal', () => {
     const otherLoan = { metadata: { pid: 'loan-2', overdue: 1 } };
-    loanApiService.getOnLoan.mockReturnValue(of({ hits: { hits: [loan, otherLoan], total: { value: 2 } } }));
+    loanApiService.getOnLoan.mockReturnValue(of({ hits: { hits: [loan, otherLoan], total: 2 } }));
     loanApiService.renew.mockReturnValue(of({
       end_date: '2026-07-01',
       extension_count: 2,
@@ -142,7 +142,7 @@ describe('LoansFeature', () => {
   });
 
   it('handles an error while renewing one loan', () => {
-    loanApiService.getOnLoan.mockReturnValue(of({ hits: { hits: [loan], total: { value: 1 } } }));
+    loanApiService.getOnLoan.mockReturnValue(of({ hits: { hits: [loan], total: 1 } }));
     loanApiService.renew.mockReturnValue(throwError(() => new Error('Renewal failed')));
     store.setPatronPid('patron-1');
     TestBed.tick();
@@ -177,7 +177,7 @@ describe('LoansFeature', () => {
       canExtend: { can: false, reasons: { blocked: 'Blocked' } },
     };
     loanApiService.getOnLoan.mockReturnValue(of({
-      hits: { hits: [{ ...loan, canExtend: { can: true, reasons: {} } }, renewableLoan, nonRenewableLoan], total: { value: 3 } },
+      hits: { hits: [{ ...loan, canExtend: { can: true, reasons: {} } }, renewableLoan, nonRenewableLoan], total: 3 },
     }));
     const firstRenewal = new Subject<RenewalResponse>();
     const secondRenewal = new Subject<RenewalResponse>();
@@ -241,7 +241,7 @@ describe('LoansFeature', () => {
           { ...loan, canExtend: { can: true, reasons: {} } },
           secondLoan,
         ],
-        total: { value: 2 },
+        total: 2,
       },
     }));
     loanApiService.canExtend.mockReturnValue(of({ can: true, reasons: {} }));

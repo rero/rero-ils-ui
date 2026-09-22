@@ -12,10 +12,7 @@ describe('ItemInCollectionPipe', () => {
   const emptyRecords = {
     aggregations: {},
     hits: {
-      total: {
-        relation: 'eq',
-        value: 0
-      },
+      total: 0,
       hits: []
     },
     links: {}
@@ -26,16 +23,13 @@ describe('ItemInCollectionPipe', () => {
   const withRecords = {
     aggregations: {},
     hits: {
-      total: {
-        relation: 'eq',
-        value: 1
-      },
+      total: 1,
       hits: records
     },
     links: {}
   };
 
-  const recordServiceSpy = { getRecords: vi.fn(), totalHits: vi.fn() };
+  const recordServiceSpy = { getRecords: vi.fn() };
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -56,13 +50,11 @@ describe('ItemInCollectionPipe', () => {
 
   it('should return a null value if no result', () => {
     recordServiceSpy.getRecords.mockReturnValue(of(emptyRecords));
-    recordServiceSpy.totalHits.mockReturnValue(0);
     pipe.transform('1').subscribe((result: any) => expect(result).toEqual([]));
   });
 
   it('should return an array of results', () => {
     recordServiceSpy.getRecords.mockReturnValue(of(withRecords));
-    recordServiceSpy.totalHits.mockReturnValue(1);
     pipe.transform('1').subscribe((result: any) => expect(result).toEqual(records));
   });
 });
