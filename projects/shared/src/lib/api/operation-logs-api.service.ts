@@ -102,4 +102,15 @@ export class OperationLogsApiService extends BaseApi {
           : {};
       }));
   }
+
+  getCirculationTransactionsByUser(userPid: string, page: number, itemsPerPage = 10): Observable<EsResult | Error> {
+    const query = `(record.type:loan AND loan.transaction_user.pid:${userPid}) OR (record.type:scan_item AND user.value:${userPid})`;
+    return this.recordService.getRecords('operation_logs', {
+      query,
+      page,
+      itemsPerPage,
+      headers: BaseApi.reroJsonheaders,
+      sort: 'operation_date_mostrecent'
+    });
+  }
 }

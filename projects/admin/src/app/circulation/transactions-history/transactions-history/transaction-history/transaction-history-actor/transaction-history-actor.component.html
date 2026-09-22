@@ -1,0 +1,66 @@
+<!--
+SPDX-FileCopyrightText: Fondation RERO+
+SPDX-License-Identifier: AGPL-3.0-or-later
+-->
+@let patronBarcode = patron()?.metadata.patron?.barcode?.[0];
+@let currentItem = currentFullItem();
+
+<div class="ui:col-span-3 ui:flex ui:flex-col">
+  @if (loan(); as loan) {
+    <span>
+      <i class="fa-regular fa-user"></i>&nbsp;
+      @if (patronBarcode) {
+        <a [routerLink]="['/circulation', 'patron', patronBarcode, 'loan']" (click)="closeRequested.emit()">
+          {{ loan.patron.name }}
+        </a>
+      } @else {
+        {{ loan.patron.name }}
+      }
+    </span>
+    <small class="ui:text-muted-color">
+      @if (currentItem?.status) {
+        <span>{{ currentItem.status | translate }}</span>
+        @switch (currentItem?.status) {
+          @case ('on_loan') {
+            @if (currentItem?.loan?.end_date ?? loan.end_date; as endDate) {
+              &nbsp;&rarr; {{ endDate | dateTranslate: 'shortDate' }}
+            }
+          }
+        }
+      } @else {
+        <span translate>Missing status</span>
+      }
+    </small>
+    @if (currentItem?.loan?.extension_count; as extensionCount) {
+      <p-tag
+        [title]="'Renewals' | translate"
+        severity="secondary"
+        class="ui:self-start ui:mt-1"
+      >
+        <i class="fa-solid fa-arrows-rotate ui:ml-1"></i>
+        {{ extensionCount }} {{ extensionCount | i18nPlural: {'=1': 'renewal' | translate, 'other': 'renewals' | translate} }}
+      </p-tag>
+    }
+    @if (totalAmountOfFee() > 0) {
+      <p-tag
+        [title]="'Fees' | translate"
+        severity="warn"
+        class="ui:self-start ui:mt-1"
+      >
+        {{ totalAmountOfFee() | currency: organisationCurrency() }}
+      </p-tag>
+    }
+  } @else if (scan()) {
+    @if (library(); as library) {
+      <span>
+        <i class="fa-regular fa-building"></i>&nbsp;
+        {{ library.metadata.name }}
+      </span>
+      <small class="ui:text-muted-color">
+        <span translate>on shelf</span>
+      </small>
+    } @else if (libraryNotFound()) {
+      <span class="ui:text-muted-color ui:italic" translate>Library not found.</span>
+    }
+  }
+</div>

@@ -6,14 +6,14 @@ import { NotificationApiService } from '@app/admin/api/notification-api.service'
 import { CirculationLogComponent } from '../circulation-log.component';
 import { Bind } from 'primeng/bind';
 import { Tag } from 'primeng/tag';
-import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 import { AsyncPipe } from '@angular/common';
 import { DateTranslatePipe, GetRecordPipe } from '@rero/ng-core';
 
 @Component({
     selector: 'admin-circulation-log-notification',
     templateUrl: './circulation-log-notification.component.html',
-    imports: [CirculationLogComponent, Bind, Tag, TranslateDirective, AsyncPipe, TranslatePipe, DateTranslatePipe, GetRecordPipe],
+    imports: [CirculationLogComponent, Bind, Tag, AsyncPipe, TranslatePipe, DateTranslatePipe, GetRecordPipe],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CirculationLogNotificationComponent {

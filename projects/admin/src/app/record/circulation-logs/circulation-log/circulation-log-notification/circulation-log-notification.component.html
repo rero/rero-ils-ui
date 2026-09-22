@@ -9,7 +9,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
   [separator]="separator()"
   (isCollapsedEvent)="loadData($event)"
 >
-  <p-tag badge translate>Notification</p-tag>
+  <p-tag badge severity="info" icon="fa-solid fa-envelope" [value]="'notification' | translate" />
   <div collapsedContent class="ui:grid ui:grid-cols-12 ui:gap-4">
     <!-- Library -->
     <div class="ui:col-span-8">
