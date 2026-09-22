@@ -1,0 +1,125 @@
+<!--
+SPDX-FileCopyrightText: Fondation RERO+
+SPDX-License-Identifier: AGPL-3.0-or-later
+-->
+@let metadata = transaction().metadata;
+@let status = transaction() | transactionStatus;
+@let collapsed = isCollapsed();
+@let isDebugMode = debugMode();
+@let currentFullItem = fullItem();
+@let currentItem = item();
+@let currentPatron = patron();
+@let currentLibrary = library();
+@let loan = logLoan();
+@let scan = logScan();
+@let notes = fullItem()?.notes || [];
+@let isLoading = !currentItem && !itemNotFound() && (loan ? (!currentPatron && !patronNotFound()) : (!currentLibrary && !libraryNotFound()));
+
+@if (isLoading) {
+  <div class="ui:grid ui:grid-cols-12 ui:gap-2 ui:items-start ui:p-2 ui:border-surface ui:border-b">
+    <div class="ui:col-span-2 ui:flex ui:flex-col ui:gap-1">
+      <p-skeleton width="4rem" height="1rem" />
+      <p-skeleton width="5rem" height="1.5rem" />
+    </div>
+
+    <div class="ui:col-span-3 ui:flex ui:gap-3 ui:items-start">
+      <div class="ui:w-10 ui:shrink-0"></div>
+      <div class="ui:flex ui:flex-col ui:gap-1">
+        <p-skeleton width="5rem" height="1rem" />
+        <p-skeleton width="3rem" height="1rem" />
+      </div>
+    </div>
+
+    <div class="ui:col-span-4">
+      <p-skeleton width="80%" height="1rem" />
+    </div>
+
+    <div class="ui:col-span-3 ui:flex ui:flex-col ui:gap-1">
+      <p-skeleton width="8rem" height="1rem" />
+      <p-skeleton width="6rem" height="1rem" />
+    </div>
+  </div>
+} @else {
+  <div class="ui:grid ui:grid-cols-12 ui:gap-2 ui:items-start ui:p-2 ui:border-surface ui:border-b">
+    <div class="ui:col-span-2 ui:flex ui:flex-col ui:gap-1">
+      <small class="ui:text-muted-color">
+        <i class="fa-regular fa-clock"></i>
+        {{ metadata.date | dateTranslate: 'shortTime' }}
+      </small>
+      <p-tag class="ui:self-start ui:justify-start" severity="info" [icon]="status.icon" [value]="status.label | translate" />
+    </div>
+
+    <div class="ui:col-span-3 ui:flex ui:gap-3 ui:items-start">
+      <div class="ui:w-10 ui:shrink-0">
+        <shared-open-close-button
+          [collapsed]="collapsed"
+          (status)="toggleRow($event)"
+        />
+      </div>
+      <div class="ui:flex ui:flex-col">
+        @if (currentItem; as currentItem) {
+          @if (currentItem.metadata.barcode) {
+            <div class="ui:flex ui:items-center ui:gap-1">
+              <a [routerLink]="['/records', 'items', 'detail', currentItem.metadata.pid]" (click)="closeRequested.emit()">{{ currentItem.metadata.barcode }}</a>
+              @if (loan?.note || scan?.note || notes.length > 0) {
+                <i class="fa-regular fa-note-sticky text-warning" [title]="'Note' | translate"></i>
+              }
+            </div>
+          }
+          @if (currentItem.metadata.call_number) {
+            <div>{{ currentItem.metadata.call_number }}</div>
+          }
+        } @else if (itemNotFound()) {
+          <span class="ui:text-muted-color ui:italic" translate>Item not found</span>
+          @if (scan?.item?.call_number; as callNumber) {
+            <div>{{ callNumber }}</div>
+          }
+        }
+      </div>
+    </div>
+
+    <admin-transaction-history-document
+      class="ui:contents"
+      [documentPid]="documentPid()"
+      [documentTitle]="documentTitle()"
+      [document]="document()"
+      [documentNotFound]="documentNotFound()"
+      (closeRequested)="closeRequested.emit()"
+    />
+
+    <admin-transaction-history-actor
+      class="ui:contents"
+      [loan]="loan"
+      [scan]="scan"
+      [patron]="currentPatron"
+      [library]="currentLibrary"
+      [libraryNotFound]="libraryNotFound()"
+      [currentFullItem]="currentFullItem"
+      [totalAmountOfFee]="totalAmountOfFee()"
+      [organisationCurrency]="organisationCurrency()"
+      (closeRequested)="closeRequested.emit()"
+    />
+
+    @if (!collapsed) {
+      <admin-transaction-history-details
+        class="ui:contents"
+        [fullItem]="currentFullItem"
+        [loan]="loan"
+        [scan]="scan"
+      />
+      @if (canUseDebugMode) {
+        <p-button class="ui:col-span-1 ui:col-start-12 ui:justify-self-end" [icon]="isDebugMode ? 'fa-solid fa-toggle-on' : 'fa-solid fa-toggle-off'" [outlined]="true" severity="warn" (onClick)="debugMode.set(!isDebugMode)">
+            <i class="fa-solid fa-bug"></i>
+        </p-button>
+      }
+      @if (canUseDebugMode && isDebugMode) {
+        <div class="ui:col-span-12">
+          <h5 class="text-error"><i class="fa-solid fa-bug"></i>&nbsp;{{ 'Debug' | translate }}</h5>
+          <p-scrollPanel class="ui:w-full" [style]="{ height: '500px' }">
+            <pre class="ui:text-sm">{{ transaction() | json }}</pre>
+          </p-scrollPanel>
+        </div>
+      }
+    }
+  </div>
+}

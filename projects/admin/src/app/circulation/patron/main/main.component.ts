@@ -1,25 +1,26 @@
 // SPDX-FileCopyrightText: Fondation RERO+
 // SPDX-License-Identifier: AGPL-3.0-or-later
+import { CurrencyPipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, DestroyRef, computed, effect, inject, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, NavigationEnd, Router, RouterLink, RouterOutlet } from '@angular/router';
 import { HotkeysService } from '@ngneat/hotkeys';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { AppStore } from '@rero/shared';
-import { TranslateService, TranslatePipe } from '@ngx-translate/core';
 import { MenuItem } from 'primeng/api';
+import { BadgeModule } from 'primeng/badge';
+import { Bind } from 'primeng/bind';
+import { Ripple } from 'primeng/ripple';
+import { Tab, TabList, Tabs } from 'primeng/tabs';
 import { filter, map, startWith } from 'rxjs';
 import { CirculationStore } from '../../store/circulation.store';
+import { TransactionsHistoryDialogComponent } from '../../transactions-history/transactions-history-dialog/transactions-history-dialog.component';
 import { CardComponent } from '../card/card.component';
-import { Bind } from 'primeng/bind';
-import { Tabs, TabList, Tab } from 'primeng/tabs';
-import { Ripple } from 'primeng/ripple';
-import { CurrencyPipe } from '@angular/common';
-import { BadgeModule } from 'primeng/badge';
 
 @Component({
     selector: 'admin-main',
     templateUrl: './main.component.html',
-    imports: [CardComponent, Bind, Tabs, TabList, Ripple, Tab, RouterLink, RouterOutlet, CurrencyPipe, TranslatePipe, BadgeModule],
+    imports: [CardComponent, Bind, Tabs, TabList, Ripple, Tab, RouterLink, RouterOutlet, CurrencyPipe, TranslatePipe, BadgeModule, TransactionsHistoryDialogComponent],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class MainComponent {

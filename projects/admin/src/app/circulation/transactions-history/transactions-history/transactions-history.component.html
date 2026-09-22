@@ -1,0 +1,27 @@
+<!--
+SPDX-FileCopyrightText: Fondation RERO+
+SPDX-License-Identifier: AGPL-3.0-or-later
+-->
+<div class="ui:flex ui:flex-col ui:gap-2">
+  <div class="ui:self-end">
+    {{ store.total() ?? 0 }} {{ (store.total() ?? 0) | i18nPlural: {'=1': 'transaction' | translate, 'other': 'transactions' | translate} }}
+  </div>
+
+  <div>
+    @for (group of store.dateTransactions() | keyvalue: sortByDateDesc; track group.key) {
+      <div class="ui:bg-surface-100 ui:p-2 ui:border-surface ui:border-y ui:text-bold">
+        <i class="fa-solid fa-calendar-days"></i>&nbsp;
+        {{ (group.key | dateTranslate: 'fullDate') ?? group.key | ucfirst }}
+      </div>
+
+      @for (transaction of group.value; track transaction.id) {
+        <admin-transaction-history [transaction]="transaction" (closeRequested)="closeRequested.emit()" />
+      }
+    }
+  </div>
+
+  @if (store.isPaginatorEnabled()) {
+    <shared-paginator [pager]="store.pager()" [total]="store.total()" (pageChange)="store.setPaginator($event, userPid())" />
+  }
+</div>
+

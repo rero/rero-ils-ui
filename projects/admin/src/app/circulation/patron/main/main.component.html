@@ -3,6 +3,7 @@ SPDX-FileCopyrightText: Fondation RERO+
 SPDX-License-Identifier: AGPL-3.0-or-later
 -->
 @if (menuItems().length) {
+  <admin-transactions-history-dialog class="ui:flex ui:justify-end ui:mb-2" />
   <admin-circulation-patron-detailed
     [patron]="store.patron()"
     [barcode]="barcode()"

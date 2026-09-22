@@ -1,0 +1,21 @@
+<!--
+SPDX-FileCopyrightText: Fondation RERO+
+SPDX-License-Identifier: AGPL-3.0-or-later
+-->
+<div class="ui:col-span-4 ui:flex ui:flex-col">
+  @if (documentNotFound()) {
+    {{ documentTitle() }}
+    <small class="ui:text-muted-color ui:italic" translate>Document not found.</small>
+  } @else {
+    <a [routerLink]="['/records', 'documents', 'detail', documentPid()]" (click)="closeRequested.emit()">
+      {{ documentTitle() }}
+    </a>
+    @if (document()?.metadata?.contribution; as contribution) {
+      @if (contribution.length > 0) {
+        <small class="ui:text-muted-color ui:line-clamp-2">
+          <shared-contribution [contributions]="contribution" [limitRecord]="3" [activateLink]="false" />
+        </small>
+      }
+    }
+  }
+</div>
