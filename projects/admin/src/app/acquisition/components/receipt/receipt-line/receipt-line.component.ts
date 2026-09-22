@@ -6,9 +6,10 @@ import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 
 import { AcqReceiptApiService } from '@app/admin/acquisition/api/acq-receipt-api.service';
 import { IAcqReceipt, IAcqReceiptLine } from '@app/admin/acquisition/classes/receipt';
+import { DocumentApiService } from '@app/admin/api/document-api.service';
 import { RecordPermissions } from '@app/admin/classes/permissions';
 import { RecordPermissionService } from '@app/admin/service/record-permission.service';
-import { RecordService, GetRecordPipe } from '@rero/ng-core';
+import { GetRecordPipe } from '@rero/ng-core';
 import { catchError, map, of, switchMap } from 'rxjs';
 import { AppStore, DocumentBriefViewComponent, ActionButtonComponent } from '@rero/shared';
 import { RouterLink } from '@angular/router';
@@ -35,7 +36,7 @@ export class ReceiptLineComponent {
   private recordPermissionService: RecordPermissionService = inject(RecordPermissionService);
   private appStore = inject(AppStore);
   private acqReceiptApiService: AcqReceiptApiService = inject(AcqReceiptApiService);
-  private recordService: RecordService = inject(RecordService);
+  private documentApiService: DocumentApiService = inject(DocumentApiService);
 
   line = input<IAcqReceiptLine>();
   receipt = input<IAcqReceipt>();
@@ -51,7 +52,7 @@ export class ReceiptLineComponent {
         if (!line?.document?.pid) {
           return of({ record: null, notFound: false });
         }
-        return this.recordService.getRecord('documents', line.document.pid).pipe(
+        return this.documentApiService.getDocument(line.document.pid).pipe(
           map((record) => ({ record, notFound: false })),
           catchError(() => of({ record: null, notFound: true }))
         );

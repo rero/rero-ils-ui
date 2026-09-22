@@ -3,7 +3,7 @@
 import { HttpClient } from '@angular/common/http';
 import { TestBed } from '@angular/core/testing';
 import { TranslateModule } from '@ngx-translate/core';
-import { RecordService } from '@rero/ng-core';
+import { RecordData, RecordService } from '@rero/ng-core';
 import { AppConfigService } from '../service/app-config.service';
 import { IAvailability } from '@rero/shared';
 import { of } from 'rxjs';
@@ -55,7 +55,7 @@ describe('DocumentApiService', () => {
       ],
       providers: [
         { provide: HttpClient, useValue: httpClientSpy },
-        { provide: RecordService, useValue: { getRecords: vi.fn() } },
+        { provide: RecordService, useValue: { getRecord: vi.fn(), getRecords: vi.fn() } },
         { provide: AppConfigService, useValue: {} }
       ]
     });
@@ -65,6 +65,20 @@ describe('DocumentApiService', () => {
 
   it('should be created', () => {
     expect(service).toBeTruthy();
+  });
+
+  it('should request the document with the rero+json representation', () => {
+    const record: RecordData = {
+      created: '2025-01-01T00:00:00+00:00',
+      id: '1',
+      links: { self: 'https://localhost/api/documents/1' },
+      metadata: { pid: '1' },
+      updated: '2025-01-01T00:00:00+00:00'
+    };
+    vi.spyOn(recordService, 'getRecord').mockReturnValue(of(record));
+    service.getDocument('1').subscribe((response) => expect(response).toEqual(record));
+    expect(recordService.getRecord).toHaveBeenCalledWith(
+      'documents', '1', { resolve: 1, headers: { Accept: 'application/rero+json' } });
   });
 
   it('should return the number of linked documents', () => {

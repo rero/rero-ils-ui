@@ -3,10 +3,10 @@
 import { Component, computed, inject, input, ChangeDetectionStrategy} from '@angular/core';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { TranslateDirective } from '@ngx-translate/core';
-import { RecordService } from '@rero/ng-core';
 import { ContributionComponent, EsRecord, MainTitlePipe } from '@rero/shared';
 import { TagModule } from 'primeng/tag';
 import { catchError, map, of, switchMap } from 'rxjs';
+import { DocumentApiService } from '../../api/document-api.service';
 import { PatronProfileStore } from '../store/patron-profile.store';
 
 @Component({
@@ -18,7 +18,7 @@ import { PatronProfileStore } from '../store/patron-profile.store';
 export class PatronProfileDocumentComponent {
 
   private store = inject(PatronProfileStore);
-  private recordService = inject(RecordService);
+  private documentApiService = inject(DocumentApiService);
 
   // COMPONENT ATTRIBUTES =====================================================
   record = input.required<EsRecord>();
@@ -28,8 +28,8 @@ export class PatronProfileDocumentComponent {
   /** Related document */
   document = toSignal(
     toObservable(this.record).pipe(
-      switchMap(record => this.recordService
-        .getRecord('documents', record.metadata.document.pid, { resolve: 1, headers: { Accept: 'application/rero+json, application/json' } })
+      switchMap(record => this.documentApiService
+        .getDocument(record.metadata.document.pid)
         .pipe(
           catchError(() => of({ metadata: {} })),
           map(doc => doc.metadata)

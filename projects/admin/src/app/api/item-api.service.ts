@@ -3,7 +3,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
-import { ApiService, Error, RecordService } from '@rero/ng-core';
+import { ApiService, Error, RecordData, RecordService } from '@rero/ng-core';
 import { BaseApi, EsResult, esResultInitialState, IAvailability, IAvailabilityService } from '@rero/shared';
 import { Observable, of } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
@@ -58,17 +58,16 @@ export class ItemApiService implements IAvailabilityService {
 
   // SERVICE FUNCTIONS ========================================================
   /**
-   * Get an Item through the REST-API
-   * @param pid: the item pid
-   * @param resolve: if $ref should be resolved.
-   * @returns: an `Observable` on REST-API item metadata result
+   * Get an item record through the REST-API, with the `rero+json`
+   * representation: the one to use to display an item.
+   *
+   * @param pid - the item pid
+   * @param resolve - resolve the `$ref` links of the record
+   * @returns an `Observable` on the REST-API item record
    */
-  getItem(pid: string, resolve = false): Observable<any> {
-    return this.recordService
-      .getRecord(ItemApiService.RESOURCE_NAME, pid, resolve ? { resolve: 1 } : undefined)
-      .pipe(
-        map((result: any) => result.metadata)
-      );
+  getItem(pid: string, resolve = 1): Observable<RecordData> {
+    return this.recordService.getRecord(
+      ItemApiService.RESOURCE_NAME, pid, { resolve, headers: BaseApi.reroJsonheaders });
   }
 
   /**

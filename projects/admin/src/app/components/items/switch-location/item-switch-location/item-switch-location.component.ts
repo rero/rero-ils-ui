@@ -8,7 +8,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { ItemApiService } from '@app/admin/api/item-api.service';
 import { LocationService } from '@app/admin/service/location.service';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
-import { Error, extractIdOnRef, HttpPendingService } from '@rero/ng-core';
+import { Error, extractIdOnRef, HttpPendingService, RecordService } from '@rero/ng-core';
 import { AppStore } from '@rero/shared';
 import { cloneDeep } from 'lodash-es';
 import { MessageService, SelectItemGroup } from 'primeng/api';
@@ -30,6 +30,7 @@ export class ItemSwitchLocationComponent implements OnInit {
   private activeRoute: ActivatedRoute = inject(ActivatedRoute);
   private router: Router = inject(Router);
   private itemApiService: ItemApiService = inject(ItemApiService);
+  private recordService: RecordService = inject(RecordService);
   private locationService: LocationService = inject(LocationService);
   private translateService: TranslateService = inject(TranslateService);
   private appStore = inject(AppStore);
@@ -71,7 +72,11 @@ export class ItemSwitchLocationComponent implements OnInit {
     if (this.item() === undefined) {
       // Standalone mode: load item from route, then init locations
       this.activeRoute.paramMap
-        .pipe(switchMap(params => this.itemApiService.getItem(params.get('pid')!)))
+        .pipe(
+          // the raw record is kept as stored: it is sent back on save
+          switchMap(params => this.recordService.getRecord('items', params.get('pid')!)),
+          map((record) => record.metadata as ItemMetadata)
+        )
         .subscribe(record => {
           this.editableItem.set(cloneDeep(record));
           this._initLocations();

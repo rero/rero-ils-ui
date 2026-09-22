@@ -3,7 +3,7 @@
 import { HttpClient } from '@angular/common/http';
 import { TestBed } from '@angular/core/testing';
 import { TranslateModule } from '@ngx-translate/core';
-import { ApiService, RecordService } from '@rero/ng-core';
+import { ApiService, RecordData, RecordService } from '@rero/ng-core';
 import { IAvailability } from '@rero/shared';
 import { of } from 'rxjs';
 import { ItemApiService } from './item-api.service';
@@ -83,10 +83,10 @@ describe('ItemApiService', () => {
     expect(service).toBeTruthy();
   });
 
-  it('should return a record ', () => {
-    service.getItem('1').subscribe((result: any) => {
-      expect(result.pid).toEqual('1');
-    });
+  it('should request the item with the rero+json representation', () => {
+    service.getItem('1').subscribe((result: RecordData) => expect(result).toEqual(record));
+    expect(recordServiceSpy.getRecord).toHaveBeenCalledWith(
+      'items', '1', { resolve: 1, headers: { Accept: 'application/rero+json' } });
   });
 
   it('should return the item\'s updated location', () => {

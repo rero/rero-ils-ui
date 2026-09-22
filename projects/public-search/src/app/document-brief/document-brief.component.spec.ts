@@ -8,6 +8,7 @@ import { ActivatedRoute } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 import { of } from 'rxjs';
 
+import { DocumentApiService } from '../api/document-api.service';
 import { DocumentBriefComponent } from './document-brief.component';
 
 
@@ -35,7 +36,8 @@ describe('DocumentBriefComponent', () => {
     providers: [
         provideHttpClient(),
         provideHttpClientTesting(),
-        { provide: ActivatedRoute, useValue: { params: of({ viewcode: 'global' }) } }
+        { provide: ActivatedRoute, useValue: { params: of({ viewcode: 'global' }) } },
+        { provide: DocumentApiService, useValue: { getAvailability: () => of({ available: true }) } }
     ]
 }).compileComponents();
   });
