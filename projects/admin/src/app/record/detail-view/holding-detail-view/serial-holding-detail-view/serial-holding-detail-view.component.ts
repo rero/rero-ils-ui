@@ -2,6 +2,7 @@
 // SPDX-FileCopyrightText: UCLouvain
 // SPDX-License-Identifier: AGPL-3.0-or-later
 import { Component, inject, input, model, OnInit, ChangeDetectionStrategy} from '@angular/core';
+import { rxResource } from '@angular/core/rxjs-interop';
 import { EsRecord, PaginatorComponent } from '@rero/shared';
 import { HoldingsSerialStore } from '../holdings-serial-store';
 import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
@@ -21,23 +22,29 @@ import { InputGroupAddon } from 'primeng/inputgroupaddon';
 import { ReceivedIssueComponent } from './received-issue/received-issue.component';
 import { HoldingDetailComponent } from '../../document-detail-view/holdings/holding-detail/holding-detail.component';
 import { LocalFieldComponent } from '../../local-field/local-field.component';
-import { AsyncPipe } from '@angular/common';
-import { GetRecordPipe } from '@rero/ng-core';
+import { DocumentApiService } from '@app/admin/api/document-api.service';
 
 @Component({
     selector: 'admin-serial-holding-detail-view',
     templateUrl: './serial-holding-detail-view.component.html',
     providers: [HoldingsSerialStore],
-    imports: [TranslateDirective, RecordMaskedComponent, DocumentsBriefViewComponent, HoldingSharedViewComponent, Bind, Tabs, TabList, Ripple, Tab, TabPanels, TabPanel, Button, ExpectedIssueComponent, RouterLink, InputGroup, FormsModule, InputText, InputGroupAddon, ReceivedIssueComponent, PaginatorComponent, HoldingDetailComponent, LocalFieldComponent, AsyncPipe, TranslatePipe, GetRecordPipe],
+    imports: [TranslateDirective, RecordMaskedComponent, DocumentsBriefViewComponent, HoldingSharedViewComponent, Bind, Tabs, TabList, Ripple, Tab, TabPanels, TabPanel, Button, ExpectedIssueComponent, RouterLink, InputGroup, FormsModule, InputText, InputGroupAddon, ReceivedIssueComponent, PaginatorComponent, HoldingDetailComponent, LocalFieldComponent, TranslatePipe],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SerialHoldingDetailViewComponent implements OnInit {
 
   protected store = inject(HoldingsSerialStore);
+  private documentApiService = inject(DocumentApiService);
 
   holding = input.required<EsRecord>();
 
   protected filter = model<string>('');
+
+  /** Host document of the holding.*/
+  protected readonly documentResource = rxResource({
+    params: () => this.holding().metadata.document.pid,
+    stream: ({ params: pid }) => this.documentApiService.getDocument(pid),
+  });
 
   /** OnInit hook */
   ngOnInit(): void {

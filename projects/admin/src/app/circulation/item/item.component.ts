@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 import { Component, effect, inject, input, model, output, signal, ChangeDetectionStrategy} from '@angular/core';
+import { DocumentApiService } from '@app/admin/api/document-api.service';
 import { PatronTransactionService } from '@app/admin/circulation/services/patron-transaction.service';
 import { Organisation } from '@app/admin/classes/core';
 import { Item, ItemAction, ItemNote, ItemNoteType } from '@app/admin/classes/items';
@@ -31,6 +32,7 @@ import { GetLoanCipoPipe } from '../pipe/get-loan-cipo.pipe';
 export class ItemComponent {
 
   private recordService: RecordService = inject(RecordService);
+  private documentApiService: DocumentApiService = inject(DocumentApiService);
   private patronTransactionService: PatronTransactionService = inject(PatronTransactionService);
   private itemService: ItemsService = inject(ItemsService);
   private appStore = inject(AppStore);
@@ -102,10 +104,8 @@ export class ItemComponent {
           ).subscribe((hits: any[]) => this.notifications.set(hits));
         }
         if (item?.document?.pid) {
-          this.recordService.getRecord('documents', item.document.pid, {
-            resolve: 1,
-            headers: { Accept: 'application/rero+json, application/json' }
-          }).subscribe(doc => this.document.set(doc.metadata));
+          this.documentApiService.getDocument(item.document.pid)
+            .subscribe(doc => this.document.set(doc.metadata));
         }
       }
     });
