@@ -42,7 +42,7 @@ export class OverdueTransactionComponent {
         })).reverse();
         if (!t.loan.item_pid?.value || !t.loan.document_pid) return of(null);
         return forkJoin([
-          this.recordService.getRecord('items', t.loan.item_pid.value),
+          this.recordService.getRecord('items', t.loan.item_pid.value, { resolve: 1 }),
           this.recordService.getRecord('documents', t.loan.document_pid)
         ]).pipe(
           map(([itemData, documentData]: [any, any]) => ({

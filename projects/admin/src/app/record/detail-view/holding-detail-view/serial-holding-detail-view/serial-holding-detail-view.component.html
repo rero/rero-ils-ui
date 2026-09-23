@@ -7,7 +7,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
   @if (holding().metadata._masked) {
     <admin-record-masked [record]="holding()" [withLabel]="true"></admin-record-masked>
   }
-  @if (holding().metadata.document.pid | getRecord:'documents' | async; as document) {
+  @if (documentResource.value(); as document) {
       <div class="ui:border ui:rounded-border ui:border-surface ui:p-6">
         <admin-documents-brief-view
             [record]="document"

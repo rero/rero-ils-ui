@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 import { ChangeDetectionStrategy, Component, computed, inject, input } from '@angular/core';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
+import { DocumentApiService } from '@app/admin/api/document-api.service';
 import { RecordPermissions } from '@app/admin/classes/permissions';
 import { RecordPermissionService } from '@app/admin/service/record-permission.service';
 import { RecordService } from '@rero/ng-core';
@@ -28,6 +29,7 @@ import { NoteBadgeColorPipe } from '../../../../pipes/note-badge-color.pipe';
 export class OrderLineComponent {
   private recordPermissionService = inject(RecordPermissionService);
   private recordService = inject(RecordService);
+  private documentApiService = inject(DocumentApiService);
   private acqOrderApiService = inject(AcqOrderApiService);
   private appStore = inject(AppStore);
 
@@ -44,7 +46,7 @@ export class OrderLineComponent {
           map(p => this.appStore.validateLibraryPermissions(p, this.order()?.library?.pid ?? ''))
         ),
         this.recordService.getRecord('acq_accounts', line.acq_account.pid),
-        this.recordService.getRecord('documents', line.document.pid).pipe(catchError(() => of(null)))
+        this.documentApiService.getDocument(line.document.pid).pipe(catchError(() => of(null)))
       ]))
     )
   );

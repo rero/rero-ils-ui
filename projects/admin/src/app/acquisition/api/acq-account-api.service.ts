@@ -5,7 +5,7 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { RecordService } from '@rero/ng-core';
-import type { EsResult } from '@rero/shared';
+import { BaseApi, type EsResult } from '@rero/shared';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { accountDefaultData, IAcqAccount } from '../classes/account';
@@ -62,7 +62,7 @@ export class AcqAccountApiService {
         query,
         page: 1,
         itemsPerPage: RecordService.MAX_REST_RESULTS_SIZE,
-        headers: { Accept: 'application/rero+json' },
+        headers: BaseApi.reroJsonheaders,
         sort: options.sort
       })
       .pipe(

@@ -5,6 +5,7 @@
 import { ChangeDetectorRef, Component, inject, OnInit, ChangeDetectionStrategy} from '@angular/core';
 import { FieldType } from '@ngx-formly/core';
 import { extractIdOnRef, RecordService } from '@rero/ng-core';
+import { DocumentApiService } from '@app/admin/api/document-api.service';
 import { catchError, map, of, switchMap, tap } from 'rxjs';
 import { DocumentBriefViewComponent } from '@rero/shared';
 import { NotesComponent } from '../../components/notes/notes.component';
@@ -46,6 +47,7 @@ import { TranslatePipe } from '@ngx-translate/core';
 })
 export class OrderLineTypeComponent extends FieldType implements OnInit {
   private recordService: RecordService = inject(RecordService);
+  private documentApiService: DocumentApiService = inject(DocumentApiService);
   private changeDetectorRef: ChangeDetectorRef = inject(ChangeDetectorRef);
 
   /** record */
@@ -65,7 +67,7 @@ export class OrderLineTypeComponent extends FieldType implements OnInit {
         tap((line) => (this.orderLine = line.metadata)),
         map(() => extractIdOnRef(this.orderLine.document.$ref)),
         switchMap((pid) =>
-          this.recordService.getRecord('documents', pid).pipe(
+          this.documentApiService.getDocument(pid).pipe(
             catchError(() => of(null))
           )
         ),

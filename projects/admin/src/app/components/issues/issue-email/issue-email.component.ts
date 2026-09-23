@@ -5,7 +5,7 @@ import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/cor
 import { ItemApiService } from '@app/admin/api/item-api.service';
 import { IPreview, ISuggestions, ITypeEmail } from '@app/admin/shared/preview-email/IPreviewInterface';
 import { Tools } from '@app/admin/shared/preview-email/utils/tools';
-import { CONFIG, NgCoreTranslateService, RecordService } from '@rero/ng-core';
+import { CONFIG, NgCoreTranslateService } from '@rero/ng-core';
 import { MessageService } from 'primeng/api';
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { PreviewEmailComponent, RecipientType } from '@app/admin/shared/preview-email/component/preview-email/preview-email.component';
@@ -25,7 +25,6 @@ export class IssueEmailComponent {
   private dynamicDialogRef: DynamicDialogRef = inject(DynamicDialogRef);
   private itemApiService: ItemApiService = inject(ItemApiService);
   private translateService: NgCoreTranslateService = inject(NgCoreTranslateService);
-  private recordService: RecordService = inject(RecordService);
 
   private record = this.dynamicDialogConfig.data.record;
 
@@ -78,8 +77,8 @@ export class IssueEmailComponent {
           detail: this.translateService.instant('A new claim has been created.'),
           life: CONFIG.MESSAGE_LIFE
         });
-        this.recordService
-          .getRecord('items', this.record.metadata.pid, { resolve: 1, headers: { Accept: 'application/rero+json' } })
+        this.itemApiService
+          .getItem(this.record.metadata.pid)
           .subscribe((record: any) => this.closeDialog(record));
       } else {
         this.messageService.add({

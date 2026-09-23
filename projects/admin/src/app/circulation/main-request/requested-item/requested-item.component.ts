@@ -5,9 +5,10 @@ import { NgClass } from '@angular/common';
 import { ChangeDetectionStrategy, Component, inject, input, model, output } from '@angular/core';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { RouterLink } from '@angular/router';
+import { DocumentApiService } from '@app/admin/api/document-api.service';
 import { LoanState } from '@app/admin/classes/loans';
 import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
-import { DateTranslatePipe, RecordService } from '@rero/ng-core';
+import { DateTranslatePipe } from '@rero/ng-core';
 import { ContributionComponent, IdAttributePipe, InheritedCallNumberComponent, MainTitlePipe, OpenCloseButtonComponent } from '@rero/shared';
 import { Bind } from 'primeng/bind';
 import { Button } from 'primeng/button';
@@ -21,7 +22,7 @@ import { map, of, switchMap } from 'rxjs';
 })
 export class RequestedItemComponent {
 
-  private recordService: RecordService = inject(RecordService);
+  private documentApiService: DocumentApiService = inject(DocumentApiService);
 
   // COMPONENT ATTRIBUTES ====================================================
 
@@ -45,14 +46,7 @@ export class RequestedItemComponent {
           return of(null);
         }
 
-        return this.recordService.getRecord(
-          'documents',
-          item.loan.document_pid,
-          {
-            resolve: 1,
-            headers: { Accept: 'application/rero+json, application/json' }
-          }
-        );
+        return this.documentApiService.getDocument(item.loan.document_pid);
       }),
       map(d => d?.metadata ?? null)
     ),

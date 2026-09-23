@@ -39,7 +39,7 @@ export class CheckinComponent {
     inject(DestroyRef).onDestroy(() => this.patronInfo.set(undefined));
   }
 
-  public placeholder = _('Please enter a patron card number or an item barcode.');
+  public placeholder = _('Scan a patron or item barcode');
   searchText = signal('');
   patronInfo = signal<User | undefined>(undefined);
   readonly barcode = signal<string | null>(null);
