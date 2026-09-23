@@ -195,7 +195,12 @@ export class ItemsService {
     return this.httpClient.post<any>(url, data, {params: queryParams}).pipe(
       map(itemData => {
         const item = new Item(itemData.metadata);
-        item.setLoan(itemData.action_applied[action]);
+        const loanSourceAction = (
+          action === ItemAction.checkin
+          && item.status === ItemStatus.IN_TRANSIT
+          && itemData.action_applied[ItemAction.validate]
+        ) ? ItemAction.validate : action;
+        item.setLoan(itemData.action_applied[loanSourceAction]);
         item.actionDone = action;
         // Propagate removed temporary item type info if present
         if (itemData.removed_temporary_item_type) {
