@@ -93,4 +93,52 @@ describe('OperationLogsService', () => {
         next: (response: any) => expect(response).toEqual(responseRecords)
     });
   });
+
+  describe('getCirculationTransactionsByUser()', () => {
+    it('should return the transactions for the given user', () => {
+      service
+        .getCirculationTransactionsByUser('patron-1', 1)
+        .subscribe({
+          next: (response: any) => expect(response).toEqual(responseRecords)
+      });
+    });
+
+    it('should query both loan and scan_item records for the transaction user', () => {
+      service
+        .getCirculationTransactionsByUser('patron-1', 1)
+        .subscribe();
+
+      expect(recordServiceSpy.getRecords).toHaveBeenCalledWith('operation_logs', {
+        query: '(record.type:loan AND loan.transaction_user.pid:patron-1) OR (record.type:scan_item AND user.value:patron-1)',
+        page: 1,
+        itemsPerPage: 10,
+        headers: OperationLogsApiService.reroJsonheaders,
+        sort: 'operation_date_mostrecent'
+      });
+    });
+
+    it('should use the given page and itemsPerPage', () => {
+      service
+        .getCirculationTransactionsByUser('patron-1', 2, 20)
+        .subscribe();
+
+      expect(recordServiceSpy.getRecords).toHaveBeenCalledWith('operation_logs', {
+        query: '(record.type:loan AND loan.transaction_user.pid:patron-1) OR (record.type:scan_item AND user.value:patron-1)',
+        page: 2,
+        itemsPerPage: 20,
+        headers: OperationLogsApiService.reroJsonheaders,
+        sort: 'operation_date_mostrecent'
+      });
+    });
+
+    it('should default itemsPerPage to 10', () => {
+      service
+        .getCirculationTransactionsByUser('patron-1', 1)
+        .subscribe();
+
+      expect(recordServiceSpy.getRecords).toHaveBeenCalledWith('operation_logs', expect.objectContaining({
+        itemsPerPage: 10
+      }));
+    });
+  });
 });
