@@ -166,12 +166,12 @@ describe('ItemsService', () => {
     });
   });
 
-  it('doAction', () => {
+  it('should use the current action loan after a simple action', () => {
+    const checkoutLoan = new Loan({ pid: 'checkout-loan' });
     const response = {
       metadata: {...itemAll},
       action_applied: {
-        'checkin': new Loan(),
-        'validate': new Loan()
+        'checkout': checkoutLoan
       }
     };
     httpClientSpy.post.mockReturnValue(of(response));
@@ -182,6 +182,38 @@ describe('ItemsService', () => {
     service.doAction(itemAll, '1', '1', '1', additionalParams).subscribe((result: any) => {
       expect(result).toBeInstanceOf(Item);
       expect(result.actionDone).toEqual(ItemAction.checkout);
+      expect(result.loan.pid).toEqual(checkoutLoan.pid);
+    });
+  });
+
+  it('should use the validated request loan after a checkin in transit for pickup', () => {
+    const checkinLoan = new Loan({
+      pid: 'checkin-loan',
+      state: LoanState.ITEM_RETURNED,
+      item_destination: { library_name: 'LIB_A' }
+    });
+    const validatedLoan = new Loan({
+      pid: 'validated-loan',
+      state: LoanState.ITEM_IN_TRANSIT_FOR_PICKUP,
+      pickup_location_pid: 'location-b',
+      item_destination: { library_name: 'LIB_B' }
+    });
+    const response = {
+      metadata: {...itemAll, status: ItemStatus.IN_TRANSIT},
+      action_applied: {
+        'checkin': checkinLoan,
+        'validate': validatedLoan
+      }
+    };
+    httpClientSpy.post.mockReturnValue(of(response));
+
+    const checkedInItem = {...itemAll, currentAction: ItemAction.checkin};
+    service.doAction(checkedInItem, '1', '1', '1').subscribe((result: any) => {
+      expect(result).toBeInstanceOf(Item);
+      expect(result.actionDone).toEqual(ItemAction.checkin);
+      expect(result.loan.pid).toEqual(validatedLoan.pid);
+      expect(result.loan.state).toEqual(LoanState.ITEM_IN_TRANSIT_FOR_PICKUP);
+      expect(result.loan.item_destination.library_name).toEqual('LIB_B');
     });
   });
 
