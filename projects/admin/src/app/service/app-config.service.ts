@@ -23,6 +23,7 @@ export class AppConfigService extends CoreConfigService {
     this.schemaFormEndpoint = '/schemas';
     this.defaultLanguage = environment.defaultLanguage;
     this.adminRoles = environment.adminRoles;
+    this.translationsVersion = environment.translationsVersion;
     this.translationsURLs = environment.translationsURLs;
     this.ngCoreAssetsUrl = environment.ngCoreAssetsUrl ?? '';
     this.librarySwitchCheckParamsUrl = environment.librarySwitchCheckParamsUrl;

@@ -13,9 +13,6 @@ export class AppConfigService extends CoreConfigService {
   /** Global View Name */
   globalViewName: string;
 
-  /** Translation urls */
-  translationsURLs: string[];
-
   /**
    * Constructor
    */
@@ -27,6 +24,7 @@ export class AppConfigService extends CoreConfigService {
     this.$refPrefix = environment.$refPrefix;
     this.schemaFormEndpoint = '/schemas';
     this.globalViewName = environment.globalViewName;
+    this.translationsVersion = environment.translationsVersion;
     this.translationsURLs = environment.translationsURLs;
     this.ngCoreAssetsUrl = environment.ngCoreAssetsUrl ?? '';
   }

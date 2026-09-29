@@ -16,7 +16,7 @@ describe('AppTranslateLoader', () => {
 
       const result = await ngCoreI18n('', 'de')();
 
-      expect(fetchSpy).toHaveBeenCalledWith('/assets/rero-ils-ui/ng-core/i18n/de.json');
+      expect(fetchSpy).toHaveBeenCalledWith('/assets/rero-ils-ui/ng-core/i18n/de.json', { cache: 'no-cache' });
       expect(result).toEqual({ default: { greeting: 'Hallo' } });
     });
 
@@ -27,7 +27,7 @@ describe('AppTranslateLoader', () => {
 
       const result = await ngCoreI18n('', 'fr')();
 
-      expect(fetchSpy).toHaveBeenCalledWith('/assets/rero-ils-ui/ng-core/i18n/fr.json');
+      expect(fetchSpy).toHaveBeenCalledWith('/assets/rero-ils-ui/ng-core/i18n/fr.json', { cache: 'no-cache' });
       expect(result).toEqual({ default: { bonjour: 'Bonjour' } });
     });
 
@@ -38,8 +38,18 @@ describe('AppTranslateLoader', () => {
 
       const result = await ngCoreI18n('', 'it')();
 
-      expect(fetchSpy).toHaveBeenCalledWith('/assets/rero-ils-ui/ng-core/i18n/it.json');
+      expect(fetchSpy).toHaveBeenCalledWith('/assets/rero-ils-ui/ng-core/i18n/it.json', { cache: 'no-cache' });
       expect(result).toEqual({ default: { saluto: 'Ciao' } });
+    });
+
+    it('should fetch a versioned URL with the default cache', async () => {
+      const fetchSpy = vi.spyOn(globalThis, 'fetch').mockResolvedValue({
+        json: () => Promise.resolve({}),
+      } as Response);
+
+      await ngCoreI18n('', 'fr', '21.2.0')();
+
+      expect(fetchSpy).toHaveBeenCalledWith('/assets/rero-ils-ui/ng-core/i18n/fr.json?v=21.2.0', { cache: 'default' });
     });
   });
 });
