@@ -12,9 +12,11 @@ export const environment = {
   $refPrefix: 'https://bib.rero.ch',
   defaultLanguage: 'en',
   adminRoles: ['system_librarian', 'librarian'],
+  // no version in development: translation files are never cached
+  translationsVersion: '',
   translationsURLs: [
-    '/assets/rero-ils-ui/shared/i18n/${lang}.json',
-    '/assets/rero-ils-ui/admin/i18n/${lang}.json',
+    { url: '/assets/rero-ils-ui/shared/i18n/${lang}.json', versioned: true },
+    { url: '/assets/rero-ils-ui/admin/i18n/${lang}.json', versioned: true },
     '/api/translations/${lang}.json'
   ],
   librarySwitchCheckParamsUrl: ['new', 'edit'],

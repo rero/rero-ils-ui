@@ -12,6 +12,7 @@ export class AppConfigService extends CoreConfigService {
   constructor() {
     super();
     this.production = environment.production;
+    this.translationsVersion = environment.translationsVersion;
     this.translationsURLs = environment.translationsURLs;
     this.ngCoreAssetsUrl = environment.ngCoreAssetsUrl ?? '';
   }
