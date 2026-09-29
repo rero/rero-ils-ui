@@ -20,6 +20,7 @@ import {
   RecordHandleErrorService as CoreRecordHandleErrorService,
   httpPendingInterceptor,
   NgCoreTranslateService,
+  noCacheInterceptor,
   PasswordGeneratorComponent,
   primeNGConfig,
   provideCore,
@@ -83,7 +84,7 @@ export const appConfig: ApplicationConfig = {
     ItemHoldingsCallNumberPipe,
     CountryCodeTranslatePipe,
     { provide: CoreRecordHandleErrorService, useExisting: RecordHandleErrorService },
-    provideHttpClient(withInterceptors([httpPendingInterceptor, userCurrentLibraryInterceptor])),
+    provideHttpClient(withInterceptors([httpPendingInterceptor, noCacheInterceptor, userCurrentLibraryInterceptor])),
     provideCore(),
     {
       provide: FORMLY_CONFIG,
