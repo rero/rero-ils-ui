@@ -4,8 +4,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 -->
 @let notes = fullItem()?.notes || [];
 
-<div class="ui:col-span-9 ui:col-start-3 ui:flex ui:gap-3 ui:pt-2">
-  <div class="ui:w-10 ui:shrink-0"></div>
+<div class="ui:col-span-9 ui:col-start-3 ui:flex ui:pt-2">
   <div class="ui:grid ui:grid-cols-12 ui:gap-1 ui:grow">
     @if (fullItem()?.enumerationAndChronology; as unit) {
       <div class="ui:col-span-2 ui:font-bold" translate>Unit</div>

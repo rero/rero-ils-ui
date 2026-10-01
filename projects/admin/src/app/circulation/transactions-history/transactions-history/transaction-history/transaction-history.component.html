@@ -17,17 +17,17 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 @if (isLoading) {
   <div class="ui:grid ui:grid-cols-12 ui:gap-2 ui:items-start ui:p-2 ui:border-surface ui:border-b">
-    <div class="ui:col-span-2 ui:flex ui:flex-col ui:gap-1">
-      <p-skeleton width="4rem" height="1rem" />
-      <p-skeleton width="5rem" height="1.5rem" />
-    </div>
-
-    <div class="ui:col-span-3 ui:flex ui:gap-3 ui:items-start">
+    <div class="ui:col-span-2 ui:flex ui:gap-2 ui:items-start">
       <div class="ui:w-10 ui:shrink-0"></div>
       <div class="ui:flex ui:flex-col ui:gap-1">
-        <p-skeleton width="5rem" height="1rem" />
-        <p-skeleton width="3rem" height="1rem" />
+        <p-skeleton width="4rem" height="1rem" />
+        <p-skeleton width="5rem" height="1.5rem" />
       </div>
+    </div>
+
+    <div class="ui:col-span-3 ui:flex ui:flex-col ui:gap-1">
+      <p-skeleton width="5rem" height="1rem" />
+      <p-skeleton width="3rem" height="1rem" />
     </div>
 
     <div class="ui:col-span-4">
@@ -40,42 +40,42 @@ SPDX-License-Identifier: AGPL-3.0-or-later
     </div>
   </div>
 } @else {
-  <div class="ui:grid ui:grid-cols-12 ui:gap-2 ui:items-start ui:p-2 ui:border-surface ui:border-b">
-    <div class="ui:col-span-2 ui:flex ui:flex-col ui:gap-1">
-      <small class="ui:text-muted-color">
-        <i class="fa-regular fa-clock"></i>
-        {{ metadata.date | dateTranslate: 'shortTime' }}
-      </small>
-      <p-tag class="ui:self-start ui:justify-start" severity="info" [icon]="status.icon" [value]="status.label | translate" />
-    </div>
-
-    <div class="ui:col-span-3 ui:flex ui:gap-3 ui:items-start">
+  <div class="ui:grid ui:grid-cols-12 ui:gap-2 ui:items-start ui:p-2 ui:border-surface ui:border-b ui:hover:bg-surface-100">
+    <div class="ui:col-span-2 ui:flex ui:gap-2 ui:items-start">
       <div class="ui:w-10 ui:shrink-0">
         <shared-open-close-button
           [collapsed]="collapsed"
           (status)="toggleRow($event)"
         />
       </div>
-      <div class="ui:flex ui:flex-col">
-        @if (currentItem; as currentItem) {
-          @if (currentItem.metadata.barcode) {
-            <div class="ui:flex ui:items-center ui:gap-1">
-              <a [routerLink]="['/records', 'items', 'detail', currentItem.metadata.pid]" (click)="closeRequested.emit()">{{ currentItem.metadata.barcode }}</a>
-              @if (loan?.note || scan?.note || notes.length > 0) {
-                <i class="fa-regular fa-note-sticky text-warning" [title]="'Note' | translate"></i>
-              }
-            </div>
-          }
-          @if (currentItem.metadata.call_number) {
-            <div>{{ currentItem.metadata.call_number }}</div>
-          }
-        } @else if (itemNotFound()) {
-          <span class="ui:text-muted-color ui:italic" translate>Item not found</span>
-          @if (scan?.item?.call_number; as callNumber) {
-            <div>{{ callNumber }}</div>
-          }
-        }
+      <div class="ui:flex ui:flex-col ui:gap-1">
+        <small class="ui:text-muted-color">
+          <i class="fa-regular fa-clock"></i>
+          {{ metadata.date | dateTranslate: 'shortTime' }}
+        </small>
+        <p-tag class="ui:self-start ui:justify-start" severity="info" [icon]="status.icon" [value]="status.label | translate" />
       </div>
+    </div>
+
+    <div class="ui:col-span-3 ui:flex ui:flex-col">
+      @if (currentItem; as currentItem) {
+        @if (currentItem.metadata.barcode) {
+          <div class="ui:flex ui:items-center ui:gap-1">
+            <a [routerLink]="['/records', 'items', 'detail', currentItem.metadata.pid]" (click)="closeRequested.emit()">{{ currentItem.metadata.barcode }}</a>
+            @if (loan?.note || scan?.note || notes.length > 0) {
+              <i class="fa-regular fa-note-sticky text-warning" [title]="'Note' | translate"></i>
+            }
+          </div>
+        }
+        @if (currentItem.metadata.call_number) {
+          <div>{{ currentItem.metadata.call_number }}</div>
+        }
+      } @else if (itemNotFound()) {
+        <span class="ui:text-muted-color ui:italic" translate>Item not found</span>
+        @if (scan?.item?.call_number; as callNumber) {
+          <div>{{ callNumber }}</div>
+        }
+      }
     </div>
 
     <admin-transaction-history-document
