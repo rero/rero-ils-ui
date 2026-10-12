@@ -181,8 +181,8 @@ importers:
         specifier: ^29.0.0
         version: 29.1.1
       katex:
-        specifier: ^0.16.22
-        version: 0.16.47
+        specifier: ^0.18.2
+        version: 0.18.2
       ng-packagr:
         specifier: ^21.2.0
         version: 21.2.5(@angular/compiler-cli@21.2.18(@angular/compiler@21.2.18)(supports-color@8.1.1)(typescript@5.9.3))(supports-color@8.1.1)(tailwindcss@4.3.3)(tslib@2.8.1)(typescript@5.9.3)
@@ -4691,12 +4691,8 @@ packages:
   karma-source-map-support@1.4.0:
     resolution: {integrity: sha512-RsBECncGO17KAoJCYXjv+ckIz+Ii9NCi+9enk+rq6XC81ezYkb4/RHE6CTXdA7IOJqoF3wcaLfVG0CPmE5ca6A==}
 
-  katex@0.16.47:
-    resolution: {integrity: sha512-Eeo8Ys1doU1z+x8AZsPpQu+p/QcZBI5PeOo7QGQdy2x2m0MU/hYagBbGOmXwr5KVbEfVuWv9LpnQWeehogurjg==}
-    hasBin: true
-
-  katex@0.18.1:
-    resolution: {integrity: sha512-Td8GCYSxDAoMhHOlKmCFMJ/hz5qlAAb71n66Dryw9nfCVfumLo7nhuotbvKom/XPADmrYC3O5QR71EPq4DarJQ==}
+  katex@0.18.2:
+    resolution: {integrity: sha512-3snve4y0SXTMequLim1FMiPvLGElySam0blN5xQZBqEY3lOJz1TnuaaiugnBZBqHzlSAGmFTYL7MCQkORuLKCA==}
     hasBin: true
 
   keyv@4.5.4:
@@ -9277,7 +9273,7 @@ snapshots:
       crypto-js: 4.2.0
       easymde: 2.21.0
       generate-password-lite: 1.0.2
-      katex: 0.18.1
+      katex: 0.18.2
       lodash-es: 4.18.1
       luxon: 3.7.2
       marked: 18.0.9
@@ -11761,11 +11757,7 @@ snapshots:
     dependencies:
       source-map-support: 0.5.21
 
-  katex@0.16.47:
-    dependencies:
-      commander: 8.3.0
-
-  katex@0.18.1:
+  katex@0.18.2:
     dependencies:
       commander: 8.3.0
 

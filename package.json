@@ -126,7 +126,7 @@
     "eslint": "^9.39.0",
     "glob": "^13.0.6",
     "jsdom": "^29.0.0",
-    "katex": "^0.16.22",
+    "katex": "^0.18.2",
     "ng-packagr": "^21.2.0",
     "postcss": "^8.5.3",
     "semantic-release": "^25.0.5",
