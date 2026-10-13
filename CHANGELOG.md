@@ -1,5 +1,23 @@
 # Changelog
 
+## [21.3.0](https://github.com/rero/rero-ils-ui/compare/v21.2.0...v21.3.0) (2026-10-13)
+
+### Features
+
+* add export requests button ([b089575](https://github.com/rero/rero-ils-ui/commit/b089575f7f9c82d2996b6a8627ef93fa38576eb3))
+* **admin:** disable the browser HTTP cache ([7a11060](https://github.com/rero/rero-ils-ui/commit/7a110609bd6bb912a61873f7ae56f1ec67ed9df4))
+* **circulation:** add operator transaction history ([da2400d](https://github.com/rero/rero-ils-ui/commit/da2400dec971af578e303e4f955e94c635bf73ec)), closes [taiga#2907](https://github.com/rero/taiga/issues/2907)
+* **fees:** show both owning and transacation libs ([461c205](https://github.com/rero/rero-ils-ui/commit/461c205a66aad1385ace150a35e70e4c39a1f2a9)), closes [rero/rero-ils#2542](https://github.com/rero/rero-ils/issues/2542)
+* **search:** support everywhere search target ([380b06d](https://github.com/rero/rero-ils-ui/commit/380b06d76e49786292a042caf7f2d20899a360f2))
+* **translations:** cache versioned files ([e8457ad](https://github.com/rero/rero-ils-ui/commit/e8457adb0009e8deee33ae7ee938021f07904ead))
+
+### Bug Fixes
+
+* **circulation:** prevent pay dialog layout issue ([5d70aca](https://github.com/rero/rero-ils-ui/commit/5d70aca2895cf4aa3257d91ae9794fc6f56c1978))
+* **document:** show the contributor ellipsis once ([fbac02b](https://github.com/rero/rero-ils-ui/commit/fbac02be868a50d1d4fc51c146e62d8540afbd01))
+* **ill-request:** display views when a patron is gone ([3e5e8d7](https://github.com/rero/rero-ils-ui/commit/3e5e8d75708f837610fb0c129c59058598714a6c))
+* read documents and items as rero+json ([ef8f9b0](https://github.com/rero/rero-ils-ui/commit/ef8f9b07c41a503648aeaadeb188b23ed3138d87))
+
 ## [21.2.0](https://github.com/rero/rero-ils-ui/compare/v21.1.0...v21.2.0) (2026-09-08)
 
 ### Features
