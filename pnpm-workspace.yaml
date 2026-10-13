@@ -4,7 +4,7 @@ allowBuilds:
   lmdb: true
   msgpackr-extract: true
 minimumReleaseAgeExclude:
-  - '@rero/ng-core@21.2.0'
+  - '@rero/ng-core@21.4.0'
 
 # overrides:
 # >> Override with a link
