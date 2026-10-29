@@ -2,38 +2,42 @@
 SPDX-FileCopyrightText: Fondation RERO+
 SPDX-License-Identifier: AGPL-3.0-or-later
 -->
-<form [formGroup]="formService.form" (ngSubmit)="onSubmit()" style="max-width: 50vw;">
+<form [formGroup]="formService.form" (ngSubmit)="onSubmit()" style="max-width: 50vw">
   <!-- Title -->
   <div class="ui:grid ui:grid-cols-12 ui:gap-4 ui:flex">
-    <label for="title" class="ui:col-span-2">
-      {{ 'Title' | translate }}&nbsp;*
-    </label>
+    <label for="title" class="ui:col-span-2"> {{ 'Title' | translate }}&nbsp;* </label>
     <div class="ui:col-span-10">
-      <input
-        pInputText
-        fluid="true"
-        formControlName="title"
-        [placeholder]="'Please insert a title' | translate"
-      />
-      @if (formService.form.get('title')!.invalid && (formService.form.get('title')!.dirty || formService.form.get('title')!.touched)) {
+      <input pInputText fluid="true" formControlName="title" [placeholder]="'Please insert a title' | translate" />
+      @if (
+        formService.form.get('title')!.invalid &&
+        (formService.form.get('title')!.dirty || formService.form.get('title')!.touched)
+      ) {
         <div class="text-error">
           @if (formService.form.get('title')!.errors?.required) {
-            <div translate>Title is required.</div>
+            <div>{{ 'Title is required.' | translate }}</div>
           }
         </div>
       }
     </div>
     <div class="ui:col-span-10 ui:col-start-3">
-      <input type="radio" name="day" value="false" [checked]="formService.form.get('is_period')!.value === false" (change)="onPeriodChange($event)" />
+      <input
+        type="radio"
+        name="day"
+        value="false"
+        [checked]="formService.form.get('is_period')!.value === false"
+        (change)="onPeriodChange($event)" />
       &nbsp;{{ 'Day' | translate }}
-      <input type="radio" name="period" value="true" [checked]="formService.form.get('is_period')!.value === true" (change)="onPeriodChange($event)" />
+      <input
+        type="radio"
+        name="period"
+        value="true"
+        [checked]="formService.form.get('is_period')!.value === true"
+        (change)="onPeriodChange($event)" />
       &nbsp;{{ 'Period' | translate }}
     </div>
 
     @if (!formService.form.get('is_period')!.value) {
-      <label for="date" class="ui:col-span-2">
-        {{ 'Date' | translate }}&nbsp;*
-      </label>
+      <label for="date" class="ui:col-span-2"> {{ 'Date' | translate }}&nbsp;* </label>
       <div class="ui:col-span-10">
         <p-datepicker
           appendTo="body"
@@ -42,15 +46,17 @@ SPDX-License-Identifier: AGPL-3.0-or-later
           panelStyleClass="ui:!min-w-0"
           formControlName="date"
           [readonlyInput]="false"
-          [showIcon]="true"
-        />
-        @if (formService.form.get('date')!.invalid && (formService.form.get('date')!.dirty || formService.form.get('date')!.touched)) {
+          [showIcon]="true" />
+        @if (
+          formService.form.get('date')!.invalid &&
+          (formService.form.get('date')!.dirty || formService.form.get('date')!.touched)
+        ) {
           <div class="text-error">
             @if (formService.form.get('date')!.errors?.required) {
-              <div translate>Date is required.</div>
+              <div>{{ 'Date is required.' | translate }}</div>
             }
             @if (formService.form.get('date')!.errors?.bsDate && formService.form.get('date')!.errors?.bsDate.invalid) {
-              <div translate>Date is invalid.</div>
+              <div>{{ 'Date is invalid.' | translate }}</div>
             }
           </div>
         }
@@ -58,9 +64,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
     }
 
     @if (formService.form.get('is_period')!.value) {
-      <label for="date" class="ui:col-span-2">
-        {{ 'Dates' | translate }}&nbsp;*
-      </label>
+      <label for="date" class="ui:col-span-2"> {{ 'Dates' | translate }}&nbsp;* </label>
       <div class="ui:col-span-10">
         <p-datepicker
           fluid="true"
@@ -71,15 +75,19 @@ SPDX-License-Identifier: AGPL-3.0-or-later
           formControlName="dates"
           selectionMode="range"
           [numberOfMonths]="2"
-          [showIcon]="true"
-        />
-        @if (formService.form.get('dates')!.invalid && (formService.form.get('dates')!.dirty || formService.form.get('dates')!.touched)) {
+          [showIcon]="true" />
+        @if (
+          formService.form.get('dates')!.invalid &&
+          (formService.form.get('dates')!.dirty || formService.form.get('dates')!.touched)
+        ) {
           <div class="text-error">
             @if (formService.form.get('dates')!.errors?.required) {
-              <div translate>Date range is required.</div>
+              <div>{{ 'Date range is required.' | translate }}</div>
             }
-            @if (formService.form.get('dates')!.errors?.bsDate && formService.form.get('dates')!.errors?.bsDate.invalid) {
-              <div translate>Date range is invalid.</div>
+            @if (
+              formService.form.get('dates')!.errors?.bsDate && formService.form.get('dates')!.errors?.bsDate.invalid
+            ) {
+              <div>{{ 'Date range is invalid.' | translate }}</div>
             }
           </div>
         }
@@ -87,15 +95,25 @@ SPDX-License-Identifier: AGPL-3.0-or-later
     }
 
     <div class="ui:col-span-10 ui:col-start-3">
-      <input type="radio" name="date-status" value="false" [checked]="formService.form.get('is_open')!.value === false" (change)="onDateStatusChange($event)" />
+      <input
+        type="radio"
+        name="date-status"
+        value="false"
+        [checked]="formService.form.get('is_open')!.value === false"
+        (change)="onDateStatusChange($event)" />
       &nbsp;{{ 'Closed' | translate }}
-      <input type="radio" name="date-status" value="true" [checked]="formService.form.get('is_open')!.value === true" (change)="onDateStatusChange($event)"/>
+      <input
+        type="radio"
+        name="date-status"
+        value="true"
+        [checked]="formService.form.get('is_open')!.value === true"
+        (change)="onDateStatusChange($event)" />
       &nbsp;{{ 'Open' | translate }}
       @if (formService.form.value && formService.form.value.is_open) {
-        <em class="ui:block ui:mt-2" translate>Change the default opening hours for this day</em>
+        <em class="ui:block ui:mt-2">{{ 'Change the default opening hours for this day' | translate }}</em>
       }
       @if (formService.form.value && !formService.form.value.is_open) {
-        <em class="ui:block ui:mt-2" translate>Change the default closing hours for this day</em>
+        <em class="ui:block ui:mt-2">{{ 'Change the default closing hours for this day' | translate }}</em>
       }
     </div>
 
@@ -106,63 +124,61 @@ SPDX-License-Identifier: AGPL-3.0-or-later
           size="small"
           outlined
           icon="fa-regular fa-square-plus"
-          [label]="'period' | translate"
-        />
+          [label]="'period' | translate" />
       }
       <ul class="ui:list-none">
-        @for (time of times.controls; track $index; let t=$index) {
+        @for (time of times.controls; track $index; let t = $index) {
           <li formArrayName="times" class="ui:mb-1">
             <div [formGroupName]="t">
               <div class="ui:grid ui:grid-cols-12 ui:gap-4">
                 <div class="ui:col-span-5">
-                  <input pInputText class="ui:w-full" formControlName="start_time">
+                  <input pInputText class="ui:w-full" formControlName="start_time" />
                 </div>
                 <div class="ui:col-span-5">
-                  <input pInputText class="ui:w-full" formControlName="end_time">
+                  <input pInputText class="ui:w-full" formControlName="end_time" />
                 </div>
                 <div class="ui:col-span-2">
                   @if (times.length === 1) {
-                    <p-button
-                      text
-                      severity="secondary"
-                      size="small"
-                      (onClick)="addTime()"
-                      icon="fa-regular fa-clone"
-                    />
+                    <p-button text severity="secondary" size="small" (onClick)="addTime()" icon="fa-regular fa-clone" />
                   }
                   <p-button
                     text
                     severity="secondary"
                     size="small"
                     (onClick)="deleteTime(t)"
-                    icon="fa-solid fa-trash-can"
-                 />
+                    icon="fa-solid fa-trash-can" />
                 </div>
               </div>
-              @if ($any(time).controls.start_time.invalid && ($any(time).controls.start_time.dirty || $any(time).controls.start_time.touched)) {
+              @if (
+                $any(time).controls.start_time.invalid &&
+                ($any(time).controls.start_time.dirty || $any(time).controls.start_time.touched)
+              ) {
                 <div class="text-error">
                   @if ($any(time).controls.start_time.errors.required) {
-                    <div translate>Start time is required.</div>
+                    <div>{{ 'Start time is required.' | translate }}</div>
                   }
                   @if ($any(time).controls.start_time.errors.pattern) {
-                    <div translate>Start time format is not correct.</div>
+                    <div>{{ 'Start time format is not correct.' | translate }}</div>
                   }
                 </div>
               }
-              @if ($any(time).controls.end_time.invalid && ($any(time).controls.end_time.dirty || $any(time).controls.end_time.touched)) {
+              @if (
+                $any(time).controls.end_time.invalid &&
+                ($any(time).controls.end_time.dirty || $any(time).controls.end_time.touched)
+              ) {
                 <div class="text-error">
                   @if ($any(time).controls.end_time.errors.required) {
-                    <div translate>End time is required.</div>
+                    <div>{{ 'End time is required.' | translate }}</div>
                   }
                   @if ($any(time).controls.end_time.errors.pattern) {
-                    <div translate>End time format is not correct.</div>
+                    <div>{{ 'End time format is not correct.' | translate }}</div>
                   }
                 </div>
               }
               @if ($any(time).invalid && ($any(time).dirty || $any(time).touched)) {
                 <div class="text-error">
                   @if ($any(time).errors && $any(time).errors.lessThan) {
-                    <div translate>End time is less than start time.</div>
+                    <div>{{ 'End time is less than start time.' | translate }}</div>
                   }
                 </div>
               }
@@ -170,44 +186,42 @@ SPDX-License-Identifier: AGPL-3.0-or-later
           </li>
         }
       </ul>
-      @if (formService.form.invalid  && (formService.form.dirty || formService.form.touched)) {
+      @if (formService.form.invalid && (formService.form.dirty || formService.form.touched)) {
         <div class="text-error">
           @if (formService.form.errors && formService.form.errors.rangeLessThan) {
-            <div translate>The two periods are overlapping.</div>
+            <div>{{ 'The two periods are overlapping.' | translate }}</div>
           }
         </div>
       }
     </div>
 
     <div class="ui:col-span-2 ui:flex ui:gap-2 ui:items-center">
-      <p-toggleswitch
-        formControlName="repeat"
-        id="repeat"
-        (onChange)="onRepeatChange($event)"
-      />
+      <p-toggleswitch formControlName="repeat" id="repeat" (onChange)="onRepeatChange($event)" />
       {{ 'Repetition' | translate | titlecase }}
     </div>
     @if (formService.form.get('repeat')!.value) {
       <div class="ui:col-span-10 ui:flex ui:gap-2 ui:items-center">
-        <label for="interval"><span translate>Repeat each</span>&nbsp;*</label>
+        <label for="interval"
+          ><span>{{ 'Repeat each' | translate }}</span
+          >&nbsp;*</label
+        >
         <div class="ui:flex ui:gap-2">
           <p-inputNumber [showButtons]="true" [min]="1" [step]="1" formControlName="interval" />
-          <p-select
-            appendTo="body"
-            [options]="periods"
-            formControlName="period"
-          />
+          <p-select appendTo="body" [options]="periods" formControlName="period" />
         </div>
-        @if (formService.form.get('interval')!.invalid && (formService.form.get('interval')!.dirty || formService.form.get('interval')!.touched)) {
+        @if (
+          formService.form.get('interval')!.invalid &&
+          (formService.form.get('interval')!.dirty || formService.form.get('interval')!.touched)
+        ) {
           <div class="text-error">
             @if (formService.form.get('interval')!.errors?.required) {
-              <div translate>Interval is required.</div>
+              <div>{{ 'Interval is required.' | translate }}</div>
             }
             @if (formService.form.get('interval')!.errors?.min) {
-              <div translate>Interval must greater than 0.</div>
+              <div>{{ 'Interval must greater than 0.' | translate }}</div>
             }
             @if (formService.form.get('interval')!.errors?.pattern && !formService.form.get('interval')!.errors?.min) {
-              <div translate>Integer only.</div>
+              <div>{{ 'Integer only.' | translate }}</div>
             }
           </div>
         }
@@ -215,7 +229,11 @@ SPDX-License-Identifier: AGPL-3.0-or-later
     }
   </div>
   <div class="ui:flex ui:gap-1 ui:justify-end ui:mt-3">
-    <p-button [label]="'Cancel'|translate" [outlined]="true" severity="danger" (onClick)="cancel()" />
-    <p-button type="submit" [label]="'Save'|translate" (onClick)="onSubmit()" [disabled]="formService.form.invalid || isSending()" />
+    <p-button [label]="'Cancel' | translate" [outlined]="true" severity="danger" (onClick)="cancel()" />
+    <p-button
+      type="submit"
+      [label]="'Save' | translate"
+      (onClick)="onSubmit()"
+      [disabled]="formService.form.invalid || isSending()" />
   </div>
 </form>

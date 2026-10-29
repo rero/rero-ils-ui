@@ -2,44 +2,43 @@
 // SPDX-FileCopyrightText: UCLouvain
 // SPDX-License-Identifier: AGPL-3.0-or-later
 import { TestBed } from '@angular/core/testing';
-import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { provideTranslateService, TranslateService } from '@ngx-translate/core';
+
 import { EntityLabelPipe } from './entity-label.pipe';
 
 describe('EntityLabelPipe', () => {
-
   let entityLabelPipe: EntityLabelPipe;
   let translateService: TranslateService;
 
-  const entities = [{
-    authorized_access_point_de: 'Schweizerischer Fischereiverein',
-    authorized_access_point_en: 'Swiss Fishing Federation',
-    authorized_access_point_fr: 'Fédération suisse de pêche',
-    authorized_access_point_it: 'Federazione svizzera della pesca',
-  }, {
-    authorized_access_point: 'Undefined person',
-    authorized_access_point_de: 'German name person',
-    authorized_access_point_en: 'English name person',
-    authorized_access_point_fr: 'French name person',
-    authorized_access_point_it: 'Italian name person',
-  }, {
-    authorized_access_point: 'Local entity',
-  }, {
-    dummy_access_point_key: 'No data',
-    subdivisions: [
-      {entity: {authorized_access_point: 'part1', type:'bf:Topic', genreForm:true}},
-      {entity: {authorized_access_point: 'part2', type:'bf:Place'}}
-    ]
-  }];
+  const entities = [
+    {
+      authorized_access_point_de: 'Schweizerischer Fischereiverein',
+      authorized_access_point_en: 'Swiss Fishing Federation',
+      authorized_access_point_fr: 'Fédération suisse de pêche',
+      authorized_access_point_it: 'Federazione svizzera della pesca',
+    },
+    {
+      authorized_access_point: 'Undefined person',
+      authorized_access_point_de: 'German name person',
+      authorized_access_point_en: 'English name person',
+      authorized_access_point_fr: 'French name person',
+      authorized_access_point_it: 'Italian name person',
+    },
+    {
+      authorized_access_point: 'Local entity',
+    },
+    {
+      dummy_access_point_key: 'No data',
+      subdivisions: [
+        { entity: { authorized_access_point: 'part1', type: 'bf:Topic', genreForm: true } },
+        { entity: { authorized_access_point: 'part2', type: 'bf:Place' } },
+      ],
+    },
+  ];
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [
-        TranslateModule.forRoot()
-      ],
-      providers: [
-        EntityLabelPipe,
-        TranslateService
-      ]
+      providers: [provideTranslateService(), EntityLabelPipe, TranslateService],
     });
     entityLabelPipe = TestBed.inject(EntityLabelPipe);
     translateService = TestBed.inject(TranslateService);

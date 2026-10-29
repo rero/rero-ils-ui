@@ -3,6 +3,7 @@
 import { ActivatedRouteSnapshot, ResolveFn, Routes } from '@angular/router';
 import { _ } from '@ngx-translate/core';
 import { RecordSearchPageComponent, RecordType } from '@rero/ng-core';
+
 import { CollectionBriefComponent } from '../collection-brief/collection-brief.component';
 import { collectionAccessGuard } from '../guard/collection-access.guard';
 

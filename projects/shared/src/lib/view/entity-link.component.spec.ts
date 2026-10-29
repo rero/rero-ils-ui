@@ -2,7 +2,8 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
-import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { provideTranslateService, TranslateService } from '@ngx-translate/core';
+
 import { EntityLinkComponent } from './entity-link.component';
 
 describe('EntityLinkComponent', () => {
@@ -15,13 +16,13 @@ describe('EntityLinkComponent', () => {
     authorized_access_point_en: 'Rousseau, Jean-Jacques (en)',
     authorized_access_point_fr: 'Rousseau, Jean-Jacques (fr)',
     pids: { remote: '1' },
-    resource_type: 'remote'
+    resource_type: 'remote',
   };
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [TranslateModule.forRoot(), EntityLinkComponent],
-      providers: [provideRouter([])]
+      imports: [EntityLinkComponent],
+      providers: [provideTranslateService(), provideRouter([])],
     }).compileComponents();
     translateService = TestBed.inject(TranslateService);
     translateService.use('fr');
@@ -55,19 +56,19 @@ describe('EntityLinkComponent', () => {
     fixture.componentRef.setInput('entity', {
       authorized_access_point_fr: 'Voltaire (fr)',
       pids: { remote: '2' },
-      resource_type: 'remote'
+      resource_type: 'remote',
     });
     expect(component.linkName()).toEqual('Voltaire (fr)');
     expect(component.queryParams()).toEqual({
       q: 'contribution.entity.pids.remote:2',
-      simple: '0'
+      simple: '0',
     });
   });
 
   it('should search on the entity pid when it has a resource type', () => {
     expect(component.queryParams()).toEqual({
       q: 'contribution.entity.pids.remote:1',
-      simple: '0'
+      simple: '0',
     });
   });
 
@@ -75,14 +76,15 @@ describe('EntityLinkComponent', () => {
     fixture.componentRef.setInput('entity', { authorized_access_point: 'Local entity' });
     expect(component.queryParams()).toEqual({
       q: 'contribution.entity.authorized_access_point_fr:"Local entity"',
-      simple: '0'
+      simple: '0',
     });
   });
 
   it('should build the external link from the router params and the query params', () => {
     fixture.componentRef.setInput('external', true);
     fixture.componentRef.setInput('routerLinkParams', ['/', 'global', 'search', 'documents']);
-    expect(component.externalHrefLink())
-      .toEqual('/global/search/documents?q=contribution.entity.pids.remote:1&simple=0');
+    expect(component.externalHrefLink()).toEqual(
+      '/global/search/documents?q=contribution.entity.pids.remote:1&simple=0',
+    );
   });
 });

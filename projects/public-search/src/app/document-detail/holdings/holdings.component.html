@@ -2,18 +2,17 @@
 SPDX-FileCopyrightText: Fondation RERO+
 SPDX-License-Identifier: AGPL-3.0-or-later
 -->
-@if(store.filter().length > 1) {
-<div class="ui:mb-3">
-  <p-multiselect
-    [options]="store.filter()"
-    optionLabel="name"
-    optionValue="pid"
-    [fluid]="true"
-    [maxSelectedLabels]="2"
-    [placeholder]="'Filter by library'|translate"
-    (onChange)="store.setLibraryFilter($event)"
-  />
-</div>
+@if (store.filter().length > 1) {
+  <div class="ui:mb-3">
+    <p-multiselect
+      [options]="store.filter()"
+      optionLabel="name"
+      optionValue="pid"
+      [fluid]="true"
+      [maxSelectedLabels]="2"
+      [placeholder]="'Filter by library' | translate"
+      (onChange)="store.setLibraryFilter($event)" />
+  </div>
 }
 
 @if (store.filteredHoldings().length > 0) {
@@ -33,92 +32,98 @@ SPDX-License-Identifier: AGPL-3.0-or-later
               <div class="ui:col-span-12 ui:md:col-span-5">
                 {{ holding.metadata.library.name }}:&nbsp;{{ holding.metadata.location.name }}
                 @if (holding.metadata.location.public_note) {
-                  <div class="ui:text-sm ui:text-gray-500">{{ holding.metadata.location.public_note | getTranslatedLabel : currentLang }}</div>
+                  <div class="ui:text-sm ui:text-gray-500">
+                    {{ holding.metadata.location.public_note | getTranslatedLabel: currentLang }}
+                  </div>
                 }
               </div>
               <div class="ui:col-span-12 ui:md:col-span-2">
-                {{ holding.metadata.circulation_category.circulation_information | getTranslatedLabel : currentLang }}
+                {{ holding.metadata.circulation_category.circulation_information | getTranslatedLabel: currentLang }}
               </div>
               <div class="ui:col-span-12 ui:md:col-span-2">
                 @if (holding.metadata.public_items_count > 0) {
                   {{ holding.metadata.public_items_count }}
-                  {{ holding.metadata.public_items_count | i18nPlural: { '=0': 'item', '=1': 'item', 'other': 'items' } | translate }}
-              }
+                  {{
+                    holding.metadata.public_items_count
+                      | i18nPlural: { '=0': 'item', '=1': 'item', other: 'items' }
+                      | translate
+                  }}
+                }
               </div>
               <div class="ui:col-span-12 ui:md:col-span-3">
                 @if (holding.metadata.holdings_type === 'serial') {
-                    <i class="fa-solid fa-circle text-warning"></i>
-                    {{ 'see collections and items' | translate }}
+                  <i class="fa-solid fa-circle text-warning"></i>
+                  {{ 'see collections and items' | translate }}
                 } @else {
                   <shared-availability recordType="holding" [record]="holding" [apiService]="holdingsApiService" />
                 }
               </div>
             </div>
-          <!-- SERIAL HOLDING INFORMATION'S -->
-          @if (holding.metadata.holdings_type === 'serial') {
-            <!-- CALL NUMBER -->
-            @if (holding.metadata.call_number) {
-              <shared-description-zone>
-                <ng-container label translate>Call number</ng-container>
-                <ng-container content>
-                  <span class="ui:font-normal">
-                    {{ holding.metadata.call_number }}
-                  @if (holding.metadata.second_call_number) {
-                    | {{ holding.metadata.second_call_number }}
-                  }
-                  </span>
-                </ng-container>
-              </shared-description-zone>
-            }
-            <!-- ENUMERATION AND CHRONOLOGY -->
-            @if (holding.metadata.enumerationAndChronology) {
-              <shared-description-zone>
-                <ng-container label translate>Available collection</ng-container>
-                <ng-container content>
-                  <span class="ui:font-normal" [innerHTML]="holding.metadata.enumerationAndChronology | nl2br"></span>
-                </ng-container>
-              </shared-description-zone>
-            }
-            <!-- SUPPLEMENTARY CONTENT -->
-            @if (holding.metadata.supplementaryContent) {
-              <shared-description-zone>
-                <ng-container label translate>Supplementary content</ng-container>
-                <ng-container content>
-                  <span class="ui:font-normal">{{ holding.metadata.supplementaryContent }}</span>
-                </ng-container>
-              </shared-description-zone>
-            }
-            <!-- INDEX -->
-            @if (holding.metadata.index) {
-              <shared-description-zone>
-                <ng-container label translate>Indexes</ng-container>
-                <ng-container content>
-                  <span class="ui:font-normal">{{ holding.metadata.index }}</span>
-                </ng-container>
-              </shared-description-zone>
-            }
-            <!-- MISSING ISSUES -->
-            @if (holding.metadata.missing_issues) {
-              <shared-description-zone>
-                <ng-container label translate>Missing issues</ng-container>
-                <ng-container content>
-                  <span class="ui:font-normal">{{ holding.metadata.missing_issues }}</span>
-                </ng-container>
-              </shared-description-zone>
-            }
-            <!-- NOTE -->
-            @if (holding.metadata.notes) {
-              @for (note of holding.metadata.notes | notesFilter : noteAuthorizedTypes; track $index) {
+            <!-- SERIAL HOLDING INFORMATION'S -->
+            @if (holding.metadata.holdings_type === 'serial') {
+              <!-- CALL NUMBER -->
+              @if (holding.metadata.call_number) {
                 <shared-description-zone>
-                  <ng-container label translate>{{ note.type }}</ng-container>
+                  <ng-container label>{{ 'Call number' | translate }}</ng-container>
                   <ng-container content>
-                    <span class="ui:font-normal" [innerHTML]="note.content | nl2br"></span>
+                    <span class="ui:font-normal">
+                      {{ holding.metadata.call_number }}
+                      @if (holding.metadata.second_call_number) {
+                        | {{ holding.metadata.second_call_number }}
+                      }
+                    </span>
                   </ng-container>
                 </shared-description-zone>
               }
+              <!-- ENUMERATION AND CHRONOLOGY -->
+              @if (holding.metadata.enumerationAndChronology) {
+                <shared-description-zone>
+                  <ng-container label>{{ 'Available collection' | translate }}</ng-container>
+                  <ng-container content>
+                    <span class="ui:font-normal" [innerHTML]="holding.metadata.enumerationAndChronology | nl2br"></span>
+                  </ng-container>
+                </shared-description-zone>
+              }
+              <!-- SUPPLEMENTARY CONTENT -->
+              @if (holding.metadata.supplementaryContent) {
+                <shared-description-zone>
+                  <ng-container label>{{ 'Supplementary content' | translate }}</ng-container>
+                  <ng-container content>
+                    <span class="ui:font-normal">{{ holding.metadata.supplementaryContent }}</span>
+                  </ng-container>
+                </shared-description-zone>
+              }
+              <!-- INDEX -->
+              @if (holding.metadata.index) {
+                <shared-description-zone>
+                  <ng-container label>{{ 'Indexes' | translate }}</ng-container>
+                  <ng-container content>
+                    <span class="ui:font-normal">{{ holding.metadata.index }}</span>
+                  </ng-container>
+                </shared-description-zone>
+              }
+              <!-- MISSING ISSUES -->
+              @if (holding.metadata.missing_issues) {
+                <shared-description-zone>
+                  <ng-container label>{{ 'Missing issues' | translate }}</ng-container>
+                  <ng-container content>
+                    <span class="ui:font-normal">{{ holding.metadata.missing_issues }}</span>
+                  </ng-container>
+                </shared-description-zone>
+              }
+              <!-- NOTE -->
+              @if (holding.metadata.notes) {
+                @for (note of holding.metadata.notes | notesFilter: noteAuthorizedTypes; track $index) {
+                  <shared-description-zone>
+                    <ng-container label>{{ note.type | translate }}</ng-container>
+                    <ng-container content>
+                      <span class="ui:font-normal" [innerHTML]="note.content | nl2br"></span>
+                    </ng-container>
+                  </shared-description-zone>
+                }
+              }
             }
-          }
-        </div>
+          </div>
         </p-accordion-header>
         <p-accordion-content>
           @if (panel.active()) {
@@ -131,8 +136,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
               [viewcode]="viewcode()"
               [holdingsItemsCount]="holding.metadata.public_items_count"
               class="ui:w-full"
-              [ngClass]="{'ui:mt-2': holding.metadata.public_items_count === 0}"
-            />
+              [ngClass]="{ 'ui:mt-2': holding.metadata.public_items_count === 0 }" />
           }
         </p-accordion-content>
       </p-accordion-panel>
@@ -140,17 +144,15 @@ SPDX-License-Identifier: AGPL-3.0-or-later
   </p-accordion>
 
   <div class="ui:mt-2">
-    @if(isAuthenticated() && isPatron() && viewcode() === 'global') {
+    @if (isAuthenticated() && isPatron() && viewcode() === 'global') {
       <div>
         <a
           pButton
           [outlined]="true"
           size="small"
           icon="fa-solid fa-truck-fast"
-          href="/{{ viewcode() }}/ill_requests/new?record_pid={{ documentPid() }}"
-          translate
-        >
-          Interlibrary loan
+          href="/{{ viewcode() }}/ill_requests/new?record_pid={{ documentPid() }}">
+          {{ 'Interlibrary loan' | translate }}
         </a>
       </div>
     }

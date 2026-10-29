@@ -1,19 +1,20 @@
 // SPDX-FileCopyrightText: Fondation RERO+
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-import { Component, inject, OnDestroy, OnInit, signal, WritableSignal, ChangeDetectionStrategy} from '@angular/core';
+import { Component, inject, OnDestroy, OnInit, signal, WritableSignal } from '@angular/core';
 import { FieldWrapper } from '@ngx-formly/core';
-import { TranslateService, TranslatePipe } from '@ngx-translate/core';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
+import { Bind } from '@openng/optimus-ui/bind';
+import { Button } from '@openng/optimus-ui/button';
+import { DialogService, DynamicDialogRef } from '@openng/optimus-ui/dynamicdialog';
 import { RecordService } from '@rero/ng-core';
-import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { of, Subscription, switchMap } from 'rxjs';
+
 import { UserIdEditorComponent } from '../../custom-editor/user-id-editor/user-id-editor.component';
-import { Bind } from 'primeng/bind';
-import { Button } from 'primeng/button';
 
 @Component({
-    selector: 'admin-user-id',
-    template: `
+  selector: 'admin-user-id',
+  template: `
     <div class="ui:flex ui:gap-2 ui:items-center ui:mb-6">
       @if (user()) {
         <strong>
@@ -28,8 +29,7 @@ import { Button } from 'primeng/button';
       }
     </div>
   `,
-    imports: [Bind, Button, TranslatePipe],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  imports: [Bind, Button, TranslatePipe],
 })
 export class UserIdComponent extends FieldWrapper implements OnInit, OnDestroy {
   private dialogService: DialogService = inject(DialogService);
@@ -79,13 +79,13 @@ export class UserIdComponent extends FieldWrapper implements OnInit, OnDestroy {
               return this.recordService.getRecord('users', userId);
             }
             return of(null);
-          })
+          }),
         )
         .subscribe((user) => {
           if (user) {
             this.user.set(user);
           }
-        })
+        }),
     );
   }
 }

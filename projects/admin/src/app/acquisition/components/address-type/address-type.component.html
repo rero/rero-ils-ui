@@ -7,52 +7,52 @@ SPDX-License-Identifier: AGPL-3.0-or-later
     <dl class="metadata">
       <!-- CONTACT_PERSON -->
       @if (addressType().contact_person) {
-      <dt translate>Contact person</dt>
-      <dd>
-        {{ addressType().contact_person }}
-      </dd>
+        <dt>{{ 'Contact person' | translate }}</dt>
+        <dd>
+          {{ addressType().contact_person }}
+        </dd>
       }
       <!-- STREET -->
       @if (addressType().street) {
-      <dt translate>Street</dt>
-      <dd>
-        {{ addressType().street }}
-      </dd>
+        <dt>{{ 'Street' | translate }}</dt>
+        <dd>
+          {{ addressType().street }}
+        </dd>
       }
       <!-- POSTAL_CODE -->
       @if (addressType().postal_code) {
-      <dt translate>Postal code</dt>
-      <dd>
-        {{ addressType().postal_code }}
-      </dd>
+        <dt>{{ 'Postal code' | translate }}</dt>
+        <dd>
+          {{ addressType().postal_code }}
+        </dd>
       }
       <!-- CITY -->
       @if (addressType().city) {
-      <dt translate>City</dt>
-      <dd>
-        {{ addressType().city }}
-      </dd>
+        <dt>{{ 'City' | translate }}</dt>
+        <dd>
+          {{ addressType().city }}
+        </dd>
       }
       <!-- COUNTRY -->
       @if (addressType().country) {
-      <dt translate>Country</dt>
-      <dd>
-        {{ addressType().country }}
-      </dd>
+        <dt>{{ 'Country' | translate }}</dt>
+        <dd>
+          {{ addressType().country }}
+        </dd>
       }
       <!-- PHONE -->
       @if (addressType().phone) {
-      <dt translate>Phone</dt>
-      <dd>
-        {{ addressType().phone }}
-      </dd>
+        <dt>{{ 'Phone' | translate }}</dt>
+        <dd>
+          {{ addressType().phone }}
+        </dd>
       }
       <!-- EMAIL -->
       @if (addressType().email) {
-      <dt translate>Email</dt>
-      <dd>
-        {{ addressType().email }}
-      </dd>
+        <dt>{{ 'Email' | translate }}</dt>
+        <dd>
+          {{ addressType().email }}
+        </dd>
       }
     </dl>
   </section>

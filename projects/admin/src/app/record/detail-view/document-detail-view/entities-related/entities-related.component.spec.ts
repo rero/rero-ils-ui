@@ -2,7 +2,8 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
-import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { provideTranslateService, TranslateService } from '@ngx-translate/core';
+
 import { EntitiesRelatedComponent } from './entities-related.component';
 
 describe('EntitiesRelatedComponent', () => {
@@ -20,8 +21,8 @@ describe('EntitiesRelatedComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [TranslateModule.forRoot(), EntitiesRelatedComponent],
-      providers: [provideRouter([])]
+      imports: [EntitiesRelatedComponent],
+      providers: [provideTranslateService(), provideRouter([])],
     }).compileComponents();
     TestBed.inject(TranslateService).use('fr');
     fixture = TestBed.createComponent(EntitiesRelatedComponent);
@@ -35,27 +36,31 @@ describe('EntitiesRelatedComponent', () => {
   it('should group the entities by field', () => {
     withMetadata({
       contribution: [
-        { entity: { pid: '1', resource_type: 'remote', type: 'bf:Person', authorized_access_point_fr: 'Rousseau' } }
+        { entity: { pid: '1', resource_type: 'remote', type: 'bf:Person', authorized_access_point_fr: 'Rousseau' } },
       ],
       genreForm: [
-        { entity: { pid: '2', resource_type: 'local', type: 'bf:Topic', authorized_access_point_fr: 'Photographies' } }
-      ]
+        { entity: { pid: '2', resource_type: 'local', type: 'bf:Topic', authorized_access_point_fr: 'Photographies' } },
+      ],
     });
     expect(component.entities()).toEqual({
-      contribution: [{
-        authorized_access_point: 'Rousseau',
-        pid: '1',
-        resource_type: 'remote',
-        type: 'bf:Person',
-        icon: 'fa-regular fa-user'
-      }],
-      genreForm: [{
-        authorized_access_point: 'Photographies',
-        pid: '2',
-        resource_type: 'local',
-        type: 'bf:Topic',
-        icon: 'fa-solid fa-tag'
-      }]
+      contribution: [
+        {
+          authorized_access_point: 'Rousseau',
+          pid: '1',
+          resource_type: 'remote',
+          type: 'bf:Person',
+          icon: 'fa-regular fa-user',
+        },
+      ],
+      genreForm: [
+        {
+          authorized_access_point: 'Photographies',
+          pid: '2',
+          resource_type: 'local',
+          type: 'bf:Topic',
+          icon: 'fa-solid fa-tag',
+        },
+      ],
     });
   });
 
@@ -63,8 +68,8 @@ describe('EntitiesRelatedComponent', () => {
     withMetadata({
       contribution: [
         { entity: { authorized_access_point_fr: 'Local contributor' } },
-        { entity: { pid: '1', resource_type: 'remote', type: 'bf:Person', authorized_access_point_fr: 'Rousseau' } }
-      ]
+        { entity: { pid: '1', resource_type: 'remote', type: 'bf:Person', authorized_access_point_fr: 'Rousseau' } },
+      ],
     });
     expect(component.entities().contribution).toHaveLength(1);
   });
@@ -82,15 +87,15 @@ describe('EntitiesRelatedComponent', () => {
   it('should replace the entities of the previous document', () => {
     withMetadata({
       contribution: [
-        { entity: { pid: '1', resource_type: 'remote', type: 'bf:Person', authorized_access_point_fr: 'Rousseau' } }
-      ]
+        { entity: { pid: '1', resource_type: 'remote', type: 'bf:Person', authorized_access_point_fr: 'Rousseau' } },
+      ],
     });
     expect(component.entities().contribution).toHaveLength(1);
 
     withMetadata({
       subjects: [
-        { entity: { pid: '2', resource_type: 'remote', type: 'bf:Place', authorized_access_point_fr: 'Genève' } }
-      ]
+        { entity: { pid: '2', resource_type: 'remote', type: 'bf:Place', authorized_access_point_fr: 'Genève' } },
+      ],
     });
     expect(component.entities().contribution).toBeUndefined();
     expect(component.entities().subjects).toHaveLength(1);

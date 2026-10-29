@@ -1,27 +1,27 @@
 // SPDX-FileCopyrightText: Fondation RERO+
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-import { HttpClient } from "@angular/common/http";
-import { TestBed } from "@angular/core/testing";
-import { TranslateModule } from "@ngx-translate/core";
-import { ApiService, RecordService } from "@rero/ng-core";
-import { AppStore, ItemStatus } from "@rero/shared";
-import { apiResponse } from "@rero/shared";
-import { of } from "rxjs";
-import { Item, ItemAction, ItemNoteType } from "../classes/items";
-import { Loan, LoanState } from "../classes/loans";
-import { ItemsService } from "./items.service";
+import { HttpClient } from '@angular/common/http';
+import { TestBed } from '@angular/core/testing';
+import { provideTranslateService } from '@ngx-translate/core';
+import { ApiService, RecordService } from '@rero/ng-core';
+import { apiResponse, AppStore, ItemStatus } from '@rero/shared';
+import { of } from 'rxjs';
+
+import { Item, ItemAction, ItemNoteType } from '../classes/items';
+import { Loan, LoanState } from '../classes/loans';
+import { ItemsService } from './items.service';
 
 describe('ItemsService', () => {
   let service: ItemsService;
 
   const httpClientSpy = { get: vi.fn(), post: vi.fn() };
 
-  const appStoreSpy = { } as any;
+  const appStoreSpy = {} as any;
   const user = {
     patronLibrarian: {
-      pid: '1'
-    }
+      pid: '1',
+    },
   };
   appStoreSpy.user = vi.fn(() => user);
 
@@ -30,20 +30,20 @@ describe('ItemsService', () => {
   const item = {
     pid: '1',
     loan: {
-      pid: '2'
-    }
+      pid: '2',
+    },
   };
 
   const itemAll = {
     available: false,
     barcode: 'I11111',
-    call_number: "CN 11223",
+    call_number: 'CN 11223',
     document: {
-      pid: '1'
+      pid: '1',
     },
     status: ItemStatus.ON_SHELF,
     organisation: {
-      pid: '1'
+      pid: '1',
     },
     pid: '1',
     requests_count: 0,
@@ -52,37 +52,35 @@ describe('ItemsService', () => {
       pid: '1',
       state: LoanState.CREATED,
       dueDate: '2025-04-22',
-      expired: false
+      expired: false,
     },
     actions: [],
     number_of_extensions: 0,
     pending_loans: [],
     location: {
-      pid: '1'
+      pid: '1',
     },
     library: {
-      pid: '1'
+      pid: '1',
     },
     library_location_name: 'Library location name',
     acquisition_date: '2025-04-22',
-    enumerationAndChronology: "I-12",
+    enumerationAndChronology: 'I-12',
     _currentAction: ItemAction.checkout,
     actionDone: ItemAction.checkout,
-    notes: []
-  }
+    notes: [],
+  };
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [
-        TranslateModule.forRoot()
-      ],
       providers: [
+        provideTranslateService(),
         ItemsService,
         { provide: ApiService, useValue: { getEndpointByType: vi.fn().mockReturnValue('/api/') } },
         { provide: HttpClient, useValue: httpClientSpy },
         { provide: AppStore, useValue: appStoreSpy },
-        { provide: RecordService, useValue: recordServiceSpy }
-      ]
+        { provide: RecordService, useValue: recordServiceSpy },
+      ],
     });
 
     service = TestBed.inject(ItemsService);
@@ -97,53 +95,56 @@ describe('ItemsService', () => {
     apiResponse.hits.hits = items;
     apiResponse.hits.total = apiResponse.hits.hits.length;
     recordServiceSpy.getRecords.mockReturnValue(of(apiResponse));
-    service.getByPidFromEs('1')
-      .subscribe((result: any) => expect(result).toEqual(items[0]))
+    service.getByPidFromEs('1').subscribe((result: any) => expect(result).toEqual(items[0]));
   });
 
   it('should return a list of requested loans', () => {
-    apiResponse.hits.hits = [{
-      item: {
-        loan: undefined
+    apiResponse.hits.hits = [
+      {
+        item: {
+          loan: undefined,
+        },
+        loan: {
+          pid: '1',
+        },
       },
-      loan: {
-        pid: '1'
-      }
-    }];
+    ];
     apiResponse.hits.total = apiResponse.hits.hits.length;
-    const response = [{
-      loan: {
-        pid: '1'
-      }
-    }];
+    const response = [
+      {
+        loan: {
+          pid: '1',
+        },
+      },
+    ];
     httpClientSpy.get.mockReturnValue(of(apiResponse));
-    service.getRequestedLoans('1')
-      .subscribe((result: any) => expect(result).toEqual(response));
+    service.getRequestedLoans('1').subscribe((result: any) => expect(result).toEqual(response));
   });
 
   it('should return the validated request', () => {
     const response = {
-      metadata: {...item},
+      metadata: { ...item },
       action_applied: {
         validate: {
           pid: '2',
-          validate: true
-        }
-      }
-    }
+          validate: true,
+        },
+      },
+    };
     httpClientSpy.post.mockReturnValue(of(response));
-    service.doValidateRequest(item, '1')
-      .subscribe((result: any) => expect(result).toEqual({
+    service.doValidateRequest(item, '1').subscribe((result: any) =>
+      expect(result).toEqual({
         pid: '1',
         loan: {
           pid: '2',
-          validate: true
-        }
-      }));
+          validate: true,
+        },
+      }),
+    );
   });
 
   it('should return an item', () => {
-    httpClientSpy.get.mockReturnValue(of({ metadata: { item: {...itemAll} } }));
+    httpClientSpy.get.mockReturnValue(of({ metadata: { item: { ...itemAll } } }));
     service.getItem('1').subscribe((result: any) => {
       expect(result).toBeInstanceOf(Item);
       expect(result.loan.dueDate).toEqual('2025-04-22');
@@ -152,13 +153,13 @@ describe('ItemsService', () => {
 
   it('should return the modified item after the checkin action', () => {
     const response = {
-      metadata: {...itemAll},
+      metadata: { ...itemAll },
       action_applied: {
-        'checkin': new Loan(),
-        'validate': new Loan()
-      }
+        checkin: new Loan(),
+        validate: new Loan(),
+      },
     };
-    httpClientSpy.post.mockReturnValue(of(response))
+    httpClientSpy.post.mockReturnValue(of(response));
     service.checkin('B1112234', '1').subscribe((result: any) => {
       expect(result).toBeInstanceOf(Item);
       expect(result.actionDone).toEqual('checkin');
@@ -169,15 +170,15 @@ describe('ItemsService', () => {
   it('should use the current action loan after a simple action', () => {
     const checkoutLoan = new Loan({ pid: 'checkout-loan' });
     const response = {
-      metadata: {...itemAll},
+      metadata: { ...itemAll },
       action_applied: {
-        'checkout': checkoutLoan
-      }
+        checkout: checkoutLoan,
+      },
     };
     httpClientSpy.post.mockReturnValue(of(response));
 
     const additionalParams = {
-      endDate: '2025-04-22'
+      endDate: '2025-04-22',
     };
     service.doAction(itemAll, '1', '1', '1', additionalParams).subscribe((result: any) => {
       expect(result).toBeInstanceOf(Item);
@@ -190,24 +191,24 @@ describe('ItemsService', () => {
     const checkinLoan = new Loan({
       pid: 'checkin-loan',
       state: LoanState.ITEM_RETURNED,
-      item_destination: { library_name: 'LIB_A' }
+      item_destination: { library_name: 'LIB_A' },
     });
     const validatedLoan = new Loan({
       pid: 'validated-loan',
       state: LoanState.ITEM_IN_TRANSIT_FOR_PICKUP,
       pickup_location_pid: 'location-b',
-      item_destination: { library_name: 'LIB_B' }
+      item_destination: { library_name: 'LIB_B' },
     });
     const response = {
-      metadata: {...itemAll, status: ItemStatus.IN_TRANSIT},
+      metadata: { ...itemAll, status: ItemStatus.IN_TRANSIT },
       action_applied: {
-        'checkin': checkinLoan,
-        'validate': validatedLoan
-      }
+        checkin: checkinLoan,
+        validate: validatedLoan,
+      },
     };
     httpClientSpy.post.mockReturnValue(of(response));
 
-    const checkedInItem = {...itemAll, currentAction: ItemAction.checkin};
+    const checkedInItem = { ...itemAll, currentAction: ItemAction.checkin };
     service.doAction(checkedInItem, '1', '1', '1').subscribe((result: any) => {
       expect(result).toBeInstanceOf(Item);
       expect(result.actionDone).toEqual(ItemAction.checkin);
@@ -218,8 +219,8 @@ describe('ItemsService', () => {
   });
 
   it('getPickupLocations', () => {
-    httpClientSpy.get.mockReturnValue(of({ locations: []}));
-    service.getPickupLocations('1').subscribe((result: any[]) => expect(result).toEqual([]))
+    httpClientSpy.get.mockReturnValue(of({ locations: [] }));
+    service.getPickupLocations('1').subscribe((result: any[]) => expect(result).toEqual([]));
   });
 
   it('canRequest', () => {
@@ -228,7 +229,7 @@ describe('ItemsService', () => {
   });
 
   it('needCallout', () => {
-    const item = new Item({ ...itemAll});
+    const item = new Item({ ...itemAll });
     expect(service.needCallout(item)).toBe(false);
 
     // Testing the checkin part
@@ -239,9 +240,7 @@ describe('ItemsService', () => {
     item.pending_loans = [new Loan()];
     expect(service.needCallout(item)).toBe(true);
     item.pending_loans = [];
-    item.notes = [
-      { type: ItemNoteType.CHECKIN, content: 'Checkin note' }
-    ];
+    item.notes = [{ type: ItemNoteType.CHECKIN, content: 'Checkin note' }];
     expect(service.needCallout(item)).toBe(true);
     item.notes = [];
     expect(service.needCallout(item)).toBe(false);
@@ -249,9 +248,7 @@ describe('ItemsService', () => {
     // Testing the checkout part
     item.actionDone = ItemAction.checkout;
     expect(service.needCallout(item)).toBe(false);
-    item.notes = [
-      { type: ItemNoteType.CHECKOUT, content: 'Checkout note' }
-    ];
+    item.notes = [{ type: ItemNoteType.CHECKOUT, content: 'Checkout note' }];
     expect(service.needCallout(item)).toBe(true);
   });
 });

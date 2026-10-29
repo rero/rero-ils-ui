@@ -2,15 +2,15 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 import { Routes, UrlSegment } from '@angular/router';
-import { _ } from "@ngx-translate/core";
+import { _ } from '@ngx-translate/core';
 import { RecordSearchPageComponent } from '@rero/ng-core';
 import { of } from 'rxjs';
-import { MigrationDataBriefComponent as ConversionMigrationDataComponent } from './conversion/record/brief-view/migration-data/migration-data.component';
-import { MigrationDetailComponent } from './record/brief-view/migration/migration.component';
 
+import { MigrationDataBriefComponent as ConversionMigrationDataComponent } from './conversion/record/brief-view/migration-data/migration-data.component';
 import { MigrationDataDetailComponent } from './conversion/record/detail-view/migration-data/migration-data.component';
 import { MigrationDataDeduplicationBriefComponent } from './deduplication/record/brief-view/migration-data-deduplication/migration-data-deduplication.component';
 import { MigrationSearchPageComponent } from './deduplication/record/search/migration-search-page.component';
+import { MigrationDetailComponent } from './record/brief-view/migration/migration.component';
 
 export const MIGRATION_ROUTES: Routes = [
   {
@@ -83,7 +83,7 @@ export const MIGRATION_ROUTES: Routes = [
             {
               label: _('Modification date (newest)'),
               value: '-updated_at',
-              icon: 'fa-solid fa-arrow-down-wide-short'
+              icon: 'fa-solid fa-arrow-down-wide-short',
             },
             {
               label: _('Modification date (oldest)'),
@@ -93,7 +93,7 @@ export const MIGRATION_ROUTES: Routes = [
             {
               label: _('Identifier'),
               value: '-_id',
-              icon: 'fa-solid fa-arrow-down-a-z'
+              icon: 'fa-solid fa-arrow-down-a-z',
             },
           ],
         },
@@ -149,7 +149,7 @@ export const MIGRATION_ROUTES: Routes = [
             {
               label: _('Modification date (newest)'),
               value: '-updated_at',
-              icon: 'fa-solid fa-arrow-down-wide-short'
+              icon: 'fa-solid fa-arrow-down-wide-short',
             },
             {
               label: _('Modification date (oldest)'),

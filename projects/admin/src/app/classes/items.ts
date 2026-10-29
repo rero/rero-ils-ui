@@ -5,6 +5,7 @@
 
 import { ItemStatus, User } from '@rero/shared';
 import { DateTime } from 'luxon';
+
 import { Loan } from './loans';
 
 export enum ItemNoteType {
@@ -17,17 +18,17 @@ export enum ItemNoteType {
   CONDITION = 'condition_note',
   PATRIMONIAL = 'patrimonial_note',
   ACQUISITION = 'acquisition_note',
-  API = 'api' // Only used to return the api message (component item)
+  API = 'api', // Only used to return the api message (component item)
 }
 
 export type Organisation = {
-  pid: string
-}
+  pid: string;
+};
 
 export type Document = {
   pid: string;
   title: string;
-}
+};
 
 export enum ItemAction {
   checkout = 'checkout',
@@ -38,10 +39,10 @@ export enum ItemAction {
   return_missing = 'return_missing',
   extend_loan = 'extend_loan',
   validate = 'validate',
-  no = 'no'
+  no = 'no',
 }
 
-type ItemActionObjectType = {[key in keyof typeof ItemAction]: any };
+type ItemActionObjectType = { [key in keyof typeof ItemAction]: any };
 
 export class ItemNote {
   type: ItemNoteType;
@@ -50,17 +51,16 @@ export class ItemNote {
 
 export enum ItemType {
   STANDARD = 'standard',
-  ISSUE = 'issue'
+  ISSUE = 'issue',
 }
 
 export class Item {
-
   static PUBLIC_NOTE_TYPES: ItemNoteType[] = [
     ItemNoteType.GENERAL,
     ItemNoteType.BINDING,
     ItemNoteType.PROVENANCE,
     ItemNoteType.CONDITION,
-    ItemNoteType.PATRIMONIAL
+    ItemNoteType.PATRIMONIAL,
   ];
 
   available: boolean;
@@ -88,11 +88,10 @@ export class Item {
   temporary_location?: any;
   removed_temporary_item_type?: { name: string };
 
-
   constructor(obj?: any) {
     Object.assign(this, obj);
     if (obj.pending_loans) {
-      this.pending_loans = obj.pending_loans.map(loan => new Loan(loan));
+      this.pending_loans = obj.pending_loans.map((loan) => new Loan(loan));
     }
     if (this.actions !== undefined) {
       this.actions.unshift(ItemAction.no);
@@ -122,13 +121,13 @@ export class Item {
   }
 
   public requestedPosition(patron: User) {
-    return (!patron || !this.pending_loans)
+    return !patron || !this.pending_loans
       ? 0
-      : this.pending_loans.findIndex(loan => loan.patron_pid === patron.patronLibrarian.pid) + 1;
+      : this.pending_loans.findIndex((loan) => loan.patron_pid === patron.patronLibrarian.pid) + 1;
   }
 
   public get hasRequests() {
-    return (this.pending_loans && this.pending_loans.length > 0);
+    return this.pending_loans && this.pending_loans.length > 0;
   }
 
   /** Search on item notes a note corresponding to the note type
@@ -140,9 +139,7 @@ export class Item {
     if (this.notes == null) {
       return null;
     }
-    const filteredNotes = this.notes.filter(note => note.type === type);
-    return (filteredNotes)
-      ? filteredNotes[0]
-      : null;
+    const filteredNotes = this.notes.filter((note) => note.type === type);
+    return filteredNotes ? filteredNotes[0] : null;
   }
 }

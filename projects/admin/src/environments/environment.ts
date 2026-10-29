@@ -17,7 +17,7 @@ export const environment = {
   translationsURLs: [
     { url: '/assets/rero-ils-ui/shared/i18n/${lang}.json', versioned: true },
     { url: '/assets/rero-ils-ui/admin/i18n/${lang}.json', versioned: true },
-    '/api/translations/${lang}.json'
+    '/api/translations/${lang}.json',
   ],
   librarySwitchCheckParamsUrl: ['new', 'edit'],
   ngCoreAssetsUrl: '',

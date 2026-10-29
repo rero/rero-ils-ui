@@ -4,33 +4,32 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 -->
 @if (checkedOutItems() && checkedOutItems().length === 0 && patron()) {
   <div class="ui:mb-2">
-    <span translate>No loan for the current patron.</span>
+    <span>{{ 'No loan for the current patron.' | translate }}</span>
   </div>
 }
 @if ((checkedOutItems() && checkedOutItems().length > 0) || (checkedInItems() && checkedInItems().length > 0)) {
   <!-- HEADER -->
-   <p-card>
+  <p-card>
     <ng-template #header>
-        <div class="ui:grid ui:grid-cols-12 ui:gap-4 ui:py-4 ui:px-2 ui:text-lg ui:font-bold ui:items-center">
-          <div class="ui:col-span-3 ui:flex ui:gap-2 ui:items-center">
-            <div>
-              <shared-open-close-button (status)="allCollapsed.set($event)" />
-            </div>
-            <div translate>Item</div>
+      <div class="ui:grid ui:grid-cols-12 ui:gap-4 ui:py-4 ui:px-2 ui:text-lg ui:font-bold ui:items-center">
+        <div class="ui:col-span-3 ui:flex ui:gap-2 ui:items-center">
+          <div>
+            <shared-open-close-button (status)="allCollapsed.set($event)" />
           </div>
-          <div class="ui:col-span-5" translate>Document</div>
-          <div class="ui:col-span-2" translate>Circulation info</div>
-          <div class="ui:col-span-2 ui:flex ui:justify-end">
-            @if (patron()) {
-              <p-button
-                id="renew-all-button"
-                [label]="'Renew all'|translate"
-                [disabled]="loansToExtend.length < 1"
-                (onClick)="extendAllLoansClick()"
-              />
-            }
-          </div>
+          <div>{{ 'Item' | translate }}</div>
         </div>
+        <div class="ui:col-span-5">{{ 'Document' | translate }}</div>
+        <div class="ui:col-span-2">{{ 'Circulation info' | translate }}</div>
+        <div class="ui:col-span-2 ui:flex ui:justify-end">
+          @if (patron()) {
+            <p-button
+              id="renew-all-button"
+              [label]="'Renew all' | translate"
+              [disabled]="loansToExtend.length < 1"
+              (onClick)="extendAllLoansClick()" />
+          }
+        </div>
+      </div>
     </ng-template>
 
     <div>
@@ -40,10 +39,9 @@ SPDX-License-Identifier: AGPL-3.0-or-later
           <admin-item
             [patron]="patron()"
             [item]="item"
-            [attr.id]="item.barcode | idAttribute:{prefix: 'item'}"
+            [attr.id]="item.barcode | idAttribute: { prefix: 'item' }"
             [isCollapsed]="allCollapsed()"
-            (extendLoanClicked)="extendLoanClick($event, item)"
-          />
+            (extendLoanClicked)="extendLoanClick($event, item)" />
         </div>
       }
 
@@ -54,10 +52,9 @@ SPDX-License-Identifier: AGPL-3.0-or-later
           <admin-item
             [patron]="patron()"
             [item]="item"
-            [attr.id]="item.barcode | idAttribute:{prefix: 'item'}"
+            [attr.id]="item.barcode | idAttribute: { prefix: 'item' }"
             [isCollapsed]="allCollapsed()"
-            (hasFeesEmitter)="hasFees($event)"
-          />
+            (hasFeesEmitter)="hasFees($event)" />
         </div>
       }
     </div>

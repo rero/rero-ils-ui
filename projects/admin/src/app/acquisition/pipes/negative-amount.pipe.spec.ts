@@ -1,17 +1,16 @@
 // SPDX-FileCopyrightText: Fondation RERO+
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-import { TestBed } from "@angular/core/testing";
-import { NegativeAmountPipe } from "./negative-amount.pipe";
+import { TestBed } from '@angular/core/testing';
+
+import { NegativeAmountPipe } from './negative-amount.pipe';
 
 describe('NegativeAmountPipe', () => {
   let pipe: NegativeAmountPipe;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [
-        NegativeAmountPipe
-      ]
+      providers: [NegativeAmountPipe],
     });
 
     pipe = TestBed.inject(NegativeAmountPipe);

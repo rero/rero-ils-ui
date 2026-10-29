@@ -4,28 +4,31 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 -->
 
 <div class="ui:grid ui:gap-4">
-  <ng-core-editor [model]="model" (modelChange)="modelChanged($event)" (canDeactivateChange)="canDeactivateChanged($event)">
+  <ng-core-editor
+    [model]="model"
+    (modelChange)="modelChanged($event)"
+    (canDeactivateChange)="canDeactivateChanged($event)">
     <div class="ui:w-full ui:mb-3" beforeTableOfContent>
-      <div class="ui:font-bold ui:mb-1" translate>Predictions</div>
+      <div class="ui:font-bold ui:mb-1">{{ 'Predictions' | translate }}</div>
       <div class="ui:ml-2">
         @if (!serialPreviewError) {
           @if (serialPreviewExamples && serialPreviewExamples.length > 0) {
             <ul class="ui:list-none">
-              @for (issue of serialPreviewExamples | slice:0:10; track $index) {
+              @for (issue of serialPreviewExamples | slice: 0 : 10; track $index) {
                 <li>{{ issue.issue }}</li>
               }
             </ul>
             …
             <ul class="ui:list-none">
-              @for (issue of serialPreviewExamples | slice:97:100; track $index) {
+              @for (issue of serialPreviewExamples | slice: 97 : 100; track $index) {
                 <li>{{ issue.issue }}</li>
               }
             </ul>
           } @else {
-            <span translate>No preview available</span>
+            <span>{{ 'No preview available' | translate }}</span>
           }
         } @else {
-          <span class="ui:text-red-500">{{'Template' | translate }}&nbsp;{{ serialPreviewError.status }}</span>
+          <span class="ui:text-red-500">{{ 'Template' | translate }}&nbsp;{{ serialPreviewError.status }}</span>
         }
       </div>
     </div>

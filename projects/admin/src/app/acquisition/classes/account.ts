@@ -35,19 +35,18 @@ export type IAcqAccount = {
   budget: IObjectReference;
   parent: IObjectReference;
   number_of_children?: number;
-} & IAcqBaseResource
-
+} & IAcqBaseResource;
 
 /** Default values */
 const exceedanceDefaultData = {
   amount: 0,
-  value: 0
+  value: 0,
 };
 
 const allocatedAmountDefaultData = {
   self: 0,
   children: 0,
-  total: 0
+  total: 0,
 };
 
 export const accountDefaultData = {
@@ -61,5 +60,5 @@ export const accountDefaultData = {
   expenditure_exceedance: exceedanceDefaultData,
   encumbrance_amount: allocatedAmountDefaultData,
   expenditure_amount: allocatedAmountDefaultData,
-  remaining_balance: allocatedAmountDefaultData
+  remaining_balance: allocatedAmountDefaultData,
 };

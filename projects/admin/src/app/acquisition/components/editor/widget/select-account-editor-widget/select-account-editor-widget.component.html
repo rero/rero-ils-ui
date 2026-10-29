@@ -10,11 +10,11 @@ SPDX-License-Identifier: AGPL-3.0-or-later
   [options]="accountList()"
   [placeholder]="'Select…' | translate"
   [ngModel]="selectedAccount()"
+  [ngModelOptions]="{ standalone: true }"
   (onChange)="selectAccount($event)"
   [loading]="loading()"
   [filter]="true"
-  filterBy="name"
->
+  filterBy="name">
   <ng-template #selectedItem let-account>
     <div class="ui:flex">
       <span class="ui:flex ui:grow ui:gap-2 ui:items-center">
@@ -24,17 +24,13 @@ SPDX-License-Identifier: AGPL-3.0-or-later
         }
       </span>
       <div>
-        <ng-container
-          [ngTemplateOutlet]="balance"
-          [ngTemplateOutletContext]="{ account }"
-        />
+        <ng-container [ngTemplateOutlet]="balance" [ngTemplateOutletContext]="{ account }" />
       </div>
     </div>
-
   </ng-template>
   <ng-template #item let-account>
     <div class="ui:flex ui:grow">
-      <div class="ui:flex ui:grow ui:gap-2  ui:items-center">
+      <div class="ui:flex ui:grow ui:gap-2 ui:items-center">
         <span [style.padding-left.px]="account.depth * 20">
           {{ account.name }}
         </span>
@@ -43,10 +39,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
         }
       </div>
       <div>
-        <ng-container
-          [ngTemplateOutlet]="balance"
-          [ngTemplateOutletContext]="{ account }"
-        />
+        <ng-container [ngTemplateOutlet]="balance" [ngTemplateOutletContext]="{ account }" />
       </div>
     </div>
   </ng-template>
@@ -57,9 +50,8 @@ SPDX-License-Identifier: AGPL-3.0-or-later
     [class]="{
       'text-success': account.remaining_balance.self > 0,
       'text-muted': account.remaining_balance.self === 0,
-      'text-warning': account.remaining_balance.self < 0
-    }"
-  >
-    {{ account.remaining_balance.self | currency : defaultCurrency() }}
+      'text-warning': account.remaining_balance.self < 0,
+    }">
+    {{ account.remaining_balance.self | currency: defaultCurrency() }}
   </span>
 </ng-template>

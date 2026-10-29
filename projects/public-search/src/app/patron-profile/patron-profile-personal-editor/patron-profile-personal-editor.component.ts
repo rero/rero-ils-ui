@@ -1,28 +1,27 @@
 // SPDX-FileCopyrightText: Fondation RERO+
 // SPDX-License-Identifier: AGPL-3.0-or-later
 import { Location } from '@angular/common';
-import { ChangeDetectionStrategy, Component, OnDestroy, OnInit, inject, input, signal } from '@angular/core';
+import { Component, inject, input, OnDestroy, OnInit, signal } from '@angular/core';
 import { ReactiveFormsModule, UntypedFormControl, UntypedFormGroup } from '@angular/forms';
 import { FormlyFieldConfig, FormlyModule } from '@ngx-formly/core';
 import { FormlyJsonschema } from '@ngx-formly/core/json-schema';
 import { LoadingBarModule } from '@ngx-loading-bar/core';
-import { TranslatePipe, TranslateService, _ } from "@ngx-translate/core";
-import { CONFIG, HttpPendingService, RecordService, processJsonSchema, removeEmptyValues, resolve$ref } from '@rero/ng-core';
+import { _, TranslatePipe, TranslateService } from '@ngx-translate/core';
+import { MessageService } from '@openng/optimus-ui/api';
+import { Button } from '@openng/optimus-ui/button';
+import { Toast } from '@openng/optimus-ui/toast';
+import { CONFIG, HttpPendingService, RecordService, removeEmptyValues } from '@rero/ng-core';
+import { processJsonSchema, resolve$ref } from '@rero/ng-core/editor';
 import { AppStore } from '@rero/shared';
-import { MessageService } from 'primeng/api';
-import { Button } from 'primeng/button';
-import { Toast } from 'primeng/toast';
-import { Subscription, forkJoin, of } from 'rxjs';
+import { forkJoin, of, Subscription } from 'rxjs';
 import { debounceTime, map, switchMap, tap } from 'rxjs/operators';
 
 @Component({
-    selector: 'public-search-patron-profile-personal-editor',
-    templateUrl: './patron-profile-personal-editor.component.html',
-    imports: [ReactiveFormsModule, FormlyModule, TranslatePipe, LoadingBarModule, Button, Toast],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  selector: 'public-search-patron-profile-personal-editor',
+  templateUrl: './patron-profile-personal-editor.component.html',
+  imports: [ReactiveFormsModule, FormlyModule, TranslatePipe, LoadingBarModule, Button, Toast],
 })
 export class PatronProfilePersonalEditorComponent implements OnInit, OnDestroy {
-
   private location: Location = inject(Location);
   private recordService: RecordService = inject(RecordService);
   private formlyJsonschema: FormlyJsonschema = inject(FormlyJsonschema);
@@ -49,7 +48,7 @@ export class PatronProfilePersonalEditorComponent implements OnInit, OnDestroy {
   /** Additional style for a field */
   private _cssConfig = {
     keep_history: 'ui:col-span-12 ui:pl-0',
-    default: 'ui:col-span-12 ui:md:col-span-6 ui:pl-0'
+    default: 'ui:col-span-12 ui:md:col-span-6 ui:pl-0',
   };
   /** Init hook */
   ngOnInit(): void {
@@ -58,94 +57,99 @@ export class PatronProfilePersonalEditorComponent implements OnInit, OnDestroy {
         if (schema) {
           const disabledFields = this.appStore.settings().userProfile.readOnlyFields;
           const fields = [
-            this.formlyJsonschema.toFieldConfig(processJsonSchema(resolve$ref(schema.schema, schema.schema.properties)), {
+            this.formlyJsonschema.toFieldConfig(
+              processJsonSchema(resolve$ref(schema.schema, schema.schema.properties)),
+              {
+                // post process JSONSchema7 to FormlyFieldConfig conversion
+                map: (field: FormlyFieldConfig, jsonSchema: any) => {
+                  // If 'format' is defined into the jsonSchema, use it as props to try a validation on this field.
+                  // See: `email.validator.ts` file
+                  if (jsonSchema.format) {
+                    field.props!.type = jsonSchema.format;
+                  }
+                  // Add the "row" class to the main object
+                  if (field.key == null) {
+                    field.type = 'formly-group';
+                    field.props!.containerCssClass = 'ui:grid ui:grid-cols-12 ui:gap-4';
+                  }
+                  const fkey = String(field.key);
+                  // Add a class on each field
+                  field.props!.itemCssClass = fkey in this._cssConfig ? this._cssConfig[fkey] : this._cssConfig.default;
+                  // Deactivation of the fields if we have a patron record
+                  if (
+                    this.appStore.user()?.profile.roles.length > 0 &&
+                    field.key !== undefined &&
+                    disabledFields.includes(fkey)
+                  ) {
+                    field.props!.disabled = true;
+                  }
+                  // Hide password field
+                  if (fkey === 'password') {
+                    field.props!.readonly = true;
+                    field.hide = true;
+                  }
+                  if (fkey === 'country') {
+                    field.props!.options?.forEach((option: any) => {
+                      option.label = this.translateService.instant('country_' + option.value);
+                    });
+                  }
+                  // Translate validator message
+                  if ('validation' in field && 'messages' in field.validation!) {
+                    Object.keys(jsonSchema.widget.formlyConfig.validation.messages).forEach((key: string) => {
+                      field.validation!.messages![key] = this.translateService.instant(
+                        String(field.validation!.messages![key]),
+                      );
+                    });
+                  }
 
-              // post process JSONSchema7 to FormlyFieldConfig conversion
-              map: (field: FormlyFieldConfig, jsonSchema: any) => {
-                // If 'format' is defined into the jsonSchema, use it as props to try a validation on this field.
-                // See: `email.validator.ts` file
-                if (jsonSchema.format) {
-                  field.props!.type = jsonSchema.format;
-                }
-                // Add the "row" class to the main object
-                if (field.key == null) {
-                  field.type = 'formly-group';
-                  field.props!.containerCssClass = 'ui:grid ui:grid-cols-12 ui:gap-4';
-                }
-                const fkey = String(field.key);
-                // Add a class on each field
-                field.props!.itemCssClass = (fkey in this._cssConfig)
-                  ? this._cssConfig[fkey]
-                  : this._cssConfig.default;
-                // Deactivation of the fields if we have a patron record
-                if ((this.appStore.user()?.profile.roles.length > 0) && (field.key !== undefined && disabledFields.includes(fkey))) {
-                  field.props!.disabled = true;
-                }
-                // Hide password field
-                if (fkey === 'password') {
-                  field.props!.readonly = true;
-                  field.hide = true;
-                }
-                if (fkey === 'country') {
-                  field.props!.options?.forEach((option: any) => {
-                    option.label = this.translateService.instant('country_' + option.value);
-                  });
-                }
-                // Translate validator message
-                if ('validation' in field  && 'messages' in field.validation!) {
-                  Object.keys(jsonSchema.widget.formlyConfig.validation.messages).forEach((key: string) => {
-                    field.validation!.messages![key] = this.translateService.instant(String(field.validation!.messages![key]));
-                  });
-                }
-
-                // Add async validators on field
-                switch (fkey) {
-                  case 'email':
-                    if (field.asyncValidators == null) {
-                      field.asyncValidators = {};
-                    }
-                    field.asyncValidators.uniqueEmail = this.getUniqueValidator(
-                      'email',
-                      jsonSchema.widget.formlyConfig.validation.messages.uniqueEmailMessage
-                    );
-                    break;
-                  case 'username':
-                    if (field.asyncValidators == null) {
-                      field.asyncValidators = {};
-                    }
-                    field.asyncValidators.uniqueUsername = this.getUniqueValidator(
-                      'username',
-                      jsonSchema.widget.formlyConfig.validation.messages.uniqueUsernameMessage
-                    );
-                }
-                // remove Message suffix to the message validation key
-                // (required for backend  translations)
-                if (field.validation && 'messages' in field.validation) {
-                  Object.keys(field.validation.messages!).map(msg => {
-                    if (msg.endsWith('Message')) {
-                      const val = field.validation!.messages![msg];
-                      delete (field.validation!.messages![msg]);
-                      const newMsg = msg.replace(/Message$/, '');
-                      field.validation!.messages![newMsg] = val;
-                    }
-                  });
-                }
-                return field;
-              }
-            })
+                  // Add async validators on field
+                  switch (fkey) {
+                    case 'email':
+                      if (field.asyncValidators == null) {
+                        field.asyncValidators = {};
+                      }
+                      field.asyncValidators.uniqueEmail = this.getUniqueValidator(
+                        'email',
+                        jsonSchema.widget.formlyConfig.validation.messages.uniqueEmailMessage,
+                      );
+                      break;
+                    case 'username':
+                      if (field.asyncValidators == null) {
+                        field.asyncValidators = {};
+                      }
+                      field.asyncValidators.uniqueUsername = this.getUniqueValidator(
+                        'username',
+                        jsonSchema.widget.formlyConfig.validation.messages.uniqueUsernameMessage,
+                      );
+                  }
+                  // remove Message suffix to the message validation key
+                  // (required for backend  translations)
+                  if (field.validation && 'messages' in field.validation) {
+                    Object.keys(field.validation.messages!).map((msg) => {
+                      if (msg.endsWith('Message')) {
+                        const val = field.validation!.messages![msg];
+                        delete field.validation!.messages![msg];
+                        const newMsg = msg.replace(/Message$/, '');
+                        field.validation!.messages![newMsg] = val;
+                      }
+                    });
+                  }
+                  return field;
+                },
+              },
+            ),
           ];
 
           // mark the root field
           if (!fields[0]?.wrappers) {
             fields[0].wrappers = ['card'];
-          }
-          else if (!fields[0].wrappers.includes('card') && !fields[0].wrappers.includes('hide')) {
+          } else if (!fields[0].wrappers.includes('card') && !fields[0].wrappers.includes('hide')) {
             fields[0].wrappers.unshift('card');
           }
 
           this.fields = fields;
         }
-      })
+      }),
     );
 
     const userQuery = this.recordService.getRecord('users', this.appStore.user()?.id.toString());
@@ -153,7 +157,7 @@ export class PatronProfilePersonalEditorComponent implements OnInit, OnDestroy {
     this._subscriptions.add(
       forkJoin([schemaForm, userQuery]).subscribe(([_schema, user]: [any, any]) => {
         this.model.set(user.metadata);
-      })
+      }),
     );
   }
 
@@ -165,14 +169,16 @@ export class PatronProfilePersonalEditorComponent implements OnInit, OnDestroy {
   // COMPONENT FUNCTIONS ======================================================
   /** Submit form */
   submit() {
-    if (this.httpPending.isPending()) { return; }
+    if (this.httpPending.isPending()) {
+      return;
+    }
     this.form.markAllAsTouched();
     if (this.form.valid === false) {
       this.messageService.add({
         severity: 'error',
         summary: this.translateService.instant('Error'),
         detail: this.translateService.instant('The form contains errors.'),
-        closable: true
+        closable: true,
       });
       return;
     }
@@ -180,37 +186,37 @@ export class PatronProfilePersonalEditorComponent implements OnInit, OnDestroy {
     // Update user record and reload logged user
     this.recordService
       .update('users', this.appStore.user()?.id.toString(), data)
-      .pipe(
-        switchMap(() => this.appStore.load())
-      )
+      .pipe(switchMap(() => this.appStore.load()))
       .subscribe({
         next: () => {
           this.messageService.add({
             severity: 'success',
             summary: this.translateService.instant('Success'),
             detail: this.translateService.instant('Your personal data has been updated.'),
-            life: CONFIG.MESSAGE_LIFE
+            life: CONFIG.MESSAGE_LIFE,
           });
           this.redirect();
         },
         error: (error: any) => {
           this.messageService.add(
-            (error.status === 409 || error.status === 412)
+            error.status === 409 || error.status === 412
               ? {
                   severity: 'warn',
                   summary: this.translateService.instant('Record conflict'),
-                  detail: this.translateService.instant('This record has been modified by another user. Please reload the page — your local changes will be lost.'),
+                  detail: this.translateService.instant(
+                    'This record has been modified by another user. Please reload the page — your local changes will be lost.',
+                  ),
                   sticky: true,
-                  closable: true
+                  closable: true,
                 }
               : {
                   severity: 'error',
                   summary: this.translateService.instant('Error'),
                   detail: this.translateService.instant('An error occurred on the server: ') + error.title,
-                  closable: true
-                }
+                  closable: true,
+                },
           );
-        }
+        },
       });
   }
 
@@ -236,17 +242,19 @@ export class PatronProfilePersonalEditorComponent implements OnInit, OnDestroy {
     return {
       expression: (control: UntypedFormControl) => {
         const { value } = control;
-        return (value == null || value.length === 0)
+        return value == null || value.length === 0
           ? of(true)
           : this.recordService.getRecords('users', { query: `${fieldName}:${value}` }).pipe(
               debounceTime(1000),
               map((res: any) => {
-                return (res.hits.hits.length === 0) ||
-                  (res.hits.hits.length === 1 && res.hits.hits[0].id === this.appStore.user()?.id);
-              })
+                return (
+                  res.hits.hits.length === 0 ||
+                  (res.hits.hits.length === 1 && res.hits.hits[0].id === this.appStore.user()?.id)
+                );
+              }),
             );
       },
-      message: this.translateService.instant(message)
+      message: this.translateService.instant(message),
     };
   }
 }

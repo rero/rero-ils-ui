@@ -5,9 +5,10 @@ import { NgCoreTranslateService } from '@rero/ng-core';
 import { AppStore, AppTranslateLanguageService, User } from '@rero/shared';
 import { from, Observable } from 'rxjs';
 import { switchMap, tap } from 'rxjs/operators';
-import { AppConfigService } from './app-config.service';
-import { RemoteAutocompleteFactoryService } from '../record/editor/formly/primeng/remote-autocomplete/remote-autocomplete-factory.service';
+
 import { LibrarySwitchStorageService } from '../menu/service/library-switch-storage.service';
+import { RemoteAutocompleteFactoryService } from '../record/editor/formly/primeng/remote-autocomplete/remote-autocomplete-factory.service';
+import { AppConfigService } from './app-config.service';
 
 export function initializeApp(): Observable<any> {
   const appStore = inject(AppStore);
@@ -37,21 +38,26 @@ export function initializeApp(): Observable<any> {
         }
         const organisationPid = user.patronLibrarian?.organisation?.pid;
         const budgetPid = user.patronLibrarian?.organisation?.budget?.pid;
-        if (organisationPid) { appStore.setCurrentOrganisation(organisationPid); }
-        if (budgetPid) { appStore.setCurrentBudget(budgetPid); }
+        if (organisationPid) {
+          appStore.setCurrentOrganisation(organisationPid);
+        }
+        if (budgetPid) {
+          appStore.setCurrentBudget(budgetPid);
+        }
       }
     }),
     switchMap(() => {
       let language = appStore.settings()?.language;
       if (language == null) {
         const browserLang = translateService.getBrowserLang();
-        language = (browserLang && appStore.availableLanguageCodes().includes(browserLang))
-          ? browserLang
-          : appConfigService.defaultLanguage;
+        language =
+          browserLang && appStore.availableLanguageCodes().includes(browserLang)
+            ? browserLang
+            : appConfigService.defaultLanguage;
       }
       return from(translateLanguageService.loadLanguageNow(language)).pipe(
-        switchMap(() => translateService.use(language))
+        switchMap(() => translateService.use(language)),
       );
-    })
+    }),
   );
 }

@@ -2,45 +2,49 @@
 // SPDX-FileCopyrightText: UCLouvain
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-import {
-  ChangeDetectionStrategy,
-  Component,
-  computed,
-  effect,
-  inject,
-  signal,
-  untracked,
-} from '@angular/core';
+import { AsyncPipe, CurrencyPipe } from '@angular/common';
+import { Component, computed, effect, inject, signal, untracked } from '@angular/core';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
-import { UntypedFormBuilder, UntypedFormGroup, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule, UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
-import { TranslateService, TranslateDirective, TranslatePipe } from '@ngx-translate/core';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
+import { MessageService } from '@openng/optimus-ui/api';
+import { Bind } from '@openng/optimus-ui/bind';
+import { Button } from '@openng/optimus-ui/button';
+import { CardModule } from '@openng/optimus-ui/card';
+import { InputGroupModule } from '@openng/optimus-ui/inputgroup';
+import { InputGroupAddonModule } from '@openng/optimus-ui/inputgroupaddon';
+import { InputTextModule } from '@openng/optimus-ui/inputtext';
+import { RadioButtonModule } from '@openng/optimus-ui/radiobutton';
+import { SelectModule } from '@openng/optimus-ui/select';
 import { CONFIG, GetRecordPipe, HttpPendingService } from '@rero/ng-core';
 import { AppStore, Tools } from '@rero/shared';
-import { MessageService } from 'primeng/api';
 import { filter, map, switchMap, take } from 'rxjs';
+
 import { AcqAccountApiService } from '../../../api/acq-account-api.service';
 import { IAcqAccount } from '../../../classes/account';
 import { orderAccountsAsTree } from '../../../utils/account';
-import { Bind } from 'primeng/bind';
-import { Button } from 'primeng/button';
-import { AsyncPipe, CurrencyPipe } from '@angular/common';
-import { SelectModule } from 'primeng/select';
-import { CardModule } from 'primeng/card';
-import { RadioButtonModule } from 'primeng/radiobutton';
-import { InputGroupModule } from 'primeng/inputgroup';
-import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
-import { InputTextModule } from 'primeng/inputtext';
 
 @Component({
   selector: 'admin-account-transfer',
   templateUrl: './account-transfer.component.html',
   imports: [
-    TranslateDirective, FormsModule, ReactiveFormsModule, RouterLink,
-    Bind, Button, AsyncPipe, CurrencyPipe, GetRecordPipe, TranslatePipe,
-    SelectModule, CardModule, RadioButtonModule, InputGroupModule, InputGroupAddonModule, InputTextModule
+    FormsModule,
+    ReactiveFormsModule,
+    RouterLink,
+    Bind,
+    Button,
+    AsyncPipe,
+    CurrencyPipe,
+    GetRecordPipe,
+    TranslatePipe,
+    SelectModule,
+    CardModule,
+    RadioButtonModule,
+    InputGroupModule,
+    InputGroupAddonModule,
+    InputTextModule,
   ],
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AccountTransferComponent {
   private acqAccountApiService = inject(AcqAccountApiService);
@@ -65,18 +69,16 @@ export class AccountTransferComponent {
       filter((pid): pid is string => !!pid),
       take(1),
       switchMap((pid) =>
-        this.acqAccountApiService
-          .getAccounts(pid, undefined, { sort: 'depth' })
-          .pipe(map(orderAccountsAsTree))
-      )
+        this.acqAccountApiService.getAccounts(pid, undefined, { sort: 'depth' }).pipe(map(orderAccountsAsTree)),
+      ),
     ),
-    { initialValue: [] as IAcqAccount[] }
+    { initialValue: [] as IAcqAccount[] },
   );
 
   readonly budgets = computed(() =>
     Array.from(new Set(this.accountsTree().map((a) => a.budget.pid)))
       .filter((pid): pid is string => pid !== undefined)
-      .map((pid) => ({ code: pid }))
+      .map((pid) => ({ code: pid })),
   );
 
   readonly selectedBudget = signal<{ code: string } | undefined>(undefined);
@@ -92,12 +94,15 @@ export class AccountTransferComponent {
   // EFFECTS ====================================================================
   constructor() {
     /** Auto-select the first budget once accounts are loaded */
-    effect(() => {
-      const first = this.budgets()[0];
-      if (first && !untracked(this.selectedBudget)) {
-        this.selectedBudget.set(first);
-      }
-    }, { allowSignalWrites: true });
+    effect(
+      () => {
+        const first = this.budgets()[0];
+        if (first && !untracked(this.selectedBudget)) {
+          this.selectedBudget.set(first);
+        }
+      },
+      { allowSignalWrites: true },
+    );
 
     /** Update amount validators when the source account changes */
     effect(() => {
@@ -120,7 +125,9 @@ export class AccountTransferComponent {
   // PUBLIC FUNCTIONS ===========================================================
   /** Submit the form */
   submit(): void {
-    if (this.httpPending.isPending()) { return; }
+    if (this.httpPending.isPending()) {
+      return;
+    }
     this.acqAccountApiService
       .transferFunds(this.form.value.source.pid, this.form.value.target.pid, this.form.value.amount)
       .subscribe({

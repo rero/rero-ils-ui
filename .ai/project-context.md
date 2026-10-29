@@ -2,37 +2,47 @@
 
 ## Stack
 
-- Angular 21
-- TypeScript strict mode
+- Angular 22
+- Standalone components (no NgModule left)
 - Zoneless (`provideZonelessChangeDetection()`) — no Zone.js
 - NgRx Signal Store for application state
-- Signals preferred over RxJS for new code
-- Vitest for testing (all projects, via `@angular/build:unit-test`)
-- pnpm for package management
-- Node 20+
+- Signals preferred over RxJS
+- TypeScript 6 with `strict: false` (`strictTemplates` is on); do not enable
+  `strict` as a side effect
+- Vitest for testing (all projects but `search-bar`, via
+  `@angular/build:unit-test`, in jsdom)
+- Optimus UI 2 (components and theme), ngx-translate 18, Formly 11
+- `@rero/ng-core` 22, with its `@rero/ng-core/editor` secondary entry point
+- Node 24 (matches `.github/workflows/`)
+- pnpm 12, pinned by the `packageManager` field of `package.json`
 
 ## Architecture
 
 Multi-project Angular workspace:
 
-- `projects/shared/` — shared library used by all apps
-- `projects/admin/` — back-office application
+- `projects/shared/` — shared library used by all apps (`@rero/shared`, built
+  into `dist/shared`)
+- `projects/admin/` — professional interface (back office)
 - `projects/public-search/` — public catalog search
 - `projects/public-patron-profile/` — patron profile app
 - `projects/public-holdings-items/` — holdings/items display app
 - `projects/search-bar/` — embeddable search bar
 
+Except `admin`, the apps are embedded in the Jinja templates of the rero-ils
+backend (see `.ai/css-strategy.md`).
+
 ## Workspace tsconfig path aliases
 
 Cross-project imports must use the aliases defined in the root `tsconfig.json`, never raw `projects/...` paths.
 
-| Alias | Target project |
-|---|---|
-| `@rero/shared` | shared library (`dist/shared`) |
-| `@app/admin/*` | `projects/admin/src/app/*` |
+| Alias                  | Target project                     |
+| ---------------------- | ---------------------------------- |
+| `@rero/shared`         | shared library (`dist/shared`)     |
+| `@app/admin/*`         | `projects/admin/src/app/*`         |
 | `@app/public-search/*` | `projects/public-search/src/app/*` |
 
-To add an alias for a new project, add it under `compilerOptions.paths` in `tsconfig.json`.
+To add an alias for a new project, add it under `compilerOptions.paths` in `tsconfig.json`
+(and in `projects/admin/vitest.config.ts` for the tests of admin).
 
 ## Architecture principles
 
@@ -42,39 +52,39 @@ To add an alias for a new project, add it under `compilerOptions.paths` in `tsco
 
 ## Folder conventions
 
-src/app/
-components/
-services/
-stores/
-utils/
+Each app is organized by feature under `src/app/` (e.g. `acquisition/`,
+`circulation/`, `record/` in admin). Components, services, stores and
+helpers are colocated with their feature.
 
-- components: UI components
-- services: Angular services and API access
-- stores: signal-based state management
-- utils: framework-independent helpers
+## Formly and the editor
 
-## Git commit conventions
+Formly and the ng-core editor weigh heavily in a bundle: they bring their
+field types and many Optimus UI components.
 
-Follow the [Conventional Commits](https://www.conventionalcommits.org/) specification:
+- `admin` registers Formly in `app.config.ts`.
+- `public-holdings-items` registers it in `app.config.ts` too, for the
+  request form (pickup location) of the document detail view. The app is a
+  web component without routes, so Formly cannot be loaded lazily there.
+- `public-patron-profile` registers it only on its form pages, in the lazy
+  `patron-profile-editor-routes.ts` of public-search.
+- `public-search` and `search-bar` display no form and must not import
+  `@rero/ng-core/editor` nor `@ngx-formly/core`.
+- A spec that renders a Formly form registers Formly itself, so it does not
+  prove the app does: check the app configuration too (see
+  `public-holdings-items/src/app/app.config.spec.ts`).
 
-- Format: `type(scope): description`
-- **Title**: 50 characters maximum
-- **Body lines**: 72 characters maximum
-- **Body bullet points**: use `*` (asterisk), not `-` (dash)
-- Common types: `feat`, `fix`, `chore`, `refactor`, `test`, `docs`, `style`
+## State management
+
+State management uses **NgRx Signal Store**.
+
+Rules:
+
+- Application state must use NgRx Signal Store.
+- Component-local state should use Angular Signals.
+- Do not use NgRx reducers/effects/store module.
+- Do not introduce BehaviorSubject-based stores.
 
 ## Testing philosophy
 
 - Use Vitest for tests — see `.ai/testing-rules.md` for details.
 - Use TestBed when Angular integration is required.
-
-## State management
-
-State management uses **NgRx Signal Store** for new stores.
-
-Rules:
-
-- New application state must use NgRx Signal Store.
-- Component-local state should use Angular Signals.
-- Do not introduce new BehaviorSubject-based stores.
-- Existing NgRx reducers/effects can remain until refactored.

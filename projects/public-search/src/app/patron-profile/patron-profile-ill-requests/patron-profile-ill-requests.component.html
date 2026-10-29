@@ -3,22 +3,21 @@ SPDX-FileCopyrightText: Fondation RERO+
 SPDX-License-Identifier: AGPL-3.0-or-later
 -->
 <section id="ill-request-section" class="ui:mt-2">
-    <p-panel>
-      <ng-template #header>
-        <div class="ui:hidden ui:w-full ui:md:grid ui:grid-cols-12 ui:gap-4 ui:text-lg ui:font-bold ui:items-center">
-          <div class="ui:col-span-10" translate>Document</div>
-          <div class="ui:col-span-2 ui:text-end ui:mr-3"><span translate>Status</span></div>
+  <p-panel>
+    <ng-template #header>
+      <div class="ui:hidden ui:w-full ui:md:grid ui:grid-cols-12 ui:gap-4 ui:text-lg ui:font-bold ui:items-center">
+        <div class="ui:col-span-10">{{ 'Document' | translate }}</div>
+        <div class="ui:col-span-2 ui:text-end ui:mr-3">
+          <span>{{ 'Status' | translate }}</span>
         </div>
-      </ng-template>
+      </div>
+    </ng-template>
 
     @if (store.illRequestsLoaded()) {
       @if (store.illRequestsTotal() > 0) {
         @for (record of store.illRequests(); track record.metadata.pid) {
           <div class="ui:odd:bg-surface-50">
-            <public-search-patron-profile-ill-request
-              [record]="record"
-              id="ill-request-{{ record.metadata.pid }}"
-            />
+            <public-search-patron-profile-ill-request [record]="record" id="ill-request-{{ record.metadata.pid }}" />
           </div>
         }
         <shared-paginator
@@ -26,10 +25,10 @@ SPDX-License-Identifier: AGPL-3.0-or-later
           [total]="store.illRequestsTotal()"
           (pageChange)="onPageChange($event)" />
       } @else {
-        <div class="ui:font-bold ui:mx-2 ui:my-6" translate>No ill request</div>
+        <div class="ui:font-bold ui:mx-2 ui:my-6">{{ 'No ill request' | translate }}</div>
       }
     } @else {
-      <div class="ui:font-bold ui:mx-2 ui:my-6" translate>Loading in progress</div>
+      <div class="ui:font-bold ui:mx-2 ui:my-6">{{ 'Loading in progress' | translate }}</div>
     }
   </p-panel>
 </section>

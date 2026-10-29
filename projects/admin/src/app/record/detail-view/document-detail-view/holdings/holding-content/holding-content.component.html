@@ -12,9 +12,11 @@ SPDX-License-Identifier: AGPL-3.0-or-later
     @if (store.total() > 0) {
       <small class="ui:ml-2">
         @if (store.filterTotal() <= 1) {
-          {{ "{{ total }} result of {{ remoteTotal }}" | translate: { total: store.filterTotal(), remoteTotal: store.total() } }}
+          {{ "{{ total }} result of {{ remoteTotal }}" | translate: { total: store.filterTotal(), remoteTotal:
+          store.total() } }}
         } @else {
-          {{ "{{ total }} results of {{ remoteTotal }}" | translate: { total: store.filterTotal(), remoteTotal: store.total() } }}
+          {{ "{{ total }} results of {{ remoteTotal }}" | translate: { total: store.filterTotal(), remoteTotal:
+          store.total() } }}
         }
       </small>
     }
@@ -24,32 +26,31 @@ SPDX-License-Identifier: AGPL-3.0-or-later
   @case ('electronic') {
     <div class="ui:flex ui:flex-col">
       @for (elocation of record.metadata.electronic_location; track $index) {
-       <a class="rero-ils-external-link" [href]="elocation.uri | safeUrl">{{ elocation.source }}</a>
+        <a class="rero-ils-external-link" [href]="elocation.uri | safeUrl">{{ elocation.source }}</a>
       }
     </div>
   }
   @case ('serial') {
     @if (store.total() > 0) {
       <div class="ui:grid ui:grid-cols-12 ui:gap-4 ui:py-2 ui:px-1 ui:font-bold">
-        <div class="ui:col-span-3" translate>Barcode</div>
-        <div class="ui:col-span-3" translate>Status</div>
-        <div class="ui:col-span-3" translate>Unit</div>
-        <div class="ui:col-span-3" translate>Call number</div>
+        <div class="ui:col-span-3">{{ 'Barcode' | translate }}</div>
+        <div class="ui:col-span-3">{{ 'Status' | translate }}</div>
+        <div class="ui:col-span-3">{{ 'Unit' | translate }}</div>
+        <div class="ui:col-span-3">{{ 'Call number' | translate }}</div>
       </div>
       <div>
-      @for (item of store.items(); track item.metadata.pid) {
-        <div class="ui:odd:bg-surface-50 ui:pb-2 ui:px-1">
-          <admin-serial-holding-item
-            [holding]="store.holdings()"
-            [item]="item"
-            [isCurrentOrganisation]="isCurrentOrganisation()"
-            (deleteItem)="store.delete($event)"
-          />
-        </div>
-      }
+        @for (item of store.items(); track item.metadata.pid) {
+          <div class="ui:odd:bg-surface-50 ui:pb-2 ui:px-1">
+            <admin-serial-holding-item
+              [holding]="store.holdings()"
+              [item]="item"
+              [isCurrentOrganisation]="isCurrentOrganisation()"
+              (deleteItem)="store.delete($event)" />
+          </div>
+        }
       </div>
     } @else {
-      <div class="ui:font-bold" translate>No item received.</div>
+      <div class="ui:font-bold">{{ 'No item received.' | translate }}</div>
     }
   }
   @default {
@@ -60,8 +61,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
             [holding]="holding"
             [item]="item"
             [isCurrentOrganisation]="isCurrentOrganisation()"
-            (deleteItem)="store.delete($event)"
-          />
+            (deleteItem)="store.delete($event)" />
         </div>
       }
     }

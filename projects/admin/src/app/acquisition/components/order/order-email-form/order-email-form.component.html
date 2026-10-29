@@ -12,13 +12,12 @@ SPDX-License-Identifier: AGPL-3.0-or-later
     [previewPosition]="'bottom'"
     [prePopulateRecipients]="suggestions().recipients"
     (closeDialog)="closeDialog()"
-    (data)="confirmOrder($event)"
-  >
+    (data)="confirmOrder($event)">
     <ng-container headerMessage>
-      <p translate>You're about to send the order.</p>
+      <p>{{ "You're about to send the order." | translate }}</p>
     </ng-container>
     <ng-container previewBottomMessage>
-      <p translate>Below you can find the preview message that will be sent</p>
+      <p>{{ 'Below you can find the preview message that will be sent' | translate }}</p>
     </ng-container>
   </admin-preview-email>
 }

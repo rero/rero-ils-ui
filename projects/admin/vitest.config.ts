@@ -10,12 +10,6 @@ export default defineConfig({
       '@app/admin': resolve(root, 'projects/admin/src/app'),
       '@app/public-search': resolve(root, 'projects/public-search/src/app'),
     },
-    dedupe: [
-      '@angular/core',
-      '@angular/common',
-      '@ngx-translate/core',
-      'primeng',
-      'rxjs'
-    ],
+    dedupe: ['@angular/core', '@angular/common', '@ngx-translate/core', '@openng/optimus-ui', 'rxjs'],
   },
 });

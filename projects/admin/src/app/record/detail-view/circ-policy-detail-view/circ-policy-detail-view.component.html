@@ -9,13 +9,13 @@ SPDX-License-Identifier: AGPL-3.0-or-later
     <!-- DETAILS -->
     <section>
       <dl class="metadata">
-        <dt translate>Name</dt>
+        <dt>{{ 'Name' | translate }}</dt>
         <dd id="cipo-name">{{ rec.metadata.name }}</dd>
         @if (rec.metadata.description) {
-          <dt translate>Description</dt>
+          <dt>{{ 'Description' | translate }}</dt>
           <dd id="cipo-description">{{ rec.metadata.description }}</dd>
         }
-        <dt translate>Level</dt>
+        <dt>{{ 'Level' | translate }}</dt>
         <dd id="cipo-level">
           @if (rec.metadata.policy_library_level) {
             {{ 'Library' | translate }}
@@ -36,85 +36,87 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
     <!-- CIRCULATION SETTINGS -->
     <section class="ui:mt-4">
-      <p-panel [header]="'Circulation settings'|translate">
+      <p-panel [header]="'Circulation settings' | translate">
         <dl class="metadata ui:my-4 ui:mx-4">
           <!-- IS DEFAULT -->
-          <dt translate>Is default</dt>
+          <dt>{{ 'Is default' | translate }}</dt>
           <dd>
             @if (rec.metadata.is_default) {
-              <i id="cipo-is-default" class="fa-solid fa-check  text-success" aria-hidden="true"></i>
+              <i id="cipo-is-default" class="fa-solid fa-check text-success" aria-hidden="true"></i>
             } @else {
               <i id="cipo-is-default" class="fa-solid fa-xmark text-error" aria-hidden="true"></i>
             }
           </dd>
           <!-- CHECKOUT SETTINGS-->
-          <dt translate>Allow checkout</dt>
+          <dt>{{ 'Allow checkout' | translate }}</dt>
           @if (checkoutIsAllowed()) {
             <dd class="ui:flex ui:gap-2">
               <i id="cipo-allow-checkout" class="fa-solid fa-check text-success" aria-hidden="true"></i>
-            <dl class="metadata" style="padding-top: 0 !important;">
-            <dt translate>Checkout duration</dt>
-            <dd id="cipo-checkout-duration">
-              {{ rec.metadata.checkout_duration }}
-              {{ rec.metadata.checkout_duration | i18nPlural: {'=1': 'day', 'other': 'days'} | translate }}
-            </dd>
-            <dt translate>Number of renewals</dt>
-            <dd id="cipo-cnumber-renewals">
-              {{ rec.metadata.number_renewals }}
-            </dd>
-            <dt translate>Renewal duration</dt>
-            <dd id="cipo-renewal-duration">
-              {{ rec.metadata.renewal_duration }}
-              {{ rec.metadata.renewal_duration | i18nPlural: {'=1': 'day', 'other': 'days'} | translate }}
-            </dd>
-            <dt translate>Automatic renewal</dt>
-            <dd id="cipo-auto-renewal">
-              @if (rec.metadata.automatic_renewal) {
-                <i class="fa-solid fa-check text-success" aria-hidden="true"></i>
-              } @else {
-                <i class="fa-solid fa-xmark text-error" aria-hidden="true"></i>
-              }
-            </dd>
-            </dl>
+              <dl class="metadata" style="padding-top: 0 !important">
+                <dt>{{ 'Checkout duration' | translate }}</dt>
+                <dd id="cipo-checkout-duration">
+                  {{ rec.metadata.checkout_duration }}
+                  {{ rec.metadata.checkout_duration | i18nPlural: { '=1': 'day', other: 'days' } | translate }}
+                </dd>
+                <dt>{{ 'Number of renewals' | translate }}</dt>
+                <dd id="cipo-cnumber-renewals">
+                  {{ rec.metadata.number_renewals }}
+                </dd>
+                <dt>{{ 'Renewal duration' | translate }}</dt>
+                <dd id="cipo-renewal-duration">
+                  {{ rec.metadata.renewal_duration }}
+                  {{ rec.metadata.renewal_duration | i18nPlural: { '=1': 'day', other: 'days' } | translate }}
+                </dd>
+                <dt>{{ 'Automatic renewal' | translate }}</dt>
+                <dd id="cipo-auto-renewal">
+                  @if (rec.metadata.automatic_renewal) {
+                    <i class="fa-solid fa-check text-success" aria-hidden="true"></i>
+                  } @else {
+                    <i class="fa-solid fa-xmark text-error" aria-hidden="true"></i>
+                  }
+                </dd>
+              </dl>
             </dd>
           } @else {
             <dd>
               <i id="cipo-allow-checkout" class="fa-solid fa-xmark text-error" aria-hidden="true"></i>
             </dd>
           }
-          <dt translate>Allow requests</dt>
+          <dt>{{ 'Allow requests' | translate }}</dt>
           <dd>
             @if (rec.metadata.allow_requests) {
-              <i id="cipo-allow-request" class="fa-solid fa-check  text-success" aria-hidden="true"></i>
+              <i id="cipo-allow-request" class="fa-solid fa-check text-success" aria-hidden="true"></i>
             } @else {
               <i id="cipo-allow-request" class="fa-solid fa-xmark text-error" aria-hidden="true"></i>
             }
           </dd>
         </dl>
-    </p-panel>
+      </p-panel>
     </section>
 
     <!-- REMINDERS -->
     @if (reminders().length > 0) {
       <section class="ui:mt-4">
-        <p-panel [header]="'Reminders'|translate">
+        <p-panel [header]="'Reminders' | translate">
           <p-table class="ui:m-1" stripedRows [value]="reminders()" size="small">
             <ng-template #header>
               <tr>
-                <th translate>Type</th>
-                <th translate>Days Delay</th>
-                <th translate>Communication channel</th>
-                <th translate>Amount</th>
+                <th>{{ 'Type' | translate }}</th>
+                <th>{{ 'Days Delay' | translate }}</th>
+                <th>{{ 'Communication channel' | translate }}</th>
+                <th>{{ 'Amount' | translate }}</th>
               </tr>
             </ng-template>
             <ng-template #body let-reminder>
               <tr>
                 <td>{{ reminder.type | translate }}</td>
                 <td>
-                  <i class="fa-solid" [ngClass]="{
-                    'fa-calendar-minus': reminder.type === 'due_soon',
-                    'fa-calendar-plus': reminder.type === 'overdue'
-                  }"></i>
+                  <i
+                    class="fa-solid"
+                    [ngClass]="{
+                      'fa-calendar-minus': reminder.type === 'due_soon',
+                      'fa-calendar-plus': reminder.type === 'overdue',
+                    }"></i>
                   {{ reminder.days_delay }}
                 </td>
                 <td>{{ reminder.communication_channel | translate }}</td>
@@ -135,12 +137,12 @@ SPDX-License-Identifier: AGPL-3.0-or-later
     <!-- OVERDUE FEES -->
     @if (overdues().length > 0) {
       <section class="ui:mt-4">
-        <p-panel [header]="'Overdue fees'|translate">
+        <p-panel [header]="'Overdue fees' | translate">
           <p-table class="ui:m-1" stripedRows [value]="overdues()" size="small">
             <ng-template #header>
               <tr>
-                <th class="ui:pl-2" translate>Interval of days</th>
-                <th translate>Amount/day</th>
+                <th class="ui:pl-2">{{ 'Interval of days' | translate }}</th>
+                <th>{{ 'Amount/day' | translate }}</th>
               </tr>
             </ng-template>
             <ng-template #body let-overdue>
@@ -151,47 +153,50 @@ SPDX-License-Identifier: AGPL-3.0-or-later
                   @if (overdue.to) {
                     {{ overdue.to }}
                   } @else {
-                    <span class=" ui:text-muted-color">&infin;</span>
+                    <span class="ui:text-muted-color">&infin;</span>
                   }
                 </td>
-                <td>
-                  {{ overdue.fee_amount | currency: org_currency() }} / {{ 'day' | translate }}
-                </td>
+                <td>{{ overdue.fee_amount | currency: org_currency() }} / {{ 'day' | translate }}</td>
               </tr>
             </ng-template>
           </p-table>
         </p-panel>
-        </section>
+      </section>
     }
 
     <!-- APPLICATION -->
     @if (rec.metadata.settings) {
       <section class="ui:mt-4">
-        <p-panel [header]="'Application'|translate">
+        <p-panel [header]="'Application' | translate">
           <p-table class="ui:m-1" stripedRows [value]="settings() | keyvalue" size="small">
             <ng-template #header>
               <tr>
-                <th rowspan="2" class="ui:align-bottom ui:pl-2" translate>Patron types</th>
-                <th [attr.colspan]="itemTypes().size" class="ui:text-center" translate>Item types</th>
+                <th rowspan="2" class="ui:align-bottom ui:pl-2">{{ 'Patron types' | translate }}</th>
+                <th [attr.colspan]="itemTypes().size" class="ui:text-center">{{ 'Item types' | translate }}</th>
               </tr>
               <tr>
                 @for (itemType of itemTypes(); track $index) {
                   <th class="ui:text-center">
-                    <span id="itty-{{itemType}}">{{ $any(itemType) | getRecord: 'item_types' : 'field' : 'name' | async }}</span>
+                    <span id="itty-{{ itemType }}">{{
+                      $any(itemType) | getRecord: 'item_types' : 'field' : 'name' | async
+                    }}</span>
                   </th>
                 }
               </tr>
             </ng-template>
             <ng-template #body let-setting>
               <tr>
-                <th id="ptty-{{setting.key}}" class="ui:text-left ui:pl-2">
+                <th id="ptty-{{ setting.key }}" class="ui:text-left ui:pl-2">
                   {{ setting.key | getRecord: 'patron_types' : 'field' : 'name' | async }}
                 </th>
                 @for (itemType of itemTypes(); track $index) {
                   <td class="ui:text-center">
                     @for (currentItemType of setting.value; track $index) {
                       @if (itemType === currentItemType) {
-                        <i id="ptty-{{setting.key}}-itty-{{currentItemType}}" class="fa-solid fa-check text-success" aria-hidden="true"></i>
+                        <i
+                          id="ptty-{{ setting.key }}-itty-{{ currentItemType }}"
+                          class="fa-solid fa-check text-success"
+                          aria-hidden="true"></i>
                       }
                     }
                   </td>

@@ -1,17 +1,18 @@
 // SPDX-FileCopyrightText: Fondation RERO+
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-import { provideHttpClient } from "@angular/common/http";
-import { provideHttpClientTesting } from "@angular/common/http/testing";
-import { TestBed } from "@angular/core/testing";
-import { HoldingsApiService } from "@app/admin/api/holdings-api.service";
-import { HoldingsService, PredictionIssue } from "@app/admin/service/holdings.service";
-import { TranslateModule } from "@ngx-translate/core";
-import { RecordUiService } from "@rero/ng-core";
-import { AppStore, EsResult } from "@rero/shared";
-import { ConfirmationService, MessageService } from "primeng/api";
-import { Observable, of } from "rxjs";
-import { HoldingsSerialStore } from "./holdings-serial-store";
+import { provideHttpClient, withXhr } from '@angular/common/http';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
+import { TestBed } from '@angular/core/testing';
+import { HoldingsApiService } from '@app/admin/api/holdings-api.service';
+import { HoldingsService, PredictionIssue } from '@app/admin/service/holdings.service';
+import { provideTranslateService } from '@ngx-translate/core';
+import { ConfirmationService, MessageService } from '@openng/optimus-ui/api';
+import { RecordUiService } from '@rero/ng-core';
+import { AppStore, EsResult } from '@rero/shared';
+import { Observable, of } from 'rxjs';
+
+import { HoldingsSerialStore } from './holdings-serial-store';
 
 describe('Holdings Serial Store', () => {
   let appStore: InstanceType<typeof AppStore>;
@@ -20,6 +21,7 @@ describe('Holdings Serial Store', () => {
     vi.useFakeTimers();
     TestBed.configureTestingModule({
       providers: [
+        provideTranslateService(),
         HoldingsSerialStore,
         holdingsServiceMock,
         holdingsApiServiceMock,
@@ -29,12 +31,9 @@ describe('Holdings Serial Store', () => {
         { provide: RecordUiService, useValue: { deleteRecord: vi.fn().mockReturnValue(of(true)) } },
         MessageService,
         ConfirmationService,
-        provideHttpClient(),
+        provideHttpClient(withXhr()),
         provideHttpClientTesting(),
       ],
-      imports: [
-        TranslateModule.forRoot()
-      ]
     });
     appStore = TestBed.inject(AppStore);
   });
@@ -90,8 +89,8 @@ describe('Holdings Serial Store', () => {
     expect(store.isAllowIssueCreation()).toBe(true);
     expect(store.showLocalFieldsTab()).toBe(true);
 
-    const newHoldings = {...holdings};
-    newHoldings.metadata = {...holdings.metadata, library: { pid: '2', type: 'lib' }};
+    const newHoldings = { ...holdings };
+    newHoldings.metadata = { ...holdings.metadata, library: { pid: '2', type: 'lib' } };
     store.setHoldings(newHoldings);
     await vi.advanceTimersByTimeAsync(500);
     expect(store.isAllowIssueCreation()).toBe(false);
@@ -137,176 +136,174 @@ describe('Holdings Serial Store', () => {
 
 const appStoreSpy = {
   currentLibraryPid: vi.fn(() => '1'),
-  canAccess: vi.fn(() => false)
+  canAccess: vi.fn(() => false),
 } as any;
 
 const holdings = {
-    "created": "2025-11-18T13:37:49.970060+00:00",
-    "id": "641",
-    "links": {
-        "self": "https://localhost:5000/api/holdings/641"
+  created: '2025-11-18T13:37:49.970060+00:00',
+  id: '641',
+  links: {
+    self: 'https://localhost:5000/api/holdings/641',
+  },
+  metadata: {
+    $schema: 'https://bib.rero.ch/schemas/holdings/holding-v0.0.1.json',
+    acquisition_expected_end_date: '2025-12-31',
+    acquisition_method: 'purchase',
+    acquisition_status: 'currently_received',
+    call_number: 'SM af-82',
+    circulation_category: {
+      pid: '3',
+      type: 'itty',
     },
-    "metadata": {
-        "$schema": "https://bib.rero.ch/schemas/holdings/holding-v0.0.1.json",
-        "acquisition_expected_end_date": "2025-12-31",
-        "acquisition_method": "purchase",
-        "acquisition_status": "currently_received",
-        "call_number": "SM af-82",
-        "circulation_category": {
-            "pid": "3",
-            "type": "itty"
-        },
-        "completeness": "complete",
-        "composite_copy_report": "separate",
-        "document": {
-            "pid": "251",
-            "type": "doc"
-        },
-        "enumerationAndChronology": "No 61(2020)-",
-        "general_retention_policy": "permanently_retained",
-        "holdings_type": "serial",
-        "issue_binding": "10",
-        "library": {
-            "pid": "1",
-            "type": "lib"
-        },
-        "location": {
-            "pid": "3",
-            "type": "loc"
-        },
-        "missing_issues": "Hors s\u00e9rie 18 (2020)",
-        "notes": [
+    completeness: 'complete',
+    composite_copy_report: 'separate',
+    document: {
+      pid: '251',
+      type: 'doc',
+    },
+    enumerationAndChronology: 'No 61(2020)-',
+    general_retention_policy: 'permanently_retained',
+    holdings_type: 'serial',
+    issue_binding: '10',
+    library: {
+      pid: '1',
+      type: 'lib',
+    },
+    location: {
+      pid: '3',
+      type: 'loc',
+    },
+    missing_issues: 'Hors s\u00e9rie 18 (2020)',
+    notes: [
+      {
+        content: '3 derniers fascicules en salle de lecture',
+        type: 'general_note',
+      },
+      {
+        content: '3 derni\u00e8res ann\u00e9es',
+        type: 'conservation_note',
+      },
+    ],
+    organisation: {
+      pid: '1',
+      type: 'org',
+    },
+    patterns: {
+      days_before_first_claim: 7,
+      days_before_next_claim: 7,
+      frequency: 'rdafr:1010',
+      language: 'eng',
+      max_number_of_claims: 3,
+      next_expected_date: '2015-06-01',
+      template: 'no {{first_enumeration.level_1}} {{first_chronology.level_2}} {{first_chronology.level_1}}',
+      values: [
+        {
+          levels: [
             {
-                "content": "3 derniers fascicules en salle de lecture",
-                "type": "general_note"
+              next_value: 82,
+              number_name: 'level_1',
+              starting_value: 61,
+            },
+          ],
+          name: 'first_enumeration',
+        },
+        {
+          levels: [
+            {
+              next_value: 2025,
+              number_name: 'level_1',
+              starting_value: 2020,
             },
             {
-                "content": "3 derni\u00e8res ann\u00e9es",
-                "type": "conservation_note"
-            }
-        ],
-        "organisation": {
-            "pid": "1",
-            "type": "org"
+              list_name: 'level_2',
+              mapping_values: ['mars', 'juin', 'sept.', 'd\u00e9c.'],
+              next_value: 2,
+            },
+          ],
+          name: 'first_chronology',
         },
-        "patterns": {
-            "days_before_first_claim": 7,
-            "days_before_next_claim": 7,
-            "frequency": "rdafr:1010",
-            "language": "eng",
-            "max_number_of_claims": 3,
-            "next_expected_date": "2015-06-01",
-            "template": "no {{first_enumeration.level_1}} {{first_chronology.level_2}} {{first_chronology.level_1}}",
-            "values": [
-                {
-                    "levels": [
-                        {
-                            "next_value": 82,
-                            "number_name": "level_1",
-                            "starting_value": 61
-                        }
-                    ],
-                    "name": "first_enumeration"
-                },
-                {
-                    "levels": [
-                        {
-                            "next_value": 2025,
-                            "number_name": "level_1",
-                            "starting_value": 2020
-                        },
-                        {
-                            "list_name": "level_2",
-                            "mapping_values": [
-                                "mars",
-                                "juin",
-                                "sept.",
-                                "d\u00e9c."
-                            ],
-                            "next_value": 2
-                        }
-                    ],
-                    "name": "first_chronology"
-                }
-            ]
-        },
-        "pid": "641",
-        "second_call_number": "EN 4624",
-        "vendor": {
-            "pid": "4"
-        }
+      ],
     },
-    "updated": "2025-11-18T15:34:59.232091+00:00"
+    pid: '641',
+    second_call_number: 'EN 4624',
+    vendor: {
+      pid: '4',
+    },
+  },
+  updated: '2025-11-18T15:34:59.232091+00:00',
 };
 
 class holdingsServiceMock {
   getHoldingPatternPreview(holdingPid: string, size = 10): Observable<PredictionIssue[]> {
     let issues = [
       {
-        "expected_date": "2015-03-01",
-        "issue": "no 81 mars 2024"
+        expected_date: '2015-03-01',
+        issue: 'no 81 mars 2024',
       },
       {
-        "expected_date": "2015-06-01",
-        "issue": "no 82 juin 2024"
+        expected_date: '2015-06-01',
+        issue: 'no 82 juin 2024',
       },
       {
-        "expected_date": "2015-09-01",
-        "issue": "no 83 sept. 2024"
-      }
+        expected_date: '2015-09-01',
+        issue: 'no 83 sept. 2024',
+      },
     ];
     if (size !== 3) {
-      issues = [...issues, {
-        "expected_date": "2016-03-01",
-        "issue": "no 84 mars 2025"
-      },
-      {
-        "expected_date": "2016-06-01",
-        "issue": "no 85 juin 2025"
-      },
-      {
-        "expected_date": "2016-09-01",
-        "issue": "no 86 sept. 2025"
-      }];
+      issues = [
+        ...issues,
+        {
+          expected_date: '2016-03-01',
+          issue: 'no 84 mars 2025',
+        },
+        {
+          expected_date: '2016-06-01',
+          issue: 'no 85 juin 2025',
+        },
+        {
+          expected_date: '2016-09-01',
+          issue: 'no 86 sept. 2025',
+        },
+      ];
     }
     return of(issues);
   }
 
   quickReceivedIssue(_holding: any, _displayText?: string, _receivedDate?: string) {
     return of({
-      "issue": {
-        "$schema": "https://bib.rero.ch/schemas/items/item-v0.0.1.json",
-        "barcode": "f-20251118043458759280",
-        "document": {
-          "$ref": "https://bib.rero.ch/api/documents/251"
+      issue: {
+        $schema: 'https://bib.rero.ch/schemas/items/item-v0.0.1.json',
+        barcode: 'f-20251118043458759280',
+        document: {
+          $ref: 'https://bib.rero.ch/api/documents/251',
         },
-        "enumerationAndChronology": "no 81 mars 2025",
-        "holding": {
-          "$ref": "https://bib.rero.ch/api/holdings/641"
+        enumerationAndChronology: 'no 81 mars 2025',
+        holding: {
+          $ref: 'https://bib.rero.ch/api/holdings/641',
         },
-        "issue": {
-          "expected_date": "2015-03-01",
-          "received_date": "2025-11-18",
-          "regular": true,
-          "status": "received",
-          "status_date": "2025-11-18T15:34:58.760892+00:00"
+        issue: {
+          expected_date: '2015-03-01',
+          received_date: '2025-11-18',
+          regular: true,
+          status: 'received',
+          status_date: '2025-11-18T15:34:58.760892+00:00',
         },
-        "item_type": {
-          "$ref": "https://bib.rero.ch/api/item_types/3"
+        item_type: {
+          $ref: 'https://bib.rero.ch/api/item_types/3',
         },
-        "library": {
-          "$ref": "https://bib.rero.ch/api/libraries/1"
+        library: {
+          $ref: 'https://bib.rero.ch/api/libraries/1',
         },
-        "location": {
-          "$ref": "https://bib.rero.ch/api/locations/3"
+        location: {
+          $ref: 'https://bib.rero.ch/api/locations/3',
         },
-        "organisation": {
-          "$ref": "https://bib.rero.ch/api/organisations/1"
+        organisation: {
+          $ref: 'https://bib.rero.ch/api/organisations/1',
         },
-        "pid": "943",
-        "status": "on_shelf",
-        "type": "issue"
-      }
+        pid: '943',
+        status: 'on_shelf',
+        type: 'issue',
+      },
     });
   }
 }
@@ -314,202 +311,202 @@ class holdingsServiceMock {
 class holdingsApiServiceMock {
   getIssuesByHoldings(holdingsPid: string, page: number, size: number, markedAsNew: boolean, filter?: string) {
     const result: EsResult = {
-        "aggregations": {},
-        "hits": {
-            "hits": [
-                {
-                    "created": "2025-11-18T14:00:13.099783+00:00",
-                    "id": "934",
-                    "links": {
-                        "self": "https://localhost:5000/api/items/934"
-                    },
-                    "metadata": {
-                        "$schema": "https://bib.rero.ch/schemas/items/item-v0.0.1.json",
-                        "barcode": "f-20251118030013063903",
-                        "current_pending_requests": 0,
-                        "document": {
-                            "document_type": [
-                                {
-                                    "main_type": "docmaintype_serial"
-                                }
-                            ],
-                            "pid": "251",
-                            "type": "doc"
-                        },
-                        "enumerationAndChronology": "no 72 d\u00e9c. 2022",
-                        "holding": {
-                            "pid": "641",
-                            "type": "hold"
-                        },
-                        "issue": {
-                            "expected_date": "2012-12-01",
-                            "inherited_first_call_number": "SM af-82",
-                            "inherited_second_call_number": "EN 4624",
-                            "received_date": "2025-11-18",
-                            "regular": true,
-                            "sort_date": "2012-12-01",
-                            "status": "received",
-                            "status_date": "2025-11-18T14:00:13.070254+00:00"
-                        },
-                        "item_type": {
-                            "pid": "3",
-                            "type": "itty"
-                        },
-                        "library": {
-                            "pid": "1",
-                            "type": "lib"
-                        },
-                        "location": {
-                            "pid": "3",
-                            "type": "loc"
-                        },
-                        "organisation": {
-                            "pid": "1",
-                            "type": "org"
-                        },
-                        "pid": "934",
-                        "status": "on_shelf",
-                        "type": "issue",
-                        "vendor": {
-                            "pid": "4",
-                            "type": "vndr"
-                        }
-                    },
-                    "updated": "2025-11-18T14:00:13.099800+00:00"
-                },
-                {
-                    "created": "2025-11-18T14:00:08.704315+00:00",
-                    "id": "933",
-                    "links": {
-                        "self": "https://localhost:5000/api/items/933"
-                    },
-                    "metadata": {
-                        "$schema": "https://bib.rero.ch/schemas/items/item-v0.0.1.json",
-                        "barcode": "f-20251118030008674194",
-                        "current_pending_requests": 0,
-                        "document": {
-                            "document_type": [
-                                {
-                                    "main_type": "docmaintype_serial"
-                                }
-                            ],
-                            "pid": "251",
-                            "type": "doc"
-                        },
-                        "enumerationAndChronology": "no 71 sept. 2023",
-                        "holding": {
-                            "pid": "641",
-                            "type": "hold"
-                        },
-                        "issue": {
-                            "expected_date": "2012-09-01",
-                            "inherited_first_call_number": "SM af-82",
-                            "inherited_second_call_number": "EN 4624",
-                            "received_date": "2025-11-18",
-                            "regular": true,
-                            "sort_date": "2012-09-01",
-                            "status": "received",
-                            "status_date": "2025-11-18T14:00:08.676898+00:00"
-                        },
-                        "item_type": {
-                            "pid": "3",
-                            "type": "itty"
-                        },
-                        "library": {
-                            "pid": "1",
-                            "type": "lib"
-                        },
-                        "location": {
-                            "pid": "3",
-                            "type": "loc"
-                        },
-                        "organisation": {
-                            "pid": "1",
-                            "type": "org"
-                        },
-                        "pid": "933",
-                        "status": "on_shelf",
-                        "type": "issue",
-                        "vendor": {
-                            "pid": "4",
-                            "type": "vndr"
-                        }
-                    },
-                    "updated": "2025-11-18T14:00:08.704331+00:00"
-                },
-                {
-                    "created": "2025-11-18T14:00:01.079118+00:00",
-                    "id": "931",
-                    "links": {
-                        "self": "https://localhost:5000/api/items/931"
-                    },
-                    "metadata": {
-                        "$schema": "https://bib.rero.ch/schemas/items/item-v0.0.1.json",
-                        "barcode": "f-20251118030001045238",
-                        "current_pending_requests": 0,
-                        "document": {
-                            "document_type": [
-                                {
-                                    "main_type": "docmaintype_serial"
-                                }
-                            ],
-                            "pid": "251",
-                            "type": "doc"
-                        },
-                        "enumerationAndChronology": "no 69 mars 2024",
-                        "holding": {
-                            "pid": "641",
-                            "type": "hold"
-                        },
-                        "issue": {
-                            "expected_date": "2012-03-01",
-                            "inherited_first_call_number": "SM af-82",
-                            "inherited_second_call_number": "EN 4624",
-                            "received_date": "2025-11-18",
-                            "regular": true,
-                            "sort_date": "2012-03-01",
-                            "status": "received",
-                            "status_date": "2025-11-18T14:00:01.048339+00:00"
-                        },
-                        "item_type": {
-                            "pid": "3",
-                            "type": "itty"
-                        },
-                        "library": {
-                            "pid": "1",
-                            "type": "lib"
-                        },
-                        "location": {
-                            "pid": "3",
-                            "type": "loc"
-                        },
-                        "organisation": {
-                            "pid": "1",
-                            "type": "org"
-                        },
-                        "pid": "931",
-                        "status": "on_shelf",
-                        "type": "issue",
-                        "vendor": {
-                            "pid": "4",
-                            "type": "vndr"
-                        }
-                    },
-                    "updated": "2025-11-18T14:00:01.079129+00:00"
-                }
-            ],
-            "total": 3
-        },
-        "links": {
-            "create": "https://localhost:5000/api/items/",
-            "self": "https://localhost:5000/api/items/"
-        }
+      aggregations: {},
+      hits: {
+        hits: [
+          {
+            created: '2025-11-18T14:00:13.099783+00:00',
+            id: '934',
+            links: {
+              self: 'https://localhost:5000/api/items/934',
+            },
+            metadata: {
+              $schema: 'https://bib.rero.ch/schemas/items/item-v0.0.1.json',
+              barcode: 'f-20251118030013063903',
+              current_pending_requests: 0,
+              document: {
+                document_type: [
+                  {
+                    main_type: 'docmaintype_serial',
+                  },
+                ],
+                pid: '251',
+                type: 'doc',
+              },
+              enumerationAndChronology: 'no 72 d\u00e9c. 2022',
+              holding: {
+                pid: '641',
+                type: 'hold',
+              },
+              issue: {
+                expected_date: '2012-12-01',
+                inherited_first_call_number: 'SM af-82',
+                inherited_second_call_number: 'EN 4624',
+                received_date: '2025-11-18',
+                regular: true,
+                sort_date: '2012-12-01',
+                status: 'received',
+                status_date: '2025-11-18T14:00:13.070254+00:00',
+              },
+              item_type: {
+                pid: '3',
+                type: 'itty',
+              },
+              library: {
+                pid: '1',
+                type: 'lib',
+              },
+              location: {
+                pid: '3',
+                type: 'loc',
+              },
+              organisation: {
+                pid: '1',
+                type: 'org',
+              },
+              pid: '934',
+              status: 'on_shelf',
+              type: 'issue',
+              vendor: {
+                pid: '4',
+                type: 'vndr',
+              },
+            },
+            updated: '2025-11-18T14:00:13.099800+00:00',
+          },
+          {
+            created: '2025-11-18T14:00:08.704315+00:00',
+            id: '933',
+            links: {
+              self: 'https://localhost:5000/api/items/933',
+            },
+            metadata: {
+              $schema: 'https://bib.rero.ch/schemas/items/item-v0.0.1.json',
+              barcode: 'f-20251118030008674194',
+              current_pending_requests: 0,
+              document: {
+                document_type: [
+                  {
+                    main_type: 'docmaintype_serial',
+                  },
+                ],
+                pid: '251',
+                type: 'doc',
+              },
+              enumerationAndChronology: 'no 71 sept. 2023',
+              holding: {
+                pid: '641',
+                type: 'hold',
+              },
+              issue: {
+                expected_date: '2012-09-01',
+                inherited_first_call_number: 'SM af-82',
+                inherited_second_call_number: 'EN 4624',
+                received_date: '2025-11-18',
+                regular: true,
+                sort_date: '2012-09-01',
+                status: 'received',
+                status_date: '2025-11-18T14:00:08.676898+00:00',
+              },
+              item_type: {
+                pid: '3',
+                type: 'itty',
+              },
+              library: {
+                pid: '1',
+                type: 'lib',
+              },
+              location: {
+                pid: '3',
+                type: 'loc',
+              },
+              organisation: {
+                pid: '1',
+                type: 'org',
+              },
+              pid: '933',
+              status: 'on_shelf',
+              type: 'issue',
+              vendor: {
+                pid: '4',
+                type: 'vndr',
+              },
+            },
+            updated: '2025-11-18T14:00:08.704331+00:00',
+          },
+          {
+            created: '2025-11-18T14:00:01.079118+00:00',
+            id: '931',
+            links: {
+              self: 'https://localhost:5000/api/items/931',
+            },
+            metadata: {
+              $schema: 'https://bib.rero.ch/schemas/items/item-v0.0.1.json',
+              barcode: 'f-20251118030001045238',
+              current_pending_requests: 0,
+              document: {
+                document_type: [
+                  {
+                    main_type: 'docmaintype_serial',
+                  },
+                ],
+                pid: '251',
+                type: 'doc',
+              },
+              enumerationAndChronology: 'no 69 mars 2024',
+              holding: {
+                pid: '641',
+                type: 'hold',
+              },
+              issue: {
+                expected_date: '2012-03-01',
+                inherited_first_call_number: 'SM af-82',
+                inherited_second_call_number: 'EN 4624',
+                received_date: '2025-11-18',
+                regular: true,
+                sort_date: '2012-03-01',
+                status: 'received',
+                status_date: '2025-11-18T14:00:01.048339+00:00',
+              },
+              item_type: {
+                pid: '3',
+                type: 'itty',
+              },
+              library: {
+                pid: '1',
+                type: 'lib',
+              },
+              location: {
+                pid: '3',
+                type: 'loc',
+              },
+              organisation: {
+                pid: '1',
+                type: 'org',
+              },
+              pid: '931',
+              status: 'on_shelf',
+              type: 'issue',
+              vendor: {
+                pid: '4',
+                type: 'vndr',
+              },
+            },
+            updated: '2025-11-18T14:00:01.079129+00:00',
+          },
+        ],
+        total: 3,
+      },
+      links: {
+        create: 'https://localhost:5000/api/items/',
+        self: 'https://localhost:5000/api/items/',
+      },
     };
     if (markedAsNew) {
       (result.hits.hits[0] as any).new_issue = true;
     }
     if (filter) {
-      result.hits.hits = result.hits.hits.filter(i => i.metadata.enumerationAndChronology.indexOf(filter) > -1);
+      result.hits.hits = result.hits.hits.filter((i) => i.metadata.enumerationAndChronology.indexOf(filter) > -1);
       result.hits.total = result.hits.hits.length;
     }
     return of(result);

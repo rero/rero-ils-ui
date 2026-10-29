@@ -1,26 +1,23 @@
 // SPDX-FileCopyrightText: Fondation RERO+
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-import { TestBed } from "@angular/core/testing";
-import { PatronTransactionsService } from "./patron-transactions.service";
-import { of } from "rxjs";
-import { apiResponse } from "@rero/shared";
-import { patronTransaction } from "@rero/shared";
-import { RecordService } from "@rero/ng-core";
-import { PatronTransaction } from "../classes/patron-transaction";
+import { TestBed } from '@angular/core/testing';
+import { RecordService } from '@rero/ng-core';
+import { apiResponse, patronTransaction } from '@rero/shared';
+import { of } from 'rxjs';
+
+import { PatronTransaction } from '../classes/patron-transaction';
+import { PatronTransactionsService } from './patron-transactions.service';
 
 describe('PatronTransactionsService', () => {
   let service: PatronTransactionsService;
 
-  const response = {...apiResponse};
+  const response = { ...apiResponse };
   const recordServiceSpy = { getRecords: vi.fn() };
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [
-        PatronTransactionsService,
-        { provide: RecordService, useValue: recordServiceSpy }
-      ]
+      providers: [PatronTransactionsService, { provide: RecordService, useValue: recordServiceSpy }],
     });
 
     service = TestBed.inject(PatronTransactionsService);
@@ -31,7 +28,7 @@ describe('PatronTransactionsService', () => {
   });
 
   it('should return the patron transaction', () => {
-    const transaction = {...patronTransaction};
+    const transaction = { ...patronTransaction };
     response.hits.hits = [transaction];
     response.hits.total = response.hits.hits.length;
     recordServiceSpy.getRecords.mockReturnValue(of(response));

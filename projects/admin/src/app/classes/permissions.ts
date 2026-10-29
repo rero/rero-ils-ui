@@ -7,10 +7,10 @@
 export type RecordPermission = {
   can: boolean;
   reasons?: {
-    links?: any,
-    others?: any,
+    links?: any;
+    others?: any;
   };
-}
+};
 
 export type RecordPermissions = {
   create: RecordPermission;
@@ -18,5 +18,4 @@ export type RecordPermissions = {
   list: RecordPermission;
   read?: RecordPermission;
   update?: RecordPermission;
-}
-
+};

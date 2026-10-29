@@ -1,6 +1,6 @@
 # Angular Rules
 
-Framework version: Angular 21
+Framework version: Angular 22
 
 ## TypeScript style rules
 
@@ -11,13 +11,17 @@ Framework version: Angular 21
 ```typescript
 // BAD
 function transform(transaction: TransactionRecord): TransactionStatus {
-  if (isScanItemMetadata(transaction.metadata)) { /* ... */ }
+  if (isScanItemMetadata(transaction.metadata)) {
+    /* ... */
+  }
 }
 
 // GOOD
 function transform(transaction: TransactionRecord): TransactionStatus {
   const { metadata } = transaction;
-  if (isScanItemMetadata(metadata)) { /* ... */ }
+  if (isScanItemMetadata(metadata)) {
+    /* ... */
+  }
 }
 ```
 
@@ -25,9 +29,9 @@ function transform(transaction: TransactionRecord): TransactionStatus {
 
 - Components, directives and pipes are standalone by default since Angular 19 — omit `standalone: true`.
 - Do not introduce NgModules.
-- Prefer Angular Signals for local state in new components.
-- Avoid RxJS when Signals are sufficient for new code.
-- Use strict TypeScript typing.
+- Prefer Angular Signals for local state.
+- Avoid RxJS when Signals are sufficient.
+- Use explicit TypeScript types.
 - Use `inject()` instead of constructor-based dependency injection.
 
 ## Component design
@@ -38,28 +42,39 @@ function transform(transaction: TransactionRecord): TransactionStatus {
 
 ## Change detection
 
-- Use OnPush change detection by default.
-
-Example:
-
-@Component({
-  changeDetection: ChangeDetectionStrategy.OnPush
-})
+- OnPush is the default change detection strategy since Angular 22. Do not
+  set `changeDetection: ChangeDetectionStrategy.OnPush` explicitly on
+  `@Component`.
+- Do not use `$safeNavigationMigration()` in templates: `?.` returns
+  `undefined` since Angular 22, so type the inputs to accept it.
 
 ## Dependency injection
 
-- Use `inject()` function — avoid constructor injection for new code.
+- Use `inject()` function — avoid constructor injection.
 - Avoid unnecessary services.
 - Prefer simple utility functions when Angular DI is not needed.
+- Use `@Service()` instead of `@Injectable({ providedIn: 'root' })` for new
+  root-provided services (available since Angular 22), and
+  `@Service({ autoProvided: false })` instead of a bare `@Injectable()` for
+  services registered in a `providers` array.
 
 ## Template syntax
 
-- Use new control flow syntax: `@if`, `@for`, `@switch`.
-- Do not introduce new `*ngIf`, `*ngFor`, `*ngSwitch` directives.
+- Use the control flow syntax: `@if`, `@for`, `@switch`.
+- Do not introduce `*ngIf`, `*ngFor`, `*ngSwitch` directives.
+- Translate with the pipe, `{{ 'Key' | translate }}` or
+  `[label]="'Key' | translate"`. Never use the element content as key
+  (`<span translate>Key</span>`) nor a bare `translate` attribute:
+  ngx-translate 18 warns for each element and removes it in version 19.
+- Mark an `ngModel` that only drives a control of the component itself (e.g.
+  inside a Formly field type) with `[ngModelOptions]="{ standalone: true }"`:
+  Angular 22 warns when an `ngModel` sits in a parent form it cannot register
+  with.
 
 ## Inputs and outputs
 
-- Use the new `input()` and `output()` APIs for new components.
+- Use the `input()` and `output()` APIs, not the `@Input()` and `@Output()`
+  decorators.
 - Use `model()` for two-way binding.
 
 ## State management
@@ -80,9 +95,9 @@ Use:
 
 Do not introduce:
 
-- New NgRx Store reducers/effects
-- New BehaviorSubject stores
-- New custom RxJS state services
+- NgRx Store reducers/effects
+- BehaviorSubject stores
+- Custom RxJS state services
 
 ## Import paths
 
@@ -91,22 +106,21 @@ Always use the tsconfig path aliases defined in `tsconfig.json`.
 
 Available aliases:
 
-| Alias | Resolves to |
-|---|---|
-| `@rero/shared` | `dist/shared` (built shared library) |
-| `@app/admin/*` | `projects/admin/src/app/*` |
-| `@app/public-search/*` | `projects/public-search/src/app/*` |
+| Alias                  | Resolves to                          |
+| ---------------------- | ------------------------------------ |
+| `@rero/shared`         | `dist/shared` (built shared library) |
+| `@app/admin/*`         | `projects/admin/src/app/*`           |
+| `@app/public-search/*` | `projects/public-search/src/app/*`   |
 
 ```typescript
-// BAD — causes TS2307 and bundler resolution errors
-import { EsRecord } from 'projects/shared/src/public-api';
-import { MyService } from 'projects/admin/src/app/service/my.service';
-import { MyComponent } from 'projects/public-search/src/app/my/my.component';
-
-// GOOD
-import { EsRecord } from '@rero/shared';
+// BAD — fails when another project compiles this file
 import { MyService } from '@app/admin/service/my.service';
 import { MyComponent } from '@app/public-search/my/my.component';
+// GOOD
+import { EsRecord } from '@rero/shared';
+import { MyService } from 'projects/admin/src/app/service/my.service';
+import { MyComponent } from 'projects/public-search/src/app/my/my.component';
+import { EsRecord } from 'projects/shared/src/public-api';
 ```
 
 Raw `projects/` paths fail at build time when one app bundles code from another project
@@ -122,17 +136,10 @@ When adding a new cross-project alias, declare it in the root `tsconfig.json` un
 
 ## Import order
 
-Always keep imports sorted alphabetically by module path when adding new imports. No grouping required — sort all imports as a single flat list.
+Prettier sorts the imports (`@ianvs/prettier-plugin-sort-imports`), on save in
+VS Code or with `pnpm run format`: third-party imports first, then a blank
+line, then the relative imports. Do not sort them by hand.
 
-Example:
+## Code comments
 
-```typescript
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { TranslatePipe } from '@ngx-translate/core';
-import { RecordService } from '@rero/ng-core';
-import { Button } from 'primeng/button';
-import { take } from 'rxjs/operators';
-import { LibraryFormService } from './library-form.service';
-import { LibraryStore } from './library.store';
-```
+All code comments must be written in English.

@@ -1,41 +1,27 @@
 # Copilot Repository Instructions
 
-This repository uses Angular 21 and is in active migration from Angular 19 patterns.
+This repository uses Angular 22: standalone components, zoneless change
+detection, NgRx Signal Store, Vitest and pnpm.
 
 Copilot must follow the rules defined in:
 
 - .ai/project-context.md
 - .ai/angular-rules.md
+- .ai/angular-patterns.md
+- .ai/css-strategy.md
 - .ai/testing-rules.md
 - .ai/dev-commands.md
 
-## Migration status
-
-This project is migrating incrementally — do not assume it is fully on Angular 21 patterns yet:
-
-- NgModules are still present — do not remove them unless explicitly asked
-- Zone.js is still active — do not apply zoneless patterns
-- Karma + Jasmine are still used — do not introduce Vitest
-
 ## Important constraints for new code
 
-- New components must be standalone
-- Do not introduce new NgModules
-- Prefer Angular Signals for local state
-- Avoid RxJS when Signals are sufficient
-- Use strict TypeScript types
+- Components are standalone and OnPush by default: do not set these
+  properties, and do not introduce NgModules
+- Use `inject()`, `input()`, `output()` and signals
+- The app is zoneless: do not rely on Zone.js, `fakeAsync` or `tick`
 - Avoid `any`
-
-## Testing
-
-Use Karma + Jasmine. Do not introduce Vitest.
+- Tests use Vitest (`vi.fn()`, `vi.spyOn()`), never Karma nor Jasmine
 
 ## Development commands
 
-When suggesting commands, use the commands defined in:
-
-.ai/dev-commands.md
-
-## Additional architecture patterns
-
-.ai/angular-patterns.md
+When suggesting commands, use the commands defined in `.ai/dev-commands.md`
+(pnpm).

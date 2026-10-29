@@ -5,17 +5,16 @@ import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class PermissionApiService {
-
   private httpClient: HttpClient = inject(HttpClient);
 
   /**
    * Get All Permissions by role
    * @return Observable, array of IRolePermission
    */
-   getAllPermissionsByRole(): Observable<IRolePermission> {
+  getAllPermissionsByRole(): Observable<IRolePermission> {
     return this.httpClient.get<IRolePermission>('/api/permissions/by_role');
   }
 
@@ -32,12 +31,12 @@ export class PermissionApiService {
 export type IRolePermission = Record<string, IPermission>;
 
 export type IPermission = {
-  type: string,
-  actions: Record<string, boolean | null>
-}
+  type: string;
+  actions: Record<string, boolean | null>;
+};
 
 export type IPatronPermission = {
-  name: string,
-  can: boolean,
-  reasons: Record<string, boolean | null>
-}
+  name: string;
+  can: boolean;
+  reasons: Record<string, boolean | null>;
+};

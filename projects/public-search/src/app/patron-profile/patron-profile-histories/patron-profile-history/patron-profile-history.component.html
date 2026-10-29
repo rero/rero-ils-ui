@@ -7,7 +7,8 @@ SPDX-License-Identifier: AGPL-3.0-or-later
   <div class="ui:grid ui:grid-cols-12 ui:gap-4 ui:p-2">
     <!-- DOCUMENT & ADDITIONAL DATA -->
     @let m = $any(record()!.metadata);
-    @let document = m.loan.item.document.pid | getRecord:'documents':'object':'':{ Accept:'application/rero+json' } | async;
+    @let document =
+      m.loan.item.document.pid | getRecord: 'documents' : 'object' : '' : { Accept: 'application/rero+json' } | async;
     <div class="ui:md:col-span-10 ui:col-span-12">
       @if (document) {
         <a href="/{{ viewcode }}/documents/{{ m.loan.item.document.pid }}">
@@ -22,16 +23,18 @@ SPDX-License-Identifier: AGPL-3.0-or-later
         </p-tag>
       }
       @if (document) {
-        <shared-contribution [contributions]="$any(document).metadata?.contribution" [view]="viewcode"></shared-contribution>
+        <shared-contribution
+          [contributions]="$any(document).metadata?.contribution"
+          [view]="viewcode"></shared-contribution>
       }
-        <dl class="ui:md:hidden ui:grid ui:grid-cols-4">
-          <dt translate>Return date</dt>
-          <dd>{{ m.date | dateTranslate: 'shortDate' }}</dd>
-        </dl>
+      <dl class="ui:md:hidden ui:grid ui:grid-cols-4">
+        <dt>{{ 'Return date' | translate }}</dt>
+        <dd>{{ m.date | dateTranslate: 'shortDate' }}</dd>
+      </dl>
     </div>
     <!-- DUE DATE -->
-      <div class="ui:md:col-span-2 ui:col-span-12 ui:hidden ui:md:block">
-        {{ m.date | dateTranslate: 'shortDate' }}
+    <div class="ui:md:col-span-2 ui:col-span-12 ui:hidden ui:md:block">
+      {{ m.date | dateTranslate: 'shortDate' }}
     </div>
   </div>
 }

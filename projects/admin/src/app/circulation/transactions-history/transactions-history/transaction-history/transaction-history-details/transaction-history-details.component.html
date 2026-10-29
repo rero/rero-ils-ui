@@ -7,14 +7,14 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 <div class="ui:col-span-9 ui:col-start-3 ui:flex ui:pt-2">
   <div class="ui:grid ui:grid-cols-12 ui:gap-1 ui:grow">
     @if (fullItem()?.enumerationAndChronology; as unit) {
-      <div class="ui:col-span-2 ui:font-bold" translate>Unit</div>
+      <div class="ui:col-span-2 ui:font-bold">{{ 'Unit' | translate }}</div>
       <div class="ui:col-span-10">
         {{ unit }}
       </div>
     }
     @if (fullItem()?.location?.pid; as locationPid) {
       @if (locationPid | getRecord: 'locations' | async; as location) {
-        <div class="ui:col-span-2 ui:font-bold" translate>Location</div>
+        <div class="ui:col-span-2 ui:font-bold">{{ 'Location' | translate }}</div>
         <div class="ui:col-span-10">
           @if ($any(location).metadata.library?.pid; as libraryPid) {
             {{ libraryPid | getRecord: 'libraries' : 'field' : 'name' | async }}:
@@ -24,14 +24,14 @@ SPDX-License-Identifier: AGPL-3.0-or-later
       }
     }
     @if (fullItem()?.temporary_location; as temporaryLocation) {
-      <div class="ui:col-span-2 ui:font-bold" translate>Temporary location</div>
+      <div class="ui:col-span-2 ui:font-bold">{{ 'Temporary location' | translate }}</div>
       <div class="ui:col-span-10">
         {{ temporaryLocation.name }}
       </div>
     }
     @if (fullItem()?.collections; as collections) {
       @if (collections.length > 0) {
-        <div class="ui:col-span-2 ui:font-bold" translate>Exhibition/course</div>
+        <div class="ui:col-span-2 ui:font-bold">{{ 'Exhibition/course' | translate }}</div>
         <div class="ui:col-span-10">
           {{ collections.join(', ') }}
         </div>
@@ -39,11 +39,11 @@ SPDX-License-Identifier: AGPL-3.0-or-later
     }
     @if (notes.length > 0) {
       @for (note of fullItem()?.notes; track note) {
-      <div class="ui:col-span-2 ui:font-bold">
-        <i class="fa-regular fa-note-sticky text-warning"></i>&nbsp;{{ note.type | translate | ucfirst }}
-      </div>
-      <div class="ui:col-span-10" [innerHTML]="note.content"></div>
-    }
+        <div class="ui:col-span-2 ui:font-bold">
+          <i class="fa-regular fa-note-sticky text-warning"></i>&nbsp;{{ note.type | translate | ucfirst }}
+        </div>
+        <div class="ui:col-span-10" [innerHTML]="note.content"></div>
+      }
     }
     @if (loan()?.note; as note) {
       <div class="ui:col-span-2 ui:font-bold">

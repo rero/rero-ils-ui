@@ -3,13 +3,13 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
+
 import { LoanOverduePreview } from '../classes/loans';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class LoanApiService {
-
   private httpClient: HttpClient = inject(HttpClient);
 
   /**

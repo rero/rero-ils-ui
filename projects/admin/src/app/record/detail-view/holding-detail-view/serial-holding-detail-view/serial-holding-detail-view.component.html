@@ -2,21 +2,21 @@
 SPDX-FileCopyrightText: Fondation RERO+
 SPDX-License-Identifier: AGPL-3.0-or-later
 -->
-<h1 translate>Holdings</h1>
+<h1>{{ 'Holdings' | translate }}</h1>
 <div class="ui:mb-4">
   @if (holding().metadata._masked) {
     <admin-record-masked [record]="holding()" [withLabel]="true"></admin-record-masked>
   }
   @if (documentResource.value(); as document) {
-      <div class="ui:border ui:rounded-border ui:border-surface ui:p-6">
-        <admin-documents-brief-view
-            [record]="document"
-            [type]="'documents'" [detailUrl]="{
-              link: '/records/documents/detail/' + $any(document).metadata.pid,
-              external: false
-            }"
-        />
-      </div>
+    <div class="ui:border ui:rounded-border ui:border-surface ui:p-6">
+      <admin-documents-brief-view
+        [record]="document"
+        [type]="'documents'"
+        [detailUrl]="{
+          link: '/records/documents/detail/' + $any(document).metadata.pid,
+          external: false,
+        }" />
+    </div>
   }
   @if (holding()) {
     <div class="ui:mt-3">
@@ -29,16 +29,16 @@ SPDX-License-Identifier: AGPL-3.0-or-later
   <p-tablist>
     <p-tab value="issue" class="ui:flex ui:items-center ui:!gap-2">
       <i class="fa-solid fa-list-ul"></i>
-      <span translate>Issues</span>
+      <span>{{ 'Issues' | translate }}</span>
     </p-tab>
     <p-tab value="detail" class="ui:flex ui:items-center ui:!gap-2">
       <i class="fa-solid fa-bars"></i>
-      <span translate>Details</span>
+      <span>{{ 'Details' | translate }}</span>
     </p-tab>
     @if (store.showLocalFieldsTab()) {
       <p-tab value="local" class="ui:flex ui:items-center ui:!gap-2">
         <i class="fa-solid fa-building-columns"></i>
-        <span translate>Local fields</span>
+        <span>{{ 'Local fields' | translate }}</span>
       </p-tab>
     }
   </p-tablist>
@@ -47,15 +47,14 @@ SPDX-License-Identifier: AGPL-3.0-or-later
       @if (holding().metadata.patterns) {
         <div class="ui:flex ui:flex-col ui:gap-2">
           <div class="ui:flex">
-            <h4 translate>Prediction</h4>
+            <h4>{{ 'Prediction' | translate }}</h4>
             <div class="ui:flex ui:flex-1 ui:justify-end">
               <p-button
                 icon="fa-regular fa-circle-up"
                 size="small"
                 label="{{ 'Show more' | translate }} &hellip;"
                 [outlined]="true"
-                (onClick)="store.moreIssues(3)"
-              />
+                (onClick)="store.moreIssues(3)" />
             </div>
           </div>
 
@@ -68,25 +67,23 @@ SPDX-License-Identifier: AGPL-3.0-or-later
                       <p-button
                         icon="fa-regular fa-square-check"
                         size="small"
-                        [title]="'Quick receive'|translate"
+                        [title]="'Quick receive' | translate"
                         [outlined]="true"
                         (onClick)="store.quickIssueReceive()"
-                        [disabled]="store.quickReceiveDisableButton()"
-                      />
+                        [disabled]="store.quickReceiveDisableButton()" />
                       <p-button
                         icon="fa-solid fa-pen-to-square"
                         size="small"
-                        [title]="'Receive and edit this issue'|translate"
+                        [title]="'Receive and edit this issue' | translate"
                         [outlined]="true"
                         [routerLink]="['/records', 'items', 'new']"
                         [queryParams]="{
-                          'holding': holding().metadata.pid,
-                          'redirectTo': 'records/holdings/detail/' + holding().metadata.pid,
-                          'enumerationAndChronology': prediction.issue,
-                          'expected_date': prediction.expected_date
+                          holding: holding().metadata.pid,
+                          redirectTo: 'records/holdings/detail/' + holding().metadata.pid,
+                          enumerationAndChronology: prediction.issue,
+                          expected_date: prediction.expected_date,
                         }"
-                        styleClass="ui:ml-1"
-                      />
+                        styleClass="ui:ml-1" />
                     }
                   </ng-container>
                 }
@@ -96,21 +93,22 @@ SPDX-License-Identifier: AGPL-3.0-or-later
         </div>
       }
 
-      <div class="ui:flex ui:flex-col ui:gap-2" [class]="{ 'ui:mt-6': holding().metadata.patterns}">
+      <div class="ui:flex ui:flex-col ui:gap-2" [class]="{ 'ui:mt-6': holding().metadata.patterns }">
         <div class="ui:flex">
-          <h4 translate>Issues</h4>
+          <h4>{{ 'Issues' | translate }}</h4>
           @if (store.isAllowIssueCreation()) {
             <div class="ui:flex ui:flex-1 ui:justify-end">
-              <p-button size="small" outlined
+              <p-button
+                size="small"
+                outlined
                 [routerLink]="['/records', 'items', 'new']"
                 [queryParams]="{
-                  'holding': holding().metadata.pid,
-                  'irregular': true,
-                  'redirectTo': 'records/holdings/detail/' + holding().metadata.pid
+                  holding: holding().metadata.pid,
+                  irregular: true,
+                  redirectTo: 'records/holdings/detail/' + holding().metadata.pid,
                 }"
                 icon="fa-regular fa-square-plus"
-                label="{{ 'Add irregular issue' | translate }} &hellip;"
-              />
+                label="{{ 'Add irregular issue' | translate }} &hellip;" />
             </div>
           }
         </div>
@@ -125,9 +123,11 @@ SPDX-License-Identifier: AGPL-3.0-or-later
               @if (store.receivedItemsCount() > 0) {
                 <small class="ui:ml-2">
                   @if (store.filterTotal() <= 1) {
-                    {{ "{{ total }} result of {{ remoteTotal }}" | translate: { total: store.filterTotal(), remoteTotal: store.receivedItemsCount() } }}
+                    {{ "{{ total }} result of {{ remoteTotal }}" | translate: { total: store.filterTotal(), remoteTotal:
+                    store.receivedItemsCount() } }}
                   } @else {
-                    {{ "{{ total }} results of {{ remoteTotal }}" | translate: { total: store.filterTotal(), remoteTotal: store.receivedItemsCount() } }}
+                    {{ "{{ total }} results of {{ remoteTotal }}" | translate: { total: store.filterTotal(),
+                    remoteTotal: store.receivedItemsCount() } }}
                   }
                 </small>
               }
@@ -137,7 +137,11 @@ SPDX-License-Identifier: AGPL-3.0-or-later
             <admin-received-issue [issue]="item" [holding]="holding()" />
           }
           @if (store.isPaginatorEnabled()) {
-            <shared-paginator class="ui:mt-4" [pager]="store.pager()" [total]="store.receivedItemsCount()" (pageChange)="store.setPaginator($event)" />
+            <shared-paginator
+              class="ui:mt-4"
+              [pager]="store.pager()"
+              [total]="store.receivedItemsCount()"
+              (pageChange)="store.setPaginator($event)" />
           }
         </div>
       </div>
@@ -149,9 +153,8 @@ SPDX-License-Identifier: AGPL-3.0-or-later
       <p-tabpanel value="local">
         <admin-local-field
           [resourceType]="'holdings'"
-          [resourcePid]="(holding().metadata.pid)"
-          [resourceLibraryPid]="holding().metadata.library.pid"
-        ></admin-local-field>
+          [resourcePid]="holding().metadata.pid"
+          [resourceLibraryPid]="holding().metadata.library.pid"></admin-local-field>
       </p-tabpanel>
     }
   </p-tabpanels>

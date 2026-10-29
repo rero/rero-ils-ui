@@ -8,10 +8,9 @@ import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class LocalFieldApiService {
-
   private recordService: RecordService = inject(RecordService);
   private recordUiService: RecordUiService = inject(RecordUiService);
 
@@ -22,18 +21,18 @@ export class LocalFieldApiService {
    * @param organisationPid - string, pid of organisation
    * @return Observable
    */
-  getByResourceTypeAndResourcePidAndOrganisationId(resourceType: string, resourcePid: string, organisationPid: string): Observable<any> {
+  getByResourceTypeAndResourcePidAndOrganisationId(
+    resourceType: string,
+    resourcePid: string,
+    organisationPid: string,
+  ): Observable<any> {
     const query = `parent.type:${resourceType} AND parent.pid:${resourcePid} AND organisation.pid:${organisationPid}`;
 
-    return this.recordService
-      .getRecords('local_fields', { query, page: 1, itemsPerPage: 1 })
-      .pipe(
-        map((result: EsResult) => {
-          return result.hits.total === 0
-            ? {}
-            : result.hits.hits[0];
-        })
-      );
+    return this.recordService.getRecords('local_fields', { query, page: 1, itemsPerPage: 1 }).pipe(
+      map((result: EsResult) => {
+        return result.hits.total === 0 ? {} : result.hits.hits[0];
+      }),
+    );
   }
 
   /**

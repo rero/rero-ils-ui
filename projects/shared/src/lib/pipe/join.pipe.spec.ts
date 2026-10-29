@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 import { TestBed } from '@angular/core/testing';
+
 import { JoinPipe } from './join.pipe';
 
 describe('JoinPipe', () => {
@@ -9,9 +10,7 @@ describe('JoinPipe', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [
-        JoinPipe
-      ]
+      providers: [JoinPipe],
     });
 
     pipe = TestBed.inject(JoinPipe);

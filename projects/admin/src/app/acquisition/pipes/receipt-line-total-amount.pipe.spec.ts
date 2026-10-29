@@ -1,35 +1,34 @@
 // SPDX-FileCopyrightText: Fondation RERO+
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-import { TestBed } from "@angular/core/testing";
-import { ReceiptLineTotalAmountPipe } from "./receipt-line-total-amount.pipe";
-import { IAcqReceiptLine } from "../classes/receipt";
+import { TestBed } from '@angular/core/testing';
+
+import { IAcqReceiptLine } from '../classes/receipt';
+import { ReceiptLineTotalAmountPipe } from './receipt-line-total-amount.pipe';
 
 describe('ReceiptLineTotalAmountPipe', () => {
   let pipe: ReceiptLineTotalAmountPipe;
 
   const acqReceiptLine: IAcqReceiptLine = {
     acq_receipt: {
-      pid: '1'
+      pid: '1',
     },
     acq_order_line: {
-      pid: '1'
+      pid: '1',
     },
     quantity: 1,
     amount: 20,
     vat_rate: undefined,
     receipt_date: '2025-04-17',
     organisation: {
-      pid: '1'
+      pid: '1',
     },
-    notes: []
+    notes: [],
   };
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [
-        ReceiptLineTotalAmountPipe
-      ]
+      providers: [ReceiptLineTotalAmountPipe],
     });
 
     pipe = TestBed.inject(ReceiptLineTotalAmountPipe);
@@ -44,7 +43,7 @@ describe('ReceiptLineTotalAmountPipe', () => {
   });
 
   it('should return the amount with the vat rate calculation', () => {
-    const receiptLine = {...acqReceiptLine};
+    const receiptLine = { ...acqReceiptLine };
     receiptLine.vat_rate = 8.2;
     expect(pipe.transform(receiptLine)).toEqual(21.64);
   });

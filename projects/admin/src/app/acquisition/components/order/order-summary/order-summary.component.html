@@ -4,71 +4,70 @@ SPDX-FileCopyrightText: UCLouvain
 SPDX-License-Identifier: AGPL-3.0-or-later
 -->
 @if (order()) {
-@let vendor = (order().vendor.$ref || order().vendor.pid) | getRecord : "vendors" | async;
-<section class="ui:grid ui:grid-cols-12 ui:gap-4">
-  <div class="ui:md:col-span-8 ui:px-3">
-    <dl class="metadata">
-      <!-- VENDOR -->
-      @if (vendor) {
-        <dt translate>Vendor</dt>
-        <dd>
-          <a [routerLink]="['/acquisition','records','vendors','detail',$any(vendor).metadata.pid]">{{ $any(vendor).metadata.name }}</a>
-          @if ($any(vendor).metadata.notes) {
-            <ul>
-            @for (note of $any(vendor).metadata.notes; track $index) {
-              <li>
-                <p-tag severity="secondary" [value]="note.type|translate"/>&nbsp;{{ note.content }}
-              </li>
+  @let vendor = order().vendor.$ref || order().vendor.pid | getRecord: 'vendors' | async;
+  <section class="ui:grid ui:grid-cols-12 ui:gap-4">
+    <div class="ui:md:col-span-8 ui:px-3">
+      <dl class="metadata">
+        <!-- VENDOR -->
+        @if (vendor) {
+          <dt>{{ 'Vendor' | translate }}</dt>
+          <dd>
+            <a [routerLink]="['/acquisition', 'records', 'vendors', 'detail', $any(vendor).metadata.pid]">{{
+              $any(vendor).metadata.name
+            }}</a>
+            @if ($any(vendor).metadata.notes) {
+              <ul>
+                @for (note of $any(vendor).metadata.notes; track $index) {
+                  <li><p-tag severity="secondary" [value]="note.type | translate" />&nbsp;{{ note.content }}</li>
+                }
+              </ul>
             }
-            </ul>
-          }
-        </dd>
+          </dd>
+        }
+        <!-- ORDER STATUS -->
+        <dt>{{ 'Order status' | translate }}</dt>
+        <dd>{{ order().status | translate }}</dd>
+        <!-- ORDER DATE -->
+        @if (order().order_date) {
+          <dt>{{ 'Order date' | translate }}</dt>
+          <dd>{{ order().order_date | dateTranslate: 'shortDate' }}</dd>
+        }
+        <!-- NOTES (optional) -->
+        <ng-content select="[notes]"></ng-content>
+      </dl>
+    </div>
+    <!-- ORDER TOTAL AMOUNT -->
+    <div class="ui:md:col-span-4 ui:flex ui:flex-col ui:gap-2">
+      <ng-container
+        [ngTemplateOutlet]="totalAmount"
+        [ngTemplateOutletContext]="{
+          quantity: order().account_statement.provisional.quantity,
+          total: order().account_statement.provisional.total_amount,
+          label: 'Ordered' | translate,
+          icon: 'fa-cart-shopping',
+        }" />
+      @if (order().account_statement.expenditure.quantity > 0) {
+        <ng-container
+          [ngTemplateOutlet]="totalAmount"
+          [ngTemplateOutletContext]="{
+            quantity: order().account_statement.expenditure.quantity,
+            total: order().account_statement.expenditure.total_amount,
+            label: 'Received' | translate,
+            icon: 'fa-circle-check',
+          }" />
       }
-      <!-- ORDER STATUS -->
-      <dt translate>Order status</dt>
-      <dd>{{ order().status | translate }}</dd>
-      <!-- ORDER DATE -->
-      @if (order().order_date) {
-      <dt translate>Order date</dt>
-      <dd>{{ order().order_date | dateTranslate : "shortDate" }}</dd>
-      }
-      <!-- NOTES (optional) -->
-      <ng-content select="[notes]"></ng-content>
-    </dl>
-  </div>
-  <!-- ORDER TOTAL AMOUNT -->
-  <div class="ui:md:col-span-4 ui:flex ui:flex-col ui:gap-2">
-    <ng-container
-      [ngTemplateOutlet]="totalAmount"
-      [ngTemplateOutletContext]="{
-        quantity: order().account_statement.provisional.quantity,
-        total: order().account_statement.provisional.total_amount,
-        label: 'Ordered' | translate,
-        icon: 'fa-cart-shopping'
-      }"
-    />
-    @if (order().account_statement.expenditure.quantity > 0) {
-    <ng-container
-      [ngTemplateOutlet]="totalAmount"
-      [ngTemplateOutletContext]="{
-        quantity: order().account_statement.expenditure.quantity,
-        total: order().account_statement.expenditure.total_amount,
-        label: 'Received' | translate,
-        icon: 'fa-circle-check'
-      }"
-    />
-    }
-  </div>
-</section>
+    </div>
+  </section>
 }
 <ng-template #totalAmount let-quantity="quantity" let-total="total" let-label="label" let-icon="icon">
   <div class="ui:bg-surface-50 ui:py-4 ui:border ui:rounded-border ui:border-surface ui:relative">
-    <div class="ui:absolute ui:bg-surface-200 ui:text-muted-color ui:rounded-l-md ui:rounded-r-md ui:border-l ui:border-b ui:border-surface ui:py-2 ui:px-6 ui:top-0 ui:right-0">
+    <div
+      class="ui:absolute ui:bg-surface-200 ui:text-muted-color ui:rounded-l-md ui:rounded-r-md ui:border-l ui:border-b ui:border-surface ui:py-2 ui:px-6 ui:top-0 ui:right-0">
       <i class="fa-solid" [class]="icon"></i>&nbsp;{{ quantity }}
     </div>
     <div class="ui:flex ui:flex-wrap ui:text-center">
       <div class="ui:w-full ui:text-2xl ui:font-bold">
-        {{ total | currency : order().currency : "symbol" }}
+        {{ total | currency: order().currency : 'symbol' }}
       </div>
       <div class="ui:w-full ui:text-sm ui:text-muted-color">{{ label }}</div>
     </div>

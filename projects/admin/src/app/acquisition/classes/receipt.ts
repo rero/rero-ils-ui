@@ -22,7 +22,8 @@ export type IAcqReceipt = {
   quantity?: number;
   total_amount?: number;
   receipt_lines?: IAcqReceiptLine[];
-} & IAcqBaseResource & IAcqResourceWithNotes
+} & IAcqBaseResource &
+  IAcqResourceWithNotes;
 
 // ACQ RECEIPT LINE ===========================================================
 export type IAcqReceiptLine = {
@@ -33,12 +34,13 @@ export type IAcqReceiptLine = {
   vat_rate: number;
   receipt_date: string;
   document?: {
-    pid: string
-    string: string,
-    title_text: string,
-    identifiers?: string[]
-  }
-} & IAcqBaseResource & IAcqResourceWithNotes
+    pid: string;
+    string: string;
+    title_text: string;
+    identifiers?: string[];
+  };
+} & IAcqBaseResource &
+  IAcqResourceWithNotes;
 
 /** Default value for an AcqReceipt */
 export const receiptDefaultData = {
@@ -46,10 +48,10 @@ export const receiptDefaultData = {
   quantity: 0,
   total_amount: 0,
   receipt_lines: [],
-  notes: []
+  notes: [],
 };
 export const receiptLineDefaultData = {
   quantity: 0,
   amount: 0,
-  notes: []
+  notes: [],
 };

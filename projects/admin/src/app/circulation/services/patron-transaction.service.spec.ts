@@ -1,19 +1,24 @@
 // SPDX-FileCopyrightText: Fondation RERO+
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-import { TestBed } from "@angular/core/testing";
-import { PatronTransactionService } from "./patron-transaction.service";
-import { RecordService } from "@rero/ng-core";
-import { of } from "rxjs";
-import { PatronTransaction, PatronTransactionEvent, PatronTransactionEventType, PatronTransactionStatus } from "@app/admin/classes/patron-transaction";
-import { computeTotalTransactionsAmount } from "@app/admin/circulation/utils/transaction.utils";
-import { apiResponse } from "@rero/shared";
-import { AppStore } from "@rero/shared";
-import { RouteToolService } from "@app/admin/routes/route-tool.service";
-import { TranslateModule } from "@ngx-translate/core";
-import { MessageService, ToastMessageOptions } from "primeng/api";
-import { provideHttpClient } from "@angular/common/http";
-import { provideHttpClientTesting } from "@angular/common/http/testing";
+import { provideHttpClient, withXhr } from '@angular/common/http';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
+import { TestBed } from '@angular/core/testing';
+import { computeTotalTransactionsAmount } from '@app/admin/circulation/utils/transaction.utils';
+import {
+  PatronTransaction,
+  PatronTransactionEvent,
+  PatronTransactionEventType,
+  PatronTransactionStatus,
+} from '@app/admin/classes/patron-transaction';
+import { RouteToolService } from '@app/admin/routes/route-tool.service';
+import { provideTranslateService } from '@ngx-translate/core';
+import { MessageService, ToastMessageOptions } from '@openng/optimus-ui/api';
+import { RecordService } from '@rero/ng-core';
+import { apiResponse, AppStore } from '@rero/shared';
+import { of } from 'rxjs';
+
+import { PatronTransactionService } from './patron-transaction.service';
 
 describe('PatronTransactionService', () => {
   let service: PatronTransactionService;
@@ -29,9 +34,9 @@ describe('PatronTransactionService', () => {
       total_amount: 10,
       events: [],
       patron: {
-        pid: '1'
-      }
-    }
+        pid: '1',
+      },
+    },
   };
 
   const patronTransactionSecond = {
@@ -43,9 +48,9 @@ describe('PatronTransactionService', () => {
       total_amount: 5,
       events: [],
       patron: {
-        pid: '1'
-      }
-    }
+        pid: '1',
+      },
+    },
   };
 
   const patronTransactionClosed = {
@@ -57,9 +62,9 @@ describe('PatronTransactionService', () => {
       total_amount: 2,
       events: [],
       patron: {
-        pid: '1'
-      }
-    }
+        pid: '1',
+      },
+    },
   };
 
   const patronTransactionEvent = {
@@ -68,36 +73,34 @@ describe('PatronTransactionService', () => {
       amount: 5,
       type: PatronTransactionEventType.PAYMENT,
       operator: {
-        pid: '1'
+        pid: '1',
       },
-      parent: patronTransaction
-    }
+      parent: patronTransaction,
+    },
   };
 
-  const appStoreSpy = { } as any;
+  const appStoreSpy = {} as any;
   const user = {
     patronLibrarian: {
-      pid: '1'
+      pid: '1',
     },
-    currentLibrary: '1'
+    currentLibrary: '1',
   };
   appStoreSpy.user = vi.fn(() => user);
   appStoreSpy.currentLibraryPid = vi.fn(() => '1');
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [
-        TranslateModule.forRoot()
-      ],
       providers: [
+        provideTranslateService(),
         PatronTransactionService,
         RouteToolService,
         RecordService,
         { provide: AppStore, useValue: appStoreSpy },
         MessageService,
-        provideHttpClient(),
-        provideHttpClientTesting()
-      ]
+        provideHttpClient(withXhr()),
+        provideHttpClientTesting(),
+      ],
     });
 
     service = TestBed.inject(PatronTransactionService);
@@ -114,22 +117,20 @@ describe('PatronTransactionService', () => {
     apiResponse.hits.total = apiResponse.hits.hits.length;
     vi.spyOn(recordService, 'getRecords').mockReturnValue(of(apiResponse));
 
-    service.patronTransactionsByLoan('1')
-      .subscribe((result: PatronTransaction[]) => {
-        expect(result.length).toEqual(1);
-        expect(result[0]).toBeInstanceOf(PatronTransaction);
-        expect(result[0].total_amount).toEqual(10);
-      });
+    service.patronTransactionsByLoan('1').subscribe((result: PatronTransaction[]) => {
+      expect(result.length).toEqual(1);
+      expect(result[0]).toBeInstanceOf(PatronTransaction);
+      expect(result[0].total_amount).toEqual(10);
+    });
   });
 
   it('should return a list of patron transactions for a patron', () => {
     apiResponse.hits.hits = [patronTransaction];
     apiResponse.hits.total = apiResponse.hits.hits.length;
     vi.spyOn(recordService, 'getRecords').mockReturnValue(of(apiResponse));
-    service.patronTransactionsByPatron('1')
-      .subscribe((result: PatronTransaction[]) => {
-        expect(result[0]).toBeInstanceOf(PatronTransaction);
-      });
+    service.patronTransactionsByPatron('1').subscribe((result: PatronTransaction[]) => {
+      expect(result[0]).toBeInstanceOf(PatronTransaction);
+    });
   });
 
   it('should add events to a patron transaction', () => {
@@ -138,7 +139,7 @@ describe('PatronTransactionService', () => {
     vi.spyOn(recordService, 'getRecords').mockReturnValue(of(apiResponse));
     const transaction = new PatronTransaction(patronTransaction.metadata);
     expect(transaction.events.length).toEqual(0);
-    service.loadTransactionHistory(transaction).subscribe(events => transaction.events = events);
+    service.loadTransactionHistory(transaction).subscribe((events) => (transaction.events = events));
     expect(transaction.events.length).toEqual(1);
     const transactionEvent = transaction.events[0];
     expect(transactionEvent).toBeInstanceOf(PatronTransactionEvent);
@@ -146,34 +147,55 @@ describe('PatronTransactionService', () => {
   });
 
   it('should return the total of open transactions', () => {
-    expect(computeTotalTransactionsAmount([
-      patronTransaction.metadata,
-      patronTransactionSecond.metadata,
-      patronTransactionClosed.metadata
-    ] as any[])).toEqual(15);
+    expect(
+      computeTotalTransactionsAmount([
+        patronTransaction.metadata,
+        patronTransactionSecond.metadata,
+        patronTransactionClosed.metadata,
+      ] as any[]),
+    ).toEqual(15);
   });
 
   it('should issue the amount of the transaction paid', () => {
-    vi.spyOn(recordService, 'create').mockReturnValue(of({
-      created: '', id: '1', links: { self: '' }, metadata: {}, updated: ''
-    }));
+    vi.spyOn(recordService, 'create').mockReturnValue(
+      of({
+        created: '',
+        id: '1',
+        links: { self: '' },
+        metadata: {},
+        updated: '',
+      }),
+    );
     service.payPatronTransaction(new PatronTransaction(patronTransaction.metadata), 5, 'cash').subscribe();
     expect(recordService.create).toHaveBeenCalled();
   });
 
   it('should add a dispute to a transaction and emit a success message', () => {
-    vi.spyOn(recordService, 'create').mockReturnValue(of({
-      created: '', id: '1', links: { self: '' }, metadata: {}, updated: ''
-    }));
-    messageService.messageObserver
-      .subscribe((options: ToastMessageOptions) => expect(options.severity).toEqual('success'));
+    vi.spyOn(recordService, 'create').mockReturnValue(
+      of({
+        created: '',
+        id: '1',
+        links: { self: '' },
+        metadata: {},
+        updated: '',
+      }),
+    );
+    messageService.messageObserver.subscribe((options: ToastMessageOptions) =>
+      expect(options.severity).toEqual('success'),
+    );
     service.disputePatronTransaction(new PatronTransaction(patronTransaction.metadata), 'contest').subscribe();
   });
 
   it('should cancel a transaction and emit the amount', () => {
-    vi.spyOn(recordService, 'create').mockReturnValue(of({
-      created: '', id: '1', links: { self: '' }, metadata: {}, updated: ''
-    }));
+    vi.spyOn(recordService, 'create').mockReturnValue(
+      of({
+        created: '',
+        id: '1',
+        links: { self: '' },
+        metadata: {},
+        updated: '',
+      }),
+    );
     service.cancelPatronTransaction(new PatronTransaction(patronTransaction.metadata), 2, 'invalid').subscribe();
     expect(recordService.create).toHaveBeenCalled();
   });

@@ -5,9 +5,7 @@ import { Pipe, PipeTransform } from '@angular/core';
 
 @Pipe({ name: 'negativeAmount' })
 export class NegativeAmountPipe implements PipeTransform {
-
   transform(amount: number): number {
     return 0 - Math.abs(amount);
   }
-
 }

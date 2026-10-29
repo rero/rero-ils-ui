@@ -12,17 +12,17 @@ export type IAcqBaseResource = {
   updated?: string;
   organisation: IObjectReference;
   library?: IObjectReference;
-}
+};
 
 export type IAcqResourceWithNotes = {
   notes: IAcqNote[];
-}
+};
 
 /** Interface to describe an order note */
 export type IAcqNote = {
   type: AcqNoteType;
   content: string;
-}
+};
 
 /** Enumeration of possible note type */
 export enum AcqNoteType {
@@ -35,4 +35,4 @@ export type IObjectReference = {
   $ref?: string;
   pid?: string;
   type?: string;
-}
+};

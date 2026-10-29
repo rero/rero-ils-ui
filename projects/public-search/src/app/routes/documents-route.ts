@@ -6,10 +6,11 @@ import { ActivatedRoute, ActivatedRouteSnapshot, ResolveFn, Routes } from '@angu
 import { _, TranslateService } from '@ngx-translate/core';
 import { Bucket, capitalize, IFilter, RecordService, RecordType } from '@rero/ng-core';
 import { EntityBriefViewComponent } from '@rero/shared';
+import { map, Observable, of } from 'rxjs';
+
 import { AppConfigService } from '../app-config.service';
 import { DocumentBriefComponent } from '../document-brief/document-brief.component';
 import { DocumentRecordSearchComponent } from '../document-record-search/document-record-search.component';
-import { map, Observable, of } from 'rxjs';
 
 export const documentsRouteTitle: ResolveFn<string> = (route: ActivatedRouteSnapshot) => {
   const title = route.params['type'] === 'documents' ? _('Documents') : _('Authors/Subjects');
@@ -18,14 +19,19 @@ export const documentsRouteTitle: ResolveFn<string> = (route: ActivatedRouteSnap
 
 export const documentsRouteResolver: ResolveFn<Partial<RecordType>[]> = (route: ActivatedRouteSnapshot) => {
   const viewcode = route.params['viewcode'];
-  return new DocumentsRoute(inject(AppConfigService), inject(ActivatedRoute), inject(TranslateService), inject(RecordService)).getTypes(viewcode);
+  return new DocumentsRoute(
+    inject(AppConfigService),
+    inject(ActivatedRoute),
+    inject(TranslateService),
+    inject(RecordService),
+  ).getTypes(viewcode);
 };
 
 export const documentsRoutes: Routes = [
   {
     path: '',
     title: documentsRouteTitle,
-    component: DocumentRecordSearchComponent
+    component: DocumentRecordSearchComponent,
   },
 ];
 
@@ -146,22 +152,39 @@ class DocumentsRoute {
       },
     ];
   }
-private processFilterName(filter: IFilter): Observable<string> {
-    if(filter.name) { return of(filter.name); }
+  private processFilterName(filter: IFilter): Observable<string> {
+    if (filter.name) {
+      return of(filter.name);
+    }
     switch (filter.aggregationKey) {
-      case 'language': return this.translateService.stream(`lang_${filter.key}`);
-      case 'library': return this.recordService.getRecord<{metadata: {name: string}}>('libraries', filter.key).pipe(map(record => record.metadata.name));
-      case 'location': return this.recordService.getRecord<{metadata: {name: string}}>('locations', filter.key).pipe(map(record => record.metadata.name));
-      case 'organisation': return this.recordService.getRecord<{metadata: {name: string}}>('organisations', filter.key).pipe(map(record => record.metadata.name));
-      default: return this.translateService.stream(filter.key);
+      case 'language':
+        return this.translateService.stream(`lang_${filter.key}`);
+      case 'library':
+        return this.recordService
+          .getRecord<{ metadata: { name: string } }>('libraries', filter.key)
+          .pipe(map((record) => record.metadata.name));
+      case 'location':
+        return this.recordService
+          .getRecord<{ metadata: { name: string } }>('locations', filter.key)
+          .pipe(map((record) => record.metadata.name));
+      case 'organisation':
+        return this.recordService
+          .getRecord<{ metadata: { name: string } }>('organisations', filter.key)
+          .pipe(map((record) => record.metadata.name));
+      default:
+        return this.translateService.stream(filter.key);
     }
   }
 
   private processBucketName(bucket: Bucket): Observable<string> {
-    if(bucket.name) { return of(bucket.name); }
+    if (bucket.name) {
+      return of(bucket.name);
+    }
     switch (bucket.aggregationKey) {
-      case 'language': return this.translateService.stream(`lang_${bucket.key}`);
-      default: return this.translateService.stream(bucket.key);
+      case 'language':
+        return this.translateService.stream(`lang_${bucket.key}`);
+      default:
+        return this.translateService.stream(bucket.key);
     }
   }
 

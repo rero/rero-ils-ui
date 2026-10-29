@@ -5,31 +5,25 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 <div>
   @if (record()) {
     <ng-core-detail-button
-    [record]="record()"
-    [type]="type()"
-    [adminMode]="adminMode()"
-    [useStatus]="useStatus()"
-    [updateStatus]="updateStatus()"
-    [deleteStatus]="deleteStatus()"
-    (recordEvent)="recordEvent($event)"
-    (deleteMessageEvent)="showDeleteMessage($event)"
-  >
-    <ng-container beforeButton>
-      @if (record()) {
-        @if (resolvedRecordPermissions()?.update?.can && isIssue && isClaimAllowed) {
-            <p-button
-              outlined
-              (click)="openClaimEmailDialog()"
-              translate
-              [label]="'Add a claim' | translate"
-            />
+      [record]="record()"
+      [type]="type()"
+      [adminMode]="adminMode()"
+      [useStatus]="useStatus()"
+      [updateStatus]="updateStatus()"
+      [deleteStatus]="deleteStatus()"
+      (recordEvent)="recordEvent($event)"
+      (deleteMessageEvent)="showDeleteMessage($event)">
+      <ng-container beforeButton>
+        @if (record()) {
+          @if (resolvedRecordPermissions()?.update?.can && isIssue && isClaimAllowed) {
+            <p-button outlined (click)="openClaimEmailDialog()" [label]="'Add a claim' | translate" />
+          }
+          @if (appStore.isLogVisible('items') && record()?.metadata.pid) {
+            <shared-operation-logs-dialog resourceType="items" [resourcePid]="$any(record()?.metadata.pid)" />
+          }
         }
-        @if (appStore.isLogVisible('items') && record()?.metadata.pid) {
-          <shared-operation-logs-dialog resourceType="items" [resourcePid]="$any(record()?.metadata.pid)" />
-        }
-      }
-    </ng-container>
-  </ng-core-detail-button>
+      </ng-container>
+    </ng-core-detail-button>
   }
   @if (error()) {
     <ng-core-error [error]="error()" />

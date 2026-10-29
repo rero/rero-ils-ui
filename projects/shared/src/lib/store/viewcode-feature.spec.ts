@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 import { TestBed } from '@angular/core/testing';
 import { signalStore } from '@ngrx/signals';
+
 import { withViewCode } from './viewcode-feature';
 
 const TestStore = signalStore(withViewCode());
@@ -11,7 +12,7 @@ describe('ViewCodeFeature', () => {
 
   beforeEach(() => {
     store = TestBed.configureTestingModule({
-      providers: [TestStore]
+      providers: [TestStore],
     }).inject(TestStore);
   });
 

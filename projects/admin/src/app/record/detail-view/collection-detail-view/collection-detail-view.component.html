@@ -7,20 +7,18 @@ SPDX-License-Identifier: AGPL-3.0-or-later
     <h1 id="collection-title">{{ rec.metadata.title }}</h1>
     @if (rec.metadata.subjects) {
       <div id="subject" class="ui:flex ui:gap-1 ui:flex-wrap">
-        @for(subject of rec.metadata.subjects; track $index) {
-          <p-tag severity="secondary">
-            <i class="fa-solid fa-tag"></i>&nbsp;{{ subject.name }}
-          </p-tag>
+        @for (subject of rec.metadata.subjects; track $index) {
+          <p-tag severity="secondary"> <i class="fa-solid fa-tag"></i>&nbsp;{{ subject.name }} </p-tag>
         }
       </div>
     }
     <dl class="metadata">
       @if (rec.metadata.description) {
-        <dt translate>Description</dt>
+        <dt>{{ 'Description' | translate }}</dt>
         <dd [innerHtml]="rec.metadata.description | nl2br"></dd>
       }
       @if (rec.metadata.teachers) {
-        <dt translate>Teachers</dt>
+        <dt>{{ 'Teachers' | translate }}</dt>
         <dd>
           @for (teacher of rec.metadata.teachers; track $index; let last = $last) {
             {{ teacher.name }} {{ last ? '' : ', ' }}
@@ -28,31 +26,34 @@ SPDX-License-Identifier: AGPL-3.0-or-later
         </dd>
       }
       @if (rec.metadata.collection_id) {
-        <dt translate>Collection ID</dt>
+        <dt>{{ 'Collection ID' | translate }}</dt>
         <dd>{{ rec.metadata.collection_id }}</dd>
       }
       @if (rec.metadata.collection_type) {
-        <dt translate>Type</dt>
+        <dt>{{ 'Type' | translate }}</dt>
         <dd>{{ rec.metadata.collection_type }}</dd>
       }
       @if (rec.metadata.libraries) {
-        <dt translate>Libraries</dt>
+        <dt>{{ 'Libraries' | translate }}</dt>
         <dd>
           <ul class="ui:list-none">
-            @for (library of rec.metadata.libraries; track $index; let last=$last) {
+            @for (library of rec.metadata.libraries; track $index; let last = $last) {
               <li>{{ library.pid | getRecord: 'libraries' : 'field' : 'name' | async }}</li>
             }
           </ul>
         </dd>
       }
-      <dt translate>Date</dt>
+      <dt>{{ 'Date' | translate }}</dt>
       <dd>
         {{ rec.metadata.start_date | dateTranslate: 'mediumDate' }}
         - {{ rec.metadata.end_date | dateTranslate: 'mediumDate' }}
       </dd>
-      <dt translate>Status</dt>
+      <dt>{{ 'Status' | translate }}</dt>
       <dd>
-        <i class="fa-solid fa-circle ui:mr-1" aria-hidden="true" [ngClass]="{'text-success': rec.metadata.published, 'text-error': !rec.metadata.published}"></i>
+        <i
+          class="fa-solid fa-circle ui:mr-1"
+          aria-hidden="true"
+          [ngClass]="{ 'text-success': rec.metadata.published, 'text-error': !rec.metadata.published }"></i>
         @if (rec.metadata.published) {
           {{ 'published' | translate }}
         } @else {
@@ -65,4 +66,3 @@ SPDX-License-Identifier: AGPL-3.0-or-later
     </div>
   </section>
 }
-

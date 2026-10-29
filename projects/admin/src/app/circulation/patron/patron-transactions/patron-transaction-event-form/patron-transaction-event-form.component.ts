@@ -1,29 +1,36 @@
 // SPDX-FileCopyrightText: Fondation RERO+
 // SPDX-License-Identifier: AGPL-3.0-or-later
-import { Component, inject, OnInit, ChangeDetectionStrategy} from '@angular/core';
-import { UntypedFormGroup, ValidationErrors, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { CurrencyPipe } from '@angular/common';
+import { Component, inject, OnInit } from '@angular/core';
+import { FormsModule, ReactiveFormsModule, UntypedFormGroup, ValidationErrors } from '@angular/forms';
 import { PatronTransactionService } from '@app/admin/circulation/services/patron-transaction.service';
 import { PatronTransaction } from '@app/admin/classes/patron-transaction';
 import { FormlyFieldConfig, FormlyModule } from '@ngx-formly/core';
-import { TranslateService, TranslateDirective, TranslatePipe } from '@ngx-translate/core';
-import { AppStore, Tools } from '@rero/shared';
-import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
-import { forkJoin, Observable } from 'rxjs';
-import { Bind } from 'primeng/bind';
-import { Panel } from 'primeng/panel';
-import { Button } from 'primeng/button';
-import { CurrencyPipe } from '@angular/common';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
+import { Bind } from '@openng/optimus-ui/bind';
+import { Button } from '@openng/optimus-ui/button';
+import { DynamicDialogConfig, DynamicDialogRef } from '@openng/optimus-ui/dynamicdialog';
+import { Panel } from '@openng/optimus-ui/panel';
 import { DateTranslatePipe, HttpPendingService } from '@rero/ng-core';
-
+import { AppStore, Tools } from '@rero/shared';
+import { forkJoin, Observable } from 'rxjs';
 
 @Component({
-    selector: 'admin-patron-transaction-form',
-    templateUrl: './patron-transaction-event-form.component.html',
-    imports: [FormsModule, ReactiveFormsModule, FormlyModule, Bind, TranslateDirective, Button, CurrencyPipe, DateTranslatePipe, TranslatePipe, Panel],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  selector: 'admin-patron-transaction-form',
+  templateUrl: './patron-transaction-event-form.component.html',
+  imports: [
+    FormsModule,
+    ReactiveFormsModule,
+    FormlyModule,
+    Bind,
+    Button,
+    CurrencyPipe,
+    DateTranslatePipe,
+    TranslatePipe,
+    Panel,
+  ],
 })
 export class PatronTransactionEventFormComponent implements OnInit {
-
   private dynamicDialogConfig: DynamicDialogConfig = inject(DynamicDialogConfig);
   private dynamicDialogRef: DynamicDialogRef = inject(DynamicDialogRef);
   private translateService: TranslateService = inject(TranslateService);
@@ -65,8 +72,8 @@ export class PatronTransactionEventFormComponent implements OnInit {
       this.formFields.push(this._amountFormFieldDefinition());
       this.formFields.push(this._methodFormFieldDefinition());
       this.model = {
-        amount: (this.mode === 'full') ? this._computeTotalAmount() : 0,
-        method: 'cash'
+        amount: this.mode === 'full' ? this._computeTotalAmount() : 0,
+        method: 'cash',
       };
     } else if (this.action === 'cancel') {
       const placeholder = this.translateService.instant('Cancellation reason');
@@ -74,7 +81,7 @@ export class PatronTransactionEventFormComponent implements OnInit {
       this.formFields.push(this._commentFormFieldDefinition(placeholder));
       this.model = {
         amount: 0,
-        method: 'cash'
+        method: 'cash',
       };
     } else {
       const placeholder = this.translateService.instant('Reason of dispute');
@@ -97,25 +104,22 @@ export class PatronTransactionEventFormComponent implements OnInit {
         pattern: '^\\d*(\\.\\d{0,2})?$',
         required: true,
         addonLeft: [
-          Tools.currencySymbol(
-            this.translateService.getCurrentLang(),
-            this.appStore.organisation().default_currency
-          )
-        ]
+          Tools.currencySymbol(this.translateService.getCurrentLang(), this.appStore.organisation().default_currency),
+        ],
       },
       validation: {
         messages: {
-          pattern: (_error: ValidationErrors, _field: FormlyFieldConfig) => `Only 2 decimals are allowed`
-        }
+          pattern: (_error: ValidationErrors, _field: FormlyFieldConfig) => `Only 2 decimals are allowed`,
+        },
       },
       validators: {
         min: {
           // As we use 'step' property, we need to specify 'min' property to '0' for a nice value interval. But
           // with this special validator, we disallow to place a payment with a 0 amount
           expression: (c) => c.value > 0,
-          message: (_error) => this.translateService.instant('Must be greater than 0')
-        }
-      }
+          message: (_error) => this.translateService.instant('Must be greater than 0'),
+        },
+      },
     };
   }
 
@@ -129,13 +133,13 @@ export class PatronTransactionEventFormComponent implements OnInit {
         required: true,
         placeholder: this.translateService.instant('Select…'),
         options: [
-          {value: 'cash', label: this.translateService.instant('Cash')},
-          {value: 'invoice', label: this.translateService.instant('Invoice')},
-          {value: 'debit_card', label: this.translateService.instant('Debit card')},
-          {value: 'credit_card', label: this.translateService.instant('Credit card')},
-          {value: 'paypal', label: 'Paypal'}
-        ]
-      }
+          { value: 'cash', label: this.translateService.instant('Cash') },
+          { value: 'invoice', label: this.translateService.instant('Invoice') },
+          { value: 'debit_card', label: this.translateService.instant('Debit card') },
+          { value: 'credit_card', label: this.translateService.instant('Credit card') },
+          { value: 'paypal', label: 'Paypal' },
+        ],
+      },
     };
   }
 
@@ -149,8 +153,8 @@ export class PatronTransactionEventFormComponent implements OnInit {
         required: true,
         placeholder,
         rows: 4,
-        minLength: 5
-      }
+        minLength: 5,
+      },
     };
   }
 
@@ -180,16 +184,19 @@ export class PatronTransactionEventFormComponent implements OnInit {
    * Submit the form and create a new PatronTransactionEvent
    */
   onSubmitForm() {
-    if (this.httpPending.isPending()) { return; }
+    if (this.httpPending.isPending()) {
+      return;
+    }
     const formValues = this.form.value;
     const observables: Observable<void>[] = [];
     if (this.action === 'pay') {
       let residualAmount = formValues.amount as number;
       for (const transaction of this.transactions) {
-        const transactionAmount = (residualAmount >= transaction.total_amount)
-          ? transaction.total_amount
-          : residualAmount;
-        observables.push(this.patronTransactionService.payPatronTransaction(transaction, transactionAmount, formValues.method));
+        const transactionAmount =
+          residualAmount >= transaction.total_amount ? transaction.total_amount : residualAmount;
+        observables.push(
+          this.patronTransactionService.payPatronTransaction(transaction, transactionAmount, formValues.method),
+        );
         // DEV NOTES : We use the below syntax to avoid floating-number precision drift.
         //   on each iteration we 'round' the residual amount to a float with 2 decimals precision.
         //   --> with this syntax : (7.8 - 2 - 2 - 2) = 1.8
@@ -205,12 +212,14 @@ export class PatronTransactionEventFormComponent implements OnInit {
       }
     } else if (this.action === 'cancel') {
       for (const transaction of this.transactions) {
-        observables.push(this.patronTransactionService.cancelPatronTransaction(transaction, formValues.amount, formValues.comment));
+        observables.push(
+          this.patronTransactionService.cancelPatronTransaction(transaction, formValues.amount, formValues.comment),
+        );
       }
     }
     const patronPid = this.transactions[0]?.patron?.pid;
     forkJoin(observables).subscribe({
-      next: () => this.dynamicDialogRef.close(patronPid)
+      next: () => this.dynamicDialogRef.close(patronPid),
     });
   }
 }
@@ -222,4 +231,4 @@ type FormModel = {
   amount?: number;
   method?: string;
   comment?: string;
-}
+};

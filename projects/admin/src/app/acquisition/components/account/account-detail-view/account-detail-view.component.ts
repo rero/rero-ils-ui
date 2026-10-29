@@ -2,27 +2,36 @@
 // SPDX-FileCopyrightText: UCLouvain
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-import { Component, inject, input, ChangeDetectionStrategy} from '@angular/core';
+import { AsyncPipe, CurrencyPipe, NgClass } from '@angular/common';
+import { Component, inject, input } from '@angular/core';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
-import { filter, switchMap } from 'rxjs';
-import { AcqAccountApiService } from '../../../api/acq-account-api.service';
-import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
 import { RouterLink } from '@angular/router';
-import { NgClass, AsyncPipe, CurrencyPipe } from '@angular/common';
+import { TranslatePipe } from '@ngx-translate/core';
+import { MessageModule } from '@openng/optimus-ui/message';
+import { PanelModule } from '@openng/optimus-ui/panel';
 import { GetRecordPipe } from '@rero/ng-core';
 import { AppStore } from '@rero/shared';
+import { filter, switchMap } from 'rxjs';
+
+import { AcqAccountApiService } from '../../../api/acq-account-api.service';
 import { NegativeAmountPipe } from '../../../pipes/negative-amount.pipe';
-import { MessageModule } from 'primeng/message';
-import { PanelModule } from 'primeng/panel';
 
 @Component({
-    selector: 'admin-acquisition-account-detail-view',
-    templateUrl: './account-detail-view.component.html',
-    imports: [TranslateDirective, RouterLink, NgClass, AsyncPipe, CurrencyPipe, GetRecordPipe, TranslatePipe, NegativeAmountPipe, MessageModule, PanelModule],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  selector: 'admin-acquisition-account-detail-view',
+  templateUrl: './account-detail-view.component.html',
+  imports: [
+    RouterLink,
+    NgClass,
+    AsyncPipe,
+    CurrencyPipe,
+    GetRecordPipe,
+    TranslatePipe,
+    NegativeAmountPipe,
+    MessageModule,
+    PanelModule,
+  ],
 })
 export class AccountDetailViewComponent {
-
   private acqAccountApiService: AcqAccountApiService = inject(AcqAccountApiService);
   private appStore = inject(AppStore);
 
@@ -36,9 +45,9 @@ export class AccountDetailViewComponent {
   readonly esRecord = toSignal(
     toObservable(this.record).pipe(
       filter((data: any) => !!data?.metadata?.pid),
-      switchMap((data: any) => this.acqAccountApiService.getAccount(data.metadata.pid))
+      switchMap((data: any) => this.acqAccountApiService.getAccount(data.metadata.pid)),
     ),
-    { initialValue: null }
+    { initialValue: null },
   );
 
   // GETTER & SETTER ============================================================

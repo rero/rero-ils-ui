@@ -5,87 +5,87 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 @let u = user();
 @let p = patron();
 <section class="ui:mt-2">
-  <h4 translate>Personal details</h4>
+  <h4>{{ 'Personal details' | translate }}</h4>
   <dl class="metadata">
     <!-- GENDER -->
     @if (u?.gender) {
-      <dt translate>Gender</dt>
+      <dt>{{ 'Gender' | translate }}</dt>
       <dd>{{ u.gender | translate }}</dd>
     }
     <!-- USERNAME -->
     @if (u?.username) {
-      <dt translate>Username</dt>
+      <dt>{{ 'Username' | translate }}</dt>
       <dd>{{ u.username }}</dd>
     }
     <!-- PRIMARY ADDRESS -->
     @if (u?.street || u?.city || u?.country) {
-      <dt translate>Primary address</dt>
+      <dt>{{ 'Primary address' | translate }}</dt>
       <dd>
         @if (u?.street) {
-          {{ u.street }}<br>
+          {{ u.street }}<br />
         }
         @if (u?.city) {
-          {{ u.postal_code }} {{ u.city }}<br>
+          {{ u.postal_code }} {{ u.city }}<br />
         }
         @if (u?.country) {
-          {{ ('country_' + u.country) | translate }}
+          {{ 'country_' + u.country | translate }}
         }
       </dd>
     }
     <!-- SECONDARY ADDRESS -->
     @if (p?.second_address) {
-      <dt translate>Secondary address</dt>
+      <dt>{{ 'Secondary address' | translate }}</dt>
       <dd>
         @if (p.second_address.street) {
-          {{ p.second_address.street }}<br>
+          {{ p.second_address.street }}<br />
         }
         @if (p.second_address.city) {
-          {{ p.second_address.postal_code }} {{ p.second_address.city }}<br>
+          {{ p.second_address.postal_code }} {{ p.second_address.city }}<br />
         }
         @if (p.second_address.country) {
-          {{ ('country_' + p.second_address.country) | translate }}
+          {{ 'country_' + p.second_address.country | translate }}
         }
       </dd>
     }
     <!-- HOME PHONE -->
     @if (u?.home_phone) {
-      <dt translate>Home phone</dt>
+      <dt>{{ 'Home phone' | translate }}</dt>
       <dd>{{ u.home_phone }}</dd>
     }
     <!-- BUSINESS PHONE -->
     @if (u?.business_phone) {
-      <dt translate>Business phone</dt>
+      <dt>{{ 'Business phone' | translate }}</dt>
       <dd>{{ u.business_phone }}</dd>
     }
     <!-- MOBILE PHONE -->
     @if (u?.mobile_phone) {
-      <dt translate>Mobile phone</dt>
+      <dt>{{ 'Mobile phone' | translate }}</dt>
       <dd>{{ u.mobile_phone }}</dd>
     }
     <!-- OTHER PHONE -->
     @if (u?.other_phone) {
-      <dt translate>Other phone</dt>
+      <dt>{{ 'Other phone' | translate }}</dt>
       <dd>{{ u.other_phone }}</dd>
     }
     <!-- EMAIL -->
     @if (u?.email) {
-      <dt translate>Email</dt>
+      <dt>{{ 'Email' | translate }}</dt>
       <dd>{{ u.email }}</dd>
     }
     <!-- PATRON BARCODE -->
     @if (p?.patron?.barcode) {
-      <dt translate>Patron number</dt>
-      <dd>{{ p.patron.barcode | join : ', ' }}</dd>
+      <dt>{{ 'Patron number' | translate }}</dt>
+      <dd>{{ p.patron.barcode | join: ', ' }}</dd>
     }
     <!-- PATRON EXPIRATION -->
     @if (p?.patron?.expiration_date) {
-      <dt translate>Account expiration</dt>
+      <dt>{{ 'Account expiration' | translate }}</dt>
       <dd>{{ p.patron.expiration_date | dateTranslate: 'shortDate' }}</dd>
     }
     <!-- KEEP HISTORY -->
-    <dt translate>Keep history</dt>
+    <dt>{{ 'Keep history' | translate }}</dt>
     <dd>
-      <i class="fa-solid fa-circle" [ngClass]="{'text-success': u.keep_history, 'text-danger': !u.keep_history}"></i>
+      <i class="fa-solid fa-circle" [ngClass]="{ 'text-success': u.keep_history, 'text-danger': !u.keep_history }"></i>
       @if (u.keep_history) {
         {{ 'The loan history is visible in your patron account.' | translate }}
       } @else {
@@ -95,8 +95,8 @@ SPDX-License-Identifier: AGPL-3.0-or-later
   </dl>
   @if (disabledButtonOnReadyOnly) {
     <div class="ui:flex ui:gap-2 ui:mt-4">
-      <p-button size="small" [label]="'Edit'|translate" [routerLink]="['user', 'edit' ]" />
-      <p-button size="small" [label]="'Change my password'|translate" [routerLink]="['password', 'edit']" />
+      <p-button size="small" [label]="'Edit' | translate" [routerLink]="['user', 'edit']" />
+      <p-button size="small" [label]="'Change my password' | translate" [routerLink]="['password', 'edit']" />
     </div>
   }
 </section>

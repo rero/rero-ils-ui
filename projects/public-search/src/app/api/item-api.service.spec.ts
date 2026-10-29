@@ -6,52 +6,50 @@ import { TestBed } from '@angular/core/testing';
 import { RecordService } from '@rero/ng-core';
 import { EsRecord, EsResult, IAvailability } from '@rero/shared';
 import { of } from 'rxjs';
-import { ItemApiService } from './item-api.service';
 
+import { ItemApiService } from './item-api.service';
 
 describe('ItemService', () => {
   let service: ItemApiService;
 
   const record: EsRecord = {
-    created: "",
-    id: "1",
+    created: '',
+    id: '1',
     links: {
-      self: ''
+      self: '',
     },
     metadata: {
       pid: '1',
-      name: 'item name'
+      name: 'item name',
     },
-    updated: ""
+    updated: '',
   };
 
   const apiResponse = {
     aggregations: {},
     hits: {
       total: 1,
-      hits: [
-        record
-      ]
+      hits: [record],
     },
     links: {
-      self: ''
-    }
+      self: '',
+    },
   };
 
   const canRequest = {
     can: true,
-    reasons: {}
+    reasons: {},
   };
 
   const request = {
     request: {},
-    metadata: {}
+    metadata: {},
   };
 
   const availability: IAvailability = {
     available: true,
-    status: 'on_loan'
-  }
+    status: 'on_loan',
+  };
 
   const recordServiceSpy = { getRecords: vi.fn() };
   recordServiceSpy.getRecords.mockReturnValue(of(apiResponse));
@@ -60,12 +58,12 @@ describe('ItemService', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-    imports: [],
-    providers: [
+      imports: [],
+      providers: [
         { provide: RecordService, useValue: recordServiceSpy },
-        { provide: HttpClient, useValue: httpClientSpy }
-    ]
-});
+        { provide: HttpClient, useValue: httpClientSpy },
+      ],
+    });
     service = TestBed.inject(ItemApiService);
   });
 
@@ -77,8 +75,8 @@ describe('ItemService', () => {
     const holdings = {
       metadata: {
         pid: '1',
-        holdings_type: 'regular'
-      }
+        holdings_type: 'regular',
+      },
     };
     service.getItemsByHoldingsAndViewcode(holdings, 'global', 1).subscribe((result: EsResult) => {
       expect(result).toEqual(apiResponse);
@@ -101,7 +99,6 @@ describe('ItemService', () => {
 
   it('should return the availability of the item', () => {
     httpClientSpy.get.mockReturnValue(of(availability));
-    service.getAvailability('1')
-      .subscribe((response: IAvailability) => expect(response).toEqual(availability));
+    service.getAvailability('1').subscribe((response: IAvailability) => expect(response).toEqual(availability));
   });
 });

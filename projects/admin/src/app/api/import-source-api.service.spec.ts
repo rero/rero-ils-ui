@@ -1,11 +1,12 @@
 // SPDX-FileCopyrightText: Fondation RERO+
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-import { TestBed } from "@angular/core/testing";
-import { ImportSourceApiService } from "./import-source-api.service";
-import { HttpClient } from "@angular/common/http";
-import { of } from "rxjs";
-import { ExternalSourceSetting } from "../classes/external-source";
+import { HttpClient } from '@angular/common/http';
+import { TestBed } from '@angular/core/testing';
+import { of } from 'rxjs';
+
+import { ExternalSourceSetting } from '../classes/external-source';
+import { ImportSourceApiService } from './import-source-api.service';
 
 describe('ImportSourceApiService', () => {
   let service: ImportSourceApiService;
@@ -14,7 +15,7 @@ describe('ImportSourceApiService', () => {
     key: 'import-a',
     label: 'Import A',
     weight: 100,
-    endpoint: '/source/api/import'
+    endpoint: '/source/api/import',
   };
 
   const httpClientSpy = { get: vi.fn() };
@@ -22,10 +23,7 @@ describe('ImportSourceApiService', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [
-        ImportSourceApiService,
-        { provide: HttpClient, useValue: httpClientSpy }
-      ]
+      providers: [ImportSourceApiService, { provide: HttpClient, useValue: httpClientSpy }],
     });
 
     service = TestBed.inject(ImportSourceApiService);

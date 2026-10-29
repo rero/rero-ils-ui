@@ -6,7 +6,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 @if (holding()) {
   @if (holding().metadata.call_number || holding().metadata.second_call_number) {
     <dl class="metadata">
-      <dt translate>Call number</dt>
+      <dt>{{ 'Call number' | translate }}</dt>
       <dd>
         @if (holding().metadata.call_number) {
           {{ holding().metadata.call_number }}
@@ -24,18 +24,15 @@ SPDX-License-Identifier: AGPL-3.0-or-later
   <!-- AVAILABLE COLLECTION -->
   @if (holding().metadata.enumerationAndChronology) {
     <dl class="metadata">
-      <dt translate>Available collection</dt>
-      <dd
-
-        [innerHTML]="holding().metadata.enumerationAndChronology | nl2br">
-      </dd>
+      <dt>{{ 'Available collection' | translate }}</dt>
+      <dd [innerHTML]="holding().metadata.enumerationAndChronology | nl2br"></dd>
     </dl>
   }
 
   <!-- SUPPLEMENTARY CONTENT -->
   @if (holding().metadata.supplementaryContent) {
     <dl class="metadata">
-      <dt translate>Supplementary content</dt>
+      <dt>{{ 'Supplementary content' | translate }}</dt>
       <dt>
         {{ holding().metadata.supplementaryContent }}
       </dt>
@@ -45,7 +42,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
   <!-- INDEXES -->
   @if (holding().metadata.index) {
     <dl class="metadata">
-      <dt translate>Indexes</dt>
+      <dt>{{ 'Indexes' | translate }}</dt>
       <dd>
         {{ holding().metadata.index }}
       </dd>

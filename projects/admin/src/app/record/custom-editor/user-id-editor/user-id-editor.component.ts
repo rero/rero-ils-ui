@@ -1,28 +1,35 @@
 // SPDX-FileCopyrightText: Fondation RERO+
 // SPDX-License-Identifier: AGPL-3.0-or-later
-import { Component, inject, OnInit, signal, ChangeDetectionStrategy} from '@angular/core';
-import { UntypedFormControl, UntypedFormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { Component, inject, OnInit, signal } from '@angular/core';
+import { FormsModule, ReactiveFormsModule, UntypedFormControl, UntypedFormGroup } from '@angular/forms';
 import { FormlyFieldConfig, FormlyModule } from '@ngx-formly/core';
 import { FormlyJsonschema } from '@ngx-formly/core/json-schema';
-import { CONFIG, HttpPendingService, JSONSchema7, NgCoreTranslateService, processJsonSchema, RecordService, removeEmptyValues, SearchInputComponent } from '@rero/ng-core';
+import { TranslatePipe } from '@ngx-translate/core';
+import { MessageService } from '@openng/optimus-ui/api';
+import { Bind } from '@openng/optimus-ui/bind';
+import { Button } from '@openng/optimus-ui/button';
+import { Divider } from '@openng/optimus-ui/divider';
+import { DynamicDialogConfig, DynamicDialogRef } from '@openng/optimus-ui/dynamicdialog';
+import {
+  CONFIG,
+  HttpPendingService,
+  JSONSchema7,
+  NgCoreTranslateService,
+  RecordService,
+  removeEmptyValues,
+  SearchInputComponent,
+} from '@rero/ng-core';
+import { processJsonSchema } from '@rero/ng-core/editor';
 import { AppStore } from '@rero/shared';
-import { MessageService } from 'primeng/api';
-import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { of } from 'rxjs';
 import { debounceTime, map, switchMap, tap } from 'rxjs/operators';
-import { Bind } from 'primeng/bind';
-import { Divider } from 'primeng/divider';
-import { Button } from 'primeng/button';
-import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
-    selector: 'admin-user-id-editor',
-    templateUrl: './user-id-editor.component.html',
-    imports: [SearchInputComponent, Bind, Divider, FormsModule, ReactiveFormsModule, Button, FormlyModule, TranslatePipe],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  selector: 'admin-user-id-editor',
+  templateUrl: './user-id-editor.component.html',
+  imports: [SearchInputComponent, Bind, Divider, FormsModule, ReactiveFormsModule, Button, FormlyModule, TranslatePipe],
 })
 export class UserIdEditorComponent implements OnInit {
-
   private messageService: MessageService = inject(MessageService);
   private dynamicDialogConfig: DynamicDialogConfig = inject(DynamicDialogConfig);
   private dynamicDialogRef: DynamicDialogRef = inject(DynamicDialogRef);
@@ -61,14 +68,14 @@ export class UserIdEditorComponent implements OnInit {
   ngOnInit(): void {
     this.form = new UntypedFormGroup({});
     this.userID = this.dynamicDialogConfig?.data?.userID;
-    this.recordService.getSchemaForm('users').pipe(
-      tap(
-        schema => {
+    this.recordService
+      .getSchemaForm('users')
+      .pipe(
+        tap((schema) => {
           if (schema != null) {
             const processedSchema: any = processJsonSchema((schema as any).schema);
             this.fields = [
               this.formlyJsonschema.toFieldConfig(processedSchema, {
-
                 // post process JSONSchema7 to FormlyFieldConfig conversion
                 map: (field: FormlyFieldConfig, jsonSchema: JSONSchema7) => {
                   // If 'format' is defined into the jsonSchema, use it as props to try a validation on this field.
@@ -95,29 +102,27 @@ export class UserIdEditorComponent implements OnInit {
                   // remove Message suffix to the message validation key
                   // (required for backend  translations)
                   if (field.validation) {
-                    Object.keys(field.validation.messages).map(msg => {
+                    Object.keys(field.validation.messages).map((msg) => {
                       if (msg.endsWith('Message')) {
                         const val = field.validation.messages[msg];
-                        delete (field.validation.messages[msg]);
+                        delete field.validation.messages[msg];
                         const newMsg = msg.replace(/Message$/, '');
                         field.validation.messages[newMsg] = val;
                       }
                     });
                   }
                   return field;
-                }
-              })
+                },
+              }),
             ];
           }
-        }
-      ),
-      switchMap(() => {
-        return (this.userID == null)
-          ? of({})
-          : this.recordService.getRecord('users', this.userID);
-      }),
-      map((user: any) => user.metadata)
-    ).subscribe(model => this.model.set(model));
+        }),
+        switchMap(() => {
+          return this.userID == null ? of({}) : this.recordService.getRecord('users', this.userID);
+        }),
+        map((user: any) => user.metadata),
+      )
+      .subscribe((model) => this.model.set(model));
   }
 
   /**
@@ -125,8 +130,10 @@ export class UserIdEditorComponent implements OnInit {
    *
    * @param query - username or email to retrieve a User
    */
-  searchValueUpdated(query: (string | null)): void {
-    if (this.httpPending.isPending()) { return; }
+  searchValueUpdated(query: string | null): void {
+    if (this.httpPending.isPending()) {
+      return;
+    }
     if (!query) {
       this.loadedUserID = null;
       this.passwordField.props.required = true;
@@ -134,55 +141,58 @@ export class UserIdEditorComponent implements OnInit {
       this.model.set({});
       return;
     }
-    this.recordService.getRecords('users', { query }).pipe(
-      map((res: any) => {
-        if (res.hits.hits.length === 0) {
-          this.messageService.add({
-            severity: 'warn',
-            summary: this.translateService.instant('User'),
-            detail: this.translateService.instant('User not found.'),
-            life: CONFIG.MESSAGE_LIFE
-          })
-          return null;
-        }
-
-        return res.hits.hits[0];
-      }),
-      map(model => {
-        if (model == null) {
-          return null;
-        }
-        // current logged user organisation
-        const currentOrgPid = this.appStore.currentOrganisationPid();
-        const patronAccounts = model.metadata.patrons;
-        // user has patron account
-        if (patronAccounts && patronAccounts.length > 0) {
-          const patronAccount = patronAccounts.filter((ptrn: any) => ptrn.organisation.pid === currentOrgPid).pop();
-          // user has already an account in the logged librarian organisation
-          if (patronAccount != null) {
+    this.recordService
+      .getRecords('users', { query })
+      .pipe(
+        map((res: any) => {
+          if (res.hits.hits.length === 0) {
             this.messageService.add({
-              severity: 'info',
+              severity: 'warn',
               summary: this.translateService.instant('User'),
-              detail: this.translateService.instant('This person is already registered in your organisation.'),
-              life: CONFIG.MESSAGE_LIFE
+              detail: this.translateService.instant('User not found.'),
+              life: CONFIG.MESSAGE_LIFE,
             });
-            return of(null);
+            return null;
           }
-        }
-        this.messageService.add({
-          severity: 'info',
-          summary: this.translateService.instant('User'),
-          detail: this.translateService.instant('The personal data has been successfully linked to this patron.'),
-          life: CONFIG.MESSAGE_LIFE
-        });
-        this.loadedUserID = model.id;
-        this.passwordField.props.required = false;
-        this.form.reset();
-        const metadata = model.metadata || null;
-        this.model.set(metadata);
-        return metadata;
-      }),
-    ).subscribe();
+
+          return res.hits.hits[0];
+        }),
+        map((model) => {
+          if (model == null) {
+            return null;
+          }
+          // current logged user organisation
+          const currentOrgPid = this.appStore.currentOrganisationPid();
+          const patronAccounts = model.metadata.patrons;
+          // user has patron account
+          if (patronAccounts && patronAccounts.length > 0) {
+            const patronAccount = patronAccounts.filter((ptrn: any) => ptrn.organisation.pid === currentOrgPid).pop();
+            // user has already an account in the logged librarian organisation
+            if (patronAccount != null) {
+              this.messageService.add({
+                severity: 'info',
+                summary: this.translateService.instant('User'),
+                detail: this.translateService.instant('This person is already registered in your organisation.'),
+                life: CONFIG.MESSAGE_LIFE,
+              });
+              return of(null);
+            }
+          }
+          this.messageService.add({
+            severity: 'info',
+            summary: this.translateService.instant('User'),
+            detail: this.translateService.instant('The personal data has been successfully linked to this patron.'),
+            life: CONFIG.MESSAGE_LIFE,
+          });
+          this.loadedUserID = model.id;
+          this.passwordField.props.required = false;
+          this.form.reset();
+          const metadata = model.metadata || null;
+          this.model.set(metadata);
+          return metadata;
+        }),
+      )
+      .subscribe();
   }
 
   closeDialog(value?: string): void {
@@ -195,7 +205,9 @@ export class UserIdEditorComponent implements OnInit {
    * Create if the userID is null else update.
    */
   submit(): void {
-    if (this.httpPending.isPending()) { return; }
+    if (this.httpPending.isPending()) {
+      return;
+    }
     this.form.markAllAsTouched();
     if (!this.form.valid) {
       this.messageService.add({
@@ -203,7 +215,7 @@ export class UserIdEditorComponent implements OnInit {
         summary: this.translateService.instant('User'),
         detail: this.translateService.instant('The form contains errors.'),
         sticky: true,
-        closable: true
+        closable: true,
       });
       return;
     }
@@ -214,43 +226,46 @@ export class UserIdEditorComponent implements OnInit {
     }
     if (this.userID != null) {
       data.pid = this.userID;
-      this.recordService.update('users', data.pid, data)
-        .subscribe({
-          next: () => this.closeDialog(this.userID),
-          error: (error: any) => {
-            this.messageService.add(
-              (error.status === 409 || error.status === 412)
-                ? {
-                    severity: 'warn',
-                    summary: this.translateService.instant('Record conflict'),
-                    detail: this.translateService.instant('This record has been modified by another user. Please reload the page — your local changes will be lost.'),
-                    sticky: true,
-                    closable: true
-                  }
-                : {
-                    severity: 'error',
-                    summary: this.translateService.instant('User'),
-                    detail: error.title,
-                    sticky: true,
-                    closable: true
-                  }
-            );
-          }
-        });
+      this.recordService.update('users', data.pid, data).subscribe({
+        next: () => this.closeDialog(this.userID),
+        error: (error: any) => {
+          this.messageService.add(
+            error.status === 409 || error.status === 412
+              ? {
+                  severity: 'warn',
+                  summary: this.translateService.instant('Record conflict'),
+                  detail: this.translateService.instant(
+                    'This record has been modified by another user. Please reload the page — your local changes will be lost.',
+                  ),
+                  sticky: true,
+                  closable: true,
+                }
+              : {
+                  severity: 'error',
+                  summary: this.translateService.instant('User'),
+                  detail: error.title,
+                  sticky: true,
+                  closable: true,
+                },
+          );
+        },
+      });
     } else {
-      this.recordService.create('users', data)
-        .subscribe({
-          next: (res: any) => { this.userID = res.id; this.closeDialog(this.userID); },
-          error: (error: any) => {
-            this.messageService.add({
-              severity: 'error',
-              summary: this.translateService.instant('User'),
-              detail: error.title,
-              sticky: true,
-              closable: true
-            });
-          }
-        });
+      this.recordService.create('users', data).subscribe({
+        next: (res: any) => {
+          this.userID = res.id;
+          this.closeDialog(this.userID);
+        },
+        error: (error: any) => {
+          this.messageService.add({
+            severity: 'error',
+            summary: this.translateService.instant('User'),
+            detail: error.title,
+            sticky: true,
+            closable: true,
+          });
+        },
+      });
     }
   }
 
@@ -271,11 +286,10 @@ export class UserIdEditorComponent implements OnInit {
           debounceTime(1000),
           map((res: any) => {
             const id = this.loadedUserID || this.userID;
-            return (res.hits.hits.length === 0) ||
-              (res.hits.hits.length === 1 && res.hits.hits[0].id === id);
-          })
+            return res.hits.hits.length === 0 || (res.hits.hits.length === 1 && res.hits.hits[0].id === id);
+          }),
         );
-      }
+      },
     };
   }
 }

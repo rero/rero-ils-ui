@@ -6,15 +6,15 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 @if (transaction()) {
   <div class="ui:grid ui:grid-cols-12">
     @if (transaction().note) {
-      <div class="ui:col-span-2" translate>Note</div>
+      <div class="ui:col-span-2">{{ 'Note' | translate }}</div>
       <div class="ui:col-span-10">{{ transaction().note }}</div>
     }
     @if (transaction()?.document?.pid) {
-      @if(transaction().document.pid | getRecord:'documents' | async; as document) {
-        <div class="ui:col-span-2" translate>Document</div>
+      @if (transaction().document.pid | getRecord: 'documents' | async; as document) {
+        <div class="ui:col-span-2">{{ 'Document' | translate }}</div>
         <div class="ui:col-span-10">
           @if ($any(document).metadata.title | mainTitle; as title) {
-            <a [routerLink]="['/records','documents','detail', transaction().document.pid]">
+            <a [routerLink]="['/records', 'documents', 'detail', transaction().document.pid]">
               {{ title | truncateText: 15 }}
             </a>
           }
@@ -22,14 +22,14 @@ SPDX-License-Identifier: AGPL-3.0-or-later
       }
     }
     @if (item(); as item) {
-      <div class="ui:col-span-2" translate>Item</div>
+      <div class="ui:col-span-2">{{ 'Item' | translate }}</div>
       <div class="ui:col-span-10">
-        <a [routerLink]="['/records','items','detail', item.pid]">{{ item.barcode }}</a>
+        <a [routerLink]="['/records', 'items', 'detail', item.pid]">{{ item.barcode }}</a>
       </div>
     }
     @if (transaction().loan !== null) {
       @if (transaction().loan.pid | getRecord: 'loans' | async; as loan) {
-        <div class="ui:col-span-2" translate>Loan started at</div>
+        <div class="ui:col-span-2">{{ 'Loan started at' | translate }}</div>
         <div class="ui:col-span-10">{{ $any(loan).metadata.start_date | dateTranslate: 'shortDate' }}</div>
       }
     }

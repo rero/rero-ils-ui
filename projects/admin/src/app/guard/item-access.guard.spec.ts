@@ -1,16 +1,16 @@
 // SPDX-FileCopyrightText: Fondation RERO+
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-import { TestBed } from "@angular/core/testing";
-import { itemAccessGuard } from "./item-access.guard";
-import { AppStore } from "@rero/shared";
-import { firstValueFrom, of } from "rxjs";
-import { apiResponse } from "@rero/shared";
-import { RecordService } from "@rero/ng-core";
-import { TranslateModule } from "@ngx-translate/core";
-import { MessageService, ToastMessageOptions } from "primeng/api";
-import { ActivatedRouteSnapshot, Router, RouterModule, RouterStateSnapshot, UrlTree } from "@angular/router";
-import { ErrorPageComponent } from "../error/error-page/error-page.component";
+import { TestBed } from '@angular/core/testing';
+import { ActivatedRouteSnapshot, Router, RouterModule, RouterStateSnapshot, UrlTree } from '@angular/router';
+import { provideTranslateService } from '@ngx-translate/core';
+import { MessageService, ToastMessageOptions } from '@openng/optimus-ui/api';
+import { RecordService } from '@rero/ng-core';
+import { apiResponse, AppStore } from '@rero/shared';
+import { firstValueFrom, of } from 'rxjs';
+
+import { ErrorPageComponent } from '../error/error-page/error-page.component';
+import { itemAccessGuard } from './item-access.guard';
 
 describe('itemAccessGuard', () => {
   let route: ActivatedRouteSnapshot;
@@ -18,51 +18,47 @@ describe('itemAccessGuard', () => {
   let messageService: MessageService;
   let router: Router;
 
-  const routes = [
-    { path: '', component: ErrorPageComponent }
-  ];
+  const routes = [{ path: '', component: ErrorPageComponent }];
 
   const item = {
     metadata: {
       pid: '1',
       holding: {
-        $ref: '/api/holdings/2'
-      }
-    }
+        $ref: '/api/holdings/2',
+      },
+    },
   };
 
   const holdings = {
     metadata: {
       library: {
-        pid: '3'
-      }
-    }
+        pid: '3',
+      },
+    },
   };
   const appStoreSpy = { currentLibraryPid: vi.fn(() => '10') } as any;
 
   const recordServiceSpy = { getRecord: vi.fn(), getRecords: vi.fn() };
   recordServiceSpy.getRecord.mockReturnValue(of(item));
 
-  const activatedRouteSnapshotSpy = { } as any;
+  const activatedRouteSnapshotSpy = {} as any;
   activatedRouteSnapshotSpy.params = {
-    pid: '1'
+    pid: '1',
   };
 
-  const routerStateSnapshotSpy = { } as any;
+  const routerStateSnapshotSpy = {} as any;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [
-        RouterModule.forRoot(routes),
-        TranslateModule.forRoot()
-      ],
+      imports: [RouterModule.forRoot(routes)],
       providers: [
+        provideTranslateService(),
         MessageService,
         { provide: AppStore, useValue: appStoreSpy },
         { provide: RecordService, useValue: recordServiceSpy },
         { provide: ActivatedRouteSnapshot, useValue: activatedRouteSnapshotSpy },
-        { provide: RouterStateSnapshot, useValue: routerStateSnapshotSpy }
-      ]
+        { provide: RouterStateSnapshot, useValue: routerStateSnapshotSpy },
+      ],
     });
 
     route = TestBed.inject(ActivatedRouteSnapshot);
@@ -80,13 +76,12 @@ describe('itemAccessGuard', () => {
   });
 
   it('should display a message and return a UrlTree if access is denied', async () => {
-    messageService.messageObserver
-      .subscribe((message: ToastMessageOptions) => {
-        expect(message.severity).toEqual('warn');
-        expect(message.detail).toEqual('Access denied');
-      });
+    messageService.messageObserver.subscribe((message: ToastMessageOptions) => {
+      expect(message.severity).toEqual('warn');
+      expect(message.detail).toEqual('Access denied');
+    });
     const result = await firstValueFrom(
-      TestBed.runInInjectionContext(() => itemAccessGuard(route, routerState)) as any
+      TestBed.runInInjectionContext(() => itemAccessGuard(route, routerState)) as any,
     );
     expect(result instanceof UrlTree).toBeTruthy();
     expect(router.serializeUrl(result as UrlTree)).toBe('/');

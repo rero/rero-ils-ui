@@ -3,16 +3,25 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 import { inject, Injectable } from '@angular/core';
 import { DocumentApiService } from '@app/admin/api/document-api.service';
-import { _ } from "@ngx-translate/core";
+import { _ } from '@ngx-translate/core';
 import { Observable, of } from 'rxjs';
 import { tap } from 'rxjs/operators';
-import { IAdvancedSearchConfig, IFieldsData, IFieldsType, ILabelValue, ILabelValueField, ISearch, ISearchModel, ISelectOptions } from './i-advanced-search-config-interface';
+
+import {
+  IAdvancedSearchConfig,
+  IFieldsData,
+  IFieldsType,
+  ILabelValue,
+  ILabelValueField,
+  ISearch,
+  ISearchModel,
+  ISelectOptions,
+} from './i-advanced-search-config-interface';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class AdvancedSearchService {
-
   private documentApiService: DocumentApiService = inject(DocumentApiService);
 
   /** Field search types */
@@ -46,9 +55,9 @@ export class AdvancedSearchService {
       return of(undefined);
     }
 
-    return this.documentApiService.getAdvancedSearchConfig().pipe(
-      tap((config: IAdvancedSearchConfig) => this.process(config)),
-    );
+    return this.documentApiService
+      .getAdvancedSearchConfig()
+      .pipe(tap((config: IAdvancedSearchConfig) => this.process(config)));
   }
 
   /**
@@ -57,10 +66,10 @@ export class AdvancedSearchService {
    */
   getOperators(): ISelectOptions[] {
     return [
-        { label: _('and'), value: AdvancedSearchService.OPERATOR_AND },
-        { label: _('or'), value: AdvancedSearchService.OPERATOR_OR },
-        { label: _('and not'), value: AdvancedSearchService.OPERATOR_NOT }
-      ]
+      { label: _('and'), value: AdvancedSearchService.OPERATOR_AND },
+      { label: _('or'), value: AdvancedSearchService.OPERATOR_OR },
+      { label: _('and not'), value: AdvancedSearchService.OPERATOR_NOT },
+    ];
   }
 
   /**
@@ -131,7 +140,7 @@ export class AdvancedSearchService {
         this.fieldsSearchType[field.value] = field.options.search_type;
       }
       fieldMapping.push([field.value, field.field]);
-      this.fieldOptions.push({label: field.label, value: field.value});
+      this.fieldOptions.push({ label: field.label, value: field.value });
     });
     this.fieldMappingMap = new Map<string, string | null>(fieldMapping);
   }
@@ -154,21 +163,21 @@ export class AdvancedSearchService {
    * @param term - The string to project
    * @returns a protected string
    */
-    private protectStar(term: string): string {
-      return term.replace(/\.\*/g, '.\\*');
+  private protectStar(term: string): string {
+    return term.replace(/\.\*/g, '.\\*');
+  }
+
+  /**
+   * Protect term
+   * @param term - The string to project
+   * @param searchType - The search type
+   * @returns a protected string and delimited
+   */
+  private protectTerm(term: string, searchType: string): string {
+    if (searchType === AdvancedSearchService.SEARCH_TYPE_CONTAINS_PHRASE) {
+      return `"${term.replace(/"/g, '\\"')}"`;
     }
 
-    /**
-     * Protect term
-     * @param term - The string to project
-     * @param searchType - The search type
-     * @returns a protected string and delimited
-     */
-    private protectTerm(term: string, searchType: string): string {
-      if (searchType === AdvancedSearchService.SEARCH_TYPE_CONTAINS_PHRASE) {
-        return `"${term.replace(/"/g, '\\"')}"`;
-      }
-
-      return `(${term.replace(/\(/g, '\\(').replace(/\)/g, '\\)')})`;
-    }
+    return `(${term.replace(/\(/g, '\\(').replace(/\)/g, '\\)')})`;
+  }
 }

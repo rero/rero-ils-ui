@@ -4,16 +4,11 @@
 import { ResolveFn, Routes } from '@angular/router';
 import { FormlyFieldConfig } from '@ngx-formly/core';
 import { _ } from '@ngx-translate/core';
-import {
-  ComponentCanDeactivateGuard,
-  EditorComponent,
-  JSONSchema7,
-  RecordData,
-  RecordType,
-  RouteDataTypesInterface,
-} from '@rero/ng-core';
+import { JSONSchema7, RecordData, RecordType, RouteDataTypesInterface, unsavedChangesGuard } from '@rero/ng-core';
+import { EditorComponent } from '@rero/ng-core/editor';
 import { PERMISSIONS, Tools } from '@rero/shared';
 import { of } from 'rxjs';
+
 import { acqOrderLineGuard } from '../../guard/acq-order-line.guard';
 import { CAN_ACCESS_ACTIONS, canAccessGuard } from '../../guard/can-access.guard';
 import { permissionGuard } from '../../guard/permission.guard';
@@ -21,8 +16,7 @@ import { BaseRoute } from '../../routes/base-route';
 import { canAddOrderLineGuard } from './guards/can-add-order-line.guard';
 import { isBudgetActiveGuard } from './guards/is-budget-active.guard';
 
-export const orderLinesRouteResolver: ResolveFn<Partial<RecordType>[]> = () =>
-  new OrderLinesRoute().getTypes();
+export const orderLinesRouteResolver: ResolveFn<Partial<RecordType>[]> = () => new OrderLinesRoute().getTypes();
 
 export const orderLinesRoutes: Routes = [
   {
@@ -30,7 +24,7 @@ export const orderLinesRoutes: Routes = [
     component: EditorComponent,
     title: _('Order line'),
     canActivate: [canAccessGuard, isBudgetActiveGuard],
-    canDeactivate: [ComponentCanDeactivateGuard],
+    canDeactivate: [unsavedChangesGuard],
     data: {
       action: CAN_ACCESS_ACTIONS.UPDATE,
     },
@@ -40,7 +34,7 @@ export const orderLinesRoutes: Routes = [
     component: EditorComponent,
     title: _('Order line'),
     canActivate: [permissionGuard, canAddOrderLineGuard, acqOrderLineGuard],
-    canDeactivate: [ComponentCanDeactivateGuard],
+    canDeactivate: [unsavedChangesGuard],
     data: {
       permissions: [PERMISSIONS.ACOL_CREATE],
     },
@@ -83,7 +77,7 @@ class OrderLinesRoute extends BaseRoute implements RouteDataTypesInterface {
     data.acq_order = {
       $ref: this.routeToolService.apiService.getRefEndpoint(
         'acq_orders',
-        this.routeToolService.getRouteQueryParam('order')
+        this.routeToolService.getRouteQueryParam('order'),
       ),
     };
     return data;

@@ -1,21 +1,20 @@
 // SPDX-FileCopyrightText: Fondation RERO+
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-@use "easymde/dist/easymde.min";
-@use "@rero/ng-core/assets/scss/ng-core-tailwind";
-@import "tailwindcss/theme.css" layer(theme) prefix(ui);
-@import "tailwindcss/utilities.css" layer(utilities) prefix(ui);
+@use 'easymde/dist/easymde.min';
+@use '@rero/ng-core/assets/scss/ng-core-tailwind';
+@import 'tailwindcss/theme.css' layer(theme) prefix(ui);
+@import 'tailwindcss/utilities.css' layer(utilities) prefix(ui);
 
-@plugin "tailwindcss-primeui";
+@plugin "@openng/optimus-ui-tailwindcss";
 
-@import "../lib/component/documents/files/files.component";
-@import "../lib/view/contribution/contribution.component";
-
+@import '../lib/component/documents/files/files.component';
+@import '../lib/view/contribution/contribution.component';
 
 .rero-ils-external-link:after {
   @apply ui:text-sm;
   vertical-align: top;
-  content: " \2197"; // ↗ external link indicator
+  content: ' \2197'; // ↗ external link indicator
 }
 
 p-accordion-header {

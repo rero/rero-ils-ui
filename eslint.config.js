@@ -6,18 +6,26 @@ const angular = require('angular-eslint');
 module.exports = tseslint.config(
   {
     files: ['**/*.ts'],
-    extends: [eslint.configs.recommended, ...tseslint.configs.recommended, ...tseslint.configs.stylistic, ...angular.configs.tsRecommended],
+    extends: [
+      eslint.configs.recommended,
+      ...tseslint.configs.recommended,
+      ...tseslint.configs.stylistic,
+      ...angular.configs.tsRecommended,
+    ],
     processor: angular.processInlineTemplates,
     rules: {
       '@angular-eslint/prefer-standalone': 'off',
       // TODO: enable these rules and fix the issues
       '@typescript-eslint/no-explicit-any': 'off',
-      '@typescript-eslint/no-unused-vars': ['warn', {
-        argsIgnorePattern: '^_',
-        varsIgnorePattern: '^_',
-        caughtErrorsIgnorePattern: '^_',
-        destructuredArrayIgnorePattern: '^_',
-      }],
+      '@typescript-eslint/no-unused-vars': [
+        'warn',
+        {
+          argsIgnorePattern: '^_',
+          varsIgnorePattern: '^_',
+          caughtErrorsIgnorePattern: '^_',
+          destructuredArrayIgnorePattern: '^_',
+        },
+      ],
       '@angular-eslint/component-class-suffix': 'warn',
       '@angular-eslint/no-output-on-prefix': 'warn',
       '@angular-eslint/no-output-native': 'warn',
@@ -27,15 +35,20 @@ module.exports = tseslint.config(
       '@typescript-eslint/consistent-type-definitions': ['error', 'type'],
       'no-empty': 'warn',
       '@typescript-eslint/no-empty-function': 'warn',
-      '@typescript-eslint/no-unused-expressions': [
-        'error',
-        {allowTernary: true}
-      ],
+      '@typescript-eslint/no-unused-expressions': ['error', { allowTernary: true }],
       '@angular-eslint/directive-selector': [
         'error',
         {
           type: 'attribute',
-          prefix: ['app', 'admin', 'public-holdings-items', 'public-patron-profile', 'public-search', 'search-bar', 'shared'],
+          prefix: [
+            'app',
+            'admin',
+            'public-holdings-items',
+            'public-patron-profile',
+            'public-search',
+            'search-bar',
+            'shared',
+          ],
           style: 'camelCase',
         },
       ],
@@ -43,7 +56,15 @@ module.exports = tseslint.config(
         'error',
         {
           type: 'element',
-          prefix: ['app', 'admin', 'public-holdings-items', 'public-patron-profile', 'public-search', 'search-bar', 'shared'],
+          prefix: [
+            'app',
+            'admin',
+            'public-holdings-items',
+            'public-patron-profile',
+            'public-search',
+            'search-bar',
+            'shared',
+          ],
           style: 'kebab-case',
         },
       ],
@@ -56,5 +77,5 @@ module.exports = tseslint.config(
       '@angular-eslint/template/click-events-have-key-events': 'warn',
       '@angular-eslint/template/interactive-supports-focus': 'warn',
     },
-  }
+  },
 );

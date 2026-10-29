@@ -1,26 +1,25 @@
 // SPDX-FileCopyrightText: Fondation RERO+
 // SPDX-License-Identifier: AGPL-3.0-or-later
-import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
-import { TranslateService } from '@ngx-translate/core';
-import { DateTranslatePipe } from '@rero/ng-core';
-import { MenuItem } from 'primeng/api';
-import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
-import { FixedDateFormComponent } from '../fixed-date-form/fixed-date-form.component';
-import { CirculationStore, ICirculationSetting } from '../../../store/circulation.store';
+import { Component, inject } from '@angular/core';
 import { LoanFixedDateService } from '@app/admin/circulation/services/loan-fixed-date.service';
-import { Bind } from 'primeng/bind';
-import { Menu } from 'primeng/menu';
-import { Button } from 'primeng/button';
+import { TranslateService } from '@ngx-translate/core';
+import { MenuItem } from '@openng/optimus-ui/api';
+import { Bind } from '@openng/optimus-ui/bind';
+import { Button } from '@openng/optimus-ui/button';
+import { DialogService, DynamicDialogRef } from '@openng/optimus-ui/dynamicdialog';
+import { Menu } from '@openng/optimus-ui/menu';
+import { DateTranslatePipe } from '@rero/ng-core';
+
+import { CirculationStore, ICirculationSetting } from '../../../store/circulation.store';
+import { FixedDateFormComponent } from '../fixed-date-form/fixed-date-form.component';
 
 @Component({
-    selector: 'admin-circulation-settings',
-    templateUrl: './circulation-settings.component.html',
-    providers: [DateTranslatePipe],
-    imports: [Bind, Menu, Button],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  selector: 'admin-circulation-settings',
+  templateUrl: './circulation-settings.component.html',
+  providers: [DateTranslatePipe],
+  imports: [Bind, Menu, Button],
 })
 export class CirculationSettingsComponent {
-
   private translateService: TranslateService = inject(TranslateService);
   private dialogService: DialogService = inject(DialogService);
   private dateTranslatePipe: DateTranslatePipe = inject(DateTranslatePipe);
@@ -31,13 +30,13 @@ export class CirculationSettingsComponent {
     {
       label: this.translateService.instant('Check-out for a fix date'),
       code: 'fix-date',
-      command: () => this.openFixedEndDateDialog()
+      command: () => this.openFixedEndDateDialog(),
     },
     {
       label: this.translateService.instant('Override blockings'),
       code: 'override',
-      command: () => this.overrideBlocking()
-    }
+      command: () => this.overrideBlocking(),
+    },
   ];
 
   dialogRef: DynamicDialogRef | undefined;
@@ -67,7 +66,7 @@ export class CirculationSettingsComponent {
     this._setCheckoutSetting({
       key: 'overrideBlocking',
       label: this.translateService.instant('Override blockings'),
-      value: true
+      value: true,
     });
   }
 
@@ -80,8 +79,8 @@ export class CirculationSettingsComponent {
       value: endDate.toISOString(),
       extra: {
         remember,
-        severity: remember ? 'success' : 'warn'
-      }
+        severity: remember ? 'success' : 'warn',
+      },
     };
     this._setCheckoutSetting(setting);
   }

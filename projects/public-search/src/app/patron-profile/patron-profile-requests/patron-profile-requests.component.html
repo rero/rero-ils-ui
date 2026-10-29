@@ -6,27 +6,27 @@ SPDX-License-Identifier: AGPL-3.0-or-later
   <p-panel>
     <ng-template #header>
       <div class="ui:hidden ui:w-full ui:md:grid ui:grid-cols-12 ui:gap-4 ui:text-lg ui:font-bold ui:items-center">
-        <div class="ui:col-span-8" translate>Document</div>
-        <div class="ui:col-span-2" translate>Status</div>
+        <div class="ui:col-span-8">{{ 'Document' | translate }}</div>
+        <div class="ui:col-span-2">{{ 'Status' | translate }}</div>
       </div>
     </ng-template>
 
-  @defer (when store.requestsLoaded()) {
-    @if (store.requestsTotal() > 0) {
-      @for (request of store.requests(); track request.metadata.pid) {
-        <div class="ui:odd:bg-surface-50 ui:my-1">
-          <public-search-patron-profile-request [record]="request" id="request-{{ request.metadata.pid }}" />
-        </div>
+    @defer (when store.requestsLoaded()) {
+      @if (store.requestsTotal() > 0) {
+        @for (request of store.requests(); track request.metadata.pid) {
+          <div class="ui:odd:bg-surface-50 ui:my-1">
+            <public-search-patron-profile-request [record]="request" id="request-{{ request.metadata.pid }}" />
+          </div>
+        }
+        <shared-paginator
+          [pager]="store.requestPager()"
+          [total]="store.requestsTotal()"
+          (pageChange)="onPageChange($event)" />
+      } @else {
+        <div class="ui:font-bold ui:mx-2 ui:my-6">{{ 'No request' | translate }}</div>
       }
-      <shared-paginator
-        [pager]="store.requestPager()"
-        [total]="store.requestsTotal()"
-        (pageChange)="onPageChange($event)" />
-    } @else {
-        <div class="ui:font-bold ui:mx-2 ui:my-6" translate>No request</div>
+    } @placeholder {
+      <div class="ui:font-bold ui:mx-2 ui:my-6">{{ 'Loading in progress' | translate }}</div>
     }
-  } @placeholder {
-      <div class="ui:font-bold ui:mx-2 ui:my-6" translate>Loading in progress</div>
-  }
   </p-panel>
 </section>

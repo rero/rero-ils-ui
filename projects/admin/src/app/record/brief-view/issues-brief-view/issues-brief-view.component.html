@@ -6,14 +6,14 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 @if (record()) {
   <h5>
-      <a [routerLink]="[parentUrl.link]">{{ record().metadata.ui_title_text }}</a>
+    <a [routerLink]="[parentUrl.link]">{{ record().metadata.ui_title_text }}</a>
   </h5>
   <dl class="metadata">
     <!-- INHERITED CALL NUMBER -->
     @let callNumber = record() | itemHoldingsCallNumber | async;
     @if (callNumber) {
       @if ((callNumber.first | json) !== '{}' || (callNumber.second | json) !== '{}') {
-        <dt translate>Call number</dt>
+        <dt>{{ 'Call number' | translate }}</dt>
         <dd>
           <shared-inherited-call-number [item]="record()" context="first" />
         </dd>
@@ -21,28 +21,28 @@ SPDX-License-Identifier: AGPL-3.0-or-later
     }
     <!-- BARCODE -->
     @if (record().metadata.barcode) {
-      <dt translate>Barcode</dt>
+      <dt>{{ 'Barcode' | translate }}</dt>
       <dd>
         <a [routerLink]="[detailUrl().link]">{{ record().metadata.barcode }}</a>
       </dd>
     }
     <!-- ENUMERATION AND CHRONOLOGY -->
     @if (record().metadata.enumerationAndChronology) {
-      <dt translate>Numbering</dt>
+      <dt>{{ 'Numbering' | translate }}</dt>
       <dd>
         {{ record().metadata.enumerationAndChronology }}
       </dd>
     }
     <!-- VENDOR -->
     @if (record().metadata.vendor) {
-      <dt translate>Vendor</dt>
+      <dt>{{ 'Vendor' | translate }}</dt>
       <dd>
-        {{ record().metadata.vendor.pid | getRecord: 'vendors': 'field': 'name' | async }}
+        {{ record().metadata.vendor.pid | getRecord: 'vendors' : 'field' : 'name' | async }}
       </dd>
     }
     <!-- EXPECTED DATE -->
     @if (record().metadata.issue.expected_date) {
-      <dt translate>Expected date</dt>
+      <dt>{{ 'Expected date' | translate }}</dt>
       <dd>
         {{ record().metadata.issue.expected_date | dateTranslate }}
       </dd>
@@ -65,14 +65,14 @@ SPDX-License-Identifier: AGPL-3.0-or-later
     }
     <!-- ISSUE STATUS AND DATE-->
     @if (record().metadata.issue.status; as status) {
-      <dt translate>Issue status</dt>
+      <dt>{{ 'Issue status' | translate }}</dt>
       <dd>
-        <i [ngClass]="{
-          'fa-solid fa-envelope ui:text-muted-color': status === issueItemStatus.EXPECTED,
-          'fa-solid fa-hourglass-half text-warning': status === issueItemStatus.LATE
-        }"
-        ></i>
-      {{ status | translate }} [{{ record().metadata.issue.status_date | dateTranslate }}]
+        <i
+          [ngClass]="{
+            'fa-solid fa-envelope ui:text-muted-color': status === issueItemStatus.EXPECTED,
+            'fa-solid fa-hourglass-half text-warning': status === issueItemStatus.LATE,
+          }"></i>
+        {{ status | translate }} [{{ record().metadata.issue.status_date | dateTranslate }}]
       </dd>
     }
   </dl>

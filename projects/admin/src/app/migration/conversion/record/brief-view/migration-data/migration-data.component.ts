@@ -1,18 +1,17 @@
 // SPDX-FileCopyrightText: Fondation RERO+
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-import { Component, computed, input, ChangeDetectionStrategy} from '@angular/core';
+import { Component, computed, input } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { Tag } from 'primeng/tag';
-import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
+import { Tag } from '@openng/optimus-ui/tag';
 import { DateTranslatePipe } from '@rero/ng-core';
 import { MainTitlePipe } from '@rero/shared';
 
 @Component({
-    selector: 'admin-migration-data',
-    templateUrl: './migration-data.component.html',
-    imports: [RouterLink, Tag, TranslateDirective, DateTranslatePipe, MainTitlePipe, TranslatePipe],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  selector: 'admin-migration-data',
+  templateUrl: './migration-data.component.html',
+  imports: [RouterLink, Tag, DateTranslatePipe, MainTitlePipe, TranslatePipe],
 })
 export class MigrationDataBriefComponent {
   record = input<any>();
@@ -22,5 +21,4 @@ export class MigrationDataBriefComponent {
   detailUrl = input<{ link: string; external: boolean }>();
 
   status = computed(() => this.record()?.metadata?.conversion?.status);
-
 }

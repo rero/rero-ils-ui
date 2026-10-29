@@ -3,482 +3,454 @@ SPDX-FileCopyrightText: Fondation RERO+
 SPDX-License-Identifier: AGPL-3.0-or-later
 -->
 @if (libForm()) {
-<h1 translate>Library</h1>
-<form [formGroup]="libForm()!" (ngSubmit)="onSubmit()">
-  <p-accordion [value]="['0']" [multiple]="true">
-    <!-- DESCRIPTIVE METADATA TAB ===================================== -->
-    <p-accordion-panel value="0">
-      <p-accordion-header>
-        <div>
-          <i class="fa-solid fa-bars"></i>&nbsp;{{ "Descriptive data" | translate }}
-        </div>
-      </p-accordion-header>
-      <p-accordion-content>
-        <div class="ui:grid ui:grid-cols-12 ui:gap-4 ui:items-center">
-          <label for="code" class="ui:col-span-3"
-            ><span translate>Code</span>&nbsp;*</label
-          >
-          <div class="ui:col-span-9">
-            <input
-              pInputText
-              id="code"
-              formControlName="code"
-              class="ui:w-full"
-              [class.ng-invalid]="code.invalid"
-              placeholder="{{ 'Please insert a code' | translate }}"
-              required
-            />
-            @if (code.invalid && (code.dirty || code.touched)) {
-            <div class="text-error">
-              @if (code.errors?.alreadyTaken) {
-              <span translate>Code is already taken.</span>
-              } @if (code.errors?.required) {
-              <span translate>Code is required.</span>
-              } @if (code.pending) {
-              <span translate>Validating…</span>
-              }
-            </div>
-            }
-          </div>
-          <label for="name" class="ui:col-span-3"
-            ><span translate>Name</span>&nbsp;*</label
-          >
-          <div class="ui:col-span-9">
-            <input
-              pInputText
-              id="name"
-              formControlName="name"
-              class="ui:w-full"
-              [class.ng-invalid]="name.invalid"
-              [placeholder]="'Please insert a name' | translate"
-              required
-            />
-            @if (name.invalid && (name.dirty || name.touched)) {
-            <div class="text-error">
-              @if (name.errors?.required) {
-              <span translate>Name is required.</span>
-              } @if (name.errors?.minlength) {
-              <span translate>Name must be at least 4 characters long.</span>
-              }
-            </div>
-            }
-          </div>
-          <label for="address" class="ui:col-span-3" translate>Address</label>
-          <div class="ui:col-span-9">
-            <p-inputgroup>
-              <p-inputgroup-addon>
-                <i class="fa-solid fa-house"></i>
-              </p-inputgroup-addon>
+  <h1>{{ 'Library' | translate }}</h1>
+  <form [formGroup]="libForm()!" (ngSubmit)="onSubmit()">
+    <p-accordion [value]="['0']" [multiple]="true">
+      <!-- DESCRIPTIVE METADATA TAB ===================================== -->
+      <p-accordion-panel value="0">
+        <p-accordion-header>
+          <div><i class="fa-solid fa-bars"></i>&nbsp;{{ 'Descriptive data' | translate }}</div>
+        </p-accordion-header>
+        <p-accordion-content>
+          <div class="ui:grid ui:grid-cols-12 ui:gap-4 ui:items-center">
+            <label for="code" class="ui:col-span-3"
+              ><span>{{ 'Code' | translate }}</span
+              >&nbsp;*</label
+            >
+            <div class="ui:col-span-9">
               <input
                 pInputText
-                id="address"
-                formControlName="address"
+                id="code"
+                formControlName="code"
                 class="ui:w-full"
-                [class.ng-invalid]="address.invalid"
-              />
-              @if (address.invalid && (address.dirty || address.touched)) {
-              <div class="text-error">
-                @if (address.errors?.minlength) {
-                <span translate>Address must be at least 4 characters long.</span>
-                }
-              </div>
-              }
-            </p-inputgroup>
-          </div>
-          <label for="email" class="ui:col-span-3" translate>Email</label>
-          <div class="ui:col-span-9">
-            <p-inputgroup>
-              <p-inputgroup-addon>
-                <i class="fa-solid fa-at"></i>
-              </p-inputgroup-addon>
-              <input
-                pInputText
-                id="email"
-                formControlName="email"
-                class="ui:w-full"
-                [class.ng-invalid]="email.invalid"
-              />
-              @if (email.invalid && (email.dirty || email.touched)) {
-              <div class="text-error">
-                @if (email.errors?.email) {
-                <span translate>Email format is not correct.</span>
-                }
-              </div>
-              }
-            </p-inputgroup>
-          </div>
-          <label for="communication_language" class="ui:col-span-3"
-            ><span translate>Communication language</span>&nbsp;*</label
-          >
-          <div class="ui:col-span-9">
-            <p-select
-              [options]="availableCommunicationLanguagesOptions()"
-              id="communication_language"
-              formControlName="communication_language"
-              class="ui:w-full"
-            />
-            @if (communicationLanguage.invalid && (communicationLanguage.dirty ||
-            communicationLanguage.touched)) {
-            <div class="text-error">
-              @if (communicationLanguage.errors?.required) {
-              <span translate>Communication language is required.</span>
-              }
-            </div>
-            }
-          </div>
-        </div>
-      </p-accordion-content>
-    </p-accordion-panel>
-    <!-- OPENING HOURS TAB ============================================ -->
-    <p-accordion-panel value="1">
-      <p-accordion-header>
-        <div class="ui:flex ui:w-full ui:items-center ui:justify-between ui:mr-2">
-          <div>
-            <i class="fa-regular fa-clock"></i>&nbsp;
-            <span translate>Opening Hours</span>
-          </div>
-          <div class="ui:flex ui:gap-1">
-            @for (day of openingHours.controls; track $index) {
-            <i
-              [ngClass]="{
-                'fa-solid fa-circle-xmark text-error': !day.value.is_open,
-                'fa-solid fa-circle text-success': day.value.is_open
-              }"
-            ></i>
-            }
-          </div>
-        </div>
-      </p-accordion-header>
-      <p-accordion-content>
-        @for (day of openingHours.controls; track $index; let i=$index) {
-        <div class="ui:mt-3" formArrayName="opening_hours">
-          <div [formGroupName]="i">
-            <div class="ui:grid ui:grid-cols-12 ui:gap-4 ui:align-items-top">
-              <div class="ui:col-span-2 ui:pt-3">
-                <div class="ui:flex ui:items-start ui:gap-1">
-                  <p-toggleswitch
-                    formControlName="is_open"
-                    [id]="day.value.day"
-                    [(ngModel)]="day.value.is_open"
-                  />
-                  <label [for]="day.value.day">{{ day.value.day | translate | titlecase }}</label>
-                </div>
-              </div>
-              <div class="ui:col-span-10">
-                @if (day.value.is_open) {
-                <ul class="ui:list-none">
-                  @for (time of $any(day).controls.times.controls; track $index;
-                  let t=$index; let last=$last; let count=$count) {
-                  <li formArrayName="times">
-                    <div [formGroupName]="t">
-                      <!-- inputs row. One row for each period -->
-                      <div class="ui:grid ui:grid-cols-12 ui:gap-4">
-                        <div class="ui:col-span-10 ui:flex ui:gap-2 ui:my-1">
-                          <p-inputgroup>
-                            <p-inputgroup-addon>
-                              <i class="fa-regular fa-clock"></i>
-                            </p-inputgroup-addon>
-                            <input
-                              pInputText
-                              formControlName="start_time"
-                              [(ngModel)]="time.value.start_time"
-                            />
-                          </p-inputgroup>
-                          <p-inputgroup>
-                            <p-inputgroup-addon>
-                              <i class="fa-solid fa-arrow-right-long"></i>
-                            </p-inputgroup-addon>
-                            <input
-                              pInputText
-                              formControlName="end_time"
-                              [(ngModel)]="time.value.end_time"
-                            />
-                          </p-inputgroup>
-                        </div>
-                        <div class="ui:col-span-2 ui:flex ui:gap-2 ui:justify-end">
-                          @if (last) {
-                            <p-button
-                              (onClick)="addTime(i)"
-                              outlined
-                              icon="fa-regular fa-square-plus"
-                              [label]="'period' | translate"
-                            />
-                          }
-                          @if (count > 1) {
-                            <p-button
-                              (onClick)="deleteTime(i, t)"
-                              outlined
-                              severity="danger"
-                              icon="fa-solid fa-trash-can"
-                            />
-                          }
-                        </div>
-                      </div>
-                      <div class="text-error">
-                        @if (time.controls.start_time.invalid &&
-                        (time.controls.start_time.dirty ||
-                        time.controls.start_time.touched)) { @if
-                        (time.controls.start_time.errors?.required) {
-                        <div translate>Start time is required.</div>
-                        } @if (time.controls.start_time.errors?.pattern) {
-                        <div translate>Start time format is not correct.</div>
-                        } } @if (time.controls.end_time.invalid &&
-                        (time.controls.end_time.dirty ||
-                        time.controls.end_time.touched)) { @if
-                        (time.controls.end_time.errors?.required) {
-                        <div translate>End time is required.</div>
-                        } @if (time.controls.end_time.errors?.pattern) {
-                        <div translate>End time format is not correct.</div>
-                        } } @if (time.invalid && (time.dirty || time.touched)) {
-                        @if (time.errors && time.errors.lessThan) {
-                        <div translate>End time is less than start time.</div>
-                        } }
-                      </div>
-                    </div>
-                  </li>
-
-                  }
-                </ul>
-                } @if (day.invalid && (day.dirty || day.touched)) {
+                [class.ng-invalid]="code.invalid"
+                placeholder="{{ 'Please insert a code' | translate }}"
+                required />
+              @if (code.invalid && (code.dirty || code.touched)) {
                 <div class="text-error">
-                  @if (day.errors && day.errors.rangeLessThan) {
-                  <div translate>The two periods are overlapping.</div>
+                  @if (code.errors?.alreadyTaken) {
+                    <span>{{ 'Code is already taken.' | translate }}</span>
+                  }
+                  @if (code.errors?.required) {
+                    <span>{{ 'Code is required.' | translate }}</span>
+                  }
+                  @if (code.pending) {
+                    <span>{{ 'Validating…' | translate }}</span>
                   }
                 </div>
-                }
-              </div>
-            </div>
-          </div>
-        </div>
-        }
-      </p-accordion-content>
-    </p-accordion-panel>
-    <!-- EXCEPTIONS DATES TAB ========================================= -->
-    <p-accordion-panel value="2" #exceptionsPanel>
-      <p-accordion-header>
-        <div class="ui:flex ui:w-full ui:items-center ui:justify-between ui:mr-2">
-          <div>
-            <i class="fa-solid fa-triangle-exclamation"></i>&nbsp;
-            <span translate>Exceptions (holidays, etc.)</span>
-          </div>
-
-          <div class="ui:flex ui:gap-2 ui:items-center">
-            <p-button
-              [hidden]="!exceptionsPanel.active()"
-              size="small"
-              outlined
-              (onClick)="$event.stopPropagation(); addException()"
-              icon="fa-regular fa-square-plus"
-              [label]="'Add' | translate"
-            />
-            <p-badge [value]="exceptionDates().length || '0'" />
-          </div>
-        </div>
-      </p-accordion-header>
-      <p-accordion-content>
-        <admin-libraries-exception-dates-list [exceptionDates]="exceptionDates()" />
-      </p-accordion-content>
-    </p-accordion-panel>
-    <!-- NOTIFICATIONS SETTING TAB ==================================== -->
-    <p-accordion-panel value="3">
-      <p-accordion-header>
-        <div>
-          <i class="fa-regular fa-envelope"></i>&nbsp;
-          <span translate>Notification settings</span>
-        </div>
-      </p-accordion-header>
-      <p-accordion-content>
-        <div formArrayName="notification_settings">
-          @for(setting of notificationSettings.controls; track $index; let i=$index) {
-          <div class="ui:grid ui:grid-cols-12 ui:mt-1" [formGroupName]="i">
-            <div class="ui:col-span-3 ui:flex ui:gap-3 ui:items-center">
-              @if ($any(setting).controls.type.value | notificationType:'patron') {
-                <i class="text-info fa-solid fa-info"></i>
               }
-              <!-- eslint-disable-next-line @angular-eslint/template/label-has-associated-control -->
-              <label class="ui:font-bold">
-                {{ $any(setting).controls.type.value | translate | ucfirst }}
-              </label>
             </div>
-            <div class="ui:col-span-9 ui:flex ui:gap-3">
-              <p-inputGroup>
-                <p-inputGroupAddon>
-                  <i class="fa-solid fa-at"></i>
-                </p-inputGroupAddon>
+            <label for="name" class="ui:col-span-3"
+              ><span>{{ 'Name' | translate }}</span
+              >&nbsp;*</label
+            >
+            <div class="ui:col-span-9">
+              <input
+                pInputText
+                id="name"
+                formControlName="name"
+                class="ui:w-full"
+                [class.ng-invalid]="name.invalid"
+                [placeholder]="'Please insert a name' | translate"
+                required />
+              @if (name.invalid && (name.dirty || name.touched)) {
+                <div class="text-error">
+                  @if (name.errors?.required) {
+                    <span>{{ 'Name is required.' | translate }}</span>
+                  }
+                  @if (name.errors?.minlength) {
+                    <span>{{ 'Name must be at least 4 characters long.' | translate }}</span>
+                  }
+                </div>
+              }
+            </div>
+            <label for="address" class="ui:col-span-3">{{ 'Address' | translate }}</label>
+            <div class="ui:col-span-9">
+              <p-inputgroup>
+                <p-inputgroup-addon>
+                  <i class="fa-solid fa-house"></i>
+                </p-inputgroup-addon>
                 <input
                   pInputText
+                  id="address"
+                  formControlName="address"
+                  class="ui:w-full"
+                  [class.ng-invalid]="address.invalid" />
+                @if (address.invalid && (address.dirty || address.touched)) {
+                  <div class="text-error">
+                    @if (address.errors?.minlength) {
+                      <span>{{ 'Address must be at least 4 characters long.' | translate }}</span>
+                    }
+                  </div>
+                }
+              </p-inputgroup>
+            </div>
+            <label for="email" class="ui:col-span-3">{{ 'Email' | translate }}</label>
+            <div class="ui:col-span-9">
+              <p-inputgroup>
+                <p-inputgroup-addon>
+                  <i class="fa-solid fa-at"></i>
+                </p-inputgroup-addon>
+                <input
+                  pInputText
+                  id="email"
                   formControlName="email"
-                  [id]="$any(setting).controls.type.value + '-email'"
-                />
-              </p-inputGroup>
-              @if (delayedNotificationTypes.includes($any(setting).controls.type.value)) {
-                <p-inputGroup>
-                  <p-inputGroupAddon>
-                    <i class="fa-regular fa-clock"></i>
-                  </p-inputGroupAddon>
-                  <p-inputNumber
-                    inputStyleClass="ui:rounded-l-none"
-                    formControlName="delay"
-                    [inputId]="$any(setting).controls.type.value + '-delay'"
-                    [min]="0"
-                    pTooltip="{{
-                      'Sending how many minutes after the item is available'
-                        | translate
-                    }}"
-                    tooltipPosition="top"
-                  />
-                </p-inputGroup>
+                  class="ui:w-full"
+                  [class.ng-invalid]="email.invalid" />
+                @if (email.invalid && (email.dirty || email.touched)) {
+                  <div class="text-error">
+                    @if (email.errors?.email) {
+                      <span>{{ 'Email format is not correct.' | translate }}</span>
+                    }
+                  </div>
+                }
+              </p-inputgroup>
+            </div>
+            <label for="communication_language" class="ui:col-span-3"
+              ><span>{{ 'Communication language' | translate }}</span
+              >&nbsp;*</label
+            >
+            <div class="ui:col-span-9">
+              <p-select
+                [options]="availableCommunicationLanguagesOptions()"
+                id="communication_language"
+                formControlName="communication_language"
+                class="ui:w-full" />
+              @if (communicationLanguage.invalid && (communicationLanguage.dirty || communicationLanguage.touched)) {
+                <div class="text-error">
+                  @if (communicationLanguage.errors?.required) {
+                    <span>{{ 'Communication language is required.' | translate }}</span>
+                  }
+                </div>
               }
             </div>
           </div>
+        </p-accordion-content>
+      </p-accordion-panel>
+      <!-- OPENING HOURS TAB ============================================ -->
+      <p-accordion-panel value="1">
+        <p-accordion-header>
+          <div class="ui:flex ui:w-full ui:items-center ui:justify-between ui:mr-2">
+            <div>
+              <i class="fa-regular fa-clock"></i>&nbsp;
+              <span>{{ 'Opening Hours' | translate }}</span>
+            </div>
+            <div class="ui:flex ui:gap-1">
+              @for (day of openingHours.controls; track $index) {
+                <i
+                  [ngClass]="{
+                    'fa-solid fa-circle-xmark text-error': !day.value.is_open,
+                    'fa-solid fa-circle text-success': day.value.is_open,
+                  }"></i>
+              }
+            </div>
+          </div>
+        </p-accordion-header>
+        <p-accordion-content>
+          @for (day of openingHours.controls; track $index; let i = $index) {
+            <div class="ui:mt-3" formArrayName="opening_hours">
+              <div [formGroupName]="i">
+                <div class="ui:grid ui:grid-cols-12 ui:gap-4 ui:align-items-top">
+                  <div class="ui:col-span-2 ui:pt-3">
+                    <div class="ui:flex ui:items-start ui:gap-1">
+                      <p-toggleswitch formControlName="is_open" [id]="day.value.day" [(ngModel)]="day.value.is_open" />
+                      <label [for]="day.value.day">{{ day.value.day | translate | titlecase }}</label>
+                    </div>
+                  </div>
+                  <div class="ui:col-span-10">
+                    @if (day.value.is_open) {
+                      <ul class="ui:list-none">
+                        @for (
+                          time of $any(day).controls.times.controls;
+                          track $index;
+                          let t = $index;
+                          let last = $last;
+                          let count = $count
+                        ) {
+                          <li formArrayName="times">
+                            <div [formGroupName]="t">
+                              <!-- inputs row. One row for each period -->
+                              <div class="ui:grid ui:grid-cols-12 ui:gap-4">
+                                <div class="ui:col-span-10 ui:flex ui:gap-2 ui:my-1">
+                                  <p-inputgroup>
+                                    <p-inputgroup-addon>
+                                      <i class="fa-regular fa-clock"></i>
+                                    </p-inputgroup-addon>
+                                    <input
+                                      pInputText
+                                      formControlName="start_time"
+                                      [(ngModel)]="time.value.start_time" />
+                                  </p-inputgroup>
+                                  <p-inputgroup>
+                                    <p-inputgroup-addon>
+                                      <i class="fa-solid fa-arrow-right-long"></i>
+                                    </p-inputgroup-addon>
+                                    <input pInputText formControlName="end_time" [(ngModel)]="time.value.end_time" />
+                                  </p-inputgroup>
+                                </div>
+                                <div class="ui:col-span-2 ui:flex ui:gap-2 ui:justify-end">
+                                  @if (last) {
+                                    <p-button
+                                      (onClick)="addTime(i)"
+                                      outlined
+                                      icon="fa-regular fa-square-plus"
+                                      [label]="'period' | translate" />
+                                  }
+                                  @if (count > 1) {
+                                    <p-button
+                                      (onClick)="deleteTime(i, t)"
+                                      outlined
+                                      severity="danger"
+                                      icon="fa-solid fa-trash-can" />
+                                  }
+                                </div>
+                              </div>
+                              <div class="text-error">
+                                @if (
+                                  time.controls.start_time.invalid &&
+                                  (time.controls.start_time.dirty || time.controls.start_time.touched)
+                                ) {
+                                  @if (time.controls.start_time.errors?.required) {
+                                    <div>{{ 'Start time is required.' | translate }}</div>
+                                  }
+                                  @if (time.controls.start_time.errors?.pattern) {
+                                    <div>{{ 'Start time format is not correct.' | translate }}</div>
+                                  }
+                                }
+                                @if (
+                                  time.controls.end_time.invalid &&
+                                  (time.controls.end_time.dirty || time.controls.end_time.touched)
+                                ) {
+                                  @if (time.controls.end_time.errors?.required) {
+                                    <div>{{ 'End time is required.' | translate }}</div>
+                                  }
+                                  @if (time.controls.end_time.errors?.pattern) {
+                                    <div>{{ 'End time format is not correct.' | translate }}</div>
+                                  }
+                                }
+                                @if (time.invalid && (time.dirty || time.touched)) {
+                                  @if (time.errors && time.errors.lessThan) {
+                                    <div>{{ 'End time is less than start time.' | translate }}</div>
+                                  }
+                                }
+                              </div>
+                            </div>
+                          </li>
+                        }
+                      </ul>
+                    }
+                    @if (day.invalid && (day.dirty || day.touched)) {
+                      <div class="text-error">
+                        @if (day.errors && day.errors.rangeLessThan) {
+                          <div>{{ 'The two periods are overlapping.' | translate }}</div>
+                        }
+                      </div>
+                    }
+                  </div>
+                </div>
+              </div>
+            </div>
           }
-          <p-divider align="left">
-            <small translate>Legend</small>
-          </p-divider>
-          <div class="ui:grid ui:grid-cols-12 ui:gap-4">
-            <i class="fa-solid fa-info text-info ui:col-span-1"></i>
-            <small class="ui:col-span-11 ui:text-muted-color ui:italic" translate>
-              The notifications for patrons without e-mail are sent to this
-              address.
-            </small>
+        </p-accordion-content>
+      </p-accordion-panel>
+      <!-- EXCEPTIONS DATES TAB ========================================= -->
+      <p-accordion-panel value="2" #exceptionsPanel>
+        <p-accordion-header>
+          <div class="ui:flex ui:w-full ui:items-center ui:justify-between ui:mr-2">
+            <div>
+              <i class="fa-solid fa-triangle-exclamation"></i>&nbsp;
+              <span>{{ 'Exceptions (holidays, etc.)' | translate }}</span>
+            </div>
+
+            <div class="ui:flex ui:gap-2 ui:items-center">
+              <p-button
+                [hidden]="!exceptionsPanel.active()"
+                size="small"
+                outlined
+                (onClick)="$event.stopPropagation(); addException()"
+                icon="fa-regular fa-square-plus"
+                [label]="'Add' | translate" />
+              <p-badge [value]="exceptionDates().length || '0'" />
+            </div>
           </div>
-        </div>
-      </p-accordion-content>
-    </p-accordion-panel>
-    <!-- ACQUISITION SETTINGS TAB ===================================== -->
-    <p-accordion-panel value="4">
-      <p-accordion-header>
-        <div>
-          <i class="fa-solid fa-cart-arrow-down ui:mr-2"></i>&nbsp;
-          <span translate>Acquisition settings</span>
-        </div>
-      </p-accordion-header>
-      <p-accordion-content>
-        <p-tabs value="0" formGroupName="acquisition_settings">
-          <p-tablist>
-            <p-tab class="ui:flex ui:items-center ui:!gap-2" value="0">
-              <i class="fa-solid fa-book"></i>
-              <span translate>Default acquisition settings</span>
-            </p-tab>
-            <p-tab class="ui:flex ui:items-center ui:!gap-2" value="1">
-              <i class="fa-solid fa-newspaper"></i>
-              <span translate>Serial acquisition settings</span>
-            </p-tab>
-          </p-tablist>
-          <p-tabpanels>
-            <p-tabpanel value="0">
-              <ng-container
-                [ngTemplateOutlet]="contact_block"
-                [ngTemplateOutletContext]="{
-                  formGroup: libForm()!
-                    .get('acquisition_settings')!
-                    .get('shipping_informations'),
-                  icon: 'fa-solid fa-truck-fast',
-                  name: 'Shipping informations' | translate,
-                  fieldPrefix: 'shipping'
-                }"
-              />
-              <ng-container
-                [ngTemplateOutlet]="contact_block"
-                [ngTemplateOutletContext]="{
-                  formGroup: libForm()!
-                    .get('acquisition_settings')!
-                    .get('billing_informations'),
-                  icon: 'fa-solid fa-money-bill-wave',
-                  name: 'Billing informations' | translate,
-                  fieldPrefix: 'billing'
-                }"
-              />
-            </p-tabpanel>
-            <p-tabpanel value="1">
-              <ng-container
-                [ngTemplateOutlet]="contact_block"
-                [ngTemplateOutletContext]="{
-                  formGroup: libForm()!
-                    .get('serial_acquisition_settings')!
-                    .get('shipping_informations'),
-                  icon: 'fa-solid fa-truck-fast',
-                  name: 'Shipping informations' | translate,
-                  fieldPrefix: 'shipping'
-                }"
-              />
-              <ng-container
-                [ngTemplateOutlet]="contact_block"
-                [ngTemplateOutletContext]="{
-                  formGroup: libForm()!
-                    .get('serial_acquisition_settings')!
-                    .get('billing_informations'),
-                  icon: 'fa-solid fa-money-bill-wave',
-                  name: 'Billing informations' | translate,
-                  fieldPrefix: 'billing'
-                }"
-              />
-            </p-tabpanel>
-          </p-tabpanels>
-        </p-tabs>
-      </p-accordion-content>
-    </p-accordion-panel>
-    <!-- ROLLOVER SETTINGS TAB ======================================== -->
-    <p-accordion-panel value="5">
-      <p-accordion-header>
-        <div class="ui:flex ui:w-full ui:items-center ui:justify-between ui:mr-2">
+        </p-accordion-header>
+        <p-accordion-content>
+          <admin-libraries-exception-dates-list [exceptionDates]="exceptionDates()" />
+        </p-accordion-content>
+      </p-accordion-panel>
+      <!-- NOTIFICATIONS SETTING TAB ==================================== -->
+      <p-accordion-panel value="3">
+        <p-accordion-header>
           <div>
-            <i class="fa-solid fa-wrench ui:mr-2"></i>&nbsp;
-            <span translate>Rollover settings</span>
+            <i class="fa-regular fa-envelope"></i>&nbsp;
+            <span>{{ 'Notification settings' | translate }}</span>
           </div>
-          <i class="fa-solid"
+        </p-accordion-header>
+        <p-accordion-content>
+          <div formArrayName="notification_settings">
+            @for (setting of notificationSettings.controls; track $index; let i = $index) {
+              <div class="ui:grid ui:grid-cols-12 ui:mt-1" [formGroupName]="i">
+                <div class="ui:col-span-3 ui:flex ui:gap-3 ui:items-center">
+                  @if ($any(setting).controls.type.value | notificationType: 'patron') {
+                    <i class="text-info fa-solid fa-info"></i>
+                  }
+                  <!-- eslint-disable-next-line @angular-eslint/template/label-has-associated-control -->
+                  <label class="ui:font-bold">
+                    {{ $any(setting).controls.type.value | translate | ucfirst }}
+                  </label>
+                </div>
+                <div class="ui:col-span-9 ui:flex ui:gap-3">
+                  <p-inputGroup>
+                    <p-inputGroupAddon>
+                      <i class="fa-solid fa-at"></i>
+                    </p-inputGroupAddon>
+                    <input pInputText formControlName="email" [id]="$any(setting).controls.type.value + '-email'" />
+                  </p-inputGroup>
+                  @if (delayedNotificationTypes.includes($any(setting).controls.type.value)) {
+                    <p-inputGroup>
+                      <p-inputGroupAddon>
+                        <i class="fa-regular fa-clock"></i>
+                      </p-inputGroupAddon>
+                      <p-inputNumber
+                        inputStyleClass="ui:rounded-l-none"
+                        formControlName="delay"
+                        [inputId]="$any(setting).controls.type.value + '-delay'"
+                        [min]="0"
+                        pTooltip="{{ 'Sending how many minutes after the item is available' | translate }}"
+                        tooltipPosition="top" />
+                    </p-inputGroup>
+                  }
+                </div>
+              </div>
+            }
+            <p-divider align="left">
+              <small>{{ 'Legend' | translate }}</small>
+            </p-divider>
+            <div class="ui:grid ui:grid-cols-12 ui:gap-4">
+              <i class="fa-solid fa-info text-info ui:col-span-1"></i>
+              <small class="ui:col-span-11 ui:text-muted-color ui:italic">
+                {{
+                  'The notifications for patrons without e-mail are sent to this
+              address.' | translate
+                }}
+              </small>
+            </div>
+          </div>
+        </p-accordion-content>
+      </p-accordion-panel>
+      <!-- ACQUISITION SETTINGS TAB ===================================== -->
+      <p-accordion-panel value="4">
+        <p-accordion-header>
+          <div>
+            <i class="fa-solid fa-cart-arrow-down ui:mr-2"></i>&nbsp;
+            <span>{{ 'Acquisition settings' | translate }}</span>
+          </div>
+        </p-accordion-header>
+        <p-accordion-content>
+          <p-tabs value="0" formGroupName="acquisition_settings">
+            <p-tablist>
+              <p-tab class="ui:flex ui:items-center ui:!gap-2" value="0">
+                <i class="fa-solid fa-book"></i>
+                <span>{{ 'Default acquisition settings' | translate }}</span>
+              </p-tab>
+              <p-tab class="ui:flex ui:items-center ui:!gap-2" value="1">
+                <i class="fa-solid fa-newspaper"></i>
+                <span>{{ 'Serial acquisition settings' | translate }}</span>
+              </p-tab>
+            </p-tablist>
+            <p-tabpanels>
+              <p-tabpanel value="0">
+                <ng-container
+                  [ngTemplateOutlet]="contact_block"
+                  [ngTemplateOutletContext]="{
+                    formGroup: libForm()!.get('acquisition_settings')!.get('shipping_informations'),
+                    icon: 'fa-solid fa-truck-fast',
+                    name: 'Shipping informations' | translate,
+                    fieldPrefix: 'shipping',
+                  }" />
+                <ng-container
+                  [ngTemplateOutlet]="contact_block"
+                  [ngTemplateOutletContext]="{
+                    formGroup: libForm()!.get('acquisition_settings')!.get('billing_informations'),
+                    icon: 'fa-solid fa-money-bill-wave',
+                    name: 'Billing informations' | translate,
+                    fieldPrefix: 'billing',
+                  }" />
+              </p-tabpanel>
+              <p-tabpanel value="1">
+                <ng-container
+                  [ngTemplateOutlet]="contact_block"
+                  [ngTemplateOutletContext]="{
+                    formGroup: libForm()!.get('serial_acquisition_settings')!.get('shipping_informations'),
+                    icon: 'fa-solid fa-truck-fast',
+                    name: 'Shipping informations' | translate,
+                    fieldPrefix: 'shipping',
+                  }" />
+                <ng-container
+                  [ngTemplateOutlet]="contact_block"
+                  [ngTemplateOutletContext]="{
+                    formGroup: libForm()!.get('serial_acquisition_settings')!.get('billing_informations'),
+                    icon: 'fa-solid fa-money-bill-wave',
+                    name: 'Billing informations' | translate,
+                    fieldPrefix: 'billing',
+                  }" />
+              </p-tabpanel>
+            </p-tabpanels>
+          </p-tabs>
+        </p-accordion-content>
+      </p-accordion-panel>
+      <!-- ROLLOVER SETTINGS TAB ======================================== -->
+      <p-accordion-panel value="5">
+        <p-accordion-header>
+          <div class="ui:flex ui:w-full ui:items-center ui:justify-between ui:mr-2">
+            <div>
+              <i class="fa-solid fa-wrench ui:mr-2"></i>&nbsp;
+              <span>{{ 'Rollover settings' | translate }}</span>
+            </div>
+            <i
+              class="fa-solid"
               [ngClass]="{
                 'fa-xmark text-error': rolloverSettings.value.account_transfer === 'rollover_no_transfer',
-                'fa-check text-success': rolloverSettings.value.account_transfer === 'rollover_allocated_amount'
-              }"
-          ></i>
-        </div>
-      </p-accordion-header>
-      <p-accordion-content>
-        <div formGroupName="rollover_settings" class="ui:grid ui:grid-cols-12 ui:gap-4 ui:items-center ui:mt-2">
-          <label for="account-transfer" class="ui:col-span-3" translate>Account transfer</label>
-          <div class="ui:col-span-9">
-            <p-select
-              appendTo="body"
-              [options]="rolloverAccountTransferOptions()"
-              id="account-transfer"
-              formControlName="account_transfer"
-              class="ui:w-full"
-            ></p-select>
+                'fa-check text-success': rolloverSettings.value.account_transfer === 'rollover_allocated_amount',
+              }"></i>
           </div>
-        </div>
-      </p-accordion-content>
-    </p-accordion-panel>
-  </p-accordion>
+        </p-accordion-header>
+        <p-accordion-content>
+          <div formGroupName="rollover_settings" class="ui:grid ui:grid-cols-12 ui:gap-4 ui:items-center ui:mt-2">
+            <label for="account-transfer" class="ui:col-span-3">{{ 'Account transfer' | translate }}</label>
+            <div class="ui:col-span-9">
+              <p-select
+                appendTo="body"
+                [options]="rolloverAccountTransferOptions()"
+                id="account-transfer"
+                formControlName="account_transfer"
+                class="ui:w-full"></p-select>
+            </div>
+          </div>
+        </p-accordion-content>
+      </p-accordion-panel>
+    </p-accordion>
 
-  <div class="ui:flex ui:justify-end ui:gap-1 ui:mt-6">
-    <p-button
-      [outlined]="true"
-      severity="danger"
-      size="small"
-      (onClick)="onCancel()"
-      icon="fa-solid fa-xmark"
-      [label]="'Cancel' | translate"
-    />
-    <p-button
-      type="submit"
-      size="small"
-      severity="primary"
-      [disabled]="libForm()!.invalid || isSaving"
-      icon="fa-solid fa-floppy-disk"
-      [label]="'Save' | translate"
-    />
-  </div>
-</form>
+    <div class="ui:flex ui:justify-end ui:gap-1 ui:mt-6">
+      <p-button
+        [outlined]="true"
+        severity="danger"
+        size="small"
+        (onClick)="onCancel()"
+        icon="fa-solid fa-xmark"
+        [label]="'Cancel' | translate" />
+      <p-button
+        type="submit"
+        size="small"
+        severity="primary"
+        [disabled]="libForm()!.invalid || isSaving"
+        icon="fa-solid fa-floppy-disk"
+        [label]="'Save' | translate" />
+    </div>
+  </form>
 }
 
-<ng-template
-  #contact_block
-  let-formGroup="formGroup"
-  let-name="name"
-  let-icon="icon"
-  let-fieldPrefix="fieldPrefix"
->
+<ng-template #contact_block let-formGroup="formGroup" let-name="name" let-icon="icon" let-fieldPrefix="fieldPrefix">
   <div class="ui:mb-2">
     <p-fieldset [formGroup]="formGroup">
       <!-- header -->
@@ -493,55 +465,37 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
       <!-- body -->
       <div class="ui:grid ui:grid-cols-12 ui:gap-4">
-        <label [for]="fieldPrefix + '_name'" class="ui:col-span-3" translate>Contact name</label>
+        <label [for]="fieldPrefix + '_name'" class="ui:col-span-3">{{ 'Contact name' | translate }}</label>
         <p-inputGroup class="ui:col-span-9">
           <p-inputGroupAddon>
             <i class="fa-solid fa-user"></i>
           </p-inputGroupAddon>
-          <input
-            pInputText
-            formControlName="name"
-            [id]="fieldPrefix + '_name'"
-            class="ui:w-full"
-          />
+          <input pInputText formControlName="name" [id]="fieldPrefix + '_name'" class="ui:w-full" />
         </p-inputGroup>
-        <label [for]="fieldPrefix + '_email'" class="ui:col-span-3" translate>Contact email</label>
+        <label [for]="fieldPrefix + '_email'" class="ui:col-span-3">{{ 'Contact email' | translate }}</label>
         <p-inputGroup class="ui:col-span-9">
           <p-inputGroupAddon>
             <i class="fa-solid fa-at"></i>
           </p-inputGroupAddon>
-          <input
-            pInputText
-            formControlName="email"
-            [id]="fieldPrefix + '_email'"
-            class="ui:w-full"
-          />
+          <input pInputText formControlName="email" [id]="fieldPrefix + '_email'" class="ui:w-full" />
         </p-inputGroup>
-        <label [for]="fieldPrefix + '_phone'" class="ui:col-span-3" translate
-          >Contact phone</label
-        >
+        <label [for]="fieldPrefix + '_phone'" class="ui:col-span-3">{{ 'Contact phone' | translate }}</label>
         <p-inputGroup class="ui:col-span-9">
           <p-inputGroupAddon>
             <i class="fa-solid fa-phone"></i>
           </p-inputGroupAddon>
-          <input
-            pInputText
-            formControlName="phone"
-            [id]="fieldPrefix + '_phone'"
-            class="ui:w-full"
-          />
+          <input pInputText formControlName="phone" [id]="fieldPrefix + '_phone'" class="ui:w-full" />
         </p-inputGroup>
       </div>
       <div class="ui:grid ui:grid-cols-12 ui:gap-4 ui:mt-4" formGroupName="address">
-        <label [for]="fieldPrefix + '_street'" class="ui:col-span-3" translate>Address</label>
+        <label [for]="fieldPrefix + '_street'" class="ui:col-span-3">{{ 'Address' | translate }}</label>
         <div class="ui:col-span-9">
           <input
             pInputText
             class="ui:w-full"
             formControlName="street"
             [id]="fieldPrefix + '_street'"
-            placeholder="{{ 'Street' | translate }}"
-          />
+            placeholder="{{ 'Street' | translate }}" />
         </div>
         <div class="ui:col-span-3 ui:col-start-4">
           <input
@@ -549,8 +503,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
             formControlName="zip_code"
             class="ui:w-full"
             [id]="fieldPrefix + '_zip-code'"
-            placeholder="{{ 'Zip code' | translate }}"
-          />
+            placeholder="{{ 'Zip code' | translate }}" />
         </div>
         <div class="ui:col-span-6">
           <input
@@ -558,8 +511,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
             formControlName="city"
             class="ui:w-full"
             [id]="fieldPrefix + '_city'"
-            placeholder="{{ 'City' | translate }}"
-          />
+            placeholder="{{ 'City' | translate }}" />
         </div>
         <div class="ui:col-span-9 ui:col-start-4">
           <p-select
@@ -570,23 +522,17 @@ SPDX-License-Identifier: AGPL-3.0-or-later
             class="ui:w-full"
             [filter]="true"
             [showClear]="true"
-            [placeholder]="'Select a country' | translate"
-          ></p-select>
+            [placeholder]="'Select a country' | translate"></p-select>
         </div>
       </div>
       <!-- extra field -->
       <div class="ui:grid ui:grid-cols-12 ui:gap-4 ui:mt-4">
-        <label [for]="fieldPrefix + '_extra'" class="ui:col-span-3" translate>Extra information</label>
+        <label [for]="fieldPrefix + '_extra'" class="ui:col-span-3">{{ 'Extra information' | translate }}</label>
         <p-inputGroup class="ui:col-span-9">
           <p-inputGroupAddon>
             <i class="fa-regular fa-note-sticky"></i>
           </p-inputGroupAddon>
-          <input
-            pInputText
-            formControlName="extra"
-            [id]="fieldPrefix + '_extra'"
-            class="ui:w-full"
-          />
+          <input pInputText formControlName="extra" [id]="fieldPrefix + '_extra'" class="ui:w-full" />
         </p-inputGroup>
       </div>
     </p-fieldset>

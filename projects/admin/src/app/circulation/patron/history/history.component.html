@@ -7,17 +7,17 @@ SPDX-License-Identifier: AGPL-3.0-or-later
     <ng-template #header>
       <div class="ui:grid ui:grid-cols-12 ui:gap-4 ui:py-4 ui:pl-4 ui:pr-7 ui:text-lg ui:font-bold ui:items-center">
         <div class="ui:col-span-10">{{ 'Title' | translate }} / {{ 'Authors' | translate }}</div>
-        <div class="ui:col-span-2" translate>Return date</div>
+        <div class="ui:col-span-2">{{ 'Return date' | translate }}</div>
       </div>
     </ng-template>
     @if (logs.length > 0) {
-        @for (log of logs; track $index) {
-          <div class="ui:odd:bg-surface-50">
-            <admin-history-log [log]="log" />
-          </div>
-        }
+      @for (log of logs; track $index) {
+        <div class="ui:odd:bg-surface-50">
+          <admin-history-log [log]="log" />
+        </div>
+      }
     } @else {
-      <div class="ui:mx-4 ui:my-6" translate>No history.</div>
+      <div class="ui:mx-4 ui:my-6">{{ 'No history.' | translate }}</div>
     }
   </p-card>
 }

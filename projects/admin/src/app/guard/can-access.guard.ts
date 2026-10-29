@@ -3,6 +3,7 @@
 import { inject } from '@angular/core';
 import { ActivatedRouteSnapshot, CanActivateFn, Router } from '@angular/router';
 import { map } from 'rxjs/operators';
+
 import { RecordPermissions } from '../classes/permissions';
 import { RecordPermissionService } from '../service/record-permission.service';
 
@@ -11,7 +12,7 @@ export const CAN_ACCESS_ACTIONS = {
   DELETE: 'delete',
   LIST: 'list',
   READ: 'read',
-  UPDATE: 'update'
+  UPDATE: 'update',
 } as const;
 
 const mandatoryParams = ['type', 'pid'];
@@ -26,9 +27,9 @@ export const canAccessGuard: CanActivateFn = (route: ActivatedRouteSnapshot) => 
   const router = inject(Router);
 
   if (
-    !('action' in route.data)
-    || !(Object.values(CAN_ACCESS_ACTIONS).includes(route.data.action))
-    || !(mandatoryParams.every((param: string) => param in route.params))
+    !('action' in route.data) ||
+    !Object.values(CAN_ACCESS_ACTIONS).includes(route.data.action) ||
+    !mandatoryParams.every((param: string) => param in route.params)
   ) {
     return router.createUrlTree(['/errors/400']);
   }
@@ -40,6 +41,6 @@ export const canAccessGuard: CanActivateFn = (route: ActivatedRouteSnapshot) => 
         return router.createUrlTree(['/errors/403']);
       }
       return true;
-    })
+    }),
   );
 };

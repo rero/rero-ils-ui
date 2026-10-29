@@ -2,20 +2,20 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 @use 'sass:meta';
-@use "@fortawesome/fontawesome-free/scss/fontawesome";
-@use "@fortawesome/fontawesome-free/scss/solid";
-@use "@fortawesome/fontawesome-free/scss/regular";
-@use "./styles.scss";
+@use '@fortawesome/fontawesome-free/scss/fontawesome';
+@use '@fortawesome/fontawesome-free/scss/solid';
+@use '@fortawesome/fontawesome-free/scss/regular';
+@use './styles.scss';
 
- @layer bootstrap {
-    @include meta.load-css('bootstrap/dist/css/bootstrap');
- }
+@layer bootstrap {
+  @include meta.load-css('bootstrap/dist/css/bootstrap');
+}
 
- :root {
-   font-family: -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI",
-     Roboto, "Helvetica Neue", Helvetica, Arial, sans-serif;
-   --font-family: -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI",
-     Roboto, "Helvetica Neue", Helvetica, Arial, sans-serif;
+:root {
+  font-family:
+    -apple-system, system-ui, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  --font-family:
+    -apple-system, system-ui, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
 
-   font-size: 1rem;
- }
+  font-size: 1rem;
+}

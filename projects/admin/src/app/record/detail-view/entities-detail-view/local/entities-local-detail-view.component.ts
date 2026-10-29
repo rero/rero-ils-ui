@@ -1,15 +1,14 @@
 // SPDX-FileCopyrightText: Fondation RERO+
 // SPDX-FileCopyrightText: UCLouvain
 // SPDX-License-Identifier: AGPL-3.0-or-later
-import { Component, inject, input, ChangeDetectionStrategy} from '@angular/core';
+import { Component, inject, input } from '@angular/core';
 import { Router } from '@angular/router';
-import { AppStore } from '@rero/shared';
-import { TranslateService, TranslateDirective, TranslatePipe } from '@ngx-translate/core';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
+import { Bind } from '@openng/optimus-ui/bind';
+import { Panel } from '@openng/optimus-ui/panel';
+import { Tag } from '@openng/optimus-ui/tag';
+import { AppStore, Entity, EntityType, EntityTypeIcon } from '@rero/shared';
 
-import { Entity, EntityType, EntityTypeIcon } from '@rero/shared';
-import { Bind } from 'primeng/bind';
-import { Tag } from 'primeng/tag';
-import { Panel } from 'primeng/panel';
 import { LocalOrganisationDetailViewComponent } from './local-organisation-detail-view/local-organisation-detail-view.component';
 import { LocalPersonDetailViewComponent } from './local-person-detail-view/local-person-detail-view.component';
 import { LocalPlaceDetailViewComponent } from './local-place-detail-view/local-place-detail-view.component';
@@ -17,13 +16,21 @@ import { LocalTopicDetailViewComponent } from './local-topic-detail-view/local-t
 import { LocalWorkDetailViewComponent } from './local-work-detail-view/local-work-detail-view.component';
 
 @Component({
-    selector: 'admin-entities-local-detail-view',
-    templateUrl: './entities-local-detail-view.component.html',
-    imports: [Bind, Tag, Panel, TranslateDirective, LocalOrganisationDetailViewComponent, LocalPersonDetailViewComponent, LocalPlaceDetailViewComponent, LocalTopicDetailViewComponent, LocalWorkDetailViewComponent, TranslatePipe],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  selector: 'admin-entities-local-detail-view',
+  templateUrl: './entities-local-detail-view.component.html',
+  imports: [
+    Bind,
+    Tag,
+    Panel,
+    LocalOrganisationDetailViewComponent,
+    LocalPersonDetailViewComponent,
+    LocalPlaceDetailViewComponent,
+    LocalTopicDetailViewComponent,
+    LocalWorkDetailViewComponent,
+    TranslatePipe,
+  ],
 })
 export class EntitiesLocalDetailViewComponent {
-
   private translateService: TranslateService = inject(TranslateService);
   private router: Router = inject(Router);
   protected appStore = inject(AppStore);
@@ -41,7 +48,7 @@ export class EntitiesLocalDetailViewComponent {
    * @param type - type of contribution
    * @return object
    */
-  icon(type: string): { class: string, title: string } {
+  icon(type: string): { class: string; title: string } {
     switch (type) {
       case EntityType.ORGANISATION:
         return { class: EntityTypeIcon.ORGANISATION, title: this.translateService.instant('Organisation') };
@@ -65,12 +72,9 @@ export class EntitiesLocalDetailViewComponent {
    * @param metadata - the record metadata
    */
   search(metadata: any): void {
-    this.router.navigate(
-      ['/records', 'documents'],
-      {
-        queryParams: { q: Entity.generateSearchQuery(metadata.type, 'local', metadata.pid), simple: '0' },
-        skipLocationChange: true
-      },
-    );
+    this.router.navigate(['/records', 'documents'], {
+      queryParams: { q: Entity.generateSearchQuery(metadata.type, 'local', metadata.pid), simple: '0' },
+      skipLocationChange: true,
+    });
   }
 }

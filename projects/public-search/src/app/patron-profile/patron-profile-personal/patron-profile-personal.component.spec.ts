@@ -1,22 +1,23 @@
 // SPDX-FileCopyrightText: Fondation RERO+
 // SPDX-License-Identifier: AGPL-3.0-or-later
 import { CommonModule, formatDate, registerLocaleData } from '@angular/common';
-import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClient, withXhr } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
+import localeEnGb from '@angular/common/locales/en-GB';
 import { Pipe, PipeTransform } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, RouterModule } from '@angular/router';
-import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { provideTranslateService, TranslateService } from '@ngx-translate/core';
+import { ButtonModule } from '@openng/optimus-ui/button';
 import { DateTranslatePipe } from '@rero/ng-core';
 import { AppStore, testUserPatronWithSettings } from '@rero/shared';
 import { cloneDeep } from 'lodash-es';
-import { ButtonModule } from 'primeng/button';
+
 import { PatronProfilePersonalComponent } from './patron-profile-personal.component';
-import localeEnGb from '@angular/common/locales/en-GB';
 
 registerLocaleData(localeEnGb);
 
-@Pipe({ name: 'dateTranslate'})
+@Pipe({ name: 'dateTranslate' })
 class MockDateTranslatePipe implements PipeTransform {
   transform(value: any, format = 'mediumDate', timezone?: string): string | null {
     if (value === null || value === undefined) return null;
@@ -35,41 +36,44 @@ describe('PatronProfilePersonalComponent', () => {
 
   const catalog = {
     country_it: 'italia',
-    country_sw: 'switzerland'
+    country_sw: 'switzerland',
   };
 
   const appStoreSpy = {
     settings: vi.fn().mockReturnValue({
-    userProfile: {
-      readOnly: false
-    }
-  })
+      userProfile: {
+        readOnly: false,
+      },
+    }),
   };
 
   const fakeActivatedRoute = {
-    snapshot: { data:{}, paramMap: { get: function(key) { return key; }} }
+    snapshot: {
+      data: {},
+      paramMap: {
+        get: function (key) {
+          return key;
+        },
+      },
+    },
   } as ActivatedRoute;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-    imports: [
-        PatronProfilePersonalComponent,
-        CommonModule,
-        RouterModule.forRoot([]),
-        TranslateModule.forRoot(),
-        ButtonModule],
-    providers: [
+      imports: [PatronProfilePersonalComponent, CommonModule, RouterModule.forRoot([]), ButtonModule],
+      providers: [
+        provideTranslateService(),
         { provide: ActivatedRoute, useValue: fakeActivatedRoute },
-      { provide: AppStore, useValue: appStoreSpy },
-        provideHttpClient(),
-        provideHttpClientTesting()
-    ]
-})
-    .overrideComponent(PatronProfilePersonalComponent, {
-      remove: { imports: [DateTranslatePipe] },
-      add: { imports: [MockDateTranslatePipe] }
+        { provide: AppStore, useValue: appStoreSpy },
+        provideHttpClient(withXhr()),
+        provideHttpClientTesting(),
+      ],
     })
-    .compileComponents();
+      .overrideComponent(PatronProfilePersonalComponent, {
+        remove: { imports: [DateTranslatePipe] },
+        add: { imports: [MockDateTranslatePipe] },
+      })
+      .compileComponents();
   });
 
   beforeEach(() => {
@@ -101,9 +105,7 @@ describe('PatronProfilePersonalComponent', () => {
     expect(dd[6].textContent).toContain('reroilstest+simonetta@gmail.com');
     expect(dd[7].textContent).toContain('2010023488');
     expect(dd[8].textContent).toContain('01/01/2024');
-    expect(dd[9].textContent).toContain(
-      'The loan history is visible in your patron account.'
-    );
+    expect(dd[9].textContent).toContain('The loan history is visible in your patron account.');
 
     const user = cloneDeep(testUserPatronWithSettings.user);
     user.keep_history = false;

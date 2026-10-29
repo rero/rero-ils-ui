@@ -17,13 +17,7 @@
         "build": {
           "builder": "@angular/build:application",
           "options": {
-            "allowedCommonJsDependencies": [
-              "crypto-js",
-              "easymde",
-              "issn",
-              "generate-password-lite",
-              "simple-isbn"
-            ],
+            "allowedCommonJsDependencies": ["easymde", "issn", "generate-password-lite", "simple-isbn"],
             "outputPath": {
               "base": "build/dist/admin"
             },
@@ -49,9 +43,7 @@
                 "output": "/assets/rero-ils-ui/ng-core/languages"
               }
             ],
-            "styles": [
-              "projects/admin/src/app/scss/styles.scss"
-            ],
+            "styles": ["projects/admin/src/app/scss/styles.scss"],
             "scripts": [],
             "extractLicenses": false,
             "sourceMap": true,
@@ -97,7 +89,7 @@
           "defaultConfiguration": ""
         },
         "serve": {
-          "builder": "@angular-devkit/build-angular:dev-server",
+          "builder": "@angular/build:dev-server",
           "options": {
             "buildTarget": "admin:build"
           },
@@ -108,20 +100,11 @@
             "development": {
               "buildTarget": "admin:build:development",
               "prebundle": {
-                "exclude": [
-                  "@rero/ng-core",
-                  "primelocale"
-                ]
+                "exclude": ["@openng/optimus-ui-locale"]
               }
             }
           },
           "defaultConfiguration": "development"
-        },
-        "extract-i18n": {
-          "builder": "@angular-devkit/build-angular:extract-i18n",
-          "options": {
-            "buildTarget": "admin:build"
-          }
         },
         "test": {
           "builder": "@angular/build:unit-test",
@@ -130,25 +113,10 @@
             "runnerConfig": "projects/admin/vitest.config.ts"
           }
         },
-        "e2e": {
-          "builder": "@angular-devkit/build-angular:protractor",
-          "options": {
-            "protractorConfig": "projects/admin/e2e/protractor.conf.js",
-            "devServerTarget": "admin:serve"
-          },
-          "configurations": {
-            "production": {
-              "devServerTarget": "admin:serve:production"
-            }
-          }
-        },
         "lint": {
           "builder": "@angular-eslint/builder:lint",
           "options": {
-            "lintFilePatterns": [
-              "projects/admin/src/**/*.ts",
-              "projects/admin/src/**/*.html"
-            ]
+            "lintFilePatterns": ["projects/admin/src/**/*.ts", "projects/admin/src/**/*.html"]
           }
         }
       }
@@ -163,13 +131,7 @@
         "build": {
           "builder": "@angular/build:application",
           "options": {
-            "allowedCommonJsDependencies": [
-              "crypto-js",
-              "easymde",
-              "issn",
-              "generate-password-lite",
-              "simple-isbn"
-            ],
+            "allowedCommonJsDependencies": ["easymde", "issn", "generate-password-lite", "simple-isbn"],
             "outputPath": {
               "base": "build/dist/public-holdings-items"
             },
@@ -199,9 +161,7 @@
                 "output": "/assets/rero-ils-ui/ng-core/languages"
               }
             ],
-            "styles": [
-              "projects/public-search/src/app/scss/bootstrap_styles.scss"
-            ],
+            "styles": ["projects/public-search/src/app/scss/bootstrap_styles.scss"],
             "scripts": [],
             "extractLicenses": false,
             "sourceMap": true,
@@ -226,9 +186,7 @@
               "namedChunks": false,
               "extractLicenses": true,
               "deployUrl": "/static/node_modules/@rero/rero-ils-ui/dist/public-holdings-items/browser/",
-              "styles": [
-                "projects/public-search/src/app/scss/styles.scss"
-              ],
+              "styles": ["projects/public-search/src/app/scss/styles.scss"],
               "budgets": [
                 {
                   "type": "initial",
@@ -255,7 +213,7 @@
           }
         },
         "serve": {
-          "builder": "@angular-devkit/build-angular:dev-server",
+          "builder": "@angular/build:dev-server",
           "options": {
             "port": 4201,
             "buildTarget": "public-holdings-items:build"
@@ -267,32 +225,11 @@
             "development": {
               "buildTarget": "public-holdings-items:build:development",
               "prebundle": {
-                "exclude": [
-                  "@rero/ng-core",
-                  "primelocale"
-                ]
+                "exclude": ["@openng/optimus-ui-locale"]
               }
             }
           },
           "defaultConfiguration": "development"
-        },
-        "extract-i18n": {
-          "builder": "@angular-devkit/build-angular:extract-i18n",
-          "options": {
-            "buildTarget": "public-holdings-items:build"
-          }
-        },
-        "e2e": {
-          "builder": "@angular-devkit/build-angular:protractor",
-          "options": {
-            "protractorConfig": "projects/public-holdings-items/e2e/protractor.conf.js",
-            "devServerTarget": "public-holdings-items:serve"
-          },
-          "configurations": {
-            "production": {
-              "devServerTarget": "public-holdings-items:serve:production"
-            }
-          }
         },
         "lint": {
           "builder": "@angular-eslint/builder:lint",
@@ -315,13 +252,7 @@
         "build": {
           "builder": "@angular/build:application",
           "options": {
-            "allowedCommonJsDependencies": [
-              "crypto-js",
-              "easymde",
-              "issn",
-              "generate-password-lite",
-              "simple-isbn"
-            ],
+            "allowedCommonJsDependencies": ["easymde", "issn", "generate-password-lite", "simple-isbn"],
             "outputPath": {
               "base": "build/dist/public-search"
             },
@@ -348,9 +279,7 @@
                 "output": "/assets/rero-ils-ui/ng-core/languages"
               }
             ],
-            "styles": [
-              "projects/public-search/src/app/scss/bootstrap_styles.scss"
-            ],
+            "styles": ["projects/public-search/src/app/scss/bootstrap_styles.scss"],
             "scripts": [],
             "extractLicenses": false,
             "sourceMap": true,
@@ -375,9 +304,7 @@
               "namedChunks": false,
               "extractLicenses": true,
               "deployUrl": "/static/node_modules/@rero/rero-ils-ui/dist/public-search/browser/",
-              "styles": [
-                "projects/public-search/src/app/scss/styles.scss"
-              ],
+              "styles": ["projects/public-search/src/app/scss/styles.scss"],
               "budgets": [
                 {
                   "type": "initial",
@@ -399,7 +326,7 @@
           "defaultConfiguration": ""
         },
         "serve": {
-          "builder": "@angular-devkit/build-angular:dev-server",
+          "builder": "@angular/build:dev-server",
           "options": {
             "port": 4202,
             "buildTarget": "public-search:build"
@@ -411,20 +338,11 @@
             "development": {
               "buildTarget": "public-search:build:development",
               "prebundle": {
-                "exclude": [
-                  "@rero/ng-core",
-                  "primelocale"
-                ]
+                "exclude": ["@openng/optimus-ui-locale"]
               }
             }
           },
           "defaultConfiguration": "development"
-        },
-        "extract-i18n": {
-          "builder": "@angular-devkit/build-angular:extract-i18n",
-          "options": {
-            "buildTarget": "public-search:build"
-          }
         },
         "test": {
           "builder": "@angular/build:unit-test",
@@ -432,25 +350,10 @@
             "tsConfig": "projects/public-search/tsconfig.spec.json"
           }
         },
-        "e2e": {
-          "builder": "@angular-devkit/build-angular:protractor",
-          "options": {
-            "protractorConfig": "projects/public-search/e2e/protractor.conf.js",
-            "devServerTarget": "public-search:serve"
-          },
-          "configurations": {
-            "production": {
-              "devServerTarget": "public-search:serve:production"
-            }
-          }
-        },
         "lint": {
           "builder": "@angular-eslint/builder:lint",
           "options": {
-            "lintFilePatterns": [
-              "projects/public-search/src/**/*.ts",
-              "projects/public-search/src/**/*.html"
-            ]
+            "lintFilePatterns": ["projects/public-search/src/**/*.ts", "projects/public-search/src/**/*.html"]
           }
         }
       }
@@ -465,13 +368,7 @@
         "build": {
           "builder": "@angular/build:application",
           "options": {
-            "allowedCommonJsDependencies": [
-              "crypto-js",
-              "easymde",
-              "issn",
-              "generate-password-lite",
-              "simple-isbn"
-            ],
+            "allowedCommonJsDependencies": ["easymde", "issn", "generate-password-lite", "simple-isbn"],
             "outputPath": {
               "base": "build/dist/search-bar"
             },
@@ -501,9 +398,7 @@
                 "output": "/assets/rero-ils-ui/ng-core/languages"
               }
             ],
-            "styles": [
-              "projects/public-search/src/app/scss/bootstrap_styles.scss"
-            ],
+            "styles": ["projects/public-search/src/app/scss/bootstrap_styles.scss"],
             "scripts": [],
             "extractLicenses": false,
             "sourceMap": true,
@@ -528,9 +423,7 @@
               "namedChunks": false,
               "extractLicenses": true,
               "deployUrl": "/static/node_modules/@rero/rero-ils-ui/dist/search-bar/browser/",
-              "styles": [
-                "projects/public-search/src/app/scss/styles.scss"
-              ],
+              "styles": ["projects/public-search/src/app/scss/styles.scss"],
               "budgets": [
                 {
                   "type": "initial",
@@ -551,7 +444,7 @@
           }
         },
         "serve": {
-          "builder": "@angular-devkit/build-angular:dev-server",
+          "builder": "@angular/build:dev-server",
           "options": {
             "port": 4203,
             "buildTarget": "search-bar:build"
@@ -563,40 +456,16 @@
             "development": {
               "buildTarget": "search-bar:build:development",
               "prebundle": {
-                "exclude": [
-                  "@rero/ng-core",
-                  "primelocale"
-                ]
+                "exclude": ["@openng/optimus-ui-locale"]
               }
             }
           },
           "defaultConfiguration": "development"
         },
-        "extract-i18n": {
-          "builder": "@angular-devkit/build-angular:extract-i18n",
-          "options": {
-            "buildTarget": "search-bar:build"
-          }
-        },
-        "e2e": {
-          "builder": "@angular-devkit/build-angular:protractor",
-          "options": {
-            "protractorConfig": "projects/search-bar/e2e/protractor.conf.js",
-            "devServerTarget": "search-bar:serve"
-          },
-          "configurations": {
-            "production": {
-              "devServerTarget": "search-bar:serve:production"
-            }
-          }
-        },
         "lint": {
           "builder": "@angular-eslint/builder:lint",
           "options": {
-            "lintFilePatterns": [
-              "projects/search-bar/src/**/*.ts",
-              "projects/search-bar/src/**/*.html"
-            ]
+            "lintFilePatterns": ["projects/search-bar/src/**/*.ts", "projects/search-bar/src/**/*.html"]
           }
         }
       }
@@ -629,10 +498,7 @@
         "lint": {
           "builder": "@angular-eslint/builder:lint",
           "options": {
-            "lintFilePatterns": [
-              "projects/shared/src/**/*.ts",
-              "projects/shared/src/**/*.html"
-            ]
+            "lintFilePatterns": ["projects/shared/src/**/*.ts", "projects/shared/src/**/*.html"]
           }
         }
       }
@@ -647,14 +513,7 @@
         "build": {
           "builder": "@angular/build:application",
           "options": {
-            "allowedCommonJsDependencies": [
-              "crypto-js",
-              "easymde",
-              "issn",
-              "generate-password-lite",
-              "simple-isbn",
-              "jsbarcode"
-            ],
+            "allowedCommonJsDependencies": ["easymde", "issn", "generate-password-lite", "simple-isbn", "jsbarcode"],
             "outputPath": {
               "base": "build/dist/public-patron-profile"
             },
@@ -684,9 +543,7 @@
                 "output": "/assets/rero-ils-ui/ng-core/languages"
               }
             ],
-            "styles": [
-              "projects/public-search/src/app/scss/bootstrap_styles.scss"
-            ],
+            "styles": ["projects/public-search/src/app/scss/bootstrap_styles.scss"],
             "scripts": [],
             "extractLicenses": false,
             "sourceMap": true,
@@ -711,9 +568,7 @@
               "namedChunks": false,
               "extractLicenses": true,
               "deployUrl": "/static/node_modules/@rero/rero-ils-ui/dist/public-patron-profile/browser/",
-              "styles": [
-                "projects/public-search/src/app/scss/styles.scss"
-              ],
+              "styles": ["projects/public-search/src/app/scss/styles.scss"],
               "budgets": [
                 {
                   "type": "initial",
@@ -742,7 +597,7 @@
           }
         },
         "serve": {
-          "builder": "@angular-devkit/build-angular:dev-server",
+          "builder": "@angular/build:dev-server",
           "options": {
             "port": 4204,
             "buildTarget": "public-patron-profile:build"
@@ -754,32 +609,11 @@
             "development": {
               "buildTarget": "public-patron-profile:build:development",
               "prebundle": {
-                "exclude": [
-                  "@rero/ng-core",
-                  "primelocale"
-                ]
+                "exclude": ["@openng/optimus-ui-locale"]
               }
             }
           },
           "defaultConfiguration": "development"
-        },
-        "extract-i18n": {
-          "builder": "@angular-devkit/build-angular:extract-i18n",
-          "options": {
-            "buildTarget": "public-patron-profile:build"
-          }
-        },
-        "e2e": {
-          "builder": "@angular-devkit/build-angular:protractor",
-          "options": {
-            "protractorConfig": "projects/public-patron-profile/e2e/protractor.conf.js",
-            "devServerTarget": "public-patron-profile:serve"
-          },
-          "configurations": {
-            "production": {
-              "devServerTarget": "public-patron-profile:serve:production"
-            }
-          }
         },
         "lint": {
           "builder": "@angular-eslint/builder:lint",
@@ -794,9 +628,7 @@
     }
   },
   "cli": {
-    "schematicCollections": [
-      "@angular-eslint/schematics"
-    ]
+    "schematicCollections": ["@angular-eslint/schematics"]
   },
   "schematics": {
     "@schematics/angular:component": {

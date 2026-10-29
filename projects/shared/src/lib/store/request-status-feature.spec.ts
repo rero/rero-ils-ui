@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 import { TestBed } from '@angular/core/testing';
 import { patchState, signalStore, withMethods } from '@ngrx/signals';
+
 import { setError, setFulfilled, setPending, withRequestStatus } from './request-status-feature';
 
 const TestStore = signalStore(
@@ -10,7 +11,7 @@ const TestStore = signalStore(
     applyPending: () => patchState(store, setPending()),
     applyFulfilled: () => patchState(store, setFulfilled()),
     applyError: (error: string) => patchState(store, setError(error)),
-  }))
+  })),
 );
 
 describe('RequestStatusFeature', () => {
@@ -18,7 +19,7 @@ describe('RequestStatusFeature', () => {
 
   beforeEach(() => {
     store = TestBed.configureTestingModule({
-      providers: [TestStore]
+      providers: [TestStore],
     }).inject(TestStore);
   });
 

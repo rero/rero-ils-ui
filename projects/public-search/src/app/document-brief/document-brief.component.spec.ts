@@ -1,16 +1,15 @@
 // SPDX-FileCopyrightText: Fondation RERO+
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClient, withXhr } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute } from '@angular/router';
-import { TranslateModule } from '@ngx-translate/core';
+import { provideTranslateService } from '@ngx-translate/core';
 import { of } from 'rxjs';
 
 import { DocumentApiService } from '../api/document-api.service';
 import { DocumentBriefComponent } from './document-brief.component';
-
 
 describe('DocumentBriefComponent', () => {
   let component: DocumentBriefComponent;
@@ -18,28 +17,22 @@ describe('DocumentBriefComponent', () => {
 
   const record = {
     metadata: {
-      type: [
-        { main_type: 'main' }
-      ],
-      title: [
-        { type: 'bf:Title', _text: 'Document title' }
-      ]
-    }
+      type: [{ main_type: 'main' }],
+      title: [{ type: 'bf:Title', _text: 'Document title' }],
+    },
   };
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-    imports: [
-        TranslateModule.forRoot(),
-        DocumentBriefComponent
-    ],
-    providers: [
-        provideHttpClient(),
+      imports: [DocumentBriefComponent],
+      providers: [
+        provideTranslateService(),
+        provideHttpClient(withXhr()),
         provideHttpClientTesting(),
         { provide: ActivatedRoute, useValue: { params: of({ viewcode: 'global' }) } },
-        { provide: DocumentApiService, useValue: { getAvailability: () => of({ available: true }) } }
-    ]
-}).compileComponents();
+        { provide: DocumentApiService, useValue: { getAvailability: () => of({ available: true }) } },
+      ],
+    }).compileComponents();
   });
 
   beforeEach(() => {

@@ -7,8 +7,8 @@ import { RecordPermissions } from '@app/admin/classes/permissions';
 import { RecordPermissionService } from '@app/admin/service/record-permission.service';
 import { patchState, signalStore, withMethods, withProps, withState } from '@ngrx/signals';
 import { TranslateService } from '@ngx-translate/core';
+import { ConfirmationService, MessageService } from '@openng/optimus-ui/api';
 import { ActionStatus, CONFIG, RecordService } from '@rero/ng-core';
-import { ConfirmationService, MessageService } from 'primeng/api';
 import { combineLatest, filter, finalize, map, Observable, of, Subject, switchMap, take, tap } from 'rxjs';
 
 type DocumentDetailState = {
@@ -49,32 +49,35 @@ export const DocumentDetailStore = signalStore(
         key: 'document-detail-child-delete',
         accept: () => {
           patchState(store, { isDeletingChild: true });
-          store.recordService.delete(type, pid).pipe(
-            take(1),
-            finalize(() => patchState(store, { isDeletingChild: false }))
-          ).subscribe({
-            next: () => {
-              delete$.next(true);
-              delete$.complete();
-              store.messageService.add({
-                severity: 'info',
-                summary: store.translateService.instant('Confirmed'),
-                detail: store.translateService.instant('Record deleted.'),
-                life: CONFIG.MESSAGE_LIFE,
-              });
-            },
-            error: (error) => {
-              delete$.next(false);
-              delete$.complete();
-              store.messageService.add({
-                severity: 'error',
-                summary: store.translateService.instant('Error'),
-                detail: store.translateService.instant(error.title),
-                sticky: true,
-                closable: true,
-              });
-            },
-          });
+          store.recordService
+            .delete(type, pid)
+            .pipe(
+              take(1),
+              finalize(() => patchState(store, { isDeletingChild: false })),
+            )
+            .subscribe({
+              next: () => {
+                delete$.next(true);
+                delete$.complete();
+                store.messageService.add({
+                  severity: 'info',
+                  summary: store.translateService.instant('Confirmed'),
+                  detail: store.translateService.instant('Record deleted.'),
+                  life: CONFIG.MESSAGE_LIFE,
+                });
+              },
+              error: (error) => {
+                delete$.next(false);
+                delete$.complete();
+                store.messageService.add({
+                  severity: 'error',
+                  summary: store.translateService.instant('Error'),
+                  detail: store.translateService.instant(error.title),
+                  sticky: true,
+                  closable: true,
+                });
+              },
+            });
         },
         reject: () => {
           delete$.next(false);
@@ -106,14 +109,11 @@ export const DocumentDetailStore = signalStore(
     };
 
     return {
-      refreshedDeleteStatus(
-        recordSignal: Signal<any>,
-        deleteStatus: Signal<ActionStatus>
-      ): Signal<ActionStatus> {
+      refreshedDeleteStatus(recordSignal: Signal<any>, deleteStatus: Signal<ActionStatus>): Signal<ActionStatus> {
         return toSignal(
           combineLatest([
             toObservable(recordSignal).pipe(
-              tap((record) => _clearHoldingsTotalOnDocumentChange(record?.metadata?.pid))
+              tap((record) => _clearHoldingsTotalOnDocumentChange(record?.metadata?.pid)),
             ),
             toObservable(store.holdingsTotal),
           ]).pipe(
@@ -128,16 +128,16 @@ export const DocumentDetailStore = signalStore(
                   can: false,
                   message: store.recordPermissionService.generateTooltipMessage(
                     { links: { holdings: holdingsTotal! } },
-                    'delete'
+                    'delete',
                   ),
                 });
               }
               return store.recordPermissionService
                 .getPermission('documents', String(pid))
                 .pipe(map((permission) => _deletePermissionToActionStatus(permission)));
-            })
+            }),
           ),
-          { initialValue: { can: false, message: '' } }
+          { initialValue: { can: false, message: '' } },
         );
       },
     };

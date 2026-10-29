@@ -1,24 +1,40 @@
 // SPDX-FileCopyrightText: Fondation RERO+
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-import { Component, inject, input, ChangeDetectionStrategy} from '@angular/core';
-import { ProvisionActivityType, OperationLogsApiService, OpenCloseButtonComponent, ContributionComponent } from '@rero/shared';
+import { AsyncPipe, NgClass, NgTemplateOutlet } from '@angular/common';
+import { Component, inject, input } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { Bind } from 'primeng/bind';
-import { Tag } from 'primeng/tag';
-import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
-import { Timeline } from 'primeng/timeline';
-import { NgClass, NgTemplateOutlet, AsyncPipe } from '@angular/common';
+import { TranslatePipe } from '@ngx-translate/core';
+import { Bind } from '@openng/optimus-ui/bind';
+import { Tag } from '@openng/optimus-ui/tag';
+import { Timeline } from '@openng/optimus-ui/timeline';
 import { DateTranslatePipe, GetRecordPipe } from '@rero/ng-core';
+import {
+  ContributionComponent,
+  OpenCloseButtonComponent,
+  OperationLogsApiService,
+  ProvisionActivityType,
+} from '@rero/shared';
 
 @Component({
-    selector: 'admin-history-log',
-    templateUrl: './history-log.component.html',
-    imports: [OpenCloseButtonComponent, RouterLink, Bind, Tag, ContributionComponent, TranslateDirective, Timeline, NgClass, NgTemplateOutlet, AsyncPipe, DateTranslatePipe, GetRecordPipe, TranslatePipe],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  selector: 'admin-history-log',
+  templateUrl: './history-log.component.html',
+  imports: [
+    OpenCloseButtonComponent,
+    RouterLink,
+    Bind,
+    Tag,
+    ContributionComponent,
+    Timeline,
+    NgClass,
+    NgTemplateOutlet,
+    AsyncPipe,
+    DateTranslatePipe,
+    GetRecordPipe,
+    TranslatePipe,
+  ],
 })
 export class HistoryLogComponent {
-
   private operationLogsApiService: OperationLogsApiService = inject(OperationLogsApiService);
 
   /** Log to display */

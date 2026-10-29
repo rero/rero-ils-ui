@@ -2,17 +2,15 @@
 // SPDX-FileCopyrightText: UCLouvain
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-import { Component, input, ChangeDetectionStrategy} from '@angular/core';
-import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
+import { Component, input } from '@angular/core';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
-    selector: 'admin-remote-entities-organisation-detail-view',
-    templateUrl: './remote-entities-organisation-detail-view.component.html',
-    imports: [TranslateDirective, TranslatePipe],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  selector: 'admin-remote-entities-organisation-detail-view',
+  templateUrl: './remote-entities-organisation-detail-view.component.html',
+  imports: [TranslatePipe],
 })
 export class RemoteEntitiesOrganisationDetailViewComponent {
-
   /** Record metadata */
   record = input<any>();
 

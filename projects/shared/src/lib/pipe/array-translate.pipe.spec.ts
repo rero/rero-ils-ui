@@ -1,7 +1,8 @@
 // SPDX-FileCopyrightText: Fondation RERO+
 // SPDX-License-Identifier: AGPL-3.0-or-later
 import { TestBed } from '@angular/core/testing';
-import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { provideTranslateService, TranslateService } from '@ngx-translate/core';
+
 import { ArrayTranslatePipe } from './array-translate.pipe';
 
 describe('ArrayTranslatePipe', () => {
@@ -11,13 +12,11 @@ describe('ArrayTranslatePipe', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [
-        TranslateModule.forRoot()
-      ],
       providers: [
+        provideTranslateService(),
         ArrayTranslatePipe,
-        { provide: TranslateService, useValue: translateServiceSpy }
-      ]
+        { provide: TranslateService, useValue: translateServiceSpy },
+      ],
     });
     pipe = TestBed.inject(ArrayTranslatePipe);
   });

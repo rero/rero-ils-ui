@@ -2,16 +2,15 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 import { HttpClient } from '@angular/common/http';
-import { Injectable, inject, signal } from '@angular/core';
+import { inject, Injectable, signal } from '@angular/core';
 import { ApiService, File } from '@rero/ng-core';
 import { AppStore } from '@rero/shared';
-import { Observable, map, of, switchMap, tap } from 'rxjs';
+import { map, Observable, of, switchMap, tap } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ResourcesFilesService {
-
   private httpService: HttpClient = inject(HttpClient);
   private apiService: ApiService = inject(ApiService);
   private appStore = inject(AppStore);
@@ -62,7 +61,7 @@ export class ResourcesFilesService {
           metadata.library = { $ref: this.apiService.getRefEndpoint('libraries', metadata.library.pid) };
           return esResult;
         }),
-        tap((record) => this.currentParentRecord.set(record))
+        tap((record) => this.currentParentRecord.set(record)),
       );
   }
 
@@ -123,7 +122,7 @@ export class ResourcesFilesService {
           }
           return file;
         });
-      })
+      }),
     );
   }
 
@@ -142,21 +141,21 @@ export class ResourcesFilesService {
     fileKey = fileKey.replaceAll('%', '');
     // create the bucket
     return this.httpService
-      .post(`${this.baseUrl}/${parentRecordId}/files`, [{ key: fileKey, metadata: { label: fileData.label }}])
+      .post(`${this.baseUrl}/${parentRecordId}/files`, [{ key: fileKey, metadata: { label: fileData.label } }])
       .pipe(
         switchMap((_res: any) =>
           // set the file content
           this.httpService.put(`${this.baseUrl}/${parentRecordId}/files/${fileKey}/content`, fileData, {
             headers: { 'content-type': 'application/octet-stream' },
-          })
+          }),
         ),
         switchMap((_res: any) => {
           // commit the file
           return this.httpService.post(
             `${this.baseUrl}/${parentRecordId}/files/${fileKey}/commit`,
-            {}
+            {},
           ) as Observable<File>;
-        })
+        }),
       );
   }
 
@@ -175,7 +174,7 @@ export class ResourcesFilesService {
    */
   update(parentRecordId: string, file: File, fileData: any): Observable<File> {
     return this.delete(parentRecordId, file.key, true).pipe(
-      switchMap((_res) => this.create(parentRecordId, file.key, fileData))
+      switchMap((_res) => this.create(parentRecordId, file.key, fileData)),
     );
   }
 
@@ -206,7 +205,7 @@ export class ResourcesFilesService {
             return this.httpService
               .delete(`${this.baseUrl}/${parentRecordId}`)
               .pipe(tap(() => this.currentParentRecord.set(null)));
-          })
+          }),
         )
     );
   }
@@ -232,4 +231,4 @@ export type parentRecord = {
   };
   sortBy: string;
   links: any;
-}
+};

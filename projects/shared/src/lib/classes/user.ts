@@ -1,9 +1,8 @@
 // SPDX-FileCopyrightText: Fondation RERO+
 // SPDX-License-Identifier: AGPL-3.0-or-later
-import { PERMISSIONS } from "../util/permissions";
+import { PERMISSIONS } from '../util/permissions';
 
 export class User {
-
   /** Logged user API url */
   static readonly LOGGED_URL = '/patrons/logged_user?resolve';
 
@@ -94,16 +93,12 @@ export class User {
   }
 
   getPatronByOrganisationPid(pid: string): IPatron | undefined {
-    return this.patrons.find(
-      (patron: IPatron) => 'patron' in patron && patron.organisation?.pid === pid
-    );
+    return this.patrons.find((patron: IPatron) => 'patron' in patron && patron.organisation?.pid === pid);
   }
 
   hasRoles(roles: string[], operator: 'and' | 'or' = 'and'): boolean {
-    const intersection = roles.filter(role => this._patronRoles.includes(role));
-    return operator === 'and'
-      ? intersection.length === roles.length
-      : intersection.length > 0;
+    const intersection = roles.filter((role) => this._patronRoles.includes(role));
+    return operator === 'and' ? intersection.length === roles.length : intersection.length > 0;
   }
 
   private _extractLibrarian(): IPatron | undefined {
@@ -115,7 +110,7 @@ export class User {
     if (!first_name && !last_name) {
       return 'AN';
     }
-    return (first_name && last_name)
+    return first_name && last_name
       ? (first_name[0] + last_name[0]).toUpperCase()
       : (first_name || last_name).slice(0, 2).toUpperCase();
   }

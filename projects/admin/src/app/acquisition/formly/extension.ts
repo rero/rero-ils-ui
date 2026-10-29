@@ -1,9 +1,8 @@
 // SPDX-FileCopyrightText: Fondation RERO+
 // SPDX-License-Identifier: AGPL-3.0-or-later
 import { AbstractControl, ValidationErrors } from '@angular/forms';
-import { _ } from "@ngx-translate/core";
 import { FormlyFieldConfig } from '@ngx-formly/core';
-import { TranslateService } from '@ngx-translate/core';
+import { _, TranslateService } from '@ngx-translate/core';
 
 /**
  * Receipt Quantity Max Validator
@@ -25,18 +24,13 @@ export function receiptQuantityMaxValidator(control: AbstractControl): Validatio
  */
 export function registerFormlyExtension(translate: TranslateService) {
   return {
-    validators: [
-      { name: 'receiveQuantityMax', validation: receiptQuantityMaxValidator }
-    ],
+    validators: [{ name: 'receiveQuantityMax', validation: receiptQuantityMaxValidator }],
     validationMessages: [
       {
         name: 'receiptQuantityMax',
         message: (err, field: FormlyFieldConfig) =>
-          translate.stream(
-            _('Max. quantity: {{ max }}'),
-            { max: field.parent.formControl.value.quantityMax }
-          )
-      }
-    ]
+          translate.stream(_('Max. quantity: {{ max }}'), { max: field.parent.formControl.value.quantityMax }),
+      },
+    ],
   };
 }

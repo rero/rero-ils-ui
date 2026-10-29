@@ -4,16 +4,24 @@ import { inject } from '@angular/core';
 import { toObservable } from '@angular/core/rxjs-interop';
 import { ResolveFn, Routes } from '@angular/router';
 import { _ } from '@ngx-translate/core';
-import { Bucket, IFilter, RecordData, RecordSearchPageComponent, RecordService, RecordType, RouteDataTypesInterface } from '@rero/ng-core';
+import {
+  Bucket,
+  IFilter,
+  RecordData,
+  RecordSearchPageComponent,
+  RecordService,
+  RecordType,
+  RouteDataTypesInterface,
+} from '@rero/ng-core';
 import { IssueItemStatus, PERMISSIONS } from '@rero/shared';
 import { map, Observable, of } from 'rxjs';
 import { filter, take } from 'rxjs/operators';
+
 import { permissionGuard } from '../guard/permission.guard';
 import { IssuesBriefViewComponent } from '../record/brief-view/issues-brief-view/issues-brief-view.component';
 import { BaseRoute } from './base-route';
 
-export const issuesRouteResolver: ResolveFn<Partial<RecordType>[]> = () =>
-  new IssuesRoute().getTypes();
+export const issuesRouteResolver: ResolveFn<Partial<RecordType>[]> = () => new IssuesRoute().getTypes();
 
 export const issuesRoutes: Routes = [
   {
@@ -75,7 +83,11 @@ class IssuesRoute extends BaseRoute implements RouteDataTypesInterface {
     ];
     // TODO: Refactor this after the change of AppInitializer service with user.
     toObservable(this.routeToolService.appStore.user, { injector: this.routeToolService.injector })
-      .pipe(filter(u => !!u), take(1)).subscribe(() => {
+      .pipe(
+        filter((u) => !!u),
+        take(1),
+      )
+      .subscribe(() => {
         const { patronLibrarian } = this.routeToolService.appStore.user();
         if (patronLibrarian) {
           (types[0].preFilters as any).organisation = patronLibrarian.organisation.pid;
@@ -85,26 +97,45 @@ class IssuesRoute extends BaseRoute implements RouteDataTypesInterface {
   }
 
   private processBucketName(bucket: Bucket): Observable<string> {
-    if(bucket.name) { return of(bucket.name); }
+    if (bucket.name) {
+      return of(bucket.name);
+    }
     switch (bucket.aggregationKey) {
       case 'claims_count': {
         const count = Number(bucket.key);
         const key = count < 2 ? _('{{count}} claim') : _('{{count}} claims');
         return this.routeToolService.translateService.stream(key, { count });
-      };
-      default: return this.routeToolService.translateService.stream(bucket.key);
+      }
+      default:
+        return this.routeToolService.translateService.stream(bucket.key);
     }
   }
 
   private processFilterName(filter: IFilter): Observable<string> {
-    if(filter.name) { return of(filter.name); }
+    if (filter.name) {
+      return of(filter.name);
+    }
     switch (filter.aggregationKey) {
-      case 'claims_count': return this.routeToolService.translateService.stream(_('Claims'));
-      case 'item_type': return this.recordService.getRecord<{metadata: {name: string}}>('item_types', filter.key).pipe(map(record => record.metadata.name));
-      case 'library': return this.recordService.getRecord<{metadata: {name: string}}>('libraries', filter.key).pipe(map(record => record.metadata.name));
-      case 'location': return this.recordService.getRecord<{metadata: {name: string}}>('locations', filter.key).pipe(map(record => record.metadata.name));
-      case 'vendor': return this.recordService.getRecord<{metadata: {name: string}}>('vendors', filter.key).pipe(map(record => record.metadata.name));
-      default: return this.routeToolService.translateService.stream(filter.key);
+      case 'claims_count':
+        return this.routeToolService.translateService.stream(_('Claims'));
+      case 'item_type':
+        return this.recordService
+          .getRecord<{ metadata: { name: string } }>('item_types', filter.key)
+          .pipe(map((record) => record.metadata.name));
+      case 'library':
+        return this.recordService
+          .getRecord<{ metadata: { name: string } }>('libraries', filter.key)
+          .pipe(map((record) => record.metadata.name));
+      case 'location':
+        return this.recordService
+          .getRecord<{ metadata: { name: string } }>('locations', filter.key)
+          .pipe(map((record) => record.metadata.name));
+      case 'vendor':
+        return this.recordService
+          .getRecord<{ metadata: { name: string } }>('vendors', filter.key)
+          .pipe(map((record) => record.metadata.name));
+      default:
+        return this.routeToolService.translateService.stream(filter.key);
     }
   }
 }

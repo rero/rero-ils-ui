@@ -6,14 +6,14 @@ import { ApiService, RecordService } from '@rero/ng-core';
 import { EsResult, User } from '@rero/shared';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
+
 import { Item } from '../classes/items';
 import { Loan, LoanOverduePreview, LoanState } from '../classes/loans';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class PatronService {
-
   private httpClient: HttpClient = inject(HttpClient);
   private apiService: ApiService = inject(ApiService);
   private recordService: RecordService = inject(RecordService);
@@ -30,11 +30,14 @@ export class PatronService {
         map((response: EsResult) => {
           const total = response.hits.total;
           switch (total) {
-            case 0: return undefined;
-            case 1: return response.hits.hits[0].metadata as unknown as User;
-            default: throw new Error('too much results');
+            case 0:
+              return undefined;
+            case 1:
+              return response.hits.hits[0].metadata as unknown as User;
+            default:
+              throw new Error('too much results');
           }
-        })
+        }),
       );
   }
 
@@ -44,9 +47,7 @@ export class PatronService {
    * @return Observable on patron metadata.
    */
   getPatronByPid(pid: string): Observable<any> {
-    return this.recordService
-      .getRecord('patrons', pid)
-      .pipe(map((data: any) => data.metadata))
+    return this.recordService.getRecord('patrons', pid).pipe(map((data: any) => data.metadata));
   }
 
   /**
@@ -62,9 +63,9 @@ export class PatronService {
     const itemApiUrl = this.apiService.getEndpointByType('item');
     const url = `${itemApiUrl}/loans/${patronPid}?sort=${sort}`;
     return this.httpClient.get<any>(url).pipe(
-      map(data => data.hits),
-      map(hits => hits.total === 0 ? [] : hits.hits),
-      map(hits => hits.map((data: any) => this._buildItem(data)))
+      map((data) => data.hits),
+      map((hits) => (hits.total === 0 ? [] : hits.hits)),
+      map((hits) => hits.map((data: any) => this._buildItem(data))),
     );
   }
 
@@ -76,9 +77,7 @@ export class PatronService {
   getItem(barcode: string) {
     return this.httpClient
       .get<any>(`/api/item/barcode/${barcode}`)
-      .pipe(
-        map(response => this._buildItem(response.metadata))
-      );
+      .pipe(map((response) => this._buildItem(response.metadata)));
   }
 
   /**
@@ -100,9 +99,7 @@ export class PatronService {
    * @return Observable
    */
   getItemsRequested(patronPid: string) {
-    return this.getLoans(
-      `patron_pid:${patronPid} AND (state:PENDING OR state:ITEM_IN_TRANSIT_FOR_PICKUP)`
-    );
+    return this.getLoans(`patron_pid:${patronPid} AND (state:PENDING OR state:ITEM_IN_TRANSIT_FOR_PICKUP)`);
   }
 
   /**
@@ -111,9 +108,7 @@ export class PatronService {
    * @return Observable
    */
   getItemsPickup(patronPid: string) {
-    return this.getLoans(
-      `patron_pid:${patronPid} AND state:ITEM_AT_DESK`
-    );
+    return this.getLoans(`patron_pid:${patronPid} AND state:ITEM_AT_DESK`);
   }
 
   /**
@@ -124,14 +119,10 @@ export class PatronService {
    * @return Observable
    */
   getHistory(patronPid: string, fromLimit?: number, toLimit?: number) {
-    fromLimit = fromLimit || Math.round(6 * 365 / 12);  // 6 months
+    fromLimit = fromLimit || Math.round((6 * 365) / 12); // 6 months
     toLimit = toLimit || 0;
-    const states = [
-      LoanState.CANCELLED,
-      LoanState.ITEM_IN_TRANSIT_TO_HOUSE,
-      LoanState.ITEM_RETURNED
-    ];
-    const statesQuery = states.map(state => `state:${state}`).join(' OR ');
+    const states = [LoanState.CANCELLED, LoanState.ITEM_IN_TRANSIT_TO_HOUSE, LoanState.ITEM_RETURNED];
+    const statesQuery = states.map((state) => `state:${state}`).join(' OR ');
     const query = `patron_pid:${patronPid} AND (${statesQuery}) end_date:[now-${fromLimit}d/d TO now-${toLimit}d/d]`;
     return this.getLoans(query, 'duedate');
   }
@@ -151,15 +142,17 @@ export class PatronService {
    * @param patronPid - string : the patron pid to search
    * @return Observable
    */
-  getOverduePreview(patronPid: string): Observable<{fees: LoanOverduePreview, loan: Loan}[]> {
+  getOverduePreview(patronPid: string): Observable<{ fees: LoanOverduePreview; loan: Loan }[]> {
     const url = [this.apiService.getEndpointByType('patrons'), patronPid, 'overdues', 'preview'].join('/');
     return this.httpClient.get(url).pipe(
-      map((data: any[]) => data.map(record => {
-        return {
-          fees: record.fees as LoanOverduePreview,
-          loan: new Loan(record.loan)
-        };
-      }))
+      map((data: any[]) =>
+        data.map((record) => {
+          return {
+            fees: record.fees as LoanOverduePreview,
+            loan: new Loan(record.loan),
+          };
+        }),
+      ),
     );
   }
 
@@ -170,11 +163,19 @@ export class PatronService {
    * @return Observable
    */
   private getLoans(query: string, sort?: string) {
-    return this.recordService.getRecords(
-      'loans', { query, page: 1, itemsPerPage: RecordService.MAX_REST_RESULTS_SIZE, aggregationsFilters: [], preFilters: {}, headers: {Accept: 'application/rero+json'}, sort }
-    ).pipe(
-      map((data: EsResult) => data.hits as any),
-      map((hits: any) => hits.total === 0 ? [] : hits.hits)
-    );
+    return this.recordService
+      .getRecords('loans', {
+        query,
+        page: 1,
+        itemsPerPage: RecordService.MAX_REST_RESULTS_SIZE,
+        aggregationsFilters: [],
+        preFilters: {},
+        headers: { Accept: 'application/rero+json' },
+        sort,
+      })
+      .pipe(
+        map((data: EsResult) => data.hits as any),
+        map((hits: any) => (hits.total === 0 ? [] : hits.hits)),
+      );
   }
 }

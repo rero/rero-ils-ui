@@ -2,10 +2,10 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { TranslateModule } from '@ngx-translate/core';
+import { provideTranslateService } from '@ngx-translate/core';
 import { KeyExistsPipe } from '@rero/shared';
-import { RecordMaskedComponent } from './record-masked.component';
 
+import { RecordMaskedComponent } from './record-masked.component';
 
 describe('MaskedComponent', () => {
   let component: RecordMaskedComponent;
@@ -14,35 +14,29 @@ describe('MaskedComponent', () => {
   const recordMasked = {
     metadata: {
       pid: '1',
-      _masked: true
-    }
+      _masked: true,
+    },
   };
 
   const recordNoMaskedWithFlag = {
     metadata: {
       pid: '1',
-      _masked: false
-    }
+      _masked: false,
+    },
   };
 
   const recordNoMaskedNoFlag = {
     metadata: {
-      pid: '1'
-    }
+      pid: '1',
+    },
   };
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-    imports: [
-        TranslateModule.forRoot(),
-        RecordMaskedComponent,
-        KeyExistsPipe
-    ],
-    schemas: [
-        CUSTOM_ELEMENTS_SCHEMA
-    ]
-})
-    .compileComponents();
+      imports: [RecordMaskedComponent, KeyExistsPipe],
+      providers: [provideTranslateService()],
+      schemas: [CUSTOM_ELEMENTS_SCHEMA],
+    }).compileComponents();
   });
 
   beforeEach(() => {

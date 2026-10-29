@@ -5,7 +5,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 <div class="ui:py-2">
   @for (field of entities() | keyvalue; track $index) {
     <dl class="metadata ui:odd:bg-surface-50">
-      <dt>{{ field.key | translate |ucfirst }}</dt>
+      <dt>{{ field.key | translate | ucfirst }}</dt>
       <dd>
         <ul class="ui:list-none">
           @for (entity of field.value; track $index) {
@@ -20,6 +20,6 @@ SPDX-License-Identifier: AGPL-3.0-or-later
       </dd>
     </dl>
   } @empty {
-    <div class="ui:font-bold" translate>No entities</div>
+    <div class="ui:font-bold">{{ 'No entities' | translate }}</div>
   }
 </div>

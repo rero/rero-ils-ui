@@ -6,13 +6,13 @@ import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
+
 import { ExternalSourceSetting } from '../classes/external-source';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class ImportSourceApiService {
-
   private httpClient: HttpClient = inject(HttpClient);
 
   /**
@@ -20,12 +20,9 @@ export class ImportSourceApiService {
    * @return: an Observable on external sources list
    */
   getSources(): Observable<ExternalSourceSetting[]> {
-    return this.httpClient
-      .get('/api/imports/config/')
-      .pipe(
-        map((sources: any[]) => sources.map(data => new ExternalSourceSetting(data))),
-        catchError(() => [])
-      );
+    return this.httpClient.get('/api/imports/config/').pipe(
+      map((sources: any[]) => sources.map((data) => new ExternalSourceSetting(data))),
+      catchError(() => []),
+    );
   }
-
 }

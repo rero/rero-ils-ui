@@ -1,28 +1,33 @@
 // SPDX-FileCopyrightText: Fondation RERO+
 // SPDX-License-Identifier: AGPL-3.0-or-later
-import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClient, withXhr } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
-import { LOCALE_ID } from '@angular/core';
+import { LOCALE_ID, Pipe, PipeTransform } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { Pipe, PipeTransform } from '@angular/core';
-import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
+import { provideTranslateService, TranslateLoader } from '@ngx-translate/core';
+import { ButtonModule } from '@openng/optimus-ui/button';
+import { DynamicDialogConfig, DynamicDialogModule, DynamicDialogRef } from '@openng/optimus-ui/dynamicdialog';
+import { TableModule } from '@openng/optimus-ui/table';
 import { DateTranslatePipe, NgCoreTranslateService } from '@rero/ng-core';
 import { Observable, of } from 'rxjs';
-import { ButtonModule } from 'primeng/button';
-import { DynamicDialogConfig, DynamicDialogModule, DynamicDialogRef } from 'primeng/dynamicdialog';
-import { TableModule } from 'primeng/table';
-class FakeLoader implements TranslateLoader {
-  getTranslation(_lang: string): Observable<any> { return of({}); }
-}
-@Pipe({
-  name: 'dateTranslate'
-})
-class MockDateTranslatePipe implements PipeTransform {
-  transform(value: string): string { return value; }
-}
+
 import { OperationLogsApiService } from '../../api/operation-logs-api.service';
 import { AppStore } from '../../store/app.store';
 import { OperationLogsComponent } from './operation-logs.component';
+
+class FakeLoader implements TranslateLoader {
+  getTranslation(_lang: string): Observable<any> {
+    return of({});
+  }
+}
+@Pipe({
+  name: 'dateTranslate',
+})
+class MockDateTranslatePipe implements PipeTransform {
+  transform(value: string): string {
+    return value;
+  }
+}
 
 describe('OperationLogsComponent', () => {
   let component: OperationLogsComponent;
@@ -36,55 +41,52 @@ describe('OperationLogsComponent', () => {
       metadata: {
         date: '2021-01-10 12:00:00',
         operation: 'create',
-        user_name: 'system'
-      }
-    }
+        user_name: 'system',
+      },
+    },
   ];
 
   beforeEach(async () => {
     appStoreSpy = {
-      getResourceKeyByResourceName: vi.fn().mockReturnValue('doc')
+      getResourceKeyByResourceName: vi.fn().mockReturnValue('doc'),
     };
     operationLogsApiServiceSpy = {
-      getLogs: vi.fn().mockReturnValue(of({
-        aggregations: [],
-        hits: { total: 1, hits: records },
-        links: []
-      }))
+      getLogs: vi.fn().mockReturnValue(
+        of({
+          aggregations: [],
+          hits: { total: 1, hits: records },
+          links: [],
+        }),
+      ),
     };
     dynamicDialogConfig = {
       data: {
         resourceType: 'documents',
-        resourcePid: '1'
-      }
+        resourcePid: '1',
+      },
     };
     await TestBed.configureTestingModule({
-    imports: [
-        TranslateModule.forRoot({ loader: { provide: TranslateLoader, useClass: FakeLoader } }),
-        DynamicDialogModule,
-        TableModule,
-        ButtonModule,
-        OperationLogsComponent
-    ],
-    providers: [
+      imports: [DynamicDialogModule, TableModule, ButtonModule, OperationLogsComponent],
+      providers: [
+        provideTranslateService({ loader: { provide: TranslateLoader, useClass: FakeLoader } }),
         { provide: LOCALE_ID, useValue: 'en-US' },
         { provide: NgCoreTranslateService, useValue: { instant: vi.fn((x: string) => x) } },
         { provide: AppStore, useValue: appStoreSpy },
         { provide: OperationLogsApiService, useValue: operationLogsApiServiceSpy },
-        provideHttpClient(),
+        provideHttpClient(withXhr()),
         provideHttpClientTesting(),
         DynamicDialogRef,
         {
           provide: DynamicDialogConfig,
-          useValue: dynamicDialogConfig
-        }
-    ]
+          useValue: dynamicDialogConfig,
+        },
+      ],
     })
-    .overrideComponent(OperationLogsComponent, {
-      remove: { imports: [DateTranslatePipe] },
-      add: { imports: [MockDateTranslatePipe] }
-    })
-    .compileComponents();
+      .overrideComponent(OperationLogsComponent, {
+        remove: { imports: [DateTranslatePipe] },
+        add: { imports: [MockDateTranslatePipe] },
+      })
+      .compileComponents();
   });
 
   const createComponent = () => {
@@ -119,7 +121,7 @@ describe('OperationLogsComponent', () => {
     dynamicDialogConfig.data.sortCriteria = 'operation_date_mostrecent';
     dynamicDialogConfig.data.sortOptions = [
       { value: 'operation_date_mostrecent', label: 'Date (newest)', icon: 'fa fa-sort-amount-desc' },
-      { value: 'operation_date_created', label: 'Date (oldest)', icon: 'fa fa-sort-amount-asc' }
+      { value: 'operation_date_created', label: 'Date (oldest)', icon: 'fa fa-sort-amount-asc' },
     ];
 
     createComponent();
@@ -143,11 +145,13 @@ describe('OperationLogsComponent', () => {
   });
 
   it('should display the paginator when operation logs exceed one page', async () => {
-    operationLogsApiServiceSpy.getLogs.mockReturnValueOnce(of({
-      aggregations: [],
-      hits: { total: 11, hits: records },
-      links: []
-    }));
+    operationLogsApiServiceSpy.getLogs.mockReturnValueOnce(
+      of({
+        aggregations: [],
+        hits: { total: 11, hits: records },
+        links: [],
+      }),
+    );
 
     createComponent();
     fixture.detectChanges();
@@ -164,9 +168,9 @@ describe('OperationLogsComponent', () => {
         metadata: {
           date: '2021-01-09 12:00:00',
           operation: 'update',
-          user_name: 'system'
-        }
-      }
+          user_name: 'system',
+        },
+      },
     ];
     createComponent();
     fixture.detectChanges();
@@ -175,11 +179,13 @@ describe('OperationLogsComponent', () => {
     fixture.detectChanges();
     await fixture.whenStable();
     operationLogsApiServiceSpy.getLogs.mockClear();
-    operationLogsApiServiceSpy.getLogs.mockReturnValueOnce(of({
-      aggregations: [],
-      hits: { total: 11, hits: nextRecords },
-      links: []
-    }));
+    operationLogsApiServiceSpy.getLogs.mockReturnValueOnce(
+      of({
+        aggregations: [],
+        hits: { total: 11, hits: nextRecords },
+        links: [],
+      }),
+    );
     component.pageChange({ page: 1, first: 10, rows: 10, pageCount: 2 });
     expect(component.pager().page).toBe(2);
     TestBed.tick();
@@ -196,27 +202,31 @@ describe('OperationLogsComponent', () => {
         metadata: {
           date: '2021-01-01 12:00:00',
           operation: 'create',
-          user_name: 'system'
-        }
-      }
+          user_name: 'system',
+        },
+      },
     ];
     createComponent();
     fixture.detectChanges();
     await fixture.whenStable();
-    operationLogsApiServiceSpy.getLogs.mockReturnValueOnce(of({
-      aggregations: [],
-      hits: { total: 11, hits: oldestRecords },
-      links: []
-    }));
+    operationLogsApiServiceSpy.getLogs.mockReturnValueOnce(
+      of({
+        aggregations: [],
+        hits: { total: 11, hits: oldestRecords },
+        links: [],
+      }),
+    );
     component.pageChange({ page: 1, first: 10, rows: 10, pageCount: 2 });
     TestBed.tick();
     fixture.detectChanges();
     await fixture.whenStable();
-    operationLogsApiServiceSpy.getLogs.mockReturnValueOnce(of({
-      aggregations: [],
-      hits: { total: 11, hits: oldestRecords },
-      links: []
-    }));
+    operationLogsApiServiceSpy.getLogs.mockReturnValueOnce(
+      of({
+        aggregations: [],
+        hits: { total: 11, hits: oldestRecords },
+        links: [],
+      }),
+    );
 
     component.sortChange({ originalEvent: undefined, value: 'created' });
     TestBed.tick();
@@ -232,11 +242,13 @@ describe('OperationLogsComponent', () => {
   });
 
   it('should support empty results', async () => {
-    operationLogsApiServiceSpy.getLogs.mockReturnValueOnce(of({
-      aggregations: [],
-      hits: { total: 0, hits: [] },
-      links: []
-    }));
+    operationLogsApiServiceSpy.getLogs.mockReturnValueOnce(
+      of({
+        aggregations: [],
+        hits: { total: 0, hits: [] },
+        links: [],
+      }),
+    );
 
     createComponent();
     fixture.detectChanges();

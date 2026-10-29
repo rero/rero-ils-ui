@@ -1,11 +1,12 @@
 // SPDX-FileCopyrightText: Fondation RERO+
 // SPDX-License-Identifier: AGPL-3.0-or-later
 import { inject, Injectable } from '@angular/core';
-import { _ } from "@ngx-translate/core";
 import { FormlyFieldConfig } from '@ngx-formly/core';
+import { _ } from '@ngx-translate/core';
 import { ApiService, extractIdOnRef } from '@rero/ng-core';
 import { Observable } from 'rxjs';
 import { map, switchMap, tap } from 'rxjs/operators';
+
 import { AcqAccountApiService } from '../../../api/acq-account-api.service';
 import { AcqOrderApiService } from '../../../api/acq-order-api.service';
 import { IAcqAccount } from '../../../classes/account';
@@ -17,16 +18,15 @@ import { IAcqReceiptModel, OrderReceipt } from './order-receipt';
 /** Select/Deselect all checkbox */
 function lineAction(action: string, fields: any): void {
   fields.map((field: any) => {
-    const selected = field.fieldGroup.find(line => line.key === 'selected');
+    const selected = field.fieldGroup.find((line) => line.key === 'selected');
     selected.formControl.setValue(action === 'select');
   });
 }
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class OrderReceiptForm {
-
   private acqOrderApiService: AcqOrderApiService = inject(AcqOrderApiService);
   private acqAccountApiService: AcqAccountApiService = inject(AcqAccountApiService);
   private apiService: ApiService = inject(ApiService);
@@ -82,44 +82,41 @@ export class OrderReceiptForm {
    */
   createForm(orderPid: string): Observable<boolean> {
     this.config = this._getConfig();
-    return this.acqOrderApiService
-      .getOrder(orderPid)
-      .pipe(
-        tap((order: IAcqOrder) => this.orderRecord = order),
-        switchMap((order: IAcqOrder) => {
-          const libraryRef = order.library.$ref;
-          const libraryPid = extractIdOnRef(libraryRef);
-          this.acqAccountApiService
-            .getAccounts(libraryPid)
-            .subscribe((accounts: IAcqAccount[]) => {
-              const to = this.config
-                .filter((field: any) => field.key === 'amountAdjustments')[0].fieldArray.fieldGroup
-                .filter((field: any) => field.key === 'acqAccount')[0].props;
-                to.currency = order.currency;
-                to.options = orderAccountsAsTree(accounts);
-            });
-          // Build the model
-          this.model.acqOrderRef = this.apiService.getRefEndpoint('acq_orders', order.pid);
-          this.model.libraryRef = libraryRef;
-          this.model.organisationRef = order.organisation.$ref;
-          order.vendor.pid = extractIdOnRef(order.vendor.$ref);
-          const query = `AND (NOT status:"${AcqOrderLineStatus.CANCELLED}" OR NOT status:"${AcqOrderLineStatus.RECEIVED}")`;
-          return this.acqOrderApiService.getOrderLines(order.pid, query).pipe(
-            map((lines: IAcqOrderLine[]) => {
-              lines.forEach((line: any) => {
-                const quantityReceived = line.received_quantity || 0;
-                this.model.receiptLines.push({
-                  acqOrderLineRef: this.apiService.getRefEndpoint('acq_order_lines', line.pid),
-                  selected: false,
-                  quantity: line.quantity - quantityReceived,
-                  quantityMax: line.quantity - quantityReceived,
-                  amount: line.amount,
-                  vatRate: 0
-                });
+    return this.acqOrderApiService.getOrder(orderPid).pipe(
+      tap((order: IAcqOrder) => (this.orderRecord = order)),
+      switchMap((order: IAcqOrder) => {
+        const libraryRef = order.library.$ref;
+        const libraryPid = extractIdOnRef(libraryRef);
+        this.acqAccountApiService.getAccounts(libraryPid).subscribe((accounts: IAcqAccount[]) => {
+          const to = this.config
+            .filter((field: any) => field.key === 'amountAdjustments')[0]
+            .fieldArray.fieldGroup.filter((field: any) => field.key === 'acqAccount')[0].props;
+          to.currency = order.currency;
+          to.options = orderAccountsAsTree(accounts);
+        });
+        // Build the model
+        this.model.acqOrderRef = this.apiService.getRefEndpoint('acq_orders', order.pid);
+        this.model.libraryRef = libraryRef;
+        this.model.organisationRef = order.organisation.$ref;
+        order.vendor.pid = extractIdOnRef(order.vendor.$ref);
+        const query = `AND (NOT status:"${AcqOrderLineStatus.CANCELLED}" OR NOT status:"${AcqOrderLineStatus.RECEIVED}")`;
+        return this.acqOrderApiService.getOrderLines(order.pid, query).pipe(
+          map((lines: IAcqOrderLine[]) => {
+            lines.forEach((line: any) => {
+              const quantityReceived = line.received_quantity || 0;
+              this.model.receiptLines.push({
+                acqOrderLineRef: this.apiService.getRefEndpoint('acq_order_lines', line.pid),
+                selected: false,
+                quantity: line.quantity - quantityReceived,
+                quantityMax: line.quantity - quantityReceived,
+                amount: line.amount,
+                vatRate: 0,
               });
-              return true;
-          }));
-        })
+            });
+            return true;
+          }),
+        );
+      }),
     );
   }
 
@@ -131,23 +128,24 @@ export class OrderReceiptForm {
    */
   processForm(model: IAcqReceiptModel, record: IAcqReceipt): IAcqReceipt {
     // create the default record
-    record = (!record)
-      ? this.orderReceipt.processBaseRecord(model)
-      : record;
+    record = !record ? this.orderReceipt.processBaseRecord(model) : record;
     if (!Object.hasOwn(record, 'amount_adjustments')) {
       record.amount_adjustments = [];
     } else {
       // we received the resolved `acq_account` with pid, but we need the `$ref` field to send the form.
       record.amount_adjustments.map(
-        (adjustment: any) => adjustment.acq_account = {$ref: this.apiService.getRefEndpoint('acq_accounts', adjustment.acq_account.pid)}
+        (adjustment: any) =>
+          (adjustment.acq_account = {
+            $ref: this.apiService.getRefEndpoint('acq_accounts', adjustment.acq_account.pid),
+          }),
       );
     }
     if (!Object.hasOwn(record, 'notes')) {
       record.notes = [];
     }
     // Update the record with model data
-    record.amount_adjustments = [...this.orderReceipt.processAdjustments(model) || []];
-    record.notes = [...model.notes || []];
+    record.amount_adjustments = [...(this.orderReceipt.processAdjustments(model) || [])];
+    record.notes = [...(model.notes || [])];
     if (model.reference && model.reference.length > 0) {
       record.reference = model.reference;
     }
@@ -173,17 +171,17 @@ export class OrderReceiptForm {
         props: {
           type: 'date',
           label: _('Reception date'),
-          required: true
+          required: true,
         },
         expressions: {
-          "props.disabled": "model?.receiptLines?.length < 1"
+          'props.disabled': 'model?.receiptLines?.length < 1',
         },
       },
       {
         key: 'amountAdjustments',
         type: 'array',
         props: {
-          label: _('Fees, discounts and other adjustments')
+          label: _('Fees, discounts and other adjustments'),
         },
         fieldArray: {
           fieldGroupClassName: 'ui:grid ui:px-4 ui:mb-3',
@@ -200,8 +198,8 @@ export class OrderReceiptForm {
                 label: _('Label'),
                 required: true,
                 minLength: 3,
-                itemCssClass: "ui:col-span-12 ui:md:col-span-6"
-              }
+                itemCssClass: 'ui:col-span-12 ui:md:col-span-6',
+              },
             },
             {
               key: 'amount',
@@ -212,8 +210,8 @@ export class OrderReceiptForm {
                 type: 'number',
                 description: _('To specify a discount, enter a negative amount'),
                 required: true,
-                itemCssClass: "ui:col-span-12 ui:md:col-span-3"
-              }
+                itemCssClass: 'ui:col-span-12 ui:md:col-span-3',
+              },
             },
             {
               key: 'acqAccount',
@@ -223,13 +221,12 @@ export class OrderReceiptForm {
                 placeholder: _('Select…'),
                 label: _('Account'),
                 required: true,
-                itemCssClass: "ui:col-span-12 ui:md:col-span-9",
-                options: [
-                ]
-              }
-            }
-          ]
-        }
+                itemCssClass: 'ui:col-span-12 ui:md:col-span-9',
+                options: [],
+              },
+            },
+          ],
+        },
       },
       {
         key: 'notes',
@@ -237,12 +234,12 @@ export class OrderReceiptForm {
         props: {
           containerCssClass: 'ui:grid ui:gap-2',
           label: _('Notes'),
-          maxItems: 1
+          maxItems: 1,
         },
         fieldArray: {
-          type: "object",
+          type: 'object',
           props: {
-            label: _('Note')
+            label: _('Note'),
           },
           fieldGroup: [
             {
@@ -252,10 +249,8 @@ export class OrderReceiptForm {
               props: {
                 label: _('Type'),
                 alwaysHidden: true,
-                options: [
-                  { label: _('staff_note'), value: 'staff_note' }
-                ]
-              }
+                options: [{ label: _('staff_note'), value: 'staff_note' }],
+              },
             },
             {
               key: 'content',
@@ -263,28 +258,26 @@ export class OrderReceiptForm {
               props: {
                 label: _('Note'),
                 required: true,
-                rows: 5
-              }
-            }
-          ]
-        }
+                rows: 5,
+              },
+            },
+          ],
+        },
       },
       {
         key: 'receiptLines',
         type: 'receipt-lines',
         expressions: {
-          "props.disabled": "model.length < 1"
+          'props.disabled': 'model.length < 1',
         },
         props: {
           selectUnselect: lineAction,
-          minLength: 0
+          minLength: 0,
         },
         fieldArray: {
           fieldGroupClassName: 'ui:grid ui:grid-cols-12 ui:gap-4',
           validators: {
-            validation: [
-              { name: 'receiveQuantityMax', options: { errorPath: 'quantity' } }
-            ]
+            validation: [{ name: 'receiveQuantityMax', options: { errorPath: 'quantity' } }],
           },
           fieldGroup: [
             {
@@ -296,7 +289,7 @@ export class OrderReceiptForm {
                 hideLabel: true,
                 checkbox: true,
                 headerClassName: 'ui:col-span-1',
-              }
+              },
             },
             {
               key: 'acqOrderLineRef',
@@ -305,16 +298,16 @@ export class OrderReceiptForm {
               className: 'ui:col-span-5',
               props: {
                 headerClassName: 'ui:col-span-5 ui:font-bold',
-                label: _('Order Line')
-              }
+                label: _('Order Line'),
+              },
             },
             {
               key: 'quantityMax',
               type: 'input',
               className: 'ui:hidden',
               props: {
-                className: 'ui:hidden'
-              }
+                className: 'ui:hidden',
+              },
             },
             {
               key: 'quantity',
@@ -323,13 +316,13 @@ export class OrderReceiptForm {
               wrappers: ['input-no-label'],
               props: {
                 headerClassName: 'ui:col-span-2 ui:font-bold',
-                styleClass: "ui:w-full",
+                styleClass: 'ui:w-full',
                 type: 'number',
                 label: _('Qty'),
                 required: true,
                 min: 1,
-                step: 1
-              }
+                step: 1,
+              },
             },
             {
               key: 'amount',
@@ -341,8 +334,8 @@ export class OrderReceiptForm {
                 type: 'number',
                 label: _('Amount'),
                 required: true,
-                min: 0
-              }
+                min: 0,
+              },
             },
             {
               key: 'vatRate',
@@ -355,13 +348,11 @@ export class OrderReceiptForm {
                 label: _('Vat Rate'),
                 min: 0,
                 max: 100,
-                addonRight: [
-                  '%'
-                ]
-              }
-            }
-          ]
-        }
+                addonRight: ['%'],
+              },
+            },
+          ],
+        },
       },
     ];
   }

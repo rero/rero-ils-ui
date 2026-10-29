@@ -3,12 +3,12 @@ SPDX-FileCopyrightText: Fondation RERO+
 SPDX-License-Identifier: AGPL-3.0-or-later
 -->
 @if (currentTransaction(); as t) {
-  <div [ngClass]="{ 'callout callout-warning': isDisputed()}" class="ui:p-2">
+  <div [ngClass]="{ 'callout callout-warning': isDisputed() }" class="ui:p-2">
     <div class="ui:grid ui:grid-cols-12 ui:items-start">
       <div class="ui:col-span-2 ui:flex ui:gap-2">
         <shared-open-close-button [collapsed]="isCollapsed()" (status)="isCollapsed.set($event)" />
         <div>
-          {{ t.creation_date | dateTranslate :'shortDate' }}
+          {{ t.creation_date | dateTranslate: 'shortDate' }}
         </div>
       </div>
       <div class="ui:col-span-2">{{ t.type | translate }}</div>
@@ -22,17 +22,18 @@ SPDX-License-Identifier: AGPL-3.0-or-later
           <span>{{ t.transaction_library.pid | getRecord: 'libraries' : 'field' : 'name' | async }}</span>
         }
       </div>
-      <div class="ui:col-span-2 ui:flex ui:justify-end">{{ transactionAmount() | currency: organisation.default_currency }}</div>
+      <div class="ui:col-span-2 ui:flex ui:justify-end">
+        {{ transactionAmount() | currency: organisation.default_currency }}
+      </div>
       <div class="ui:col-span-2 ui:flex ui:justify-end">
         @if (t.status === patronTransactionStatus.OPEN) {
           <p-select
-            [placeholder]="'Action'|translate"
+            [placeholder]="'Action' | translate"
             [options]="menuItems()"
             [ngModel]="menuSelectedAction()"
             (ngModelChange)="menuSelectedAction.set($event)"
             (onChange)="patronTransactionEvent($event)"
-            appendTo="body"
-            />
+            appendTo="body" />
         }
       </div>
     </div>
@@ -40,7 +41,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
       <div class="ui:grid ui:grid-cols-12">
         <div class="ui:col-start-3 ui:col-span-9 ui:mt-2">
           <!-- Transaction detail -->
-          <h6 translate>Details</h6>
+          <h6>{{ 'Details' | translate }}</h6>
           <section class="ui:mb-4">
             @switch (t.type) {
               @case ('overdue') {
@@ -52,7 +53,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
             }
           </section>
           <!-- Transaction history -->
-          <h6 translate>Transaction history</h6>
+          <h6>{{ 'Transaction history' | translate }}</h6>
           <admin-patron-transaction-history [events]="t.get_events()" />
         </div>
       </div>

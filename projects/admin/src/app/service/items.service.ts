@@ -6,13 +6,13 @@ import { ApiService, RecordService } from '@rero/ng-core';
 import { AppStore, BaseApi, ItemStatus } from '@rero/shared';
 import { Observable, of } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
+
 import { Item, ItemAction, ItemNoteType } from '../classes/items';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class ItemsService {
-
   private httpClient: HttpClient = inject(HttpClient);
   private appStore = inject(AppStore);
   private recordService: RecordService = inject(RecordService);
@@ -24,9 +24,9 @@ export class ItemsService {
    * @returns Observable<any>
    */
   getByPidFromEs(pid: string): Observable<any> {
-    return this.recordService.getRecords(
-      'items', { query: `pid:${pid}`, page: 1, itemsPerPage: 1, headers: BaseApi.reroJsonheaders }
-    ).pipe(map((result: any) => result.hits.hits[0]));
+    return this.recordService
+      .getRecords('items', { query: `pid:${pid}`, page: 1, itemsPerPage: 1, headers: BaseApi.reroJsonheaders })
+      .pipe(map((result: any) => result.hits.hits[0]));
   }
 
   /**
@@ -38,18 +38,18 @@ export class ItemsService {
     const itemApiUrl = this.apiService.getEndpointByType('item');
     const url = `${itemApiUrl}/requested_loans/${libraryPid}`;
     return this.httpClient.get<any>(url).pipe(
-      map(data => data.hits),
-      map(hits => hits.total === 0 ? [] : hits.hits),
-      map(hits => hits.map(
-        data => {
+      map((data) => data.hits),
+      map((hits) => (hits.total === 0 ? [] : hits.hits)),
+      map((hits) =>
+        hits.map((data) => {
           const { item } = data;
           if (data.loan) {
             item.loan = data.loan;
           }
           return item;
-        }
-        ))
-      );
+        }),
+      ),
+    );
   }
 
   /**
@@ -61,22 +61,24 @@ export class ItemsService {
   doValidateRequest(item, transactionLibraryPid): Observable<any> {
     const itemApiUrl = this.apiService.getEndpointByType('item');
     const url = `${itemApiUrl}/validate_request`;
-    return this.httpClient.post<any>(url, {
-      item_pid: item.pid,
-      pid: item.loan.pid,
-      transaction_library_pid: transactionLibraryPid,
-      transaction_user_pid: this.appStore.user()?.patronLibrarian.pid
-    }).pipe(
-      map(data => {
-        const itemData = data.metadata;
-        itemData.loan = data.action_applied.validate;
-        // Propagate removed temporary item type info if present
-        if (data.removed_temporary_item_type) {
-          itemData.removed_temporary_item_type = data.removed_temporary_item_type;
-        }
-        return itemData;
+    return this.httpClient
+      .post<any>(url, {
+        item_pid: item.pid,
+        pid: item.loan.pid,
+        transaction_library_pid: transactionLibraryPid,
+        transaction_user_pid: this.appStore.user()?.patronLibrarian.pid,
       })
-    );
+      .pipe(
+        map((data) => {
+          const itemData = data.metadata;
+          itemData.loan = data.action_applied.validate;
+          // Propagate removed temporary item type info if present
+          if (data.removed_temporary_item_type) {
+            itemData.removed_temporary_item_type = data.removed_temporary_item_type;
+          }
+          return itemData;
+        }),
+      );
   }
 
   /**
@@ -92,21 +94,21 @@ export class ItemsService {
       url += `?patron.patron_pid=${patronPid}`;
     }
     return this.httpClient.get<any>(url).pipe(
-      map(data => {
+      map((data) => {
         const item = new Item(data.metadata.item);
         if (data.metadata.loan) {
           item.setLoan(data.metadata.loan);
         }
         return item;
       }),
-      catchError(e => {
+      catchError((e) => {
         switch (e.status) {
           case 404:
             throw new Error('Item not found');
           default:
             throw e;
         }
-      })
+      }),
     );
   }
 
@@ -117,41 +119,43 @@ export class ItemsService {
    */
   checkin(barcode: string, transactionLibraryPid: string) {
     const itemApiUrl = this.apiService.getEndpointByType('item');
-    return this.httpClient.post<any>(`${itemApiUrl}/checkin`, {
-      item_barcode: barcode,
-      transaction_library_pid: transactionLibraryPid,
-      transaction_user_pid: this.appStore.user()?.patronLibrarian.pid
-    }).pipe(
-      map(data => {
-        const item = new Item(data.metadata);
-        let loan: any;
-        item.action_applied = data.action_applied;
-        // Set actionDone with priority order: checkin > receive > validate
-        const actionPriority = [ItemAction.checkin, ItemAction.receive, ItemAction.validate];
-        for (const action of actionPriority) {
-          if (data.action_applied[action]) {
-            item.actionDone = action;
-            loan = data.action_applied[action];
-            break;
-          }
-        }
-        if (loan != null) {
-          item.setLoan(loan);
-        }
-        // Propagate removed temporary item type info if present
-        if (data.removed_temporary_item_type) {
-          item.removed_temporary_item_type = data.removed_temporary_item_type;
-        }
-        return item;
-      }),
-      catchError(e => {
-        if (e.status === 404) {
-          return of(null);
-        } else {
-          throw e;
-        }
+    return this.httpClient
+      .post<any>(`${itemApiUrl}/checkin`, {
+        item_barcode: barcode,
+        transaction_library_pid: transactionLibraryPid,
+        transaction_user_pid: this.appStore.user()?.patronLibrarian.pid,
       })
-    );
+      .pipe(
+        map((data) => {
+          const item = new Item(data.metadata);
+          let loan: any;
+          item.action_applied = data.action_applied;
+          // Set actionDone with priority order: checkin > receive > validate
+          const actionPriority = [ItemAction.checkin, ItemAction.receive, ItemAction.validate];
+          for (const action of actionPriority) {
+            if (data.action_applied[action]) {
+              item.actionDone = action;
+              loan = data.action_applied[action];
+              break;
+            }
+          }
+          if (loan != null) {
+            item.setLoan(loan);
+          }
+          // Propagate removed temporary item type info if present
+          if (data.removed_temporary_item_type) {
+            item.removed_temporary_item_type = data.removed_temporary_item_type;
+          }
+          return item;
+        }),
+        catchError((e) => {
+          if (e.status === 404) {
+            return of(null);
+          } else {
+            throw e;
+          }
+        }),
+      );
   }
 
   /**
@@ -171,7 +175,7 @@ export class ItemsService {
     const data: any = {
       item_pid: item.pid,
       transaction_library_pid: transactionLibraryPid,
-      transaction_user_pid: userPid
+      transaction_user_pid: userPid,
     };
     if (patronPid && action === ItemAction.checkout) {
       data.patron_pid = patronPid;
@@ -192,14 +196,15 @@ export class ItemsService {
       queryParams[key] = true;
     }
 
-    return this.httpClient.post<any>(url, data, {params: queryParams}).pipe(
-      map(itemData => {
+    return this.httpClient.post<any>(url, data, { params: queryParams }).pipe(
+      map((itemData) => {
         const item = new Item(itemData.metadata);
-        const loanSourceAction = (
-          action === ItemAction.checkin
-          && item.status === ItemStatus.IN_TRANSIT
-          && itemData.action_applied[ItemAction.validate]
-        ) ? ItemAction.validate : action;
+        const loanSourceAction =
+          action === ItemAction.checkin &&
+          item.status === ItemStatus.IN_TRANSIT &&
+          itemData.action_applied[ItemAction.validate]
+            ? ItemAction.validate
+            : action;
         item.setLoan(itemData.action_applied[loanSourceAction]);
         item.actionDone = action;
         // Propagate removed temporary item type info if present
@@ -207,7 +212,7 @@ export class ItemsService {
           item.removed_temporary_item_type = itemData.removed_temporary_item_type;
         }
         return item;
-      })
+      }),
     );
   }
 
@@ -220,12 +225,12 @@ export class ItemsService {
     const itemApiUrl = this.apiService.getEndpointByType('item');
     const url = `${itemApiUrl}/${itemPid}/pickup_locations`;
     return this.httpClient.get<any>(url).pipe(
-      map(data => data.locations),
-      catchError(e => {
+      map((data) => data.locations),
+      catchError((e) => {
         if (e.status === 404) {
           return of(null);
         }
-      })
+      }),
     );
   }
 
@@ -262,9 +267,11 @@ export class ItemsService {
     // WARNING ~~~~~~~~~~~~~~~~~~~~~~~
     if (type === 'warning') {
       if (item.actionDone && item.actionDone === ItemAction.checkin) {
-        return item.status === ItemStatus.IN_TRANSIT
-            || (item.pending_loans?.length > 0)
-            || item.getNote(ItemNoteType.CHECKIN) != null;
+        return (
+          item.status === ItemStatus.IN_TRANSIT ||
+          item.pending_loans?.length > 0 ||
+          item.getNote(ItemNoteType.CHECKIN) != null
+        );
       }
       if (item.actionDone && item.actionDone === ItemAction.checkout) {
         return item.getNote(ItemNoteType.CHECKOUT) != null;

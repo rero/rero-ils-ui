@@ -1,18 +1,17 @@
 // SPDX-FileCopyrightText: Fondation RERO+
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-import { Component, computed, inject, input, ChangeDetectionStrategy} from '@angular/core';
-import { TranslateService, TranslateDirective, TranslatePipe } from '@ngx-translate/core';
-import { MainTitlePipe } from '@rero/shared';
-import { Bind } from 'primeng/bind';
-import { TableModule } from 'primeng/table';
+import { Component, computed, inject, input } from '@angular/core';
 import { RouterLink } from '@angular/router';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
+import { Bind } from '@openng/optimus-ui/bind';
+import { TableModule } from '@openng/optimus-ui/table';
+import { MainTitlePipe } from '@rero/shared';
 
 @Component({
-    selector: 'admin-migration-metadata',
-    templateUrl: './migration-metadata.component.html',
-    imports: [Bind, TableModule, TranslateDirective, RouterLink, TranslatePipe],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  selector: 'admin-migration-metadata',
+  templateUrl: './migration-metadata.component.html',
+  imports: [Bind, TableModule, RouterLink, TranslatePipe],
 })
 export class MigrationMetadataBriefComponent {
   // services
@@ -40,7 +39,7 @@ export class MigrationMetadataBriefComponent {
    */
   getScore(value): string {
     if (value == null) {
-      return ''
+      return '';
     }
     if (value?.weight == null) {
       return `${value.value.toFixed(2)}&nbsp;|&nbsp;1.0`;
@@ -51,7 +50,7 @@ export class MigrationMetadataBriefComponent {
     } else if (value.value > 0.8) {
       color = 'text-green-500';
     }
-    return `<span class="${color}">${value.value.toFixed(2)}</span>&nbsp;|&nbsp;${value.weight.toFixed(1)}`
+    return `<span class="${color}">${value.value.toFixed(2)}</span>&nbsp;|&nbsp;${value.weight.toFixed(1)}`;
   }
 
   /**

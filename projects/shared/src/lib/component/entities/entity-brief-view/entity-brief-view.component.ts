@@ -2,16 +2,28 @@
 // SPDX-FileCopyrightText: UCLouvain
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-import { AfterViewInit, ChangeDetectionStrategy, Component, computed, inject, inputBinding, Signal, Type, ViewChild, ViewContainerRef, input } from '@angular/core';
-import { Bind } from 'primeng/bind';
-import { Tag } from 'primeng/tag';
+import {
+  AfterViewInit,
+  Component,
+  computed,
+  inject,
+  input,
+  inputBinding,
+  Signal,
+  Type,
+  ViewChild,
+  ViewContainerRef,
+} from '@angular/core';
 import { TranslatePipe } from '@ngx-translate/core';
+import { Bind } from '@openng/optimus-ui/bind';
+import { Tag } from '@openng/optimus-ui/tag';
+
 import { Entity, EntityType } from '../../../classes/entity';
+import { ReroTemplateDirective } from '../../../directive/rero-template.directive';
 import { ExtractSourceFieldPipe } from '../../../pipe/extract-source-field.pipe';
-import { BriefViewTag, BriefViewComponent } from '../../core/brief-view/brief-view.component';
+import { BriefViewComponent, BriefViewTag } from '../../core/brief-view/brief-view.component';
 import { EntityBriefViewRemoteOrganisationComponent } from './entity-brief-view.organisation';
 import { EntityBriefViewRemotePersonComponent } from './entity-brief-view.person';
-import { ReroTemplateDirective } from '../../../directive/rero-template.directive';
 
 @Component({
   selector: 'shared-entity-brief-view',
@@ -34,10 +46,8 @@ import { ReroTemplateDirective } from '../../../directive/rero-template.directiv
     </shared-brief-view>
   `,
   imports: [BriefViewComponent, ReroTemplateDirective, Bind, Tag, TranslatePipe],
-  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class EntityBriefViewComponent implements AfterViewInit {
-
   protected extractedSourceFieldPipe: ExtractSourceFieldPipe = inject(ExtractSourceFieldPipe);
 
   readonly record = input<any>(undefined);
@@ -86,9 +96,12 @@ export class EntityBriefViewComponent implements AfterViewInit {
     const record = this.record();
     if (!record || record.metadata.resource_type !== 'remote') return null;
     switch (record.metadata.type) {
-      case EntityType.ORGANISATION: return EntityBriefViewRemoteOrganisationComponent;
-      case EntityType.PERSON: return EntityBriefViewRemotePersonComponent;
-      default: return null;
+      case EntityType.ORGANISATION:
+        return EntityBriefViewRemoteOrganisationComponent;
+      case EntityType.PERSON:
+        return EntityBriefViewRemotePersonComponent;
+      default:
+        return null;
     }
   });
 
@@ -96,9 +109,7 @@ export class EntityBriefViewComponent implements AfterViewInit {
     const component = this.contentComponent();
     if (component) {
       this.entityContent.createComponent(component, {
-        bindings: [
-          inputBinding('record', () => this.record()),
-        ],
+        bindings: [inputBinding('record', () => this.record())],
       });
     }
   }

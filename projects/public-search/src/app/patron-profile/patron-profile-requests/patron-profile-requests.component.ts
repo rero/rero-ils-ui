@@ -1,21 +1,20 @@
 // SPDX-FileCopyrightText: Fondation RERO+
 // SPDX-License-Identifier: AGPL-3.0-or-later
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
-import { TranslateDirective } from "@ngx-translate/core";
+import { Component, inject } from '@angular/core';
+import { TranslatePipe } from '@ngx-translate/core';
+import { PaginatorState } from '@openng/optimus-ui/paginator';
+import { PanelModule } from '@openng/optimus-ui/panel';
 import { PaginatorComponent } from '@rero/shared';
-import { PanelModule } from 'primeng/panel';
-import { PaginatorState } from 'primeng/paginator';
+
 import { PatronProfileStore } from '../store/patron-profile.store';
 import { PatronProfileRequestComponent } from './patron-profile-request/patron-profile-request.component';
 
 @Component({
-    selector: 'public-search-patron-profile-requests',
-    templateUrl: './patron-profile-requests.component.html',
-    imports: [TranslateDirective, PanelModule, PaginatorComponent, PatronProfileRequestComponent],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  selector: 'public-search-patron-profile-requests',
+  templateUrl: './patron-profile-requests.component.html',
+  imports: [TranslatePipe, PanelModule, PaginatorComponent, PatronProfileRequestComponent],
 })
 export class PatronProfileRequestsComponent {
-
   protected store = inject(PatronProfileStore);
 
   // COMPONENTS FUNCTIONS =====================================================

@@ -1,27 +1,37 @@
 // SPDX-FileCopyrightText: Fondation RERO+
 // SPDX-License-Identifier: AGPL-3.0-or-later
-import { Component, inject, input, OnInit, output, signal, ChangeDetectionStrategy} from '@angular/core';
+import { Component, inject, input, OnInit, output, signal } from '@angular/core';
+import { RouterLink } from '@angular/router';
 import { HoldingsService } from '@app/admin/service/holdings.service';
 import { RecordPermissionService } from '@app/admin/service/record-permission.service';
-import { TranslateService, TranslatePipe } from '@ngx-translate/core';
-import { AppStore, EsRecord, GetTranslatedLabelPipe } from '@rero/shared';
-import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
-import { forkJoin } from 'rxjs';
-import { ItemRequestComponent } from '../../item-request/item-request.component';
-import { RecordMaskedComponent } from '../../../record-masked/record-masked.component';
-import { Bind } from 'primeng/bind';
-import { Button } from 'primeng/button';
-import { RouterLink } from '@angular/router';
-import { Tooltip } from 'primeng/tooltip';
-import { HoldingDetailComponent } from '../holding-detail/holding-detail.component';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
+import { Bind } from '@openng/optimus-ui/bind';
+import { Button } from '@openng/optimus-ui/button';
+import { DialogService, DynamicDialogRef } from '@openng/optimus-ui/dynamicdialog';
+import { Tooltip } from '@openng/optimus-ui/tooltip';
 import { Nl2brPipe } from '@rero/ng-core';
+import { AppStore, EsRecord, GetTranslatedLabelPipe } from '@rero/shared';
+import { forkJoin } from 'rxjs';
+
+import { RecordMaskedComponent } from '../../../record-masked/record-masked.component';
+import { ItemRequestComponent } from '../../item-request/item-request.component';
 import { DocumentDetailStore } from '../../store/document-detail.store';
+import { HoldingDetailComponent } from '../holding-detail/holding-detail.component';
 
 @Component({
-    selector: 'admin-holding-header',
-    templateUrl: './holding-header.component.html',
-    imports: [RecordMaskedComponent, Bind, Button, RouterLink, Tooltip, HoldingDetailComponent, TranslatePipe, GetTranslatedLabelPipe, Nl2brPipe],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  selector: 'admin-holding-header',
+  templateUrl: './holding-header.component.html',
+  imports: [
+    RecordMaskedComponent,
+    Bind,
+    Button,
+    RouterLink,
+    Tooltip,
+    HoldingDetailComponent,
+    TranslatePipe,
+    GetTranslatedLabelPipe,
+    Nl2brPipe,
+  ],
 })
 export class HoldingHeaderComponent implements OnInit {
   private recordPermissionService: RecordPermissionService = inject(RecordPermissionService);
@@ -50,10 +60,7 @@ export class HoldingHeaderComponent implements OnInit {
   }
 
   get deleteInfoMessage(): string {
-    return this.recordPermissionService.generateTooltipMessage(
-      this.permissions()?.delete?.reasons,
-      'delete'
-    );
+    return this.recordPermissionService.generateTooltipMessage(this.permissions()?.delete?.reasons, 'delete');
   }
 
   /** onInit hook */
@@ -70,7 +77,7 @@ export class HoldingHeaderComponent implements OnInit {
       modal: true,
       width: '30vw',
       closable: true,
-      data: { recordPid, recordType }
+      data: { recordPid, recordType },
     });
     ref.onClose.subscribe((value?: boolean) => {
       if (value) {
@@ -86,16 +93,14 @@ export class HoldingHeaderComponent implements OnInit {
   private _getPermissions(): void {
     const permissionObs = this.recordPermissionService.getPermission('holdings', this.holding().metadata.pid);
     const canRequestObs = this.holdingService.canRequest(this.holding().metadata.pid);
-    forkJoin([permissionObs, canRequestObs]).subscribe(
-      ([permissions, canRequest]) => {
-        const resolved = this.recordPermissionService
-          .membership(
-            this.appStore.currentLibraryPid(),
-            this.holding().metadata.library.pid,
-            permissions
-          );
-        resolved.canRequest = canRequest;
-        this.permissions.set(resolved);
+    forkJoin([permissionObs, canRequestObs]).subscribe(([permissions, canRequest]) => {
+      const resolved = this.recordPermissionService.membership(
+        this.appStore.currentLibraryPid(),
+        this.holding().metadata.library.pid,
+        permissions,
+      );
+      resolved.canRequest = canRequest;
+      this.permissions.set(resolved);
     });
   }
 }

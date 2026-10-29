@@ -8,15 +8,21 @@ SPDX-License-Identifier: AGPL-3.0-or-later
     [searchText]="searchText()"
     (searchQuery)="searchValueUpdated($event)"
     [focus]="searchInputFocus()"
-    [disabled]="searchInputDisabled()"
-  />
+    [disabled]="searchInputDisabled()" />
   <div class="ui:flex ui:flex-col ui:gap-2 ui:lg:flex-row ui:lg:items-center">
     <!-- auto refresh -->
     <div class="ui:flex ui:flex-wrap ui:items-center ui:gap-2">
-      <p-toggleswitch id="auto-refresh" [ngModel]="refreshInterval() > 0" (onChange)="enableAutoRefresh($event.checked)" />
-      <label class="ui:whitespace-nowrap" for="auto-refresh" translate>Auto refresh</label>
+      <p-toggleswitch
+        id="auto-refresh"
+        [ngModel]="refreshInterval() > 0"
+        (onChange)="enableAutoRefresh($event.checked)" />
+      <label class="ui:whitespace-nowrap" for="auto-refresh">{{ 'Auto refresh' | translate }}</label>
       @if (refreshInterval() > 0) {
-        <p-select [options]="refreshOptions" optionValue="value" [ngModel]="refreshInterval().toString()" (onChange)="selectingIntervalTimer($event.value)">
+        <p-select
+          [options]="refreshOptions"
+          optionValue="value"
+          [ngModel]="refreshInterval().toString()"
+          (onChange)="selectingIntervalTimer($event.value)">
           <ng-template #selectedItem let-item>
             <div class="ui:flex ui:items-center ui:gap-2">
               <i [class]="item.icon"></i>
@@ -34,7 +40,11 @@ SPDX-License-Identifier: AGPL-3.0-or-later
     </div>
     <div class="ui:flex ui:grow ui:flex-wrap ui:items-center ui:gap-2 ui:lg:justify-end">
       <!-- Sorting loans -->
-      <p-select [options]="sortingCriteria()" optionValue="value" [ngModel]="sortCriteria()" (onChange)="selectingSortCriteria($event.value)">
+      <p-select
+        [options]="sortingCriteria()"
+        optionValue="value"
+        [ngModel]="sortCriteria()"
+        (onChange)="selectingSortCriteria($event.value)">
         <ng-template #selectedItem let-item>
           <div class="ui:flex ui:items-center ui:gap-2">
             <i [class]="item.icon"></i>
@@ -56,9 +66,6 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 <div class="ui:grid ui:grid-cols-12 ui:gap-4">
   <div class="ui:col-span-12">
-    <admin-circulation-requested-items-list
-      [items]="items()"
-      (requestValidated)="searchValueUpdated($event)"
-    />
+    <admin-circulation-requested-items-list [items]="items()" (requestValidated)="searchValueUpdated($event)" />
   </div>
 </div>

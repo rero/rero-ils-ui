@@ -4,15 +4,16 @@ import { ResolveFn, Routes } from '@angular/router';
 import { _ } from '@ngx-translate/core';
 import {
   ActionStatus,
-  ComponentCanDeactivateGuard,
   DetailComponent,
   RecordData,
   RecordSearchPageComponent,
   RecordType,
   RouteDataTypesInterface,
+  unsavedChangesGuard,
 } from '@rero/ng-core';
-import { PERMISSIONS, PERMISSION_OPERATOR } from '@rero/shared';
+import { PERMISSION_OPERATOR, PERMISSIONS } from '@rero/shared';
 import { of } from 'rxjs';
+
 import { CAN_ACCESS_ACTIONS, canAccessGuard } from '../guard/can-access.guard';
 import { permissionGuard } from '../guard/permission.guard';
 import { LibrariesBriefViewComponent } from '../record/brief-view/libraries-brief-view.component';
@@ -20,8 +21,7 @@ import { LibraryComponent } from '../record/custom-editor/libraries/library.comp
 import { LibraryDetailViewComponent } from '../record/detail-view/library-detail-view/library-detail-view.component';
 import { BaseRoute } from './base-route';
 
-export const librariesRouteResolver: ResolveFn<Partial<RecordType>[]> = () =>
-  new LibrariesRoute().getTypes();
+export const librariesRouteResolver: ResolveFn<Partial<RecordType>[]> = () => new LibrariesRoute().getTypes();
 
 export const librariesRoutes: Routes = [
   {
@@ -48,7 +48,7 @@ export const librariesRoutes: Routes = [
     component: LibraryComponent,
     title: _('Library'),
     canActivate: [canAccessGuard],
-    canDeactivate: [ComponentCanDeactivateGuard],
+    canDeactivate: [unsavedChangesGuard],
     data: {
       action: CAN_ACCESS_ACTIONS.UPDATE,
     },
@@ -58,7 +58,7 @@ export const librariesRoutes: Routes = [
     component: LibraryComponent,
     title: _('Library'),
     canActivate: [permissionGuard],
-    canDeactivate: [ComponentCanDeactivateGuard],
+    canDeactivate: [unsavedChangesGuard],
     data: {
       permissions: [PERMISSIONS.LIB_CREATE],
     },
@@ -80,12 +80,14 @@ class LibrariesRoute extends BaseRoute implements RouteDataTypesInterface {
         component: LibrariesBriefViewComponent,
         detailComponent: LibraryDetailViewComponent,
         searchFilters: [this.expertSearchFilter()],
-        canAdd: () =>
-          of({ can: this.routeToolService.appStore.canAccess(PERMISSIONS.LIB_CREATE) } as ActionStatus),
+        canAdd: () => of({ can: this.routeToolService.appStore.canAccess(PERMISSIONS.LIB_CREATE) } as ActionStatus),
         permissions: (record: RecordData) => this.routeToolService.permissions(record, this.recordType),
         preCreateRecord: (data) => {
           data.organisation = {
-            $ref: this.routeToolService.apiService.getRefEndpoint('organisations', this.routeToolService.appStore.currentOrganisationPid()),
+            $ref: this.routeToolService.apiService.getRefEndpoint(
+              'organisations',
+              this.routeToolService.appStore.currentOrganisationPid(),
+            ),
           };
           return data;
         },

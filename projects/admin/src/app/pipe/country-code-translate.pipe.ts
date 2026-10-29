@@ -6,7 +6,6 @@ import { TranslateService } from '@ngx-translate/core';
 
 @Pipe({ name: 'countryCodeTranslate' })
 export class CountryCodeTranslatePipe implements PipeTransform {
-
   private translateService: TranslateService = inject(TranslateService);
 
   /**
@@ -17,5 +16,4 @@ export class CountryCodeTranslatePipe implements PipeTransform {
   transform(countryCode: string): string {
     return this.translateService.instant('country_' + countryCode);
   }
-
 }

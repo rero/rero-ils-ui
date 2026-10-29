@@ -5,7 +5,6 @@ import { TranslateService } from '@ngx-translate/core';
 
 @Pipe({ name: 'arrayTranslate' })
 export class ArrayTranslatePipe implements PipeTransform {
-
   private translateService: TranslateService = inject(TranslateService);
 
   /**

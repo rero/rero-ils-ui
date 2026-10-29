@@ -1,8 +1,9 @@
 // SPDX-FileCopyrightText: Fondation RERO+
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-import { MenuItem } from "primeng/api";
-import { MENU_IDS } from "./menu-ids";
+import { MenuItem } from '@openng/optimus-ui/api';
+
+import { MENU_IDS } from './menu-ids';
 
 export const MENU_USER: MenuItem[] = [
   {
@@ -11,7 +12,7 @@ export const MENU_USER: MenuItem[] = [
     icon: 'fa-solid fa-circle-question',
     id: MENU_IDS.USER.HELP,
     url: '/help',
-    target: '_blank'
+    target: '_blank',
   },
   {
     label: '$symbolName',
@@ -39,7 +40,7 @@ export const MENU_USER: MenuItem[] = [
         id: MENU_IDS.USER.LOGOUT,
         icon: 'fa-solid fa-right-from-bracket',
         url: '/signout',
-      }
-    ]
-  }
-]
+      },
+    ],
+  },
+];

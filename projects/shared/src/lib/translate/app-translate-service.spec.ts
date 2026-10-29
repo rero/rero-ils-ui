@@ -3,10 +3,11 @@
 import localeDe from '@angular/common/locales/de';
 import localeFr from '@angular/common/locales/fr';
 import localeIt from '@angular/common/locales/it';
+import { de } from '@openng/optimus-ui-locale/js/de.js';
+import { fr } from '@openng/optimus-ui-locale/js/fr.js';
+import { it as itLocale } from '@openng/optimus-ui-locale/js/it.js';
 import { CORE_LOCALES, NgCoreTranslateService } from '@rero/ng-core';
-import { de } from 'primelocale/js/de.js';
-import { fr } from 'primelocale/js/fr.js';
-import { it as itLocale } from 'primelocale/js/it.js';
+
 import { AppTranslateService } from './app-translate-service';
 
 describe('AppTranslateService', () => {

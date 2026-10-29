@@ -3,7 +3,6 @@
 import { inject, Pipe, PipeTransform } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 
-
 /** This pipe allows to find the best possible label to used from an array of labels.
  *  Each label must define 2 keys : `language` and `label` ::
  *
@@ -18,11 +17,10 @@ import { TranslateService } from '@ngx-translate/core';
  */
 
 @Pipe({
-    name: 'getTranslatedLabel',
-    pure: true
+  name: 'getTranslatedLabel',
+  pure: true,
 })
 export class GetTranslatedLabelPipe implements PipeTransform {
-
   protected translateService: TranslateService = inject(TranslateService);
 
   /**
@@ -32,18 +30,19 @@ export class GetTranslatedLabelPipe implements PipeTransform {
    *                  the current used interface language will be used.
    * @return: the best possible label.
    */
-  transform(entries: {language: string, label: string}[], language?: string): string | null {
+  transform(entries: { language: string; label: string }[], language?: string): string | null {
     if (!Array.isArray(entries)) {
       return null;
     }
     language = language || this.translateService.getCurrentLang();
-    const labels = entries.filter(entry => entry.language === language);
-    if (labels.length > 0) {  // We find a correct entry ! Return the label
+    const labels = entries.filter((entry) => entry.language === language);
+    if (labels.length > 0) {
+      // We find a correct entry ! Return the label
       return labels[0].label;
-    } else if (entries.length > 0) {  // we didn't find any entry. Return the first label from the input entries.
+    } else if (entries.length > 0) {
+      // we didn't find any entry. Return the first label from the input entries.
       return this.translateService.instant(entries[0].label);
     }
     return null;
   }
-
 }

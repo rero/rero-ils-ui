@@ -12,8 +12,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
             [searchText]="searchText()"
             (searchQuery)="searchValueUpdated($event)"
             [focus]="searchInputFocus()"
-            [disabled]="searchInputDisabled()"
-          />
+            [disabled]="searchInputDisabled()" />
         </div>
         <div class="ui:self-center ui:pl-1">
           <admin-circulation-settings />
@@ -25,7 +24,11 @@ SPDX-License-Identifier: AGPL-3.0-or-later
           @for (setting of store.settings(); track $index) {
             <p-tag [severity]="$any(setting.extra?.severity || 'warn')">
               {{ setting.label }}
-              <i class="fa-solid fa-circle-xmark ui:ml-2" tabindex="0" (click)="removeCheckoutSettings(setting.key)" (keyup.enter)="removeCheckoutSettings(setting.key)"></i>
+              <i
+                class="fa-solid fa-circle-xmark ui:ml-2"
+                tabindex="0"
+                (click)="removeCheckoutSettings(setting.key)"
+                (keyup.enter)="removeCheckoutSettings(setting.key)"></i>
             </p-tag>
           }
         </div>
@@ -34,17 +37,25 @@ SPDX-License-Identifier: AGPL-3.0-or-later
     <!-- Sorting loans -->
     <div class="ui:col-span-6 ui:flex ui:items-start ui:justify-end">
       <p-select
-        [ngModel]="sortCriteria()" (ngModelChange)="sortCriteria.set($event)"
+        [ngModel]="sortCriteria()"
+        (ngModelChange)="sortCriteria.set($event)"
         [options]="[
-          {value:'-transaction_date', label:'Transaction date (newest)' | translate, icon:'fa-solid fa-arrow-down-9-1'},
-          {value:'transaction_date', label:'Transaction date (oldest)' | translate, icon:'fa-solid fa-arrow-down-1-9'},
-          {value:'-due_date', label:'Due date (latest)' | translate, icon:'fa-solid fa-arrow-down-9-1'},
-          {value:'due_date', label:'Due date (earliest)' | translate, icon:'fa-solid fa-arrow-down-1-9'},
-          {value:'-location', label:'Location (Z-A)' | translate, icon: 'fa-solid fa-arrow-down-9-1'},
-          {value:'location', label:'Location (A-Z)' | translate, icon: 'fa-solid fa-arrow-down-1-9'}
+          {
+            value: '-transaction_date',
+            label: 'Transaction date (newest)' | translate,
+            icon: 'fa-solid fa-arrow-down-9-1',
+          },
+          {
+            value: 'transaction_date',
+            label: 'Transaction date (oldest)' | translate,
+            icon: 'fa-solid fa-arrow-down-1-9',
+          },
+          { value: '-due_date', label: 'Due date (latest)' | translate, icon: 'fa-solid fa-arrow-down-9-1' },
+          { value: 'due_date', label: 'Due date (earliest)' | translate, icon: 'fa-solid fa-arrow-down-1-9' },
+          { value: '-location', label: 'Location (Z-A)' | translate, icon: 'fa-solid fa-arrow-down-9-1' },
+          { value: 'location', label: 'Location (A-Z)' | translate, icon: 'fa-solid fa-arrow-down-1-9' },
         ]"
-        (onChange)="selectingSortCriteria($event)"
-      >
+        (onChange)="selectingSortCriteria($event)">
         <ng-template #selectedItem let-item>
           <div class="ui:flex ui:items-center ui:gap-2">
             <i [class]="item.icon"></i>
@@ -66,6 +77,5 @@ SPDX-License-Identifier: AGPL-3.0-or-later
     [patron]="store.patron()"
     (extendLoanClicked)="applyItems($any([$event]))"
     (extendAllLoansClicked)="applyItems($event)"
-    (hasFeesEmitter)="hasFees($event)"
-  />
+    (hasFeesEmitter)="hasFees($event)" />
 </section>

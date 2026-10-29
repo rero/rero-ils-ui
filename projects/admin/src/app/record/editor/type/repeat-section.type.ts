@@ -1,13 +1,13 @@
 // SPDX-FileCopyrightText: Fondation RERO+
 // SPDX-License-Identifier: AGPL-3.0-or-later
-import { Component, ChangeDetectionStrategy} from '@angular/core';
+import { Component } from '@angular/core';
 import { FieldArrayType, FormlyModule } from '@ngx-formly/core';
-import { Bind } from 'primeng/bind';
-import { Button } from 'primeng/button';
+import { Bind } from '@openng/optimus-ui/bind';
+import { Button } from '@openng/optimus-ui/button';
 
 @Component({
-    selector: 'admin-repeat-section',
-    template: `
+  selector: 'admin-repeat-section',
+  template: `
     @for (field of field.fieldGroup; track $index; let i = $index) {
       <div class="ui:grid ui:grid-cols-12 ui:gap-4 ui:mt-2">
         <div class="ui:col-span-11">
@@ -20,22 +20,17 @@ import { Button } from 'primeng/button';
               severity="danger"
               icon="fa-solid fa-trash-can"
               [rounded]="true"
-              [text]="true"
-            />
+              [text]="true" />
           }
-          @if (field.parent.props.maxItems > field.parent.fieldGroup.length && field.parent.fieldGroup.length -1 === i) {
-            <p-button
-              (onClick)="add()"
-              icon="fa-solid fa-circle-plus"
-              [rounded]="true"
-              [text]="true"
-            />
+          @if (
+            field.parent.props.maxItems > field.parent.fieldGroup.length && field.parent.fieldGroup.length - 1 === i
+          ) {
+            <p-button (onClick)="add()" icon="fa-solid fa-circle-plus" [rounded]="true" [text]="true" />
           }
         </div>
       </div>
     }
   `,
-    imports: [FormlyModule, Bind, Button],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  imports: [FormlyModule, Bind, Button],
 })
-export class RepeatTypeComponent extends FieldArrayType { }
+export class RepeatTypeComponent extends FieldArrayType {}

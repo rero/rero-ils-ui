@@ -1,17 +1,18 @@
 // SPDX-FileCopyrightText: Fondation RERO+
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-import { provideHttpClient } from "@angular/common/http";
-import { provideHttpClientTesting } from "@angular/common/http/testing";
-import { TestBed } from "@angular/core/testing";
-import { TranslateModule } from "@ngx-translate/core";
-import { Error } from "@rero/ng-core";
-import { AppStore, EsResult, testUserLibrarianWithSettings, User } from "@rero/shared";
-import { ConfirmationService, MessageService } from "primeng/api";
-import { Observable, of, Subject } from "rxjs";
-import { HoldingsApiService } from "../../../../../api/holdings-api.service";
-import { DocumentDetailStore } from "../../store/document-detail.store";
-import { HoldingsStore } from "./holdings-store";
+import { provideHttpClient, withXhr } from '@angular/common/http';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
+import { TestBed } from '@angular/core/testing';
+import { provideTranslateService } from '@ngx-translate/core';
+import { ConfirmationService, MessageService } from '@openng/optimus-ui/api';
+import { Error } from '@rero/ng-core';
+import { AppStore, EsResult, testUserLibrarianWithSettings, User } from '@rero/shared';
+import { Observable, of, Subject } from 'rxjs';
+
+import { HoldingsApiService } from '../../../../../api/holdings-api.service';
+import { DocumentDetailStore } from '../../store/document-detail.store';
+import { HoldingsStore } from './holdings-store';
 
 describe('Holdings Store', () => {
   let deleteResult$: Subject<boolean>;
@@ -29,6 +30,7 @@ describe('Holdings Store', () => {
     };
     TestBed.configureTestingModule({
       providers: [
+        provideTranslateService(),
         HoldingsStore,
         { provide: DocumentDetailStore, useValue: documentDetailStore },
         ConfirmationService,
@@ -37,12 +39,9 @@ describe('Holdings Store', () => {
         HoldingsApiServiceMock,
         { provide: HoldingsApiService, useExisting: HoldingsApiServiceMock },
         { provide: AppStore, useExisting: UserServiceMock },
-        provideHttpClient(),
+        provideHttpClient(withXhr()),
         provideHttpClientTesting(),
       ],
-      imports: [
-        TranslateModule.forRoot(),
-      ]
     });
   });
 
@@ -67,13 +66,13 @@ describe('Holdings Store', () => {
     const store = TestBed.inject(HoldingsStore);
     store.setDocument(document);
     await vi.advanceTimersByTimeAsync(500);
-    store.setLibraryFilter({ originalEvent: new Event('change'), value: ["1"] });
+    store.setLibraryFilter({ originalEvent: new Event('change'), value: ['1'] });
     expect(store.holdingsCurrentOrganisation()).toHaveLength(9);
     expect(store.holdingsOtherOrganisation()).toHaveLength(0);
-    store.setLibraryFilter({ originalEvent: new Event('change'), value: ["2"] });
+    store.setLibraryFilter({ originalEvent: new Event('change'), value: ['2'] });
     expect(store.holdingsCurrentOrganisation()).toHaveLength(0);
     expect(store.holdingsOtherOrganisation()).toHaveLength(3);
-    store.setLibraryFilter({ originalEvent: new Event('change'), value: ["1", "2"] });
+    store.setLibraryFilter({ originalEvent: new Event('change'), value: ['1', '2'] });
     expect(store.holdingsCurrentOrganisation()).toHaveLength(9);
     expect(store.holdingsOtherOrganisation()).toHaveLength(3);
     store.setLibraryFilter({ originalEvent: new Event('change'), value: [] });
@@ -86,7 +85,7 @@ describe('Holdings Store', () => {
     const holdingsApiService = TestBed.inject(HoldingsApiServiceMock);
     store.setDocument(document);
     await vi.advanceTimersByTimeAsync(500);
-    store.setLibraryFilter({ originalEvent: new Event('change'), value: ["2"] });
+    store.setLibraryFilter({ originalEvent: new Event('change'), value: ['2'] });
     expect(store.holdingsCurrentOrganisation()).toHaveLength(0);
     // Navigating to a linked document only rebinds the inputs of the detail view:
     // this store is reused, so the previous holdings and filter have to be dropped.
@@ -104,10 +103,10 @@ describe('Holdings Store', () => {
     const holdingsApiService = TestBed.inject(HoldingsApiServiceMock);
     store.setDocument(document);
     await vi.advanceTimersByTimeAsync(500);
-    store.setLibraryFilter({ originalEvent: new Event('change'), value: ["1"] });
+    store.setLibraryFilter({ originalEvent: new Event('change'), value: ['1'] });
     store.setDocument({ ...document });
     await vi.advanceTimersByTimeAsync(500);
-    expect(store.filteredLibrary()).toEqual(["1"]);
+    expect(store.filteredLibrary()).toEqual(['1']);
     expect(store.holdings()).toHaveLength(12);
     expect(holdingsApiService.requestedPids).toEqual(['262', '262']);
   });
@@ -164,157 +163,144 @@ describe('Holdings Store', () => {
 });
 
 const document = {
-  "created": "2025-11-03T12:45:51.978055+00:00",
-  "id": "262",
-  "links": {
-    "self": "https://localhost:5000/api/documents/262"
+  created: '2025-11-03T12:45:51.978055+00:00',
+  id: '262',
+  links: {
+    self: 'https://localhost:5000/api/documents/262',
   },
-  "metadata": {
-    "$schema": "https://bib.rero.ch/schemas/documents/document-v0.0.1.json",
-    "adminMetadata": {
-      "encodingLevel": "Minimal level" },
-    "contentMediaCarrier": [
-      {
-        "carrierType": "rdact:1049",
-        "contentType": [
-          "rdaco:1020"
-        ],
-        "mediaType": "rdamt:1007"
-      }
-    ],
-    "contribution": [
-      {
-        "entity": {
-          "authorized_access_point": "Schefer, Dorothy",
-          "type": "bf:Person"
-        },
-        "role": [
-          "ctb"
-        ]
-      },
-      {
-        "entity": {
-          "authorized_access_point": "Chanine, Nathalie",
-          "type": "bf:Person"
-        },
-        "role": [
-          "ctb"
-        ]
-      }
-    ],
-    "dimensions": [
-      "21 cm"
-    ],
-    "extent": "399 p.",
-    "fiction_statement": "non_fiction",
-    "genreForm": [
-      {
-        "entity": {
-          "authorized_access_point": "Photographies",
-          "source": "rero",
-          "type": "bf:Topic"
-        }
-      },
-      {
-        "entity": {
-          "authorized_access_point": "\u00c9tudes diverses",
-          "source": "rero",
-          "type": "bf:Topic"
-        }
-      }
-    ],
-    "identifiedBy": [
-      {
-        "type": "bf:Isbn",
-        "value": "9782843231926"
-      },
-      {
-        "source": "BNF",
-        "type": "uri",
-        "value": "http://catalogue.bnf.fr/ark:/12148/cb371086243"
-      }
-    ],
-    "illustrativeContent": [
-      "illustrations"
-    ],
-    "issuance": {
-      "main_type": "rdami:1001",
-      "subtype": "materialUnit"
+  metadata: {
+    $schema: 'https://bib.rero.ch/schemas/documents/document-v0.0.1.json',
+    adminMetadata: {
+      encodingLevel: 'Minimal level',
     },
-    "language": [
+    contentMediaCarrier: [
       {
-        "type": "bf:Language",
-        "value": "fre"
-      }
+        carrierType: 'rdact:1049',
+        contentType: ['rdaco:1020'],
+        mediaType: 'rdamt:1007',
+      },
     ],
-    "note": [
+    contribution: [
       {
-        "label": "ill.",
-        "noteType": "otherPhysicalDetails"
-      }
+        entity: {
+          authorized_access_point: 'Schefer, Dorothy',
+          type: 'bf:Person',
+        },
+        role: ['ctb'],
+      },
+      {
+        entity: {
+          authorized_access_point: 'Chanine, Nathalie',
+          type: 'bf:Person',
+        },
+        role: ['ctb'],
+      },
     ],
-    "pid": "262",
-    "provisionActivity": [
+    dimensions: ['21 cm'],
+    extent: '399 p.',
+    fiction_statement: 'non_fiction',
+    genreForm: [
       {
-        "_text": [
+        entity: {
+          authorized_access_point: 'Photographies',
+          source: 'rero',
+          type: 'bf:Topic',
+        },
+      },
+      {
+        entity: {
+          authorized_access_point: '\u00c9tudes diverses',
+          source: 'rero',
+          type: 'bf:Topic',
+        },
+      },
+    ],
+    identifiedBy: [
+      {
+        type: 'bf:Isbn',
+        value: '9782843231926',
+      },
+      {
+        source: 'BNF',
+        type: 'uri',
+        value: 'http://catalogue.bnf.fr/ark:/12148/cb371086243',
+      },
+    ],
+    illustrativeContent: ['illustrations'],
+    issuance: {
+      main_type: 'rdami:1001',
+      subtype: 'materialUnit',
+    },
+    language: [
+      {
+        type: 'bf:Language',
+        value: 'fre',
+      },
+    ],
+    note: [
+      {
+        label: 'ill.',
+        noteType: 'otherPhysicalDetails',
+      },
+    ],
+    pid: '262',
+    provisionActivity: [
+      {
+        _text: [
           {
-            "language": "default",
-            "value": "Paris : Assouline, 2000"
-          }
+            language: 'default',
+            value: 'Paris : Assouline, 2000',
+          },
         ],
-        "place": [
+        place: [
           {
-            "country": "fr"
-          }
+            country: 'fr',
+          },
         ],
-        "startDate": 2000,
-        "statement": [
+        startDate: 2000,
+        statement: [
           {
-            "label": [
+            label: [
               {
-                "value": "Paris"
-              }
+                value: 'Paris',
+              },
             ],
-            "type": "bf:Place"
-          }
+            type: 'bf:Place',
+          },
         ],
-        "type": "bf:Publication"
-      }
+        type: 'bf:Publication',
+      },
     ],
-    "responsibilityStatement": [
+    responsibilityStatement: [
       [
         {
-          "value": "introd. par par Dorothy Schefer Faux"
-        }
-      ]
+          value: 'introd. par par Dorothy Schefer Faux',
+        },
+      ],
     ],
-    "title": [
+    title: [
       {
-        "_text": "Beaut\u00e9 du si\u00e8cle",
-        "mainTitle": [
+        _text: 'Beaut\u00e9 du si\u00e8cle',
+        mainTitle: [
           {
-            "value": "Beaut\u00e9 du si\u00e8cle"
-          }
+            value: 'Beaut\u00e9 du si\u00e8cle',
+          },
         ],
-        "type": "bf:Title"
-      }
+        type: 'bf:Title',
+      },
     ],
-    "type": [
+    type: [
       {
-        "main_type": "docmaintype_book",
-        "subtype": "docsubtype_other_book"
-      }
+        main_type: 'docmaintype_book',
+        subtype: 'docsubtype_other_book',
+      },
     ],
-    "ui_responsibilities": [
-      "introd. par par Dorothy Schefer Faux",
-      "Nathalie Chanine... [et al.]"
-    ]
+    ui_responsibilities: ['introd. par par Dorothy Schefer Faux', 'Nathalie Chanine... [et al.]'],
   },
-  "updated": "2025-11-03T12:45:51.981000+00:00"
-}
+  updated: '2025-11-03T12:45:51.981000+00:00',
+};
 
 class HoldingsApiServiceMock {
-
   /** Document pid of every request, in call order */
   readonly requestedPids: string[] = [];
 
@@ -323,50 +309,50 @@ class HoldingsApiServiceMock {
     const holdings = [];
 
     for (let i = 0; i < 12; i++) {
-      const pid = i % 4 ? '1': '2';
+      const pid = i % 4 ? '1' : '2';
       holdings.push({
-          "created": "2025-11-03T12:46:15.669328+00:00",
-          "id": `${i}`,
-          "links": {
-              "self": `https://localhost:5000/api/holdings/${i}`
+        created: '2025-11-03T12:46:15.669328+00:00',
+        id: `${i}`,
+        links: {
+          self: `https://localhost:5000/api/holdings/${i}`,
+        },
+        metadata: {
+          $schema: 'https://bib.rero.ch/schemas/holdings/holding-v0.0.1.json',
+          circulation_category: {
+            $schema: 'https://bib.rero.ch/schemas/item_types/item_type-v0.0.1.json',
+            description: 'Standard checkout for adults only (16+)',
+            name: 'Standard adult',
+            negative_availability: false,
+            organisation: {
+              $ref: 'https://bib.rero.ch/api/organisations/1',
+            },
+            pid: '5',
+            type: 'standard',
           },
-          "metadata": {
-              "$schema": "https://bib.rero.ch/schemas/holdings/holding-v0.0.1.json",
-              "circulation_category": {
-                  "$schema": "https://bib.rero.ch/schemas/item_types/item_type-v0.0.1.json",
-                  "description": "Standard checkout for adults only (16+)",
-                  "name": "Standard adult",
-                  "negative_availability": false,
-                  "organisation": {
-                      "$ref": "https://bib.rero.ch/api/organisations/1"
-                  },
-                  "pid": "5",
-                  "type": "standard"
-              },
-              "document": {
-                  "pid": "262",
-                  "type": "doc"
-              },
-              "holdings_type": "standard",
-              "items_count": 1,
-              "library": {
-                "name": `Bibliothèque communale et scolaire d'Avise (${pid})`,
-                "pid": `${pid}`,
-                "type": "lib"
-              },
-              "location": {
-                  "name": "Espaces publics",
-                  "pid": "11",
-                  "type": "loc"
-              },
-              "organisation": {
-                "pid": `${pid}`,
-                "type": "org"
-              },
-              "pid": `${i}`,
-              "public_items_count": 1
+          document: {
+            pid: '262',
+            type: 'doc',
           },
-          "updated": "2025-11-03T12:46:15.669330+00:00"
+          holdings_type: 'standard',
+          items_count: 1,
+          library: {
+            name: `Bibliothèque communale et scolaire d'Avise (${pid})`,
+            pid: `${pid}`,
+            type: 'lib',
+          },
+          location: {
+            name: 'Espaces publics',
+            pid: '11',
+            type: 'loc',
+          },
+          organisation: {
+            pid: `${pid}`,
+            type: 'org',
+          },
+          pid: `${i}`,
+          public_items_count: 1,
+        },
+        updated: '2025-11-03T12:46:15.669330+00:00',
       });
     }
 
@@ -374,11 +360,11 @@ class HoldingsApiServiceMock {
       aggregations: {},
       hits: {
         hits: holdings,
-        total: holdings.length
+        total: holdings.length,
       },
       links: {
-        self: ''
-      }
+        self: '',
+      },
     });
   }
 }

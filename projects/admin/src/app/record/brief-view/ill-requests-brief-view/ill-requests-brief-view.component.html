@@ -16,7 +16,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
     <div class="ui:mb-2">{{ record().metadata.document.authors }}</div>
   }
   <dl class="metadata">
-    <dt translate>Requested by</dt>
+    <dt>{{ 'Requested by' | translate }}</dt>
     <dd>
       @if (requester()?.patron?.barcode?.[0]) {
         <a [routerLink]="['/circulation', 'patron', requester()?.patron?.barcode?.[0]]">
@@ -26,10 +26,10 @@ SPDX-License-Identifier: AGPL-3.0-or-later
           }
         </a>
       } @else {
-        <span translate>Unknown</span>
+        <span>{{ 'Unknown' | translate }}</span>
       }
     </dd>
-    <dt translate>Request date</dt>
-    <dd>{{ record().created | dateTranslate:'medium' }}</dd>
+    <dt>{{ 'Request date' | translate }}</dt>
+    <dd>{{ record().created | dateTranslate: 'medium' }}</dd>
   </dl>
 }

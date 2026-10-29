@@ -1,21 +1,20 @@
 // SPDX-FileCopyrightText: Fondation RERO+
 // SPDX-License-Identifier: AGPL-3.0-or-later
-import { Component, computed, inject, input, Signal, ChangeDetectionStrategy} from '@angular/core';
-import { TranslateService, TranslateDirective, TranslatePipe } from '@ngx-translate/core';
-import { Entity } from '@rero/shared';
-import { IEntityRelated, RawRelatedEntity } from './entities-related.interface';
-import { RouterLink } from '@angular/router';
 import { KeyValuePipe } from '@angular/common';
+import { Component, computed, inject, input, Signal } from '@angular/core';
+import { RouterLink } from '@angular/router';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { UpperCaseFirstPipe } from '@rero/ng-core';
+import { Entity } from '@rero/shared';
+
+import { IEntityRelated, RawRelatedEntity } from './entities-related.interface';
 
 @Component({
-    selector: 'admin-entities-related',
-    templateUrl: './entities-related.component.html',
-    imports: [RouterLink, TranslateDirective, KeyValuePipe, UpperCaseFirstPipe, TranslatePipe],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  selector: 'admin-entities-related',
+  templateUrl: './entities-related.component.html',
+  imports: [RouterLink, KeyValuePipe, UpperCaseFirstPipe, TranslatePipe],
 })
 export class EntitiesRelatedComponent {
-
   private translateService: TranslateService = inject(TranslateService);
 
   /** Record metadata */
@@ -40,7 +39,7 @@ export class EntitiesRelatedComponent {
               pid: entity.pid,
               resource_type: entity.resource_type,
               type: entity.type,
-              icon: Entity.getIcon(entity.type)
+              icon: Entity.getIcon(entity.type),
             });
           }
         });

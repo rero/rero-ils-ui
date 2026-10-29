@@ -7,10 +7,9 @@ import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class HoldingsApiService {
-
   private recordService = inject(RecordService);
   private recordUiService = inject(RecordUiService);
 
@@ -19,10 +18,13 @@ export class HoldingsApiService {
 
   getHoldingsByDocumentPid(documentPid: string): Observable<EsResult | Error> {
     const query = `document.pid:${documentPid} AND ((holdings_type:standard AND items_count:[1 TO *]) OR holdings_type:serial OR holdings_type:electronic)`;
-    return this.recordService.getRecords(
-      this.RESOURCE_NAME,
-      { query, page: 1, itemsPerPage: RecordService.MAX_REST_RESULTS_SIZE, headers: BaseApi.reroJsonheaders, sort: 'organisation_library_location' }
-    );
+    return this.recordService.getRecords(this.RESOURCE_NAME, {
+      query,
+      page: 1,
+      itemsPerPage: RecordService.MAX_REST_RESULTS_SIZE,
+      headers: BaseApi.reroJsonheaders,
+      sort: 'organisation_library_location',
+    });
   }
 
   getIssuesByHoldings(holdingsPid: string, page: number, size: number, markedAsNew: boolean, filter?: string) {
@@ -30,14 +32,23 @@ export class HoldingsApiService {
     if (filter) {
       query += ` AND (enumerationAndChronology.analyzed:"${filter}" OR call_numbers:(*${filter}*) OR barcode:(*${filter}*))`;
     }
-    return this.recordService.getRecords('items', { query, page, itemsPerPage: size, aggregationsFilters: [], preFilters: {}, sort: '-issue_sort_date' }).pipe(
-      map((result: EsResult) => {
-        if (markedAsNew) {
-          (result.hits.hits[0] as any).new_issue = true;
-        }
-        return result;
+    return this.recordService
+      .getRecords('items', {
+        query,
+        page,
+        itemsPerPage: size,
+        aggregationsFilters: [],
+        preFilters: {},
+        sort: '-issue_sort_date',
       })
-    );
+      .pipe(
+        map((result: EsResult) => {
+          if (markedAsNew) {
+            (result.hits.hits[0] as any).new_issue = true;
+          }
+          return result;
+        }),
+      );
   }
 
   delete(holdingsPid: string): Observable<boolean> {
@@ -60,13 +71,12 @@ export class HoldingsApiService {
     isCurrentOrganisation = true,
     page = 1,
     itemsPerPage = 10,
-    order = 'organisation_library_location'
+    order = 'organisation_library_location',
   ): Observable<any> {
     const query = this._queryOrganisation(documentPid, organisationPid, isCurrentOrganisation);
-    return this.recordService.getRecords(
-      this.RESOURCE_NAME, { query, page, itemsPerPage, headers: BaseApi.reroJsonheaders, sort: order }).pipe(
-      map((result: EsResult) => result.hits.hits)
-    );
+    return this.recordService
+      .getRecords(this.RESOURCE_NAME, { query, page, itemsPerPage, headers: BaseApi.reroJsonheaders, sort: order })
+      .pipe(map((result: EsResult) => result.hits.hits));
   }
 
   /**
@@ -78,9 +88,9 @@ export class HoldingsApiService {
    */
   getHoldingsCount(documentPid: string, organisationPid: string, isCurrentOrganisation = true): Observable<number> {
     const query = this._queryOrganisation(documentPid, organisationPid, isCurrentOrganisation);
-    return this.recordService.getRecords(this.RESOURCE_NAME, { query, page: 1, itemsPerPage: 1 }).pipe(
-      map((result: EsResult) => result.hits.total)
-    );
+    return this.recordService
+      .getRecords(this.RESOURCE_NAME, { query, page: 1, itemsPerPage: 1 })
+      .pipe(map((result: EsResult) => result.hits.total));
   }
 
   /**

@@ -5,35 +5,38 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 -->
 <div class="ui:grid ui:grid-cols-12 ui:gap-4 ui:py-2">
   <div class="ui:col-span-10">
-    <i class="ui:mr-1 fa-regular"
-       [ngClass]="{'fa-square-plus': isCollapsed === true, 'fa-square-minus': isCollapsed === false}"
-       tabindex="0"
-       (click)="isCollapsed = !isCollapsed"
-       (keyup.enter)="isCollapsed = !isCollapsed">
+    <i
+      class="ui:mr-1 fa-regular"
+      [ngClass]="{ 'fa-square-plus': isCollapsed === true, 'fa-square-minus': isCollapsed === false }"
+      tabindex="0"
+      (click)="isCollapsed = !isCollapsed"
+      (keyup.enter)="isCollapsed = !isCollapsed">
     </i>
     {{ permission().name }}
   </div>
   <div class="ui:col-span-2 ui:text-center">
-    <i class="fa-solid fa-square" [ngClass]="{'text-success': permission().can, 'text-error': !permission().can}"></i>
+    <i class="fa-solid fa-square" [ngClass]="{ 'text-success': permission().can, 'text-error': !permission().can }"></i>
   </div>
-  @if(!isCollapsed) {
-  <div id="reasons" class="ui:col-span-12 ui:my-1 ui:ml-8">
-    <ul class="ui:list-none">
-      @for (role of permission().reasons | keyvalue; track $index) {
-        <li>
-          <div class="ui:grid ui:grid-cols-12 ui:gap-4">
-            <div class="ui:col-span-6">{{ role.key | translate }}</div>
-            <div>
-              <i class="fa-solid fa-square" [ngClass]="{
-                 'text-success': role.value === true,
-                 'text-error': role.value === false,
-                 ' ui:text-muted-color': role.value === null
-              }"></i>
+  @if (!isCollapsed) {
+    <div id="reasons" class="ui:col-span-12 ui:my-1 ui:ml-8">
+      <ul class="ui:list-none">
+        @for (role of permission().reasons | keyvalue; track $index) {
+          <li>
+            <div class="ui:grid ui:grid-cols-12 ui:gap-4">
+              <div class="ui:col-span-6">{{ role.key | translate }}</div>
+              <div>
+                <i
+                  class="fa-solid fa-square"
+                  [ngClass]="{
+                    'text-success': role.value === true,
+                    'text-error': role.value === false,
+                    ' ui:text-muted-color': role.value === null,
+                  }"></i>
+              </div>
             </div>
-          </div>
-        </li>
-      }
-    </ul>
-  </div>
-}
+          </li>
+        }
+      </ul>
+    </div>
+  }
 </div>

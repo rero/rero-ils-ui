@@ -2,20 +2,19 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 import { Component, Input } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+
 import { AppStore } from '../store/app.store';
 import { PermissionsDirective } from './permissions.directive';
 
 @Component({
-    // eslint-disable-next-line @angular-eslint/component-selector
-    selector: 'permissions-testing-component',
-    imports: [PermissionsDirective],
-    template: `
-  <div id="perm" [permissions]="permissions">Permissions testing</div>`
+  // eslint-disable-next-line @angular-eslint/component-selector
+  selector: 'permissions-testing-component',
+  imports: [PermissionsDirective],
+  template: ` <div id="perm" [permissions]="permissions">Permissions testing</div>`,
 })
 class PermissionsTestingComponent {
   @Input() permissions: string[] | string = [];
 }
-
 
 describe('PermissionDirective', () => {
   let fixture: ComponentFixture<PermissionsTestingComponent>;
@@ -24,12 +23,9 @@ describe('PermissionDirective', () => {
 
   beforeEach(() => {
     fixture = TestBed.configureTestingModule({
-    imports: [PermissionsTestingComponent],
-    providers: [
-      { provide: AppStore, useValue: { canAccess: vi.fn(() => canAccess) } }
-    ]
-})
-    .createComponent(PermissionsTestingComponent);
+      imports: [PermissionsTestingComponent],
+      providers: [{ provide: AppStore, useValue: { canAccess: vi.fn(() => canAccess) } }],
+    }).createComponent(PermissionsTestingComponent);
 
     component = fixture.componentInstance;
     canAccess = true;

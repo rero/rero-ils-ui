@@ -1,14 +1,22 @@
 // SPDX-FileCopyrightText: Fondation RERO+
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-import { TestBed } from "@angular/core/testing";
-import { PatronService } from "./patron.service";
-import { ApiService, RecordService } from "@rero/ng-core";
-import { HttpClient } from "@angular/common/http";
-import { of } from "rxjs";
-import { apiResponse, loanPending, testCirculationInformations, testItemWithAllSerializedData, testOverduePreview, testPatron } from "@rero/shared";
-import { Item } from "../classes/items";
-import { Loan } from "../classes/loans";
+import { HttpClient } from '@angular/common/http';
+import { TestBed } from '@angular/core/testing';
+import { ApiService, RecordService } from '@rero/ng-core';
+import {
+  apiResponse,
+  loanPending,
+  testCirculationInformations,
+  testItemWithAllSerializedData,
+  testOverduePreview,
+  testPatron,
+} from '@rero/shared';
+import { of } from 'rxjs';
+
+import { Item } from '../classes/items';
+import { Loan } from '../classes/loans';
+import { PatronService } from './patron.service';
 
 describe('PatronService', () => {
   let service: PatronService;
@@ -23,8 +31,8 @@ describe('PatronService', () => {
         PatronService,
         { provide: ApiService, useValue: { getEndpointByType: vi.fn().mockReturnValue('/api/') } },
         { provide: HttpClient, useValue: httpClientSpy },
-        { provide: RecordService, useValue: recordServiceSpy }
-      ]
+        { provide: RecordService, useValue: recordServiceSpy },
+      ],
     });
 
     service = TestBed.inject(PatronService);
@@ -35,7 +43,7 @@ describe('PatronService', () => {
   });
 
   it('should not return a patron', () => {
-    const response = {...apiResponse};
+    const response = { ...apiResponse };
     response.hits.hits = [];
     response.hits.total = 0;
     recordServiceSpy.getRecords.mockReturnValue(of(response));
@@ -43,8 +51,8 @@ describe('PatronService', () => {
   });
 
   it('should return a patron', () => {
-    const response = {...apiResponse};
-    response.hits.hits = [{...testPatron}];
+    const response = { ...apiResponse };
+    response.hits.hits = [{ ...testPatron }];
     response.hits.total = response.hits.hits.length;
     recordServiceSpy.getRecords.mockReturnValue(of(response));
     service.getPatron('2010023488').subscribe((result: any) => {
@@ -53,17 +61,16 @@ describe('PatronService', () => {
   });
 
   it('should return a patron by its pid', () => {
-    const patron = {...testPatron};
+    const patron = { ...testPatron };
     recordServiceSpy.getRecord.mockReturnValue(of(patron));
-    service.getPatronByPid('1')
-      .subscribe((result: any) => expect(result).toEqual(patron.metadata));
+    service.getPatronByPid('1').subscribe((result: any) => expect(result).toEqual(patron.metadata));
   });
 
   it('should return a list of items for a patron', () => {
-    const response = {...apiResponse};
+    const response = { ...apiResponse };
     response.hits.hits = [
-      {item: { barcode: '10000000406', 'organisation_pid': '1', pid: '406'}},
-      {item: { barcode: '10000000423', 'organisation_pid': '1', pid: '423'}}
+      { item: { barcode: '10000000406', organisation_pid: '1', pid: '406' } },
+      { item: { barcode: '10000000423', organisation_pid: '1', pid: '423' } },
     ];
     response.hits.total = response.hits.hits.length;
     httpClientSpy.get.mockReturnValue(of(response));
@@ -75,53 +82,49 @@ describe('PatronService', () => {
 
   it('should return a item with all data', () => {
     httpClientSpy.get.mockReturnValue(of(testItemWithAllSerializedData));
-    service.getItem('10000000406')
-      .subscribe((result: any) => {
-        expect(result).toBeInstanceOf(Item);
-        expect(result.document).toEqual(testItemWithAllSerializedData.metadata.item.document);
-      })
+    service.getItem('10000000406').subscribe((result: any) => {
+      expect(result).toBeInstanceOf(Item);
+      expect(result.document).toEqual(testItemWithAllSerializedData.metadata.item.document);
+    });
   });
 
   it('should return the requested items', () => {
-    const response = {...apiResponse};
-    response.hits.hits = [{...loanPending}];
+    const response = { ...apiResponse };
+    response.hits.hits = [{ ...loanPending }];
     response.hits.total = response.hits.hits.length;
     recordServiceSpy.getRecords.mockReturnValue(of(response));
-    service.getItemsRequested('1')
-      .subscribe((result: any) => expect(result).toEqual(response.hits.hits));
+    service.getItemsRequested('1').subscribe((result: any) => expect(result).toEqual(response.hits.hits));
   });
 
   it('should return the pickup items', () => {
-    const response = {...apiResponse};
-    response.hits.hits = [{...loanPending}];
+    const response = { ...apiResponse };
+    response.hits.hits = [{ ...loanPending }];
     response.hits.total = response.hits.hits.length;
     recordServiceSpy.getRecords.mockReturnValue(of(response));
-    service.getItemsPickup('1')
-      .subscribe((result: any) => expect(result).toEqual(response.hits.hits));
+    service.getItemsPickup('1').subscribe((result: any) => expect(result).toEqual(response.hits.hits));
   });
 
   it('should return the history', () => {
-    const response = {...apiResponse};
-    response.hits.hits = [{...loanPending}];
+    const response = { ...apiResponse };
+    response.hits.hits = [{ ...loanPending }];
     response.hits.total = response.hits.hits.length;
     recordServiceSpy.getRecords.mockReturnValue(of(response));
-    service.getHistory('1')
-      .subscribe((result: any) => expect(result).toEqual(response.hits.hits));
+    service.getHistory('1').subscribe((result: any) => expect(result).toEqual(response.hits.hits));
   });
 
   it('should return circulation information', () => {
     httpClientSpy.get.mockReturnValue(of(testCirculationInformations));
-    service.getCirculationInformations('1')
-      .subscribe((result: any) => expect(result).toEqual(testCirculationInformations))
+    service
+      .getCirculationInformations('1')
+      .subscribe((result: any) => expect(result).toEqual(testCirculationInformations));
   });
 
   it('should return overdue preview about overdue loans related to a patron', () => {
-    httpClientSpy.get.mockReturnValue(of([{...testOverduePreview}]));
+    httpClientSpy.get.mockReturnValue(of([{ ...testOverduePreview }]));
     service.getOverduePreview('1').subscribe((result: any) => {
       expect(result[0].fees).toEqual(testOverduePreview.fees);
       expect(result[0].loan).toBeInstanceOf(Loan);
       expect(result[0].loan.document_pid).toEqual('2000110');
     });
   });
-
 });

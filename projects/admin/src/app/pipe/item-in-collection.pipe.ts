@@ -8,7 +8,6 @@ import { map } from 'rxjs/operators';
 
 @Pipe({ name: 'itemInCollection' })
 export class ItemInCollectionPipe implements PipeTransform {
-
   private recordService: RecordService = inject(RecordService);
 
   /**
@@ -16,19 +15,21 @@ export class ItemInCollectionPipe implements PipeTransform {
    * @param itemPid - Item pid
    * @returns Observable
    */
-  transform(itemPid: string|undefined): Observable<[] | null> {
-    if(itemPid === undefined) {
+  transform(itemPid: string | undefined): Observable<[] | null> {
+    if (itemPid === undefined) {
       return of([]);
     }
-    return this.recordService.getRecords(
-      'collections',
-      { query: `items.pid:${itemPid} AND published:true`, page: 1, itemsPerPage: RecordService.MAX_REST_RESULTS_SIZE, sort: 'title' }
-    ).pipe(
-      map((result: any) => {
-        return (result.hits.total === 0)
-          ? []
-          : result.hits.hits;
+    return this.recordService
+      .getRecords('collections', {
+        query: `items.pid:${itemPid} AND published:true`,
+        page: 1,
+        itemsPerPage: RecordService.MAX_REST_RESULTS_SIZE,
+        sort: 'title',
       })
-    );
+      .pipe(
+        map((result: any) => {
+          return result.hits.total === 0 ? [] : result.hits.hits;
+        }),
+      );
   }
 }

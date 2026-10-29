@@ -10,10 +10,10 @@
     "tslib": "^2.1.0"
   },
   "peerDependencies": {
-    "@angular/common": "^19.2.0",
-    "@angular/core": "^19.2.0",
-    "@ngx-translate/core": "^16.0.0",
-    "primelocale": "^1.6",
-    "primeng": "^19.1.0"
+    "@angular/common": "^22.2.3",
+    "@angular/core": "^22.2.3",
+    "@ngx-translate/core": "^18.0.0",
+    "@openng/optimus-ui": "^2.0.2",
+    "@openng/optimus-ui-locale": "^2.0.2"
   }
 }

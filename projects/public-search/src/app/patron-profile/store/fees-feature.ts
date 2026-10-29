@@ -6,6 +6,7 @@ import { rxMethod } from '@ngrx/signals/rxjs-interop';
 import { RecordService } from '@rero/ng-core';
 import type { EsResult } from '@rero/shared';
 import { catchError, finalize, forkJoin, of, pipe, switchMap, tap } from 'rxjs';
+
 import { PatronApiService } from '../../api/patron-api.service';
 import { PatronTransactionApiService } from '../../api/patron-transaction-api.service';
 import { Fee, OverdueFee } from '../patron-profile-fees/types';
@@ -49,7 +50,7 @@ function buildFees(feesResponse: EsResult, overdueResponse: OverdueFee[]): Fee[]
         loan: overdue.loan,
         totalAmount: overdue.fees.total,
         overdue: overdue.fees.total,
-        transactions: []
+        transactions: [],
       });
     }
   });
@@ -64,7 +65,7 @@ function buildFee(record: any): Fee {
     notes: [],
     createdAt: new Date(record.metadata.creation_date),
     totalAmount: record.metadata.total_amount,
-    transactions: [record]
+    transactions: [record],
   };
   if (record.metadata.note) {
     result.notes.push(record.metadata.note);
@@ -83,61 +84,63 @@ export function withFeesFeature<_>() {
       fees: [],
       feesLoaded: false,
     }),
-    withMethods((
-      store,
-      patronTransactionApiService = inject(PatronTransactionApiService),
-      patronApiService = inject(PatronApiService)
-    ) => ({
-      resetFees(): void {
-        patchState(store, {
-          fees: [],
-          feesLoaded: false,
-        });
-      },
-      /**
-       * Load transaction and overdue fees together for the current patron.
-       */
-      loadFees: rxMethod<string | null>(
-        pipe(
-          switchMap(patronPid => {
-            if (!patronPid) return of([]);
+    withMethods(
+      (
+        store,
+        patronTransactionApiService = inject(PatronTransactionApiService),
+        patronApiService = inject(PatronApiService),
+      ) => ({
+        resetFees(): void {
+          patchState(store, {
+            fees: [],
+            feesLoaded: false,
+          });
+        },
+        /**
+         * Load transaction and overdue fees together for the current patron.
+         */
+        loadFees: rxMethod<string | null>(
+          pipe(
+            switchMap((patronPid) => {
+              if (!patronPid) return of([]);
 
-            patchState(store, {
-              fees: [],
-              feesLoaded: false,
-            });
-            const queryFees = patronTransactionApiService.getFees(
-              patronPid,
-              'open',
-              1,
-              RecordService.MAX_REST_RESULTS_SIZE
-            );
-            const queryOverdue = patronApiService.getOverduePreviewByPatronPid(patronPid);
+              patchState(store, {
+                fees: [],
+                feesLoaded: false,
+              });
+              const queryFees = patronTransactionApiService.getFees(
+                patronPid,
+                'open',
+                1,
+                RecordService.MAX_REST_RESULTS_SIZE,
+              );
+              const queryOverdue = patronApiService.getOverduePreviewByPatronPid(patronPid);
 
-            return forkJoin([queryFees, queryOverdue]).pipe(
-              tap(([feesResponse, overdueResponse]) => {
-                if (!('hits' in feesResponse)) {
-                  throw feesResponse;
-                }
+              return forkJoin([queryFees, queryOverdue]).pipe(
+                tap(([feesResponse, overdueResponse]) => {
+                  if (!('hits' in feesResponse)) {
+                    throw feesResponse;
+                  }
 
-                const fees = buildFees(feesResponse, overdueResponse);
+                  const fees = buildFees(feesResponse, overdueResponse);
 
-                patchState(store, { fees });
-              }),
-              catchError(error => {
-                console.error(error);
-                return of(null);
-              }),
-              finalize(() => patchState(store, { feesLoaded: true }))
-            );
-          })
-        )
-      ),
-    })),
+                  patchState(store, { fees });
+                }),
+                catchError((error) => {
+                  console.error(error);
+                  return of(null);
+                }),
+                finalize(() => patchState(store, { feesLoaded: true })),
+              );
+            }),
+          ),
+        ),
+      }),
+    ),
     withHooks({
       onInit(store) {
         store.loadFees(store.patronPid);
       },
-    })
+    }),
   );
 }

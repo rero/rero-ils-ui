@@ -3,7 +3,6 @@
 import { Subject } from 'rxjs';
 
 export class Paginator {
-
   /** Event on more */
   private more = new Subject<number>();
 
@@ -11,7 +10,7 @@ export class Paginator {
   private recordsCount = 0;
 
   /** Hidden info (after show more link) */
-  private hiddenInfo: { singular: string, plurial: string } = undefined;
+  private hiddenInfo: { singular: string; plurial: string } = undefined;
 
   /** Hidden records count */
   private hiddenCount = 0;
@@ -26,7 +25,10 @@ export class Paginator {
    * @param page - number (default: 1)
    * @param recordsPerPage - number (default: 10)
    */
-  constructor(private page = 1, private recordsPerPage = 10) {}
+  constructor(
+    private page = 1,
+    private recordsPerPage = 10,
+  ) {}
 
   /**
    * Set Page
@@ -99,11 +101,9 @@ export class Paginator {
    */
   getHiddenInfo(): string {
     if (this.hiddenInfo) {
-      this.hiddenCount = this.recordsCount - (this.page * this.recordsPerPage);
-      this.hiddenCount = Math.max(this.hiddenCount, 0)
-      return (this.hiddenCount > 1)
-        ? this.hiddenInfo.plurial
-        : this.hiddenInfo.singular;
+      this.hiddenCount = this.recordsCount - this.page * this.recordsPerPage;
+      this.hiddenCount = Math.max(this.hiddenCount, 0);
+      return this.hiddenCount > 1 ? this.hiddenInfo.plurial : this.hiddenInfo.singular;
     }
   }
 
@@ -120,8 +120,7 @@ export class Paginator {
    * @return boolean
    */
   isShowMore(): boolean {
-    return this.recordsCount > 0
-      && ((this.page * this.recordsPerPage) < this.recordsCount);
+    return this.recordsCount > 0 && this.page * this.recordsPerPage < this.recordsCount;
   }
 
   /**
@@ -129,7 +128,7 @@ export class Paginator {
    * @param page - number
    */
   next(page?: number) {
-    this.page = (!page) ? this.page + 1 : page;
+    this.page = !page ? this.page + 1 : page;
     this.more.next(this.page);
   }
 }

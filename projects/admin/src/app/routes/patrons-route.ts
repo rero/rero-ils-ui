@@ -6,8 +6,6 @@ import { FormlyFieldConfig } from '@ngx-formly/core';
 import { _ } from '@ngx-translate/core';
 import {
   ActionStatus,
-  ComponentCanDeactivateGuard,
-  EditorComponent,
   IFilter,
   JSONSchema7,
   RecordData,
@@ -15,10 +13,13 @@ import {
   RecordService,
   RecordType,
   RouteDataTypesInterface,
+  unsavedChangesGuard,
 } from '@rero/ng-core';
+import { EditorComponent } from '@rero/ng-core/editor';
 import { ILibrary, IPatron, PERMISSION_OPERATOR, PERMISSIONS } from '@rero/shared';
 import { Observable, of } from 'rxjs';
 import { map } from 'rxjs/operators';
+
 import { CAN_ACCESS_ACTIONS, canAccessGuard } from '../guard/can-access.guard';
 import { permissionGuard } from '../guard/permission.guard';
 import { PatronsBriefViewComponent } from '../record/brief-view/patrons-brief-view/patrons-brief-view.component';
@@ -26,8 +27,7 @@ import { PatronDetailViewComponent } from '../record/detail-view/patron-detail-v
 import { PatronDetailComponent } from '../record/detail-view/patron-detail-view/patron-detail/patron-detail.component';
 import { BaseRoute } from './base-route';
 
-export const patronsRouteResolver: ResolveFn<Partial<RecordType>[]> = () =>
-  new PatronsRoute().getTypes();
+export const patronsRouteResolver: ResolveFn<Partial<RecordType>[]> = () => new PatronsRoute().getTypes();
 
 export const patronsRoutes: Routes = [
   {
@@ -54,7 +54,7 @@ export const patronsRoutes: Routes = [
     component: EditorComponent,
     title: _('Patron'),
     canActivate: [canAccessGuard],
-    canDeactivate: [ComponentCanDeactivateGuard],
+    canDeactivate: [unsavedChangesGuard],
     data: {
       action: CAN_ACCESS_ACTIONS.UPDATE,
     },
@@ -64,7 +64,7 @@ export const patronsRoutes: Routes = [
     component: EditorComponent,
     title: _('Patron'),
     canActivate: [permissionGuard],
-    canDeactivate: [ComponentCanDeactivateGuard],
+    canDeactivate: [unsavedChangesGuard],
     data: {
       permissions: [PERMISSIONS.PTRN_CREATE],
     },
@@ -198,7 +198,7 @@ class PatronsRoute extends BaseRoute implements RouteDataTypesInterface {
         map((results: any) => {
           values.forEach((role: any) => (role.disabled = !results.allowed_roles.includes(role.value)));
           return values;
-        })
+        }),
       );
     }
 
@@ -239,7 +239,7 @@ class PatronsRoute extends BaseRoute implements RouteDataTypesInterface {
                     value: apiService.getRefEndpoint('libraries', hit.metadata.pid),
                   };
                 });
-              })
+              }),
             );
         },
       };
@@ -248,10 +248,16 @@ class PatronsRoute extends BaseRoute implements RouteDataTypesInterface {
   }
 
   private processFilterName(filter: IFilter): Observable<string> {
-    if(filter.name) { return of(filter.name); }
+    if (filter.name) {
+      return of(filter.name);
+    }
     switch (filter.aggregationKey) {
-      case 'patron_type': return this.recordService.getRecord<{metadata: {name: string}}>('patron_types', filter.key).pipe(map(record => record.metadata.name));
-      default: return this.routeToolService.translateService.stream(filter.key);
+      case 'patron_type':
+        return this.recordService
+          .getRecord<{ metadata: { name: string } }>('patron_types', filter.key)
+          .pipe(map((record) => record.metadata.name));
+      default:
+        return this.routeToolService.translateService.stream(filter.key);
     }
   }
 }

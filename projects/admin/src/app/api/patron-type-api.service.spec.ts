@@ -1,11 +1,12 @@
 // SPDX-FileCopyrightText: Fondation RERO+
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-import { TestBed } from "@angular/core/testing";
-import { PatronTypeApiService } from "./patron-type-api.service";
-import { RecordService } from "@rero/ng-core";
-import { TranslateModule } from "@ngx-translate/core";
-import { of } from "rxjs";
+import { TestBed } from '@angular/core/testing';
+import { provideTranslateService } from '@ngx-translate/core';
+import { RecordService } from '@rero/ng-core';
+import { of } from 'rxjs';
+
+import { PatronTypeApiService } from './patron-type-api.service';
 
 describe('PatronTypeApiService', () => {
   let service: PatronTypeApiService;
@@ -19,12 +20,12 @@ describe('PatronTypeApiService', () => {
           metadata: {
             pid: 1,
             name: 'Children',
-            description: 'Children'
-          }
-        }
-      ]
+            description: 'Children',
+          },
+        },
+      ],
     },
-    links: {}
+    links: {},
   };
 
   const recordServiceSpy = { getRecords: vi.fn() };
@@ -32,13 +33,11 @@ describe('PatronTypeApiService', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [
-        TranslateModule.forRoot()
-      ],
       providers: [
+        provideTranslateService(),
         PatronTypeApiService,
-        { provide: RecordService, useValue: recordServiceSpy }
-      ]
+        { provide: RecordService, useValue: recordServiceSpy },
+      ],
     });
 
     service = TestBed.inject(PatronTypeApiService);
@@ -49,7 +48,6 @@ describe('PatronTypeApiService', () => {
   });
 
   it('should return a list of patron types', () => {
-    service.getAll()
-      .subscribe((result: any[]) => expect(result).toEqual(response.hits.hits));
+    service.getAll().subscribe((result: any[]) => expect(result).toEqual(response.hits.hits));
   });
 });

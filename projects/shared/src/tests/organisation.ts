@@ -9,11 +9,11 @@ export const organisation = {
     collection_enabled_on_public_view: true,
     current_budget_pid: '1',
     default_currency: 'EUR',
-    name: 'Réseau des bibliothèques du Canton d\'Aoste',
+    name: "Réseau des bibliothèques du Canton d'Aoste",
     online_harvested_source: ['ebibliomedia'],
-    pid: '1'
-  }
-}
+    pid: '1',
+  },
+};
 
 export const location = {
   metadata: {
@@ -22,14 +22,13 @@ export const location = {
     code: 'AOSTE-CANT1-BIBLIOGR',
     library: {
       pid: '1',
-      type: 'lib'
+      type: 'lib',
     },
     name: 'Bibliographie valdôtaine',
     organisation: {
       pid: '1',
-      type: 'org'
+      type: 'org',
     },
-    pid: '2'
-  }
+    pid: '2',
+  },
 };
-

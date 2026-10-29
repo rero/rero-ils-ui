@@ -8,6 +8,7 @@ import { RecordService, RecordUiService } from '@rero/ng-core';
 import { BaseApi, EsResult } from '@rero/shared';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
+
 import { Notification } from '../../classes/notification';
 import {
   AcqAddressRecipient,
@@ -15,14 +16,13 @@ import {
   IAcqOrder,
   IAcqOrderLine,
   orderDefaultData,
-  orderLineDefaultData
+  orderLineDefaultData,
 } from '../classes/order';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class AcqOrderApiService extends BaseApi {
-
   private httpClient: HttpClient = inject(HttpClient);
   private recordService: RecordService = inject(RecordService);
   private recordUiService: RecordUiService = inject(RecordUiService);
@@ -38,10 +38,10 @@ export class AcqOrderApiService extends BaseApi {
    * @param orderPid: the order pid
    * @return: the corresponding AcqOrder
    */
-  getOrder(orderPid: string, resolve=0): Observable<IAcqOrder> {
-    return this.recordService.getRecord('acq_orders', orderPid, { resolve, headers: BaseApi.reroJsonheaders }).pipe(
-        map((data: any) => ({...orderDefaultData, ...data.metadata}) as IAcqOrder)
-      );
+  getOrder(orderPid: string, resolve = 0): Observable<IAcqOrder> {
+    return this.recordService
+      .getRecord('acq_orders', orderPid, { resolve, headers: BaseApi.reroJsonheaders })
+      .pipe(map((data: any) => ({ ...orderDefaultData, ...data.metadata }) as IAcqOrder));
   }
 
   /**
@@ -55,15 +55,13 @@ export class AcqOrderApiService extends BaseApi {
       .getRecords('acq_orders', {
         query: `pid:${orderPid}`,
         page: 1,
-        itemsPerPage: 1
+        itemsPerPage: 1,
       })
       .pipe(
-        map((result: EsResult): { pid: string, document?: { title?: string } }[] =>
-          result.hits.total === 0 ? [] : (result.hits.hits[0] as any).metadata.order_lines ?? []
+        map((result: EsResult): { pid: string; document?: { title?: string } }[] =>
+          result.hits.total === 0 ? [] : ((result.hits.hits[0] as any).metadata.order_lines ?? []),
         ),
-        map(orderLines =>
-          new Map(orderLines.map(orderLine => [orderLine.pid, orderLine.document?.title ?? '']))
-        )
+        map((orderLines) => new Map(orderLines.map((orderLine) => [orderLine.pid, orderLine.document?.title ?? '']))),
       );
   }
 
@@ -83,15 +81,12 @@ export class AcqOrderApiService extends BaseApi {
    */
   sendOrder(orderPid: string, emails: AcqAddressRecipient[]): Observable<Notification> {
     const apiUrl = `/api/acq_order/${orderPid}/send_order`;
-    return this.httpClient.post<any>(apiUrl, {emails}).pipe(
-      map((data: any) => new Notification(data.data))
-    );
+    return this.httpClient.post<any>(apiUrl, { emails }).pipe(map((data: any) => new Notification(data.data)));
   }
 
   getOrderHistory(orderPid: string): Observable<AcqOrderHistoryVersionResponseInterface[]> {
     const apiUrl = `/api/acq_order/${orderPid}/history`;
-    return this.httpClient
-        .get<AcqOrderHistoryVersionResponseInterface[]>(apiUrl);
+    return this.httpClient.get<AcqOrderHistoryVersionResponseInterface[]>(apiUrl);
   }
 
   // ORDER LINES RELATED METHODS ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -110,16 +105,18 @@ export class AcqOrderApiService extends BaseApi {
         query,
         page: 1,
         itemsPerPage: RecordService.MAX_REST_RESULTS_SIZE,
-        sort: 'priority'
+        sort: 'priority',
       })
       .pipe(
-        map((result: EsResult) => result.hits.total === 0 ? [] : result.hits.hits),
-        map((hits: any[]) => hits.map(hit => ({
-          ...orderLineDefaultData,
-          ...hit.metadata,
-          created: hit.created,
-          updated: hit.updated
-        })))
+        map((result: EsResult) => (result.hits.total === 0 ? [] : result.hits.hits)),
+        map((hits: any[]) =>
+          hits.map((hit) => ({
+            ...orderLineDefaultData,
+            ...hit.metadata,
+            created: hit.created,
+            updated: hit.updated,
+          })),
+        ),
       );
   }
 
@@ -128,13 +125,10 @@ export class AcqOrderApiService extends BaseApi {
    * @param orderLine: the order line to delete
    */
   deleteOrderLine(orderLine: IAcqOrderLine): void {
-    this.recordUiService
-      .deleteRecord('acq_order_lines', orderLine.pid)
-      .subscribe((success: boolean) => {
-          if (success) {
-            this.lastDeletedOrderLine.set(orderLine);
-          }
-        }
-      );
+    this.recordUiService.deleteRecord('acq_order_lines', orderLine.pid).subscribe((success: boolean) => {
+      if (success) {
+        this.lastDeletedOrderLine.set(orderLine);
+      }
+    });
   }
 }

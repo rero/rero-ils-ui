@@ -1,18 +1,19 @@
 // SPDX-FileCopyrightText: Fondation RERO+
 // SPDX-License-Identifier: AGPL-3.0-or-later
-import { ChangeDetectionStrategy, Component, computed, inject, Injector, linkedSignal, signal } from '@angular/core';
+import { Component, computed, inject, Injector, linkedSignal, signal } from '@angular/core';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
-import { _, TranslateDirective, TranslatePipe, TranslateService } from "@ngx-translate/core";
+import { _, TranslatePipe, TranslateService } from '@ngx-translate/core';
+import { MessageService } from '@openng/optimus-ui/api';
+import { Bind } from '@openng/optimus-ui/bind';
+import { Select } from '@openng/optimus-ui/select';
+import { ToggleSwitch } from '@openng/optimus-ui/toggleswitch';
 import { CONFIG, ExportButtonComponent, IExportOption, SearchInputComponent } from '@rero/ng-core';
 import { AppStore } from '@rero/shared';
 import { DateTime } from 'luxon';
-import { MessageService } from 'primeng/api';
-import { Bind } from 'primeng/bind';
-import { Select } from 'primeng/select';
-import { ToggleSwitch } from 'primeng/toggleswitch';
 import { interval, of } from 'rxjs';
 import { map, startWith, switchMap } from 'rxjs/operators';
+
 import { LoanState } from '../../classes/loans';
 import { ItemsService } from '../../service/items.service';
 import { RequestedItemsListComponent } from './requested-items-list/requested-items-list.component';
@@ -47,11 +48,18 @@ type RequestedLoanItem = {
 @Component({
   selector: 'admin-circulation-main-request',
   templateUrl: './main-request.component.html',
-  imports: [SearchInputComponent, Bind, ToggleSwitch, FormsModule, TranslateDirective, RequestedItemsListComponent, TranslatePipe, Select, ExportButtonComponent],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  imports: [
+    SearchInputComponent,
+    Bind,
+    ToggleSwitch,
+    FormsModule,
+    RequestedItemsListComponent,
+    TranslatePipe,
+    Select,
+    ExportButtonComponent,
+  ],
 })
 export class MainRequestComponent {
-
   private appStore = inject(AppStore);
   private itemsService: ItemsService = inject(ItemsService);
   private translateService: TranslateService = inject(TranslateService);
@@ -65,29 +73,57 @@ export class MainRequestComponent {
     { value: '60000', label: '1 m', icon: 'fa-regular fa-clock' },
     { value: '300000', label: '5 m', icon: 'fa-regular fa-clock' },
     { value: '600000', label: '10 m', icon: 'fa-regular fa-clock' },
-    { value: '3000000', label: '30 m', icon: 'fa-regular fa-clock' }
+    { value: '3000000', label: '30 m', icon: 'fa-regular fa-clock' },
   ];
 
   /** options used to sort requested items list */
   private readonly currentLanguage = toSignal(
     this.translateService.onLangChange.pipe(
       map(() => this.translateService.getCurrentLang()),
-      startWith(this.translateService.getCurrentLang())
+      startWith(this.translateService.getCurrentLang()),
     ),
-    { initialValue: this.translateService.getCurrentLang() }
+    { initialValue: this.translateService.getCurrentLang() },
   );
 
   readonly sortingCriteria = computed<SortOption[]>(() => {
     this.currentLanguage();
     return [
-      { value: 'requestdate', label: this.translateService.instant('Request date (oldest)'), icon: 'fa-solid fa-arrow-down-1-9' },
-      { value: '-requestdate', label: this.translateService.instant('Request date (newest)'), icon: 'fa-solid fa-arrow-down-9-1' },
-      { value: 'callnumber', label: this.translateService.instant('Call number (A-Z)'), icon: 'fa-solid fa-arrow-down-a-z' },
-      { value: '-callnumber', label: this.translateService.instant('Call number (Z-A)'), icon: 'fa-solid fa-arrow-down-z-a' },
+      {
+        value: 'requestdate',
+        label: this.translateService.instant('Request date (oldest)'),
+        icon: 'fa-solid fa-arrow-down-1-9',
+      },
+      {
+        value: '-requestdate',
+        label: this.translateService.instant('Request date (newest)'),
+        icon: 'fa-solid fa-arrow-down-9-1',
+      },
+      {
+        value: 'callnumber',
+        label: this.translateService.instant('Call number (A-Z)'),
+        icon: 'fa-solid fa-arrow-down-a-z',
+      },
+      {
+        value: '-callnumber',
+        label: this.translateService.instant('Call number (Z-A)'),
+        icon: 'fa-solid fa-arrow-down-z-a',
+      },
       { value: 'location', label: this.translateService.instant('Location (A-Z)'), icon: 'fa-solid fa-arrow-down-a-z' },
-      { value: '-location', label: this.translateService.instant('Location (Z-A)'), icon: 'fa-solid fa-arrow-down-z-a' },
-      { value: 'pickuplocation', label: this.translateService.instant('Pick-up location (A-Z)'), icon: 'fa-solid fa-arrow-down-a-z' },
-      { value: '-pickuplocation', label: this.translateService.instant('Pick-up location (Z-A)'), icon: 'fa-solid fa-arrow-down-z-a' },
+      {
+        value: '-location',
+        label: this.translateService.instant('Location (Z-A)'),
+        icon: 'fa-solid fa-arrow-down-z-a',
+      },
+      {
+        value: 'pickuplocation',
+        label: this.translateService.instant('Pick-up location (A-Z)'),
+        icon: 'fa-solid fa-arrow-down-a-z',
+      },
+      {
+        value: '-pickuplocation',
+        label: this.translateService.instant('Pick-up location (Z-A)'),
+        icon: 'fa-solid fa-arrow-down-z-a',
+      },
     ];
   });
 
@@ -131,19 +167,23 @@ export class MainRequestComponent {
 
   private readonly rawItems = toSignal(
     toObservable(this.libraryPid, { injector: this.injector }).pipe(
-      switchMap(libraryPid => {
+      switchMap((libraryPid) => {
         if (!libraryPid) {
           return of<RequestedLoanItem[] | null>(null);
         }
         return toObservable(this.refreshInterval, { injector: this.injector }).pipe(
-          switchMap(refreshInterval => refreshInterval > 0
-            ? interval(refreshInterval).pipe(startWith(0), switchMap(() => this.itemsService.getRequestedLoans(libraryPid)))
-            : this.itemsService.getRequestedLoans(libraryPid)
-          )
+          switchMap((refreshInterval) =>
+            refreshInterval > 0
+              ? interval(refreshInterval).pipe(
+                  startWith(0),
+                  switchMap(() => this.itemsService.getRequestedLoans(libraryPid)),
+                )
+              : this.itemsService.getRequestedLoans(libraryPid),
+          ),
         );
-      })
+      }),
     ),
-    { injector: this.injector, initialValue: null }
+    { injector: this.injector, initialValue: null },
   );
 
   readonly items = computed<RequestedLoanItem[] | null>(() => {
@@ -153,9 +193,7 @@ export class MainRequestComponent {
     if (!items) {
       return null;
     }
-    const merged = overrides.size > 0
-      ? items.map((item: RequestedLoanItem) => overrides.get(item.pid) ?? item)
-      : items;
+    const merged = overrides.size > 0 ? items.map((item: RequestedLoanItem) => overrides.get(item.pid) ?? item) : items;
     return this.sortRequestedLoans(merged, sortCriteria);
   });
 
@@ -179,38 +217,30 @@ export class MainRequestComponent {
       }
 
       switch (sortCriteria) {
-        case '-requestdate': return bTime.toMillis() - aTime.toMillis();
+        case '-requestdate':
+          return bTime.toMillis() - aTime.toMillis();
         case 'callnumber':
-          return (('call_number' in a) && ('call_number' in b))
-            ? a.call_number.localeCompare(b.call_number)
-            : 1;
+          return 'call_number' in a && 'call_number' in b ? a.call_number.localeCompare(b.call_number) : 1;
         case '-callnumber':
-          return (('call_number' in a) && ('call_number' in b))
-            ? b.call_number.localeCompare(a.call_number)
-            : 1;
+          return 'call_number' in a && 'call_number' in b ? b.call_number.localeCompare(a.call_number) : 1;
         case 'location':
-        case '-location':
-          {
-            const locA = a.library.name + ' ' + a.location.name;
-            const locB = b.library.name + ' ' + b.location.name;
-            return (sortCriteria === 'location')
-              ? locA.localeCompare(locB)
-              : locB.localeCompare(locA);
-          }
+        case '-location': {
+          const locA = a.library.name + ' ' + a.location.name;
+          const locB = b.library.name + ' ' + b.location.name;
+          return sortCriteria === 'location' ? locA.localeCompare(locB) : locB.localeCompare(locA);
+        }
         case 'pickuplocation':
-        case '-pickuplocation':
-          {
-            const pickA = (a.loan.pickup_location.pickup_name)
-              ? a.loan.pickup_location.pickup_name
-              : a.loan.pickup_location.library_name + ' ' + a.loan.pickup_location.name;
-            const pickB = (b.loan.pickup_location.pickup_name)
-              ? b.loan.pickup_location.pickup_name
-              : b.loan.pickup_location.library_name + ' ' + b.loan.pickup_location.name;
-            return (sortCriteria === 'pickuplocation')
-              ? pickA.localeCompare(pickB)
-              : pickB.localeCompare(pickA);
-          }
-        default: return aTime.toMillis() - bTime.toMillis();
+        case '-pickuplocation': {
+          const pickA = a.loan.pickup_location.pickup_name
+            ? a.loan.pickup_location.pickup_name
+            : a.loan.pickup_location.library_name + ' ' + a.loan.pickup_location.name;
+          const pickB = b.loan.pickup_location.pickup_name
+            ? b.loan.pickup_location.pickup_name
+            : b.loan.pickup_location.library_name + ' ' + b.loan.pickup_location.name;
+          return sortCriteria === 'pickuplocation' ? pickA.localeCompare(pickB) : pickB.localeCompare(pickA);
+        }
+        default:
+          return aTime.toMillis() - bTime.toMillis();
       }
     });
   }
@@ -236,7 +266,7 @@ export class MainRequestComponent {
         severity: 'warn',
         summary: this.translateService.instant('request'),
         detail: this.translateService.instant('No request corresponding to the given item has been found.'),
-        life: CONFIG.MESSAGE_LIFE
+        life: CONFIG.MESSAGE_LIFE,
       });
       this._resetSearchInput();
     } else {
@@ -245,18 +275,16 @@ export class MainRequestComponent {
         return;
       }
 
-      this.itemsService.doValidateRequest(item, libraryPid).subscribe(
-        newItem => {
-          this.itemOverrides.update(overrides => new Map(overrides).set(newItem.pid, newItem));
-          this.messageService.add({
-            severity: 'warn',
-            summary: this.translateService.instant('request'),
-            detail: this.translateService.instant('The item is ').concat(this.translateService.instant(newItem.status)),
-            life: CONFIG.MESSAGE_LIFE
-          });
-          this._resetSearchInput();
-        }
-      );
+      this.itemsService.doValidateRequest(item, libraryPid).subscribe((newItem) => {
+        this.itemOverrides.update((overrides) => new Map(overrides).set(newItem.pid, newItem));
+        this.messageService.add({
+          severity: 'warn',
+          summary: this.translateService.instant('request'),
+          detail: this.translateService.instant('The item is ').concat(this.translateService.instant(newItem.status)),
+          life: CONFIG.MESSAGE_LIFE,
+        });
+        this._resetSearchInput();
+      });
     }
   }
 
@@ -265,7 +293,7 @@ export class MainRequestComponent {
    * @param state: the toggle switch state
    */
   enableAutoRefresh(state: boolean): void {
-    this.refreshInterval.set((state) ? parseInt(this.refreshOptions[0].value, 10) : 0);
+    this.refreshInterval.set(state ? parseInt(this.refreshOptions[0].value, 10) : 0);
   }
 
   /**

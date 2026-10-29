@@ -2,50 +2,52 @@
 SPDX-FileCopyrightText: Fondation RERO+
 SPDX-License-Identifier: AGPL-3.0-or-later
 -->
-@if(line()) {
+@if (line()) {
   <div class="ui:grid ui:grid-cols-12 ui:gap-4">
-  <div class="ui:col-span-7 ui:flex ui:gap-2 ui:flex-wrap">
-    <strong>{{ line().quantity }}</strong>&nbsp;x
-    <div>
-      @if (document().record; as doc) {
-        <shared-document-brief-view [record]="doc.metadata" />
-      } @else if (document().notFound) {
-        <span class="ui:text-muted-color"><i class="fa-solid fa-triangle-exclamation"></i>&nbsp;{{ "Unknown document" | translate }} (pid {{ line().document?.pid }})</span>
-      }
-      @if ($any(line()).acq_account.pid | getRecord: 'acq_accounts' | async; as account) {
-      <span class="ui:font-bold ui:text-muted-color ui:text-sm">[{{ $any(account).metadata.number }}]</span>
-      }
+    <div class="ui:col-span-7 ui:flex ui:gap-2 ui:flex-wrap">
+      <strong>{{ line().quantity }}</strong
+      >&nbsp;x
+      <div>
+        @if (document().record; as doc) {
+          <shared-document-brief-view [record]="doc.metadata" />
+        } @else if (document().notFound) {
+          <span class="ui:text-muted-color"
+            ><i class="fa-solid fa-triangle-exclamation"></i>&nbsp;{{ 'Unknown document' | translate }} (pid
+            {{ line().document?.pid }})</span
+          >
+        }
+        @if ($any(line()).acq_account.pid | getRecord: 'acq_accounts' | async; as account) {
+          <span class="ui:font-bold ui:text-muted-color ui:text-sm">[{{ $any(account).metadata.number }}]</span>
+        }
+      </div>
     </div>
-  </div>
-  <div class="ui:col-span-3 ui:flex ui:flex-col ui:gap-2 ui:items-end">
-    <div class="ui:font-bold">{{ line() | receiptLineTotalAmount | currency:receipt().currency:'symbol' }}</div>
-    <div class="ui:text-sm ui:text-muted-color">
-      {{ line().quantity }} x {{ line().amount | currency:receipt().currency:'symbol' }}
-      @if (line().vat_rate) {
-      + {{ line().vat_rate }}%
-      }
+    <div class="ui:col-span-3 ui:flex ui:flex-col ui:gap-2 ui:items-end">
+      <div class="ui:font-bold">{{ line() | receiptLineTotalAmount | currency: receipt().currency : 'symbol' }}</div>
+      <div class="ui:text-sm ui:text-muted-color">
+        {{ line().quantity }} x {{ line().amount | currency: receipt().currency : 'symbol' }}
+        @if (line().vat_rate) {
+          + {{ line().vat_rate }}%
+        }
+      </div>
     </div>
-  </div>
-  @if(permissions()) {
-  <div class="ui:col-span-2 ui:flex ui:gap-1 ui:justify-end">
-    @if(permissions().update?.can) {
-      <shared-action-button
-        [title]="'Edit' | translate"
-        [class]="'btn-outline-primary mr-1'"
-        [routerLink]="['/acquisition', 'records', 'acq_receipt_lines', 'edit', line().pid]"
-        icon="fa-solid fa-pen"
-      />
+    @if (permissions()) {
+      <div class="ui:col-span-2 ui:flex ui:gap-1 ui:justify-end">
+        @if (permissions().update?.can) {
+          <shared-action-button
+            [title]="'Edit' | translate"
+            [class]="'btn-outline-primary mr-1'"
+            [routerLink]="['/acquisition', 'records', 'acq_receipt_lines', 'edit', line().pid]"
+            icon="fa-solid fa-pen" />
+        }
+        <shared-action-button
+          [title]="'Delete' | translate"
+          [class]="'btn-outline-danger'"
+          severity="danger"
+          [message]="deleteInfoMessage"
+          icon="fa-solid fa-trash-can"
+          [disabled]="!permissions().delete.can"
+          (btnClick)="delete()" />
+      </div>
     }
-    <shared-action-button
-      [title]="'Delete' | translate"
-      [class]="'btn-outline-danger'"
-      severity="danger"
-      [message]="deleteInfoMessage"
-      icon="fa-solid fa-trash-can"
-      [disabled]="!permissions().delete.can"
-      (btnClick)="delete()"
-    />
   </div>
-  }
-</div>
 }

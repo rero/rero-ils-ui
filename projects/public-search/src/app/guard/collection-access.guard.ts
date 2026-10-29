@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 import { inject } from '@angular/core';
 import { ActivatedRouteSnapshot, CanActivateFn, Router } from '@angular/router';
+
 import { AppConfigService } from '../app-config.service';
 
 export const collectionAccessGuard: CanActivateFn = (route: ActivatedRouteSnapshot) => {
