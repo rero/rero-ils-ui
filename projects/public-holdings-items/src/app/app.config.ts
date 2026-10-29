@@ -24,9 +24,6 @@ export const appConfig: ApplicationConfig = {
     provideTranslateService({
       loader: provideTranslateLoader(AppTranslateLoader),
     }),
-    { provide: TranslateService, useExisting: NgCoreTranslateService },
-    { provide: NgCoreTranslateService, useExisting: AppTranslateService },
-    { provide: TranslateLanguageService, useExisting: AppTranslateLanguageService },
     provideFormlyCore(withFormlyPrimeNG()),
     provideLoadingBar({}),
     provideLoadingBarInterceptor(),
@@ -35,6 +32,10 @@ export const appConfig: ApplicationConfig = {
       return appInitializerService.load();
     }),
     provideCore(),
-    { provide: CoreConfigService, useClass: AppConfigService },
+    { provide: CoreConfigService, useExisting: AppConfigService },
+    // After provideCore(), which provides its own TranslateService: the last provider wins.
+    { provide: TranslateService, useExisting: NgCoreTranslateService },
+    { provide: NgCoreTranslateService, useExisting: AppTranslateService },
+    { provide: TranslateLanguageService, useExisting: AppTranslateLanguageService },
   ],
 };
