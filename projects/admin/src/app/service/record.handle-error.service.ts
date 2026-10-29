@@ -3,16 +3,15 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
+import { MessageService } from '@openng/optimus-ui/api';
 import { RecordHandleErrorService as CoreRecordHandleErrorService } from '@rero/ng-core';
 import { NgxSpinnerService } from 'ngx-spinner';
-import { MessageService } from 'primeng/api';
 import { NEVER, Observable } from 'rxjs';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class RecordHandleErrorService extends CoreRecordHandleErrorService {
-
   private spinner: NgxSpinnerService = inject(NgxSpinnerService);
   private messageService = inject(MessageService);
   protected translateService: TranslateService = inject(TranslateService);
@@ -29,11 +28,13 @@ export class RecordHandleErrorService extends CoreRecordHandleErrorService {
         severity: 'error',
         summary: this.translateService.instant('Import from the web'),
         detail: this.translateService.instant(
-          'Your request to the external server has failed. Try again later ({{ statusCode }}).', {
-            statusCode: error.status
-        }),
+          'Your request to the external server has failed. Try again later ({{ statusCode }}).',
+          {
+            statusCode: error.status,
+          },
+        ),
         sticky: true,
-        closable: true
+        closable: true,
       });
       this.spinner.hide();
       return NEVER;

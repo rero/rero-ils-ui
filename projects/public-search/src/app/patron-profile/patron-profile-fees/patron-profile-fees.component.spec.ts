@@ -1,17 +1,16 @@
 // SPDX-FileCopyrightText: Fondation RERO+
 // SPDX-License-Identifier: AGPL-3.0-or-later
+import { provideHttpClient, withXhr } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { Component, Input, NO_ERRORS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { TranslateModule } from '@ngx-translate/core';
-
-import { provideHttpClient } from '@angular/common/http';
-import { provideNoopAnimations } from '@angular/platform-browser/animations';
+import { provideTranslateService } from '@ngx-translate/core';
+import { MessageService } from '@openng/optimus-ui/api';
 import { RecordService } from '@rero/ng-core';
 import { AppStore, testUserPatronWithSettings, User, UserApiService } from '@rero/shared';
 import { cloneDeep } from 'lodash-es';
-import { MessageService } from 'primeng/api';
 import { of } from 'rxjs';
+
 import { IllRequestApiService } from '../../api/ill-request-api.service';
 import { LoanApiService } from '../../api/loan-api.service';
 import { PatronApiService } from '../../api/patron-api.service';
@@ -37,12 +36,12 @@ describe('PatronProfileFeeComponent', () => {
       hits: [
         {
           metadata: {
-            pid: '1'
-          }
-        }
-      ]
+            pid: '1',
+          },
+        },
+      ],
     },
-    links: {}
+    links: {},
   };
 
   const patronTransactionApiServiceSpy = { getFees: vi.fn() };
@@ -52,17 +51,15 @@ describe('PatronProfileFeeComponent', () => {
   userApiServiceSpy.getLoggedUser.mockReturnValue(of(testUserPatronWithSettings));
 
   const appStoreSpy = {
-    user: vi.fn().mockReturnValue(new User(cloneDeep(testUserPatronWithSettings)))
+    user: vi.fn().mockReturnValue(new User(cloneDeep(testUserPatronWithSettings))),
   };
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       schemas: [NO_ERRORS_SCHEMA],
-      imports: [
-        TranslateModule.forRoot(),
-        PatronProfileFeesComponent
-      ],
+      imports: [PatronProfileFeesComponent],
       providers: [
+        provideTranslateService(),
         PatronProfileStore,
         { provide: UserApiService, useValue: userApiServiceSpy },
         { provide: AppStore, useValue: appStoreSpy },
@@ -82,15 +79,17 @@ describe('PatronProfileFeeComponent', () => {
           },
         },
         { provide: MessageService, useValue: { add: vi.fn() } },
-        { provide: RecordService, useValue: { getRecord: vi.fn().mockReturnValue(of(null)), MAX_REST_RESULTS_SIZE: 1000 } },
-        provideHttpClient(),
+        {
+          provide: RecordService,
+          useValue: { getRecord: vi.fn().mockReturnValue(of(null)), MAX_REST_RESULTS_SIZE: 1000 },
+        },
+        provideHttpClient(withXhr()),
         provideHttpClientTesting(),
-        provideNoopAnimations()
-      ]
+      ],
     })
       .overrideComponent(PatronProfileFeesComponent, {
         remove: { imports: [PatronProfileFeeComponent] },
-        add: { imports: [StubPatronProfileFeeComponent] }
+        add: { imports: [StubPatronProfileFeeComponent] },
       })
       .compileComponents();
   });
@@ -98,7 +97,7 @@ describe('PatronProfileFeeComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(PatronProfileFeesComponent);
     component = fixture.componentInstance;
-    fixture.componentRef.setInput('feesTotal', 12.50);
+    fixture.componentRef.setInput('feesTotal', 12.5);
     store = TestBed.inject(PatronProfileStore);
     store.init(new User(cloneDeep(testUserPatronWithSettings)));
     fixture.detectChanges();

@@ -1,17 +1,17 @@
 // SPDX-FileCopyrightText: Fondation RERO+
 // SPDX-License-Identifier: AGPL-3.0-or-later
 import { inject, Injectable } from '@angular/core';
-import { IRemoteAutocomplete } from './i-remote-autocomplete';
-import { ApiService, RecordService } from '@rero/ng-core';
-import { IQueryOptions, ISuggestionItem } from '@rero/ng-core';
-import { catchError, map, Observable, of } from 'rxjs';
 import { formatPatronName } from '@app/admin/utils/patron.utils';
+import { ApiService, RecordService } from '@rero/ng-core';
+import { IQueryOptions, ISuggestionItem } from '@rero/ng-core/editor';
+import { catchError, map, Observable, of } from 'rxjs';
+
+import { IRemoteAutocomplete } from './i-remote-autocomplete';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class PatronsRemoteService implements IRemoteAutocomplete {
-
   private recordService: RecordService = inject(RecordService);
   private apiService: ApiService = inject(ApiService);
 
@@ -19,49 +19,48 @@ export class PatronsRemoteService implements IRemoteAutocomplete {
     return 'patrons';
   }
 
-  getSuggestions(query: string, queryOptions: IQueryOptions, _currentPid: string | null): Observable<ISuggestionItem[]> {
+  getSuggestions(
+    query: string,
+    queryOptions: IQueryOptions,
+    _currentPid: string | null,
+  ): Observable<ISuggestionItem[]> {
     if (!query) {
       return of([]);
     }
 
-    return this.recordService.getRecords(
-      this.getName(),
-      { query, page: 1, itemsPerPage: queryOptions.maxOfResult }
-    ).pipe(
-      map((result: any) => {
-        const patrons: ISuggestionItem[] = [];
-        result.hits.hits.map((hit: any) => patrons.push(this.getPatronsRef(hit.metadata, query)));
+    return this.recordService
+      .getRecords(this.getName(), { query, page: 1, itemsPerPage: queryOptions.maxOfResult })
+      .pipe(
+        map((result: any) => {
+          const patrons: ISuggestionItem[] = [];
+          result.hits.hits.map((hit: any) => patrons.push(this.getPatronsRef(hit.metadata, query)));
 
-        return patrons;
-      }),
-      catchError(e => {
-        switch (e.status) {
-          case 400:
-            return of([]);
-          default:
-            throw e;
-        }
-      })
-    );
+          return patrons;
+        }),
+        catchError((e) => {
+          switch (e.status) {
+            case 400:
+              return of([]);
+            default:
+              throw e;
+          }
+        }),
+      );
   }
   getValueAsHTML(queryOptions: IQueryOptions, item: ISuggestionItem): Observable<string> {
     const url = item.value!.split('/');
     const pid = url.pop()!;
 
-    return this.recordService
-      .getRecord(queryOptions.type, pid, { resolve: 1 })
-      .pipe(
-        map((data: any) =>
-          `<span class="ui:p-2 ui:font-bold">${formatPatronName(data.metadata)}</span>`
-        ),
-        catchError(() => of('<span class="ui:p-2 ui:font-bold">unknown</span>'))
-      );
+    return this.recordService.getRecord(queryOptions.type, pid, { resolve: 1 }).pipe(
+      map((data: any) => `<span class="ui:p-2 ui:font-bold">${formatPatronName(data.metadata)}</span>`),
+      catchError(() => of('<span class="ui:p-2 ui:font-bold">unknown</span>')),
+    );
   }
 
   private getPatronsRef(metadata: any, _query: string): ISuggestionItem {
     return {
       label: formatPatronName(metadata),
-      value: this.apiService.getRefEndpoint(this.getName(), metadata.pid)
+      value: this.apiService.getRefEndpoint(this.getName(), metadata.pid),
     };
   }
 }

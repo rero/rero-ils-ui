@@ -5,19 +5,20 @@ import { FormlyFieldConfig } from '@ngx-formly/core';
 import { _ } from '@ngx-translate/core';
 import {
   ActionStatus,
-  ComponentCanDeactivateGuard,
   DetailComponent,
-  EditorComponent,
   JSONSchema7,
   RecordData,
   RecordSearchPageComponent,
   RecordService,
   RecordType,
   RouteDataTypesInterface,
+  unsavedChangesGuard,
 } from '@rero/ng-core';
+import { EditorComponent } from '@rero/ng-core/editor';
 import { ILibrary, IPatron, PERMISSION_OPERATOR, PERMISSIONS } from '@rero/shared';
 import { of } from 'rxjs';
 import { map } from 'rxjs/operators';
+
 import { CAN_ACCESS_ACTIONS, canAccessGuard } from '../guard/can-access.guard';
 import { permissionGuard } from '../guard/permission.guard';
 import { CollectionBriefViewComponent } from '../record/brief-view/collection-brief-view.component';
@@ -31,8 +32,7 @@ export interface JSONSchema7Items extends JSONSchema7 {
   };
 }
 
-export const collectionsRouteResolver: ResolveFn<Partial<RecordType>[]> = () =>
-  new CollectionsRoute().getTypes();
+export const collectionsRouteResolver: ResolveFn<Partial<RecordType>[]> = () => new CollectionsRoute().getTypes();
 
 export const collectionsRoutes: Routes = [
   {
@@ -59,7 +59,7 @@ export const collectionsRoutes: Routes = [
     component: EditorComponent,
     title: _('Exhibition/course'),
     canActivate: [canAccessGuard],
-    canDeactivate: [ComponentCanDeactivateGuard],
+    canDeactivate: [unsavedChangesGuard],
     data: {
       action: CAN_ACCESS_ACTIONS.UPDATE,
     },
@@ -69,7 +69,7 @@ export const collectionsRoutes: Routes = [
     component: EditorComponent,
     title: _('Exhibition/course'),
     canActivate: [permissionGuard],
-    canDeactivate: [ComponentCanDeactivateGuard],
+    canDeactivate: [unsavedChangesGuard],
     data: {
       permissions: [PERMISSIONS.COLL_CREATE],
     },
@@ -91,8 +91,7 @@ class CollectionsRoute extends BaseRoute implements RouteDataTypesInterface {
         component: CollectionBriefViewComponent,
         detailComponent: CollectionDetailViewComponent,
         searchFilters: [this.expertSearchFilter()],
-        canAdd: () =>
-          of({ can: this.routeToolService.appStore.canAccess(PERMISSIONS.COLL_CREATE) } as ActionStatus),
+        canAdd: () => of({ can: this.routeToolService.appStore.canAccess(PERMISSIONS.COLL_CREATE) } as ActionStatus),
         permissions: (record: RecordData) => this.routeToolService.permissions(record, this.recordType),
         aggregationsOrder: ['type', 'library', 'teacher', 'subject'],
         aggregationsExpand: ['type'],
@@ -101,14 +100,20 @@ class CollectionsRoute extends BaseRoute implements RouteDataTypesInterface {
             // set the user's default library at the time of creation
             record.libraries = [];
             record.libraries.push({
-              $ref: this.routeToolService.apiService.getRefEndpoint('libraries', this.routeToolService.appStore.currentLibraryPid()),
+              $ref: this.routeToolService.apiService.getRefEndpoint(
+                'libraries',
+                this.routeToolService.appStore.currentLibraryPid(),
+              ),
             });
           }
           return record;
         },
         preCreateRecord: (data) => {
           data.organisation = {
-            $ref: this.routeToolService.apiService.getRefEndpoint('organisations', this.routeToolService.appStore.currentOrganisationPid()),
+            $ref: this.routeToolService.apiService.getRefEndpoint(
+              'organisations',
+              this.routeToolService.appStore.currentOrganisationPid(),
+            ),
           };
           return data;
         },
@@ -191,7 +196,7 @@ class CollectionsRoute extends BaseRoute implements RouteDataTypesInterface {
                   value: apiService.getRefEndpoint('libraries', hit.metadata.pid),
                 };
               });
-            })
+            }),
           );
       },
     };

@@ -52,14 +52,20 @@ When testing components:
 
 Example pattern:
 
-describe('MyComponent', () => {
+```ts
+describe('computeSomething', () => {
+  it('should double the value', () => {
+    expect(computeSomething(2)).toBe(4);
+  });
+});
+```
 
-it('should compute value', () => {
-const result = computeSomething(2)
-expect(result).toBe(4)
-})
+## Test environment
 
-})
+- The tests run in jsdom (`@angular/build:unit-test`), not in a real browser.
+- The tests of `admin` resolve the workspace aliases (`@rero/shared`,
+  `@app/...`) through `projects/admin/vitest.config.ts`: declare a new alias
+  there too.
 
 ## Test performance
 
@@ -89,8 +95,18 @@ Prefer:
 - Synchronous assertions (synchronous `of(...)` observables complete synchronously — no tick needed)
 - `async/await` with `await vi.advanceTimersByTimeAsync(0)` for effects (see NgRx section below)
 
-- Spy types: use `any` instead of `MockedObject<T>` for partial mocks
-- Remove `.mockName('...')` from `vi.fn()` chains (causes TS errors)
+## Vitest gotchas
+
+- Spy types: prefer a narrow partial test type or an explicit local mock
+  interface over `MockedObject<T>` for partial mocks, rather than `any`.
+- Remove `.mockName('...')` from `vi.fn()` chains (causes TS errors).
+- `.compileComponents()` is unnecessary.
+
+## @ngx-translate/core in tests
+
+`@ngx-translate/core` 18 is standalone only — `TranslateModule` no longer
+exists. Register it with `provideTranslateService()` in `providers`, and use
+`setFallbackLang()` instead of the removed `setDefaultLang()`.
 
 ## setTimeout in tests
 
@@ -130,7 +146,7 @@ const TestStore = signalStore(
   withMyFeature(),
   withMethods((store) => ({
     applyX: () => patchState(store, setX()),
-  }))
+  })),
 );
 ```
 
@@ -141,7 +157,7 @@ const TestStore = signalStore(
 ```ts
 TestBed.configureTestingModule({
   providers: [
-    MyStore,                                      // ← required
+    MyStore, // ← required
     { provide: MyService, useValue: mockService },
   ],
 });

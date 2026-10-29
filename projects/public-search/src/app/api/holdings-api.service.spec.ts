@@ -6,54 +6,51 @@ import { TestBed } from '@angular/core/testing';
 import { RecordService } from '@rero/ng-core';
 import { EsRecord, EsResult, IAvailability } from '@rero/shared';
 import { of } from 'rxjs';
-import { HoldingsApiService } from './holdings-api.service';
-import { HoldingCanRequest, HoldingPatronRequest } from '../classes/holdings';
 
+import { HoldingCanRequest, HoldingPatronRequest } from '../classes/holdings';
+import { HoldingsApiService } from './holdings-api.service';
 
 describe('HoldingsService', () => {
-
   let service: HoldingsApiService;
 
   const record: EsRecord = {
-    created: "",
-    id: "1",
+    created: '',
+    id: '1',
     links: {
-      self: ''
+      self: '',
     },
     metadata: {
       pid: '1',
-      name: 'holding name'
+      name: 'holding name',
     },
-    updated: ""
+    updated: '',
   };
 
   const apiResponse = {
     aggregations: {},
     hits: {
       total: 1,
-      hits: [
-        record
-      ]
+      hits: [record],
     },
     links: {
-      self: ''
-    }
+      self: '',
+    },
   };
 
   const availability: IAvailability = {
-    available: true
-  }
+    available: true,
+  };
 
   const canRequest = {
     holdingPid: '1',
     libraryPid: '1',
-    patronBarcode: '1'
+    patronBarcode: '1',
   };
 
   const holdingsPatronRequest = {
     holding_pid: '1',
     pickup_location_pid: '1',
-    description: 'holdings patron request'
+    description: 'holdings patron request',
   };
 
   const httpClientSpy = { get: vi.fn(), post: vi.fn() };
@@ -63,11 +60,11 @@ describe('HoldingsService', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-    providers: [
-      { provide: RecordService, useValue: recordServiceSpy },
-      { provide: HttpClient, useValue: httpClientSpy }
-    ]
-});
+      providers: [
+        { provide: RecordService, useValue: recordServiceSpy },
+        { provide: HttpClient, useValue: httpClientSpy },
+      ],
+    });
     service = TestBed.inject(HoldingsApiService);
   });
 
@@ -76,30 +73,31 @@ describe('HoldingsService', () => {
   });
 
   it('should return a set of Holdings', () => {
-    service.getHoldingsByDocumentPidAndViewcode('1', 'global')
+    service
+      .getHoldingsByDocumentPidAndViewcode('1', 'global')
       .subscribe((result: EsResult) => expect(result.hits.hits[0]).toEqual(record));
   });
 
   it('should return a set of Electronics Holdings', () => {
-    service.getElectronicHoldingsByDocumentPidAndViewcode('1', 'global', 1)
+    service
+      .getElectronicHoldingsByDocumentPidAndViewcode('1', 'global', 1)
       .subscribe((result: EsResult['hits']) => expect(result.hits[0]).toEqual(record));
   });
 
   it('should return to holdings if it can be requested', () => {
     httpClientSpy.get.mockReturnValue(of(canRequest));
-    service.canRequest('1', '1', '1')
-      .subscribe((result: HoldingCanRequest) => expect(result).toEqual(canRequest));
+    service.canRequest('1', '1', '1').subscribe((result: HoldingCanRequest) => expect(result).toEqual(canRequest));
   });
 
   it('', () => {
     httpClientSpy.post.mockReturnValue(of(holdingsPatronRequest));
-    service.request(holdingsPatronRequest)
+    service
+      .request(holdingsPatronRequest)
       .subscribe((response: HoldingPatronRequest) => expect(response).toEqual(holdingsPatronRequest));
   });
 
   it('should return the availability of the holdings', () => {
     httpClientSpy.get.mockReturnValue(of(availability));
-    service.getAvailability('1')
-      .subscribe((response: IAvailability) => expect(response).toEqual(availability));
+    service.getAvailability('1').subscribe((response: IAvailability) => expect(response).toEqual(availability));
   });
 });

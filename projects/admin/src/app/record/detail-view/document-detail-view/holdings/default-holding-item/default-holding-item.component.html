@@ -5,81 +5,79 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 -->
 @if (editableItem(); as item) {
   <div class="ui:flex ui:gap-2 ui:pt-2">
-      <div class="ui:grow">  <!-- First row :: item detail -->
+    <div class="ui:grow">
+      <!-- First row :: item detail -->
       <!-- METADATA COLUMN -->
-       <dl class="metadata">
+      <dl class="metadata">
         <!-- Barcode -->
-          <dt translate>Barcode</dt>
-          <dd>
-            @if (item.metadata._masked) {
-              <admin-record-masked [record]="item" />
-            }
-            <!-- Remove link if not current organisation -->
-            @if (permissions()) {
-              <a [routerLink]="['/records', 'items', 'detail', item.metadata.pid]" name="barcode">
-                {{ item.metadata.barcode }}
-              </a>
-            } @else {
+        <dt>{{ 'Barcode' | translate }}</dt>
+        <dd>
+          @if (item.metadata._masked) {
+            <admin-record-masked [record]="item" />
+          }
+          <!-- Remove link if not current organisation -->
+          @if (permissions()) {
+            <a [routerLink]="['/records', 'items', 'detail', item.metadata.pid]" name="barcode">
               {{ item.metadata.barcode }}
-            }
-          </dd>
-          <!-- Unit -->
-          @if (item.metadata.enumerationAndChronology) {
-            <dt translate>Unit</dt>
-            <dd>{{ item.metadata.enumerationAndChronology }}</dd>
+            </a>
+          } @else {
+            {{ item.metadata.barcode }}
           }
-          <!-- Call numbers -->
-          @if (item | itemHoldingsCallNumber | async; as callNumber) {
-            @if ((callNumber | json) !== ({ first: {}, second: {} } | json)) {
-              <dt translate>Call number</dt>
-              <dd>
-                <shared-inherited-call-number [item]="item" />
-              </dd>
-            }
-          }
-          <!-- Status -->
-          <dt translate>Status</dt>
-          <dd>
-            <shared-availability
-              recordType="item"
-              [record]="item"
-              [apiService]="itemApiService"
-            ></shared-availability>
-          </dd>
-          <!-- URL -->
-          @if (item.metadata.url) {
-            <dt translate>Online access</dt>
-            <dd><a target="_blank" [href]="item.metadata.url | safeUrl">{{ item.metadata.url }}</a></dd>
-          }
-          <!-- TEMPORARY LOCATION -->
-          @if (item.metadata.temporary_location) {
-            <dt translate>Temporary location</dt>
-            <dd>{{ item.metadata.temporary_location.name }}</dd>
-          }
-          <!-- ITEM IN COLLECTION (hide if not current organisation) -->
-          @let itemPid = item.metadata.pid;
-          @if (itemPid) {
-            @let collections = permissions && itemPid | itemInCollection | async;
-            @if (collections && collections.length > 0) {
-              <dt translate>Exhibition/course</dt>
-              <dd>
-                @for (collection of collections; track $any(collection).metadata.pid; let last=$last) {
-                  <a [routerLink]="['/records', 'collections', 'detail', $any(collection).metadata.pid]">
-                    {{ $any(collection).metadata.title }}
-                  </a>{{ last ? '' : '; ' }}
-                }
-              </dd>
-            }
-          }
-        </dl>
-        <!-- (hide if not current organisation) -->
-        @if (permissions()) {
-          @for (note of item.metadata.notes; track $index) {
-            <admin-holding-item-note [note]="note" />
-          }
-          <admin-holding-item-temporary-item-type [record]="item" />
+        </dd>
+        <!-- Unit -->
+        @if (item.metadata.enumerationAndChronology) {
+          <dt>{{ 'Unit' | translate }}</dt>
+          <dd>{{ item.metadata.enumerationAndChronology }}</dd>
         }
-
+        <!-- Call numbers -->
+        @if (item | itemHoldingsCallNumber | async; as callNumber) {
+          @if ((callNumber | json) !== ({ first: {}, second: {} } | json)) {
+            <dt>{{ 'Call number' | translate }}</dt>
+            <dd>
+              <shared-inherited-call-number [item]="item" />
+            </dd>
+          }
+        }
+        <!-- Status -->
+        <dt>{{ 'Status' | translate }}</dt>
+        <dd>
+          <shared-availability recordType="item" [record]="item" [apiService]="itemApiService"></shared-availability>
+        </dd>
+        <!-- URL -->
+        @if (item.metadata.url) {
+          <dt>{{ 'Online access' | translate }}</dt>
+          <dd>
+            <a target="_blank" [href]="item.metadata.url | safeUrl">{{ item.metadata.url }}</a>
+          </dd>
+        }
+        <!-- TEMPORARY LOCATION -->
+        @if (item.metadata.temporary_location) {
+          <dt>{{ 'Temporary location' | translate }}</dt>
+          <dd>{{ item.metadata.temporary_location.name }}</dd>
+        }
+        <!-- ITEM IN COLLECTION (hide if not current organisation) -->
+        @let itemPid = item.metadata.pid;
+        @if (itemPid) {
+          @let collections = permissions && itemPid | itemInCollection | async;
+          @if (collections && collections.length > 0) {
+            <dt>{{ 'Exhibition/course' | translate }}</dt>
+            <dd>
+              @for (collection of collections; track $any(collection).metadata.pid; let last = $last) {
+                <a [routerLink]="['/records', 'collections', 'detail', $any(collection).metadata.pid]">
+                  {{ $any(collection).metadata.title }} </a
+                >{{ last ? '' : '; ' }}
+              }
+            </dd>
+          }
+        }
+      </dl>
+      <!-- (hide if not current organisation) -->
+      @if (permissions()) {
+        @for (note of item.metadata.notes; track $index) {
+          <admin-holding-item-note [note]="note" />
+        }
+        <admin-holding-item-temporary-item-type [record]="item" />
+      }
     </div>
     <!-- ACTIONS BUTTONS -->
     @if (permissions()) {
@@ -88,14 +86,13 @@ SPDX-License-Identifier: AGPL-3.0-or-later
           icon="fa-solid fa-basket-shopping"
           class="ui:pointer-events-auto"
           size="small"
-          [title]="'Item request'|translate"
+          [title]="'Item request' | translate"
           [outlined]="true"
           (onClick)="addRequest(item.metadata.pid, 'item')"
           [pTooltip]="cannotRequestTooltipContent"
           tooltipPosition="top"
           [disabled]="!permissions().canRequest?.can"
-          [tooltipDisabled]="permissions().canRequest?.can"
-        />
+          [tooltipDisabled]="permissions().canRequest?.can" />
         <ng-template #cannotRequestTooltipContent>
           <span [innerHTML]="cannotRequestInfoMessage | nl2br"></span>
         </ng-template>
@@ -104,19 +101,17 @@ SPDX-License-Identifier: AGPL-3.0-or-later
           <p-button
             icon="fa-solid fa-shuffle"
             size="small"
-            [title]="'Switch location'|translate"
+            [title]="'Switch location' | translate"
             [outlined]="true"
-            [routerLink]="['/records', 'items', 'switch_location', item.metadata.pid]"
-          />
+            [routerLink]="['/records', 'items', 'switch_location', item.metadata.pid]" />
         }
         @if (permissions()?.update?.can) {
           <p-button
             icon="fa-solid fa-pencil"
             size="small"
-            [title]="'Edit'|translate"
+            [title]="'Edit' | translate"
             [outlined]="true"
-            [routerLink]="['/records', 'items', 'edit', item.metadata.pid]"
-          />
+            [routerLink]="['/records', 'items', 'edit', item.metadata.pid]" />
         }
         <p-button
           icon="fa-solid fa-trash-can"
@@ -124,13 +119,12 @@ SPDX-License-Identifier: AGPL-3.0-or-later
           size="small"
           [outlined]="true"
           severity="danger"
-          [title]="'Delete'|translate"
+          [title]="'Delete' | translate"
           [pTooltip]="tooltipContent"
           tooltipPosition="top"
           [disabled]="documentDetailStore.isDeletingChild() || !permissions().delete?.can"
           [tooltipDisabled]="documentDetailStore.isDeletingChild() || permissions().delete?.can"
-          (onClick)="delete()"
-        />
+          (onClick)="delete()" />
         <ng-template #tooltipContent>
           <span [innerHTML]="deleteInfoMessage | nl2br"></span>
         </ng-template>

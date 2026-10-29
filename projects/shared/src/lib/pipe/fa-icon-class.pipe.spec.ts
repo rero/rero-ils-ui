@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 import { TestBed } from '@angular/core/testing';
+
 import { FaIconClassPipe } from './fa-icon-class.pipe';
 
 describe('FaIconClassPipe', () => {
@@ -9,9 +10,7 @@ describe('FaIconClassPipe', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [
-        FaIconClassPipe
-      ]
+      providers: [FaIconClassPipe],
     });
 
     pipe = TestBed.inject(FaIconClassPipe);

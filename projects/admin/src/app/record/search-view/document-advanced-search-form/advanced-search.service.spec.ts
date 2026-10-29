@@ -5,6 +5,7 @@ import { TestBed } from '@angular/core/testing';
 import { DocumentApiService } from '@app/admin/api/document-api.service';
 import { cloneDeep } from 'lodash-es';
 import { of } from 'rxjs';
+
 import { AdvancedSearchService } from './advanced-search.service';
 
 describe('AdvancedSearchService', () => {
@@ -14,45 +15,48 @@ describe('AdvancedSearchService', () => {
     fieldsConfig: [
       {
         field: null,
-        label: "Everywhere",
-        value: "everywhere",
+        label: 'Everywhere',
+        value: 'everywhere',
         options: {
           search_type: [
-            { label: "contains", value: AdvancedSearchService.SEARCH_TYPE_CONTAINS },
-            { label: "exact", value: AdvancedSearchService.SEARCH_TYPE_CONTAINS_PHRASE },
-          ]} },
+            { label: 'contains', value: AdvancedSearchService.SEARCH_TYPE_CONTAINS },
+            { label: 'exact', value: AdvancedSearchService.SEARCH_TYPE_CONTAINS_PHRASE },
+          ],
+        },
+      },
       {
-        field: "title.*",
-        label: "Title",
-        value: "title",
+        field: 'title.*',
+        label: 'Title',
+        value: 'title',
         options: {
           search_type: [
-            { label: "contains", value: AdvancedSearchService.SEARCH_TYPE_CONTAINS },
-            { label: "exact", value: AdvancedSearchService.SEARCH_TYPE_CONTAINS_PHRASE },
-          ]} },
+            { label: 'contains', value: AdvancedSearchService.SEARCH_TYPE_CONTAINS },
+            { label: 'exact', value: AdvancedSearchService.SEARCH_TYPE_CONTAINS_PHRASE },
+          ],
+        },
+      },
       {
-        field: "provisionActivity.place.country",
-        label: "Country",
-        value: "country",
+        field: 'provisionActivity.place.country',
+        label: 'Country',
+        value: 'country',
         options: {
-          search_type: [
-            { label: "exact", value: AdvancedSearchService.SEARCH_TYPE_CONTAINS_PHRASE },
-          ]
-        } }
+          search_type: [{ label: 'exact', value: AdvancedSearchService.SEARCH_TYPE_CONTAINS_PHRASE }],
+        },
+      },
     ],
     fieldsData: {
       canton: [
-        { label: "canton_ag", value: "ag" },
-        { label: "canton_ai", value: "ai" }
+        { label: 'canton_ag', value: 'ag' },
+        { label: 'canton_ai', value: 'ai' },
       ],
       country: [
-        { label: "country_aa", value: "aa" },
-        { label: "country_abc", value: "abc" }
+        { label: 'country_aa', value: 'aa' },
+        { label: 'country_abc', value: 'abc' },
       ],
       rdaCarrierType: [],
       rdaContentType: [],
-      rdaMediaType: []
-    }
+      rdaMediaType: [],
+    },
   };
 
   const documentApiServiceSpy = { getAdvancedSearchConfig: vi.fn() };
@@ -60,9 +64,7 @@ describe('AdvancedSearchService', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [
-        { provide: DocumentApiService, useValue: documentApiServiceSpy }
-      ]
+      providers: [{ provide: DocumentApiService, useValue: documentApiServiceSpy }],
     });
     service = TestBed.inject(AdvancedSearchService);
   });
@@ -79,9 +81,9 @@ describe('AdvancedSearchService', () => {
 
   it('should return the fields configuration', () => {
     const response = [
-      { label: "Everywhere", value: "everywhere" },
-      { label: "Title", value: "title" },
-      { label: "Country", value: "country" },
+      { label: 'Everywhere', value: 'everywhere' },
+      { label: 'Title', value: 'title' },
+      { label: 'Country', value: 'country' },
     ];
     service.load().subscribe();
     expect(service.getFieldsConfig()).toEqual(response);
@@ -95,16 +97,14 @@ describe('AdvancedSearchService', () => {
   it('should return the fields search type data', () => {
     const response = {
       everywhere: [
-        { label: "contains", value: AdvancedSearchService.SEARCH_TYPE_CONTAINS },
-        { label: "exact", value: AdvancedSearchService.SEARCH_TYPE_CONTAINS_PHRASE },
+        { label: 'contains', value: AdvancedSearchService.SEARCH_TYPE_CONTAINS },
+        { label: 'exact', value: AdvancedSearchService.SEARCH_TYPE_CONTAINS_PHRASE },
       ],
       title: [
-        { label: "contains", value: AdvancedSearchService.SEARCH_TYPE_CONTAINS },
-        { label: "exact", value: AdvancedSearchService.SEARCH_TYPE_CONTAINS_PHRASE },
+        { label: 'contains', value: AdvancedSearchService.SEARCH_TYPE_CONTAINS },
+        { label: 'exact', value: AdvancedSearchService.SEARCH_TYPE_CONTAINS_PHRASE },
       ],
-      country: [
-        { label: "exact", value: AdvancedSearchService.SEARCH_TYPE_CONTAINS_PHRASE },
-      ]
+      country: [{ label: 'exact', value: AdvancedSearchService.SEARCH_TYPE_CONTAINS_PHRASE }],
     };
     service.load().subscribe();
     expect(service.getFieldsSearchType()).toEqual(response);
@@ -114,7 +114,7 @@ describe('AdvancedSearchService', () => {
     const response = [
       { label: 'and', value: AdvancedSearchService.OPERATOR_AND },
       { label: 'or', value: AdvancedSearchService.OPERATOR_OR },
-      { label: 'and not', value: AdvancedSearchService.OPERATOR_NOT }
+      { label: 'and not', value: AdvancedSearchService.OPERATOR_NOT },
     ];
     service.load().subscribe();
     expect(service.getOperators()).toEqual(response);
@@ -139,12 +139,15 @@ describe('AdvancedSearchService', () => {
       field: 'title',
       term: 'flamand',
       searchType: AdvancedSearchService.SEARCH_TYPE_CONTAINS,
-      search: [{
-        operator: AdvancedSearchService.OPERATOR_AND,
-        field: 'title',
-        term: '',
-        searchType: AdvancedSearchService.SEARCH_TYPE_CONTAINS
-      }] };
+      search: [
+        {
+          operator: AdvancedSearchService.OPERATOR_AND,
+          field: 'title',
+          term: '',
+          searchType: AdvancedSearchService.SEARCH_TYPE_CONTAINS,
+        },
+      ],
+    };
     expect(service.generateQueryByModel(model)).toEqual(searchString);
 
     // EVERYWHERE: CONTAINS
@@ -153,12 +156,15 @@ describe('AdvancedSearchService', () => {
       field: 'everywhere',
       term: 'flamand',
       searchType: AdvancedSearchService.SEARCH_TYPE_CONTAINS,
-      search: [{
-        operator: AdvancedSearchService.OPERATOR_AND,
-        field: 'title',
-        term: '',
-        searchType: AdvancedSearchService.SEARCH_TYPE_CONTAINS
-      }] };
+      search: [
+        {
+          operator: AdvancedSearchService.OPERATOR_AND,
+          field: 'title',
+          term: '',
+          searchType: AdvancedSearchService.SEARCH_TYPE_CONTAINS,
+        },
+      ],
+    };
     expect(service.generateQueryByModel(model)).toEqual(searchString);
 
     // EVERYWHERE: PHRASE
@@ -167,12 +173,15 @@ describe('AdvancedSearchService', () => {
       field: 'everywhere',
       term: 'flamand primitif',
       searchType: AdvancedSearchService.SEARCH_TYPE_CONTAINS_PHRASE,
-      search: [{
-        operator: AdvancedSearchService.OPERATOR_AND,
-        field: 'title',
-        term: '',
-        searchType: AdvancedSearchService.SEARCH_TYPE_CONTAINS
-      }] };
+      search: [
+        {
+          operator: AdvancedSearchService.OPERATOR_AND,
+          field: 'title',
+          term: '',
+          searchType: AdvancedSearchService.SEARCH_TYPE_CONTAINS,
+        },
+      ],
+    };
     expect(service.generateQueryByModel(model)).toEqual(searchString);
 
     // CONTAINS: Test protect ( and )
@@ -181,12 +190,15 @@ describe('AdvancedSearchService', () => {
       field: 'title',
       term: '(flamand)',
       searchType: AdvancedSearchService.SEARCH_TYPE_CONTAINS,
-      search: [{
-        operator: AdvancedSearchService.OPERATOR_AND,
-        field: 'title',
-        term: '',
-        searchType: AdvancedSearchService.SEARCH_TYPE_CONTAINS
-      }] };
+      search: [
+        {
+          operator: AdvancedSearchService.OPERATOR_AND,
+          field: 'title',
+          term: '',
+          searchType: AdvancedSearchService.SEARCH_TYPE_CONTAINS,
+        },
+      ],
+    };
     expect(service.generateQueryByModel(model)).toEqual(searchString);
 
     // PHRASE
@@ -195,12 +207,15 @@ describe('AdvancedSearchService', () => {
       field: 'title',
       term: 'flamand',
       searchType: AdvancedSearchService.SEARCH_TYPE_CONTAINS_PHRASE,
-      search: [{
-        operator: AdvancedSearchService.OPERATOR_AND,
-        field: 'title',
-        term: '',
-        searchType: AdvancedSearchService.SEARCH_TYPE_CONTAINS
-      }] };
+      search: [
+        {
+          operator: AdvancedSearchService.OPERATOR_AND,
+          field: 'title',
+          term: '',
+          searchType: AdvancedSearchService.SEARCH_TYPE_CONTAINS,
+        },
+      ],
+    };
     expect(service.generateQueryByModel(model)).toEqual(searchString);
 
     // PHRASE: Test protect "
@@ -209,12 +224,15 @@ describe('AdvancedSearchService', () => {
       field: 'title',
       term: '"flamand"',
       searchType: AdvancedSearchService.SEARCH_TYPE_CONTAINS_PHRASE,
-      search: [{
-        operator: AdvancedSearchService.OPERATOR_AND,
-        field: 'title',
-        term: '',
-        searchType: AdvancedSearchService.SEARCH_TYPE_CONTAINS
-      }] };
+      search: [
+        {
+          operator: AdvancedSearchService.OPERATOR_AND,
+          field: 'title',
+          term: '',
+          searchType: AdvancedSearchService.SEARCH_TYPE_CONTAINS,
+        },
+      ],
+    };
     expect(service.generateQueryByModel(model)).toEqual(searchString);
 
     // MULTIPLE SEARCH
@@ -228,15 +246,16 @@ describe('AdvancedSearchService', () => {
           operator: AdvancedSearchService.OPERATOR_AND,
           field: 'title',
           term: 'primitif',
-          searchType: AdvancedSearchService.SEARCH_TYPE_CONTAINS_PHRASE
+          searchType: AdvancedSearchService.SEARCH_TYPE_CONTAINS_PHRASE,
         },
         {
           operator: AdvancedSearchService.OPERATOR_OR,
           field: 'country',
           term: 'abc',
-          searchType: AdvancedSearchService.SEARCH_TYPE_CONTAINS_PHRASE
-        }
-      ] };
+          searchType: AdvancedSearchService.SEARCH_TYPE_CONTAINS_PHRASE,
+        },
+      ],
+    };
     expect(service.generateQueryByModel(model)).toEqual(searchString);
 
     // MULTIPLE SEARCH WITH EVERYWHERE
@@ -250,21 +269,22 @@ describe('AdvancedSearchService', () => {
           operator: AdvancedSearchService.OPERATOR_AND,
           field: 'title',
           term: 'primitif',
-          searchType: AdvancedSearchService.SEARCH_TYPE_CONTAINS_PHRASE
+          searchType: AdvancedSearchService.SEARCH_TYPE_CONTAINS_PHRASE,
         },
         {
           operator: AdvancedSearchService.OPERATOR_OR,
           field: 'everywhere',
           term: 'art moderne',
-          searchType: AdvancedSearchService.SEARCH_TYPE_CONTAINS_PHRASE
+          searchType: AdvancedSearchService.SEARCH_TYPE_CONTAINS_PHRASE,
         },
         {
           operator: AdvancedSearchService.OPERATOR_NOT,
           field: 'country',
           term: 'abc',
-          searchType: AdvancedSearchService.SEARCH_TYPE_CONTAINS_PHRASE
-        }
-      ] };
+          searchType: AdvancedSearchService.SEARCH_TYPE_CONTAINS_PHRASE,
+        },
+      ],
+    };
     expect(service.generateQueryByModel(model)).toEqual(searchString);
   });
 });

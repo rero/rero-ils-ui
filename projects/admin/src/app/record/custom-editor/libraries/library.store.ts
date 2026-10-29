@@ -8,6 +8,7 @@ import type { EsResult } from '@rero/shared';
 import { DateTime } from 'luxon';
 import { EMPTY, forkJoin, pipe } from 'rxjs';
 import { catchError, filter, map, switchMap, tap } from 'rxjs/operators';
+
 import { ExceptionDates, Library } from '../../../classes/library';
 import { NotificationType } from '../../../classes/notification';
 
@@ -21,7 +22,6 @@ type SchemaForm = {
     properties: Record<string, SchemaProperty>;
   };
 };
-
 
 export type LocationRecord = {
   metadata: {
@@ -58,9 +58,8 @@ const initialState: LibraryState = {
 };
 
 function sortExceptionDates(dates: ExceptionDates[]): ExceptionDates[] {
-  return [...dates].sort((a, b) =>
-    (DateTime.fromISO(b.start_date as string).toMillis()) -
-    (DateTime.fromISO(a.start_date as string).toMillis())
+  return [...dates].sort(
+    (a, b) => DateTime.fromISO(b.start_date as string).toMillis() - DateTime.fromISO(a.start_date as string).toMillis(),
   );
 }
 
@@ -68,17 +67,18 @@ export const LibraryStore = signalStore(
   withState<LibraryState>(initialState),
   withComputed((store) => ({
     isNewLibrary: computed(() => !store.library()?.pid),
-    organisationPid: computed(() => store.library()?.organisation?.$ref ? extractIdOnRef(store.library()!.organisation.$ref) : ''),
+    organisationPid: computed(() =>
+      store.library()?.organisation?.$ref ? extractIdOnRef(store.library()!.organisation.$ref) : '',
+    ),
   })),
   withMethods((store, recordService = inject(RecordService)) => ({
-
     loadLibrary: rxMethod<string>(
       pipe(
         filter(Boolean),
         tap(() => patchState(store, { isLoading: true, error: undefined })),
-        switchMap(pid =>
+        switchMap((pid) =>
           recordService.getRecordWithEtag('libraries', pid).pipe(
-            tap(({body, headers}) => {
+            tap(({ body, headers }) => {
               const lib = new Library(body!.metadata);
               patchState(store, {
                 library: lib,
@@ -87,61 +87,66 @@ export const LibraryStore = signalStore(
                 currentLibraryETag: headers.get('ETag') ?? undefined,
               });
             }),
-            catchError(err => {
+            catchError((err) => {
               patchState(store, { error: String(err), isLoading: false });
               return EMPTY;
-            })
-          )
-        )
-      )
+            }),
+          ),
+        ),
+      ),
     ),
 
     loadLocations: rxMethod<string>(
       pipe(
         filter(Boolean),
         tap(() => patchState(store, { isLoading: true })),
-        switchMap(pid =>
-          recordService.getRecords('locations', {
-            query: `library.pid:${pid}`,
-            page: 1,
-            itemsPerPage: RecordService.MAX_REST_RESULTS_SIZE,
-            sort: 'name',
-          }).pipe(
-            map((res: EsResult) => (res.hits.hits as unknown as LocationRecord[]) || []),
-            tap(locations => patchState(store, { locations, isLoading: false })),
-            catchError(() => { patchState(store, { isLoading: false }); return EMPTY; })
-          )
-        )
-      )
+        switchMap((pid) =>
+          recordService
+            .getRecords('locations', {
+              query: `library.pid:${pid}`,
+              page: 1,
+              itemsPerPage: RecordService.MAX_REST_RESULTS_SIZE,
+              sort: 'name',
+            })
+            .pipe(
+              map((res: EsResult) => (res.hits.hits as unknown as LocationRecord[]) || []),
+              tap((locations) => patchState(store, { locations, isLoading: false })),
+              catchError(() => {
+                patchState(store, { isLoading: false });
+                return EMPTY;
+              }),
+            ),
+        ),
+      ),
     ),
 
     loadSchemas: rxMethod<void>(
       pipe(
         switchMap(() =>
-          forkJoin([
-            recordService.getSchemaForm('libraries'),
-            recordService.getSchemaForm('notifications'),
-          ]).pipe(
+          forkJoin([recordService.getSchemaForm('libraries'), recordService.getSchemaForm('notifications')]).pipe(
             tap(([libSchema, notifSchema]) => {
               const libProps = (libSchema as SchemaForm).schema.properties;
-              const notifTypes = ((notifSchema as SchemaForm).schema.properties['notification_type'].enum as NotificationType[])
-                .filter(t => t !== NotificationType.ACQUISITION_ORDER)
-                .filter(t => t !== NotificationType.CLAIM_ISSUE);
+              const notifTypes = (
+                (notifSchema as SchemaForm).schema.properties['notification_type'].enum as NotificationType[]
+              )
+                .filter((t) => t !== NotificationType.ACQUISITION_ORDER)
+                .filter((t) => t !== NotificationType.CLAIM_ISSUE);
               patchState(store, {
                 availableCommunicationLanguages: libProps.communication_language.enum ?? [],
-                countryIsoCodes: libProps.acquisition_settings?.properties?.shipping_informations
-                  ?.properties?.address?.properties?.country?.enum ?? [],
+                countryIsoCodes:
+                  libProps.acquisition_settings?.properties?.shipping_informations?.properties?.address?.properties
+                    ?.country?.enum ?? [],
                 rolloverAccountTransferOptions: libProps.rollover_settings?.properties?.account_transfer?.enum ?? [],
                 notificationTypes: notifTypes,
               });
             }),
-            catchError(err => {
+            catchError((err) => {
               patchState(store, { error: String(err) });
               return EMPTY;
-            })
-          )
-        )
-      )
+            }),
+          ),
+        ),
+      ),
     ),
 
     setNewLibrary(): void {
@@ -169,9 +174,9 @@ export const LibraryStore = signalStore(
     },
 
     deleteLocation(pid: string): void {
-      if (store.locations().some(loc => loc.metadata.pid === pid)) {
+      if (store.locations().some((loc) => loc.metadata.pid === pid)) {
         patchState(store, {
-          locations: store.locations().filter(loc => loc.metadata.pid !== pid),
+          locations: store.locations().filter((loc) => loc.metadata.pid !== pid),
         });
       }
     },
@@ -180,5 +185,5 @@ export const LibraryStore = signalStore(
     onInit: () => {
       store.loadSchemas();
     },
-  }))
+  })),
 );

@@ -1,24 +1,24 @@
 // SPDX-FileCopyrightText: Fondation RERO+
 // SPDX-License-Identifier: AGPL-3.0-or-later
-import { Component, input, inject, ChangeDetectionStrategy, signal, computed, effect, viewChild, untracked, DestroyRef } from '@angular/core';
+import { Component, computed, DestroyRef, effect, inject, input, signal, untracked, viewChild } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { ResourcesFilesService } from '@app/admin/service/resources-files.service';
-import { TranslateService, TranslateDirective, TranslatePipe } from '@ngx-translate/core';
-import { CONFIG, FilesizePipe, DateTranslatePipe } from '@rero/ng-core';
-import { NgxSpinnerService } from 'ngx-spinner';
-import { ConfirmationService, MessageService } from 'primeng/api';
-import { FileUpload } from 'primeng/fileupload';
-import { catchError, concatMap, from, map, Observable, of, switchMap, tap, toArray } from 'rxjs';
-import { FilesCollectionsComponent } from '../files-collections.component';
-import { Bind } from 'primeng/bind';
-import { InputGroup } from 'primeng/inputgroup';
 import { FormsModule } from '@angular/forms';
-import { InputText } from 'primeng/inputtext';
-import { InputGroupAddon } from 'primeng/inputgroupaddon';
-import { Tooltip } from 'primeng/tooltip';
-import { Button } from 'primeng/button';
-import { NgxSpinnerComponent } from 'ngx-spinner';
-import { Message } from 'primeng/message';
+import { ResourcesFilesService } from '@app/admin/service/resources-files.service';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
+import { ConfirmationService, MessageService } from '@openng/optimus-ui/api';
+import { Bind } from '@openng/optimus-ui/bind';
+import { Button } from '@openng/optimus-ui/button';
+import { FileUpload } from '@openng/optimus-ui/fileupload';
+import { InputGroup } from '@openng/optimus-ui/inputgroup';
+import { InputGroupAddon } from '@openng/optimus-ui/inputgroupaddon';
+import { InputText } from '@openng/optimus-ui/inputtext';
+import { Message } from '@openng/optimus-ui/message';
+import { Tooltip } from '@openng/optimus-ui/tooltip';
+import { CONFIG, DateTranslatePipe, FilesizePipe } from '@rero/ng-core';
+import { NgxSpinnerComponent, NgxSpinnerService } from 'ngx-spinner';
+import { catchError, concatMap, from, map, Observable, of, switchMap, tap, toArray } from 'rxjs';
+
+import { FilesCollectionsComponent } from '../files-collections.component';
 
 type ParentRecord = {
   id: string;
@@ -36,13 +36,26 @@ export type UploadedFile = {
 };
 
 @Component({
-    selector: 'admin-upload-files',
-    templateUrl: './upload-files.component.html',
-    imports: [FilesCollectionsComponent, TranslateDirective, Bind, FileUpload, InputGroup, FormsModule, InputText, InputGroupAddon, Tooltip, Button, FilesizePipe, TranslatePipe, DateTranslatePipe, NgxSpinnerComponent, Message],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  selector: 'admin-upload-files',
+  templateUrl: './upload-files.component.html',
+  imports: [
+    FilesCollectionsComponent,
+    Bind,
+    FileUpload,
+    InputGroup,
+    FormsModule,
+    InputText,
+    InputGroupAddon,
+    Tooltip,
+    Button,
+    FilesizePipe,
+    TranslatePipe,
+    DateTranslatePipe,
+    NgxSpinnerComponent,
+    Message,
+  ],
 })
 export class UploadFilesComponent {
-
   private messageService = inject(MessageService);
   private destroyRef = inject(DestroyRef);
   fileService = inject(ResourcesFilesService);
@@ -76,7 +89,7 @@ export class UploadFilesComponent {
     const text = this.filterText().toLowerCase();
     const allFiles = this.files() ?? [];
     if (text.length === 0) return allFiles;
-    return allFiles.filter(f => f.label.toLowerCase().includes(text));
+    return allFiles.filter((f) => f.label.toLowerCase().includes(text));
   });
 
   // True if the maximum number of files is reached.
@@ -117,14 +130,12 @@ export class UploadFilesComponent {
       .updateMetadata(this.parentRecord()!.id, file.key, { metadata: { ...(file.metadata ?? {}), label } })
       .subscribe((res) => {
         const newLabel = res.metadata.label as string;
-        this.files.update(files =>
-          (files ?? []).map(f => f.key === file.key ? { ...f, label: newLabel } : f)
-        );
+        this.files.update((files) => (files ?? []).map((f) => (f.key === file.key ? { ...f, label: newLabel } : f)));
         this.messageService.add({
           severity: 'success',
           summary: this.translateService.instant('File'),
           detail: this.translateService.instant('Metadata have been saved successfully.'),
-          life: CONFIG.MESSAGE_LIFE
+          life: CONFIG.MESSAGE_LIFE,
         });
       });
   }
@@ -156,8 +167,8 @@ export class UploadFilesComponent {
         // create the parent record
         // should not happens when a document is used as parent record
         obs = this.fileService.createParentRecord(this.pid()!).pipe(
-          tap(record => this.parentRecord.set(record)),
-          switchMap(() => this.generateCreateRequests(event))
+          tap((record) => this.parentRecord.set(record)),
+          switchMap(() => this.generateCreateRequests(event)),
         );
       } else {
         // the parent record already exists: create only the new files
@@ -175,7 +186,7 @@ export class UploadFilesComponent {
               summary: this.translateService.instant('File'),
               detail: msg,
               sticky: true,
-              closable: true
+              closable: true,
             });
             return of([]);
           }),
@@ -186,7 +197,7 @@ export class UploadFilesComponent {
               severity: 'success',
               summary: this.translateService.instant('File'),
               detail: this.translateService.instant('File uploaded successfully.'),
-              life: CONFIG.MESSAGE_LIFE
+              life: CONFIG.MESSAGE_LIFE,
             });
             this.nUploadedFiles.set(0);
           }),
@@ -203,14 +214,14 @@ export class UploadFilesComponent {
    */
   private generateCreateRequests(event: { files: File[] }): Observable<unknown> {
     return from(event.files).pipe(
-      concatMap(f => this.fileService.create(this.parentRecord()!.id, f.name, f)),
-      map(raw => {
-        this.nUploadedFiles.update(n => n + 1);
+      concatMap((f) => this.fileService.create(this.parentRecord()!.id, f.name, f)),
+      map((raw) => {
+        this.nUploadedFiles.update((n) => n + 1);
         const file = raw as unknown as UploadedFile;
         const label = (file.metadata?.['label'] as string | undefined) ?? file.key;
-        this.files.update(files => [{ ...file, label }, ...(files ?? [])]);
+        this.files.update((files) => [{ ...file, label }, ...(files ?? [])]);
       }),
-      toArray()
+      toArray(),
     );
   }
 
@@ -259,23 +270,26 @@ export class UploadFilesComponent {
       acceptButtonStyleClass: 'core:bg-red-500 core:border-red-500',
       rejectButtonStyleClass: 'p-button-text',
       accept: () => {
-        this.fileService.delete(this.parentRecord()!.id, file.key).pipe(
-          map(() => {
-            this.files.update(files => (files ?? []).filter(f => f.key !== file.key));
-            if ((this.files()?.length ?? 0) === 0) {
-              this.parentRecord.set(null);
-            }
-            this.filterText.set('');
-            this.messageService.add({
-              severity: 'success',
-              summary: this.translateService.instant('File'),
-              detail: this.translateService.instant('File removed successfully.'),
-              life: CONFIG.MESSAGE_LIFE
-            });
-            return true;
-          })
-        ).subscribe();
-      }
+        this.fileService
+          .delete(this.parentRecord()!.id, file.key)
+          .pipe(
+            map(() => {
+              this.files.update((files) => (files ?? []).filter((f) => f.key !== file.key));
+              if ((this.files()?.length ?? 0) === 0) {
+                this.parentRecord.set(null);
+              }
+              this.filterText.set('');
+              this.messageService.add({
+                severity: 'success',
+                summary: this.translateService.instant('File'),
+                detail: this.translateService.instant('File removed successfully.'),
+                life: CONFIG.MESSAGE_LIFE,
+              });
+              return true;
+            }),
+          )
+          .subscribe();
+      },
     });
   }
 
@@ -283,21 +297,26 @@ export class UploadFilesComponent {
    * Load record and files for the given pid.
    */
   private getFiles(pid: string): void {
-    this.fileService.getParentRecord(pid).pipe(
-      tap(record => this.parentRecord.set(record)),
-      switchMap(record => record == null ? of([]) : this.fileService.list(record.id)),
-      map(files => (files as unknown as UploadedFile[]).map(item => {
-        if (item.label == null) {
-          item.label = (item.metadata?.['label'] as string | undefined) ?? item.key;
-        }
-        return item;
-      })),
-      map((files: UploadedFile[]) => {
-        files.sort((a, b) => new Date(b.created).getTime() - new Date(a.created).getTime());
-        this.files.set(files);
-      }),
-      catchError(() => of([])),
-      takeUntilDestroyed(this.destroyRef)
-    ).subscribe();
+    this.fileService
+      .getParentRecord(pid)
+      .pipe(
+        tap((record) => this.parentRecord.set(record)),
+        switchMap((record) => (record == null ? of([]) : this.fileService.list(record.id))),
+        map((files) =>
+          (files as unknown as UploadedFile[]).map((item) => {
+            if (item.label == null) {
+              item.label = (item.metadata?.['label'] as string | undefined) ?? item.key;
+            }
+            return item;
+          }),
+        ),
+        map((files: UploadedFile[]) => {
+          files.sort((a, b) => new Date(b.created).getTime() - new Date(a.created).getTime());
+          this.files.set(files);
+        }),
+        catchError(() => of([])),
+        takeUntilDestroyed(this.destroyRef),
+      )
+      .subscribe();
   }
 }

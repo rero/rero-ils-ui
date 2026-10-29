@@ -4,18 +4,17 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { ApiService, Error, RecordData, RecordService } from '@rero/ng-core';
-import { BaseApi, EsResult, esResultInitialState, IAvailability, IAvailabilityService } from '@rero/shared';
+import { BaseApi, EsRecord, EsResult, esResultInitialState, IAvailability, IAvailabilityService } from '@rero/shared';
 import { Observable, of } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
+
 import { AppConfigService } from '../service/app-config.service';
 import { ITypeEmail } from '../shared/preview-email/IPreviewInterface';
-import { EsRecord } from '@rero/shared';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class ItemApiService implements IAvailabilityService {
-
   private appConfigService: AppConfigService = inject(AppConfigService);
   private apiService: ApiService = inject(ApiService);
   private recordService: RecordService = inject(RecordService);
@@ -28,8 +27,8 @@ export class ItemApiService implements IAvailabilityService {
   /** http client options */
   private httpClientOptions = {
     headers: new HttpHeaders({
-      'Content-Type':  'application/json'
-    })
+      'Content-Type': 'application/json',
+    }),
   };
 
   getItemsByHoldings(holdings: Partial<EsRecord>, page: number, itemsPerPage = 10, filter = ''): Observable<EsResult> {
@@ -47,13 +46,12 @@ export class ItemApiService implements IAvailabilityService {
     if (filter !== '') {
       query += ` AND (enumerationAndChronology.analyzed:"${filter}" OR call_numbers:(*${filter}*) OR barcode:(*${filter}*))`;
     }
-    return this.recordService.getRecords(
-      ItemApiService.RESOURCE_NAME,
-      { query, page, itemsPerPage, headers: BaseApi.reroJsonheaders, sort }
-    ).pipe(
-      catchError(() => of(esResultInitialState)),
-      map((response: EsResult) => response)
-    );
+    return this.recordService
+      .getRecords(ItemApiService.RESOURCE_NAME, { query, page, itemsPerPage, headers: BaseApi.reroJsonheaders, sort })
+      .pipe(
+        catchError(() => of(esResultInitialState)),
+        map((response: EsResult) => response),
+      );
   }
 
   // SERVICE FUNCTIONS ========================================================
@@ -66,8 +64,10 @@ export class ItemApiService implements IAvailabilityService {
    * @returns an `Observable` on the REST-API item record
    */
   getItem(pid: string, resolve = 1): Observable<RecordData> {
-    return this.recordService.getRecord(
-      ItemApiService.RESOURCE_NAME, pid, { resolve, headers: BaseApi.reroJsonheaders });
+    return this.recordService.getRecord(ItemApiService.RESOURCE_NAME, pid, {
+      resolve,
+      headers: BaseApi.reroJsonheaders,
+    });
   }
 
   /**
@@ -95,10 +95,12 @@ export class ItemApiService implements IAvailabilityService {
    * @returns Observable of the Preview of a claim and suggested email addresses.
    */
   getPreviewByItemPid(itemPid: string): Observable<any> {
-    return this.httpClient.get<any>(
-      `${this.appConfigService.apiEndpointPrefix}/item/${itemPid}/issue/claims/preview`,
-      this.httpClientOptions
-    ).pipe(catchError((err: any) => of({ error: err.error.message })));
+    return this.httpClient
+      .get<any>(
+        `${this.appConfigService.apiEndpointPrefix}/item/${itemPid}/issue/claims/preview`,
+        this.httpClientOptions,
+      )
+      .pipe(catchError((err: any) => of({ error: err.error.message })));
   }
 
   /**
@@ -109,9 +111,9 @@ export class ItemApiService implements IAvailabilityService {
    */
   addClaimIssue(itemPid: string, recipients: ITypeEmail[]): Observable<boolean> {
     const apiUrl = `${this.appConfigService.apiEndpointPrefix}/item/${itemPid}/issue/claims`;
-    return this.httpClient.post(apiUrl, {recipients}).pipe(
+    return this.httpClient.post(apiUrl, { recipients }).pipe(
       map(() => true),
-      catchError(() => of(false))
+      catchError(() => of(false)),
     );
   }
 

@@ -1,33 +1,46 @@
 // SPDX-FileCopyrightText: Fondation RERO+
 // SPDX-FileCopyrightText: UCLouvain
 // SPDX-License-Identifier: AGPL-3.0-or-later
-import { Component, computed, inject, OnDestroy, OnInit, signal, ChangeDetectionStrategy} from '@angular/core';
+import { TitleCasePipe } from '@angular/common';
+import { Component, computed, inject, OnDestroy, OnInit, signal } from '@angular/core';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { _, TranslateService, TranslatePipe } from "@ngx-translate/core";
+import { _, TranslatePipe, TranslateService } from '@ngx-translate/core';
+import { Bind } from '@openng/optimus-ui/bind';
+import { Button } from '@openng/optimus-ui/button';
+import { DynamicDialogConfig, DynamicDialogRef } from '@openng/optimus-ui/dynamicdialog';
+import { ToggleSwitch } from '@openng/optimus-ui/toggleswitch';
+import { DateTranslatePipe } from '@rero/ng-core';
 import { EsResult, OperationLogsApiService } from '@rero/shared';
 import { DateTime } from 'luxon';
-import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { Observable, Subscription } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
-import { CirculationStatsComponent } from './circulation-stats/circulation-stats.component';
-import { Bind } from 'primeng/bind';
-import { ToggleSwitch } from 'primeng/toggleswitch';
-import { CirculationLogNotificationComponent } from './circulation-log/circulation-log-notification/circulation-log-notification.component';
+
 import { CirculationItemScanComponent } from './circulation-log/circulation-item-scan/circulation-item-scan.component';
 import { CirculationLogLoanComponent } from './circulation-log/circulation-log-loan/circulation-log-loan.component';
-import { Button } from 'primeng/button';
-import { TitleCasePipe } from '@angular/common';
-import { DateTranslatePipe } from '@rero/ng-core';
+import { CirculationLogNotificationComponent } from './circulation-log/circulation-log-notification/circulation-log-notification.component';
+import { CirculationStatsComponent } from './circulation-stats/circulation-stats.component';
 import { CirculationLogRecordTypePipe } from './pipe/circulation-log-record-type.pipe';
 
 @Component({
-    selector: 'admin-circulation-logs',
-    templateUrl: './circulation-logs.component.html',
-    imports: [CirculationStatsComponent, FormsModule, ReactiveFormsModule, Bind, ToggleSwitch, CirculationLogNotificationComponent, CirculationItemScanComponent, CirculationLogLoanComponent, Button, TitleCasePipe, TranslatePipe, DateTranslatePipe, CirculationLogRecordTypePipe],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  selector: 'admin-circulation-logs',
+  templateUrl: './circulation-logs.component.html',
+  imports: [
+    CirculationStatsComponent,
+    FormsModule,
+    ReactiveFormsModule,
+    Bind,
+    ToggleSwitch,
+    CirculationLogNotificationComponent,
+    CirculationItemScanComponent,
+    CirculationLogLoanComponent,
+    Button,
+    TitleCasePipe,
+    TranslatePipe,
+    DateTranslatePipe,
+    CirculationLogRecordTypePipe,
+  ],
 })
 export class CirculationLogsComponent implements OnInit, OnDestroy {
-
   private dynamicDialogConfig: DynamicDialogConfig = inject(DynamicDialogConfig);
   private dynamicDialogRef: DynamicDialogRef = inject(DynamicDialogRef);
   private operationLogsApiService: OperationLogsApiService = inject(OperationLogsApiService);
@@ -54,9 +67,8 @@ export class CirculationLogsComponent implements OnInit, OnDestroy {
 
   hiddenTransactionLabel = computed(() => {
     const count = this.recordsTotal() - this.records().length;
-    const linkText = (count > 1)
-      ? _('{{ counter }} hidden circulations logs')
-      : _('{{ counter }} hidden circulations log');
+    const linkText =
+      count > 1 ? _('{{ counter }} hidden circulations logs') : _('{{ counter }} hidden circulations log');
     return this.translateService.instant(linkText, { counter: count });
   });
 
@@ -73,26 +85,28 @@ export class CirculationLogsComponent implements OnInit, OnDestroy {
     this.resourcePid = data.resourcePid;
     this.formGroup = new FormGroup(
       this.filterTypes.reduce((acc, elem) => {
-        acc[elem] =  new FormControl<boolean>(undefined);
-        return acc
-      }, {})
+        acc[elem] = new FormControl<boolean>(undefined);
+        return acc;
+      }, {}),
     );
     this.resourceType = data.resourceType || 'item';
     this.subscriptions.add(
-      this.formGroup.valueChanges.pipe(
-        switchMap(() => this.circulationLogsQuery(1))
-      ).subscribe((response: EsResult) => {
-        this.page.set(1);
-        this.recordsTotal.set(response.hits.total);
-        this.records.set(response.hits.hits);
-        this.loadedRecord.set(true);
-      })
+      this.formGroup.valueChanges
+        .pipe(switchMap(() => this.circulationLogsQuery(1)))
+        .subscribe((response: EsResult) => {
+          this.page.set(1);
+          this.recordsTotal.set(response.hits.total);
+          this.records.set(response.hits.hits);
+          this.loadedRecord.set(true);
+        }),
     );
 
-    this.formGroup.setValue(this.filterTypes.reduce((acc, elem) => {
-      acc[elem] = true
-      return acc
-    }, {}));
+    this.formGroup.setValue(
+      this.filterTypes.reduce((acc, elem) => {
+        acc[elem] = true;
+        return acc;
+      }, {}),
+    );
   }
 
   ngOnDestroy(): void {
@@ -106,11 +120,10 @@ export class CirculationLogsComponent implements OnInit, OnDestroy {
 
   /** show more */
   showMore(): void {
-    this.page.update(page => page + 1);
-    this.circulationLogsQuery(this.page())
-      .subscribe((response: EsResult) => {
-        this.records.update(records => records.concat(response.hits.hits));
-      });
+    this.page.update((page) => page + 1);
+    this.circulationLogsQuery(this.page()).subscribe((response: EsResult) => {
+      this.records.update((records) => records.concat(response.hits.hits));
+    });
   }
 
   /**
@@ -144,7 +157,12 @@ export class CirculationLogsComponent implements OnInit, OnDestroy {
    * @param page - number
    */
   private circulationLogsQuery(page: number): Observable<any> {
-    return this.operationLogsApiService
-      .getCirculationLogs(this.resourceType, this.resourcePid, page, this.itemsPerPage, this.formGroup.value);
+    return this.operationLogsApiService.getCirculationLogs(
+      this.resourceType,
+      this.resourcePid,
+      page,
+      this.itemsPerPage,
+      this.formGroup.value,
+    );
   }
 }

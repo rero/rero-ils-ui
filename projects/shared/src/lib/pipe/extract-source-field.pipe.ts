@@ -2,14 +2,14 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 import { inject, Pipe, PipeTransform } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
+
 import { AppStore } from '../store/app.store';
 
 @Pipe({
-    name: 'extractSourceField',
-    pure: false
+  name: 'extractSourceField',
+  pure: false,
 })
 export class ExtractSourceFieldPipe implements PipeTransform {
-
   protected appStore = inject(AppStore);
   protected translateService: TranslateService = inject(TranslateService);
 
@@ -27,18 +27,13 @@ export class ExtractSourceFieldPipe implements PipeTransform {
       return null;
     }
     const language = this.translateService.getCurrentLang();
-    const agentLabelOrder = (language in contributionsLabel)
-      ? contributionsLabel[language]
-      : contributionsLabel[contributionsLabel.fallback];
+    const agentLabelOrder =
+      language in contributionsLabel ? contributionsLabel[language] : contributionsLabel[contributionsLabel.fallback];
     for (const source of agentLabelOrder) {
-      if (
-        Object.hasOwn(metadata, source)
-        && Object.hasOwn(metadata[source], field)
-      ) {
+      if (Object.hasOwn(metadata, source) && Object.hasOwn(metadata[source], field)) {
         return metadata[source][field];
       }
     }
     return null;
   }
-
 }

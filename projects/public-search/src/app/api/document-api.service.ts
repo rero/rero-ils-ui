@@ -6,13 +6,13 @@ import { inject, Injectable } from '@angular/core';
 import { RecordData, RecordService } from '@rero/ng-core';
 import { BaseApi, IAvailability, IAvailabilityService } from '@rero/shared';
 import { Observable } from 'rxjs';
+
 import { AppConfigService } from '../app-config.service';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class DocumentApiService extends BaseApi implements IAvailabilityService {
-
   private httpClient: HttpClient = inject(HttpClient);
   private recordService: RecordService = inject(RecordService);
   private appConfigService: AppConfigService = inject(AppConfigService);
@@ -28,8 +28,7 @@ export class DocumentApiService extends BaseApi implements IAvailabilityService 
    * @returns Observable of the document record
    */
   getDocument(pid: string, resolve = 1): Observable<RecordData> {
-    return this.recordService.getRecord(
-      this.RESOURCE_NAME, pid, { resolve, headers: BaseApi.reroJsonheaders });
+    return this.recordService.getRecord(this.RESOURCE_NAME, pid, { resolve, headers: BaseApi.reroJsonheaders });
   }
 
   /**

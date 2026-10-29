@@ -5,18 +5,15 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 -->
 @defer (when permissions().length > 0) {
   <div class="ui:flex ui:flex-col ui:gap-2">
-    <label for="filter" translate>Filter permission list</label>
-    <input
-        pInputText
-        #search
-        id="filter"
-        (keyup)="filterPermissions(search.value)"
-    />
-    <small id="filterInfo" class="ui:text-muted-color" translate>Enter a part of the permission name to filter the list.</small>
+    <label for="filter">{{ 'Filter permission list' | translate }}</label>
+    <input pInputText #search id="filter" (keyup)="filterPermissions(search.value)" />
+    <small id="filterInfo" class="ui:text-muted-color">{{
+      'Enter a part of the permission name to filter the list.' | translate
+    }}</small>
   </div>
   <div class="ui:grid ui:grid-cols-12 ui:gap-4 ui:mt-4 ui:mb-2">
-    <div class="ui:col-span-10 ui:font-bold ui:uppercase" translate>Permission</div>
-    <div class="ui:col-span-2 ui:font-bold ui:text-center ui:uppercase" translate>Access</div>
+    <div class="ui:col-span-10 ui:font-bold ui:uppercase">{{ 'Permission' | translate }}</div>
+    <div class="ui:col-span-2 ui:font-bold ui:text-center ui:uppercase">{{ 'Access' | translate }}</div>
   </div>
   <div>
     @for (permission of filteredPermissions(); track $index) {

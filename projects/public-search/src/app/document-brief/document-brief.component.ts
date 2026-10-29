@@ -1,28 +1,41 @@
 // SPDX-FileCopyrightText: Fondation RERO+
 // SPDX-FileCopyrightText: UCLouvain
 // SPDX-License-Identifier: AGPL-3.0-or-later
-import { Component, inject, input, ChangeDetectionStrategy, computed} from '@angular/core';
-import { DocumentApiService } from '../api/document-api.service';
-import { ThumbnailComponent, ContributionComponent, PartOfComponent, AvailabilityComponent, MainTitlePipe, SafeUrlPipe } from '@rero/shared';
-import { RecordData } from '@rero/ng-core';
-import { ActivatedRoute } from '@angular/router';
+import { Component, computed, inject, input } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
+import { ActivatedRoute } from '@angular/router';
+import { RecordData } from '@rero/ng-core';
+import {
+  AvailabilityComponent,
+  ContributionComponent,
+  MainTitlePipe,
+  PartOfComponent,
+  SafeUrlPipe,
+  ThumbnailComponent,
+} from '@rero/shared';
 import { map } from 'rxjs';
+
+import { DocumentApiService } from '../api/document-api.service';
 
 type Production = {
   language: string;
   value: string;
   [key: string]: any;
-}
+};
 
 @Component({
-    selector: 'public-search-document-brief',
-    templateUrl: './document-brief.component.html',
-    imports: [ThumbnailComponent, ContributionComponent, PartOfComponent, AvailabilityComponent, MainTitlePipe, SafeUrlPipe],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  selector: 'public-search-document-brief',
+  templateUrl: './document-brief.component.html',
+  imports: [
+    ThumbnailComponent,
+    ContributionComponent,
+    PartOfComponent,
+    AvailabilityComponent,
+    MainTitlePipe,
+    SafeUrlPipe,
+  ],
 })
 export class DocumentBriefComponent {
-
   protected route = inject(ActivatedRoute);
   protected documentApiService = inject(DocumentApiService);
 
@@ -30,9 +43,9 @@ export class DocumentBriefComponent {
 
   type = input.required<string>();
 
-  detailUrl = input<{ link: string, external: boolean }>();
+  detailUrl = input<{ link: string; external: boolean }>();
 
-  viewcode = toSignal(this.route.params.pipe(map(p => p['viewcode'])));
+  viewcode = toSignal(this.route.params.pipe(map((p) => p['viewcode'])));
 
   recordDetailUrl = computed(() => this.detailUrl()?.link.replace(':viewcode', this.viewcode()));
 

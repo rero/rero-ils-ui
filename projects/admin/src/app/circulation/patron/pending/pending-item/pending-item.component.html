@@ -21,22 +21,23 @@ SPDX-License-Identifier: AGPL-3.0-or-later
         @if (item.enumerationAndChronology) {
           <p-tag severity="info" [value]="item.enumerationAndChronology" />
         }
-        <br/>
+        <br />
       }
       <shared-contribution [contributions]="document()?.contribution" />
 
       @if (!isCollapsed()) {
         <dl class="metadata ui:pl-0">
           <!-- position into queue -->
-          <dt translate>Position</dt>
+          <dt>{{ 'Position' | translate }}</dt>
           <dd>
             <p-badge severity="info" value="{{ loan().metadata.rank }} / {{ item.current_pending_requests }}" />
           </dd>
           <!-- item location -->
           @if (item.location.pid | getRecord: 'locations' | async; as location) {
-            <dt translate>Location</dt>
+            <dt>{{ 'Location' | translate }}</dt>
             <dd>
-              {{ $any(location).metadata.library.pid | getRecord: 'libraries' : 'field' : 'name' | async }}: {{ item.location.name }}
+              {{ $any(location).metadata.library.pid | getRecord: 'libraries' : 'field' : 'name' | async }}:
+              {{ item.location.name }}
             </dd>
           }
         </dl>

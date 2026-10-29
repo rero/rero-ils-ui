@@ -7,60 +7,60 @@ export function makeUser(data: UserConstructorData): User {
 }
 
 export const testPermissions = [
-  "acac-create",
-  "acac-search",
-  "acin-create",
-  "acin-search",
-  "acol-create",
-  "acol-search",
-  "acor-create",
-  "acor-search",
-  "acre-create",
-  "acre-search",
-  "acrl-create",
-  "acrl-search",
-  "access-circulation",
-  "admin-ui-access",
-  "budg-search",
-  "can-use-debug-mode",
-  "cipo-create",
-  "cipo-search",
-  "coll-create",
-  "coll-search",
-  "doc-create",
-  "doc-search",
-  "hold-create",
-  "hold-search",
-  "illr-create",
-  "illr-search",
-  "item-create",
-  "item-search",
-  "itty-create",
-  "itty-search",
-  "late-issue-management",
-  "lib-create",
-  "lib-search",
-  "loan-search",
-  "loc-create",
-  "loc-search",
-  "lofi-create",
-  "lofi-search",
-  "notif-create",
-  "notif-search",
-  "oplg-search",
-  "org-search",
-  "ptre-create",
-  "ptre-search",
-  "ptrn-create",
-  "ptrn-search",
-  "pttr-create",
-  "pttr-search",
-  "ptty-create",
-  "ptty-search",
-  "tmpl-create",
-  "tmpl-search",
-  "vndr-create",
-  "vndr-search"
+  'acac-create',
+  'acac-search',
+  'acin-create',
+  'acin-search',
+  'acol-create',
+  'acol-search',
+  'acor-create',
+  'acor-search',
+  'acre-create',
+  'acre-search',
+  'acrl-create',
+  'acrl-search',
+  'access-circulation',
+  'admin-ui-access',
+  'budg-search',
+  'can-use-debug-mode',
+  'cipo-create',
+  'cipo-search',
+  'coll-create',
+  'coll-search',
+  'doc-create',
+  'doc-search',
+  'hold-create',
+  'hold-search',
+  'illr-create',
+  'illr-search',
+  'item-create',
+  'item-search',
+  'itty-create',
+  'itty-search',
+  'late-issue-management',
+  'lib-create',
+  'lib-search',
+  'loan-search',
+  'loc-create',
+  'loc-search',
+  'lofi-create',
+  'lofi-search',
+  'notif-create',
+  'notif-search',
+  'oplg-search',
+  'org-search',
+  'ptre-create',
+  'ptre-search',
+  'ptrn-create',
+  'ptrn-search',
+  'pttr-create',
+  'pttr-search',
+  'ptty-create',
+  'ptty-search',
+  'tmpl-create',
+  'tmpl-search',
+  'vndr-create',
+  'vndr-search',
 ];
 
 /** User with 2 patrons record */
@@ -75,7 +75,7 @@ export const testUserPatronWithSettings = {
     operationLogs: { documents: 'doc', holdings: 'hold', items: 'item' },
     documentAdvancedSearch: false,
     userProfile: { readOnly: false, readOnlyFields: [] },
-    availableLanguages: [{ code: 'fr', name: 'French' }]
+    availableLanguages: [{ code: 'fr', name: 'French' }],
   },
   permissions: testPermissions,
   user: {
@@ -106,17 +106,22 @@ export const testUserPatronWithSettings = {
         communication_channel: 'email',
         communication_language: 'fra',
         blocked: false,
-        libraries: [{ pid: '1', organisation: { pid: '2', code: 'org1', name: 'Organisation 1', currency: 'CHF' } }]
+        libraries: [{ pid: '1', organisation: { pid: '2', code: 'org1', name: 'Organisation 1', currency: 'CHF' } }],
       },
       organisation: { pid: '2', code: 'org1', name: 'Organisation 1', currency: 'CHF' },
-      roles: ['patron']
+      roles: ['patron'],
     },
     {
       pid: '2',
       libraries: [{ organisation: { pid: '1' }, pid: '4' }],
-      organisation: { code: 'aoste', currency: 'EUR', name: 'R\u00e9seau des biblioth\u00e8ques du Canton d\'Aoste', pid: '1' },
-      roles: ['system_librarian', 'librarian']
-    }
+      organisation: {
+        code: 'aoste',
+        currency: 'EUR',
+        name: "R\u00e9seau des biblioth\u00e8ques du Canton d'Aoste",
+        pid: '1',
+      },
+      roles: ['system_librarian', 'librarian'],
+    },
   ],
 };
 
@@ -148,21 +153,25 @@ export const testUserPatronLibrarian: UserConstructorData = {
         communication_channel: 'email',
         communication_language: 'fra',
         blocked: false,
-        libraries: [{ pid: '1', organisation: { pid: '2', code: 'org1', name: 'Organisation 1', currency: 'CHF' } }]
+        libraries: [{ pid: '1', organisation: { pid: '2', code: 'org1', name: 'Organisation 1', currency: 'CHF' } }],
       },
       organisation: { pid: '2', code: 'org1', name: 'Organisation 1', currency: 'CHF' },
-      roles: ['patron']
+      roles: ['patron'],
     },
     {
       pid: '1',
       libraries: [{ organisation: { pid: '1' }, pid: '4' }],
-      organisation: { code: 'aoste', currency: 'EUR', name: 'R\u00e9seau des biblioth\u00e8ques du Canton d\'Aoste', pid: '1' },
-      roles: ['system_librarian', 'librarian']
-    }
+      organisation: {
+        code: 'aoste',
+        currency: 'EUR',
+        name: "R\u00e9seau des biblioth\u00e8ques du Canton d'Aoste",
+        pid: '1',
+      },
+      roles: ['system_librarian', 'librarian'],
+    },
   ],
   permissions: testPermissions,
 };
-
 
 /** User with 2 patrons record (multiple organisation) */
 export const testUserPatronMultipleOrganisationsWithSettings = {
@@ -176,7 +185,7 @@ export const testUserPatronMultipleOrganisationsWithSettings = {
     operationLogs: { documents: 'doc', holdings: 'hold', items: 'item' },
     documentAdvancedSearch: false,
     userProfile: { readOnly: false, readOnlyFields: [] },
-    availableLanguages: [{ code: 'fr', name: 'French' }]
+    availableLanguages: [{ code: 'fr', name: 'French' }],
   },
   permissions: [],
   user: {
@@ -207,10 +216,10 @@ export const testUserPatronMultipleOrganisationsWithSettings = {
         communication_channel: 'email',
         communication_language: 'fra',
         blocked: false,
-        libraries: [{ pid: '1', organisation: { pid: '2', code: 'org1', name: 'Organisation 1', currency: 'CHF' } }]
+        libraries: [{ pid: '1', organisation: { pid: '2', code: 'org1', name: 'Organisation 1', currency: 'CHF' } }],
       },
       organisation: { pid: '2', code: 'org1', name: 'Organisation 1', currency: 'CHF' },
-      roles: ['patron']
+      roles: ['patron'],
     },
     {
       pid: '10',
@@ -222,14 +231,13 @@ export const testUserPatronMultipleOrganisationsWithSettings = {
         communication_channel: 'email',
         communication_language: 'fra',
         blocked: false,
-        libraries: [{ pid: '1', organisation: { pid: '3', code: 'org2', name: 'Organisation 2', currency: 'CHF' } }]
+        libraries: [{ pid: '1', organisation: { pid: '3', code: 'org2', name: 'Organisation 2', currency: 'CHF' } }],
       },
       organisation: { pid: '3', code: 'org2', name: 'Organisation 2', currency: 'CHF' },
-      roles: ['patron']
+      roles: ['patron'],
     },
   ],
 };
-
 
 export const testUserLibrarianWithSettings = {
   settings: {
@@ -237,19 +245,19 @@ export const testUserLibrarianWithSettings = {
     agentSources: ['idref', 'gnd', 'rero'],
     agentAgentTypes: {
       'bf:Person': 'persons',
-      'bf:Organisation': 'corporate-bodies'
+      'bf:Organisation': 'corporate-bodies',
     },
     agentLabelOrder: {
       de: ['gnd', 'idref', 'rero'],
       fallback: 'fr',
-      fr: ['idref', 'rero', 'gnd']
+      fr: ['idref', 'rero', 'gnd'],
     },
     globalView: 'global',
     language: 'fr',
     operationLogs: { documents: 'doc', holdings: 'hold', items: 'item' },
     documentAdvancedSearch: false,
     userProfile: { readOnly: false, readOnlyFields: [] },
-    availableLanguages: [{ code: 'fr', name: 'French' }]
+    availableLanguages: [{ code: 'fr', name: 'French' }],
   },
   permissions: testPermissions,
   user: {
@@ -275,16 +283,16 @@ export const testUserLibrarianWithSettings = {
       libraries: [
         { organisation: { pid: '1' }, pid: '2' },
         { organisation: { pid: '1' }, pid: '3' },
-        { organisation: { pid: '1' }, pid: '4' }
+        { organisation: { pid: '1' }, pid: '4' },
       ],
       organisation: {
         code: 'aoste',
         currency: 'EUR',
-        name: 'R\u00e9seau des biblioth\u00e8ques du Canton d\'Aoste',
-        pid: '1'
+        name: "R\u00e9seau des biblioth\u00e8ques du Canton d'Aoste",
+        pid: '1',
       },
-      roles: ['librarian']
-    }
+      roles: ['librarian'],
+    },
   ],
 };
 
@@ -299,7 +307,7 @@ export const testPatron = {
     keep_history: true,
     last_name: 'Doe',
     organisation: {
-      pid: '1'
+      pid: '1',
     },
     patron: {
       barcode: ['2050124312'],
@@ -311,18 +319,18 @@ export const testPatron = {
           end_date: '2026-02-20',
           patron_transaction: {
             pid: '3',
-            type: 'pttr'
+            type: 'pttr',
           },
           patron_type: {
             pid: '1',
-            type: 'ptty'
+            type: 'ptty',
           },
-          start_date: '2025-02-20'
-        }
+          start_date: '2025-02-20',
+        },
       ],
       type: {
         pid: '1',
-        type: 'ptty'
+        type: 'ptty',
       },
     },
     pid: '1',
@@ -330,6 +338,6 @@ export const testPatron = {
     roles: ['patron'],
     street: 'Av. de la Gare',
     user_id: 14,
-    username: 'john.doe'
-  }
-}
+    username: 'john.doe',
+  },
+};

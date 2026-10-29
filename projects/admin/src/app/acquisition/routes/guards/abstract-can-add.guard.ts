@@ -29,6 +29,6 @@ export function canAdd(resource: string, pid: string): Observable<boolean> {
     catchError(() => {
       router.navigate(['/errors/404'], { skipLocationChange: true });
       return of(false);
-    })
+    }),
   );
 }

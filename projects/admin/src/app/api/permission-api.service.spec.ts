@@ -1,6 +1,6 @@
 // SPDX-FileCopyrightText: Fondation RERO+
 // SPDX-License-Identifier: AGPL-3.0-or-later
-import { HttpClient, provideHttpClient } from '@angular/common/http';
+import { HttpClient, provideHttpClient, withXhr } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { of } from 'rxjs';
@@ -15,20 +15,17 @@ describe('PermissionService', () => {
     patron: {
       actions: {
         'ptrn-read': true,
-        'ptrn-create': false
+        'ptrn-create': false,
       },
-      type: 'role'
-    }
+      type: 'role',
+    },
   };
 
-  const responseUserPermissions: any = {}
+  const responseUserPermissions: any = {};
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [
-        provideHttpClient(),
-        provideHttpClientTesting()
-      ]
+      providers: [provideHttpClient(withXhr()), provideHttpClientTesting()],
     });
     service = TestBed.inject(PermissionApiService);
     client = TestBed.inject(HttpClient);
@@ -39,14 +36,14 @@ describe('PermissionService', () => {
   });
 
   it('should return a list of all available permissions', () => {
-    vi.spyOn(client, 'get').mockReturnValue(of(responseRolesPermissions))
+    vi.spyOn(client, 'get').mockReturnValue(of(responseRolesPermissions));
     service.getAllPermissionsByRole().subscribe((result: IRolePermission) => {
       expect(result).toEqual(responseRolesPermissions);
     });
   });
 
   it('should return the list of user permissions', () => {
-    vi.spyOn(client, 'get').mockReturnValue(of(responseUserPermissions))
+    vi.spyOn(client, 'get').mockReturnValue(of(responseUserPermissions));
     service.getUserPermissions('1').subscribe((result: any) => {
       expect(result).toEqual(responseUserPermissions);
     });

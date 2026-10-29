@@ -4,13 +4,13 @@ SPDX-FileCopyrightText: UCLouvain
 SPDX-License-Identifier: AGPL-3.0-or-later
 -->
 @if (parent().note) {
-  <h5>
-    [{{ 'Note' | translate }}: {{ parent().note }}]
-  </h5>
+  <h5>[{{ 'Note' | translate }}: {{ parent().note }}]</h5>
 }
 <dl class="metadata">
-  <dt translate>Patron</dt>
+  <dt>{{ 'Patron' | translate }}</dt>
   <dd>
-    <a [routerLink]="['/records', 'patrons', 'detail', parent().patron.pid]">{{ parent().patron.pid | patronName | async }}</a>
+    <a [routerLink]="['/records', 'patrons', 'detail', parent().patron.pid]">{{
+      parent().patron.pid | patronName | async
+    }}</a>
   </dd>
 </dl>

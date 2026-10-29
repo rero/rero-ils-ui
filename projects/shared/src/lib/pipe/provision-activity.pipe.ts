@@ -6,12 +6,11 @@ export enum ProvisionActivityType {
   PUBLICATION = 'bf:Publication',
   MANUFACTURE = 'bf:Manufacture',
   PRODUCTION = 'bf:Production',
-  DISTRIBUTION = 'bf:Distribution'
+  DISTRIBUTION = 'bf:Distribution',
 }
 
 @Pipe({ name: 'provisionActivity' })
 export class ProvisionActivityPipe implements PipeTransform {
-
   /**
    * extract the provision activity from the document metadata
    * @param metadata: the document metadata (as `getRecord` with resolve=1)
@@ -20,10 +19,8 @@ export class ProvisionActivityPipe implements PipeTransform {
    */
   transform(metadata: any, type = ProvisionActivityType.PUBLICATION): any {
     let provisionActivities = metadata.provisionActivity || [];
-    provisionActivities = provisionActivities.filter(activity => activity.type === type && activity._text);
+    provisionActivities = provisionActivities.filter((activity) => activity.type === type && activity._text);
     // TODO : do better with '_text' using the current language tag
-    return (provisionActivities.length > 0)
-      ? provisionActivities.pop()._text[0].value
-      : null;
+    return provisionActivities.length > 0 ? provisionActivities.pop()._text[0].value : null;
   }
 }

@@ -1,18 +1,19 @@
 // SPDX-FileCopyrightText: Fondation RERO+
 // SPDX-License-Identifier: AGPL-3.0-or-later
 import { inject } from '@angular/core';
-import { patchState, signalStore, withComputed, withHooks, withMethods, withState } from '@ngrx/signals';
-import { rxMethod } from '@ngrx/signals/rxjs-interop';
+import { LoanFixedDateService } from '@app/admin/circulation/services/loan-fixed-date.service';
 import { Loan, LoanOverduePreview, LoanState } from '@app/admin/classes/loans';
 import { PatronTransaction } from '@app/admin/classes/patron-transaction';
 import { PatronService } from '@app/admin/service/patron.service';
-import { LoanFixedDateService } from '@app/admin/circulation/services/loan-fixed-date.service';
 import { getSeverity } from '@app/admin/utils/utils';
-import { PatronTransactionService } from '../services/patron-transaction.service';
-import { computeTotalTransactionsAmount } from '../utils/transaction.utils';
+import { patchState, signalStore, withComputed, withHooks, withMethods, withState } from '@ngrx/signals';
+import { rxMethod } from '@ngrx/signals/rxjs-interop';
 import { User } from '@rero/shared';
 import { EMPTY, forkJoin, pipe } from 'rxjs';
 import { catchError, filter, switchMap, tap } from 'rxjs/operators';
+
+import { PatronTransactionService } from '../services/patron-transaction.service';
+import { computeTotalTransactionsAmount } from '../utils/transaction.utils';
 
 export type ICirculationSetting = {
   key: string;
@@ -73,12 +74,11 @@ export const CirculationStore = signalStore(
       store,
       patronService = inject(PatronService),
       patronTransactionService = inject(PatronTransactionService),
-      loanFixedDateService = inject(LoanFixedDateService)
+      loanFixedDateService = inject(LoanFixedDateService),
     ) => ({
-
       /** Add or replace a checkout setting. Persists endDate if remember is set. */
       addSetting(setting: ICirculationSetting): void {
-        patchState(store, state => ({ settings: [...state.settings.filter(s => s.key !== setting.key), setting] }));
+        patchState(store, (state) => ({ settings: [...state.settings.filter((s) => s.key !== setting.key), setting] }));
         if (setting.key === 'endDate' && setting.extra?.remember && typeof setting.value === 'string') {
           loanFixedDateService.set(setting.value);
         }
@@ -86,11 +86,11 @@ export const CirculationStore = signalStore(
 
       /** Remove a checkout setting by key. Clears persisted endDate if needed. */
       removeSetting(key: string): void {
-        const setting = store.settings().find(s => s.key === key);
+        const setting = store.settings().find((s) => s.key === key);
         if (setting?.key === 'endDate' && setting.extra?.remember) {
           loanFixedDateService.remove();
         }
-        patchState(store, state => ({ settings: state.settings.filter(s => s.key !== key) }));
+        patchState(store, (state) => ({ settings: state.settings.filter((s) => s.key !== key) }));
       },
       /** Load patron by barcode and store in state. */
       loadPatron: rxMethod<string>(
@@ -99,10 +99,10 @@ export const CirculationStore = signalStore(
           switchMap((barcode) =>
             patronService.getPatron(barcode).pipe(
               tap((patron) => patchState(store, { patron: patron ?? undefined })),
-              catchError(() => EMPTY)
-            )
-          )
-        )
+              catchError(() => EMPTY),
+            ),
+          ),
+        ),
       ),
 
       /** Load circulation statistics for a patron. */
@@ -140,10 +140,10 @@ export const CirculationStore = signalStore(
                   messages,
                 }));
               }),
-              catchError(() => EMPTY)
-            )
-          )
-        )
+              catchError(() => EMPTY),
+            ),
+          ),
+        ),
       ),
 
       /** Load overdue preview and open transactions for a patron. */
@@ -157,7 +157,9 @@ export const CirculationStore = signalStore(
             ]).pipe(
               tap(([overdues, openTransactions]) => {
                 let overdueFees = 0;
-                overdues.forEach((item: any) => { overdueFees += item.fees.total; });
+                overdues.forEach((item: any) => {
+                  overdueFees += item.fees.total;
+                });
                 const feesEngaged = computeTotalTransactionsAmount(openTransactions);
                 patchState(store, (state) => ({
                   overdueTransactions: overdues,
@@ -170,10 +172,10 @@ export const CirculationStore = signalStore(
                   },
                 }));
               }),
-              catchError(() => EMPTY)
-            )
-          )
-        )
+              catchError(() => EMPTY),
+            ),
+          ),
+        ),
       ),
 
       /** Reload only open transactions (e.g., after a payment). */
@@ -193,10 +195,10 @@ export const CirculationStore = signalStore(
                   },
                 }));
               }),
-              catchError(() => EMPTY)
-            )
-          )
-        )
+              catchError(() => EMPTY),
+            ),
+          ),
+        ),
       ),
 
       /** Clear all circulation state. */
@@ -215,12 +217,12 @@ export const CirculationStore = signalStore(
       clearMessages(): void {
         patchState(store, { messages: [] });
       },
-    })
+    }),
   ),
   withHooks((store) => ({
     onInit: () => {
       store.loadFees(store.patronPid);
       store.loadStats(store.patronPid);
     },
-  }))
+  })),
 );

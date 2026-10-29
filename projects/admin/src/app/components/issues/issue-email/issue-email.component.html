@@ -12,19 +12,14 @@ SPDX-License-Identifier: AGPL-3.0-or-later
     [previewPosition]="'bottom'"
     [prePopulateRecipients]="suggestions().recipients"
     (closeDialog)="closeDialog()"
-    (data)="confirmIssue($event)"
-  >
+    (data)="confirmIssue($event)">
     <ng-container headerMessage>
-      <p-message
-        class="ui:my-1"
-        severity="warn"
-        showTransitionOptions="0ms"
-      >
-        {{ 'You\'re about to send the claim.' | translate }}
+      <p-message class="ui:my-1" severity="warn" showTransitionOptions="0ms">
+        {{ "You're about to send the claim." | translate }}
       </p-message>
     </ng-container>
     <ng-container previewBottomMessage>
-      <p translate>Below you can find the preview message that will be sent.</p>
+      <p>{{ 'Below you can find the preview message that will be sent.' | translate }}</p>
     </ng-container>
   </admin-preview-email>
 }

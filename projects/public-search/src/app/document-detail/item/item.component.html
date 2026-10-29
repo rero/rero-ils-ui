@@ -15,28 +15,26 @@ SPDX-License-Identifier: AGPL-3.0-or-later
     <!-- LIBRARY AND LOCATION -->
     @if (context() === 'book') {
       <div class="ui:flex ui:flex-col ui:md:flex-row">
-        <div class="ui:font-bold ui:md:w-[30%] ui:w-[100%]" translate>Location</div>
-        <div>
-          {{m.library.name}}: {{m.location.name}}
-        </div>
+        <div class="ui:font-bold ui:md:w-[30%] ui:w-[100%]">{{ 'Location' | translate }}</div>
+        <div>{{ m.library.name }}: {{ m.location.name }}</div>
       </div>
     }
     <!-- CALL NUMBER -->
     @if (m?.call_number) {
       <div class="ui:flex ui:flex-col ui:md:flex-row">
-        <div class="ui:font-bold ui:md:w-[30%] ui:w-[100%]" translate>Call number</div>
+        <div class="ui:font-bold ui:md:w-[30%] ui:w-[100%]">{{ 'Call number' | translate }}</div>
         <div>
           {{ m.call_number }}
-        @if (m.second_call_number) {
-          | {{ m.second_call_number }}
-        }
+          @if (m.second_call_number) {
+            | {{ m.second_call_number }}
+          }
         </div>
       </div>
     }
     <!-- ITEM IN COLLECTION -->
     @if (m?.in_collection) {
       <div class="ui:flex ui:flex-col ui:md:flex-row">
-        <div class="ui:font-bold ui:md:w-[30%] ui:w-[100%]" translate>Temporary location</div>
+        <div class="ui:font-bold ui:md:w-[30%] ui:w-[100%]">{{ 'Temporary location' | translate }}</div>
         <div>
           @for (collection of m.in_collection; track $index; let last = $last) {
             <a href="/{{ collection.viewcode }}/collections/{{ collection.pid }}">{{ collection.title }}</a>
@@ -47,7 +45,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
     } @else {
       @if (m?.temporary_location) {
         <div class="ui:flex ui:flex-col ui:md:flex-row">
-          <div class="ui:font-bold ui:md:w-[30%] ui:w-[100%]" translate>Temporary location</div>
+          <div class="ui:font-bold ui:md:w-[30%] ui:w-[100%]">{{ 'Temporary location' | translate }}</div>
           <div>
             <i class="fa-solid fa-triangle-exclamation text-warning" aria-hidden="true"></i>
             {{ m.temporary_location.name }}
@@ -57,24 +55,24 @@ SPDX-License-Identifier: AGPL-3.0-or-later
     }
     <!-- BARCODE -->
     <div class="ui:flex ui:flex-col ui:md:flex-row">
-      <div class="ui:font-bold ui:md:w-[30%] ui:w-[100%]" translate>Barcode</div>
+      <div class="ui:font-bold ui:md:w-[30%] ui:w-[100%]">{{ 'Barcode' | translate }}</div>
       <div>
         {{ m?.barcode }}
       </div>
     </div>
     <!-- NOTES -->
     @if (m?.notes && m?.notes.length > 0) {
-      @for (note of m.notes | notesFilter : noteAuthorizedTypes; track $index) {
+      @for (note of m.notes | notesFilter: noteAuthorizedTypes; track $index) {
         <div class="ui:flex ui:flex-col ui:md:flex-row">
           <div class="ui:font-bold ui:md:w-[30%] ui:w-[100%]">{{ note.type | translate }}</div>
           <div [innerHTML]="note.content | nl2br"></div>
         </div>
-        }
+      }
     }
     <!-- URL -->
     @if (m?.url) {
       <div class="ui:flex ui:flex-col ui:md:flex-row">
-        <div class="ui:font-bold ui:md:w-[30%] ui:w-[100%]" translate>URL</div>
+        <div class="ui:font-bold ui:md:w-[30%] ui:w-[100%]">{{ 'URL' | translate }}</div>
         <div>
           <a target="_blank" [href]="m.url | safeUrl">{{ m.url }}</a>
         </div>
@@ -90,8 +88,12 @@ SPDX-License-Identifier: AGPL-3.0-or-later
           {{ circulationInformation }}
         </div>
       }
-      <shared-availability class="ui:justify-top ui:text-right" recordType="item" [record]="item()" [apiService]="itemApiService" />
-      @if(isPatron()) {
+      <shared-availability
+        class="ui:justify-top ui:text-right"
+        recordType="item"
+        [record]="item()"
+        [apiService]="itemApiService" />
+      @if (isPatron()) {
         <div class="ui:my-2">
           <public-search-item-request [record]="item()" (request)="showRequestDialog = !showRequestDialog" />
         </div>
@@ -100,14 +102,12 @@ SPDX-License-Identifier: AGPL-3.0-or-later
   </div>
 </div>
 
-@if(isPatron()) {
+@if (isPatron()) {
   <div class="ui:mb-2" [hidden]="!showRequestDialog">
     <public-search-pickup-location
       [record]="item()"
       recordType="item"
       (closeEvent)="showRequestDialog = !showRequestDialog"
-      class="ui:w-full"
-    />
+      class="ui:w-full" />
   </div>
 }
-

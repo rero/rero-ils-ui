@@ -10,95 +10,95 @@ SPDX-License-Identifier: AGPL-3.0-or-later
         'ui:bg-orange-200': event.type === patronTransactionEventType.DISPUTE,
         'ui:bg-red-200': event.type === patronTransactionEventType.FEE,
         'ui:bg-green-200': event.type === patronTransactionEventType.PAYMENT,
-        'ui:bg-blue-200': event.type === patronTransactionEventType.CANCEL
-      }"
-    >
+        'ui:bg-blue-200': event.type === patronTransactionEventType.CANCEL,
+      }">
     </span>
   </ng-template>
   <ng-template #content let-event>
     <div class="ui:flex ui:gap-2 ui:items-start">
       <div class="ui:flex ui:gap-2 ui:items-center">
         <div>{{ eventLabel(event) }}</div>
-          @if (event.type !== patronTransactionEventType.DISPUTE) {
-            <p-tag
-              [value]="event.amount | currency: organisation.default_currency"
-              [severity]="$any(tagSeverity(event))"
-            />
-          }
-          @if (event.pid) {
-            <i
-              class="fa-solid"
-              [ngClass]="{'fa-eye': hideShowEye('event-' + event.pid), 'fa-eye-slash': !hideShowEye('event-' + event.pid)}"
-              tabindex="0"
-              (click)="hideShowEvent('event-' + event.pid)"
-              (keyup.enter)="hideShowEvent('event-' + event.pid)"></i>
-          }
-        </div>
+        @if (event.type !== patronTransactionEventType.DISPUTE) {
+          <p-tag
+            [value]="event.amount | currency: organisation.default_currency"
+            [severity]="$any(tagSeverity(event))" />
+        }
+        @if (event.pid) {
+          <i
+            class="fa-solid"
+            [ngClass]="{
+              'fa-eye': hideShowEye('event-' + event.pid),
+              'fa-eye-slash': !hideShowEye('event-' + event.pid),
+            }"
+            tabindex="0"
+            (click)="hideShowEvent('event-' + event.pid)"
+            (keyup.enter)="hideShowEvent('event-' + event.pid)"></i>
+        }
       </div>
-      <div id="event-{{ event.pid }}" class="ui:my-2" [hidden]="true">
-        @if (event.note) {
+    </div>
+    <div id="event-{{ event.pid }}" class="ui:my-2" [hidden]="true">
+      @if (event.note) {
+        <div class="ui:grid ui:grid-cols-12 ui:gap-4">
+          <div class="ui:col-span-4">
+            <i class="fa-regular fa-note-sticky"></i>&nbsp;
+            {{ 'Note' | translate }}
+          </div>
+          <div class="ui:col-span-8">{{ event.note }}</div>
+        </div>
+      }
+      @if (event.operator) {
+        @if (event.operator.pid | getRecord: 'patrons' | async; as operator) {
           <div class="ui:grid ui:grid-cols-12 ui:gap-4">
             <div class="ui:col-span-4">
-              <i class="fa-regular fa-note-sticky"></i>&nbsp;
-              {{ 'Note' | translate }}
+              <i class="fa-solid fa-user"></i>&nbsp;
+              {{ 'Operator' | translate }}
             </div>
-            <div class="ui:col-span-8">{{ event.note }}</div>
+            <div class="ui:col-span-8">
+              @if ($any(operator).metadata.last_name) {
+                {{ $any(operator).metadata.last_name }}
+              }
+              @if ($any(operator).metadata.last_name && $any(operator).metadata.first_name) {
+                ,
+              }
+              @if ($any(operator).metadata.first_name) {
+                {{ $any(operator).metadata.first_name }}
+              }
+            </div>
           </div>
         }
-        @if (event.operator) {
-          @if (event.operator.pid | getRecord:'patrons' | async; as operator) {
-            <div class="ui:grid ui:grid-cols-12 ui:gap-4">
-              <div class="ui:col-span-4">
-                <i class="fa-solid fa-user"></i>&nbsp;
-                {{ 'Operator' | translate }}
-              </div>
-              <div class="ui:col-span-8">
-                @if ($any(operator).metadata.last_name) {
-                  {{ $any(operator).metadata.last_name }}
-                }
-                @if ($any(operator).metadata.last_name && $any(operator).metadata.first_name) {
-                  ,
-                }
-                @if ($any(operator).metadata.first_name) {
-                  {{ $any(operator).metadata.first_name }}
-                }
-              </div>
+      }
+      @if (event.library) {
+        @if (event.library.pid | getRecord: 'libraries' | async; as library) {
+          <div class="ui:grid ui:grid-cols-12 ui:gap-4">
+            <div class="ui:col-span-4">
+              <i class="fa-solid fa-location-dot"></i>&nbsp;
+              {{ 'Library' | translate }}
             </div>
-          }
+            <div class="ui:col-span-8">{{ $any(library).metadata.name }}</div>
+          </div>
         }
-        @if (event.library) {
-          @if (event.library.pid | getRecord:'libraries' | async; as library) {
-            <div class="ui:grid ui:grid-cols-12 ui:gap-4">
-              <div class="ui:col-span-4">
-                <i class="fa-solid fa-location-dot"></i>&nbsp;
-                {{ 'Library' | translate }}
-              </div>
-              <div class="ui:col-span-8">{{ $any(library).metadata.name }}</div>
+      }
+      @if (event.steps) {
+        @for (step of event.steps; track $index; let first = $first) {
+          <div class="ui:grid ui:grid-cols-12 ui:gap-4 ui:mb-1">
+            <div class="ui:col-span-4">
+              @if (first) {
+                <i class="fa-solid fa-cubes"></i>&nbsp;
+                {{ 'Steps' | translate }}
+              }
             </div>
-          }
-        }
-        @if (event.steps) {
-          @for (step of event.steps; track $index; let first = $first) {
-            <div class="ui:grid ui:grid-cols-12 ui:gap-4 ui:mb-1">
-              <div class="ui:col-span-4">
-                @if (first) {
-                  <i class="fa-solid fa-cubes"></i>&nbsp;
-                  {{ 'Steps' | translate }}
-                }
-              </div>
-              <div class="ui:col-span-6">{{ step.timestamp | dateTranslate: 'shortDate' }}</div>
-              <div class="ui:col-span-2">
-                @if (event.type !== patronTransactionEventType.DISPUTE) {
-                  <p-tag
-                    [value]="step.amount | currency: organisation.default_currency"
-                    [severity]="$any(tagSeverity(event))"
-                  />
-                }
-              </div>
+            <div class="ui:col-span-6">{{ step.timestamp | dateTranslate: 'shortDate' }}</div>
+            <div class="ui:col-span-2">
+              @if (event.type !== patronTransactionEventType.DISPUTE) {
+                <p-tag
+                  [value]="step.amount | currency: organisation.default_currency"
+                  [severity]="$any(tagSeverity(event))" />
+              }
             </div>
-          }
+          </div>
         }
-      </div>
+      }
+    </div>
   </ng-template>
 
   <ng-template #opposite let-event>

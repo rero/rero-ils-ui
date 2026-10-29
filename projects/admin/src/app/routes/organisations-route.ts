@@ -2,14 +2,15 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 import { ResolveFn, Routes } from '@angular/router';
 import { _ } from '@ngx-translate/core';
-import { DetailComponent, RecordData, RecordType, RouteDataTypesInterface, ComponentCanDeactivateGuard, EditorComponent } from '@rero/ng-core';
+import { DetailComponent, RecordData, RecordType, RouteDataTypesInterface, unsavedChangesGuard } from '@rero/ng-core';
+import { EditorComponent } from '@rero/ng-core/editor';
+import { PERMISSIONS } from '@rero/shared';
+
 import { CAN_ACCESS_ACTIONS, canAccessGuard } from '../guard/can-access.guard';
 import { OrganisationDetailViewComponent } from '../record/detail-view/organisation-detail-view/organisation-detail-view/organisation-detail-view.component';
 import { BaseRoute } from './base-route';
-import { PERMISSIONS } from '@rero/shared';
 
-export const organisationsRouteResolver: ResolveFn<Partial<RecordType>[]> = () =>
-  new OrganisationsRoute().getTypes();
+export const organisationsRouteResolver: ResolveFn<Partial<RecordType>[]> = () => new OrganisationsRoute().getTypes();
 
 export const organisationsRoutes: Routes = [
   {
@@ -27,7 +28,7 @@ export const organisationsRoutes: Routes = [
     component: EditorComponent,
     title: _('Organisation'),
     canActivate: [canAccessGuard],
-    canDeactivate: [ComponentCanDeactivateGuard],
+    canDeactivate: [unsavedChangesGuard],
     data: {
       action: CAN_ACCESS_ACTIONS.UPDATE,
       permissions: [PERMISSIONS.ORG_ACCESS],

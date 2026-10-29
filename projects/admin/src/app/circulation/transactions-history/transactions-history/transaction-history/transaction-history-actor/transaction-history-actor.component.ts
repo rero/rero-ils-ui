@@ -4,19 +4,23 @@
 import { CurrencyPipe, I18nPluralPipe } from '@angular/common';
 import { Component, input, output } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { LibraryRecord, PatronRecord, TransactionLoan, TransactionScan } from '@app/admin/circulation/model/circulation.model';
+import {
+  LibraryRecord,
+  PatronRecord,
+  TransactionLoan,
+  TransactionScan,
+} from '@app/admin/circulation/model/circulation.model';
 import { Item } from '@app/admin/classes/items';
-import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
+import { Tag } from '@openng/optimus-ui/tag';
 import { DateTranslatePipe } from '@rero/ng-core';
-import { Tag } from 'primeng/tag';
 
 @Component({
   selector: 'admin-transaction-history-actor',
-  imports: [CurrencyPipe, DateTranslatePipe, I18nPluralPipe, RouterLink, Tag, TranslateDirective, TranslatePipe],
+  imports: [CurrencyPipe, DateTranslatePipe, I18nPluralPipe, RouterLink, Tag, TranslatePipe],
   templateUrl: './transaction-history-actor.component.html',
 })
 export class TransactionHistoryActorComponent {
-
   /** `loan` part of the operation_logs entry — `undefined` for a scan_item entry. */
   loan = input<TransactionLoan | undefined>(undefined);
   /** `scan` part of the operation_logs entry — `undefined` for a loan entry. */

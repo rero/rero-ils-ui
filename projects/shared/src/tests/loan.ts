@@ -7,13 +7,13 @@ export const loanPending = {
     document_pid: '201',
     item_pid: {
       type: 'item',
-      value: '235'
+      value: '235',
     },
     library_pid: '1',
     location_pid: '3',
     organisation: {
       type: 'org',
-      value: '1'
+      value: '1',
     },
     patron_pid: '3',
     patron_type_pid: '1',
@@ -26,6 +26,6 @@ export const loanPending = {
     transaction_library_pid: '1',
     transaction_location_pid: '1',
     transaction_user_pid: '1',
-    trigger: 'request'
-  }
-}
+    trigger: 'request',
+  },
+};

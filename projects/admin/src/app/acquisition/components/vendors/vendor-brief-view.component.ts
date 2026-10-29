@@ -1,12 +1,12 @@
 // SPDX-FileCopyrightText: Fondation RERO+
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-import { Component, input, OnInit, ChangeDetectionStrategy} from '@angular/core';
+import { Component, input, OnInit } from '@angular/core';
 import { RouterLink } from '@angular/router';
 
 @Component({
-    selector: 'admin-vendor-brief-view',
-    template: `
+  selector: 'admin-vendor-brief-view',
+  template: `
     <h5>
       <a [routerLink]="[detailUrl().link]">{{ record().metadata.name }}</a>
     </h5>
@@ -25,12 +25,10 @@ import { RouterLink } from '@angular/router';
       }
     }
   `,
-    styleUrls: [],
-    imports: [RouterLink],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  styleUrls: [],
+  imports: [RouterLink],
 })
 export class VendorBriefViewComponent implements OnInit {
-
   /** Record  data */
   record = input<any>();
 
@@ -38,7 +36,7 @@ export class VendorBriefViewComponent implements OnInit {
   type = input<string>();
 
   /** Detail URL to navigate to detail view */
-  detailUrl = input<{ link: string, external: boolean }>();
+  detailUrl = input<{ link: string; external: boolean }>();
 
   // Default address
   address: any;
@@ -46,6 +44,6 @@ export class VendorBriefViewComponent implements OnInit {
   /** OnInit hook */
   ngOnInit(): void {
     const contact: any[] = this.record().metadata.contacts.filter((contact: any) => contact.type === 'default');
-    this.address = (contact.length > 0) ? contact[0] : undefined;
+    this.address = contact.length > 0 ? contact[0] : undefined;
   }
 }

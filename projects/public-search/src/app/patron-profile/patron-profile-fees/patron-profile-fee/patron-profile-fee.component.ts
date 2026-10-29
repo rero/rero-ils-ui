@@ -1,38 +1,36 @@
 // SPDX-FileCopyrightText: Fondation RERO+
 // SPDX-License-Identifier: AGPL-3.0-or-later
 import { CurrencyPipe } from '@angular/common';
-import { Component, inject, input, OnDestroy, OnInit, signal, ChangeDetectionStrategy} from '@angular/core';
-import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
+import { Component, inject, input, OnDestroy, OnInit, signal } from '@angular/core';
+import { TranslatePipe } from '@ngx-translate/core';
+import { PanelModule } from '@openng/optimus-ui/panel';
+import { TagModule } from '@openng/optimus-ui/tag';
+import { TimelineModule } from '@openng/optimus-ui/timeline';
 import { DateTranslatePipe, RecordService } from '@rero/ng-core';
-import { MainTitlePipe, OpenCloseButtonComponent, IOrganisation } from '@rero/shared';
-import { Fee } from '../types';
-import { PanelModule } from 'primeng/panel';
-import { TagModule } from 'primeng/tag';
-import { TimelineModule } from 'primeng/timeline';
+import { IOrganisation, MainTitlePipe, OpenCloseButtonComponent } from '@rero/shared';
 import { Observable, Subscription } from 'rxjs';
+
 import { PatronProfileStore } from '../../store/patron-profile.store';
 import { PatronProfileFeeEventsComponent } from '../patron-profile-fee-events/patron-profile-fee-events.component';
+import { Fee } from '../types';
 
 @Component({
-    selector: 'public-search-patron-profile-fee',
-    templateUrl: './patron-profile-fee.component.html',
-    styleUrl: './patron-profile-fee.component.scss',
-    imports: [
-      CurrencyPipe,
-      TranslateDirective,
-      TranslatePipe,
-      DateTranslatePipe,
-      MainTitlePipe,
-      OpenCloseButtonComponent,
-      PanelModule,
-      TagModule,
-      TimelineModule,
-      PatronProfileFeeEventsComponent,
-    ],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  selector: 'public-search-patron-profile-fee',
+  templateUrl: './patron-profile-fee.component.html',
+  styleUrl: './patron-profile-fee.component.scss',
+  imports: [
+    CurrencyPipe,
+    TranslatePipe,
+    DateTranslatePipe,
+    MainTitlePipe,
+    OpenCloseButtonComponent,
+    PanelModule,
+    TagModule,
+    TimelineModule,
+    PatronProfileFeeEventsComponent,
+  ],
 })
 export class PatronProfileFeeComponent<T> implements OnInit, OnDestroy {
-
   private store = inject(PatronProfileStore);
   private recordService = inject(RecordService);
 
@@ -56,8 +54,9 @@ export class PatronProfileFeeComponent<T> implements OnInit, OnDestroy {
   ngOnInit(): void {
     if (this.record()?.loan) {
       this.subscription.add(
-        this.recordService.getRecord('documents', this.record()?.loan.document_pid)
-          .subscribe(document => this.document.set(document))
+        this.recordService
+          .getRecord('documents', this.record()?.loan.document_pid)
+          .subscribe((document) => this.document.set(document)),
       );
     }
   }

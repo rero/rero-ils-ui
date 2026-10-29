@@ -6,8 +6,8 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 <p-panel>
   <ng-template #header>
     <div class="ui:w-full ui:flex ui:items-center ui:justify-between ui:gap-2">
-      <span class="ui:text-bold ui:text-xl ui:flex ui:gap-2" translate>
-        {{ numberOfReceipt | i18nPlural : { "=1": "Receipt", other: "Receipts" } | translate }}
+      <span class="ui:text-bold ui:text-xl ui:flex ui:gap-2">
+        {{ numberOfReceipt | i18nPlural: { '=1': 'Receipt', other: 'Receipts' } | translate }}
         <p-badge [value]="numberOfReceipt" />
       </span>
       <p-button
@@ -20,8 +20,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
         [pTooltip]="tooltipContent"
         tooltipPosition="top"
         [disabled]="!recordPermissions()?.create?.can"
-        [tooltipDisabled]="recordPermissions()?.create?.can"
-      />
+        [tooltipDisabled]="recordPermissions()?.create?.can" />
       <ng-template #tooltipContent>
         <span [innerHTML]="createInfoMessage | nl2br"></span>
       </ng-template>
@@ -34,6 +33,6 @@ SPDX-License-Identifier: AGPL-3.0-or-later
       </div>
     }
   } @else {
-    <div class="ui:my-3 ui:mx-4" translate>No receipt</div>
+    <div class="ui:my-3 ui:mx-4">{{ 'No receipt' | translate }}</div>
   }
 </p-panel>

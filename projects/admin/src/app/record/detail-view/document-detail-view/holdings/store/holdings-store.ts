@@ -1,14 +1,15 @@
 // SPDX-FileCopyrightText: Fondation RERO+
 // SPDX-License-Identifier: AGPL-3.0-or-later
-import { computed, inject } from "@angular/core";
-import { toObservable } from "@angular/core/rxjs-interop";
-import { patchState, signalStore, withComputed, withHooks, withMethods, withProps, withState } from "@ngrx/signals";
-import { rxMethod } from "@ngrx/signals/rxjs-interop";
-import { AppStore, EsRecord, nonNullable, setFulfilled, setPending, withRequestStatus } from "@rero/shared";
-import { MultiSelectChangeEvent } from "primeng/multiselect";
-import { pipe, switchMap, tap } from "rxjs";
-import { HoldingsApiService } from "../../../../../api/holdings-api.service";
-import { DocumentDetailStore } from "../../store/document-detail.store";
+import { computed, inject } from '@angular/core';
+import { toObservable } from '@angular/core/rxjs-interop';
+import { patchState, signalStore, withComputed, withHooks, withMethods, withProps, withState } from '@ngrx/signals';
+import { rxMethod } from '@ngrx/signals/rxjs-interop';
+import { MultiSelectChangeEvent } from '@openng/optimus-ui/multiselect';
+import { AppStore, EsRecord, nonNullable, setFulfilled, setPending, withRequestStatus } from '@rero/shared';
+import { pipe, switchMap, tap } from 'rxjs';
+
+import { HoldingsApiService } from '../../../../../api/holdings-api.service';
+import { DocumentDetailStore } from '../../store/document-detail.store';
 
 type HoldingsState = {
   document: EsRecord | undefined;
@@ -16,14 +17,14 @@ type HoldingsState = {
   holdings: EsRecord[];
   total: number;
   filteredLibrary: string[];
-}
+};
 
 export const initialHoldingsState: HoldingsState = {
   document: undefined,
   record: undefined,
   holdings: [],
   total: 0,
-  filteredLibrary: []
+  filteredLibrary: [],
 };
 
 export const HoldingsStore = signalStore(
@@ -35,22 +36,30 @@ export const HoldingsStore = signalStore(
     holdingsApiService: inject(HoldingsApiService),
   })),
   withComputed((store) => ({
-    isDocumentHarvested: computed(() => ('harvested' in store.document().metadata)),
-    holdingsCurrentOrganisation: computed(
-      () => store.holdings().filter(h => (store.filteredLibrary().length === 0)
-        ? h.metadata.organisation.pid === store.appStore.currentOrganisationPid()
-        : h.metadata.organisation.pid === store.appStore.currentOrganisationPid() && store.filteredLibrary().includes(h.metadata.library.pid)
-      )
+    isDocumentHarvested: computed(() => 'harvested' in store.document().metadata),
+    holdingsCurrentOrganisation: computed(() =>
+      store
+        .holdings()
+        .filter((h) =>
+          store.filteredLibrary().length === 0
+            ? h.metadata.organisation.pid === store.appStore.currentOrganisationPid()
+            : h.metadata.organisation.pid === store.appStore.currentOrganisationPid() &&
+              store.filteredLibrary().includes(h.metadata.library.pid),
+        ),
     ),
-    holdingsOtherOrganisation: computed(
-      () => store.holdings().filter(h => (store.filteredLibrary().length === 0)
-        ? h.metadata.organisation.pid !== store.appStore.currentOrganisationPid()
-        : h.metadata.organisation.pid !== store.appStore.currentOrganisationPid() && store.filteredLibrary().includes(h.metadata.library.pid)
-      )
+    holdingsOtherOrganisation: computed(() =>
+      store
+        .holdings()
+        .filter((h) =>
+          store.filteredLibrary().length === 0
+            ? h.metadata.organisation.pid !== store.appStore.currentOrganisationPid()
+            : h.metadata.organisation.pid !== store.appStore.currentOrganisationPid() &&
+              store.filteredLibrary().includes(h.metadata.library.pid),
+        ),
     ),
     filter: computed(() => {
       // Extract all libraries and add organisation pid
-      const libraries = store.holdings().map(h => {
+      const libraries = store.holdings().map((h) => {
         const { library } = h.metadata;
         library.organisationPid = h.metadata.organisation.pid;
         return library;
@@ -58,17 +67,23 @@ export const HoldingsStore = signalStore(
 
       // Unique libraries for current organisation and sort.
       const currentOrganisationLibraries = [
-        ...new Map(libraries.filter(l => l.organisationPid === store.appStore.currentOrganisationPid())
-          .map(lib => [JSON.stringify(lib), lib])).values()
+        ...new Map(
+          libraries
+            .filter((l) => l.organisationPid === store.appStore.currentOrganisationPid())
+            .map((lib) => [JSON.stringify(lib), lib]),
+        ).values(),
       ].sort((a, b) => a.name.localeCompare(b.name));
       // Unique libraries for other organisation(s) and sort.
       const otherOrganisationLibraries = [
-        ...new Map(libraries.filter(l => l.organisationPid !== store.appStore.currentOrganisationPid())
-          .map(lib => [JSON.stringify(lib), lib])).values()
+        ...new Map(
+          libraries
+            .filter((l) => l.organisationPid !== store.appStore.currentOrganisationPid())
+            .map((lib) => [JSON.stringify(lib), lib]),
+        ).values(),
       ].sort((a, b) => a.name.localeCompare(b.name));
 
       return [...currentOrganisationLibraries, ...otherOrganisationLibraries];
-    })
+    }),
   })),
   withMethods((store) => ({
     /**
@@ -80,10 +95,7 @@ export const HoldingsStore = signalStore(
      */
     setDocument(document: EsRecord) {
       const isAnotherDocument = store.document()?.metadata?.pid !== document?.metadata?.pid;
-      patchState(store, isAnotherDocument
-        ? { ...initialHoldingsState, document }
-        : { document }
-      );
+      patchState(store, isAnotherDocument ? { ...initialHoldingsState, document } : { document });
     },
     setLibraryFilter(filter: MultiSelectChangeEvent) {
       patchState(store, { filteredLibrary: filter.value });
@@ -93,7 +105,7 @@ export const HoldingsStore = signalStore(
       const total = holdings.length;
       patchState(store, {
         holdings,
-        total
+        total,
       });
       store.documentDetailStore.setHoldingsTotal(total);
     },
@@ -105,8 +117,8 @@ export const HoldingsStore = signalStore(
           const total = result.hits.total;
           patchState(store, { holdings: result.hits.hits, total }, setFulfilled());
           store.documentDetailStore.setHoldingsTotal(total);
-        })
-      )
+        }),
+      ),
     ),
     delete: rxMethod<EsRecord>(
       pipe(
@@ -119,13 +131,15 @@ export const HoldingsStore = signalStore(
             patchState(store, { holdings, total, record: undefined });
             store.documentDetailStore.setHoldingsTotal(total);
           }
-        })
-      )
+        }),
+      ),
     ),
   })),
   withHooks((store) => ({
     onInit: () => {
-      toObservable(store.document).pipe(nonNullable()).subscribe(() => store.load());
-    }
-  }))
+      toObservable(store.document)
+        .pipe(nonNullable())
+        .subscribe(() => store.load());
+    },
+  })),
 );

@@ -1,36 +1,33 @@
 // SPDX-FileCopyrightText: Fondation RERO+
 // SPDX-License-Identifier: AGPL-3.0-or-later
-import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClient, withXhr } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
-import { ActivatedRouteSnapshot, Router, RouterStateSnapshot, RouterModule, UrlTree } from '@angular/router';
-import { TranslateModule } from '@ngx-translate/core';
-import { AppState, AppStore, PERMISSION_OPERATOR, PERMISSIONS } from '@rero/shared';
-import { patchState, WritableStateSource } from '@ngrx/signals';
+import { ActivatedRouteSnapshot, Router, RouterModule, RouterStateSnapshot, UrlTree } from '@angular/router';
 import { ErrorPageComponent } from '@app/admin/error/error-page/error-page.component';
+import { patchState, WritableStateSource } from '@ngrx/signals';
+import { provideTranslateService } from '@ngx-translate/core';
+import { AppState, AppStore, PERMISSION_OPERATOR, PERMISSIONS } from '@rero/shared';
+
 import { permissionGuard } from './permission.guard';
 
 describe('permissionGuard', () => {
   let appStore: InstanceType<typeof AppStore>;
   let router: Router;
 
-  const routes = [
-    { path: 'errors/403', component: ErrorPageComponent }
-  ];
+  const routes = [{ path: 'errors/403', component: ErrorPageComponent }];
 
   const routeSnapshot = {
-    data: { permissions: [PERMISSIONS.DOC_SEARCH, PERMISSIONS.DOC_CREATE, PERMISSIONS.ILL_SEARCH] }
+    data: { permissions: [PERMISSIONS.DOC_SEARCH, PERMISSIONS.DOC_CREATE, PERMISSIONS.ILL_SEARCH] },
   } as any as ActivatedRouteSnapshot;
 
   const runGuard = (route: ActivatedRouteSnapshot) =>
-    TestBed.runInInjectionContext(() =>
-      permissionGuard(route, {} as RouterStateSnapshot)
-    );
+    TestBed.runInInjectionContext(() => permissionGuard(route, {} as RouterStateSnapshot));
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [RouterModule.forRoot(routes), TranslateModule.forRoot()],
-      providers: [provideHttpClient(), provideHttpClientTesting()]
+      imports: [RouterModule.forRoot(routes)],
+      providers: [provideTranslateService(), provideHttpClient(withXhr()), provideHttpClientTesting()],
     });
     appStore = TestBed.inject(AppStore);
     router = TestBed.inject(Router);
@@ -58,7 +55,9 @@ describe('permissionGuard', () => {
   });
 
   it('should deny access when not all permissions are present (AND)', () => {
-    patchState(appStore as unknown as WritableStateSource<AppState>, { permissions: [PERMISSIONS.DOC_CREATE, PERMISSIONS.HOLD_CREATE] });
+    patchState(appStore as unknown as WritableStateSource<AppState>, {
+      permissions: [PERMISSIONS.DOC_CREATE, PERMISSIONS.HOLD_CREATE],
+    });
     const snapshot = structuredClone(routeSnapshot);
     snapshot.data = { ...snapshot.data, operator: PERMISSION_OPERATOR.AND };
     const result = runGuard(snapshot);
@@ -67,7 +66,9 @@ describe('permissionGuard', () => {
   });
 
   it('should allow access when all permissions are present (AND)', () => {
-    patchState(appStore as unknown as WritableStateSource<AppState>, { permissions: [PERMISSIONS.DOC_SEARCH, PERMISSIONS.DOC_CREATE, PERMISSIONS.ILL_SEARCH] });
+    patchState(appStore as unknown as WritableStateSource<AppState>, {
+      permissions: [PERMISSIONS.DOC_SEARCH, PERMISSIONS.DOC_CREATE, PERMISSIONS.ILL_SEARCH],
+    });
     const snapshot = structuredClone(routeSnapshot);
     snapshot.data = { ...snapshot.data, operator: PERMISSION_OPERATOR.AND };
     expect(runGuard(snapshot)).toBe(true);

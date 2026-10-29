@@ -2,15 +2,15 @@
 SPDX-FileCopyrightText: Fondation RERO+
 SPDX-License-Identifier: AGPL-3.0-or-later
 -->
-@if(illRequests(); as illRequests) {
+@if (illRequests(); as illRequests) {
   <p-card>
     <ng-template #header>
       <div class="ui:grid ui:grid-cols-12 ui:gap-4 ui:py-4 ui:px-2 ui:m-1 ui:text-lg ui:font-bold ui:items-center">
-          <div class="ui:col-span-4" translate>Document</div>
-        <div class="ui:col-span-3" translate>Pickup location</div>
-        <div class="ui:col-span-2" translate>Request date</div>
-        <div class="ui:col-span-2" translate>Loan status</div>
-        <div class="ui:col-span-1" translate></div>
+        <div class="ui:col-span-4">{{ 'Document' | translate }}</div>
+        <div class="ui:col-span-3">{{ 'Pickup location' | translate }}</div>
+        <div class="ui:col-span-2">{{ 'Request date' | translate }}</div>
+        <div class="ui:col-span-2">{{ 'Loan status' | translate }}</div>
+        <div class="ui:col-span-1"></div>
       </div>
     </ng-template>
     @if (illRequests.length > 0) {
@@ -22,11 +22,11 @@ SPDX-License-Identifier: AGPL-3.0-or-later
         }
       </div>
     } @else {
-      <div class="ui:mx-4 ui:my-6" translate>
-        No ill request.
+      <div class="ui:mx-4 ui:my-6">
+        {{ 'No ill request.' | translate }}
       </div>
     }
   </p-card>
 } @else {
-  <div class="ui:mx-2 ui:my-6" translate>Loading in progress</div>
+  <div class="ui:mx-2 ui:my-6">{{ 'Loading in progress' | translate }}</div>
 }

@@ -1,16 +1,14 @@
 // SPDX-FileCopyrightText: Fondation RERO+
 // SPDX-License-Identifier: AGPL-3.0-or-later
 import { inject, Injectable } from '@angular/core';
-import { RecordService } from '@rero/ng-core';
-import type { Error } from '@rero/ng-core';
+import { RecordService, type Error } from '@rero/ng-core';
 import { BaseApi, EsResult } from '@rero/shared';
 import { Observable } from 'rxjs';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class PatronTransactionApiService extends BaseApi {
-
   private recordService: RecordService = inject(RecordService);
 
   /**
@@ -23,13 +21,21 @@ export class PatronTransactionApiService extends BaseApi {
    * @return Observable
    */
   getFees(
-    patronPid: string, status: string, page: number,
-    itemsPerPage = 10, headers = BaseApi.reroJsonheaders,
-    sort = 'creation_date'
+    patronPid: string,
+    status: string,
+    page: number,
+    itemsPerPage = 10,
+    headers = BaseApi.reroJsonheaders,
+    sort = 'creation_date',
   ): Observable<EsResult | Error> {
     const query = `patron.pid:${patronPid} AND status:${status}`;
-    return this.recordService.getRecords(
-      'patron_transactions', { query, page, itemsPerPage, headers, sort, facets: ['total'] }
-    );
+    return this.recordService.getRecords('patron_transactions', {
+      query,
+      page,
+      itemsPerPage,
+      headers,
+      sort,
+      facets: ['total'],
+    });
   }
 }

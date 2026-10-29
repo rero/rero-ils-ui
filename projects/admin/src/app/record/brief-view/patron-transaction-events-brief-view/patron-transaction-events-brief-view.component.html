@@ -19,7 +19,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
     <div>
       <p-tag [severity]="$any(severity())">
         @if (event().type !== eventTypes.DISPUTE) {
-          {{ event().amount | currency : organisation()?.default_currency }}
+          {{ event().amount | currency: organisation()?.default_currency }}
         } @else {
           {{ 'dispute' | translate }}
         }
@@ -29,22 +29,18 @@ SPDX-License-Identifier: AGPL-3.0-or-later
   <div class="ui:flex ui:gap-2 ui:flex-wrap ui:mt-2">
     <div class="ui:flex ui:grow ui:flex-wrap ui:gap-2">
       @if (event().operator) {
-        <p-tag severity="secondary">
-          <i class="fa-solid fa-circle-user"></i>&nbsp;{{ event().operator.name }}
-        </p-tag>
+        <p-tag severity="secondary"> <i class="fa-solid fa-circle-user"></i>&nbsp;{{ event().operator.name }} </p-tag>
       }
       @if (event().library) {
         <p-tag severity="secondary">
           <i class="fa-solid fa-building-columns"></i>&nbsp;{{ event().library.name }}
         </p-tag>
       }
-      <p-tag severity="secondary">
-        <i class="fa-solid fa-right-left"></i>&nbsp;{{ parent.type | translate }}
-      </p-tag>
+      <p-tag severity="secondary"> <i class="fa-solid fa-right-left"></i>&nbsp;{{ parent.type | translate }} </p-tag>
     </div>
 
     <p-tag severity="secondary">
-      <i class="fa-regular fa-clock"></i>&nbsp;{{ event().creation_date | date : 'short' }}
+      <i class="fa-regular fa-clock"></i>&nbsp;{{ event().creation_date | date: 'short' }}
     </p-tag>
   </div>
 } @else {

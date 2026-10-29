@@ -5,6 +5,7 @@
 import { Routes } from '@angular/router';
 import { _ } from '@ngx-translate/core';
 import { PERMISSION_OPERATOR, PERMISSIONS } from '@rero/shared';
+
 import { permissionGuard } from '../guard/permission.guard';
 import { recordTypeMatcher } from '../routes/record-type-matcher';
 import { AccountListComponent } from './components/account/account-list/account-list.component';

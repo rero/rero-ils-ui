@@ -1,23 +1,24 @@
 // SPDX-FileCopyrightText: Fondation RERO+
 // SPDX-License-Identifier: AGPL-3.0-or-later
+import { ResolveFn, Routes } from '@angular/router';
 import { FormlyFieldConfig } from '@ngx-formly/core';
 import { _ } from '@ngx-translate/core';
 import {
   ActionStatus,
-  ComponentCanDeactivateGuard,
   DetailComponent,
-  EditorComponent,
   JSONSchema7,
   RecordData,
   RecordSearchPageComponent,
   RecordService,
   RecordType,
   RouteDataTypesInterface,
+  unsavedChangesGuard,
 } from '@rero/ng-core';
-import { PERMISSIONS, PERMISSION_OPERATOR, Tools } from '@rero/shared';
+import { EditorComponent } from '@rero/ng-core/editor';
+import { PERMISSION_OPERATOR, PERMISSIONS, Tools } from '@rero/shared';
 import { of } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { ResolveFn, Routes } from '@angular/router';
+
 import { CAN_ACCESS_ACTIONS, canAccessGuard } from '../guard/can-access.guard';
 import { permissionGuard } from '../guard/permission.guard';
 import { CircPoliciesBriefViewComponent } from '../record/brief-view/circ-policies-brief-view.component';
@@ -52,7 +53,7 @@ export const circulationPoliciesRoutes: Routes = [
     component: EditorComponent,
     title: _('Circulation policy'),
     canActivate: [canAccessGuard],
-    canDeactivate: [ComponentCanDeactivateGuard],
+    canDeactivate: [unsavedChangesGuard],
     data: {
       action: CAN_ACCESS_ACTIONS.UPDATE,
     },
@@ -62,7 +63,7 @@ export const circulationPoliciesRoutes: Routes = [
     component: EditorComponent,
     title: _('Circulation policy'),
     canActivate: [permissionGuard],
-    canDeactivate: [ComponentCanDeactivateGuard],
+    canDeactivate: [unsavedChangesGuard],
     data: {
       permissions: [PERMISSIONS.CIPO_CREATE],
     },
@@ -87,13 +88,15 @@ class CirculationPoliciesRoute extends BaseRoute implements RouteDataTypesInterf
         component: CircPoliciesBriefViewComponent,
         detailComponent: CircPolicyDetailViewComponent,
         searchFilters: [this.expertSearchFilter()],
-        canAdd: () =>
-          of({ can: this.routeToolService.appStore.canAccess(PERMISSIONS.CIPO_CREATE) } as ActionStatus),
+        canAdd: () => of({ can: this.routeToolService.appStore.canAccess(PERMISSIONS.CIPO_CREATE) } as ActionStatus),
         permissions: (record: RecordData) => this.routeToolService.permissions(record, this.recordType),
         preCreateRecord: (data) => {
           if (data.parent == null) {
             data.organisation = {
-              $ref: this.routeToolService.apiService.getRefEndpoint('organisations', this.routeToolService.appStore.currentOrganisationPid()),
+              $ref: this.routeToolService.apiService.getRefEndpoint(
+                'organisations',
+                this.routeToolService.appStore.currentOrganisationPid(),
+              ),
             };
           }
           return data;
@@ -157,7 +160,7 @@ class CirculationPoliciesRoute extends BaseRoute implements RouteDataTypesInterf
                   value: apiService.getRefEndpoint('libraries', hit.metadata.pid),
                 };
               });
-            })
+            }),
           );
       },
     };
@@ -179,7 +182,7 @@ class CirculationPoliciesRoute extends BaseRoute implements RouteDataTypesInterf
             return response.templates.map((tpl: any) => {
               return { label: tpl, value: tpl };
             });
-          })
+          }),
         );
       },
     };

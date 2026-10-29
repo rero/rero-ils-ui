@@ -3,18 +3,14 @@ SPDX-FileCopyrightText: Fondation RERO+
 SPDX-License-Identifier: AGPL-3.0-or-later
 -->
 @let status = record() | transactionStatus;
-<admin-circulation-log
-  [record]="record()"
-  [isHighlight]="isHighlight()"
-  [separator]="separator()"
->
+<admin-circulation-log [record]="record()" [isHighlight]="isHighlight()" [separator]="separator()">
   <p-tag badge severity="info" [icon]="status.icon" [value]="status.label | translate" />
   <div collapsedContent class="ui:grid ui:grid-cols-12 ui:gap-4">
     <div class="ui:col-span-8">
       <i class="fa-solid fa-globe"></i>&nbsp;
       @if (record().metadata.scan.transaction_location) {
-        @if (record().metadata.scan.transaction_location.pid | getRecord : 'locations' | async; as location) {
-          {{ $any(location).metadata.library.pid | getRecord : 'libraries' : 'field' : 'name' | async }}
+        @if (record().metadata.scan.transaction_location.pid | getRecord: 'locations' | async; as location) {
+          {{ $any(location).metadata.library.pid | getRecord: 'libraries' : 'field' : 'name' | async }}
         }
       } @else {
         ---
@@ -24,13 +20,13 @@ SPDX-License-Identifier: AGPL-3.0-or-later
   <div expandedContent>
     <!-- Library -->
     <div class="ui:grid ui:grid-cols-12 ui:gap-x-2">
-      <div class="ui:col-span-3 ui:font-bold" translate>
+      <div class="ui:col-span-3 ui:font-bold">
         <i class="fa-solid fa-building-columns"></i>&nbsp;{{ 'Library' | translate }}
       </div>
       <div class="ui:col-span-9">
         @if (record().metadata.scan.transaction_location) {
-          @if (record().metadata.scan.transaction_location.pid | getRecord : 'locations' | async; as location) {
-            {{ $any(location).metadata.library.pid | getRecord : 'libraries' : 'field' : 'name' | async }}
+          @if (record().metadata.scan.transaction_location.pid | getRecord: 'locations' | async; as location) {
+            {{ $any(location).metadata.library.pid | getRecord: 'libraries' : 'field' : 'name' | async }}
           }
         } @else {
           ---
@@ -39,7 +35,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
     </div>
     <!-- Operator -->
     <div class="ui:grid ui:grid-cols-12 ui:gap-x-2">
-      <div class="ui:col-span-3 ui:font-bold" translate>
+      <div class="ui:col-span-3 ui:font-bold">
         <i class="fa-solid fa-circle-user"></i>&nbsp;{{ 'Operator' | translate }}
       </div>
       <div class="ui:col-span-9">
@@ -47,9 +43,9 @@ SPDX-License-Identifier: AGPL-3.0-or-later
       </div>
     </div>
     <!-- Note -->
-     @if (record().metadata.scan.note) {
+    @if (record().metadata.scan.note) {
       <div class="ui:grid ui:grid-cols-12 ui:gap-x-2">
-        <div class="ui:col-span-3 ui:font-bold" translate>
+        <div class="ui:col-span-3 ui:font-bold">
           <i class="fa-regular fa-note-sticky"></i>&nbsp;{{ 'Note' | translate }}
         </div>
         <div class="ui:col-span-9">
@@ -59,4 +55,3 @@ SPDX-License-Identifier: AGPL-3.0-or-later
     }
   </div>
 </admin-circulation-log>
-

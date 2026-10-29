@@ -28,25 +28,18 @@ SPDX-License-Identifier: AGPL-3.0-or-later
           }
         }
       } @else {
-        <span translate>Missing status</span>
+        <span>{{ 'Missing status' | translate }}</span>
       }
     </small>
     @if (currentItem?.loan?.extension_count; as extensionCount) {
-      <p-tag
-        [title]="'Renewals' | translate"
-        severity="secondary"
-        class="ui:self-start ui:mt-1"
-      >
+      <p-tag [title]="'Renewals' | translate" severity="secondary" class="ui:self-start ui:mt-1">
         <i class="fa-solid fa-arrows-rotate ui:ml-1"></i>
-        {{ extensionCount }} {{ extensionCount | i18nPlural: {'=1': 'renewal' | translate, 'other': 'renewals' | translate} }}
+        {{ extensionCount }}
+        {{ extensionCount | i18nPlural: { '=1': 'renewal' | translate, other: 'renewals' | translate } }}
       </p-tag>
     }
     @if (totalAmountOfFee() > 0) {
-      <p-tag
-        [title]="'Fees' | translate"
-        severity="warn"
-        class="ui:self-start ui:mt-1"
-      >
+      <p-tag [title]="'Fees' | translate" severity="warn" class="ui:self-start ui:mt-1">
         {{ totalAmountOfFee() | currency: organisationCurrency() }}
       </p-tag>
     }
@@ -57,10 +50,10 @@ SPDX-License-Identifier: AGPL-3.0-or-later
         {{ library.metadata.name }}
       </span>
       <small class="ui:text-muted-color">
-        <span translate>on shelf</span>
+        <span>{{ 'on shelf' | translate }}</span>
       </small>
     } @else if (libraryNotFound()) {
-      <span class="ui:text-muted-color ui:italic" translate>Library not found.</span>
+      <span class="ui:text-muted-color ui:italic">{{ 'Library not found.' | translate }}</span>
     }
   }
 </div>

@@ -14,4 +14,4 @@ export type Organisation = {
   current_budget_pid?: string;
   online_harvested_source?: string;
   collection_enabled_on_public_view?: boolean;
-}
+};

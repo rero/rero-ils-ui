@@ -8,7 +8,7 @@ import { PatronTransaction, PatronTransactionStatus } from '@app/admin/classes/p
  */
 export function computeTotalTransactionsAmount(transactions: PatronTransaction[]): number {
   return transactions.reduce((accumulator, transaction) => {
-    return (transaction.status === PatronTransactionStatus.OPEN)
+    return transaction.status === PatronTransactionStatus.OPEN
       ? parseFloat((accumulator + transaction.total_amount).toFixed(2))
       : accumulator;
   }, 0);

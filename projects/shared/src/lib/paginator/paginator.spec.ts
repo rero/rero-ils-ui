@@ -35,32 +35,26 @@ describe('Test', () => {
   });
 
   it('should return the hidden info (singular)', () => {
-    paginator
-      .setRecordsCount(10)
-      .setRecordsPerPage(9);
+    paginator.setRecordsCount(10).setRecordsPerPage(9);
     paginator.setHiddenInfo('singular', 'plurial');
     expect(paginator.getHiddenInfo()).toEqual('singular');
     expect(paginator.getHiddenCount()).toEqual(1);
   });
 
   it('should return the hidden info (plurial)', () => {
-    paginator
-      .setRecordsCount(10)
-      .setRecordsPerPage(5);
+    paginator.setRecordsCount(10).setRecordsPerPage(5);
     paginator.setHiddenInfo('singular', 'plurial');
     expect(paginator.getHiddenInfo()).toEqual('plurial');
     expect(paginator.getHiddenCount()).toEqual(5);
   });
 
   it('should return true for displaying the "show-more" link', () => {
-    paginator
-      .setRecordsCount(20);
+    paginator.setRecordsCount(20);
     expect(paginator.isShowMore()).toBeTruthy();
   });
 
   it('should return false for displaying the "show-more" link', () => {
-    paginator
-      .setRecordsCount(5);
+    paginator.setRecordsCount(5);
     expect(paginator.isShowMore()).toBeFalsy();
   });
 
@@ -77,5 +71,4 @@ describe('Test', () => {
     });
     paginator.next(4);
   });
-
 });

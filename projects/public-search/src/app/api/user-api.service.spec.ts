@@ -4,6 +4,7 @@ import { HttpClient } from '@angular/common/http';
 import { TestBed } from '@angular/core/testing';
 import { ApiService } from '@rero/ng-core';
 import { of } from 'rxjs';
+
 import { UserApiService } from './user-api.service';
 
 describe('UserApiService', () => {
@@ -19,8 +20,8 @@ describe('UserApiService', () => {
     TestBed.configureTestingModule({
       providers: [
         { provide: HttpClient, useValue: httpClientSpy },
-        { provide: ApiService, useValue: apiServiceSpy }
-      ]
+        { provide: ApiService, useValue: apiServiceSpy },
+      ],
     });
     service = TestBed.inject(UserApiService);
   });
@@ -33,14 +34,12 @@ describe('UserApiService', () => {
     const passwordData = {
       password: 'A11111',
       new_password: 'B22333',
-      new_password_confirm: 'B22333'
+      new_password_confirm: 'B22333',
     };
-    service.updatePassword(passwordData)
-      .subscribe((result: any) => expect(result).toEqual(apiResponse));
+    service.updatePassword(passwordData).subscribe((result: any) => expect(result).toEqual(apiResponse));
   });
 
   it('should validate the password', () => {
-    service.validatePassword('FooBar')
-      .subscribe((result: any) => expect(result).toEqual(apiResponse))
+    service.validatePassword('FooBar').subscribe((result: any) => expect(result).toEqual(apiResponse));
   });
 });

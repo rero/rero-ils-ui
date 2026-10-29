@@ -4,24 +4,24 @@ import { ResolveFn, Routes } from '@angular/router';
 import { _ } from '@ngx-translate/core';
 import {
   ActionStatus,
-  ComponentCanDeactivateGuard,
   DetailComponent,
-  EditorComponent,
   RecordData,
   RecordSearchPageComponent,
   RecordType,
   RouteDataTypesInterface,
+  unsavedChangesGuard,
 } from '@rero/ng-core';
-import { PERMISSIONS, PERMISSION_OPERATOR } from '@rero/shared';
+import { EditorComponent } from '@rero/ng-core/editor';
+import { PERMISSION_OPERATOR, PERMISSIONS } from '@rero/shared';
 import { of } from 'rxjs';
+
 import { CAN_ACCESS_ACTIONS, canAccessGuard } from '../guard/can-access.guard';
 import { permissionGuard } from '../guard/permission.guard';
 import { PatronTypesBriefViewComponent } from '../record/brief-view/patron-types-brief-view.component';
 import { PatronTypesDetailViewComponent } from '../record/detail-view/patron-types-detail-view/patron-types-detail-view.component';
 import { BaseRoute } from './base-route';
 
-export const patronTypesRouteResolver: ResolveFn<Partial<RecordType>[]> = () =>
-  new PatronTypesRoute().getTypes();
+export const patronTypesRouteResolver: ResolveFn<Partial<RecordType>[]> = () => new PatronTypesRoute().getTypes();
 
 export const patronTypesRoutes: Routes = [
   {
@@ -48,7 +48,7 @@ export const patronTypesRoutes: Routes = [
     component: EditorComponent,
     title: _('Patron type'),
     canActivate: [canAccessGuard],
-    canDeactivate: [ComponentCanDeactivateGuard],
+    canDeactivate: [unsavedChangesGuard],
     data: {
       action: CAN_ACCESS_ACTIONS.UPDATE,
     },
@@ -58,7 +58,7 @@ export const patronTypesRoutes: Routes = [
     component: EditorComponent,
     title: _('Patron type'),
     canActivate: [permissionGuard],
-    canDeactivate: [ComponentCanDeactivateGuard],
+    canDeactivate: [unsavedChangesGuard],
     data: {
       permissions: [PERMISSIONS.PTTY_CREATE],
     },
@@ -80,12 +80,14 @@ class PatronTypesRoute extends BaseRoute implements RouteDataTypesInterface {
         component: PatronTypesBriefViewComponent,
         detailComponent: PatronTypesDetailViewComponent,
         searchFilters: [this.expertSearchFilter()],
-        canAdd: () =>
-          of({ can: this.routeToolService.appStore.canAccess(PERMISSIONS.PTTY_CREATE) } as ActionStatus),
+        canAdd: () => of({ can: this.routeToolService.appStore.canAccess(PERMISSIONS.PTTY_CREATE) } as ActionStatus),
         permissions: (record: RecordData) => this.routeToolService.permissions(record, this.recordType),
         preCreateRecord: (data) => {
           data.organisation = {
-            $ref: this.routeToolService.apiService.getRefEndpoint('organisations', this.routeToolService.appStore.currentOrganisationPid()),
+            $ref: this.routeToolService.apiService.getRefEndpoint(
+              'organisations',
+              this.routeToolService.appStore.currentOrganisationPid(),
+            ),
           };
           return data;
         },

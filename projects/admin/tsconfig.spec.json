@@ -7,13 +7,9 @@
       "@rero/shared": ["../../projects/shared/src/public-api.ts"],
       "@rero/shared/*": ["../../projects/shared/src/*"],
       "@app/admin/*": ["./src/app/*"],
-      "@app/public-search/*": ["../../projects/public-search/src/app/*"],
-      "moment": ["../../node_modules/moment/min/moment.min.js"],
-      "@rero/prime/*": ["../../node_modules/@rero/ng-core/lib/record/editor/formly/primeng/*"]
+      "@app/public-search/*": ["../../projects/public-search/src/app/*"]
     }
   },
-  "files": [
-    "src/vitest.d.ts"
-  ],
+  "files": ["src/vitest.d.ts"],
   "include": ["src/**/*.d.ts", "src/**/*.spec.ts"]
 }

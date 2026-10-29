@@ -2,19 +2,18 @@
 // SPDX-FileCopyrightText: UCLouvain
 // SPDX-License-Identifier: AGPL-3.0-or-later
 import { inject, Injectable } from '@angular/core';
-import { RecordService } from '@rero/ng-core';
-import type { Error } from '@rero/ng-core';
-import type { EsResult } from '../model/es-result-model';
-import { BaseApi } from '../api/base-api';
+import { RecordService, type Error } from '@rero/ng-core';
+import { DateTime } from 'luxon';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { DateTime } from 'luxon';
+
+import { BaseApi } from '../api/base-api';
+import type { EsResult } from '../model/es-result-model';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class OperationLogsApiService extends BaseApi {
-
   private recordService: RecordService = inject(RecordService);
 
   /**
@@ -27,11 +26,20 @@ export class OperationLogsApiService extends BaseApi {
    * @return Observable
    */
   getLogs(
-    resourceType: string, resourcePid: string, page: number,
-    itemsPerPage = 10, sort = 'mostrecent'): Observable<EsResult | Error> {
+    resourceType: string,
+    resourcePid: string,
+    page: number,
+    itemsPerPage = 10,
+    sort = 'mostrecent',
+  ): Observable<EsResult | Error> {
     const query = `record.type:${resourceType} AND record.value:${resourcePid}`;
-    return this.recordService.getRecords(
-      'operation_logs', { query, page, itemsPerPage, headers: BaseApi.reroJsonheaders, sort });
+    return this.recordService.getRecords('operation_logs', {
+      query,
+      page,
+      itemsPerPage,
+      headers: BaseApi.reroJsonheaders,
+      sort,
+    });
   }
 
   /**
@@ -45,11 +53,15 @@ export class OperationLogsApiService extends BaseApi {
    * @returns Observable
    */
   getCirculationLogs(
-    resourceType: string, resourcePid: string, page: number, itemPerPage = 5, filters: object = {}, sort = 'mostrecent'): Observable<EsResult | Error> {
+    resourceType: string,
+    resourcePid: string,
+    page: number,
+    itemPerPage = 5,
+    filters: object = {},
+    sort = 'mostrecent',
+  ): Observable<EsResult | Error> {
     const query = [];
-    const queryField = (resourceType === 'loan')
-      ? 'loan.pid'
-      : 'loan.item.pid';
+    const queryField = resourceType === 'loan' ? 'loan.pid' : 'loan.item.pid';
     let fieldQuery = `${queryField}:${resourcePid}`;
     if (resourceType === 'item') {
       fieldQuery += ` OR scan.item.pid:${resourcePid}`;
@@ -70,7 +82,12 @@ export class OperationLogsApiService extends BaseApi {
       });
       query.push(`(${typeFilters.join(' OR ')})`);
     }
-    return this.recordService.getRecords('operation_logs', { query: query.join(' AND '), page, itemsPerPage: itemPerPage, sort });
+    return this.recordService.getRecords('operation_logs', {
+      query: query.join(' AND '),
+      page,
+      itemsPerPage: itemPerPage,
+      sort,
+    });
   }
 
   /**
@@ -80,11 +97,16 @@ export class OperationLogsApiService extends BaseApi {
    * @param itemsPerPage - number
    * @return Observable
    */
-   getCheckInHistory(patronPid: string, page: number, itemsPerPage = 10): Observable<EsResult | Error> {
+  getCheckInHistory(patronPid: string, page: number, itemsPerPage = 10): Observable<EsResult | Error> {
     const date = DateTime.now().minus({ months: 6 }).toISO();
     const query = `_exists_:loan AND record.type:loan AND loan.patron.pid:${patronPid} AND loan.trigger:checkin AND date:[${date} TO *]`;
-    return this.recordService.getRecords(
-      'operation_logs', { query, page, itemsPerPage, headers: BaseApi.reroJsonheaders, sort: 'mostrecent' });
+    return this.recordService.getRecords('operation_logs', {
+      query,
+      page,
+      itemsPerPage,
+      headers: BaseApi.reroJsonheaders,
+      sort: 'mostrecent',
+    });
   }
 
   /**
@@ -95,12 +117,13 @@ export class OperationLogsApiService extends BaseApi {
    */
   getHistoryByLoanPid(loanPid: string, type = 'checkin'): Observable<EsResult | Error> {
     const query = `_exists_:loan AND loan.pid:${loanPid} AND loan.trigger:${type} AND record.type:loan`;
-    return this.recordService.getRecords('operation_logs', { query, page: 1, itemsPerPage: 1, headers: BaseApi.reroJsonheaders })
-      .pipe(map((result: any) => {
-        return result.hits.total === 1
-          ? result.hits.hits[0]
-          : {};
-      }));
+    return this.recordService
+      .getRecords('operation_logs', { query, page: 1, itemsPerPage: 1, headers: BaseApi.reroJsonheaders })
+      .pipe(
+        map((result: any) => {
+          return result.hits.total === 1 ? result.hits.hits[0] : {};
+        }),
+      );
   }
 
   getCirculationTransactionsByUser(userPid: string, page: number, itemsPerPage = 10): Observable<EsResult | Error> {
@@ -110,7 +133,7 @@ export class OperationLogsApiService extends BaseApi {
       page,
       itemsPerPage,
       headers: BaseApi.reroJsonheaders,
-      sort: 'operation_date_mostrecent'
+      sort: 'operation_date_mostrecent',
     });
   }
 }

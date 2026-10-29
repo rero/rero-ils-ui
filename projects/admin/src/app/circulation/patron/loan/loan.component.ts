@@ -1,38 +1,38 @@
 // SPDX-FileCopyrightText: Fondation RERO+
 // SPDX-License-Identifier: AGPL-3.0-or-later
-import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { Item, ItemAction, ItemNoteType } from '@app/admin/classes/items';
 import { ItemsService } from '@app/admin/service/items.service';
 import { PatronService } from '@app/admin/service/patron.service';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
+import { MessageService } from '@openng/optimus-ui/api';
+import { Bind } from '@openng/optimus-ui/bind';
+import { DynamicDialogRef } from '@openng/optimus-ui/dynamicdialog';
+import { SelectChangeEvent, SelectModule } from '@openng/optimus-ui/select';
+import { Tag } from '@openng/optimus-ui/tag';
 import { CONFIG, SearchInputComponent } from '@rero/ng-core';
 import { AppStore, ItemStatus, User } from '@rero/shared';
-import { MessageService } from 'primeng/api';
-import { Bind } from 'primeng/bind';
-import { DynamicDialogRef } from 'primeng/dynamicdialog';
-import { SelectChangeEvent, SelectModule } from 'primeng/select';
-import { Tag } from 'primeng/tag';
 import { delay, filter, forkJoin, tap } from 'rxjs';
+
 import { ItemsListComponent } from '../../items-list/items-list.component';
 import { CirculationStore } from '../../store/circulation.store';
 import { CirculationSettingsComponent } from './circulation-settings/circulation-settings.component';
 
 @Component({
-    selector: 'admin-loan',
-    templateUrl: './loan.component.html',
-    imports: [
-        FormsModule,
-        SearchInputComponent,
-        CirculationSettingsComponent,
-        Bind,
-        Tag,
-        ItemsListComponent,
-        TranslatePipe,
-        SelectModule
-    ],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  selector: 'admin-loan',
+  templateUrl: './loan.component.html',
+  imports: [
+    FormsModule,
+    SearchInputComponent,
+    CirculationSettingsComponent,
+    Bind,
+    Tag,
+    ItemsListComponent,
+    TranslatePipe,
+    SelectModule,
+  ],
 })
 export class LoanComponent {
   private itemsService: ItemsService = inject(ItemsService);
@@ -61,7 +61,7 @@ export class LoanComponent {
   readonly sortCriteria = signal('-transaction_date');
 
   private _getCheckoutSetting(key: string): unknown | null {
-    return this.store.settings().find(s => s.key === key)?.value ?? null;
+    return this.store.settings().find((s) => s.key === key)?.value ?? null;
   }
 
   removeCheckoutSettings(key: string): void {
@@ -69,26 +69,30 @@ export class LoanComponent {
   }
 
   constructor() {
-    toObservable(this.store.patron).pipe(
-      takeUntilDestroyed(),
-      filter((patron): patron is User => !!patron?.pid)
-    ).subscribe(patron => {
-      const loanedItems$ = this.patronService.getItems(patron.pid!, this.sortCriteria());
-      const pickupItems$ = this.patronService.getItemsPickup(patron.pid!);
-      forkJoin([loanedItems$, pickupItems$]).subscribe({
-        next: ([loanedItems, pickupItems]) => {
-          loanedItems.map((item: { loading: boolean }) => (item.loading = true));
-          this.checkedOutItems.set([...loanedItems]);
-          this.pickupItems.set(pickupItems);
-          loanedItems.forEach((data: any, index: number) => {
-            this.patronService.getItem(data.barcode).subscribe((item) => {
-              this.checkedOutItems.update(c => [...c.slice(0, index), item, ...c.slice(index + 1)]);
+    toObservable(this.store.patron)
+      .pipe(
+        takeUntilDestroyed(),
+        filter((patron): patron is User => !!patron?.pid),
+      )
+      .subscribe((patron) => {
+        const loanedItems$ = this.patronService.getItems(patron.pid!, this.sortCriteria());
+        const pickupItems$ = this.patronService.getItemsPickup(patron.pid!);
+        forkJoin([loanedItems$, pickupItems$]).subscribe({
+          next: ([loanedItems, pickupItems]) => {
+            loanedItems.map((item: { loading: boolean }) => (item.loading = true));
+            this.checkedOutItems.set([...loanedItems]);
+            this.pickupItems.set(pickupItems);
+            loanedItems.forEach((data: any, index: number) => {
+              this.patronService.getItem(data.barcode).subscribe((item) => {
+                this.checkedOutItems.update((c) => [...c.slice(0, index), item, ...c.slice(index + 1)]);
+              });
             });
-          });
-        },
-        error: (_error) => { /* intentional no-op */ },
+          },
+          error: (_error) => {
+            /* intentional no-op */
+          },
+        });
       });
-    });
     this.searchInputFocus.set(true);
   }
 
@@ -151,7 +155,7 @@ export class LoanComponent {
                 severity: 'error',
                 summary: this.translateService.instant('Checkout'),
                 detail: this.translateService.instant(
-                  'Checkout impossible: the item is already on loan for another patron'
+                  'Checkout impossible: the item is already on loan for another patron',
                 ),
                 sticky: true,
                 closable: true,
@@ -198,7 +202,7 @@ export class LoanComponent {
       if (item.currentAction !== ItemAction.no) {
         const additionalParams: Record<string, unknown> = {};
         if (item.currentAction === ItemAction.checkout) {
-          this.store.settings().forEach(s => (additionalParams[s.key] = s.value));
+          this.store.settings().forEach((s) => (additionalParams[s.key] = s.value));
         }
         observables.push(
           this.itemsService.doAction(
@@ -207,8 +211,8 @@ export class LoanComponent {
             // TODO: user or patron ?
             this.appStore.user()?.patronLibrarian.pid,
             this.store.patron()!.pid,
-            additionalParams
-          )
+            additionalParams,
+          ),
         );
       }
     }
@@ -225,14 +229,14 @@ export class LoanComponent {
                 content: this.translateService.instant('Temporary item type removed: {{ name }}', {
                   name: newItem.removed_temporary_item_type.name,
                 }),
-                type: ItemNoteType.API
+                type: ItemNoteType.API,
               });
             }
             switch (newItem.actionDone) {
               case ItemAction.checkin: {
                 this.displayCirculationInformation(ItemAction.checkin, newItem, ItemNoteType.CHECKIN);
-                this.checkedOutItems.update(c => c.filter((currItem) => currItem.pid !== newItem.pid));
-                this.checkedInItems.update(c => [newItem, ...c]);
+                this.checkedOutItems.update((c) => c.filter((currItem) => currItem.pid !== newItem.pid));
+                this.checkedInItems.update((c) => [newItem, ...c]);
                 // display a toast message if the item goes in transit...
                 if (newItem.status === ItemStatus.IN_TRANSIT) {
                   const destination = newItem.loan.item_destination.library_name;
@@ -250,28 +254,28 @@ export class LoanComponent {
               case ItemAction.checkout: {
                 this._displayTransactionEndDateChanged(newItem);
                 this.displayCirculationInformation(ItemAction.checkout, newItem, ItemNoteType.CHECKOUT);
-                this.checkedOutItems.update(c => [newItem, ...c]);
-                this.checkedInItems.update(c => c.filter((currItem) => currItem.pid !== newItem.pid));
+                this.checkedOutItems.update((c) => [newItem, ...c]);
+                this.checkedInItems.update((c) => c.filter((currItem) => currItem.pid !== newItem.pid));
                 // check if items was ready to pickup. if yes, then we need to decrement the counter
                 const idx = this.pickupItems().findIndex((i) => i.metadata.item.pid === newItem.pid);
                 if (idx > -1) {
-                  this.pickupItems.update(c => c.filter((_, i) => i !== idx));
+                  this.pickupItems.update((c) => c.filter((_, i) => i !== idx));
                 }
                 break;
               }
               case ItemAction.extend_loan: {
-                this.checkedOutItems.update(c => {
+                this.checkedOutItems.update((c) => {
                   const index = c.findIndex((currItem) => currItem.pid === newItem.pid);
                   return index > -1 ? [...c.slice(0, index), newItem, ...c.slice(index + 1)] : c;
                 });
                 break;
               }
             }
-          })
+          }),
         ),
         tap(() => this._resetSearchInput()),
         delay(200),
-        tap(() => this.store.loadStats(this.store.patron()!.pid!))
+        tap(() => this.store.loadStats(this.store.patron()!.pid!)),
       )
       .subscribe({
         error: (err) => {
@@ -342,9 +346,11 @@ export class LoanComponent {
       if (message.length > 0) {
         message.push('<br/>');
       }
-      message.push(this.translateService.instant('Temporary item type removed: {{ name }}', {
-        name: item.removed_temporary_item_type.name,
-      }));
+      message.push(
+        this.translateService.instant('Temporary item type removed: {{ name }}', {
+          name: item.removed_temporary_item_type.name,
+        }),
+      );
     }
     // Show additional message only for the owning library
     if (action === ItemAction.checkin && item.library.pid === this.appStore.currentLibraryPid()) {
@@ -372,14 +378,14 @@ export class LoanComponent {
       message.push(`${this.translateService.instant('This item is in exhibition/course')} "${item.collections[0]}"`);
       if (item.collections.length > 1) {
         message.push(
-          ` ${this.translateService.instant('and {{ count }} other(s)', { count: item.collections.length - 1 })}`
+          ` ${this.translateService.instant('and {{ count }} other(s)', { count: item.collections.length - 1 })}`,
         );
       }
       message.push('.');
     }
     if (item.temporary_location) {
       message.push(
-        `<br/>${this.translateService.instant('This item is in temporary location')} "${item.temporary_location.name}".`
+        `<br/>${this.translateService.instant('This item is in temporary location')} "${item.temporary_location.name}".`,
       );
     }
 
@@ -406,7 +412,7 @@ export class LoanComponent {
           severity: 'warn',
           summary: this.translateService.instant('Checkout'),
           detail: this.translateService.instant(
-            'The due date has been set to the next business day, since the selected day is closed.'
+            'The due date has been set to the next business day, since the selected day is closed.',
           ),
           life: CONFIG.MESSAGE_LIFE,
         });
@@ -436,22 +442,30 @@ export class LoanComponent {
   selectingSortCriteria(sortCriteria: SelectChangeEvent): void {
     switch (sortCriteria.value) {
       case 'due_date':
-        this.checkedOutItems.update(c => [...c].sort((a, b) => a.loan.end_date.diff(b.loan.end_date)));
+        this.checkedOutItems.update((c) => [...c].sort((a, b) => a.loan.end_date.diff(b.loan.end_date)));
         break;
       case '-due_date':
-        this.checkedOutItems.update(c => [...c].sort((a, b) => b.loan.end_date.diff(a.loan.end_date)));
+        this.checkedOutItems.update((c) => [...c].sort((a, b) => b.loan.end_date.diff(a.loan.end_date)));
         break;
       case 'transaction_date':
-        this.checkedOutItems.update(c => [...c].sort((a, b) => a.loan.transaction_date.diff(b.loan.transaction_date)));
+        this.checkedOutItems.update((c) =>
+          [...c].sort((a, b) => a.loan.transaction_date.diff(b.loan.transaction_date)),
+        );
         break;
       case 'location':
-        this.checkedOutItems.update(c => [...c].sort((a, b) => a.library_location_name.localeCompare(b.library_location_name)));
+        this.checkedOutItems.update((c) =>
+          [...c].sort((a, b) => a.library_location_name.localeCompare(b.library_location_name)),
+        );
         break;
       case '-location':
-        this.checkedOutItems.update(c => [...c].sort((a, b) => b.library_location_name.localeCompare(a.library_location_name)));
+        this.checkedOutItems.update((c) =>
+          [...c].sort((a, b) => b.library_location_name.localeCompare(a.library_location_name)),
+        );
         break;
       default:
-        this.checkedOutItems.update(c => [...c].sort((a, b) => b.loan.transaction_date.diff(a.loan.transaction_date)));
+        this.checkedOutItems.update((c) =>
+          [...c].sort((a, b) => b.loan.transaction_date.diff(a.loan.transaction_date)),
+        );
     }
   }
 

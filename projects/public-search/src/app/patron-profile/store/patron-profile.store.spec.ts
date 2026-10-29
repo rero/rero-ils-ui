@@ -2,9 +2,10 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 import { TestBed } from '@angular/core/testing';
 import { TranslateService } from '@ngx-translate/core';
+import { MessageService } from '@openng/optimus-ui/api';
 import { testUserPatronMultipleOrganisationsWithSettings, User } from '@rero/shared';
-import { MessageService } from 'primeng/api';
 import { of } from 'rxjs';
+
 import { IllRequestApiService } from '../../api/ill-request-api.service';
 import { LoanApiService } from '../../api/loan-api.service';
 import { PatronApiService } from '../../api/patron-api.service';
@@ -43,8 +44,7 @@ describe('PatronProfileStore', () => {
         { provide: TranslateService, useValue: { instant: vi.fn((value: string) => value) } },
         { provide: MessageService, useValue: { add: vi.fn() } },
       ],
-    })
-      .inject(PatronProfileStore);
+    }).inject(PatronProfileStore);
   });
 
   it('should have correct initial state', () => {
@@ -93,7 +93,7 @@ describe('PatronProfileStore', () => {
     it('should set isMultiOrganisation to false for a single patron', () => {
       const single = new User({
         ...testUserPatronMultipleOrganisationsWithSettings,
-        patrons: [testUserPatronMultipleOrganisationsWithSettings.patrons[0]]
+        patrons: [testUserPatronMultipleOrganisationsWithSettings.patrons[0]],
       });
       store.init(single);
       expect(store.isMultiOrganisation()).toBe(false);
@@ -102,7 +102,7 @@ describe('PatronProfileStore', () => {
     it('should handle user with no patron role', () => {
       const noPatron = new User({
         ...testUserPatronMultipleOrganisationsWithSettings,
-        patrons: [{ ...testUserPatronMultipleOrganisationsWithSettings.patrons[0], roles: ['librarian' as const] }]
+        patrons: [{ ...testUserPatronMultipleOrganisationsWithSettings.patrons[0], roles: ['librarian' as const] }],
       });
       store.init(noPatron);
       expect(store.patrons()).toHaveLength(0);
@@ -144,5 +144,4 @@ describe('PatronProfileStore', () => {
       expect(store.activeTab()).toBe('request');
     });
   });
-
 });

@@ -14,22 +14,20 @@ SPDX-License-Identifier: AGPL-3.0-or-later
       [disabled]="!canRequest().can"
       [tooltipDisabled]="canRequest().can"
       [pTooltip]="tooltip()"
-      tooltipPosition="top"
-    >
+      tooltipPosition="top">
       <i class="fa-solid fa-cart-arrow-down ui:mr-2"></i>
       @if (holdingsItemsCount() > 0) {
         {{ 'Request another issue' | translate }}
       } @else {
         {{ 'Request an issue' | translate }}
       }
-      </p-button>
+    </p-button>
   } @else {
     <public-search-pickup-location
       [record]="record()"
       [itemCount]="holdingsItemsCount()"
       [recordType]="recordType()"
       (closeEvent)="closeDialog()"
-      class="ui:w-full"
-    />
+      class="ui:w-full" />
   }
 }

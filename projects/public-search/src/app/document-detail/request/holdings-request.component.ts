@@ -1,12 +1,13 @@
 // SPDX-FileCopyrightText: Fondation RERO+
 // SPDX-License-Identifier: AGPL-3.0-or-later
-import { ChangeDetectionStrategy, Component, computed, inject, input, OnInit, output, signal } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Component, computed, inject, input, OnInit, output, signal } from '@angular/core';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
+import { Button } from '@openng/optimus-ui/button';
+import { Tooltip } from '@openng/optimus-ui/tooltip';
 import { RecordData } from '@rero/ng-core';
 import { AppStore, IPatron } from '@rero/shared';
-import { Button } from 'primeng/button';
-import { Tooltip } from 'primeng/tooltip';
+import { Observable } from 'rxjs';
+
 import { HoldingsApiService } from '../../api/holdings-api.service';
 import { ItemApiService } from '../../api/item-api.service';
 import { canRequest } from '../model/can-request-model';
@@ -16,10 +17,8 @@ import { PickupLocationComponent } from './pickup-location/pickup-location.compo
   selector: 'public-search-request',
   templateUrl: './holdings-request.component.html',
   imports: [Button, Tooltip, PickupLocationComponent, TranslatePipe],
-  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class HoldingsRequestComponent implements OnInit {
-
   private itemApiService = inject(ItemApiService);
   private holdingsApiService = inject(HoldingsApiService);
   private appStore = inject(AppStore);
@@ -45,9 +44,10 @@ export class HoldingsRequestComponent implements OnInit {
     'patron_type_request_limits',
   ];
 
-  allReasonsDisplayable = computed(() =>
-    this.canRequest().reasons &&
-    Object.keys(this.canRequest().reasons).every(key => this.reasonsToDisplay.includes(key))
+  allReasonsDisplayable = computed(
+    () =>
+      this.canRequest().reasons &&
+      Object.keys(this.canRequest().reasons).every((key) => this.reasonsToDisplay.includes(key)),
   );
 
   hiddenRequestButton = computed(() => this.canRequest().can || this.allReasonsDisplayable());
@@ -55,7 +55,7 @@ export class HoldingsRequestComponent implements OnInit {
   tooltip = computed(() =>
     Object.values(this.canRequest().reasons || {})
       .map((reason: string) => '- ' + this.translateService.instant(reason))
-      .join('\n')
+      .join('\n'),
   );
 
   ngOnInit(): void {
@@ -64,7 +64,9 @@ export class HoldingsRequestComponent implements OnInit {
         ? (pid, lib, bc) => this.holdingsApiService.canRequest(pid, lib, bc) as unknown as Observable<canRequest>
         : this.recordType() === 'item'
           ? (pid, lib, bc) => this.itemApiService.canRequest(pid, lib, bc)
-          : () => { throw new TypeError(`${this.recordType()} isn't supported`); };
+          : () => {
+              throw new TypeError(`${this.recordType()} isn't supported`);
+            };
 
     const user = this.appStore.user();
     const record = this.record();
@@ -75,11 +77,9 @@ export class HoldingsRequestComponent implements OnInit {
     this.patron.set(patron);
 
     if (patron?.patron) {
-      canRequest$(
-        metadata['pid'],
-        metadata['library'].pid,
-        patron.patron.barcode[0],
-      ).subscribe(can => this.canRequest.set(can));
+      canRequest$(metadata['pid'], metadata['library'].pid, patron.patron.barcode[0]).subscribe((can) =>
+        this.canRequest.set(can),
+      );
     }
   }
 

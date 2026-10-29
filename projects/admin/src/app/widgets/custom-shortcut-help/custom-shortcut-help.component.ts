@@ -1,19 +1,17 @@
 // SPDX-FileCopyrightText: Fondation RERO+
 // SPDX-FileCopyrightText: UCLouvain
 // SPDX-License-Identifier: AGPL-3.0-or-later
-import { Component, inject, ChangeDetectionStrategy} from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { HotkeysService, HotkeysShortcutPipe } from '@ngneat/hotkeys';
-import { DynamicDialogRef } from 'primeng/dynamicdialog';
+import { DynamicDialogRef } from '@openng/optimus-ui/dynamicdialog';
 
 @Component({
-    selector: 'admin-custom-shortcut-help',
-    templateUrl: './custom-shortcut-help.component.html',
-    styleUrls: ['./custom-shortcut-help.component.scss'],
-    imports: [HotkeysShortcutPipe],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  selector: 'admin-custom-shortcut-help',
+  templateUrl: './custom-shortcut-help.component.html',
+  styleUrls: ['./custom-shortcut-help.component.scss'],
+  imports: [HotkeysShortcutPipe],
 })
 export class CustomShortcutHelpComponent {
-
   private hotKeysService: HotkeysService = inject(HotkeysService);
   private ref = inject(DynamicDialogRef);
 

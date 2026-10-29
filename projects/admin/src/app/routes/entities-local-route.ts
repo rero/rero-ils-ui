@@ -3,17 +3,18 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 import { ResolveFn, Routes } from '@angular/router';
 import { _ } from '@ngx-translate/core';
-import { EditorComponent, RecordData, RecordType, RouteDataTypesInterface } from '@rero/ng-core';
+import { RecordData, RecordType, RouteDataTypesInterface } from '@rero/ng-core';
+import { EditorComponent } from '@rero/ng-core/editor';
 import { PERMISSIONS } from '@rero/shared';
 import { of } from 'rxjs';
+
 import { CAN_ACCESS_ACTIONS, canAccessGuard } from '../guard/can-access.guard';
 import { permissionGuard } from '../guard/permission.guard';
 import { EntitiesLocalDetailViewComponent } from '../record/detail-view/entities-detail-view/local/entities-local-detail-view.component';
 import { LocalPageDetailComponent } from '../record/detail-view/entities-detail-view/local/local-page-detail/local-page-detail.component';
 import { BaseRoute } from './base-route';
 
-export const entitiesLocalRouteResolver: ResolveFn<Partial<RecordType>[]> = () =>
-  new EntitiesLocalRoute().getTypes();
+export const entitiesLocalRouteResolver: ResolveFn<Partial<RecordType>[]> = () => new EntitiesLocalRoute().getTypes();
 
 export const entitiesLocalRoutes: Routes = [
   {

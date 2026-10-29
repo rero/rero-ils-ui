@@ -1,21 +1,21 @@
 // SPDX-FileCopyrightText: Fondation RERO+
 // SPDX-FileCopyrightText: UCLouvain
 // SPDX-License-Identifier: AGPL-3.0-or-later
-import { ChangeDetectionStrategy, Component, computed, effect, inject, Injector, OnInit, signal } from '@angular/core';
+import { Component, computed, effect, inject, Injector, OnInit, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { _, TranslatePipe } from "@ngx-translate/core";
-import type { RecordData } from '@rero/ng-core';
-import type { EsResult } from '../../model/es-result-model';
-import { DateTranslatePipe } from '@rero/ng-core';
-import { Bind } from 'primeng/bind';
-import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
-import { PaginatorState } from 'primeng/paginator';
-import { SelectChangeEvent, SelectModule } from 'primeng/select';
-import { TableModule } from 'primeng/table';
+import { _, TranslatePipe } from '@ngx-translate/core';
+import { Bind } from '@openng/optimus-ui/bind';
+import { DynamicDialogConfig, DynamicDialogRef } from '@openng/optimus-ui/dynamicdialog';
+import { PaginatorState } from '@openng/optimus-ui/paginator';
+import { SelectChangeEvent, SelectModule } from '@openng/optimus-ui/select';
+import { TableModule } from '@openng/optimus-ui/table';
+import { DateTranslatePipe, type RecordData } from '@rero/ng-core';
+
 import { OperationLogsApiService } from '../../api/operation-logs-api.service';
+import type { EsResult } from '../../model/es-result-model';
+import { AppStore } from '../../store/app.store';
 import { Pager } from '../paginator/model/paginator-model';
 import { PaginatorComponent } from '../paginator/paginator.component';
-import { AppStore } from '../../store/app.store';
 
 export type sortOptionType = {
   value: string;
@@ -24,13 +24,11 @@ export type sortOptionType = {
 };
 
 @Component({
-    selector: 'shared-operation-logs',
-    templateUrl: './operation-logs.component.html',
-    imports: [Bind, FormsModule, SelectModule, TableModule, DateTranslatePipe, TranslatePipe, PaginatorComponent],
-    changeDetection: ChangeDetectionStrategy.OnPush
+  selector: 'shared-operation-logs',
+  templateUrl: './operation-logs.component.html',
+  imports: [Bind, FormsModule, SelectModule, TableModule, DateTranslatePipe, TranslatePipe, PaginatorComponent],
 })
 export class OperationLogsComponent implements OnInit {
-
   private dynamicDialogRef: DynamicDialogRef = inject(DynamicDialogRef);
   private dynamicDialogConfig: DynamicDialogConfig = inject(DynamicDialogConfig);
   private operationLogsApiService: OperationLogsApiService = inject(OperationLogsApiService);
@@ -47,14 +45,14 @@ export class OperationLogsComponent implements OnInit {
     page: 1,
     first: 1,
     rows: 10,
-    rowsPerPageOptions: [10, 20, 50]
+    rowsPerPageOptions: [10, 20, 50],
   });
   /** Sort criteria */
   readonly sortCriteria = signal('mostrecent');
   /** Sort options */
   readonly sortOptions = signal([
     { value: 'mostrecent', label: _('Date (newest)'), icon: 'fa fa-sort-amount-desc' },
-    { value: 'created', label: _('Date (oldest)'), icon: 'fa fa-sort-amount-asc' }
+    { value: 'created', label: _('Date (oldest)'), icon: 'fa fa-sort-amount-asc' },
   ]);
 
   readonly operationLogsResult = signal<EsResult | undefined>(undefined);
@@ -77,18 +75,13 @@ export class OperationLogsComponent implements OnInit {
         const pager = this.pager();
         const sort = this.sortCriteria();
 
-        const subscription = this.operationLogsApiService.getLogs(
-          this.resourceKey,
-          this.resourcePid,
-          pager.page,
-          pager.rows,
-          sort
-        )
-          .subscribe(response => this.operationLogsResult.set(response as EsResult));
+        const subscription = this.operationLogsApiService
+          .getLogs(this.resourceKey, this.resourcePid, pager.page, pager.rows, sort)
+          .subscribe((response) => this.operationLogsResult.set(response as EsResult));
 
         onCleanup(() => subscription.unsubscribe());
       },
-      { injector: this.injector }
+      { injector: this.injector },
     );
   }
 
@@ -101,17 +94,17 @@ export class OperationLogsComponent implements OnInit {
   pageChange(event: PaginatorState): void {
     const rows = event.rows || this.pager().rows;
     const hasRowsChanged = rows !== this.pager().rows;
-    this.pager.update(pager => ({
+    this.pager.update((pager) => ({
       page: hasRowsChanged ? 1 : (event.page || 0) + 1,
       first: hasRowsChanged ? 1 : (event.first || 0) + 1,
       rows,
-      rowsPerPageOptions: pager.rowsPerPageOptions
+      rowsPerPageOptions: pager.rowsPerPageOptions,
     }));
   }
 
   /** Change sort */
   sortChange(event: SelectChangeEvent): void {
     this.sortCriteria.set(event.value);
-    this.pager.update(pager => ({ ...pager, page: 1, first: 1 }));
+    this.pager.update((pager) => ({ ...pager, page: 1, first: 1 }));
   }
 }

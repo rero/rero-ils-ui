@@ -4,103 +4,101 @@ SPDX-FileCopyrightText: UCLouvain
 SPDX-License-Identifier: AGPL-3.0-or-later
 -->
 <dl class="metadata">
-<!-- AUTHORIZED ACCESS POINT(S) -->
-@if (record().authorized_access_point) {
-  <dt translate>Authorized access point</dt>
-  <dd>{{ record().authorized_access_point }}</dd>
-}
-<!-- BNF TYPE -->
-@if (record().bnf_type) {
-  <dt translate>Type</dt>
-  <dd>{{ record().bnf_type }}</dd>
-}
-<!-- VARIANT ACCESS POINT(S) -->
-@if (record().variant_access_point) {
-  <dt translate>Variant access point</dt>
-  <dd>
-    <ul class="ui:list-none">
-      @for (variant_access_point of record().variant_access_point; track $index) {
-        <li>{{ variant_access_point }}</li>
-      }
-    </ul>
-  </dd>
-}
-<!-- BROADER -->
-@if (record().broader) {
-  <dt translate>Broader</dt>
-  <dd>
-    <ul class="ui:list-none">
-      @for (broader of record().broader; track $index) {
-        <li>{{ broader.authorized_access_point }}</li>
-      }
-    </ul>
-  </dd>
-}
-<!-- NARROWER -->
-@if (record().narrower) {
-  <dt translate>Narrower</dt>
-  <dd>
-    <ul class="ui:list-none">
-      @for (narrower of record().narrower; track $index) {
-        <li>{{ narrower.authorized_access_point }}</li>
-      }
-    </ul>
-  </dd>
-}
-<!-- RELATED -->
-@if (record().related) {
-  <dt translate>Related</dt>
-  <dd>
-    <ul class="ui:list-none">
-      @for (related of record().related; track $index) {
-        <li>{{ related.authorized_access_point }}</li>
-      }
-    </ul>
-  </dd>
-}
+  <!-- AUTHORIZED ACCESS POINT(S) -->
+  @if (record().authorized_access_point) {
+    <dt>{{ 'Authorized access point' | translate }}</dt>
+    <dd>{{ record().authorized_access_point }}</dd>
+  }
+  <!-- BNF TYPE -->
+  @if (record().bnf_type) {
+    <dt>{{ 'Type' | translate }}</dt>
+    <dd>{{ record().bnf_type }}</dd>
+  }
+  <!-- VARIANT ACCESS POINT(S) -->
+  @if (record().variant_access_point) {
+    <dt>{{ 'Variant access point' | translate }}</dt>
+    <dd>
+      <ul class="ui:list-none">
+        @for (variant_access_point of record().variant_access_point; track $index) {
+          <li>{{ variant_access_point }}</li>
+        }
+      </ul>
+    </dd>
+  }
+  <!-- BROADER -->
+  @if (record().broader) {
+    <dt>{{ 'Broader' | translate }}</dt>
+    <dd>
+      <ul class="ui:list-none">
+        @for (broader of record().broader; track $index) {
+          <li>{{ broader.authorized_access_point }}</li>
+        }
+      </ul>
+    </dd>
+  }
+  <!-- NARROWER -->
+  @if (record().narrower) {
+    <dt>{{ 'Narrower' | translate }}</dt>
+    <dd>
+      <ul class="ui:list-none">
+        @for (narrower of record().narrower; track $index) {
+          <li>{{ narrower.authorized_access_point }}</li>
+        }
+      </ul>
+    </dd>
+  }
+  <!-- RELATED -->
+  @if (record().related) {
+    <dt>{{ 'Related' | translate }}</dt>
+    <dd>
+      <ul class="ui:list-none">
+        @for (related of record().related; track $index) {
+          <li>{{ related.authorized_access_point }}</li>
+        }
+      </ul>
+    </dd>
+  }
 
-<!-- CLASSIFICATION(S) -->
-@if (record().classification) {
-  <dt translate>Classification</dt>
-  <dd>
-    <ul class="ui:list-none">
-      @for (classification of record().classification; track $index) {
-        <li class="ui:mb-1 ui:flex ui:gap-1 ui:items-center">
-          @if (classification.classificationPortion) {
-            <span>{{ classification.classificationPortion }}</span>
-          }
-          @if (classification.name) {
-            <span>{{ classification.name }}</span>
-          }
-          @if (classification.type) {
-            <p-tag severity="secondary" [value]="classification.type | translate" />
-          }
-        </li>
-      }
-    </ul>
-  </dd>
-}
-<!-- EXACT MATCH -->
-@if (exactMatch().length > 0) {
-  <ng-container
-    [ngTemplateOutlet]="match"
-    [ngTemplateOutletContext]="{ item: {match: exactMatch(), title: 'Exact match' | translate } }"
-  ></ng-container>
-}
-<!-- CLOSE MATCH -->
-@if (closeMatch().length > 0) {
-  <ng-container
-    [ngTemplateOutlet]="match"
-    [ngTemplateOutletContext]="{ item: {match: closeMatch(), title: 'Close match' | translate } }"
-  ></ng-container>
-}
+  <!-- CLASSIFICATION(S) -->
+  @if (record().classification) {
+    <dt>{{ 'Classification' | translate }}</dt>
+    <dd>
+      <ul class="ui:list-none">
+        @for (classification of record().classification; track $index) {
+          <li class="ui:mb-1 ui:flex ui:gap-1 ui:items-center">
+            @if (classification.classificationPortion) {
+              <span>{{ classification.classificationPortion }}</span>
+            }
+            @if (classification.name) {
+              <span>{{ classification.name }}</span>
+            }
+            @if (classification.type) {
+              <p-tag severity="secondary" [value]="classification.type | translate" />
+            }
+          </li>
+        }
+      </ul>
+    </dd>
+  }
+  <!-- EXACT MATCH -->
+  @if (exactMatch().length > 0) {
+    <ng-container
+      [ngTemplateOutlet]="match"
+      [ngTemplateOutletContext]="{ item: { match: exactMatch(), title: 'Exact match' | translate } }"></ng-container>
+  }
+  <!-- CLOSE MATCH -->
+  @if (closeMatch().length > 0) {
+    <ng-container
+      [ngTemplateOutlet]="match"
+      [ngTemplateOutletContext]="{ item: { match: closeMatch(), title: 'Close match' | translate } }"></ng-container>
+  }
 </dl>
 
 <ng-template #match let-item="item">
-  <dt translate>{{ item.title }}</dt>
+  <dt>{{ item.title | translate }}</dt>
   <dd>
-    <ul  class="ui:list-none">
-      @for(match of item.match; track $index) {
+    <ul class="ui:list-none">
+      @for (match of item.match; track $index) {
         <li>
           {{ match.source }}:
           @if (match.uri) {

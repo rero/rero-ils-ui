@@ -1,9 +1,10 @@
 // SPDX-FileCopyrightText: Fondation RERO+
 // SPDX-License-Identifier: AGPL-3.0-or-later
 import { TestBed } from '@angular/core/testing';
-import { TranslateModule } from '@ngx-translate/core';
+import { provideTranslateService } from '@ngx-translate/core';
 import { RecordService } from '@rero/ng-core';
 import { of } from 'rxjs';
+
 import { ItemInCollectionPipe } from './item-in-collection.pipe';
 
 describe('ItemInCollectionPipe', () => {
@@ -13,33 +14,31 @@ describe('ItemInCollectionPipe', () => {
     aggregations: {},
     hits: {
       total: 0,
-      hits: []
+      hits: [],
     },
-    links: {}
+    links: {},
   };
 
-  const records = [{ pid: '1'}];
+  const records = [{ pid: '1' }];
 
   const withRecords = {
     aggregations: {},
     hits: {
       total: 1,
-      hits: records
+      hits: records,
     },
-    links: {}
+    links: {},
   };
 
   const recordServiceSpy = { getRecords: vi.fn() };
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [
-        TranslateModule.forRoot()
-      ],
       providers: [
+        provideTranslateService(),
         ItemInCollectionPipe,
-        { provide: RecordService, useValue: recordServiceSpy }
-      ]
+        { provide: RecordService, useValue: recordServiceSpy },
+      ],
     });
     pipe = TestBed.inject(ItemInCollectionPipe);
   });

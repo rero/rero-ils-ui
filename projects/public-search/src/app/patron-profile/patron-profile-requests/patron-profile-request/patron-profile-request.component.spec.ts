@@ -1,17 +1,18 @@
 // SPDX-FileCopyrightText: Fondation RERO+
 // SPDX-License-Identifier: AGPL-3.0-or-later
-import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClient, withXhr } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { TranslateModule } from '@ngx-translate/core';
+import { provideTranslateService } from '@ngx-translate/core';
+import { MessageService } from '@openng/optimus-ui/api';
 import { RecordService } from '@rero/ng-core';
 import { AppStore, testUserPatronWithSettings, User } from '@rero/shared';
 import { cloneDeep } from 'lodash-es';
 import { of } from 'rxjs';
-import { MessageService } from 'primeng/api';
-import { LoanApiService } from '../../../api/loan-api.service';
+
 import { IllRequestApiService } from '../../../api/ill-request-api.service';
+import { LoanApiService } from '../../../api/loan-api.service';
 import { PatronApiService } from '../../../api/patron-api.service';
 import { PatronTransactionApiService } from '../../../api/patron-transaction-api.service';
 import { PatronProfileStore } from '../../store/patron-profile.store';
@@ -27,28 +28,26 @@ describe('PatronProfileRequestComponent', () => {
       pid: '1',
       document: {
         pid: '1',
-        title: [{ type: 'bf:Title', _text: 'Document title' }]
+        title: [{ type: 'bf:Title', _text: 'Document title' }],
       },
       item: {},
       pickup_name: 'Pickup name',
       state: 'ITEM_AT_DESK',
-      rank: 3
-    }
+      rank: 3,
+    },
   };
 
   const appStoreSpy = {
-    user: vi.fn().mockReturnValue(new User(cloneDeep(testUserPatronWithSettings)))
+    user: vi.fn().mockReturnValue(new User(cloneDeep(testUserPatronWithSettings))),
   };
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-    schemas: [NO_ERRORS_SCHEMA],
-    imports: [
-        TranslateModule.forRoot(),
-        PatronProfileRequestComponent
-    ],
-    providers: [
-      { provide: AppStore, useValue: appStoreSpy },
+      schemas: [NO_ERRORS_SCHEMA],
+      imports: [PatronProfileRequestComponent],
+      providers: [
+        provideTranslateService(),
+        { provide: AppStore, useValue: appStoreSpy },
         {
           provide: LoanApiService,
           useValue: {
@@ -64,13 +63,19 @@ describe('PatronProfileRequestComponent', () => {
           },
         },
         { provide: MessageService, useValue: { add: vi.fn() } },
-        { provide: PatronTransactionApiService, useValue: { getFees: vi.fn().mockReturnValue(of({ hits: { hits: [] } })) } },
+        {
+          provide: PatronTransactionApiService,
+          useValue: { getFees: vi.fn().mockReturnValue(of({ hits: { hits: [] } })) },
+        },
         { provide: PatronApiService, useValue: { getOverduePreviewByPatronPid: vi.fn().mockReturnValue(of([])) } },
-        { provide: RecordService, useValue: { getRecord: vi.fn().mockReturnValue(of({ metadata: {} })), MAX_REST_RESULTS_SIZE: 1000 } },
-        provideHttpClient(),
-        provideHttpClientTesting()
-    ]
-}).compileComponents();
+        {
+          provide: RecordService,
+          useValue: { getRecord: vi.fn().mockReturnValue(of({ metadata: {} })), MAX_REST_RESULTS_SIZE: 1000 },
+        },
+        provideHttpClient(withXhr()),
+        provideHttpClientTesting(),
+      ],
+    }).compileComponents();
   });
 
   beforeEach(() => {

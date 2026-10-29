@@ -1,6 +1,7 @@
 // SPDX-FileCopyrightText: Fondation RERO+
 // SPDX-License-Identifier: AGPL-3.0-or-later
 import { CoreTranslateLoader } from '@rero/ng-core';
+
 import { AppTranslateLoader, ngCoreI18n } from './app-translate-loader';
 
 describe('AppTranslateLoader', () => {

@@ -5,16 +5,17 @@ import { FormlyFieldConfig } from '@ngx-formly/core';
 import { _ } from '@ngx-translate/core';
 import {
   ActionStatus,
-  ComponentCanDeactivateGuard,
   JSONSchema7,
   RecordData,
   RecordService,
   RecordType,
   RouteDataTypesInterface,
+  unsavedChangesGuard,
 } from '@rero/ng-core';
 import { PERMISSIONS } from '@rero/shared';
 import { of } from 'rxjs';
 import { map } from 'rxjs/operators';
+
 import { CAN_ACCESS_ACTIONS, canAccessGuard } from '../guard/can-access.guard';
 import { permissionGuard } from '../guard/permission.guard';
 import { HoldingEditorComponent } from '../record/custom-editor/holding-editor/holding-editor.component';
@@ -22,8 +23,7 @@ import { HoldingDetailViewComponent } from '../record/detail-view/holding-detail
 import { HoldingPageDetailComponent } from '../record/detail-view/holding-detail-view/holding-page-detail/holding-page-detail.component';
 import { BaseRoute } from './base-route';
 
-export const holdingsRouteResolver: ResolveFn<Partial<RecordType>[]> = () =>
-  new HoldingsRoute().getTypes();
+export const holdingsRouteResolver: ResolveFn<Partial<RecordType>[]> = () => new HoldingsRoute().getTypes();
 
 export const holdingsRoutes: Routes = [
   {
@@ -40,7 +40,7 @@ export const holdingsRoutes: Routes = [
     component: HoldingEditorComponent,
     title: _('Holding'),
     canActivate: [canAccessGuard],
-    canDeactivate: [ComponentCanDeactivateGuard],
+    canDeactivate: [unsavedChangesGuard],
     data: {
       action: CAN_ACCESS_ACTIONS.UPDATE,
     },
@@ -50,7 +50,7 @@ export const holdingsRoutes: Routes = [
     component: HoldingEditorComponent,
     title: _('Holding'),
     canActivate: [permissionGuard],
-    canDeactivate: [ComponentCanDeactivateGuard],
+    canDeactivate: [unsavedChangesGuard],
     data: {
       permissions: [PERMISSIONS.HOLD_CREATE],
     },
@@ -79,14 +79,13 @@ class HoldingsRoute extends BaseRoute implements RouteDataTypesInterface {
         },
         detailComponent: HoldingDetailViewComponent,
         canRead: (record: RecordData) => this.canRead(record),
-        canAdd: () =>
-          of({ can: this.routeToolService.appStore.canAccess(PERMISSIONS.HOLD_CREATE) } as ActionStatus),
+        canAdd: () => of({ can: this.routeToolService.appStore.canAccess(PERMISSIONS.HOLD_CREATE) } as ActionStatus),
         permissions: (record: RecordData) => this.routeToolService.permissions(record, this.recordType, true),
         preCreateRecord: (data) => {
           data.document = {
             $ref: this.routeToolService.apiService.getRefEndpoint(
               'documents',
-              this.routeToolService.getRouteQueryParam('document')
+              this.routeToolService.getRouteQueryParam('document'),
             ),
           };
           return data;
@@ -98,7 +97,7 @@ class HoldingsRoute extends BaseRoute implements RouteDataTypesInterface {
           return [
             this.routeToolService.translateService.instant(_('Do you really want to delete this record?')),
             this.routeToolService.translateService.instant(
-              _('This will also delete all items and issues of the holdings.')
+              _('This will also delete all items and issues of the holdings.'),
             ),
           ];
         },
@@ -118,7 +117,7 @@ class HoldingsRoute extends BaseRoute implements RouteDataTypesInterface {
           return this.redirectUrl(record.metadata, '/records/templates/detail');
         },
         hideInTabs: true,
-      }
+      },
     ];
   }
 
@@ -140,7 +139,12 @@ class HoldingsRoute extends BaseRoute implements RouteDataTypesInterface {
           const libraryPid = this.routeToolService.appStore.currentLibraryPid();
           const query = `library.pid:${libraryPid}`;
           f.props!.options = recordService
-            .getRecords('locations', { query, page: 1, itemsPerPage: RecordService.MAX_REST_RESULTS_SIZE, sort: 'name' })
+            .getRecords('locations', {
+              query,
+              page: 1,
+              itemsPerPage: RecordService.MAX_REST_RESULTS_SIZE,
+              sort: 'name',
+            })
             .pipe(
               map((result: any) => (result.hits.total === 0 ? [] : result.hits.hits)),
               map((hits: any) => {
@@ -150,7 +154,7 @@ class HoldingsRoute extends BaseRoute implements RouteDataTypesInterface {
                     value: apiService.getRefEndpoint('locations', hit.metadata.pid),
                   };
                 });
-              })
+              }),
             );
         },
       };

@@ -7,8 +7,6 @@ import { ItemSwitchLocationComponent } from '@app/admin/components/items/switch-
 import { FormlyFieldConfig } from '@ngx-formly/core';
 import { _ } from '@ngx-translate/core';
 import {
-  ComponentCanDeactivateGuard,
-  EditorComponent,
   IFilter,
   JSONSchema7,
   RecordData,
@@ -16,10 +14,13 @@ import {
   RecordService,
   RecordType,
   RouteDataTypesInterface,
+  unsavedChangesGuard,
 } from '@rero/ng-core';
-import { AppStore, IssueItemStatus, PERMISSIONS, PERMISSION_OPERATOR } from '@rero/shared';
+import { EditorComponent } from '@rero/ng-core/editor';
+import { AppStore, IssueItemStatus, PERMISSION_OPERATOR, PERMISSIONS } from '@rero/shared';
 import { Observable, of } from 'rxjs';
 import { filter, map, take } from 'rxjs/operators';
+
 import { ItemType } from '../classes/items';
 import { CAN_ACCESS_ACTIONS, canAccessGuard } from '../guard/can-access.guard';
 import { permissionGuard } from '../guard/permission.guard';
@@ -28,8 +29,7 @@ import { ItemDetailViewComponent } from '../record/detail-view/item-detail-view/
 import { ItemPageDetailComponent } from '../record/detail-view/item-detail-view/item-page-detail/item-page-detail.component';
 import { BaseRoute } from './base-route';
 
-export const itemsRouteResolver: ResolveFn<Partial<RecordType>[]> = () =>
-  new ItemsRoute().getTypes();
+export const itemsRouteResolver: ResolveFn<Partial<RecordType>[]> = () => new ItemsRoute().getTypes();
 
 export const itemsRoutes: Routes = [
   {
@@ -55,7 +55,7 @@ export const itemsRoutes: Routes = [
     component: EditorComponent,
     title: _('Item'),
     canActivate: [canAccessGuard],
-    canDeactivate: [ComponentCanDeactivateGuard],
+    canDeactivate: [unsavedChangesGuard],
     data: {
       action: CAN_ACCESS_ACTIONS.UPDATE,
     },
@@ -74,7 +74,7 @@ export const itemsRoutes: Routes = [
     component: EditorComponent,
     title: _('Item'),
     canActivate: [permissionGuard],
-    canDeactivate: [ComponentCanDeactivateGuard],
+    canDeactivate: [unsavedChangesGuard],
     data: {
       permissions: [PERMISSIONS.HOLD_CREATE, PERMISSIONS.ITEM_CREATE],
       permissionsOperator: PERMISSION_OPERATOR.AND,
@@ -129,7 +129,7 @@ class ItemsRoute extends BaseRoute implements RouteDataTypesInterface {
             data.document = {
               $ref: this.routeToolService.apiService.getRefEndpoint(
                 'documents',
-                this.routeToolService.getRouteQueryParam('document')
+                this.routeToolService.getRouteQueryParam('document'),
               ),
             };
           }
@@ -250,12 +250,16 @@ class ItemsRoute extends BaseRoute implements RouteDataTypesInterface {
           return this.redirectUrl(record.metadata, '/records/templates/detail');
         },
         hideInTabs: true,
-      }
+      },
     ];
 
     // TODO: Refactor this after the change of AppInitializer service with user.
     toObservable(this.routeToolService.appStore.user, { injector: this.routeToolService.injector })
-      .pipe(filter(u => !!u), take(1)).subscribe(() => {
+      .pipe(
+        filter((u) => !!u),
+        take(1),
+      )
+      .subscribe(() => {
         const { patronLibrarian } = this.routeToolService.appStore.user();
         if (patronLibrarian) {
           (types[0] as any).preFilters.organisation = patronLibrarian.organisation.pid;
@@ -295,7 +299,12 @@ class ItemsRoute extends BaseRoute implements RouteDataTypesInterface {
           const libraryPid = this.routeToolService.appStore.currentLibraryPid();
           const query = `library.pid:${libraryPid}`;
           f.props!.options = recordService
-            .getRecords('locations', { query, page: 1, itemsPerPage: RecordService.MAX_REST_RESULTS_SIZE, sort: 'name' })
+            .getRecords('locations', {
+              query,
+              page: 1,
+              itemsPerPage: RecordService.MAX_REST_RESULTS_SIZE,
+              sort: 'name',
+            })
             .pipe(
               map((result: any) => (result.hits.total === 0 ? [] : result.hits.hits)),
               map((hits: any[]) =>
@@ -304,8 +313,8 @@ class ItemsRoute extends BaseRoute implements RouteDataTypesInterface {
                     label: hit.metadata.name,
                     value: apiService.getRefEndpoint('locations', hit.metadata.pid),
                   };
-                })
-              )
+                }),
+              ),
             );
         },
       };
@@ -344,25 +353,37 @@ class ItemsRoute extends BaseRoute implements RouteDataTypesInterface {
     record.issue.expected_date = this.routeToolService.getRouteQueryParam('expected_date', today);
     record.issue.received_date = this.routeToolService.getRouteQueryParam('received_date', today);
 
-    (this.routeToolService.recordService as RecordService).getRecord('holdings', holdingPid).subscribe(
-      (holdingData: any) => {
+    (this.routeToolService.recordService as RecordService)
+      .getRecord('holdings', holdingPid)
+      .subscribe((holdingData: any) => {
         record.item_type = holdingData.metadata.circulation_category;
         record.location = holdingData.metadata.location;
         record.document = holdingData.metadata.document;
         record.holding = { $ref: (this.routeToolService.apiService as any).getRefEndpoint('holdings', holdingPid) };
-      }
-    );
+      });
   }
 
   private processFilterName(filter: IFilter): Observable<string> {
-    if(filter.name) { return of(filter.name); }
+    if (filter.name) {
+      return of(filter.name);
+    }
     switch (filter.aggregationKey) {
       case 'item_type':
-      case 'temporary_item_type': return this.recordService.getRecord<{metadata: {name: string}}>('item_types', filter.key).pipe(map(record => record.metadata.name));
-      case 'library': return this.recordService.getRecord<{metadata: {name: string}}>('libraries', filter.key).pipe(map(record => record.metadata.name));
+      case 'temporary_item_type':
+        return this.recordService
+          .getRecord<{ metadata: { name: string } }>('item_types', filter.key)
+          .pipe(map((record) => record.metadata.name));
+      case 'library':
+        return this.recordService
+          .getRecord<{ metadata: { name: string } }>('libraries', filter.key)
+          .pipe(map((record) => record.metadata.name));
       case 'location':
-      case 'temporary_location': return this.recordService.getRecord<{metadata: {name: string}}>('locations', filter.key).pipe(map(record => record.metadata.name));
-      default: return this.routeToolService.translateService.stream(filter.key);
+      case 'temporary_location':
+        return this.recordService
+          .getRecord<{ metadata: { name: string } }>('locations', filter.key)
+          .pipe(map((record) => record.metadata.name));
+      default:
+        return this.routeToolService.translateService.stream(filter.key);
     }
   }
 }

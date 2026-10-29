@@ -1,11 +1,12 @@
 // SPDX-FileCopyrightText: Fondation RERO+
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-import { TestBed } from "@angular/core/testing";
-import { ItemTypeApiService } from "./item-type-api.service";
-import { RecordService } from "@rero/ng-core";
-import { of } from "rxjs";
-import { TranslateModule } from "@ngx-translate/core";
+import { TestBed } from '@angular/core/testing';
+import { provideTranslateService } from '@ngx-translate/core';
+import { RecordService } from '@rero/ng-core';
+import { of } from 'rxjs';
+
+import { ItemTypeApiService } from './item-type-api.service';
 
 describe('ItemTypeApiService', () => {
   let service: ItemTypeApiService;
@@ -16,26 +17,26 @@ describe('ItemTypeApiService', () => {
         pid: 1,
         name: 'In acquisition',
         negative_availability: true,
-        type: 'standard'
-      }
+        type: 'standard',
+      },
     },
     {
       metadata: {
         pid: 2,
         name: 'Missing',
         negative_availability: true,
-        type: 'standard'
-      }
-    }
+        type: 'standard',
+      },
+    },
   ];
 
   const response = {
     aggregations: {},
     hits: {
       total: 1,
-      hits: itemTypes
+      hits: itemTypes,
     },
-    links: {}
+    links: {},
   };
 
   const recordServiceSpy = { getRecords: vi.fn() };
@@ -43,13 +44,11 @@ describe('ItemTypeApiService', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [
-        TranslateModule.forRoot()
-      ],
       providers: [
+        provideTranslateService(),
         ItemTypeApiService,
-        { provide: RecordService, useValue: recordServiceSpy }
-      ]
+        { provide: RecordService, useValue: recordServiceSpy },
+      ],
     });
 
     service = TestBed.inject(ItemTypeApiService);

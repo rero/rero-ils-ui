@@ -18,15 +18,14 @@ SPDX-License-Identifier: AGPL-3.0-or-later
     <div class="ui:grow ui:flex ui:flex-col ui:gap-1">
       <!-- TITLE -->
       @if (record().metadata.title && record().metadata.title | mainTitle; as title) {
-      <h1 id="doc-title">
-        <ng-core-read-more
-          [text]="title"
-          [unit]="'char'"
-          [limit]="150"
-          [showMoreLabel]="'Show more' | translate"
-          [showLessLabel]="'Show less' | translate"
-        />
-      </h1>
+        <h1 id="doc-title">
+          <ng-core-read-more
+            [text]="title"
+            [unit]="'char'"
+            [limit]="150"
+            [showMoreLabel]="'Show more' | translate"
+            [showLessLabel]="'Show less' | translate" />
+        </h1>
       }
 
       <!-- TITLE ALTERNATIVE GRAPHICS -->
@@ -40,14 +39,13 @@ SPDX-License-Identifier: AGPL-3.0-or-later
       <shared-contribution
         [contributions]="$any(record().metadata?.contribution)"
         [withRoles]="true"
-        [activateLink]="activateLink()"
-      />
+        [activateLink]="activateLink()" />
       <!-- PUBLICATION ACTIVITY: PUBLICATION -->
-       @let provisionActivity = record().metadata.provisionActivity
-        | documentProvisionActivity
-        | keyvalue
-        | callbackArrayFilter
-          : filterPublicationProvisionActivity;
+      @let provisionActivity =
+        record().metadata.provisionActivity
+          | documentProvisionActivity
+          | keyvalue
+          | callbackArrayFilter: filterPublicationProvisionActivity;
       @if (provisionActivity) {
         @for (provision of provisionActivity; track $index) {
           <ul class="ui:list-none">
@@ -67,31 +65,32 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
       <!-- DURATION -->
       @if (record().metadata.duration && $any(record()).metadata.duration.length > 0) {
-      <div id="doc-duration">
-        {{ "Duration" | translate }}: {{ $any(record()).metadata.duration.join(", ") }}
-      </div>
+        <div id="doc-duration">{{ 'Duration' | translate }}: {{ $any(record()).metadata.duration.join(', ') }}</div>
       }
 
       <!-- EDITION STATEMENT -->
       @if (record().metadata.editionStatement) {
-      <div id="doc-edition-statement">
-        <ul class="ui:list-none">
-          @for (edition of $any(record()).metadata.editionStatement; track $index) {
-            <li>{{ edition._text[0].value }}</li>
-          }
-        </ul>
-      </div>
+        <div id="doc-edition-statement">
+          <ul class="ui:list-none">
+            @for (edition of $any(record()).metadata.editionStatement; track $index) {
+              <li>{{ edition._text[0].value }}</li>
+            }
+          </ul>
+        </div>
       }
 
       <!-- FREQUENCY -->
       @if (record().metadata.frequency) {
         <div id="doc-frequency">
-          <b>{{ "Frequency" | translate }}</b>:
-          @for (freq of $any(record()).metadata.frequency; track $index; let isLast =
-          $last) {
+          <b>{{ 'Frequency' | translate }}</b
+          >:
+          @for (freq of $any(record()).metadata.frequency; track $index; let isLast = $last) {
             {{ freq.label }}
             @if (freq.date) {
-              ({{ freq.date }}) @if (!isLast) {; }
+              ({{ freq.date }})
+              @if (!isLast) {
+                ;
+              }
             }
           }
         </div>
@@ -102,61 +101,51 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
       <!-- ISSUED WITH -->
       @if (record().metadata.issuedWith) {
-      <shared-other-edition
-        [fieldLabel]="'Issued with' | translate"
-        [field]="record().metadata.issuedWith"
-
-        [inline]="true"
-      />
+        <shared-other-edition
+          [fieldLabel]="'Issued with' | translate"
+          [field]="record().metadata.issuedWith"
+          [inline]="true" />
       }
 
       <!-- PRECEDED BY -->
       @if (record().metadata.precededBy) {
-      <shared-other-edition
-        [fieldLabel]="'Preceded by' | translate"
-        [field]="record().metadata.precededBy"
-
-        [inline]="true"
-      />
+        <shared-other-edition
+          [fieldLabel]="'Preceded by' | translate"
+          [field]="record().metadata.precededBy"
+          [inline]="true" />
       }
 
       <!-- SUCCEEDED BY -->
       @if (record().metadata.succeededBy) {
-      <shared-other-edition
-        [fieldLabel]="'Succeeded by' | translate"
-        [field]="record().metadata.succeededBy"
-
-        [inline]="true"
-      />
+        <shared-other-edition
+          [fieldLabel]="'Succeeded by' | translate"
+          [field]="record().metadata.succeededBy"
+          [inline]="true" />
       }
 
       <!-- SUPPLEMENT TO -->
       @if (record().metadata.supplementTo) {
-      <shared-other-edition
-        [fieldLabel]="'Supplement to' | translate"
-        [field]="record().metadata.supplementTo"
-
-        [inline]="true"
-      />
+        <shared-other-edition
+          [fieldLabel]="'Supplement to' | translate"
+          [field]="record().metadata.supplementTo"
+          [inline]="true" />
       }
 
       <!-- REPRODUCTION OF -->
       @if (record().metadata.reproductionOf) {
-      <shared-other-edition
-        [fieldLabel]="'Reproduction of' | translate"
-        [field]="record().metadata.reproductionOf"
-
-        [inline]="true"
-      />
+        <shared-other-edition
+          [fieldLabel]="'Reproduction of' | translate"
+          [field]="record().metadata.reproductionOf"
+          [inline]="true" />
       }
 
       <!-- ELECTRONIC LOCATOR: RELATED RESOURCE -->
       @if (relatedResources().length > 0) {
         <ul class="ui:list-none">
           @for (eloc of relatedResources(); track $index) {
-          <li>
-            <admin-related-resource [electronicLocator]="eloc" />
-          </li>
+            <li>
+              <admin-related-resource [electronicLocator]="eloc" />
+            </li>
           }
         </ul>
       }
@@ -170,9 +159,8 @@ SPDX-License-Identifier: AGPL-3.0-or-later
               [unit]="'char'"
               [limit]="400"
               [showMoreLabel]="'Show more' | translate"
-              [showLessLabel]="'Show less' | translate"
-            />
-         }
+              [showLessLabel]="'Show less' | translate" />
+          }
         }
       }
 
@@ -180,16 +168,10 @@ SPDX-License-Identifier: AGPL-3.0-or-later
       @if (record().metadata.subjects; as subjects) {
         <div class="ui:flex ui:gap-1 ui:flex-wrap">
           @for (subject of $any(subjects); track $index) {
-          <p-tag
-            severity="secondary"
-            [title]="subject.entity.type | translate"
-          >
-            <i class="fa-solid fa-tag"></i>
-            <shared-entity-link
-              resourceName="subjects"
-              [entity]="subject.entity"
-            />
-          </p-tag>
+            <p-tag severity="secondary" [title]="subject.entity.type | translate">
+              <i class="fa-solid fa-tag"></i>
+              <shared-entity-link resourceName="subjects" [entity]="subject.entity" />
+            </p-tag>
           }
         </div>
       }
@@ -219,15 +201,10 @@ SPDX-License-Identifier: AGPL-3.0-or-later
             outlined
             size="small"
             [routerLink]="['/records', 'documents']"
-            [queryParams]="{ q: 'partOf.document.pid:' + pid, simple: 0 }"
-          >
+            [queryParams]="{ q: 'partOf.document.pid:' + pid, simple: 0 }">
             <i class="fa-solid fa-list" aria-hidden="true"></i>&nbsp;
             {{ linkedDocumentsCount() }}
-            {{
-              linkedDocumentsCount()
-                | i18nPlural : { "=1": "article/volume", other: "articles/volumes" }
-                | translate
-            }}
+            {{ linkedDocumentsCount() | i18nPlural: { '=1': 'article/volume', other: 'articles/volumes' } | translate }}
           </a>
         </div>
       }
@@ -236,41 +213,41 @@ SPDX-License-Identifier: AGPL-3.0-or-later
   <!-- END OF HEADER -->
 
   <!-- TABS -->
-   @let marcRecord = marc();
-   <p-tabs [value]="selectedTab()">
+  @let marcRecord = marc();
+  <p-tabs [value]="selectedTab()">
     <p-tablist>
       @if (record().metadata.pid) {
-      <p-tab value="get" class="ui:flex ui:items-center ui:!gap-2">
-        <i class="fa-solid fa-building-circle-check"></i>
-        <span translate>Get</span>
-      </p-tab>
+        <p-tab value="get" class="ui:flex ui:items-center ui:!gap-2">
+          <i class="fa-solid fa-building-circle-check"></i>
+          <span>{{ 'Get' | translate }}</span>
+        </p-tab>
       }
       <p-tab value="description" class="ui:flex ui:items-center ui:!gap-2">
         <i class="fa-solid fa-bars"></i>
-        <span translate>Description</span>
+        <span>{{ 'Description' | translate }}</span>
       </p-tab>
       @if (record()?.metadata?.pid && hasRelatedEntities()) {
         <p-tab value="entity" class="ui:flex ui:items-center ui:!gap-2">
           <i class="fa-solid fa-circle-nodes"></i>
-          <span translate>Related Entities</span>
+          <span>{{ 'Related Entities' | translate }}</span>
         </p-tab>
       }
       @if (record()?.metadata?.pid && showLocalFieldsTab() && (!record()?.metadata?.harvested || hasLocalFields())) {
         <p-tab value="local" class="ui:flex ui:items-center ui:!gap-2">
-           <i class="fa-solid fa-building-columns"></i>
-          <span translate>Local fields</span>
+          <i class="fa-solid fa-building-columns"></i>
+          <span>{{ 'Local fields' | translate }}</span>
         </p-tab>
       }
       @if (!record().metadata.harvested && record().metadata.pid && showFilesTab) {
         <p-tab value="file" class="ui:flex ui:items-center ui:!gap-2">
           <i class="fa-solid fa-folder-tree"></i>
-          <span translate>Files</span>
+          <span>{{ 'Files' | translate }}</span>
         </p-tab>
       }
       @if (marcRecord) {
         <p-tab value="marc" class="ui:flex ui:items-center ui:!gap-2">
           <i class="fa-solid fa-list-ul"></i>
-          <span translate>Marc</span>
+          <span>{{ 'Marc' | translate }}</span>
         </p-tab>
       }
     </p-tablist>
@@ -278,7 +255,9 @@ SPDX-License-Identifier: AGPL-3.0-or-later
       <p-tabpanel #tabGet value="get">
         <div class="ui:mb-2">
           @if (tabGet.active()) {
-            <shared-doc-files [documentPid]="$any(record().metadata.pid)" [routerPath]="['/','records', 'documents']" />
+            <shared-doc-files
+              [documentPid]="$any(record().metadata.pid)"
+              [routerPath]="['/', 'records', 'documents']" />
           }
         </div>
         <admin-holdings [document]="record()" />
@@ -297,8 +276,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
             [resourceType]="'documents'"
             [resourcePid]="$any(record()?.metadata?.pid)"
             [readOnly]="!!record()?.metadata?.harvested"
-            (hasLocalFields)="hasLocalFields.set($event)"
-          />
+            (hasLocalFields)="hasLocalFields.set($event)" />
         </p-tabpanel>
       }
       @if (!record().metadata.harvested && record().metadata.pid && showFilesTab) {
@@ -323,5 +301,5 @@ SPDX-License-Identifier: AGPL-3.0-or-later
         </p-tabpanel>
       }
     </p-tabpanels>
-   </p-tabs>
+  </p-tabs>
 }

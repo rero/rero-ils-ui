@@ -1,15 +1,16 @@
 // SPDX-FileCopyrightText: Fondation RERO+
 // SPDX-License-Identifier: AGPL-3.0-or-later
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { TranslateModule } from '@ngx-translate/core';
+import { provideTranslateService } from '@ngx-translate/core';
+
 import { ContributionComponent } from './contribution.component';
 
 describe('ContributionComponent', () => {
   let fixture: ComponentFixture<ContributionComponent>;
 
-  const contributions = ['A', 'B', 'C', 'D'].map(name => ({
+  const contributions = ['A', 'B', 'C', 'D'].map((name) => ({
     entity: { type: 'bf:Person', authorized_access_point: name },
-    role: ['aut']
+    role: ['aut'],
   }));
 
   /** Rendered text, whitespace collapsed */
@@ -17,7 +18,8 @@ describe('ContributionComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [TranslateModule.forRoot(), ContributionComponent]
+      imports: [ContributionComponent],
+      providers: [provideTranslateService()],
     }).compileComponents();
     fixture = TestBed.createComponent(ContributionComponent);
     fixture.componentRef.setInput('contributions', contributions);

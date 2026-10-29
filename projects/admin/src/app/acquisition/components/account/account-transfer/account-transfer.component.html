@@ -6,16 +6,14 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 @if (organisation()) {
   <div class="ui:flex ui:flex-wrap ui:gap-2 ui:justify-between">
-    <h1 translate>Fund transfer</h1>
+    <h1>{{ 'Fund transfer' | translate }}</h1>
     @if (budgets().length > 1) {
       <p-select (onChange)="selectedBudget.set($event.value)" [ngModel]="selectedBudget()" [options]="budgets()">
         <ng-template #selectedItem>
-          {{
-            selectedBudget()?.code | getRecord : "budgets" : "field" : "name" | async
-          }}
+          {{ selectedBudget()?.code | getRecord: 'budgets' : 'field' : 'name' | async }}
         </ng-template>
         <ng-template #item let-budget>
-          {{ budget.code | getRecord : "budgets" : "field" : "name" | async }}
+          {{ budget.code | getRecord: 'budgets' : 'field' : 'name' | async }}
         </ng-template>
       </p-select>
     }
@@ -23,72 +21,55 @@ SPDX-License-Identifier: AGPL-3.0-or-later
   <form class="ui:mt-3" [formGroup]="form" (ngSubmit)="submit()" onkeydown="return event.key != 'Enter';">
     <p-card>
       <ng-template #header>
-      <div class="ui:grid ui:grid-cols-12 ui:bg-surface-100 ui:p-2 ui:text-lg ui:font-bold">
-        <div class="ui:col-span-1 ui:text-center" translate>Source</div>
-        <div class="ui:col-span-8 ui:text-right" translate>Amount</div>
-        <div class="ui:col-span-2 ui:text-right" translate>Available</div>
-        <div class="ui:col-span-1 ui:text-center" translate>Target</div>
-      </div>
-    </ng-template>
+        <div class="ui:grid ui:grid-cols-12 ui:bg-surface-100 ui:p-2 ui:text-lg ui:font-bold">
+          <div class="ui:col-span-1 ui:text-center">{{ 'Source' | translate }}</div>
+          <div class="ui:col-span-8 ui:text-right">{{ 'Amount' | translate }}</div>
+          <div class="ui:col-span-2 ui:text-right">{{ 'Available' | translate }}</div>
+          <div class="ui:col-span-1 ui:text-center">{{ 'Target' | translate }}</div>
+        </div>
+      </ng-template>
       <div class="ui:mt-4">
         @if (accountsToDisplay().length > 0) {
           @for (account of accountsToDisplay(); track account.pid) {
             <div class="ui:grid ui:grid-cols-12 ui:py-1 ui:odd:bg-surface-50">
               <div class="ui:col-span-1 ui:text-center">
-                @if (!(form.get('target').value &&
-                    form.get('target').value.pid === account.pid)) {
-                  <p-radioButton
-                    name="source"
-                    formControlName="source"
-                    [value]="account"
-                  />
+                @if (!(form.get('target').value && form.get('target').value.pid === account.pid)) {
+                  <p-radioButton name="source" formControlName="source" [value]="account" />
                 }
               </div>
               <div class="ui:col-span-6">
                 <a
-                [routerLink]="['/acquisition', 'records', 'acq_accounts', 'detail', account.pid]"
-                [style.padding-left.px]="account.depth * 10"
-                >
+                  [routerLink]="['/acquisition', 'records', 'acq_accounts', 'detail', account.pid]"
+                  [style.padding-left.px]="account.depth * 10">
                   {{ account.name }}
                 </a>
               </div>
               <div class="ui:col-span-2 ui:text-right">
-                {{
-                  account.allocated_amount | currency : organisation()!.default_currency
-                }}
+                {{ account.allocated_amount | currency: organisation()!.default_currency }}
               </div>
               <div
                 class="ui:col-span-2 ui:text-right"
                 [class]="{
                   'text-success': account.remaining_balance.self > 0,
                   ' ui:text-muted-color': account.remaining_balance.self === 0,
-                  'text-warning': account.remaining_balance.self < 0
-                }"
-              >
-                {{
-                  account.remaining_balance?.self
-                    | currency : organisation()!.default_currency
-                }}
+                  'text-warning': account.remaining_balance.self < 0,
+                }">
+                {{ account.remaining_balance?.self | currency: organisation()!.default_currency }}
               </div>
               <div class="ui:col-span-1 ui:text-center">
-                @if(!(form.get('source').value &&
-                    form.get('source').value.pid === account.pid)) {
-                <p-radioButton
-                  name="target"
-                  formControlName="target"
-                  [value]="account"
-                />
+                @if (!(form.get('source').value && form.get('source').value.pid === account.pid)) {
+                  <p-radioButton name="target" formControlName="target" [value]="account" />
                 }
+              </div>
             </div>
-          </div>
-        }
+          }
         } @else {
-          {{ "No account available" | translate }}
+          {{ 'No account available' | translate }}
         }
       </div>
       <ng-template #footer>
         <div class="ui:flex ui:flex-col ui:gap-1 ui:py-4 ui:px-6 ui:pb-6 ui:mt-2 ui:border-t ui:border-surface">
-          <label for="amount" translate>Amount</label>
+          <label for="amount">{{ 'Amount' | translate }}</label>
           <div class="ui:flex ui:flex-wrap ui:gap-2 ui:justify-between">
             <div>
               <p-inputGroup>
@@ -98,8 +79,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
                   type="number"
                   id="amount"
                   formControlName="amount"
-                  [class]="{ 'ng-invalid ng-dirty': checkInput('amount') }"
-                />
+                  [class]="{ 'ng-invalid ng-dirty': checkInput('amount') }" />
               </p-inputGroup>
             </div>
             <div class="ui:flex ui:flex-wrap ui:gap-1 ui:justify-end">
@@ -108,29 +88,27 @@ SPDX-License-Identifier: AGPL-3.0-or-later
                 [label]="'Cancel' | translate"
                 severity="danger"
                 [routerLink]="['/acquisition', 'accounts']"
-                outlined
-              />
+                outlined />
               <p-button
                 type="submit"
                 [label]="'Transfer' | translate"
-                [disabled]="form.invalid || httpPending.isPending()"
-              />
+                [disabled]="form.invalid || httpPending.isPending()" />
             </div>
           </div>
           @if (checkInput('amount')) {
             @if (form.get('amount').hasError('required')) {
-              <small class="text-error" translate>This field is required.</small>
+              <small class="text-error">{{ 'This field is required.' | translate }}</small>
             }
             @if (form.get('amount').hasError('min')) {
               <small class="text-error">
-                {{ "Minimum amount is" | translate }}
-                {{ form.get("amount").errors.min.min }}.
+                {{ 'Minimum amount is' | translate }}
+                {{ form.get('amount').errors.min.min }}.
               </small>
             }
             @if (form.get('amount').hasError('max')) {
               <small class="text-error">
-                {{ "Maximum amount is" | translate }}
-                {{ form.get("amount").errors.max.max }}.
+                {{ 'Maximum amount is' | translate }}
+                {{ form.get('amount').errors.max.max }}.
               </small>
             }
           }

@@ -2,7 +2,6 @@
 // SPDX-FileCopyrightText: UCLouvain
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-
 ul.contributor-list {
   padding-inline-start: 0;
   li {
@@ -10,20 +9,20 @@ ul.contributor-list {
   }
   & > li + li::before {
     @apply ui:mx-1;
-    content: ";";
+    content: ';';
   }
 
   ul.contributor-roles {
     @apply ui:list-none ui:inline ui:ml-1;
     color: var(--p-text-muted-color);
     & > li + li::before {
-      content: ", ";
+      content: ', ';
     }
     &::before {
-      content:'(';
+      content: '(';
     }
     &::after {
-      content:')';
+      content: ')';
     }
   }
 }

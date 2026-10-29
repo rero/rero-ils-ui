@@ -1,21 +1,19 @@
 // SPDX-FileCopyrightText: Fondation RERO+
 // SPDX-License-Identifier: AGPL-3.0-or-later
-import { Component, inject, input, ChangeDetectionStrategy} from '@angular/core';
-import { TranslateDirective } from '@ngx-translate/core';
-import { AppStore } from '@rero/shared';
-import { NgClass, AsyncPipe, CurrencyPipe } from '@angular/common';
-import { Bind } from 'primeng/bind';
-import { Panel } from 'primeng/panel';
+import { AsyncPipe, CurrencyPipe, NgClass } from '@angular/common';
+import { Component, inject, input } from '@angular/core';
+import { TranslatePipe } from '@ngx-translate/core';
+import { Bind } from '@openng/optimus-ui/bind';
+import { Panel } from '@openng/optimus-ui/panel';
 import { GetRecordPipe } from '@rero/ng-core';
+import { AppStore } from '@rero/shared';
 
 @Component({
-    selector: 'admin-patron-types-detail-view',
-    templateUrl: './patron-types-detail-view.component.html',
-    imports: [TranslateDirective, NgClass, Bind, Panel, AsyncPipe, CurrencyPipe, GetRecordPipe],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  selector: 'admin-patron-types-detail-view',
+  templateUrl: './patron-types-detail-view.component.html',
+  imports: [TranslatePipe, NgClass, Bind, Panel, AsyncPipe, CurrencyPipe, GetRecordPipe],
 })
 export class PatronTypesDetailViewComponent {
-
   private appStore = inject(AppStore);
 
   readonly record = input<any>();

@@ -7,12 +7,12 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 <admin-entities-local-global [record]="record()">
   <!-- NAME -->
   @if (record().name) {
-    <dt translate>Name</dt>
+    <dt>{{ 'Name' | translate }}</dt>
     <dd>{{ record().name }}</dd>
   }
   <!-- ALTERNATIVE NAMES -->
   @if (record().alternative_names && record().alternative_names.length > 0) {
-    <dt translate>Alternative names</dt>
+    <dt>{{ 'Alternative names' | translate }}</dt>
     <dd>
       <ul class="ui:list-none">
         @for (name of record().alternative_names; track $index) {

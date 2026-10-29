@@ -1,30 +1,42 @@
 // SPDX-FileCopyrightText: Fondation RERO+
 // SPDX-License-Identifier: AGPL-3.0-or-later
 import { CurrencyPipe } from '@angular/common';
-import { ChangeDetectionStrategy, Component, DestroyRef, computed, effect, inject, signal } from '@angular/core';
+import { Component, computed, DestroyRef, effect, inject, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, NavigationEnd, Router, RouterLink, RouterOutlet } from '@angular/router';
 import { HotkeysService } from '@ngneat/hotkeys';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
+import { MenuItem } from '@openng/optimus-ui/api';
+import { BadgeModule } from '@openng/optimus-ui/badge';
+import { Bind } from '@openng/optimus-ui/bind';
+import { Ripple } from '@openng/optimus-ui/ripple';
+import { Tab, TabList, Tabs } from '@openng/optimus-ui/tabs';
 import { AppStore } from '@rero/shared';
-import { MenuItem } from 'primeng/api';
-import { BadgeModule } from 'primeng/badge';
-import { Bind } from 'primeng/bind';
-import { Ripple } from 'primeng/ripple';
-import { Tab, TabList, Tabs } from 'primeng/tabs';
 import { filter, map, startWith } from 'rxjs';
+
 import { CirculationStore } from '../../store/circulation.store';
 import { TransactionsHistoryDialogComponent } from '../../transactions-history/transactions-history-dialog/transactions-history-dialog.component';
 import { CardComponent } from '../card/card.component';
 
 @Component({
-    selector: 'admin-main',
-    templateUrl: './main.component.html',
-    imports: [CardComponent, Bind, Tabs, TabList, Ripple, Tab, RouterLink, RouterOutlet, CurrencyPipe, TranslatePipe, BadgeModule, TransactionsHistoryDialogComponent],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  selector: 'admin-main',
+  templateUrl: './main.component.html',
+  imports: [
+    CardComponent,
+    Bind,
+    Tabs,
+    TabList,
+    Ripple,
+    Tab,
+    RouterLink,
+    RouterOutlet,
+    CurrencyPipe,
+    TranslatePipe,
+    BadgeModule,
+    TransactionsHistoryDialogComponent,
+  ],
 })
 export class MainComponent {
-
   private route: ActivatedRoute = inject(ActivatedRoute);
   private router: Router = inject(Router);
   protected appStore = inject(AppStore);
@@ -42,25 +54,55 @@ export class MainComponent {
     if (!patron) return [];
     const barcode = this.barcode();
     const items: MenuItem[] = [
-      { id: 'loan', label: this.translateService.instant('On loan'), routerLink: ['/circulation', 'patron', barcode, 'loan'] },
-      { id: 'pickup', label: this.translateService.instant('To pick up'), routerLink: ['/circulation', 'patron', barcode, 'pickup'] },
-      { id: 'pending', label: this.translateService.instant('Pending'), routerLink: ['/circulation', 'patron', barcode, 'pending'] },
-      { id: 'ill', label: this.translateService.instant('Interlibrary loan'), routerLink: ['/circulation', 'patron', barcode, 'ill'] },
-      { id: 'profile', label: this.translateService.instant('Profile'), routerLink: ['/circulation', 'patron', barcode, 'profile'] },
-      { id: 'fees', label: this.translateService.instant('Fees'), routerLink: ['/circulation', 'patron', barcode, 'fees'], severity: 'warn', withCurrency: true },
+      {
+        id: 'loan',
+        label: this.translateService.instant('On loan'),
+        routerLink: ['/circulation', 'patron', barcode, 'loan'],
+      },
+      {
+        id: 'pickup',
+        label: this.translateService.instant('To pick up'),
+        routerLink: ['/circulation', 'patron', barcode, 'pickup'],
+      },
+      {
+        id: 'pending',
+        label: this.translateService.instant('Pending'),
+        routerLink: ['/circulation', 'patron', barcode, 'pending'],
+      },
+      {
+        id: 'ill',
+        label: this.translateService.instant('Interlibrary loan'),
+        routerLink: ['/circulation', 'patron', barcode, 'ill'],
+      },
+      {
+        id: 'profile',
+        label: this.translateService.instant('Profile'),
+        routerLink: ['/circulation', 'patron', barcode, 'profile'],
+      },
+      {
+        id: 'fees',
+        label: this.translateService.instant('Fees'),
+        routerLink: ['/circulation', 'patron', barcode, 'fees'],
+        severity: 'warn',
+        withCurrency: true,
+      },
     ];
     if (patron.keep_history) {
-      items.push({ id: 'history', label: this.translateService.instant('History'), routerLink: ['/circulation', 'patron', barcode, 'history'] });
+      items.push({
+        id: 'history',
+        label: this.translateService.instant('History'),
+        routerLink: ['/circulation', 'patron', barcode, 'history'],
+      });
     }
     return items;
   });
   readonly activeTab = toSignal(
     this.router.events.pipe(
-      filter(e => e instanceof NavigationEnd),
+      filter((e) => e instanceof NavigationEnd),
       map(() => this.router.url.split('/').pop() ?? ''),
-      startWith(this.router.url.split('/').pop() ?? '')
+      startWith(this.router.url.split('/').pop() ?? ''),
     ),
-    { initialValue: this.router.url.split('/').pop() ?? '' }
+    { initialValue: this.router.url.split('/').pop() ?? '' },
   );
 
   readonly shortcuts = computed(() => {
@@ -69,15 +111,30 @@ export class MainComponent {
     const group = this.translateService.instant('Patron profile shortcuts');
     const nav = (tab: string) => () => this.router.navigate(['/circulation', 'patron', this.barcode(), tab]);
     const base = [
-      { keys: '1', group, description: this.translateService.instant('Go to "circulation" tab'), callback: nav('loan') },
+      {
+        keys: '1',
+        group,
+        description: this.translateService.instant('Go to "circulation" tab'),
+        callback: nav('loan'),
+      },
       { keys: '2', group, description: this.translateService.instant('Go to "pickup" tab'), callback: nav('pickup') },
       { keys: '3', group, description: this.translateService.instant('Go to "pending" tab'), callback: nav('pending') },
       { keys: '4', group, description: this.translateService.instant('Go to "ILL" tab'), callback: nav('ill') },
-      { keys: '5', group, description: this.translateService.instant('Go to "patron profile" tab'), callback: nav('profile') },
+      {
+        keys: '5',
+        group,
+        description: this.translateService.instant('Go to "patron profile" tab'),
+        callback: nav('profile'),
+      },
       { keys: '6', group, description: this.translateService.instant('Go to "fees" tab'), callback: nav('fees') },
     ];
     if (patron.keep_history) {
-      base.push({ keys: '7', group, description: this.translateService.instant('Go to "history" tab'), callback: nav('history') });
+      base.push({
+        keys: '7',
+        group,
+        description: this.translateService.instant('Go to "history" tab'),
+        callback: nav('history'),
+      });
     }
     return base;
   });
@@ -116,8 +173,8 @@ export class MainComponent {
   }
 
   private _unregisterShortcuts(): void {
-    const registeredKeys = this.hotKeysService.getHotkeys().map(s => s.keys);
-    const toRemove = registeredKeys.filter(k => this.SHORTCUT_KEYS.includes(k));
+    const registeredKeys = this.hotKeysService.getHotkeys().map((s) => s.keys);
+    const toRemove = registeredKeys.filter((k) => this.SHORTCUT_KEYS.includes(k));
     if (toRemove.length > 0) {
       this.hotKeysService.removeShortcuts(toRemove);
     }

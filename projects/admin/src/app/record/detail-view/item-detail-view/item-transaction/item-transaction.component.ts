@@ -1,32 +1,42 @@
 // SPDX-FileCopyrightText: Fondation RERO+
 // SPDX-License-Identifier: AGPL-3.0-or-later
-import { Component, computed, effect, inject, input, output, signal, ChangeDetectionStrategy } from '@angular/core';
+import { AsyncPipe } from '@angular/common';
+import { Component, computed, effect, inject, input, output, signal } from '@angular/core';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
+import { FormsModule } from '@angular/forms';
+import { RouterLink } from '@angular/router';
 import { ItemsService } from '@app/admin/service/items.service';
 import { LoanService } from '@app/admin/service/loan.service';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
-import { AppStore } from '@rero/shared';
-import { ConfirmationService } from 'primeng/api';
-import { SelectChangeEvent, Select } from 'primeng/select';
-import { map, of, switchMap } from 'rxjs';
-import { RouterLink } from '@angular/router';
-import { Bind } from 'primeng/bind';
-import { FormsModule } from '@angular/forms';
-import { Button } from 'primeng/button';
-import { ConfirmDialog } from 'primeng/confirmdialog';
-import { Tooltip } from 'primeng/tooltip';
-import { AsyncPipe } from '@angular/common';
+import { ConfirmationService } from '@openng/optimus-ui/api';
+import { Bind } from '@openng/optimus-ui/bind';
+import { Button } from '@openng/optimus-ui/button';
+import { ConfirmDialog } from '@openng/optimus-ui/confirmdialog';
+import { Select, SelectChangeEvent } from '@openng/optimus-ui/select';
+import { Tooltip } from '@openng/optimus-ui/tooltip';
 import { DateTranslatePipe, GetRecordPipe } from '@rero/ng-core';
+import { AppStore } from '@rero/shared';
+import { map, of, switchMap } from 'rxjs';
 
 @Component({
-    selector: 'admin-item-transaction',
-    templateUrl: './item-transaction.component.html',
-    providers: [ConfirmationService],
-    imports: [RouterLink, Bind, Select, FormsModule, Button, ConfirmDialog, Tooltip, AsyncPipe, TranslatePipe, DateTranslatePipe, GetRecordPipe],
-    changeDetection: ChangeDetectionStrategy.OnPush
+  selector: 'admin-item-transaction',
+  templateUrl: './item-transaction.component.html',
+  providers: [ConfirmationService],
+  imports: [
+    RouterLink,
+    Bind,
+    Select,
+    FormsModule,
+    Button,
+    ConfirmDialog,
+    Tooltip,
+    AsyncPipe,
+    TranslatePipe,
+    DateTranslatePipe,
+    GetRecordPipe,
+  ],
 })
 export class ItemTransactionComponent {
-
   private appStore = inject(AppStore);
   private itemService: ItemsService = inject(ItemsService);
   private loanService: LoanService = inject(LoanService);
@@ -44,30 +54,32 @@ export class ItemTransactionComponent {
 
   private readonly _fetchedLocations = toSignal(
     toObservable(this.type).pipe(
-      switchMap(type => {
+      switchMap((type) => {
         if (!type || !this._authorizedTypes.includes(type)) return of(null);
         const currentLibrary = this.appStore.currentLibraryPid();
         return this.itemService.getPickupLocations(this.itemPid()).pipe(
-          map(locations => ((locations as any[]) ?? []).map((loc: any) => ({
-            label: loc.pickup_name || loc.name,
-            value: loc.pid,
-            _isDefault: loc.library.pid === currentLibrary
-          })))
+          map((locations) =>
+            ((locations as any[]) ?? []).map((loc: any) => ({
+              label: loc.pickup_name || loc.name,
+              value: loc.pid,
+              _isDefault: loc.library.pid === currentLibrary,
+            })),
+          ),
         );
-      })
+      }),
     ),
-    { initialValue: null }
+    { initialValue: null },
   );
 
   readonly pickupLocations = computed(() => this._fetchedLocations() ?? []);
-  readonly currentPickupLocation = signal<{value: string, label: string} | null>(null);
+  readonly currentPickupLocation = signal<{ value: string; label: string } | null>(null);
 
   constructor() {
     effect(() => {
       const locs = this._fetchedLocations();
       if (locs) {
         const pid = this.transaction()?.metadata?.pickup_location_pid;
-        this.currentPickupLocation.set(locs.find(loc => loc.value === pid) ?? null);
+        this.currentPickupLocation.set(locs.find((loc) => loc.value === pid) ?? null);
       }
     });
   }
@@ -100,7 +112,7 @@ export class ItemTransactionComponent {
   emitUpdatePickupLocation(event: SelectChangeEvent): void {
     this.updatePickupLocationEvent.emit({
       pickupLocationPid: event.value.value,
-      transaction: this.transaction()
+      transaction: this.transaction(),
     });
   }
 }

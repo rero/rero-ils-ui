@@ -13,17 +13,18 @@ SPDX-License-Identifier: AGPL-3.0-or-later
     </div>
   </div>
   <div class="ui:col-span-3">{{ record().metadata.pickup_location.name }}</div>
-  <div class="ui:col-span-2">{{ record().created | dateTranslate:'medium'}}</div>
+  <div class="ui:col-span-2">{{ record().created | dateTranslate: 'medium' }}</div>
   <div class="ui:col-span-2">
-    <p-tag [severity]="$any(badgeColor(record().metadata.loan_status))" [value]="record().metadata.loan_status|translate" />
+    <p-tag
+      [severity]="$any(badgeColor(record().metadata.loan_status))"
+      [value]="record().metadata.loan_status | translate" />
   </div>
   <div class="ui:col-span-1 ui:text-right">
     <p-button
       icon="fa-solid fa-eye"
       outlined
-      [title]="'Details'|translate"
-      [routerLink]="['/', 'records', 'ill_requests', 'detail', record().metadata.pid]"
-    />
+      [title]="'Details' | translate"
+      [routerLink]="['/', 'records', 'ill_requests', 'detail', record().metadata.pid]" />
   </div>
   <!-- DETAIL ROWS :: collapsible detail information's -->
   @if (!isCollapsed) {
@@ -31,22 +32,22 @@ SPDX-License-Identifier: AGPL-3.0-or-later
       <dl class="metadata ui:ml-11">
         <!-- PUBLISHER -->
         @if (record().metadata.document.publisher) {
-          <dt translate>Publisher</dt>
+          <dt>{{ 'Publisher' | translate }}</dt>
           <dd>{{ record().metadata.document.publisher }}</dd>
         }
         <!-- YEAR -->
         @if (record().metadata.document.year) {
-          <dt translate>Year</dt>
+          <dt>{{ 'Year' | translate }}</dt>
           <dd>{{ record().metadata.document.year }}</dd>
         }
         <!-- IDENTIFIER -->
         @if (record().metadata.document.identifier) {
-          <dt translate>Identifier</dt>
+          <dt>{{ 'Identifier' | translate }}</dt>
           <dd>{{ record().metadata.document.identifier }}</dd>
         }
         <!-- SOURCE -->
         @if (record().metadata.document.source) {
-          <dt translate>Source</dt>
+          <dt>{{ 'Source' | translate }}</dt>
           <dd>
             @if (record().metadata.document.source.volume || record().metadata.document.source.number) {
               {{ record().metadata.document.source | journalVolume }}
@@ -54,7 +55,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
           </dd>
         }
         <!-- SCOPE -->
-        <dt translate>Scope</dt>
+        <dt>{{ 'Scope' | translate }}</dt>
         <dd>
           @if (record().metadata.copy) {
             {{ 'Copy' | translate }}
@@ -64,31 +65,29 @@ SPDX-License-Identifier: AGPL-3.0-or-later
         </dd>
         <!-- PAGES -->
         @if (record().metadata.copy && record().metadata.pages) {
-          <dt translate>Pages</dt>
+          <dt>{{ 'Pages' | translate }}</dt>
           <dd>{{ record().metadata.pages }}</dd>
         }
         <!-- FOUND IN -->
         @if (record().metadata.found_in) {
-          <dt translate>Found in</dt>
+          <dt>{{ 'Found in' | translate }}</dt>
           <dd>
-            <a
-              [title]="record().metadata.found_in.url"
-              [href]="record().metadata.found_in.url"
-              target="_blank"
-            >
+            <a [title]="record().metadata.found_in.url" [href]="record().metadata.found_in.url" target="_blank">
               {{ record().metadata.found_in.url | truncateText: 80 : '…' : 'char' }}
             </a>
             <p-tag class="ui:ml-2" severity="secondary" [value]="record().metadata.found_in.source" />
           </dd>
         }
         <!-- STATUS -->
-        <dt translate>Request status</dt>
+        <dt>{{ 'Request status' | translate }}</dt>
         <dd>
-          <p-tag [severity]="$any(badgeColor(record().metadata.status))" [value]="record().metadata.status|translate" />
+          <p-tag
+            [severity]="$any(badgeColor(record().metadata.status))"
+            [value]="record().metadata.status | translate" />
         </dd>
         <!-- NOTES -->
         @if (record().metadata.notes && record().metadata.notes.length > 0) {
-          <dt translate>Note</dt>
+          <dt>{{ 'Note' | translate }}</dt>
           <dd>
             <ul class="ui:list-none">
               @for (note of record().metadata.notes; track $index) {

@@ -3,23 +3,24 @@
 import { Location } from '@angular/common';
 import { inject } from '@angular/core';
 import { UrlSegment } from '@angular/router';
-import { _ } from "@ngx-translate/core";
+import { _ } from '@ngx-translate/core';
 import { ActionStatus, extractIdOnRef, RecordData } from '@rero/ng-core';
 import { AppStore } from '@rero/shared';
 import { Observable, of } from 'rxjs';
+
 import { RouteToolService } from './route-tool.service';
 
 export class BaseRoute {
-
   protected routeToolService = inject(RouteToolService);
   protected location = inject(Location);
   protected appStore = inject(AppStore);
 
   /** Disabled action */
-  readonly DISABLED = (): Observable<ActionStatus> => of({
-    can: false,
-    message: ''
-  })
+  readonly DISABLED = (): Observable<ActionStatus> =>
+    of({
+      can: false,
+      message: '',
+    });
 
   /**
    * Route matcher
@@ -53,13 +54,10 @@ export class BaseRoute {
    * @param url - UrlSegment
    */
   protected matchedUrl(url: UrlSegment[]) {
-    const segments = [
-      new UrlSegment(url[0].path, {}),
-      new UrlSegment(url[1].path, {})
-    ];
+    const segments = [new UrlSegment(url[0].path, {}), new UrlSegment(url[1].path, {})];
     return {
       consumed: segments,
-      posParams: { type: new UrlSegment(url[1].path, {}) }
+      posParams: { type: new UrlSegment(url[1].path, {}) },
     };
   }
 
@@ -72,14 +70,14 @@ export class BaseRoute {
   removeKey(data: any, key: string) {
     // array?
     if (data instanceof Array) {
-      data = data.map(v => this.removeKey(v, key));
+      data = data.map((v) => this.removeKey(v, key));
     }
     // object?
     if (data instanceof Object) {
       // new object with non empty values
       for (const k of Object.keys(data)) {
         if (k === key) {
-          delete(data[key]);
+          delete data[key];
         } else {
           data[k] = this.removeKey(data[k], key);
         }
@@ -95,9 +93,7 @@ export class BaseRoute {
    * @return observable
    */
   protected redirectUrl(recordMetadata: any, baseUrl: string) {
-    const pid = ('$ref' in recordMetadata)
-      ? extractIdOnRef(recordMetadata.$ref)
-      : recordMetadata.pid;
+    const pid = '$ref' in recordMetadata ? extractIdOnRef(recordMetadata.$ref) : recordMetadata.pid;
     return of(`${baseUrl}/${pid}`);
   }
 
@@ -129,9 +125,7 @@ export class BaseRoute {
    */
   protected canRead(record: any) {
     const organisationPid = this.routeToolService.appStore.currentOrganisationPid();
-    const recordOrganisationPid = ('organisation' in record.metadata)
-      ? record.metadata.organisation.pid
-      : false;
+    const recordOrganisationPid = 'organisation' in record.metadata ? record.metadata.organisation.pid : false;
     return of({ can: organisationPid === recordOrganisationPid, message: '' });
   }
 
@@ -158,13 +152,12 @@ export class BaseRoute {
   private _expertSearchLink() {
     const defaultPath = 'help/recherche';
     const searchPaths = {
-      fr: 'help/recherche'
+      fr: 'help/recherche',
       // TODO: Add other paths
     };
     const availableLanguages = Object.keys(searchPaths);
-    return (this.routeToolService.translateService.getCurrentLang() in availableLanguages)
+    return this.routeToolService.translateService.getCurrentLang() in availableLanguages
       ? searchPaths[this.routeToolService.translateService.getCurrentLang()]
       : defaultPath;
   }
- }
-
+}

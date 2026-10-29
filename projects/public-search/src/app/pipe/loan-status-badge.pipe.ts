@@ -3,10 +3,9 @@
 import { Pipe, PipeTransform } from '@angular/core';
 
 @Pipe({
-    name: 'loanStatusBadge',
+  name: 'loanStatusBadge',
 })
 export class LoanStatusBadgePipe implements PipeTransform {
-
   /**
    * Transform status to class
    * @param status - string
@@ -21,7 +20,7 @@ export class LoanStatusBadgePipe implements PipeTransform {
       case 'ITEM_ON_LOAN':
         return 'info';
       case 'CANCELLED':
-        return 'danger'
+        return 'danger';
       default:
         return 'secondary';
     }

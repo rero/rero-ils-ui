@@ -1,7 +1,8 @@
 // SPDX-FileCopyrightText: Fondation RERO+
 // SPDX-License-Identifier: AGPL-3.0-or-later
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { TranslateModule } from '@ngx-translate/core';
+import { provideTranslateService } from '@ngx-translate/core';
+
 import { RemoteTopicDetailViewComponent } from './remote-topic-detail-view.component';
 
 describe('RemoteTopicDetailViewComponent', () => {
@@ -10,7 +11,8 @@ describe('RemoteTopicDetailViewComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [TranslateModule.forRoot(), RemoteTopicDetailViewComponent]
+      imports: [RemoteTopicDetailViewComponent],
+      providers: [provideTranslateService()],
     }).compileComponents();
     fixture = TestBed.createComponent(RemoteTopicDetailViewComponent);
     component = fixture.componentInstance;
@@ -23,31 +25,37 @@ describe('RemoteTopicDetailViewComponent', () => {
 
   it('should keep the first uri of a match', () => {
     fixture.componentRef.setInput('record', {
-      exactMatch: [{
+      exactMatch: [
+        {
+          authorized_access_point: 'Photographie',
+          source: 'idref',
+          identifiedBy: [
+            { type: 'bf:Local', value: 'ignored' },
+            { type: 'uri', value: 'https://www.idref.fr/027224651' },
+            { type: 'uri', value: 'https://www.idref.fr/second' },
+          ],
+        },
+      ],
+    });
+    expect(component.exactMatch()).toEqual([
+      {
         authorized_access_point: 'Photographie',
         source: 'idref',
-        identifiedBy: [
-          { type: 'bf:Local', value: 'ignored' },
-          { type: 'uri', value: 'https://www.idref.fr/027224651' },
-          { type: 'uri', value: 'https://www.idref.fr/second' }
-        ]
-      }]
-    });
-    expect(component.exactMatch()).toEqual([{
-      authorized_access_point: 'Photographie',
-      source: 'idref',
-      uri: 'https://www.idref.fr/027224651'
-    }]);
+        uri: 'https://www.idref.fr/027224651',
+      },
+    ]);
   });
 
   it('should omit the uri when the match has no identifier of that type', () => {
     fixture.componentRef.setInput('record', {
-      closeMatch: [{ authorized_access_point: 'Photographie', source: 'gnd', identifiedBy: [] }]
+      closeMatch: [{ authorized_access_point: 'Photographie', source: 'gnd', identifiedBy: [] }],
     });
-    expect(component.closeMatch()).toEqual([{
-      authorized_access_point: 'Photographie',
-      source: 'gnd'
-    }]);
+    expect(component.closeMatch()).toEqual([
+      {
+        authorized_access_point: 'Photographie',
+        source: 'gnd',
+      },
+    ]);
   });
 
   /**
@@ -56,7 +64,7 @@ describe('RemoteTopicDetailViewComponent', () => {
    */
   it('should replace the matches of the previous entity', () => {
     fixture.componentRef.setInput('record', {
-      exactMatch: [{ authorized_access_point: 'Photographie', source: 'idref' }]
+      exactMatch: [{ authorized_access_point: 'Photographie', source: 'idref' }],
     });
     expect(component.exactMatch()).toHaveLength(1);
 

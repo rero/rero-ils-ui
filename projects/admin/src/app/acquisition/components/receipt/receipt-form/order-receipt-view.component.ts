@@ -1,29 +1,28 @@
 // SPDX-FileCopyrightText: Fondation RERO+
 // SPDX-License-Identifier: AGPL-3.0-or-later
-import { Component, computed, inject, OnInit, signal, ChangeDetectionStrategy} from '@angular/core';
+import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { UntypedFormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule, UntypedFormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormlyFieldConfig, FormlyModule } from '@ngx-formly/core';
-import { TranslateService, TranslateDirective, TranslatePipe } from '@ngx-translate/core';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
+import { MessageService } from '@openng/optimus-ui/api';
+import { Bind } from '@openng/optimus-ui/bind';
+import { Button } from '@openng/optimus-ui/button';
 import { ApiService, CONFIG, HttpPendingService } from '@rero/ng-core';
-import { MessageService } from 'primeng/api';
 import { tap } from 'rxjs/operators';
+
 import { AcqReceiptApiService } from '../../../api/acq-receipt-api.service';
 import { AcqReceiptAmountAdjustment, IAcqReceipt } from '../../../classes/receipt';
 import { IAcqReceiptModel, ICreateLineMessage, OrderReceipt } from './order-receipt';
 import { OrderReceiptForm } from './order-receipt-form';
-import { Bind } from 'primeng/bind';
-import { Button } from 'primeng/button';
 
 @Component({
-    selector: 'admin-order-receipt-view',
-    templateUrl: './order-receipt-view.component.html',
-    imports: [FormsModule, ReactiveFormsModule, TranslateDirective, Bind, Button, FormlyModule, TranslatePipe],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  selector: 'admin-order-receipt-view',
+  templateUrl: './order-receipt-view.component.html',
+  imports: [FormsModule, ReactiveFormsModule, Bind, Button, FormlyModule, TranslatePipe],
 })
 export class OrderReceiptViewComponent implements OnInit {
-
   private route: ActivatedRoute = inject(ActivatedRoute);
   private router: Router = inject(Router);
   private orderReceipt: OrderReceipt = inject(OrderReceipt);
@@ -31,7 +30,7 @@ export class OrderReceiptViewComponent implements OnInit {
   private translateService: TranslateService = inject(TranslateService);
   private orderReceiptForm: OrderReceiptForm = inject(OrderReceiptForm);
   private messageService = inject(MessageService);
-  private apiService:ApiService = inject(ApiService);
+  private apiService: ApiService = inject(ApiService);
   readonly httpPending = inject(HttpPendingService);
 
   private readonly _paramMap = toSignal(this.route.paramMap);
@@ -70,26 +69,28 @@ export class OrderReceiptViewComponent implements OnInit {
    * @param model - ReceiptModel
    */
   onSubmit(model: IAcqReceiptModel): void {
-    if (this.httpPending.isPending()) { return; }
-    let record: IAcqReceipt = (!this.receiptRecord())
+    if (this.httpPending.isPending()) {
+      return;
+    }
+    let record: IAcqReceipt = !this.receiptRecord()
       ? this.orderReceipt.processBaseRecord(model)
       : this.orderReceipt.processExistingRecord(this.receiptRecord());
     record = this.orderReceiptForm.processForm(model, record);
 
-    const receiptApi$ = (!this.receiptRecord())
-      ? this.acqReceiptApiService.createReceipt(record).pipe(tap(receipt => model.pid = receipt.pid))
+    const receiptApi$ = !this.receiptRecord()
+      ? this.acqReceiptApiService.createReceipt(record).pipe(tap((receipt) => (model.pid = receipt.pid)))
       : this.acqReceiptApiService.updateReceipt(record.pid, record);
-    receiptApi$
-      .subscribe({
-        next: (receipt: IAcqReceipt) => this.createLinesAndMessage(model, receipt),
-        error: (err) => this.messageService.add({
+    receiptApi$.subscribe({
+      next: (receipt: IAcqReceipt) => this.createLinesAndMessage(model, receipt),
+      error: (err) =>
+        this.messageService.add({
           severity: 'error',
           summary: this.translateService.instant('Receipt'),
           detail: err.title,
           sticky: true,
-          closable: true
-        })
-      });
+          closable: true,
+        }),
+    });
   }
 
   // COMPONENT PRIVATE FUNCTIONS ==============================================
@@ -103,21 +104,18 @@ export class OrderReceiptViewComponent implements OnInit {
     const receiptPid = this.receiptPid();
     if (receiptPid) {
       this.model.pid = receiptPid;
-      this.acqReceiptApiService
-        .getReceipt(receiptPid)
-        .subscribe((receipt: IAcqReceipt) => {
-          this.receiptRecord.set(receipt);
-          this.model.reference = receipt.reference;
-          this.model.notes = receipt.notes;
-          if (receipt.amount_adjustments) {
-            this.model.amountAdjustments =
-              receipt.amount_adjustments.map((adj: AcqReceiptAmountAdjustment) => ({
-                label: adj.label,
-                amount: adj.amount,
-                acqAccount: this.apiService.getRefEndpoint('acq_accounts', adj.acq_account.pid!)
-              }));
-          }
-        });
+      this.acqReceiptApiService.getReceipt(receiptPid).subscribe((receipt: IAcqReceipt) => {
+        this.receiptRecord.set(receipt);
+        this.model.reference = receipt.reference;
+        this.model.notes = receipt.notes;
+        if (receipt.amount_adjustments) {
+          this.model.amountAdjustments = receipt.amount_adjustments.map((adj: AcqReceiptAmountAdjustment) => ({
+            label: adj.label,
+            amount: adj.amount,
+            acqAccount: this.apiService.getRefEndpoint('acq_accounts', adj.acq_account.pid!),
+          }));
+        }
+      });
     }
     this.orderReceiptForm
       .setModel(this.model)
@@ -139,33 +137,31 @@ export class OrderReceiptViewComponent implements OnInit {
     // receipt exists, we can create corresponding lines
     const lines = this.orderReceipt.processLines(model);
     if (lines.length > 0) {
-      this.acqReceiptApiService
-        .createReceiptLines(model.pid, lines)
-        .subscribe((result: ICreateLineMessage) => {
-          if (result.success) {
-            this.messageService.add({
-              severity: 'success',
-              summary: this.translateService.instant('Receipt'),
-              detail: this.translateService.instant('Receipt operations were successful'),
-              life: CONFIG.MESSAGE_LIFE
-            });
-          } else {
-            this.messageService.add({
-              severity: 'error',
-              summary: this.translateService.instant('Receipt'),
-              detail: this.translateService.instant(result.messages),
-              sticky: true,
-              closable: true
-            });
-          }
-          this.redirectToOrder();
-        });
+      this.acqReceiptApiService.createReceiptLines(model.pid, lines).subscribe((result: ICreateLineMessage) => {
+        if (result.success) {
+          this.messageService.add({
+            severity: 'success',
+            summary: this.translateService.instant('Receipt'),
+            detail: this.translateService.instant('Receipt operations were successful'),
+            life: CONFIG.MESSAGE_LIFE,
+          });
+        } else {
+          this.messageService.add({
+            severity: 'error',
+            summary: this.translateService.instant('Receipt'),
+            detail: this.translateService.instant(result.messages),
+            sticky: true,
+            closable: true,
+          });
+        }
+        this.redirectToOrder();
+      });
     } else {
       this.messageService.add({
         severity: 'success',
         summary: this.translateService.instant('Receipt'),
         detail: this.translateService.instant('Receipt operations were successful'),
-        life: CONFIG.MESSAGE_LIFE
+        life: CONFIG.MESSAGE_LIFE,
       });
       this.redirectToOrder();
     }
@@ -173,6 +169,8 @@ export class OrderReceiptViewComponent implements OnInit {
 
   /** Redirect to order detail view */
   redirectToOrder(): void {
-    this.router.navigate(['/acquisition', 'records', 'acq_orders', 'detail', this.orderPid()], { queryParams: {tab: 'reception'}});
+    this.router.navigate(['/acquisition', 'records', 'acq_orders', 'detail', this.orderPid()], {
+      queryParams: { tab: 'reception' },
+    });
   }
 }

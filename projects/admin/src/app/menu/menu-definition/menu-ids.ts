@@ -44,7 +44,7 @@ export const MENU_IDS = {
       ILL: 'app-user-ill',
       REQUEST: 'app-user-request',
       USERS: 'app-user-users',
-    }
+    },
   },
 
   LIBRARY_MENU: 'library-menu',
@@ -55,5 +55,5 @@ export const MENU_IDS = {
     LANGUAGE: 'user-language',
     LOGOUT: 'user-logout',
     PUBLIC_INTERFACE: 'user-public-interface',
-  }
+  },
 };

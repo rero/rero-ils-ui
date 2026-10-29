@@ -3,4 +3,4 @@
 export type canRequest = {
   can: boolean;
   reasons?: Record<string, string>;
-}
+};

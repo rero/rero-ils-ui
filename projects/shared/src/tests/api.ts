@@ -5,7 +5,7 @@ export const apiResponse = {
   aggregations: {},
   hits: {
     total: 1,
-    hits: []
+    hits: [],
   },
-  links: {}
+  links: {},
 };

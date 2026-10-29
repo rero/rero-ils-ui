@@ -2,76 +2,73 @@
 SPDX-FileCopyrightText: Fondation RERO+
 SPDX-License-Identifier: AGPL-3.0-or-later
 -->
-@if (user) { @if (user.isAuthenticated && user.isPatron) {
-<div class="ui:flex ui:flex-col ui:sm:flex-row ui:mt-1">
-  <h3 class="ui:flex-grow">{{ fullname }}</h3>
-  <svg class="ui:w-xs ui:h-30 ui:md:w-3xs ui:md:h-20" id="barcode"></svg>
-</div>
-<section class="ui:mt-2">
-  <public-search-patron-profile-menu [patronPid]="patron.pid" />
-</section>
-<section class="ui:mt-4">
-  <public-search-patron-profile-message />
-</section>
+@if (user) {
+  @if (user.isAuthenticated && user.isPatron) {
+    <div class="ui:flex ui:flex-col ui:sm:flex-row ui:mt-1">
+      <h3 class="ui:flex-grow">{{ fullname }}</h3>
+      <svg class="ui:w-xs ui:h-30 ui:md:w-3xs ui:md:h-20" id="barcode"></svg>
+    </div>
+    <section class="ui:mt-2">
+      <public-search-patron-profile-menu [patronPid]="patron.pid" />
+    </section>
+    <section class="ui:mt-4">
+      <public-search-patron-profile-message />
+    </section>
 
-<section class="ui:mt-4">
-  @let tabsOrder = tabs()|keyvalue: sortTabs;
-  <p-tabs [(value)]="activeTab" scrollable>
-    <p-tablist>
-      @for (tab of tabsOrder; track $index) {
-        @if (tab.value.display) {
-          <p-tab [value]="tab.key" class="ui:flex ui:items-center ui:!gap-2">
-              <span>{{ tab.value.title }}</span>
-              @if (tab.value.count >= 0) {
-                <p-badge [value]="tab.value.count" severity="info" />
-              }
-              @if (tab.value.feeTotal > 0) {
-                <p-badge
-                  [value]="tab.value.feeTotal  | currency : patron.organisation.currency : 'symbol'"
-                  severity="warn"
-                  [pTooltip]="tab.value.tooltip"
-                  tooltipPosition="top"
-                />
-              }
-          </p-tab>
-        }
-      }
-    </p-tablist>
-    <p-tabpanels>
-      @for (tab of tabsOrder; track tab.key) {
-        <p-tabpanel [value]="tab.key">
-          @switch(tab.key) {
-            @case ('loan') {
-              <public-search-patron-profile-loans />
-            }
-            @case ('request') {
-              <public-search-patron-profile-requests />
-            }
-            @case ('fee') {
-              <public-search-patron-profile-fees [feesTotal]="tab.value.feeTotal" />
-            }
-            @case ('history') {
-              <public-search-patron-profile-histories />
-            }
-            @case ('illRequest') {
-              <public-search-patron-profile-ill-requests />
-            }
-            @case ('personalDetails') {
-              <public-search-patron-profile-personal
-                [user]="user"
-                [patron]="patron"
-                [viewcode]="viewcode"
-              />
+    <section class="ui:mt-4">
+      @let tabsOrder = tabs() | keyvalue: sortTabs;
+      <p-tabs [(value)]="activeTab" scrollable>
+        <p-tablist>
+          @for (tab of tabsOrder; track $index) {
+            @if (tab.value.display) {
+              <p-tab [value]="tab.key" class="ui:flex ui:items-center ui:!gap-2">
+                <span>{{ tab.value.title }}</span>
+                @if (tab.value.count >= 0) {
+                  <p-badge [value]="tab.value.count" severity="info" />
+                }
+                @if (tab.value.feeTotal > 0) {
+                  <p-badge
+                    [value]="tab.value.feeTotal | currency: patron.organisation.currency : 'symbol'"
+                    severity="warn"
+                    [pTooltip]="tab.value.tooltip"
+                    tooltipPosition="top" />
+                }
+              </p-tab>
             }
           }
-        </p-tabpanel>
-      }
-    </p-tabpanels>
-  </p-tabs>
-</section>
-} @else {
-<div class="ui:text-center ui:p-6">
-  <h3 translate>Access denied</h3>
-  {{ "You are not identified as a patron." | translate }}
-</div>
-} }
+        </p-tablist>
+        <p-tabpanels>
+          @for (tab of tabsOrder; track tab.key) {
+            <p-tabpanel [value]="tab.key">
+              @switch (tab.key) {
+                @case ('loan') {
+                  <public-search-patron-profile-loans />
+                }
+                @case ('request') {
+                  <public-search-patron-profile-requests />
+                }
+                @case ('fee') {
+                  <public-search-patron-profile-fees [feesTotal]="tab.value.feeTotal" />
+                }
+                @case ('history') {
+                  <public-search-patron-profile-histories />
+                }
+                @case ('illRequest') {
+                  <public-search-patron-profile-ill-requests />
+                }
+                @case ('personalDetails') {
+                  <public-search-patron-profile-personal [user]="user" [patron]="patron" [viewcode]="viewcode" />
+                }
+              }
+            </p-tabpanel>
+          }
+        </p-tabpanels>
+      </p-tabs>
+    </section>
+  } @else {
+    <div class="ui:text-center ui:p-6">
+      <h3>{{ 'Access denied' | translate }}</h3>
+      {{ 'You are not identified as a patron.' | translate }}
+    </div>
+  }
+}

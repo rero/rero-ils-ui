@@ -22,7 +22,11 @@ const TRANSACTION_STATUSES: Record<string, TransactionStatus> = {
   scan_item: { label: _('item scan'), severity: 'info', icon: 'fa-solid fa-barcode' },
 };
 
-const DEFAULT_STATUS: TransactionStatus = { label: _('Unknown'), severity: 'secondary', icon: 'fa-solid fa-circle-question' };
+const DEFAULT_STATUS: TransactionStatus = {
+  label: _('Unknown'),
+  severity: 'secondary',
+  icon: 'fa-solid fa-circle-question',
+};
 
 /**
  * Resolve the display status (label, PrimeNG severity, icon) of a circulation
@@ -34,9 +38,8 @@ const DEFAULT_STATUS: TransactionStatus = { label: _('Unknown'), severity: 'seco
   name: 'transactionStatus',
 })
 export class TransactionStatusPipe implements PipeTransform {
-
   transform(transaction: TransactionRecord): TransactionStatus {
-    const {metadata} = transaction;
+    const { metadata } = transaction;
     if (isScanItemMetadata(metadata)) {
       return TRANSACTION_STATUSES['scan_item'];
     }

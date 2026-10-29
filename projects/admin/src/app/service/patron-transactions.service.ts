@@ -7,13 +7,13 @@ import { RecordService } from '@rero/ng-core';
 import { BaseApi, EsResult } from '@rero/shared';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
+
 import { PatronTransaction } from '../classes/patron-transaction';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class PatronTransactionsService {
-
   private recordService: RecordService = inject(RecordService);
 
   /**
@@ -26,11 +26,16 @@ export class PatronTransactionsService {
     //   We use `getRecords` instead of `getRecord` in order to benefit of the
     //   records search serialization
     return this.recordService
-      .getRecords('patron_transactions', { query: `pid:${pid}`, page: 1, itemsPerPage: 1, headers: BaseApi.reroJsonheaders })
+      .getRecords('patron_transactions', {
+        query: `pid:${pid}`,
+        page: 1,
+        itemsPerPage: 1,
+        headers: BaseApi.reroJsonheaders,
+      })
       .pipe(
-        map((result: EsResult) => result.hits.total === 0 ? [] : result.hits.hits),
-        map((hits: any) => hits.find(Boolean)),  // Get first element of array if exists
-        map((hit: any) => new PatronTransaction(hit.metadata))
+        map((result: EsResult) => (result.hits.total === 0 ? [] : result.hits.hits)),
+        map((hits: any) => hits.find(Boolean)), // Get first element of array if exists
+        map((hit: any) => new PatronTransaction(hit.metadata)),
       );
   }
 }

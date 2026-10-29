@@ -3,9 +3,10 @@
 import { computed, inject, type Signal } from '@angular/core';
 import { patchState, signalStoreFeature, type, withHooks, withMethods, withState } from '@ngrx/signals';
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
+import { PaginatorState } from '@openng/optimus-ui/paginator';
 import { BaseApi, nextPager, Pager } from '@rero/shared';
-import { PaginatorState } from 'primeng/paginator';
 import { catchError, finalize, of, pipe, switchMap, tap } from 'rxjs';
+
 import { IllRequestApiService } from '../../api/ill-request-api.service';
 
 type IllRequestsFeatureState = {
@@ -26,7 +27,7 @@ const initialIllRequestsPager: Pager = {
   page: 1,
   first: 1,
   rows: 10,
-  rowsPerPageOptions: [10, 20, 50]
+  rowsPerPageOptions: [10, 20, 50],
 };
 
 /** Add ILL request state and pagination to the patron profile store. */
@@ -68,40 +69,39 @@ export function withIllRequestsFeature<_>() {
 
             patchState(store, { illRequestsLoaded: false });
 
-            return illRequestApiService.getPublicIllRequest(
-              patronPid,
-              page,
-              recordsPerPage,
-              BaseApi.reroJsonheaders,
-              '-created',
-              { remove_archived: '1' }
-            ).pipe(
-              tap(response => {
-                if (!('hits' in response)) return;
-                patchState(store, {
-                  illRequests: response.hits.hits,
-                  illRequestsTotal: response.hits.total,
-                });
-              }),
-              catchError(error => {
-                console.error(error);
-                return of(null);
-              }),
-              finalize(() => patchState(store, { illRequestsLoaded: true }))
-            );
-          })
-        )
-      )
+            return illRequestApiService
+              .getPublicIllRequest(patronPid, page, recordsPerPage, BaseApi.reroJsonheaders, '-created', {
+                remove_archived: '1',
+              })
+              .pipe(
+                tap((response) => {
+                  if (!('hits' in response)) return;
+                  patchState(store, {
+                    illRequests: response.hits.hits,
+                    illRequestsTotal: response.hits.total,
+                  });
+                }),
+                catchError((error) => {
+                  console.error(error);
+                  return of(null);
+                }),
+                finalize(() => patchState(store, { illRequestsLoaded: true })),
+              );
+          }),
+        ),
+      ),
     })),
     withHooks({
       onInit(store) {
-        store.loadIllRequests(computed(() => ({
-          patronPid: store.patronPid(),
-          active: store.activeTab() === 'illRequest',
-          page: store.illRequestsPager().page,
-          recordsPerPage: store.illRequestsPager().rows,
-        })));
+        store.loadIllRequests(
+          computed(() => ({
+            patronPid: store.patronPid(),
+            active: store.activeTab() === 'illRequest',
+            page: store.illRequestsPager().page,
+            recordsPerPage: store.illRequestsPager().rows,
+          })),
+        );
       },
-    })
+    }),
   );
 }

@@ -1,15 +1,16 @@
 // SPDX-FileCopyrightText: Fondation RERO+
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-import { TestBed } from "@angular/core/testing";
-import { AcqReceiptApiService } from "./acq-receipt-api.service";
-import { RecordService, RecordUiService } from "@rero/ng-core";
-import { HttpClient } from "@angular/common/http";
-import { of } from "rxjs";
-import { TranslateModule } from "@ngx-translate/core";
-import { IAcqReceipt, IAcqReceiptLine, receiptDefaultData, receiptLineDefaultData } from "../classes/receipt";
-import { apiResponse } from "@rero/shared";
-import { ICreateLineMessage } from "../components/receipt/receipt-form/order-receipt";
+import { HttpClient } from '@angular/common/http';
+import { TestBed } from '@angular/core/testing';
+import { provideTranslateService } from '@ngx-translate/core';
+import { RecordService, RecordUiService } from '@rero/ng-core';
+import { apiResponse } from '@rero/shared';
+import { of } from 'rxjs';
+
+import { IAcqReceipt, IAcqReceiptLine, receiptDefaultData, receiptLineDefaultData } from '../classes/receipt';
+import { ICreateLineMessage } from '../components/receipt/receipt-form/order-receipt';
+import { AcqReceiptApiService } from './acq-receipt-api.service';
 
 describe('AcqReceiptApiService', () => {
   let service: AcqReceiptApiService;
@@ -18,34 +19,34 @@ describe('AcqReceiptApiService', () => {
     metadata: {
       pid: '1',
       acq_order: {
-        pid: '1'
+        pid: '1',
       },
       amount_adjustments: [],
       organisation: {
-        pid: '1'
+        pid: '1',
       },
-      notes: []
-    }
+      notes: [],
+    },
   };
 
   const receiptLine = {
     metadata: {
       acq_receipt: {
-        pid: '1'
+        pid: '1',
       },
       acq_order_line: {
-        pid: '1'
+        pid: '1',
       },
       quantity: 2,
       amount: 20,
       vat_rate: 8,
-      receipt_date: "2025-04-17",
+      receipt_date: '2025-04-17',
       organisation: {
-        pid: '1'
+        pid: '1',
       },
-      notes: []
-    }
-  }
+      notes: [],
+    },
+  };
 
   const recordServiceSpy = { create: vi.fn(), update: vi.fn(), getRecord: vi.fn(), getRecords: vi.fn() };
 
@@ -56,15 +57,13 @@ describe('AcqReceiptApiService', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [
-        TranslateModule.forRoot()
-      ],
       providers: [
+        provideTranslateService(),
         AcqReceiptApiService,
         { provide: RecordService, useValue: recordServiceSpy },
         { provide: RecordUiService, useValue: recordUiServiceSpy },
         { provide: HttpClient, useValue: httpClientSpy },
-      ]
+      ],
     });
 
     service = TestBed.inject(AcqReceiptApiService);
@@ -75,13 +74,13 @@ describe('AcqReceiptApiService', () => {
   });
 
   it('should return a receipt', () => {
-    const data = {...receiptDefaultData, ...receipt.metadata};
+    const data = { ...receiptDefaultData, ...receipt.metadata };
     recordServiceSpy.getRecord.mockReturnValue(of(receipt));
     service.getReceipt('1').subscribe((result: IAcqReceipt) => expect(result).toEqual(data));
   });
 
   it('should return a list of receptions depending on whether a query', () => {
-    const data = [{...receiptDefaultData, ...receipt.metadata}];
+    const data = [{ ...receiptDefaultData, ...receipt.metadata }];
     apiResponse.hits.hits = [receipt];
     apiResponse.hits.total = apiResponse.hits.hits.length;
     recordServiceSpy.getRecords.mockReturnValue(of(apiResponse));
@@ -89,7 +88,7 @@ describe('AcqReceiptApiService', () => {
   });
 
   it('should return a list of receptions for an order', () => {
-    const data = [{...receiptDefaultData, ...receipt.metadata}];
+    const data = [{ ...receiptDefaultData, ...receipt.metadata }];
     apiResponse.hits.hits = [receipt];
     apiResponse.hits.total = apiResponse.hits.hits.length;
     recordServiceSpy.getRecords.mockReturnValue(of(apiResponse));
@@ -97,7 +96,7 @@ describe('AcqReceiptApiService', () => {
   });
 
   it('should return a list of receptions', () => {
-    const data = [{...receiptLineDefaultData, ...receiptLine.metadata}];
+    const data = [{ ...receiptLineDefaultData, ...receiptLine.metadata }];
     apiResponse.hits.hits = [receiptLine];
     apiResponse.hits.total = apiResponse.hits.hits.length;
     recordServiceSpy.getRecords.mockReturnValue(of(apiResponse));
@@ -105,23 +104,23 @@ describe('AcqReceiptApiService', () => {
   });
 
   it('should return the reception line created', () => {
-    const data = {...receiptDefaultData, ...receipt.metadata};
+    const data = { ...receiptDefaultData, ...receipt.metadata };
     recordServiceSpy.create.mockReturnValue(of(receipt));
     service.createReceipt(receipt.metadata).subscribe((result: IAcqReceipt) => expect(result).toEqual(data));
   });
 
   it('should return success when creating lines', () => {
-    const data = {success: true};
-    httpClientSpy.post.mockReturnValue(of({ response: [receiptLine]}));
-    service.createReceiptLines('1', [receiptLine.metadata])
+    const data = { success: true };
+    httpClientSpy.post.mockReturnValue(of({ response: [receiptLine] }));
+    service
+      .createReceiptLines('1', [receiptLine.metadata])
       .subscribe((result: ICreateLineMessage) => expect(result).toEqual(data));
   });
 
   it('should return the updated receipt', () => {
-    const data = {...receiptDefaultData, ...receipt.metadata};
+    const data = { ...receiptDefaultData, ...receipt.metadata };
     recordServiceSpy.update.mockReturnValue(of(receipt));
-    service.updateReceipt('1', receipt.metadata)
-      .subscribe((result: any) => expect(result).toEqual(data));
+    service.updateReceipt('1', receipt.metadata).subscribe((result: any) => expect(result).toEqual(data));
   });
 
   it('should update lastDeletedReceipt signal on delete', () => {

@@ -4,23 +4,23 @@
 export type ITypeEmail = {
   type: string;
   address: string;
-}
+};
 
 export type IRecipientSuggestion = {
   address: string;
   type?: string[];
-}
+};
 
 export type ISuggestions = {
   emails: string[];
   recipients: ITypeEmail[];
-}
+};
 
 export type IPreview = {
   preview: string;
   recipient_suggestions: IRecipientSuggestion[];
   message?: {
-    type: string,
-    content: string
+    type: string;
+    content: string;
   }[];
-}
+};

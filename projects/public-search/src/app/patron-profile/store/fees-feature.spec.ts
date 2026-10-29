@@ -5,18 +5,19 @@ import { TestBed } from '@angular/core/testing';
 import { signalStore, withMethods, withProps } from '@ngrx/signals';
 import { RecordService } from '@rero/ng-core';
 import { of, Subject, throwError } from 'rxjs';
+
 import { PatronApiService } from '../../api/patron-api.service';
 import { PatronTransactionApiService } from '../../api/patron-transaction-api.service';
 import { withFeesFeature } from './fees-feature';
 
 const FeesFeatureStore = signalStore(
   withProps(() => ({ patronPid: signal<string | null>(null) })),
-  withMethods(store => ({
+  withMethods((store) => ({
     setPatronPid(patronPid: string | null): void {
       store.patronPid.set(patronPid);
     },
   })),
-  withFeesFeature()
+  withFeesFeature(),
 );
 
 describe('FeesFeature', () => {
@@ -38,17 +39,21 @@ describe('FeesFeature', () => {
   afterEach(() => TestBed.resetTestingModule());
 
   it('clears previous fees while a new request is pending', () => {
-    patronTransactionApiService.getFees.mockReturnValueOnce(of({
-      hits: {
-        hits: [{
-          metadata: {
-            type: 'manual',
-            creation_date: '2026-06-01',
-            total_amount: 5,
-          },
-        }],
-      },
-    }));
+    patronTransactionApiService.getFees.mockReturnValueOnce(
+      of({
+        hits: {
+          hits: [
+            {
+              metadata: {
+                type: 'manual',
+                creation_date: '2026-06-01',
+                total_amount: 5,
+              },
+            },
+          ],
+        },
+      }),
+    );
     patronApiService.getOverduePreviewByPatronPid.mockReturnValueOnce(of([]));
     store.setPatronPid('patron-1');
     TestBed.tick();
@@ -73,23 +78,31 @@ describe('FeesFeature', () => {
   });
 
   it('groups fee transactions with their overdue fee by loan', () => {
-    patronTransactionApiService.getFees.mockReturnValue(of({
-      hits: {
-        hits: [{
-          metadata: {
-            type: 'manual',
-            creation_date: '2026-06-01',
-            total_amount: 4,
-            note: 'First fee',
-            loan: { pid: 'loan-1' },
-          },
-        }],
-      },
-    }));
-    patronApiService.getOverduePreviewByPatronPid.mockReturnValue(of([{
-      loan: { pid: 'loan-1' },
-      fees: { steps: [], total: 2 },
-    }]));
+    patronTransactionApiService.getFees.mockReturnValue(
+      of({
+        hits: {
+          hits: [
+            {
+              metadata: {
+                type: 'manual',
+                creation_date: '2026-06-01',
+                total_amount: 4,
+                note: 'First fee',
+                loan: { pid: 'loan-1' },
+              },
+            },
+          ],
+        },
+      }),
+    );
+    patronApiService.getOverduePreviewByPatronPid.mockReturnValue(
+      of([
+        {
+          loan: { pid: 'loan-1' },
+          fees: { steps: [], total: 2 },
+        },
+      ]),
+    );
 
     store.setPatronPid('patron-1');
     TestBed.tick();
@@ -98,7 +111,7 @@ describe('FeesFeature', () => {
       'patron-1',
       'open',
       1,
-      RecordService.MAX_REST_RESULTS_SIZE
+      RecordService.MAX_REST_RESULTS_SIZE,
     );
     expect(patronApiService.getOverduePreviewByPatronPid).toHaveBeenCalledWith('patron-1');
     expect(store.feesLoaded()).toBe(true);

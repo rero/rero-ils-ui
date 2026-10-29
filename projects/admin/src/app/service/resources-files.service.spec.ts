@@ -1,48 +1,49 @@
 // SPDX-FileCopyrightText: Fondation RERO+
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-import { TestBed } from "@angular/core/testing";
-import { ResourcesFilesService } from "./resources-files.service";
-import { HttpClient } from "@angular/common/http";
-import { ApiService, File } from "@rero/ng-core";
-import { AppStore } from "@rero/shared";
-import { of } from "rxjs";
+import { HttpClient } from '@angular/common/http';
+import { TestBed } from '@angular/core/testing';
+import { ApiService, File } from '@rero/ng-core';
+import { AppStore } from '@rero/shared';
+import { of } from 'rxjs';
+
+import { ResourcesFilesService } from './resources-files.service';
 
 describe('ResourcesFilesService', () => {
   let service: ResourcesFilesService;
 
   const response = {
-    "hits": {
-      "hits": [
+    hits: {
+      hits: [
         {
-          "id": "6az65-5bf71",
-          "created": "2025-04-09T13:12:06.013939+00:00",
-          "updated": "2025-04-09T13:12:06.207588+00:00",
-          "links": {
-            "self": "https://127.0.0.1:5000/api/records/6az65-5bf71"
+          id: '6az65-5bf71',
+          created: '2025-04-09T13:12:06.013939+00:00',
+          updated: '2025-04-09T13:12:06.207588+00:00',
+          links: {
+            self: 'https://127.0.0.1:5000/api/records/6az65-5bf71',
           },
-          "revision_id": 2,
-          "metadata": {
-            "library": {
-              "pid": "4",
-              "type": "lib"
+          revision_id: 2,
+          metadata: {
+            library: {
+              pid: '4',
+              type: 'lib',
             },
-            "document": {
-              "pid": "258",
-              "type": "doc"
+            document: {
+              pid: '258',
+              type: 'doc',
             },
-            "n_files": 2,
-            "file_size": 192904
-          }
-        }
+            n_files: 2,
+            file_size: 192904,
+          },
+        },
       ],
-      "total": 1
+      total: 1,
     },
-    "sortBy": "newest",
-    "links": {
-      "self": "https://127.0.0.1:5000/api/records?page=1&size=25&sort=newest"
-    }
-  }
+    sortBy: 'newest',
+    links: {
+      self: 'https://127.0.0.1:5000/api/records?page=1&size=25&sort=newest',
+    },
+  };
 
   const file: File = {
     updated: '2025-04-23',
@@ -54,23 +55,22 @@ describe('ResourcesFilesService', () => {
     tags: ['image'],
     delete_marker: false,
     links: {
-        self: '/link/images'
+      self: '/link/images',
     },
     checksum: 'A123456FDE12',
     key: 'file_key',
     showInfo: true,
     showChildren: false,
     metadata: {
-      label: 'file_key'
-    }
+      label: 'file_key',
+    },
   };
 
   const httpClientSpy = { delete: vi.fn(), get: vi.fn(), post: vi.fn(), put: vi.fn() };
 
   const appStoreSpy = {
-    currentLibraryPid: vi.fn(() => '1')
+    currentLibraryPid: vi.fn(() => '1'),
   } as any;
-
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -78,8 +78,8 @@ describe('ResourcesFilesService', () => {
         ResourcesFilesService,
         ApiService,
         { provide: HttpClient, useValue: httpClientSpy },
-        { provide: AppStore, useValue: appStoreSpy }
-      ]
+        { provide: AppStore, useValue: appStoreSpy },
+      ],
     });
 
     service = TestBed.inject(ResourcesFilesService);
@@ -93,20 +93,19 @@ describe('ResourcesFilesService', () => {
     const parentTransform = {
       metadata: {
         library: {
-          $ref: '/api/libraries/4'
+          $ref: '/api/libraries/4',
         },
         document: {
-          $ref: '/api/documents/258'
+          $ref: '/api/documents/258',
         },
         n_files: 2,
-        file_size: 192904
-      }
+        file_size: 192904,
+      },
     };
-    const responseCopy = {...response};
-    const parentWith$ref = {...responseCopy.hits.hits[0], ...parentTransform};
-    httpClientSpy.get.mockReturnValue(of({...response}));
-    service.getParentRecord('1')
-      .subscribe((result: any) => expect(result).toEqual(parentWith$ref));
+    const responseCopy = { ...response };
+    const parentWith$ref = { ...responseCopy.hits.hits[0], ...parentTransform };
+    httpClientSpy.get.mockReturnValue(of({ ...response }));
+    service.getParentRecord('1').subscribe((result: any) => expect(result).toEqual(parentWith$ref));
     expect(service.currentParentRecord()).toEqual(parentWith$ref);
   });
 
@@ -114,28 +113,26 @@ describe('ResourcesFilesService', () => {
     const parentTransform = {
       metadata: {
         library: {
-          $ref: '/api/libraries/4'
+          $ref: '/api/libraries/4',
         },
         document: {
-          $ref: '/api/documents/260'
+          $ref: '/api/documents/260',
         },
         n_files: 2,
-        file_size: 192904
-      }
+        file_size: 192904,
+      },
     };
-    const responseCopy = {...response};
-    const parentWith$ref = {...responseCopy.hits.hits[0], ...parentTransform};
+    const responseCopy = { ...response };
+    const parentWith$ref = { ...responseCopy.hits.hits[0], ...parentTransform };
     httpClientSpy.post.mockReturnValue(of(parentWith$ref));
-    service.createParentRecord('1')
-      .subscribe((result: any) => expect(result).toEqual(parentWith$ref));
+    service.createParentRecord('1').subscribe((result: any) => expect(result).toEqual(parentWith$ref));
     expect(service.currentParentRecord()).toEqual(parentWith$ref);
   });
 
   it('should update the parent', () => {
-    const responseCopy = {...response.hits.hits[0]};
+    const responseCopy = { ...response.hits.hits[0] };
     httpClientSpy.put.mockReturnValue(of(responseCopy));
-    service.updateParentRecordMetadata('1', {})
-      .subscribe((result: any) => expect(result).toEqual(responseCopy))
+    service.updateParentRecordMetadata('1', {}).subscribe((result: any) => expect(result).toEqual(responseCopy));
   });
 
   it('should return a list of files', () => {
@@ -144,23 +141,21 @@ describe('ResourcesFilesService', () => {
         {
           key: 'file_key',
           metadata: null,
-          is_head: false
-        }
-      ]
-    }
-    const result = {...response};
+          is_head: false,
+        },
+      ],
+    };
+    const result = { ...response };
     result.entries[0].is_head = true;
-    result.entries[0].metadata = { label: 'file_key' }
+    result.entries[0].metadata = { label: 'file_key' };
     httpClientSpy.get.mockReturnValue(of(response));
-    service.list('1')
-      .subscribe((result: any) => expect(result).toEqual(result));
+    service.list('1').subscribe((result: any) => expect(result).toEqual(result));
   });
 
   it('should return a new file', () => {
     httpClientSpy.post.mockReturnValue(of(file));
     httpClientSpy.put.mockReturnValue(of(file));
-    service.create('1', 'file_key', { label: 'file label'})
-      .subscribe((result: any) => expect(result).toEqual(file));
+    service.create('1', 'file_key', { label: 'file label' }).subscribe((result: any) => expect(result).toEqual(file));
   });
 
   it('should delete a file', () => {
@@ -169,10 +164,10 @@ describe('ResourcesFilesService', () => {
         {
           key: 'file_key',
           metadata: null,
-          is_head: false
-        }
-      ]
-    }
+          is_head: false,
+        },
+      ],
+    };
     httpClientSpy.delete.mockReturnValue(of({}));
     httpClientSpy.get.mockReturnValue(of(response));
     service.delete('1', 'file_key').subscribe((result: any) => expect(result).toBe(true));
@@ -181,12 +176,13 @@ describe('ResourcesFilesService', () => {
       entries: [
         {
           metadata: {
-            type: 'thumbnail' },
+            type: 'thumbnail',
+          },
           key: 'file_key',
-          is_head: false
-        }
-      ]
-    }
+          is_head: false,
+        },
+      ],
+    };
     httpClientSpy.get.mockReturnValue(of(responseBis));
     service.delete('1', 'file_key').subscribe((result: any) => expect(result).toEqual({}));
     expect(service.currentParentRecord()).toBeNull();

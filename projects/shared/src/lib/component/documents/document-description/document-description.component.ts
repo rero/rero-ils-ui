@@ -1,19 +1,19 @@
 // SPDX-FileCopyrightText: Fondation RERO+
 // SPDX-FileCopyrightText: UCLouvain
 // SPDX-License-Identifier: AGPL-3.0-or-later
-import { ChangeDetectionStrategy, Component, computed, inject, input, Signal } from '@angular/core';
-import { toSignal } from '@angular/core/rxjs-interop';
-import { LangChangeEvent, TranslateService, TranslatePipe } from '@ngx-translate/core';
-import { map } from 'rxjs';
-import { DescriptionZoneComponent } from './description-zone/description-zone.component';
-import { OtherEditionComponent } from './other-edition/other-edition.component';
-import { Bind } from 'primeng/bind';
-import { Tag } from 'primeng/tag';
-import { CallbackArrayFilterPipe, TranslateLanguagePipe, UpperCaseFirstPipe } from '@rero/ng-core';
 import { KeyValuePipe } from '@angular/common';
+import { Component, computed, inject, input, Signal } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { LangChangeEvent, TranslatePipe, TranslateService } from '@ngx-translate/core';
+import { Bind } from '@openng/optimus-ui/bind';
+import { Tag } from '@openng/optimus-ui/tag';
+import { CallbackArrayFilterPipe, TranslateLanguagePipe, UpperCaseFirstPipe } from '@rero/ng-core';
+import { map } from 'rxjs';
+
 import { DocumentProvisionActivityPipe } from '../../../pipe/document-provision-activity.pipe';
 import { IdAttributePipe } from '../../../pipe/id-attribute.pipe';
 import { SafeUrlPipe } from '../../../pipe/safe-url.pipe';
+import { DescriptionZoneComponent } from './description-zone/description-zone.component';
 import {
   CartographicAttribute,
   DocumentMetadata,
@@ -26,17 +26,29 @@ import {
   SeriesStatement,
   TemporalCoverage,
   WorkAccessAgent,
-  WorkAccessPoint
+  WorkAccessPoint,
 } from './model/document-description-model';
+import { OtherEditionComponent } from './other-edition/other-edition.component';
 
 @Component({
-    selector: 'shared-document-description',
-    templateUrl: './document-description.component.html',
-    imports: [DescriptionZoneComponent, OtherEditionComponent, Bind, Tag, CallbackArrayFilterPipe, KeyValuePipe, TranslateLanguagePipe, TranslatePipe, UpperCaseFirstPipe, DocumentProvisionActivityPipe, IdAttributePipe, SafeUrlPipe],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  selector: 'shared-document-description',
+  templateUrl: './document-description.component.html',
+  imports: [
+    DescriptionZoneComponent,
+    OtherEditionComponent,
+    Bind,
+    Tag,
+    CallbackArrayFilterPipe,
+    KeyValuePipe,
+    TranslateLanguagePipe,
+    TranslatePipe,
+    UpperCaseFirstPipe,
+    DocumentProvisionActivityPipe,
+    IdAttributePipe,
+    SafeUrlPipe,
+  ],
 })
 export class DocumentDescriptionComponent {
-
   public translateService: TranslateService = inject(TranslateService);
 
   /** Document record */
@@ -51,7 +63,7 @@ export class DocumentDescriptionComponent {
   /** Current interface language */
   private readonly language = toSignal(
     this.translateService.onLangChange.pipe(map((event: LangChangeEvent) => event.lang)),
-    { initialValue: this.translateService.getCurrentLang() }
+    { initialValue: this.translateService.getCurrentLang() },
   );
 
   /**
@@ -67,11 +79,12 @@ export class DocumentDescriptionComponent {
 
   /** Cartographic attributes */
   readonly cartographicAttributes: Signal<CartographicAttribute[]> = computed(() =>
-    (this.metadata().cartographicAttributes ?? []).filter((attribute: CartographicAttribute) =>
-      'projection' in attribute
-      || 'equinox' in attribute
-      || ('coordinates' in attribute && 'label' in attribute.coordinates)
-    )
+    (this.metadata().cartographicAttributes ?? []).filter(
+      (attribute: CartographicAttribute) =>
+        'projection' in attribute ||
+        'equinox' in attribute ||
+        ('coordinates' in attribute && 'label' in attribute.coordinates),
+    ),
   );
 
   /**
@@ -84,7 +97,7 @@ export class DocumentDescriptionComponent {
       const texts = statement._text ?? [];
       statements.push(
         ...texts.filter((text: LocalizedText) => text.language === 'default'),
-        ...texts.filter((text: LocalizedText) => text.language !== 'default')
+        ...texts.filter((text: LocalizedText) => text.language !== 'default'),
       );
     });
     return statements;
@@ -106,21 +119,21 @@ export class DocumentDescriptionComponent {
       }
       return {
         // Replace bf:Local by source, when the identifier provides one
-        type: (id.type === 'bf:Local') ? (id.source ?? id.type) : id.type,
+        type: id.type === 'bf:Local' ? (id.source ?? id.type) : id.type,
         value: id.value,
-        details: details.join(', ')
+        details: details.join(', '),
       };
-    })
+    }),
   );
 
   /** General notes only */
   readonly notesGeneral: Signal<Record<string, string[]> | undefined> = computed(() =>
-    this.sortedNotesByType(this.notes().filter((note: Note) => note.noteType === 'general'))
+    this.sortedNotesByType(this.notes().filter((note: Note) => note.noteType === 'general')),
   );
 
   /** All notes without general */
   readonly notesExceptGeneral: Signal<Record<string, string[]> | undefined> = computed(() =>
-    this.sortedNotesByType(this.notes().filter((note: Note) => note.noteType !== 'general'))
+    this.sortedNotesByType(this.notes().filter((note: Note) => note.noteType !== 'general')),
   );
 
   /** Provision activity notes, grouped by provision activity type */
@@ -143,7 +156,7 @@ export class DocumentDescriptionComponent {
   readonly provisionActivityOriginalDate: Signal<ProvisionActivity[]> = computed(() =>
     (this.metadata().provisionActivity ?? [])
       .filter((provision: ProvisionActivity) => provision.type !== 'bf:Publication')
-      .filter((provision: ProvisionActivity) => 'original_date' in provision)
+      .filter((provision: ProvisionActivity) => 'original_date' in provision),
   );
 
   /** Temporal coverages, formatted for display */
@@ -158,7 +171,7 @@ export class DocumentDescriptionComponent {
           [coverage.start_date, coverage.end_date]
             .filter((date: string) => date)
             .map((date: string) => this.formatTemporalDate(date))
-            .join(' - ')
+            .join(' - '),
         );
       }
       if (coverage.period_code?.length) {
@@ -213,8 +226,9 @@ export class DocumentDescriptionComponent {
   readonly workAccessPoint: Signal<string[]> = computed(() => {
     // Read the language to depend on it
     this.language();
-    return (this.metadata().work_access_point ?? [])
-      .map((workAccess: WorkAccessPoint) => this.formatWorkAccessPoint(workAccess));
+    return (this.metadata().work_access_point ?? []).map((workAccess: WorkAccessPoint) =>
+      this.formatWorkAccessPoint(workAccess),
+    );
   });
 
   /**
@@ -231,7 +245,7 @@ export class DocumentDescriptionComponent {
    * @return True if element isn't a 'Publication', False otherwise
    */
   filterNotPublicationProvisionActivity(element: any): boolean {
-    return ('key' in element && element.key !== 'bf:Publication');
+    return 'key' in element && element.key !== 'bf:Publication';
   }
 
   /**
@@ -239,12 +253,10 @@ export class DocumentDescriptionComponent {
    * @param classification - the classification to format
    * @returns the available qualifiers, joined by a comma
    */
-  classificationQualifiers(classification: { type: string, edition?: string, assigner?: string }): string {
-    return [
-      this.translateService.instant(classification.type),
-      classification.edition,
-      classification.assigner
-    ].filter((qualifier: string) => qualifier).join(', ');
+  classificationQualifiers(classification: { type: string; edition?: string; assigner?: string }): string {
+    return [this.translateService.instant(classification.type), classification.edition, classification.assigner]
+      .filter((qualifier: string) => qualifier)
+      .join(', ');
   }
 
   /**
@@ -252,9 +264,8 @@ export class DocumentDescriptionComponent {
    * @param scale - the scale to format
    * @returns the horizontal and vertical ratios, or null when neither is set
    */
-  scaleRatios(scale: { ratio_linear_horizontal?: string, ratio_linear_vertical?: string }): string | null {
-    const ratios = [scale.ratio_linear_horizontal, scale.ratio_linear_vertical]
-      .filter((ratio: string) => ratio);
+  scaleRatios(scale: { ratio_linear_horizontal?: string; ratio_linear_vertical?: string }): string | null {
+    const ratios = [scale.ratio_linear_horizontal, scale.ratio_linear_vertical].filter((ratio: string) => ratio);
     return ratios.length > 0 ? ratios.join(' / ') : null;
   }
 
@@ -279,9 +290,12 @@ export class DocumentDescriptionComponent {
       ...(workAccess.medium_of_performance_for_music ?? []),
       workAccess.key_for_music,
       workAccess.arranged_statement_for_music,
-      workAccess.date_of_work
+      workAccess.date_of_work,
     );
-    return parts.filter((part: string) => part).map((part: string) => `${part}.`).join(' ');
+    return parts
+      .filter((part: string) => part)
+      .map((part: string) => `${part}.`)
+      .join(' ');
   }
 
   /**
@@ -301,21 +315,20 @@ export class DocumentDescriptionComponent {
       const person = [
         name.filter((element: string) => element).join(' '),
         agent.numeration ? agent.qualifier : undefined,
-        [agent.date_of_birth, agent.date_of_death].filter((date: string) => date).join('-')
+        [agent.date_of_birth, agent.date_of_death].filter((date: string) => date).join('-'),
       ];
       return [
         person.filter((element: string) => element).join(', '),
         // The qualifier of an unnumbered person is a part of its own
-        agent.numeration ? undefined : agent.qualifier
+        agent.numeration ? undefined : agent.qualifier,
       ];
     }
     // Organisation
-    const conference = [agent.numbering, agent.conference_date, agent.place]
-      .filter((element: string) => element);
+    const conference = [agent.numbering, agent.conference_date, agent.place].filter((element: string) => element);
     return [
       agent.preferred_name,
       ...(agent.subordinate_unit ?? []),
-      conference.length > 0 ? `(${conference.join(' : ')})` : undefined
+      conference.length > 0 ? `(${conference.join(' : ')})` : undefined,
     ];
   }
 
@@ -339,7 +352,7 @@ export class DocumentDescriptionComponent {
       return undefined;
     }
     const sortedByType: Record<string, string[]> = {};
-    notes.forEach(note => {
+    notes.forEach((note) => {
       sortedByType[note.noteType] ??= [];
       sortedByType[note.noteType].push(note.label);
     });

@@ -7,15 +7,14 @@ SPDX-License-Identifier: AGPL-3.0-or-later
   [record]="record()"
   [isHighlight]="isHighlight()"
   [separator]="separator()"
-  (isCollapsedEvent)="loadData($event)"
->
+  (isCollapsedEvent)="loadData($event)">
   <p-tag badge severity="info" icon="fa-solid fa-envelope" [value]="'notification' | translate" />
   <div collapsedContent class="ui:grid ui:grid-cols-12 ui:gap-4">
     <!-- Library -->
     <div class="ui:col-span-8">
       <i class="fa-solid fa-globe"></i>&nbsp;
       @if (record().metadata.notification.sender_library_pid) {
-        {{ record().metadata.notification.sender_library_pid | getRecord : 'libraries'  : 'field' : 'name' | async }}
+        {{ record().metadata.notification.sender_library_pid | getRecord: 'libraries' : 'field' : 'name' | async }}
       } @else {
         ---
       }
@@ -27,21 +26,21 @@ SPDX-License-Identifier: AGPL-3.0-or-later
   </div>
   <dl class="metadata" expandedContent>
     <!-- Library -->
-    <dt><i class="fa-solid fa-building-columns"></i>&nbsp;{{'Library' | translate}}</dt>
+    <dt><i class="fa-solid fa-building-columns"></i>&nbsp;{{ 'Library' | translate }}</dt>
     <dd>
       @if (record().metadata.notification.sender_library_pid) {
-        {{ record().metadata.notification.sender_library_pid | getRecord : 'libraries'  : 'field' : 'name' | async }}
+        {{ record().metadata.notification.sender_library_pid | getRecord: 'libraries' : 'field' : 'name' | async }}
       } @else {
         ---
       }
     </dd>
 
     <!-- Type of notification -->
-    <dt><i class="fa-solid fa-flag"></i>&nbsp;{{ 'Type' | translate}}</dt>
+    <dt><i class="fa-solid fa-flag"></i>&nbsp;{{ 'Type' | translate }}</dt>
     <dd>{{ record().metadata.notification.type | translate }}</dd>
 
     <!-- Recipients -->
-    <dt><i class="fa-solid fa-envelope"></i>&nbsp;{{ 'Recipients' | translate}}</dt>
+    <dt><i class="fa-solid fa-envelope"></i>&nbsp;{{ 'Recipients' | translate }}</dt>
     <dd>
       <ul class="ui:list-none">
         @for (recipient of record().metadata.notification.recipients; track $index) {
@@ -52,11 +51,11 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
     @if (notificationRecord) {
       <!-- Process date -->
-      <dt><i class="fa-solid fa-calendar-days"></i>&nbsp;{{ 'Process date' | translate}}</dt>
-      <dd>{{ notificationRecord.process_date  | dateTranslate :'medium' }}</dd>
+      <dt><i class="fa-solid fa-calendar-days"></i>&nbsp;{{ 'Process date' | translate }}</dt>
+      <dd>{{ notificationRecord.process_date | dateTranslate: 'medium' }}</dd>
 
       <!-- Status -->
-      <dt><i class="fa-solid fa-eye"></i>&nbsp;{{ 'Status' | translate}}</dt>
+      <dt><i class="fa-solid fa-eye"></i>&nbsp;{{ 'Status' | translate }}</dt>
       <dd>
         @if (notificationRecord.notification_sent) {
           <i class="fa-solid fa-circle text-success"></i> {{ 'message sent' | translate }}

@@ -8,14 +8,18 @@ import { RecordService, RecordUiService } from '@rero/ng-core';
 import { BaseApi, EsResult } from '@rero/shared';
 import { Observable, of } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
+
 import { IAcqReceipt, IAcqReceiptLine, receiptDefaultData, receiptLineDefaultData } from '../classes/receipt';
-import { AcqResponseReceiptLineStatus, ICreateLineMessage, IResponseReceiptLine } from '../components/receipt/receipt-form/order-receipt';
+import {
+  AcqResponseReceiptLineStatus,
+  ICreateLineMessage,
+  IResponseReceiptLine,
+} from '../components/receipt/receipt-form/order-receipt';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class AcqReceiptApiService {
-
   private apiService: RecordService = inject(RecordService);
   private recordUiService: RecordUiService = inject(RecordUiService);
   private httpClient: HttpClient = inject(HttpClient);
@@ -27,8 +31,8 @@ export class AcqReceiptApiService {
 
   /** default options to get records */
   private readonly _defaultRecordOptions = {
-    headers: { Accept: 'application/json'},
-    sort: 'receipt_date'
+    headers: { Accept: 'application/json' },
+    sort: 'receipt_date',
   };
   /** Last deleted receipt/receipt-line (null = no deletion yet) */
   readonly lastDeletedReceipt = signal<IAcqReceipt | null>(null);
@@ -43,9 +47,7 @@ export class AcqReceiptApiService {
   getReceipt(pid: string): Observable<IAcqReceipt> {
     return this.apiService
       .getRecord(this.resourceName, pid, { resolve: 1, headers: BaseApi.reroJsonheaders })
-      .pipe(
-        map((data: any) => ({...receiptDefaultData, ...data.metadata}) as IAcqReceipt)
-      );
+      .pipe(map((data: any) => ({ ...receiptDefaultData, ...data.metadata }) as IAcqReceipt));
   }
 
   /**
@@ -54,22 +56,25 @@ export class AcqReceiptApiService {
    * @param [options] - the additional options to get the records.
    * @returns ElasticSearch response corresponding to search criteria.
    */
-  searchReceipts(query: string, options?: {
-    headers?: object,
-    sort?: string
-  }): Observable<IAcqReceipt[]> {
-    options = {...this._defaultRecordOptions, ...options};  // add some default params
+  searchReceipts(
+    query: string,
+    options?: {
+      headers?: object;
+      sort?: string;
+    },
+  ): Observable<IAcqReceipt[]> {
+    options = { ...this._defaultRecordOptions, ...options }; // add some default params
     return this.apiService
       .getRecords(this.resourceName, {
         query,
         page: 1,
         itemsPerPage: RecordService.MAX_REST_RESULTS_SIZE,
         headers: options.headers as any,
-        sort: options.sort
+        sort: options.sort,
       })
       .pipe(
-        map((result: EsResult) => result.hits.total === 0 ? [] : result.hits.hits),
-        map((hits: any[]) => hits.map(hit => ({...receiptDefaultData, ...hit.metadata}) ))
+        map((result: EsResult) => (result.hits.total === 0 ? [] : result.hits.hits)),
+        map((hits: any[]) => hits.map((hit) => ({ ...receiptDefaultData, ...hit.metadata }))),
       );
   }
 
@@ -95,11 +100,11 @@ export class AcqReceiptApiService {
         page: 1,
         itemsPerPage: RecordService.MAX_REST_RESULTS_SIZE,
         headers: BaseApi.reroJsonheaders as any,
-        sort: 'receipt_date'
+        sort: 'receipt_date',
       })
       .pipe(
-        map((result: EsResult) => result.hits.total === 0 ? [] : result.hits.hits),
-        map((hits: any[]) => hits.map(hit => ({...receiptLineDefaultData, ...hit.metadata}) ))
+        map((result: EsResult) => (result.hits.total === 0 ? [] : result.hits.hits)),
+        map((hits: any[]) => hits.map((hit) => ({ ...receiptLineDefaultData, ...hit.metadata }))),
       );
   }
 
@@ -112,9 +117,7 @@ export class AcqReceiptApiService {
   createReceipt(record: any): Observable<IAcqReceipt> {
     return this.apiService
       .create(this.resourceName, record)
-      .pipe(
-        map((data: any) => ({...receiptDefaultData, ...data.metadata}) )
-      );
+      .pipe(map((data: any) => ({ ...receiptDefaultData, ...data.metadata })));
   }
 
   /**
@@ -126,23 +129,23 @@ export class AcqReceiptApiService {
   createReceiptLines(receiptPid: string, lines: IAcqReceiptLine[]): Observable<ICreateLineMessage> {
     const generalErrorMessage = this.translateService.instant('Error proceeding receipt lines creation');
     const url = `/api/acq_receipt/${receiptPid}/lines`;
-    return this.httpClient
-      .post<any>(url, lines)
-      .pipe(
-        map((response: IResponseReceiptLine) => response.response),
-        map((response: IResponseReceiptLine[]) => {
-          if (response === null) {  // no response
-            throw new Error(generalErrorMessage);
-          } else if (response.some((line) => line.status === AcqResponseReceiptLineStatus.FAILURE)) {  // Response but with some errors
-            const errorMessages = response
-              .filter((line: IResponseReceiptLine) => line.status === AcqResponseReceiptLineStatus.FAILURE)
-              .map((line: IResponseReceiptLine) => line.error_message);
-            throw Error(errorMessages.join('\n'));
-          }
-          return {success: true};
-        }),
-        catchError((err) => of({success: false, messages: err.toString()}))
-      );
+    return this.httpClient.post<any>(url, lines).pipe(
+      map((response: IResponseReceiptLine) => response.response),
+      map((response: IResponseReceiptLine[]) => {
+        if (response === null) {
+          // no response
+          throw new Error(generalErrorMessage);
+        } else if (response.some((line) => line.status === AcqResponseReceiptLineStatus.FAILURE)) {
+          // Response but with some errors
+          const errorMessages = response
+            .filter((line: IResponseReceiptLine) => line.status === AcqResponseReceiptLineStatus.FAILURE)
+            .map((line: IResponseReceiptLine) => line.error_message);
+          throw Error(errorMessages.join('\n'));
+        }
+        return { success: true };
+      }),
+      catchError((err) => of({ success: false, messages: err.toString() })),
+    );
   }
 
   // UPDATE FUNCTIONS =========================================================
@@ -152,12 +155,10 @@ export class AcqReceiptApiService {
    * @param record - the data corresponding to the receipt
    * @returns the API response with receipt data or null if operation failed.
    */
-  updateReceipt(receiptPid: string, record: any): Observable<any|null> {
+  updateReceipt(receiptPid: string, record: any): Observable<any | null> {
     return this.apiService
       .update(this.resourceName, receiptPid, record)
-      .pipe(
-        map((response: any) => ({ ...receiptDefaultData, ...response.metadata}) )
-      );
+      .pipe(map((response: any) => ({ ...receiptDefaultData, ...response.metadata })));
   }
 
   // DELETE FUNCTIONS ========================================================
@@ -167,14 +168,11 @@ export class AcqReceiptApiService {
    * @param receipt - the receipt to delete
    */
   delete(receipt: IAcqReceipt): void {
-    this.recordUiService
-      .deleteRecord(this.resourceName, receipt.pid)
-      .subscribe((success: boolean) => {
-          if (success) {
-            this.lastDeletedReceipt.set(receipt);
-          }
-        }
-      );
+    this.recordUiService.deleteRecord(this.resourceName, receipt.pid).subscribe((success: boolean) => {
+      if (success) {
+        this.lastDeletedReceipt.set(receipt);
+      }
+    });
   }
 
   /**
@@ -183,12 +181,10 @@ export class AcqReceiptApiService {
    * @param receiptLine - the receipt line to delete
    */
   deleteReceiptLine(receiptLine: IAcqReceiptLine): void {
-    this.recordUiService
-      .deleteRecord('acq_receipt_lines', receiptLine.pid)
-      .subscribe((success: boolean) => {
-        if (success) {
-          this.lastDeletedReceiptLine.set(receiptLine);
-        }
-      });
+    this.recordUiService.deleteRecord('acq_receipt_lines', receiptLine.pid).subscribe((success: boolean) => {
+      if (success) {
+        this.lastDeletedReceiptLine.set(receiptLine);
+      }
+    });
   }
 }

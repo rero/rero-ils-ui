@@ -10,7 +10,6 @@ SPDX-License-Identifier: AGPL-3.0-or-later
     <div class="ui:w-full">
       <div>{{ $any(record()?.metadata.document).title }}</div>
       <div class="ui:text-sm">{{ $any(record()?.metadata.document).authors }}</div>
-
     </div>
   </div>
   <div class="ui:md:col-span-2 ui:col-span-12 ui:text-end">
@@ -22,77 +21,74 @@ SPDX-License-Identifier: AGPL-3.0-or-later
   </div>
 
   <!-- ILL DETAIL -->
-  @if (!isCollapsed){
-  <div class="ui:col-span-12 ui:pl-12 ui:mb-3">
-    <dl class="metadata ui:pt-4">
-      <!-- PUBLISHER -->
-      @if ($any(record()?.metadata.document).publisher) {
-        <dt translate>Publisher</dt>
-        <dd>{{ $any(record()?.metadata.document).publisher }}</dd>
-      }
-      <!-- YEAR -->
-      @if ($any(record()?.metadata.document).year) {
-        <dt translate>Year</dt>
-        <dd>{{ $any(record()?.metadata.document).year }}</dd>
-      }
-      <!-- IDENTIFIER -->
-      @if ($any(record()?.metadata.document).identifier) {
-        <dt translate>Identifier</dt>
-        <dd>{{ $any(record()?.metadata.document).identifier }}</dd>
-      }
-      <!-- SOURCE -->
-      @if ($any(record()?.metadata.document).source) {
-        <dt translate>Source</dt>
-        <dd>
-          @if ($any(record()?.metadata.document).source.volume || $any(record()?.metadata.document).source.number) {
-            {{ $any(record()?.metadata.document).source | journalVolume }}
-          }
-        </dd>
-      }
-      <!-- PICKUP LOCATION -->
-      <dt translate>Pickup location</dt>
-      <dd>{{ $any(record()?.metadata.pickup_location).name }}</dd>
-      <!-- SCOPE -->
-      <dt translate>Scope</dt>
-      <dd>
-        @if (record()?.metadata.copy) {
-          {{ 'Copy' | translate }}
-        } @else {
-          {{ 'Loan' | translate }}
+  @if (!isCollapsed) {
+    <div class="ui:col-span-12 ui:pl-12 ui:mb-3">
+      <dl class="metadata ui:pt-4">
+        <!-- PUBLISHER -->
+        @if ($any(record()?.metadata.document).publisher) {
+          <dt>{{ 'Publisher' | translate }}</dt>
+          <dd>{{ $any(record()?.metadata.document).publisher }}</dd>
         }
-      </dd>
-      <!-- PAGES -->
-      @if (record()?.metadata.copy && record()?.metadata.pages) {
-        <dt translate>Pages</dt>
-        <dd >{{ record()?.metadata.pages }}</dd>
-      }
-      <!-- FOUND IN -->
-      @if (record()?.metadata.found_in) {
-        <dt translate>Found in</dt>
-        <dd class="ui:flex ui:gap-2 ui:items-start">
-          @if($any(record()?.metadata?.found_in).url) {
-            <a
-              [title]="$any(record()?.metadata.found_in).url"
-              href="{{ $any(record()?.metadata.found_in).url }}"
-            >
-              {{ $any(record()?.metadata.found_in).url | truncateText: 80 : '…' : 'char' }}
-            </a>
-          }
-          <p-tag severity="secondary">{{ $any(record()?.metadata.found_in).source }}</p-tag>
-        </dd>
-      }
-      <!-- NOTES -->
-      @if (record()?.metadata.notes && $any(record()?.metadata.notes).length > 0) {
-        <dt translate>Note</dt>
-        <dd>
-          <ul class="ui:list-none">
-            @for (note of $any(record()?.metadata.notes) | notesFilter:['public_note']; track $index) {
-              <li [innerHTML]="note.content | nl2br"></li>
+        <!-- YEAR -->
+        @if ($any(record()?.metadata.document).year) {
+          <dt>{{ 'Year' | translate }}</dt>
+          <dd>{{ $any(record()?.metadata.document).year }}</dd>
+        }
+        <!-- IDENTIFIER -->
+        @if ($any(record()?.metadata.document).identifier) {
+          <dt>{{ 'Identifier' | translate }}</dt>
+          <dd>{{ $any(record()?.metadata.document).identifier }}</dd>
+        }
+        <!-- SOURCE -->
+        @if ($any(record()?.metadata.document).source) {
+          <dt>{{ 'Source' | translate }}</dt>
+          <dd>
+            @if ($any(record()?.metadata.document).source.volume || $any(record()?.metadata.document).source.number) {
+              {{ $any(record()?.metadata.document).source | journalVolume }}
             }
-          </ul>
+          </dd>
+        }
+        <!-- PICKUP LOCATION -->
+        <dt>{{ 'Pickup location' | translate }}</dt>
+        <dd>{{ $any(record()?.metadata.pickup_location).name }}</dd>
+        <!-- SCOPE -->
+        <dt>{{ 'Scope' | translate }}</dt>
+        <dd>
+          @if (record()?.metadata.copy) {
+            {{ 'Copy' | translate }}
+          } @else {
+            {{ 'Loan' | translate }}
+          }
         </dd>
-      }
-    </dl>
-  </div>
-}
+        <!-- PAGES -->
+        @if (record()?.metadata.copy && record()?.metadata.pages) {
+          <dt>{{ 'Pages' | translate }}</dt>
+          <dd>{{ record()?.metadata.pages }}</dd>
+        }
+        <!-- FOUND IN -->
+        @if (record()?.metadata.found_in) {
+          <dt>{{ 'Found in' | translate }}</dt>
+          <dd class="ui:flex ui:gap-2 ui:items-start">
+            @if ($any(record()?.metadata?.found_in).url) {
+              <a [title]="$any(record()?.metadata.found_in).url" href="{{ $any(record()?.metadata.found_in).url }}">
+                {{ $any(record()?.metadata.found_in).url | truncateText: 80 : '…' : 'char' }}
+              </a>
+            }
+            <p-tag severity="secondary">{{ $any(record()?.metadata.found_in).source }}</p-tag>
+          </dd>
+        }
+        <!-- NOTES -->
+        @if (record()?.metadata.notes && $any(record()?.metadata.notes).length > 0) {
+          <dt>{{ 'Note' | translate }}</dt>
+          <dd>
+            <ul class="ui:list-none">
+              @for (note of $any(record()?.metadata.notes) | notesFilter: ['public_note']; track $index) {
+                <li [innerHTML]="note.content | nl2br"></li>
+              }
+            </ul>
+          </dd>
+        }
+      </dl>
+    </div>
+  }
 </div>

@@ -3,9 +3,11 @@
 ## Two deployment contexts
 
 ### Admin app
+
 The admin app is a **standalone Angular application** — it occupies the full page in its Flask/Jinja template with no other CSS framework loaded alongside it. No style isolation is needed.
 
 ### Public apps (`public-search`, `public-patron-profile`, `public-holdings-items`, `search-bar`)
+
 These apps are **embedded as web components inside Flask/Jinja templates** that already load Bootstrap. Angular styles must be isolated to avoid conflicts with Bootstrap (especially resets like `preflight` vs Bootstrap's own reboot).
 
 Isolation is enforced by scoping Angular styles under the `.rero-ils-ui` CSS class, which is applied to each Angular root element in the Flask template:
@@ -18,86 +20,92 @@ Isolation is enforced by scoping Angular styles under the `.rero-ils-ui` CSS cla
 
 ## CSS cascade layer ordering
 
-All projects declare an explicit layer ordering so that layer priority is predictable regardless of load order. The declaration lives in a `<style>` tag at the top of each `index.html` `<head>`:
+The public apps declare an explicit layer ordering so that layer priority is predictable regardless of load order. The declaration lives in a `<style>` tag at the top of their `index.html` `<head>`, and in production in the rero-ils templates that host them (`rero_ils/theme/templates/rero_ils/page.html` and `login_user.html`): keep both in sync.
 
 ```html
 <style>
-  @layer bootstrap, theme, base, rero-ils-ui, primeng, utilities;
+  @layer bootstrap, theme, base, rero-ils-ui, optimus, utilities;
 </style>
 ```
 
 Order = lowest to highest priority:
-| Layer | Contents |
-|-------|----------|
-| `bootstrap` | Bootstrap CSS (dev only, loaded via `bootstrap_styles.scss`) |
-| `theme` | Tailwind theme tokens (`@layer theme`) |
-| `base` | Tailwind preflight/base reset |
-| `rero-ils-ui` | Application styles, ng-core theme & typography |
-| `primeng` | PrimeNG component styles (`tailwindcss-primeui` plugin) |
-| `utilities` | Tailwind utility classes (`@layer utilities`) |
 
-> **Admin** uses the same ordering. Because there is no Bootstrap in production, the `bootstrap` layer is simply empty and has no effect.
+| Layer         | Contents                                                              |
+| ------------- | --------------------------------------------------------------------- |
+| `bootstrap`   | Bootstrap CSS (dev only, loaded via `bootstrap_styles.scss`)          |
+| `theme`       | Tailwind theme tokens (`@layer theme`)                                |
+| `base`        | Tailwind preflight/base reset                                         |
+| `rero-ils-ui` | Application styles, ng-core theme & typography                        |
+| `optimus`     | Optimus UI component styles (`@openng/optimus-ui-tailwindcss` plugin) |
+| `utilities`   | Tailwind utility classes (`@layer utilities`)                         |
+
+> **Admin** declares no order itself: Optimus UI injects the one of `optimusUIConfig` (`theme, base, optimus, utilities`) at startup, and admin has no `bootstrap` nor `rero-ils-ui` layer.
 
 ---
 
-## PrimeNG layer injection anchor
+## Optimus UI layer injection anchor
 
-PrimeNG dynamically injects a `@layer` order declaration into the DOM at runtime. To control exactly where it appears (after our own layer declaration, before bundled stylesheets), each public `index.html` includes an empty placeholder that PrimeNG targets:
+Optimus UI dynamically injects a `@layer` order declaration into the DOM at runtime. To control exactly where it appears (after our own layer declaration, before bundled stylesheets), each public `index.html` includes an empty placeholder that Optimus UI targets:
 
 ```html
 <style>
-  @layer bootstrap, theme, base, rero-ils-ui, primeng, utilities;
+  @layer bootstrap, theme, base, rero-ils-ui, optimus, utilities;
 </style>
-<style type="text/css" data-primeng-style-id="layer-order"></style>
+<style type="text/css" data-optimus-style-id="layer-order"></style>
 ```
 
-This tag is placed in all public apps. Admin does not need it because PrimeNG is configured with a default css order (no runtime layer wrapping).
+This tag is placed in all public apps and in the rero-ils templates. Without it, or if `optimus` is missing from the declaration, the browser appends the `optimus` layer last, with the highest priority: the Optimus UI component styles then override Bootstrap, the application styles and the utilities. Admin does not need the tag: with no layer declaration of its own, Optimus UI creates it.
 
 ---
 
 ## Stylesheet structure per project
 
 ### Shared base (`projects/shared/src/scss/styles.scss`)
+
 Imported by all projects via `@use`. Provides:
+
 - `easymde` styles
 - `ng-core-tailwind` (pre-compiled Tailwind `@layer properties`, `@layer theme`, `@layer utilities` with `core:` prefix)
 - `tailwindcss/theme.css` → `@layer theme` with `ui:` prefix
 - `tailwindcss/utilities.css` → `@layer utilities` with `ui:` prefix
-- `tailwindcss-primeui` plugin → `@layer primeng`
+- `@openng/optimus-ui-tailwindcss` plugin → `@layer optimus`
 - Shared component styles (`files.component`, `contribution.component`)
 
 ### Public apps (`projects/public-search/src/app/scss/styles.scss`)
+
 Production stylesheet. Scopes Angular-specific styles under `.rero-ils-ui`:
 
 ```scss
 @use '../../../../shared/src/scss/styles';
 
 // @theme blocks must be at root level (Tailwind v4 constraint)
-@import "@rero/ng-core/assets/scss/colors";
+@import '@rero/ng-core/assets/scss/colors';
 
 @layer rero-ils-ui {
   .rero-ils-ui {
-    @import "tailwindcss/preflight.css" prefix(ui);  // scoped, avoids Bootstrap conflict
-    @import "@rero/ng-core/assets/scss/theme";
-    @import "@rero/ng-core/assets/scss/typography";
+    @import 'tailwindcss/preflight.css' prefix(ui); // scoped, avoids Bootstrap conflict
+    @import '@rero/ng-core/assets/scss/theme';
+    @import '@rero/ng-core/assets/scss/typography';
     // component-specific imports...
   }
 }
 ```
 
 Key decisions:
+
 - `colors.scss` at root because it contains `@theme {}` blocks (Tailwind v4 requires root-level)
 - `preflight` inside `.rero-ils-ui` selector to avoid conflicting with Bootstrap's reboot outside Angular
 - `theme` and `typography` scoped under `.rero-ils-ui` so ng-core styles don't leak to Bootstrap context
 - Component SCSS files use `@import` (not `@use`) when they need to be nested inside a selector block
 
 ### Dev stylesheet (`projects/public-search/src/app/scss/bootstrap_styles.scss`)
+
 Development-only. Adds Bootstrap inside `@layer bootstrap` so it participates in the cascade:
 
 ```scss
 @use 'sass:meta';
-@use "font-awesome/scss/font-awesome";
-@use "./styles.scss";
+@use 'font-awesome/scss/font-awesome';
+@use './styles.scss';
 
 @layer bootstrap {
   @include meta.load-css('bootstrap/dist/css/bootstrap');
@@ -105,6 +113,7 @@ Development-only. Adds Bootstrap inside `@layer bootstrap` so it participates in
 ```
 
 ### Admin (`projects/admin/src/app/scss/styles.scss`)
+
 Uses `ng-core` directly (includes theme, typography and colors in one import) without `.rero-ils-ui` selector scope, since there is no Bootstrap conflict. Component-specific styles are loaded via `@use` at the top level:
 
 ```scss
@@ -130,10 +139,10 @@ body { margin: 0; }
 
 Each project has two style configurations:
 
-| Config | Stylesheet |
-|--------|-----------|
+| Config        | Stylesheet                                                |
+| ------------- | --------------------------------------------------------- |
 | default (dev) | `bootstrap_styles.scss` (public) or `styles.scss` (admin) |
-| production | `styles.scss` |
+| production    | `styles.scss`                                             |
 
 **Why two stylesheets for public apps:**
 

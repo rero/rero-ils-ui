@@ -1,12 +1,11 @@
 // SPDX-FileCopyrightText: Fondation RERO+
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-import { ILLRequestStatus } from "../classes/ill-request";
-import { LoanState } from "../classes/loans";
-import { getSeverity, getTagSeverityFromStatus } from "./utils";
+import { ILLRequestStatus } from '../classes/ill-request';
+import { LoanState } from '../classes/loans';
+import { getSeverity, getTagSeverityFromStatus } from './utils';
 
 describe('Utils', () => {
-
   it('should return the severity according to the level', () => {
     expect(getSeverity('error')).toEqual('error');
     expect(getSeverity('warning')).toEqual('warn');

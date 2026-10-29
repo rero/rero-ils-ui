@@ -2,14 +2,14 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 import { TestBed } from '@angular/core/testing';
-import { TranslateModule } from '@ngx-translate/core';
+import { provideTranslateService } from '@ngx-translate/core';
 import { RecordService } from '@rero/ng-core';
 import { firstValueFrom, of } from 'rxjs';
 import { skip } from 'rxjs/operators';
+
 import { ItemHoldingsCallNumberPipe } from './item-holdings-call-number.pipe';
 
 describe('ItemHoldingsCallNumberPipe', () => {
-
   let pipe: ItemHoldingsCallNumberPipe;
 
   const recordServiceSpy = { getRecord: vi.fn() };
@@ -17,13 +17,11 @@ describe('ItemHoldingsCallNumberPipe', () => {
   beforeEach(() => {
     recordServiceSpy.getRecord.mockReset();
     TestBed.configureTestingModule({
-      imports: [
-        TranslateModule.forRoot()
-      ],
       providers: [
+        provideTranslateService(),
         ItemHoldingsCallNumberPipe,
-        { provide: RecordService, useValue: recordServiceSpy }
-      ]
+        { provide: RecordService, useValue: recordServiceSpy },
+      ],
     });
     pipe = TestBed.inject(ItemHoldingsCallNumberPipe);
   });
@@ -36,18 +34,18 @@ describe('ItemHoldingsCallNumberPipe', () => {
     const record = {
       metadata: {
         call_number: 'first call number',
-        second_call_number: 'second call number'
-      }
+        second_call_number: 'second call number',
+      },
     };
     const output = {
       first: {
         source: 'item' as const,
-        value: record.metadata.call_number
+        value: record.metadata.call_number,
       },
       second: {
         source: 'item' as const,
-        value: record.metadata.second_call_number
-      }
+        value: record.metadata.second_call_number,
+      },
     };
     expect(await firstValueFrom(pipe.transform(record))).toEqual(output);
     expect(recordServiceSpy.getRecord).not.toHaveBeenCalled();
@@ -57,12 +55,12 @@ describe('ItemHoldingsCallNumberPipe', () => {
     recordServiceSpy.getRecord.mockReturnValue(of({ metadata: {} }));
     const record = {
       metadata: {
-        holding: { pid: '1' }
-      }
+        holding: { pid: '1' },
+      },
     };
     const output = {
       first: { source: undefined, value: undefined },
-      second: { source: undefined, value: undefined }
+      second: { source: undefined, value: undefined },
     };
     expect(await firstValueFrom(pipe.transform(record).pipe(skip(1)))).toEqual(output);
   });
@@ -72,17 +70,17 @@ describe('ItemHoldingsCallNumberPipe', () => {
     const record = {
       metadata: {
         holding: { pid: '1' },
-        second_call_number: 'M call number'
-      }
+        second_call_number: 'M call number',
+      },
     };
     const output = {
       first: { source: 'holding' as const, value: 'M call number' },
-      second: { source: 'item' as const, value: record.metadata.second_call_number }
+      second: { source: 'item' as const, value: record.metadata.second_call_number },
     };
 
     expect(await firstValueFrom(pipe.transform(record))).toEqual({
       first: { source: undefined, value: undefined },
-      second: { source: undefined, value: undefined }
+      second: { source: undefined, value: undefined },
     });
 
     expect(await firstValueFrom(pipe.transform(record).pipe(skip(1)))).toEqual(output);

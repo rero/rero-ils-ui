@@ -2,18 +2,18 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 import { APP_BASE_HREF } from '@angular/common';
 import { inject, Injectable } from '@angular/core';
+import { TranslateService } from '@ngx-translate/core';
 import { ApiService, RecordService } from '@rero/ng-core';
-import { IQueryOptions, ISuggestionItem } from '@rero/ng-core';
+import { IQueryOptions, ISuggestionItem } from '@rero/ng-core/editor';
 import { Entity, MainTitlePipe } from '@rero/shared';
 import { catchError, map, Observable, of } from 'rxjs';
+
 import { IRemoteAutocomplete } from './i-remote-autocomplete';
-import { TranslateService } from '@ngx-translate/core';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class DocumentsRemoteService implements IRemoteAutocomplete {
-
   private translateService: TranslateService = inject(TranslateService);
   private recordService: RecordService = inject(RecordService);
   private mainTitlePipe: MainTitlePipe = inject(MainTitlePipe);
@@ -53,16 +53,16 @@ export class DocumentsRemoteService implements IRemoteAutocomplete {
             hits.push(this.processHit(hit.metadata, queryOptions));
           });
 
-          return hits
+          return hits;
         }),
-        catchError(e => {
+        catchError((e) => {
           switch (e.status) {
             case 400:
               return [];
             default:
               throw e;
           }
-        })
+        }),
       );
   }
 
@@ -70,16 +70,17 @@ export class DocumentsRemoteService implements IRemoteAutocomplete {
     const url = item.value!.split('/');
     const pid = url.pop()!;
 
-    return this.recordService
-      .getRecord(queryOptions.type, pid, { resolve: 1 })
-      .pipe(
-        map((data: any) =>
-          `<span class="ui:p-2"><strong>${this.mainTitlePipe.transform(data.metadata.title)}</strong></span>`
+    return this.recordService.getRecord(queryOptions.type, pid, { resolve: 1 }).pipe(
+      map(
+        (data: any) =>
+          `<span class="ui:p-2"><strong>${this.mainTitlePipe.transform(data.metadata.title)}</strong></span>`,
+      ),
+      catchError(() =>
+        of(
+          `<span class="ui:text-muted-color"><i class="fa-solid fa-triangle-exclamation"></i>&nbsp;${this.translateService.instant('Unknown document')} (pid ${pid})</span>`,
         ),
-        catchError(() => of(
-          `<span class="ui:text-muted-color"><i class="fa-solid fa-triangle-exclamation"></i>&nbsp;${this.translateService.instant('Unknown document')} (pid ${pid})</span>`
-        ))
-      );
+      ),
+    );
   }
 
   private processHit(metadata: any, _queryOptions: IQueryOptions): ISuggestionItem {
@@ -88,15 +89,15 @@ export class DocumentsRemoteService implements IRemoteAutocomplete {
     if (metadata.contribution) {
       summary.push(this.processContribution(metadata.contribution));
     }
-    if (('identifiedBy' in metadata)) {
+    if ('identifiedBy' in metadata) {
       summary.push(this.processIdentifiedBy(metadata.identifiedBy));
     }
     return {
       label: this.processTitle(metadata.title),
       value: this.apiService.getRefEndpoint(this.getName(), metadata.pid),
       summary: summary.length > 0 ? summary.join('<br>') : undefined,
-      link: `${baseHref}/records/documents/detail/${metadata.pid}`
-    }
+      link: `${baseHref}/records/documents/detail/${metadata.pid}`,
+    };
   }
 
   private processContribution(contributions: any): string | undefined {
@@ -113,7 +114,7 @@ export class DocumentsRemoteService implements IRemoteAutocomplete {
       }
     });
 
-    return contrib.length > 0 ? contrib.join('<br>'): undefined;
+    return contrib.length > 0 ? contrib.join('<br>') : undefined;
   }
 
   private processTitle(title: any, maxLengthSuggestion = 100): string {
@@ -128,12 +129,12 @@ export class DocumentsRemoteService implements IRemoteAutocomplete {
 
   private processIdentifiedBy(identifiedBy: any): string {
     const ids: string[] = [];
-      const identifiers = this.extractIdentifier(identifiedBy);
-      const keys = Object.keys(identifiers);
-      keys.forEach((key: string) => {
-        ids.push(`${key}: ${identifiers[key].join(', ')}`);
-      });
-      return `<small>${ids.join(' / ')}</small>`;
+    const identifiers = this.extractIdentifier(identifiedBy);
+    const keys = Object.keys(identifiers);
+    keys.forEach((key: string) => {
+      ids.push(`${key}: ${identifiers[key].join(', ')}`);
+    });
+    return `<small>${ids.join(' / ')}</small>`;
   }
 
   private extractIdentifier(identifiers: any) {
@@ -141,7 +142,7 @@ export class DocumentsRemoteService implements IRemoteAutocomplete {
       'bf:Ean': 'ISBN',
       'bf:Isbn': 'ISBN',
       'bf:Issn': 'ISSN',
-      'bf:IssnL': 'ISSN'
+      'bf:IssnL': 'ISSN',
     };
     const keys = Object.keys(availableIdentifiers);
     const result: Record<string, any> = {};
@@ -160,7 +161,7 @@ export class DocumentsRemoteService implements IRemoteAutocomplete {
         result[key].add(data);
       });
     for (const [key, value] of Object.entries(result)) {
-      result[key] = Array.from(value);  // convert set to list
+      result[key] = Array.from(value); // convert set to list
     }
     return result;
   }

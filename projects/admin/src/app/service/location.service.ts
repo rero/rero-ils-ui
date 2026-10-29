@@ -9,10 +9,9 @@ import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class LocationService {
-
   private recordService: RecordService = inject(RecordService);
 
   // SERVICE ATTRIBUTES =======================================================
@@ -27,8 +26,8 @@ export class LocationService {
     preFilters: undefined,
     sort: 'name',
     headers: {
-      Accept: 'application/rero+json'
-    }
+      Accept: 'application/rero+json',
+    },
   };
 
   // SERVICE FUNCTIONS ========================================================
@@ -37,10 +36,10 @@ export class LocationService {
    * @param libraryPids: the library pids
    */
   getLocationsByLibraries$(libraryPids: string[]): Observable<any[]> {
-    const query = libraryPids.map(pid => `library.pid:${pid}`).join(' OR ');
+    const query = libraryPids.map((pid) => `library.pid:${pid}`).join(' OR ');
     return this._query(query).pipe(
       map((data: EsResult) => data.hits as any),
-      map((hits: {hits: any[], total: any}) => hits.total === 0 ? [] : hits.hits),
+      map((hits: { hits: any[]; total: any }) => (hits.total === 0 ? [] : hits.hits)),
     );
   }
 
@@ -51,33 +50,27 @@ export class LocationService {
    * @param options: options to use to get records.
    */
   private _query(query: string, options?: GetRecordsOptions): Observable<EsResult | Error> {
-    options = {...LocationService.defaultOptions, ...options};
-    return this.recordService.getRecords(
-      LocationService.resource,
-      {
-        query,
-        page: options.page,
-        itemsPerPage: options.itemsPerPage,
-        aggregationsFilters: options.aggregations as any,
-        preFilters: options.preFilters as any,
-        headers: options.headers,
-        sort: options.sort
-      }
-    );
+    options = { ...LocationService.defaultOptions, ...options };
+    return this.recordService.getRecords(LocationService.resource, {
+      query,
+      page: options.page,
+      itemsPerPage: options.itemsPerPage,
+      aggregationsFilters: options.aggregations as any,
+      preFilters: options.preFilters as any,
+      headers: options.headers,
+      sort: options.sort,
+    });
   }
 }
-
 
 /** Options available to search records */
 export type GetRecordsOptions = {
-  page?: number,
-  itemsPerPage?: number,
-  aggregations?: string[],
-  preFilters?: object,
-  sort?: string,
+  page?: number;
+  itemsPerPage?: number;
+  aggregations?: string[];
+  preFilters?: object;
+  sort?: string;
   headers?: {
-    Accept?: string
-  }
-}
-
-
+    Accept?: string;
+  };
+};

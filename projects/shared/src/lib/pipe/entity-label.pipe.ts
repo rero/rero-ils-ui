@@ -32,14 +32,13 @@ import { TranslateService } from '@ngx-translate/core';
  */
 @Pipe({ name: 'entityLabel' })
 export class EntityLabelPipe implements PipeTransform {
-
   protected translateService: TranslateService = inject(TranslateService);
 
   // PIPE ATTRIBUTES ==========================================================
   /** the basic key where to find the entity label */
   private _authorizedKey = 'authorized_access_point';
   /** the separator to use to glue all parts of the label. */
-  private _defaultPartSeparator = ' - '
+  private _defaultPartSeparator = ' - ';
 
   // PIPE METHODS =============================================================
   /**
@@ -51,18 +50,17 @@ export class EntityLabelPipe implements PipeTransform {
    * @return the entity label
    */
   transform(entity: any, partSeparator: string = this._defaultPartSeparator): string {
-    const parts: string[] = []
+    const parts: string[] = [];
     const currentLangKey = `${this._authorizedKey}_${this.translateService.getCurrentLang()}`;
     const fallbackLangKey = `${this._authorizedKey}_en`;
     parts.push(entity[currentLangKey] || entity[fallbackLangKey] || entity[this._authorizedKey]);
     if (entity?.subdivisions) {
-      entity.subdivisions.forEach(sub => parts.push(
-        sub.entity[currentLangKey] || sub.entity[fallbackLangKey] || sub.entity[this._authorizedKey]
-      ));
+      entity.subdivisions.forEach((sub) =>
+        parts.push(sub.entity[currentLangKey] || sub.entity[fallbackLangKey] || sub.entity[this._authorizedKey]),
+      );
     }
     return parts
-      .filter(part => part)  // filter array removing "null|undefined|false" values
-      .join(partSeparator);  // glue all parts to return a simple string
+      .filter((part) => part) // filter array removing "null|undefined|false" values
+      .join(partSeparator); // glue all parts to return a simple string
   }
-
 }

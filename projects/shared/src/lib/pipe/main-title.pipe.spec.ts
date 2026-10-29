@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 import { TestBed } from '@angular/core/testing';
+
 import { MainTitlePipe } from './main-title.pipe';
 
 describe('MainTitlePipe', () => {
@@ -9,23 +10,25 @@ describe('MainTitlePipe', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [
-        MainTitlePipe
-      ]
+      providers: [MainTitlePipe],
     });
 
     pipe = TestBed.inject(MainTitlePipe);
   });
 
-  const metadata = [{
-    _text: 'document title',
-    type: 'bf:Title'
-  }];
+  const metadata = [
+    {
+      _text: 'document title',
+      type: 'bf:Title',
+    },
+  ];
 
-  const metadataNoText = [{
-    _text: 'document foo',
-    type: 'bf:Foo'
-  }];
+  const metadataNoText = [
+    {
+      _text: 'document foo',
+      type: 'bf:Foo',
+    },
+  ];
 
   it('create an instance', () => {
     expect(pipe).toBeTruthy();

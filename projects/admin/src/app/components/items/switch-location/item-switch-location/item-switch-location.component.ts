@@ -2,30 +2,28 @@
 // SPDX-FileCopyrightText: UCLouvain
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-import { ChangeDetectionStrategy, Component, computed, inject, input, linkedSignal, OnInit, output, signal } from '@angular/core';
+import { Component, computed, inject, input, linkedSignal, OnInit, output, signal } from '@angular/core';
 import { FormsModule, ReactiveFormsModule, UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ItemApiService } from '@app/admin/api/item-api.service';
 import { LocationService } from '@app/admin/service/location.service';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
+import { MessageService, SelectItemGroup } from '@openng/optimus-ui/api';
+import { Bind } from '@openng/optimus-ui/bind';
+import { Button } from '@openng/optimus-ui/button';
+import { Card } from '@openng/optimus-ui/card';
+import { Select } from '@openng/optimus-ui/select';
 import { Error, extractIdOnRef, HttpPendingService, RecordService } from '@rero/ng-core';
 import { AppStore } from '@rero/shared';
 import { cloneDeep } from 'lodash-es';
-import { MessageService, SelectItemGroup } from 'primeng/api';
-import { Bind } from 'primeng/bind';
-import { Button } from 'primeng/button';
-import { Card } from 'primeng/card';
-import { Select } from 'primeng/select';
-import { switchMap, map } from 'rxjs/operators';
+import { map, switchMap } from 'rxjs/operators';
 
 @Component({
   selector: 'admin-item-switch-location',
   templateUrl: './item-switch-location.component.html',
-  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [FormsModule, ReactiveFormsModule, Bind, Card, Select, Button, TranslatePipe],
 })
 export class ItemSwitchLocationComponent implements OnInit {
-
   private formBuilder: UntypedFormBuilder = inject(UntypedFormBuilder);
   private activeRoute: ActivatedRoute = inject(ActivatedRoute);
   private router: Router = inject(Router);
@@ -62,8 +60,8 @@ export class ItemSwitchLocationComponent implements OnInit {
   });
 
   /** Whether to activate the filter feature on the target dropdown */
-  isFilterActive = computed(() =>
-    this.options().reduce((acc, library) => acc + library.items.length, 0) > this.filterLimit()
+  isFilterActive = computed(
+    () => this.options().reduce((acc, library) => acc + library.items.length, 0) > this.filterLimit(),
   );
 
   // COMPONENT LIFECYCLE ======================================================
@@ -74,10 +72,10 @@ export class ItemSwitchLocationComponent implements OnInit {
       this.activeRoute.paramMap
         .pipe(
           // the raw record is kept as stored: it is sent back on save
-          switchMap(params => this.recordService.getRecord('items', params.get('pid')!)),
-          map((record) => record.metadata as ItemMetadata)
+          switchMap((params) => this.recordService.getRecord('items', params.get('pid')!)),
+          map((record) => record.metadata as ItemMetadata),
         )
-        .subscribe(record => {
+        .subscribe((record) => {
           this.editableItem.set(cloneDeep(record));
           this._initLocations();
         });
@@ -91,22 +89,23 @@ export class ItemSwitchLocationComponent implements OnInit {
 
   /** Handle form submission */
   submit(): void {
-    if (this.httpPending.isPending()) { return; }
-    this.itemApiService
-      .updateLocation(this.editableItem(), this.form.value.target)
-      .subscribe({
-        next: (result: any) => {
-          this.editableItem.set(cloneDeep(result.metadata));
-          this._afterUpdate(result.metadata);
-        },
-        error: (err: Error) => this.messageService.add({
+    if (this.httpPending.isPending()) {
+      return;
+    }
+    this.itemApiService.updateLocation(this.editableItem(), this.form.value.target).subscribe({
+      next: (result: any) => {
+        this.editableItem.set(cloneDeep(result.metadata));
+        this._afterUpdate(result.metadata);
+      },
+      error: (err: Error) =>
+        this.messageService.add({
           severity: 'error',
           summary: this.translateService.instant('Locations'),
           detail: err.title,
           sticky: true,
-          closable: true
-        })
-      });
+          closable: true,
+        }),
+    });
   }
 
   /** Handle cancel: emit or redirect without changes */
@@ -132,17 +131,17 @@ export class ItemSwitchLocationComponent implements OnInit {
   /** Load pickup locations and build dropdown options */
   private _initLocations(): void {
     const user = this.appStore.user();
-    if (!user) { return; }
-    const libraryPids = user.patronLibrarian?.libraries?.map(lib => lib.pid) ?? [];
+    if (!user) {
+      return;
+    }
+    const libraryPids = user.patronLibrarian?.libraries?.map((lib) => lib.pid) ?? [];
     this.locationService
       .getLocationsByLibraries$(libraryPids)
-      .pipe(map(locations => locations.map(loc => loc.metadata)))
-      .subscribe(locations => {
+      .pipe(map((locations) => locations.map((loc) => loc.metadata)))
+      .subscribe((locations) => {
         this.options.set(this._buildOptions(locations));
         this.initialLocationName.set(
-          locations
-            .filter(loc => loc.pid === extractIdOnRef(this.editableItem()!.location.$ref))
-            .pop()?.name ?? ''
+          locations.filter((loc) => loc.pid === extractIdOnRef(this.editableItem()!.location.$ref)).pop()?.name ?? '',
         );
       });
   }
@@ -161,23 +160,21 @@ export class ItemSwitchLocationComponent implements OnInit {
     };
 
     let currentParent: SelectItemGroup = { label: '', value: undefined, items: [] };
-    locationHits
-      .sort(this._locationSort)
-      .forEach(location => {
-        if (currentParent.value !== location.library.pid) {
-          appendLibrary(currentParent);
-          currentParent = {
-            label: `[${location.library.code}] ${location.library.name}`,
-            value: location.library.pid,
-            items: []
-          };
-        }
-        currentParent.items.push({
-          label: location.name,
-          value: location.pid,
-          disabled: location.pid === extractIdOnRef(this.editableItem()!.location.$ref)
-        });
+    locationHits.sort(this._locationSort).forEach((location) => {
+      if (currentParent.value !== location.library.pid) {
+        appendLibrary(currentParent);
+        currentParent = {
+          label: `[${location.library.code}] ${location.library.name}`,
+          value: location.library.pid,
+          items: [],
+        };
+      }
+      currentParent.items.push({
+        label: location.name,
+        value: location.pid,
+        disabled: location.pid === extractIdOnRef(this.editableItem()!.location.$ref),
       });
+    });
     appendLibrary(currentParent);
     return options;
   }
@@ -186,7 +183,7 @@ export class ItemSwitchLocationComponent implements OnInit {
    * Comparator to sort locations by library code then location name.
    */
   private _locationSort(a: any, b: any): number {
-    return (a.library.code === b.library.code)
+    return a.library.code === b.library.code
       ? a.name.localeCompare(b.name)
       : a.library.code.localeCompare(b.library.code);
   }

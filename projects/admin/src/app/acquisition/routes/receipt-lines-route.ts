@@ -4,22 +4,16 @@
 import { ResolveFn, Routes } from '@angular/router';
 import { FormlyFieldConfig } from '@ngx-formly/core';
 import { _ } from '@ngx-translate/core';
-import {
-  ComponentCanDeactivateGuard,
-  EditorComponent,
-  JSONSchema7,
-  RecordData,
-  RecordType,
-  RouteDataTypesInterface,
-} from '@rero/ng-core';
+import { JSONSchema7, RecordData, RecordType, RouteDataTypesInterface, unsavedChangesGuard } from '@rero/ng-core';
+import { EditorComponent } from '@rero/ng-core/editor';
 import { PERMISSIONS, Tools } from '@rero/shared';
 import { of } from 'rxjs';
+
 import { CAN_ACCESS_ACTIONS, canAccessGuard } from '../../guard/can-access.guard';
 import { BaseRoute } from '../../routes/base-route';
 import { isBudgetActiveGuard } from './guards/is-budget-active.guard';
 
-export const receiptLinesRouteResolver: ResolveFn<Partial<RecordType>[]> = () =>
-  new ReceiptLinesRoute().getTypes();
+export const receiptLinesRouteResolver: ResolveFn<Partial<RecordType>[]> = () => new ReceiptLinesRoute().getTypes();
 
 export const receiptLinesRoutes: Routes = [
   {
@@ -27,7 +21,7 @@ export const receiptLinesRoutes: Routes = [
     component: EditorComponent,
     title: _('Receipt line'),
     canActivate: [canAccessGuard, isBudgetActiveGuard],
-    canDeactivate: [ComponentCanDeactivateGuard],
+    canDeactivate: [unsavedChangesGuard],
     data: {
       action: CAN_ACCESS_ACTIONS.UPDATE,
     },

@@ -1,28 +1,27 @@
 // SPDX-FileCopyrightText: Fondation RERO+
 // SPDX-FileCopyrightText: UCLouvain
 // SPDX-License-Identifier: AGPL-3.0-or-later
-@use "@fortawesome/fontawesome-free/scss/fontawesome";
-@use "@fortawesome/fontawesome-free/scss/solid";
-@use "@fortawesome/fontawesome-free/scss/regular";
-@use "../../../../shared/src/scss/styles";
+@use '@fortawesome/fontawesome-free/scss/fontawesome';
+@use '@fortawesome/fontawesome-free/scss/solid';
+@use '@fortawesome/fontawesome-free/scss/regular';
+@use '../../../../shared/src/scss/styles';
 
+@use '../menu/menu-dashboard/menu-dashboard.component';
+@use '../menu/menu-app/menu-app.component';
+@use '../record/detail-view/permission-detail-view/permission-detail-view.component';
+@use '../migration/conversion/record/detail-view/migration-data/migration-data.component';
+@use '../acquisition/components/account/account-detail-view/account-detail-view.component';
+@use '../circulation/patron/card/card.component';
+@use '../components/items/switch-location/item-switch-location/item-switch-location.component';
 
-@use "../menu/menu-dashboard/menu-dashboard.component";
-@use "../menu/menu-app/menu-app.component";
-@use "../record/detail-view/permission-detail-view/permission-detail-view.component";
-@use "../migration/conversion/record/detail-view/migration-data/migration-data.component";
-@use "../acquisition/components/account/account-detail-view/account-detail-view.component";
-@use "../circulation/patron/card/card.component";
-@use "../components/items/switch-location/item-switch-location/item-switch-location.component";
-
-@import "tailwindcss/preflight.css" layer(base) prefix(ui);
-@import "@rero/ng-core/assets/scss/ng-core";
+@import 'tailwindcss/preflight.css' layer(base) prefix(ui);
+@import '@rero/ng-core/assets/scss/ng-core';
 
 :root {
-  font-family: -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI", Roboto,
-    "Helvetica Neue", Helvetica, Arial, sans-serif;
-  --font-family: -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI",
-    Roboto, "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family:
+    -apple-system, system-ui, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  --font-family:
+    -apple-system, system-ui, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
   font-size: 1rem;
 }
 body {
@@ -34,11 +33,15 @@ body {
 }
 
 @media print {
-  body, .container, .main-content {
+  body,
+  .container,
+  .main-content {
     min-width: 992px !important;
   }
 
-  button, header, .p-menubar {
-    display : none
+  button,
+  header,
+  .p-menubar {
+    display: none;
   }
 }

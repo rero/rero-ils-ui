@@ -3,8 +3,9 @@
 
 // required as json properties is not lowerCamelCase
 
-import { ObjectReference } from '../../../../shared/src/lib/classes/core';
 import { DateTime } from 'luxon';
+
+import { ObjectReference } from '../../../../shared/src/lib/classes/core';
 
 export enum NotificationType {
   AT_DESK = 'at_desk',
@@ -17,7 +18,7 @@ export enum NotificationType {
   TRANSIT_NOTICE = 'transit_notice',
   ACQUISITION_ORDER = 'acquisition_order',
   CLAIM_ISSUE = 'claim_issue',
-  AUTO_EXTEND = 'auto_extend'
+  AUTO_EXTEND = 'auto_extend',
 }
 
 export class Notification {
@@ -27,14 +28,14 @@ export class Notification {
       NotificationType.DUE_SOON,
       NotificationType.OVERDUE,
       NotificationType.RECALL,
-      NotificationType.AUTO_EXTEND
+      NotificationType.AUTO_EXTEND,
     ],
     library: [
       NotificationType.AT_DESK,
       NotificationType.BOOKING,
       NotificationType.REQUEST,
-      NotificationType.TRANSIT_NOTICE
-    ]
+      NotificationType.TRANSIT_NOTICE,
+    ],
   };
 
   pid: string;
@@ -43,18 +44,16 @@ export class Notification {
   notification_sent = false;
   notification_type: NotificationType;
   context: {
-    loan?: ObjectReference,
-    reminder_counter?: number,
-    order?: ObjectReference,
+    loan?: ObjectReference;
+    reminder_counter?: number;
+    order?: ObjectReference;
     recipients?: {
       type: string;
       address: string;
-    }[]
+    }[];
   };
 
   constructor(obj?: any) {
     Object.assign(this, obj);
   }
-
-
 }

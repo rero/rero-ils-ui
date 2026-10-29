@@ -3,21 +3,22 @@
 import { TestBed } from '@angular/core/testing';
 import { RecordService } from '@rero/ng-core';
 import { EMPTY, firstValueFrom, lastValueFrom, of, throwError } from 'rxjs';
+
+import { testUserLibrarianWithSettings } from '../../tests/user';
 import { UserApiService } from '../api/user-api.service';
 import { User } from '../classes/user';
-import { testUserLibrarianWithSettings } from '../../tests/user';
-import { PERMISSIONS, PERMISSION_OPERATOR } from '../util/permissions';
+import { PERMISSION_OPERATOR, PERMISSIONS } from '../util/permissions';
 import { AppStore } from './app.store';
 
 describe('AppStore', () => {
   let store: InstanceType<typeof AppStore>;
 
   const userApiServiceSpy = {
-    getLoggedUser: vi.fn()
+    getLoggedUser: vi.fn(),
   };
 
   const recordServiceSpy = {
-    getRecord: vi.fn().mockReturnValue(EMPTY)
+    getRecord: vi.fn().mockReturnValue(EMPTY),
   };
 
   beforeEach(() => {
@@ -28,7 +29,7 @@ describe('AppStore', () => {
         AppStore,
         { provide: UserApiService, useValue: userApiServiceSpy },
         { provide: RecordService, useValue: recordServiceSpy },
-      ]
+      ],
     }).inject(AppStore);
   });
 
@@ -217,17 +218,19 @@ describe('AppStore', () => {
     });
 
     it('should reflect multiple languages when settings has several', async () => {
-      userApiServiceSpy.getLoggedUser.mockReturnValue(of({
-        ...testUserLibrarianWithSettings,
-        settings: {
-          ...testUserLibrarianWithSettings.settings,
-          availableLanguages: [
-            { code: 'fr', name: 'French' },
-            { code: 'de', name: 'German' },
-            { code: 'it', name: 'Italian' },
-          ]
-        }
-      }));
+      userApiServiceSpy.getLoggedUser.mockReturnValue(
+        of({
+          ...testUserLibrarianWithSettings,
+          settings: {
+            ...testUserLibrarianWithSettings.settings,
+            availableLanguages: [
+              { code: 'fr', name: 'French' },
+              { code: 'de', name: 'German' },
+              { code: 'it', name: 'Italian' },
+            ],
+          },
+        }),
+      );
       await firstValueFrom(store.load());
       expect(store.availableLanguageCodes()).toEqual(['fr', 'de', 'it']);
     });
@@ -236,10 +239,10 @@ describe('AppStore', () => {
   describe('validateLibraryPermissions()', () => {
     const fullPermissions = {
       create: { can: true, reasons: {} },
-      read:   { can: true, reasons: {} },
+      read: { can: true, reasons: {} },
       update: { can: true, reasons: {} },
       delete: { can: true, reasons: {} },
-      list:   { can: true, reasons: {} },
+      list: { can: true, reasons: {} },
     };
 
     it('should not modify permissions when current library matches owner', () => {
@@ -281,8 +284,9 @@ describe('AppStore', () => {
 
     it('should throw when the resource is not in operationLogs settings', async () => {
       await firstValueFrom(store.load());
-      expect(() => store.getResourceKeyByResourceName('patrons'))
-        .toThrow(new Error('Operation logs: Missing resource key'));
+      expect(() => store.getResourceKeyByResourceName('patrons')).toThrow(
+        new Error('Operation logs: Missing resource key'),
+      );
     });
   });
 });

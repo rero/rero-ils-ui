@@ -3,9 +3,10 @@
 
 import { inject, Injectable } from '@angular/core';
 import { ApiService } from '@rero/ng-core';
+import { DateTime } from 'luxon';
+
 import { IAcqNote } from '../../../classes/common';
 import { AcqReceiptAmountAdjustment, IAcqReceipt, IAcqReceiptLine } from '../../../classes/receipt';
-import { DateTime } from 'luxon';
 
 /** Interface for Receipt data */
 export type IAcqReceiptModel = {
@@ -22,15 +23,15 @@ export type IAcqReceiptModel = {
   }[];
   notes: IAcqNote[];
   receiptLines: {
-    acqOrderLineRef: string,
-    selected: boolean,
-    document?: string,
-    quantityMax: number,
-    quantity: number,
-    amount: number,
-    vatRate: number
+    acqOrderLineRef: string;
+    selected: boolean;
+    document?: string;
+    quantityMax: number;
+    quantity: number;
+    amount: number;
+    vatRate: number;
   }[];
-}
+};
 
 // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
 export interface IResponseReceiptLine {
@@ -47,19 +48,18 @@ export interface IResponseReceiptLine {
 
 export enum AcqResponseReceiptLineStatus {
   SUCCESS = 'success',
-  FAILURE = 'failure'
+  FAILURE = 'failure',
 }
 
 export type ICreateLineMessage = {
   success: boolean;
   messages?: string[];
-}
+};
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class OrderReceipt {
-
   private apiService: ApiService = inject(ApiService);
 
   /** Model */
@@ -73,7 +73,7 @@ export class OrderReceipt {
       reference: null,
       amountAdjustments: [],
       notes: [],
-      receiptLines: []
+      receiptLines: [],
     };
   }
 
@@ -85,16 +85,16 @@ export class OrderReceipt {
   processBaseRecord(model: IAcqReceiptModel): IAcqReceipt {
     return {
       acq_order: {
-        $ref: model.acqOrderRef
+        $ref: model.acqOrderRef,
       },
       library: {
-        $ref: model.libraryRef
+        $ref: model.libraryRef,
       },
       organisation: {
-        $ref: model.organisationRef
+        $ref: model.organisationRef,
       },
       amount_adjustments: [],
-      notes: []
+      notes: [],
     };
   }
 
@@ -107,7 +107,7 @@ export class OrderReceipt {
       organisation: { $ref: this.apiService.getRefEndpoint('organisation', record.organisation.pid) },
       reference: record.reference,
       amount_adjustments: record.amount_adjustments,
-      notes: record.notes
+      notes: record.notes,
     };
   }
 
@@ -116,13 +116,13 @@ export class OrderReceipt {
    * @param model: the model where to found receipt adjustments
    * @return: an array of AcqReceiptAmountAdjustment
    */
-   processAdjustments(model: IAcqReceiptModel): AcqReceiptAmountAdjustment[] {
+  processAdjustments(model: IAcqReceiptModel): AcqReceiptAmountAdjustment[] {
     const adjustments = [];
     model.amountAdjustments.forEach((adj) => {
       const data = {
         label: adj.label,
         amount: adj.amount,
-        acq_account: { $ref: adj.acqAccount }
+        acq_account: { $ref: adj.acqAccount },
       };
       adjustments.push(data);
     });
@@ -134,21 +134,21 @@ export class OrderReceipt {
    * @param model: the model where found the receipt lines to process
    * @return: an array of AcqReceiptLine
    */
-   processLines(model: IAcqReceiptModel): IAcqReceiptLine[] {
+  processLines(model: IAcqReceiptModel): IAcqReceiptLine[] {
     const lines = [];
     model.receiptLines
-    .filter(line => line.selected === true)
-    .forEach((line: any) => {
-      lines.push({
-        acq_order_line: {
-          $ref: line.acqOrderLineRef
-        },
-        quantity: line.quantity,
-        amount: line.amount,
-        vat_rate: line.vatRate,
-        receipt_date: model.receiptDate
+      .filter((line) => line.selected === true)
+      .forEach((line: any) => {
+        lines.push({
+          acq_order_line: {
+            $ref: line.acqOrderLineRef,
+          },
+          quantity: line.quantity,
+          amount: line.amount,
+          vat_rate: line.vatRate,
+          receipt_date: model.receiptDate,
+        });
       });
-    });
     return lines;
   }
 

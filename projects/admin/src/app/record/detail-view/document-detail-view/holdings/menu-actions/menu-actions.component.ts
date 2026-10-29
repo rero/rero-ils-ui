@@ -1,23 +1,20 @@
 // SPDX-FileCopyrightText: Fondation RERO+
 // SPDX-License-Identifier: AGPL-3.0-or-later
-import { Component, computed, effect, inject, input, signal, ChangeDetectionStrategy} from '@angular/core';
+import { Component, computed, effect, inject, input, signal } from '@angular/core';
 import { RecordPermissionService } from '@app/admin/service/record-permission.service';
-import { TranslateService, TranslatePipe } from '@ngx-translate/core';
-import { AppStore, IPermissions, PERMISSIONS, PermissionsDirective } from '@rero/shared';
-import { EsRecord } from '@rero/shared';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
+import { Bind } from '@openng/optimus-ui/bind';
+import { Button } from '@openng/optimus-ui/button';
+import { Menu } from '@openng/optimus-ui/menu';
+import { AppStore, EsRecord, IPermissions, PERMISSIONS, PermissionsDirective } from '@rero/shared';
 import { forkJoin } from 'rxjs';
-import { Bind } from 'primeng/bind';
-import { Button } from 'primeng/button';
-import { Menu } from 'primeng/menu';
 
 @Component({
-    selector: 'admin-menu-actions',
-    templateUrl: './menu-actions.component.html',
-    imports: [PermissionsDirective, Bind, Button, TranslatePipe, Menu],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  selector: 'admin-menu-actions',
+  templateUrl: './menu-actions.component.html',
+  imports: [PermissionsDirective, Bind, Button, TranslatePipe, Menu],
 })
 export class MenuActionsComponent {
-
   protected appStore = inject(AppStore);
   protected recordPermissionService = inject(RecordPermissionService);
   protected translateService = inject(TranslateService);
@@ -32,7 +29,7 @@ export class MenuActionsComponent {
       forkJoin([
         this.recordPermissionService.getPermission('holdings'),
         this.recordPermissionService.getPermission('items'),
-      ]).subscribe(p => this.permissions.set(p));
+      ]).subscribe((p) => this.permissions.set(p));
     });
   }
 
@@ -44,25 +41,24 @@ export class MenuActionsComponent {
     return hold.create.can || item.create.can;
   });
 
-
   protected perms: IPermissions = PERMISSIONS;
 
   protected options = computed(() => {
     const perms = this.permissions();
     if (!perms) return [];
     return [
-        {
-          label: this.translateService.instant('an item'),
-          routerLink: ['/', 'records', 'items', 'new'],
-          queryParams: { document: this.document().metadata.pid },
-          visible: this.appStore.canAccess(PERMISSIONS.ITEM_CREATE)
-        },
-        {
-          label: this.translateService.instant('a holdings'),
-          routerLink: ['/', 'records', 'holdings', 'new'],
-          queryParams: { document: this.document().metadata.pid },
-          visible: this.appStore.canAccess(PERMISSIONS.HOLD_CREATE)
-        }
-      ];
+      {
+        label: this.translateService.instant('an item'),
+        routerLink: ['/', 'records', 'items', 'new'],
+        queryParams: { document: this.document().metadata.pid },
+        visible: this.appStore.canAccess(PERMISSIONS.ITEM_CREATE),
+      },
+      {
+        label: this.translateService.instant('a holdings'),
+        routerLink: ['/', 'records', 'holdings', 'new'],
+        queryParams: { document: this.document().metadata.pid },
+        visible: this.appStore.canAccess(PERMISSIONS.HOLD_CREATE),
+      },
+    ];
   });
 }

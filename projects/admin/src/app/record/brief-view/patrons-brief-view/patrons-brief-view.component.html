@@ -20,8 +20,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
           icon="fa-solid fa-right-left"
           class="ui:my-0 ui:py-0"
           outlined
-          (onClick)="goToCirculation(record().metadata.patron.barcode[0])"
-        />
+          (onClick)="goToCirculation(record().metadata.patron.barcode[0])" />
       }
     </div>
 
@@ -33,8 +32,6 @@ SPDX-License-Identifier: AGPL-3.0-or-later
       }
     </div>
 
-    <span>
-      {{ record().metadata.birth_date | dateTranslate:'mediumDate' }} &mdash; {{ record().metadata.city }}
-    </span>
+    <span> {{ record().metadata.birth_date | dateTranslate: 'mediumDate' }} &mdash; {{ record().metadata.city }} </span>
   </div>
 }

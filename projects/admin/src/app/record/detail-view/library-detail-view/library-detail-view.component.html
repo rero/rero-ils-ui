@@ -9,21 +9,29 @@ SPDX-License-Identifier: AGPL-3.0-or-later
       <div class="ui:bg-surface-500 ui:rounded-full ui:w-40 ui:h-40 ui:flex ui:items-center ui:justify-center">
         <i class="fa-solid fa-building-columns fa-4x ui:text-white"></i>
       </div>
-    <div class="ui:grow">
+      <div class="ui:grow">
         <h1>{{ rec.name }}</h1>
         <dl class="metadata">
-          <dt><i class="fa-solid fa-code"></i>&nbsp;<span translate>Code</span></dt>
+          <dt>
+            <i class="fa-solid fa-code"></i>&nbsp;<span>{{ 'Code' | translate }}</span>
+          </dt>
           <dd>{{ rec.code }}</dd>
           @if (rec.email) {
-            <dt><i class="fa-solid fa-at"></i>&nbsp;<span translate>Email</span></dt>
+            <dt>
+              <i class="fa-solid fa-at"></i>&nbsp;<span>{{ 'Email' | translate }}</span>
+            </dt>
             <dd>{{ rec.email }}</dd>
           }
           @if (rec.address) {
-            <dt><i class="fa-solid fa-house"></i>&nbsp;<span translate>Address</span></dt>
+            <dt>
+              <i class="fa-solid fa-house"></i>&nbsp;<span>{{ 'Address' | translate }}</span>
+            </dt>
             <dd>{{ rec.address }}</dd>
           }
-          <dt><i class="fa-solid fa-language"></i>&nbsp;<span translate>Language</span></dt>
-          <dd>{{ ('lang_' + rec.communication_language) | translate | ucfirst }}</dd>
+          <dt>
+            <i class="fa-solid fa-language"></i>&nbsp;<span>{{ 'Language' | translate }}</span>
+          </dt>
+          <dd>{{ 'lang_' + rec.communication_language | translate | ucfirst }}</dd>
         </dl>
       </div>
     </div>
@@ -35,18 +43,16 @@ SPDX-License-Identifier: AGPL-3.0-or-later
       <p-accordion-header>
         <div class="ui:flex ui:w-full ui:items-center ui:justify-between ui:mr-2">
           <div>
-            <i class="fa-solid fa-location-dot"></i>&nbsp;<span translate>Locations</span>
+            <i class="fa-solid fa-location-dot"></i>&nbsp;<span>{{ 'Locations' | translate }}</span>
           </div>
           <p-button
             [hidden]="!(isUserCanAddLocation() && locTab.active())"
             icon="fa-regular fa-square-plus"
-            [label]="'Add'|translate"
+            [label]="'Add' | translate"
             outlined
             [routerLink]="['/', 'records', 'locations', 'new']"
             [queryParams]="{ library: rec.pid }"
-            styleClass="ui:ml-2 align-ui:items-right"
-          />
-
+            styleClass="ui:ml-2 align-ui:items-right" />
         </div>
       </p-accordion-header>
       <p-accordion-content>
@@ -59,7 +65,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
             }
           </ul>
         } @else {
-          <p translate>no location</p>
+          <p>{{ 'no location' | translate }}</p>
         }
       </p-accordion-content>
     </p-accordion-panel>
@@ -69,14 +75,18 @@ SPDX-License-Identifier: AGPL-3.0-or-later
         <div class="ui:flex ui:w-full ui:items-center ui:justify-between ui:mr-2">
           <div>
             <i class="fa-regular fa-clock"></i>&nbsp;
-            <span translate>Opening Hours</span>
+            <span>{{ 'Opening Hours' | translate }}</span>
           </div>
           <div class="ui:flex ui:gap-1">
             @for (day of rec.opening_hours; track $index) {
-              <i [ngClass]="{'fa-solid fa-circle-xmark text-error': !day.is_open, 'fa-solid fa-circle text-success': day.is_open}"></i>
+              <i
+                [ngClass]="{
+                  'fa-solid fa-circle-xmark text-error': !day.is_open,
+                  'fa-solid fa-circle text-success': day.is_open,
+                }"></i>
             }
           </div>
-      </div>
+        </div>
       </p-accordion-header>
       <p-accordion-content>
         <div class="ui:mt-2">
@@ -92,11 +102,11 @@ SPDX-License-Identifier: AGPL-3.0-or-later
         <p-accordion-header>
           <div class="ui:flex ui:w-full ui:items-center ui:justify-between ui:mr-2">
             <div>
-            <i class="fa-solid fa-triangle-exclamation"></i>&nbsp;
-            <span translate>Exceptions (holidays, etc.)</span>
-          </div>
+              <i class="fa-solid fa-triangle-exclamation"></i>&nbsp;
+              <span>{{ 'Exceptions (holidays, etc.)' | translate }}</span>
+            </div>
             <p-badge [value]="rec.exception_dates.length" />
-        </div>
+          </div>
         </p-accordion-header>
         <p-accordion-content>
           <div class="ui:mt-2">
@@ -113,9 +123,9 @@ SPDX-License-Identifier: AGPL-3.0-or-later
     <p-accordion-panel value="3">
       <p-accordion-header>
         <div>
-        <i class="fa-regular fa-envelope"></i>&nbsp;
-        <span translate>Notification settings</span>
-      </div>
+          <i class="fa-regular fa-envelope"></i>&nbsp;
+          <span>{{ 'Notification settings' | translate }}</span>
+        </div>
       </p-accordion-header>
       <p-accordion-content>
         <div class="ui:mt-2 ui:mx-2">
@@ -141,7 +151,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
       <p-accordion-header>
         <div>
           <i class="fa-solid fa-cart-arrow-down ui:mr-2"></i>&nbsp;
-          <span translate>Acquisition settings</span>
+          <span>{{ 'Acquisition settings' | translate }}</span>
         </div>
       </p-accordion-header>
       <p-accordion-content>
@@ -150,19 +160,27 @@ SPDX-License-Identifier: AGPL-3.0-or-later
             <p-divider align="left">
               <div>
                 <i class="fa-solid fa-book"></i>&nbsp;
-                <span translate>Default acquisition settings</span>
+                <span>{{ 'Default acquisition settings' | translate }}</span>
               </div>
             </p-divider>
             <div class="ui:grid ui:grid-cols-12 ui:gap-4">
               @if (acquisitionSettings.shipping_informations; as acqInfos) {
-                <ng-container [ngTemplateOutlet]="address_block"
-                              [ngTemplateOutletContext]="{ label: 'Shipping informations' | translate, data: acqInfos, icon: 'fa-solid fa-truck-fast'}"
-                />
+                <ng-container
+                  [ngTemplateOutlet]="address_block"
+                  [ngTemplateOutletContext]="{
+                    label: 'Shipping informations' | translate,
+                    data: acqInfos,
+                    icon: 'fa-solid fa-truck-fast',
+                  }" />
               }
               @if (acquisitionSettings.billing_informations; as acqInfos) {
-                <ng-container [ngTemplateOutlet]="address_block"
-                              [ngTemplateOutletContext]="{ label: 'Billing informations' | translate, data: acqInfos, icon: 'fa-solid fa-money-bill-wave'}"
-                />
+                <ng-container
+                  [ngTemplateOutlet]="address_block"
+                  [ngTemplateOutletContext]="{
+                    label: 'Billing informations' | translate,
+                    data: acqInfos,
+                    icon: 'fa-solid fa-money-bill-wave',
+                  }" />
               }
             </div>
           }
@@ -170,19 +188,27 @@ SPDX-License-Identifier: AGPL-3.0-or-later
             <p-divider align="left">
               <div>
                 <i class="fa-solid fa-newspaper"></i>&nbsp;
-                <span translate>Serial acquisition settings</span>
+                <span>{{ 'Serial acquisition settings' | translate }}</span>
               </div>
             </p-divider>
             <div class="ui:grid ui:grid-cols-12 ui:gap-4 ui:justify-start">
               @if (acquisitionSettings.shipping_informations; as acqInfos) {
-                <ng-container [ngTemplateOutlet]="address_block"
-                              [ngTemplateOutletContext]="{ label: 'Shipping informations' | translate, data: acqInfos, icon: 'fa-solid fa-truck-fast'}"
-                />
+                <ng-container
+                  [ngTemplateOutlet]="address_block"
+                  [ngTemplateOutletContext]="{
+                    label: 'Shipping informations' | translate,
+                    data: acqInfos,
+                    icon: 'fa-solid fa-truck-fast',
+                  }" />
               }
               @if (acquisitionSettings.billing_informations; as acqInfos) {
-                <ng-container [ngTemplateOutlet]="address_block"
-                              [ngTemplateOutletContext]="{ label: 'Billing informations' | translate, data: acqInfos, icon: 'fa-solid fa-money-bill-wave'}"
-                />
+                <ng-container
+                  [ngTemplateOutlet]="address_block"
+                  [ngTemplateOutletContext]="{
+                    label: 'Billing informations' | translate,
+                    data: acqInfos,
+                    icon: 'fa-solid fa-money-bill-wave',
+                  }" />
               }
             </div>
           }
@@ -196,20 +222,20 @@ SPDX-License-Identifier: AGPL-3.0-or-later
           <div class="ui:flex ui:w-full ui:items-center ui:justify-between ui:mr-2">
             <div>
               <i class="fa-solid fa-wrench ui:mr-2"></i>&nbsp;
-              <span translate>Rollover settings</span>
+              <span>{{ 'Rollover settings' | translate }}</span>
             </div>
-            <i class="fa-solid"
-                [ngClass]="{
-                  'fa-xmark text-error': rec.rollover_settings.account_transfer === 'rollover_no_transfer',
-                  'fa-check text-success': rec.rollover_settings.account_transfer === 'rollover_allocated_amount'
-                }"
-            ></i>
+            <i
+              class="fa-solid"
+              [ngClass]="{
+                'fa-xmark text-error': rec.rollover_settings.account_transfer === 'rollover_no_transfer',
+                'fa-check text-success': rec.rollover_settings.account_transfer === 'rollover_allocated_amount',
+              }"></i>
           </div>
         </p-accordion-header>
         <p-accordion-content>
           <div class="ui:mt-2 ui:mx-2">
             <dl class="metadata">
-              <dt translate>Account transfer</dt>
+              <dt>{{ 'Account transfer' | translate }}</dt>
               <dd>{{ rec.rollover_settings.account_transfer | translate }}</dd>
             </dl>
           </div>
@@ -232,10 +258,10 @@ SPDX-License-Identifier: AGPL-3.0-or-later
         <div class="ui:flex ui:gap-2">
           <i class="fa-solid fa-house"></i>
           <div>
-            {{ data.name }}<br/>
+            {{ data.name }}<br />
             @if (data.address) {
               @if (data.address.street) {
-                {{ data.address.street }}<br/>
+                {{ data.address.street }}<br />
               }
               @if (data.address.zip_code || data.address.city) {
                 @if (data.address.zip_code) {
@@ -247,7 +273,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
                 @if (data.address.city) {
                   {{ data.address.city }}
                 }
-                <br/>
+                <br />
               }
               @if (data.address.country) {
                 {{ data.address.country | countryCodeTranslate }}

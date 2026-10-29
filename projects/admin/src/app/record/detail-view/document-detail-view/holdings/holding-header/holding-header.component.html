@@ -11,69 +11,67 @@ SPDX-License-Identifier: AGPL-3.0-or-later
       }
       <span>{{ record.metadata.library.name }}: {{ record.metadata.location.name }}</span>
       @if (record.metadata.location.public_note) {
-        <div class="ui:text-sm ui:text-gray-500">{{ record.metadata.location.public_note | getTranslatedLabel : language }}</div>
+        <div class="ui:text-sm ui:text-gray-500">
+          {{ record.metadata.location.public_note | getTranslatedLabel: language }}
+        </div>
       }
     </div>
 
     <div class="ui:col-span-4">
-      {{ record.metadata.circulation_category.circulation_information | getTranslatedLabel : language }}
+      {{ record.metadata.circulation_category.circulation_information | getTranslatedLabel: language }}
     </div>
 
     @if (holdingType === 'serial') {
-    <div class="ui:col-span-2 ui:justify-end ui:flex">
-      @if (permissions()) {
-      <div class="ui:flex ui:gap-1 ui:mr-4">
-        <p-button
-          icon="fa-solid fa-eye"
-          [title]="'Holdings detail'|translate"
-          size="small"
-          outlined
-          [routerLink]="['/', 'records', 'holdings', 'detail', record.metadata.pid]"
-        />
-        <p-button
-          icon="fa-solid fa-basket-shopping"
-          [title]="'Holdings request'|translate"
-          outlined
-          size="small"
-          (onClick)="addRequest(record.metadata.pid, 'holding')"
-          class="ui:pointer-events-auto"
-          [pTooltip]="cannotRequestTooltipContent"
-          tooltipPosition="top"
-          [disabled]="!permissions().canRequest?.can"
-          [tooltipDisabled]="permissions().canRequest?.can"
-        />
-        <ng-template #cannotRequestTooltipContent>
-          <span [innerHTML]="cannotRequestInfoMessage | nl2br"></span>
-        </ng-template>
-        @if (permissions()?.update?.can) {
-        <p-button
-          icon="fa-solid fa-pencil"
-          outlined
-          size="small"
-          [title]="'Edit holdings'|translate"
-          [routerLink]="['/', 'records', 'holdings', 'edit', record.metadata.pid]"
-        />
+      <div class="ui:col-span-2 ui:justify-end ui:flex">
+        @if (permissions()) {
+          <div class="ui:flex ui:gap-1 ui:mr-4">
+            <p-button
+              icon="fa-solid fa-eye"
+              [title]="'Holdings detail' | translate"
+              size="small"
+              outlined
+              [routerLink]="['/', 'records', 'holdings', 'detail', record.metadata.pid]" />
+            <p-button
+              icon="fa-solid fa-basket-shopping"
+              [title]="'Holdings request' | translate"
+              outlined
+              size="small"
+              (onClick)="addRequest(record.metadata.pid, 'holding')"
+              class="ui:pointer-events-auto"
+              [pTooltip]="cannotRequestTooltipContent"
+              tooltipPosition="top"
+              [disabled]="!permissions().canRequest?.can"
+              [tooltipDisabled]="permissions().canRequest?.can" />
+            <ng-template #cannotRequestTooltipContent>
+              <span [innerHTML]="cannotRequestInfoMessage | nl2br"></span>
+            </ng-template>
+            @if (permissions()?.update?.can) {
+              <p-button
+                icon="fa-solid fa-pencil"
+                outlined
+                size="small"
+                [title]="'Edit holdings' | translate"
+                [routerLink]="['/', 'records', 'holdings', 'edit', record.metadata.pid]" />
+            }
+            <p-button
+              icon="fa-solid fa-trash-can"
+              class="ui:pointer-events-auto"
+              severity="danger"
+              outlined
+              size="small"
+              [title]="'Delete holdings' | translate"
+              (onClick)="delete()"
+              [pTooltip]="tooltipContent"
+              tooltipPosition="top"
+              [disabled]="documentDetailStore.isDeletingChild() || !permissions().delete?.can"
+              [tooltipDisabled]="documentDetailStore.isDeletingChild() || permissions().delete?.can" />
+            <ng-template #tooltipContent>
+              <span [innerHTML]="deleteInfoMessage | nl2br"></span>
+            </ng-template>
+          </div>
         }
-        <p-button
-          icon="fa-solid fa-trash-can"
-          class="ui:pointer-events-auto"
-          severity="danger"
-          outlined
-          size="small"
-          [title]="'Delete holdings'|translate"
-          (onClick)="delete()"
-          [pTooltip]="tooltipContent"
-          tooltipPosition="top"
-          [disabled]="documentDetailStore.isDeletingChild() || !permissions().delete?.can"
-          [tooltipDisabled]="documentDetailStore.isDeletingChild() || permissions().delete?.can"
-        />
-        <ng-template #tooltipContent>
-          <span [innerHTML]="deleteInfoMessage | nl2br"></span>
-        </ng-template>
       </div>
-      }
-    </div>
-    <admin-holding-detail context="document" [holding]="record" class="ui:col-span-12"></admin-holding-detail>
+      <admin-holding-detail context="document" [holding]="record" class="ui:col-span-12"></admin-holding-detail>
     }
   </div>
 </div>

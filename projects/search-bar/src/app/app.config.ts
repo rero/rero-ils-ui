@@ -1,13 +1,26 @@
 // SPDX-FileCopyrightText: Fondation RERO+
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClient, withXhr } from '@angular/common/http';
 import { ApplicationConfig, inject, provideAppInitializer, provideZonelessChangeDetection } from '@angular/core';
 import { provideRouter } from '@angular/router';
-import { TranslateService, provideTranslateLoader, provideTranslateService } from '@ngx-translate/core';
-import { CoreConfigService, NgCoreTranslateService, TranslateLanguageService, TruncateTextPipe, primeNGConfig } from '@rero/ng-core';
-import { AppStore, AppTranslateLanguageService, AppTranslateLoader, AppTranslateService, MainTitlePipe } from '@rero/shared';
-import { providePrimeNG } from 'primeng/config';
+import { provideTranslateLoader, provideTranslateService, TranslateService } from '@ngx-translate/core';
+import { provideOptimus } from '@openng/optimus-ui/config';
+import {
+  CoreConfigService,
+  NgCoreTranslateService,
+  optimusUIConfig,
+  TranslateLanguageService,
+  TruncateTextPipe,
+} from '@rero/ng-core';
+import {
+  AppStore,
+  AppTranslateLanguageService,
+  AppTranslateLoader,
+  AppTranslateService,
+  MainTitlePipe,
+} from '@rero/shared';
+
 import { AppConfigService } from './app-config.service';
 
 export const appConfig: ApplicationConfig = {
@@ -15,8 +28,8 @@ export const appConfig: ApplicationConfig = {
     provideRouter([]),
     { provide: CoreConfigService, useExisting: AppConfigService },
     provideZonelessChangeDetection(),
-    provideHttpClient(),
-    providePrimeNG(primeNGConfig),
+    provideHttpClient(withXhr()),
+    provideOptimus(optimusUIConfig),
     provideTranslateService({
       loader: provideTranslateLoader(AppTranslateLoader),
     }),

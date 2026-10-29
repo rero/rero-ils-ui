@@ -3,13 +3,14 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 import { ResolveFn, Routes } from '@angular/router';
 import { _ } from '@ngx-translate/core';
-import { ComponentCanDeactivateGuard, EditorComponent, RecordType, RouteDataTypesInterface } from '@rero/ng-core';
+import { RecordType, RouteDataTypesInterface, unsavedChangesGuard } from '@rero/ng-core';
+import { EditorComponent } from '@rero/ng-core/editor';
+
 import { CAN_ACCESS_ACTIONS, canAccessGuard } from '../../guard/can-access.guard';
 import { BaseRoute } from '../../routes/base-route';
 import { isBudgetActiveGuard } from './guards/is-budget-active.guard';
 
-export const receiptsRouteResolver: ResolveFn<Partial<RecordType>[]> = () =>
-  new ReceiptsRoute().getTypes();
+export const receiptsRouteResolver: ResolveFn<Partial<RecordType>[]> = () => new ReceiptsRoute().getTypes();
 
 export const receiptsRoutes: Routes = [
   {
@@ -17,7 +18,7 @@ export const receiptsRoutes: Routes = [
     component: EditorComponent,
     title: _('Receipt'),
     canActivate: [canAccessGuard, isBudgetActiveGuard],
-    canDeactivate: [ComponentCanDeactivateGuard],
+    canDeactivate: [unsavedChangesGuard],
     data: {
       action: CAN_ACCESS_ACTIONS.UPDATE,
     },

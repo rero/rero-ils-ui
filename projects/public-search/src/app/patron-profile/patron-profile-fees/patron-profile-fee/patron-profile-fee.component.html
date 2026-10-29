@@ -13,7 +13,9 @@ SPDX-License-Identifier: AGPL-3.0-or-later
       <div class="ui:col-span-7">
         <div class="ui:flex ui:flex-col">
           @if (isCollapsed && document()) {
-            <a href="/{{ organisation.code }}/documents/{{ document().metadata.pid }}">{{ document().metadata.title | mainTitle }}</a>
+            <a href="/{{ organisation.code }}/documents/{{ document().metadata.pid }}">{{
+              document().metadata.title | mainTitle
+            }}</a>
           }
           <div>
             {{ record().type | translate }}
@@ -21,91 +23,93 @@ SPDX-License-Identifier: AGPL-3.0-or-later
         </div>
       </div>
       <div class="ui:col-span-3 ui:flex ui:justify-start ui:md:justify-end ui:mr-3 ui:font-bold">
-        {{ record().totalAmount | currency:organisation.currency:'symbol' }}
+        {{ record().totalAmount | currency: organisation.currency : 'symbol' }}
       </div>
     </div>
 
     <!-- FEE DETAILS & EVENTS =========================================== -->
     @if (!isCollapsed) {
       <div class="ui:col-span-11 ui:col-start-2">
-          <!-- NOTE -->
-          @if (record().notes?.length > 0) {
-            @let headerTitle = record().notes.length > 1 ? 'Notes' : 'Note';
-            <p-panel class="ui:mb-2 ui:pb-2 ui:bg-transparent" [header]="headerTitle | translate">
-              <div class="ui:mx-5">
-                <ul>
-                  @for (note of record().notes; track $index) {
-                    <li>{{ note }}</li>
-                  }
-                </ul>
-              </div>
-            </p-panel>
-          }
-          <!-- DOCUMENT METADATA -->
-          @if (document()) {
-            <p-panel class="ui:mb-2 ui:pb-2 ui:bg-transparent" [header]="'Document' | translate" id="fee-{{ document().metadata.pid }}-document">
-              <dl class="metadata ui:mx-5">
-                <!-- TITLE -->
-                <dt translate>Title</dt>
-                <dd>
-                  <a href="/{{ organisation.code }}/documents/{{ document().metadata.pid }}">{{ document().metadata.title | mainTitle }}</a>
-                </dd>
-                <!-- CALL NUMBER -->
-                @if (record().loan.item?.call_number) {
-                  <dt translate>Call number</dt>
-                  <dd>{{ record().loan.item.call_number }}</dd>
+        <!-- NOTE -->
+        @if (record().notes?.length > 0) {
+          @let headerTitle = record().notes.length > 1 ? 'Notes' : 'Note';
+          <p-panel class="ui:mb-2 ui:pb-2 ui:bg-transparent" [header]="headerTitle | translate">
+            <div class="ui:mx-5">
+              <ul>
+                @for (note of record().notes; track $index) {
+                  <li>{{ note }}</li>
                 }
-                <!-- LOAN DATE -->
-                <dt translate>Loan started at</dt>
-                <dd>{{ record().loan.start_date | dateTranslate: 'short' }}</dd>
-              </dl>
-            </p-panel>
-          }
+              </ul>
+            </div>
+          </p-panel>
+        }
+        <!-- DOCUMENT METADATA -->
+        @if (document()) {
+          <p-panel
+            class="ui:mb-2 ui:pb-2 ui:bg-transparent"
+            [header]="'Document' | translate"
+            id="fee-{{ document().metadata.pid }}-document">
+            <dl class="metadata ui:mx-5">
+              <!-- TITLE -->
+              <dt>{{ 'Title' | translate }}</dt>
+              <dd>
+                <a href="/{{ organisation.code }}/documents/{{ document().metadata.pid }}">{{
+                  document().metadata.title | mainTitle
+                }}</a>
+              </dd>
+              <!-- CALL NUMBER -->
+              @if (record().loan.item?.call_number) {
+                <dt>{{ 'Call number' | translate }}</dt>
+                <dd>{{ record().loan.item.call_number }}</dd>
+              }
+              <!-- LOAN DATE -->
+              <dt>{{ 'Loan started at' | translate }}</dt>
+              <dd>{{ record().loan.start_date | dateTranslate: 'short' }}</dd>
+            </dl>
+          </p-panel>
+        }
 
-          <!-- TRANSACTIONS HISTORY -->
-          <p-panel class="ui:bg-transparent  ui:pb-2 time-line-30" [header]="'Transactions history' | translate">
-
+        <!-- TRANSACTIONS HISTORY -->
+        <p-panel class="ui:bg-transparent ui:pb-2 time-line-30" [header]="'Transactions history' | translate">
           <public-search-patron-profile-fee-events [events]="record().transactions" />
 
           @if (record().overdue > 0) {
             <p-timeline [value]="[record()]" class="ui:mt-2">
-                <ng-template #content let-event>
-                    <div class="ui:md:flex">
-                      <div class="ui:flex-grow" translate>
-                        expected fees
-                      </div>
-                      <div>
-                      <p-tag class="ui:pr-1" severity="danger">
-                        {{ event.overdue | currency:organisation.currency:'symbol' }}
-                      </p-tag>
-                      </div>
+              <ng-template #content let-event>
+                <div class="ui:md:flex">
+                  <div class="ui:flex-grow">
+                    {{ 'expected fees' | translate }}
+                  </div>
+                  <div>
+                    <p-tag class="ui:pr-1" severity="danger">
+                      {{ event.overdue | currency: organisation.currency : 'symbol' }}
+                    </p-tag>
+                  </div>
+                </div>
+              </ng-template>
+              <ng-template #opposite let-event>
+                <div class="ui:text-muted-color ui:text-sm ui:justify-items-end">
+                  <div class="ui:md:flex ui:md:flex-row ui:flex-col ui:justify-items-end">
+                    <div class="ui:flex ui:gap-1 ui:items-center">
+                      <i class="fa-solid fa-calendar-days"></i>
+                      {{ event.createdAt | dateTranslate: 'shortDate' }}
                     </div>
-                </ng-template>
-                <ng-template #opposite  let-event>
-                  <div class="ui:text-muted-color ui:text-sm ui:justify-items-end">
-                    <div class="ui:md:flex ui:md:flex-row ui:flex-col ui:justify-items-end">
-                      <div class="ui:flex ui:gap-1 ui:items-center">
-                        <i class="fa-solid fa-calendar-days"></i>
-                        {{ event.createdAt | dateTranslate: 'shortDate' }}
-                      </div>
-                      <div class="ui:flex ui:gap-1 ui:items-center">
-                        <i class="fa-regular fa-clock ui:pl-1"></i>
-                        {{ event.createdAt | dateTranslate: 'HH:mm' }}
-                      </div>
+                    <div class="ui:flex ui:gap-1 ui:items-center">
+                      <i class="fa-regular fa-clock ui:pl-1"></i>
+                      {{ event.createdAt | dateTranslate: 'HH:mm' }}
                     </div>
                   </div>
-                </ng-template>
-                <ng-template #marker>
-                  <span
-                    class="ui:flex ui:items-center ui:justify-center ui:text-white ui:rounded-full ui:z-10 ui:shadow-sm ui:bg-red-500 ui:w-[1.3rem] ui:h-[1.3rem]"
-                  >
-                    <i class="fa-solid fa-check"></i>
-                  </span>
-                </ng-template>
+                </div>
+              </ng-template>
+              <ng-template #marker>
+                <span
+                  class="ui:flex ui:items-center ui:justify-center ui:text-white ui:rounded-full ui:z-10 ui:shadow-sm ui:bg-red-500 ui:w-[1.3rem] ui:h-[1.3rem]">
+                  <i class="fa-solid fa-check"></i>
+                </span>
+              </ng-template>
             </p-timeline>
           }
-
-          </p-panel>
+        </p-panel>
       </div>
     }
   </div>

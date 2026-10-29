@@ -1,16 +1,17 @@
 // SPDX-FileCopyrightText: Fondation RERO+
 // SPDX-License-Identifier: AGPL-3.0-or-later
-import { ChangeDetectionStrategy, Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { IdentifierTypes } from '@app/admin/classes/identifiers';
-import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
+import { Bind } from '@openng/optimus-ui/bind';
+import { Button, ButtonDirective } from '@openng/optimus-ui/button';
+import { ConfirmDialog } from '@openng/optimus-ui/confirmdialog';
+import { DialogService, DynamicDialogRef } from '@openng/optimus-ui/dynamicdialog';
 import { DetailButtonComponent, DetailComponent, ErrorComponent } from '@rero/ng-core';
 import { AppStore, IPermissions, OperationLogsDialogComponent, PERMISSIONS, PermissionsDirective } from '@rero/shared';
 import { cloneDeep } from 'lodash-es';
-import { Bind } from 'primeng/bind';
-import { Button, ButtonDirective } from 'primeng/button';
-import { ConfirmDialog } from 'primeng/confirmdialog';
-import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
+
 import { DialogImportComponent } from '../dialog-import/dialog-import.component';
 import { DocumentDetailStore } from '../store/document-detail.store';
 
@@ -18,11 +19,20 @@ import { DocumentDetailStore } from '../store/document-detail.store';
   selector: 'admin-document-detail',
   templateUrl: './document-detail.component.html',
   providers: [DocumentDetailStore],
-  imports: [DetailButtonComponent, OperationLogsDialogComponent, Bind, Button, ButtonDirective, ConfirmDialog, PermissionsDirective, RouterLink, ErrorComponent, TranslateDirective, TranslatePipe],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  imports: [
+    DetailButtonComponent,
+    OperationLogsDialogComponent,
+    Bind,
+    Button,
+    ButtonDirective,
+    ConfirmDialog,
+    PermissionsDirective,
+    RouterLink,
+    ErrorComponent,
+    TranslatePipe,
+  ],
 })
 export class DocumentDetailComponent extends DetailComponent implements OnInit {
-
   private dialogService: DialogService = inject(DialogService);
   private documentDetailStore = inject(DocumentDetailStore);
   protected appStore = inject(AppStore);
@@ -54,26 +64,18 @@ export class DocumentDetailComponent extends DetailComponent implements OnInit {
     const libPid = this.appStore.currentLibraryPid();
     if (libPid) {
       this.recordService.getRecord('libraries', libPid).subscribe((library) => {
-        this.fileTitle = [
-          this.translate.instant('Files'),
-          library.metadata.name,
-        ].join(' - ');
+        this.fileTitle = [this.translate.instant('Files'), library.metadata.name].join(' - ');
       });
     }
   }
 
   /** Source for imported record. */
   get source() {
-    if (
-      this.route.snapshot &&
-      this.route.snapshot.params &&
-      this.route.snapshot.params.type !== null
-    ) {
+    if (this.route.snapshot && this.route.snapshot.params && this.route.snapshot.params.type !== null) {
       return this.route.snapshot.params.type.replace('import_', '');
     }
     return null;
   }
-
 
   /**
    * Import document
@@ -81,11 +83,7 @@ export class DocumentDetailComponent extends DetailComponent implements OnInit {
    * @param record - the current record to import
    * @param data - The source information
    */
-  importDocument(
-    event: Event,
-    record: any,
-    data: { source: string; pid: string }
-  ): void {
+  importDocument(event: Event, record: any, data: { source: string; pid: string }): void {
     event.preventDefault();
     const rec = record.metadata;
     const route = ['/records', 'documents', 'new'];
@@ -94,9 +92,7 @@ export class DocumentDetailComponent extends DetailComponent implements OnInit {
     if (rec.identifiedBy) {
       // We select only a defined part of the identifier
       rec.identifiedBy
-        .filter((identifier: any) =>
-          this.identifiersList.includes(identifier.type)
-        )
+        .filter((identifier: any) => this.identifiersList.includes(identifier.type))
         .map((identifier: any) => {
           queryParams.push(this.extractAndFormatQueryParams(identifier));
           if (identifier.type in this.mappingTypes) {
@@ -112,9 +108,7 @@ export class DocumentDetailComponent extends DetailComponent implements OnInit {
     // https://github.com/rero/rero-ils/issues/2900 (Generalize to all resources)
     if (queryParams.length === 0 && rec.title) {
       // We extract the title
-      const titles = rec.title.filter(
-        (rtitle: any) => rtitle.type === 'bf:Title' && '_text' in rtitle
-      );
+      const titles = rec.title.filter((rtitle: any) => rtitle.type === 'bf:Title' && '_text' in rtitle);
       if (titles.length > 0) {
         // We clean the text string by deleting some characters
         const regex = /["[\]]/gi;
@@ -134,29 +128,29 @@ export class DocumentDetailComponent extends DetailComponent implements OnInit {
         query = query.substring(0, query.substring(0, 1024).lastIndexOf('OR') - 1);
         warning = true;
       }
-      this.recordService.getRecords(
-        'documents', { query, page: 1, headers: { accept: 'application/rero+json' } }
-      ).subscribe((response: any) => {
-        if (response.hits.total === 0 && !warning) {
-          this.router.navigate(route, { queryParams: data });
-        } else {
-          const dynamicDialogRef: DynamicDialogRef = this.dialogService.open(DialogImportComponent, {
-            header: this.translate.instant('Import'),
-            modal: true,
-            closable: true,
-            width: '30vw',
-            data: {
-              records: response.hits.hits,
-              warning
-            }
-          });
-          dynamicDialogRef.onClose.subscribe((confirmation: boolean) => {
-            if (confirmation) {
-              this.router.navigate(route, { queryParams: data });
-            }
-          });
-        }
-      });
+      this.recordService
+        .getRecords('documents', { query, page: 1, headers: { accept: 'application/rero+json' } })
+        .subscribe((response: any) => {
+          if (response.hits.total === 0 && !warning) {
+            this.router.navigate(route, { queryParams: data });
+          } else {
+            const dynamicDialogRef: DynamicDialogRef = this.dialogService.open(DialogImportComponent, {
+              header: this.translate.instant('Import'),
+              modal: true,
+              closable: true,
+              width: '30vw',
+              data: {
+                records: response.hits.hits,
+                warning,
+              },
+            });
+            dynamicDialogRef.onClose.subscribe((confirmation: boolean) => {
+              if (confirmation) {
+                this.router.navigate(route, { queryParams: data });
+              }
+            });
+          }
+        });
     }
   }
 
@@ -174,5 +168,4 @@ export class DocumentDetailComponent extends DetailComponent implements OnInit {
     }
     return `(${query.join(' AND ')})`;
   }
-
 }

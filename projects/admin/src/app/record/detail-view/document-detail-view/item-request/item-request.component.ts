@@ -1,34 +1,32 @@
 // SPDX-FileCopyrightText: Fondation RERO+
 // SPDX-License-Identifier: AGPL-3.0-or-later
 import { HttpClient } from '@angular/common/http';
-import { ChangeDetectionStrategy, Component, computed, inject, OnInit, signal } from '@angular/core';
+import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { AbstractControl, FormsModule, ReactiveFormsModule, UntypedFormGroup } from '@angular/forms';
+import { RouterLink } from '@angular/router';
 import { FormlyFieldConfig, FormlyModule } from '@ngx-formly/core';
-import { TranslatePipe, TranslateService } from '@ngx-translate/core';
+import { _, TranslatePipe, TranslateService } from '@ngx-translate/core';
+import { MessageService } from '@openng/optimus-ui/api';
+import { Bind } from '@openng/optimus-ui/bind';
+import { Button } from '@openng/optimus-ui/button';
+import { Card } from '@openng/optimus-ui/card';
+import { DynamicDialogConfig, DynamicDialogRef } from '@openng/optimus-ui/dynamicdialog';
+import { Message } from '@openng/optimus-ui/message';
 import { CONFIG, RecordService } from '@rero/ng-core';
 import { AppStore } from '@rero/shared';
-import { MessageService } from 'primeng/api';
-import { Bind } from 'primeng/bind';
-import { Button } from 'primeng/button';
-import { Card } from 'primeng/card';
-import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
-import { Message } from 'primeng/message';
 import { Observable, of, timer } from 'rxjs';
 import { catchError, map, shareReplay, switchMap, tap } from 'rxjs/operators';
-import { RouterLink } from '@angular/router';
+
 import { HoldingsService } from '../../../../service/holdings.service';
 import { ItemsService } from '../../../../service/items.service';
 import { LoanService } from '../../../../service/loan.service';
-import { _ } from '@ngx-translate/core';
 
 @Component({
-    selector: 'admin-item-request',
-    templateUrl: './item-request.component.html',
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [Bind, Button, RouterLink, Card, FormsModule, ReactiveFormsModule, FormlyModule, TranslatePipe, Message],
+  selector: 'admin-item-request',
+  templateUrl: './item-request.component.html',
+  imports: [Bind, Button, RouterLink, Card, FormsModule, ReactiveFormsModule, FormlyModule, TranslatePipe, Message],
 })
 export class ItemRequestComponent implements OnInit {
-
   private appStore = inject(AppStore);
   private recordService: RecordService = inject(RecordService);
   private httpClient: HttpClient = inject(HttpClient);
@@ -83,9 +81,9 @@ export class ItemRequestComponent implements OnInit {
     const { data } = this.dynamicDialogConfig;
     this.recordPid = data.recordPid;
     this.recordType = data.recordType;
-    this.service = (this.recordType === 'item') ? this.itemService : this.holdingService;
+    this.service = this.recordType === 'item' ? this.itemService : this.holdingService;
     if (this.recordType === 'item') {
-      this.loanService.requestedBy$(this.recordPid).subscribe(v => this.requestedBy.set(v));
+      this.loanService.requestedBy$(this.recordPid).subscribe((v) => this.requestedBy.set(v));
     }
     this.initForm();
   }
@@ -106,29 +104,30 @@ export class ItemRequestComponent implements OnInit {
         transaction_user_pid: user.patronLibrarian.pid,
         ...(this.recordType === 'item'
           ? { item_pid: this.recordPid }
-          : { holding_pid: this.recordPid, description: model.description }
-        )
+          : { holding_pid: this.recordPid, description: model.description }),
       };
-      this.httpClient.post(`/api/${this.recordType}/request`, body)
-      .pipe(tap(() => this.requestInProgress.set(false)))
-      .subscribe({
-        next: () => {
-          this.closeModal(true);
-          this.messageService.add({
-            severity: 'success',
-            summary: this.translateService.instant('Item request'),
-            detail: this.translateService.instant('Request registered.'),
-            life: CONFIG.MESSAGE_LIFE
-          });
-        },
-        error: () => this.messageService.add({
-          severity: 'error',
-          summary: this.translateService.instant('Item request'),
-          detail: this.translateService.instant('An error has occurred. Please try again.'),
-          sticky: true,
-          closable: true
-        })
-      });
+      this.httpClient
+        .post(`/api/${this.recordType}/request`, body)
+        .pipe(tap(() => this.requestInProgress.set(false)))
+        .subscribe({
+          next: () => {
+            this.closeModal(true);
+            this.messageService.add({
+              severity: 'success',
+              summary: this.translateService.instant('Item request'),
+              detail: this.translateService.instant('Request registered.'),
+              life: CONFIG.MESSAGE_LIFE,
+            });
+          },
+          error: () =>
+            this.messageService.add({
+              severity: 'error',
+              summary: this.translateService.instant('Item request'),
+              detail: this.translateService.instant('An error has occurred. Please try again.'),
+              sticky: true,
+              closable: true,
+            }),
+        });
     }
   }
 
@@ -145,7 +144,7 @@ export class ItemRequestComponent implements OnInit {
    */
   initForm() {
     if (this.appStore.user()) {
-      this.getPickupLocations().subscribe(pickups => {
+      this.getPickupLocations().subscribe((pickups) => {
         this.formFields.set([
           {
             key: 'patronBarcode',
@@ -158,7 +157,7 @@ export class ItemRequestComponent implements OnInit {
                 if (event.key === 'Enter') {
                   event.preventDefault();
                 }
-              }
+              },
             },
             asyncValidators: {
               patronCheck: {
@@ -183,10 +182,10 @@ export class ItemRequestComponent implements OnInit {
                           }
                           this.canRequestMessage = undefined;
                           return { valid: true };
-                        })
+                        }),
                       );
                     }),
-                    map((state: { valid: boolean }) => state.valid)
+                    map((state: { valid: boolean }) => state.valid),
                   );
                 },
                 message: () => {
@@ -194,9 +193,9 @@ export class ItemRequestComponent implements OnInit {
                     return this.translateService.instant(this.canRequestMessage);
                   }
                   return this.translateService.instant('Patron not found.');
-                }
-              }
-            }
+                },
+              },
+            },
           },
           {
             key: 'pickup',
@@ -207,21 +206,24 @@ export class ItemRequestComponent implements OnInit {
               required: true,
               placeholder: this.translateService.instant('Select…'),
               options: pickups,
-              filter: true
-            }
-          }
+              filter: true,
+            },
+          },
         ]);
         if (this.recordType === 'holding') {
-          this.formFields.update(fields => [...(fields ?? []), {
-            key: 'description',
-            type: 'input',
-            props: {
-              label: this.translateService.instant('Collection or item year, volume, number, pages'),
-              placeholder: this.translateService.instant('Year / Volume / Number / Pages'),
-              maxLength: 100,
-              required: true,
-            }
-          }]);
+          this.formFields.update((fields) => [
+            ...(fields ?? []),
+            {
+              key: 'description',
+              type: 'input',
+              props: {
+                label: this.translateService.instant('Collection or item year, volume, number, pages'),
+                placeholder: this.translateService.instant('Year / Volume / Number / Pages'),
+                maxLength: 100,
+                required: true,
+              },
+            },
+          ]);
         }
         this.model.set({
           patronBarcode: null,
@@ -232,7 +234,6 @@ export class ItemRequestComponent implements OnInit {
     }
   }
 
-
   /**
    * Get pickup location available for the item
    * @return observable with pickup locations information (name and pid)
@@ -240,16 +241,18 @@ export class ItemRequestComponent implements OnInit {
   private getPickupLocations(): Observable<any[]> {
     const currentLibraryPid = this.appStore.currentLibraryPid();
     return this.service.getPickupLocations(this.recordPid).pipe(
-      map((locations: any) => locations.map((loc: any) => {
-        const libraryPid = loc.library.$ref.split('/').pop();
-        if (this.pickupDefaultValue === undefined && libraryPid === currentLibraryPid) {
-          this.pickupDefaultValue = loc.pid;
-        }
-        return {
-          label: loc.pickup_name || loc.name,
-          value: loc.pid
-        };
-      }))
+      map((locations: any) =>
+        locations.map((loc: any) => {
+          const libraryPid = loc.library.$ref.split('/').pop();
+          if (this.pickupDefaultValue === undefined && libraryPid === currentLibraryPid) {
+            this.pickupDefaultValue = loc.pid;
+          }
+          return {
+            label: loc.pickup_name || loc.name,
+            value: loc.pid,
+          };
+        }),
+      ),
     );
   }
 
@@ -262,8 +265,8 @@ export class ItemRequestComponent implements OnInit {
     const query = `barcode:${barcode}`;
     return timer(500).pipe(
       switchMap(() => this.recordService.getRecords('patrons', { query, page: 1, itemsPerPage: 1 })),
-      map((result: any) => result.hits.total === 0 ? [] : result.hits.hits),
-      shareReplay(1)
+      map((result: any) => (result.hits.total === 0 ? [] : result.hits.hits)),
+      shareReplay(1),
     );
   }
 }
@@ -275,7 +278,7 @@ type FormModel = {
   patronBarcode: string | null;
   pickup: string | undefined;
   description: string | undefined;
-}
+};
 
 type RequestBody = {
   pickup_location_pid: string;
@@ -285,7 +288,7 @@ type RequestBody = {
   item_pid?: string;
   holding_pid?: string;
   description?: string;
-}
+};
 
 type PatronData = {
   pid: string;
@@ -295,10 +298,10 @@ type PatronData = {
   postal_code?: string;
   city?: string;
   email?: string;
-}
+};
 
 type Loan = {
   pid: string;
   state: string;
   patron_pid?: string;
-}
+};

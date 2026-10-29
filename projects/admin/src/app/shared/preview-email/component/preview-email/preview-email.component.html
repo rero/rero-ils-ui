@@ -9,35 +9,36 @@ SPDX-License-Identifier: AGPL-3.0-or-later
   @if (previewPosition() === 'top') {
     <ng-container
       [ngTemplateOutlet]="messagePreview"
-      [ngTemplateOutletContext]="{preview, position: ['previewMessage']}"
-    />
+      [ngTemplateOutletContext]="{ preview, position: ['previewMessage'] }" />
   }
 
-  <h5 translate>Who do you want to send the message to?</h5>
+  <h5>{{ 'Who do you want to send the message to?' | translate }}</h5>
 
   <!-- SUGGESTED EMAILS -->
   @if (emails().length > 0) {
     <p-panel>
       <ng-template #header>
         <div class="p-panel-title">
-        @if (emails().length < 2) {
-          {{ 'Suggested email address' | translate }}
-        } @else {
-          {{ 'Suggested email addresses' | translate }}
-        }
-        <small class="ui:ml-1">(<span class="ui:italic" translate>Drag and drop</span>)</small>
-      </div>
+          @if (emails().length < 2) {
+            {{ 'Suggested email address' | translate }}
+          } @else {
+            {{ 'Suggested email addresses' | translate }}
+          }
+          <small class="ui:ml-1"
+            >(<span class="ui:italic">{{ 'Drag and drop' | translate }}</span
+            >)</small
+          >
+        </div>
       </ng-template>
       <div class="ui:flex ui:gap-1 ui:mb-4 ui:mx-4">
         @for (email of emails(); track $index) {
           <p-tag
             pDraggable="emails"
-            [style]="{cursor: 'grab'}"
+            [style]="{ cursor: 'grab' }"
             (onDragStart)="dragStart(email)"
             (onDragEnd)="dragEnd()"
             icon="fa-solid fa-user"
-            [value]="email"
-          />
+            [value]="email" />
         }
       </div>
     </p-panel>
@@ -48,7 +49,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
     <div class="ui:grid ui:grid-cols-12 ui:gap-4 ui:mt-2 ui:mb-4 ui:mx-4">
       @for (type of emailTypes(); track $index) {
         <div class="ui:col-span-2" [class.field-required]="mandatoryEmailTypes().includes(type)">
-          {{ ('email_' + type) | translate }}&nbsp;:
+          {{ 'email_' + type | translate }}&nbsp;:
         </div>
         <div class="ui:col-span-10">
           <p-autocomplete
@@ -59,8 +60,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
             pDroppable="emails"
             (onDrop)="drop($event, type)"
             (onBlur)="onBlur($event)"
-            [(ngModel)]="recipients[type]"
-          />
+            [(ngModel)]="recipients[type]" />
         </div>
       }
     </div>
@@ -70,21 +70,20 @@ SPDX-License-Identifier: AGPL-3.0-or-later
   @if (previewPosition() === 'bottom') {
     <ng-container
       [ngTemplateOutlet]="messagePreview"
-      [ngTemplateOutletContext]="{preview, position: ['previewBottomMessage']}"
-    />
+      [ngTemplateOutletContext]="{ preview, position: ['previewBottomMessage'] }" />
   }
 </div>
 
 <div class="ui:flex ui:justify-end ui:gap-1 ui:mt-2">
-  <p-button severity="danger" outlined [label]="'Cancel'|translate" (onClick)="close()" aria-label="Close"/>
-  <p-button [label]="'Confirm'|translate" [disabled]="!formValid() || isSending()" (onClick)="confirm()" />
+  <p-button severity="danger" outlined [label]="'Cancel' | translate" (onClick)="close()" aria-label="Close" />
+  <p-button [label]="'Confirm' | translate" [disabled]="!formValid() || isSending()" (onClick)="confirm()" />
 </div>
 
 <ng-template #messagePreview let-preview="preview" let-position="position">
   <p-panel>
     <ng-template #header>
       <div class="ui:grid ui:grid-flow-row ui:auto-rows-max">
-        <div class="ui:font-bold" translate>Message</div>
+        <div class="ui:font-bold">{{ 'Message' | translate }}</div>
         <div class="ui:italic ui:text-sm">
           <ng-content [select]="position" />
         </div>

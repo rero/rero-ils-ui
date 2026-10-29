@@ -11,7 +11,6 @@ import { DomSanitizer } from '@angular/platform-browser';
  */
 @Pipe({ name: 'highlightJson' })
 export class HighlightJsonPipe implements PipeTransform {
-
   // services
   protected sanitizer: DomSanitizer = inject(DomSanitizer);
 
@@ -48,7 +47,7 @@ export class HighlightJsonPipe implements PipeTransform {
           cls = 'ui:text-blue-600';
         }
         return `<span class="${cls}">${match}</span>`;
-      }
+      },
     );
 
     return this.sanitizer.bypassSecurityTrustHtml(json);

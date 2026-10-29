@@ -1,18 +1,17 @@
 // SPDX-FileCopyrightText: Fondation RERO+
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-
 @use '../../../../shared/src/scss/styles';
 
 // @theme blocks must be at root level (Tailwind v4 constraint)
-@import "@rero/ng-core/assets/scss/colors";
+@import '@rero/ng-core/assets/scss/colors';
 
 @layer rero-ils-ui {
   .rero-ils-ui {
-    @import "tailwindcss/preflight.css" layer(base) prefix(ui);
-    @import "@rero/ng-core/assets/scss/theme";
-    @import "@rero/ng-core/assets/scss/typography";
-    @import "../document-detail/holdings/holdings.component";
+    @import 'tailwindcss/preflight.css' layer(base) prefix(ui);
+    @import '@rero/ng-core/assets/scss/theme';
+    @import '@rero/ng-core/assets/scss/typography';
+    @import '../document-detail/holdings/holdings.component';
 
     // Bootstrap reboot overrides — scoped to Angular app only
     legend {
@@ -27,4 +26,3 @@
     }
   }
 }
-

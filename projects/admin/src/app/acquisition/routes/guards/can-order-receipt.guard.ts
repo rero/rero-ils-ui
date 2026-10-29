@@ -6,6 +6,7 @@ import { extractIdOnRef } from '@rero/ng-core';
 import { AppStore } from '@rero/shared';
 import { combineLatest, Observable, of } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
+
 import { AcqOrderApiService } from '../../api/acq-order-api.service';
 import { AcqReceiptApiService } from '../../api/acq-receipt-api.service';
 import { AcqOrderStatus, IAcqOrder } from '../../classes/order';
@@ -14,7 +15,7 @@ import { IAcqReceipt } from '../../classes/receipt';
 function orderQuery(
   orderPid: string,
   acqOrderApiService: AcqOrderApiService,
-  appStore: InstanceType<typeof AppStore>
+  appStore: InstanceType<typeof AppStore>,
 ): Observable<boolean> {
   const validStatuses = [AcqOrderStatus.ORDERED, AcqOrderStatus.PARTIALLY_RECEIVED, AcqOrderStatus.RECEIVED];
   return acqOrderApiService.getOrder(orderPid).pipe(
@@ -25,20 +26,20 @@ function orderQuery(
       if (!order.is_current_budget) {
         return false;
       }
-      return validStatuses.some(status => status === order.status);
+      return validStatuses.some((status) => status === order.status);
     }),
-    catchError(() => of(false))
+    catchError(() => of(false)),
   );
 }
 
 function receiptQuery(
   receiptPid: string,
   orderPid: string,
-  acqReceiptApiService: AcqReceiptApiService
+  acqReceiptApiService: AcqReceiptApiService,
 ): Observable<boolean> {
   return acqReceiptApiService.getReceipt(receiptPid).pipe(
     map((receipt: IAcqReceipt) => orderPid === receipt.acq_order.pid),
-    catchError(() => of(false))
+    catchError(() => of(false)),
   );
 }
 
@@ -65,12 +66,12 @@ export const canOrderReceiptGuard: CanActivateFn = (route: ActivatedRouteSnapsho
 
   if (!receiptPid) {
     return order$.pipe(
-      map(valid => {
+      map((valid) => {
         if (!valid) {
           router.navigate(['/errors/403'], { skipLocationChange: true });
         }
         return valid;
-      })
+      }),
     );
   }
 
@@ -81,6 +82,6 @@ export const canOrderReceiptGuard: CanActivateFn = (route: ActivatedRouteSnapsho
         return false;
       }
       return true;
-    })
+    }),
   );
 };

@@ -4,9 +4,8 @@ import { Pipe, PipeTransform } from '@angular/core';
 
 @Pipe({ name: 'circulationLogRecordType' })
 export class CirculationLogRecordTypePipe implements PipeTransform {
-
   transform(recordType: string): unknown {
-    switch(recordType) {
+    switch (recordType) {
       case 'notif':
         return 'notification';
       case 'scan_item':

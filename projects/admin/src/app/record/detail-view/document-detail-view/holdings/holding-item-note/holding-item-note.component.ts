@@ -1,12 +1,12 @@
 // SPDX-FileCopyrightText: Fondation RERO+
 // SPDX-License-Identifier: AGPL-3.0-or-later
-import { Component, input, ChangeDetectionStrategy} from '@angular/core';
+import { Component, input } from '@angular/core';
 import { ItemNote } from '@app/admin/classes/items';
 import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
-    selector: 'admin-holding-item-note',
-    template: `
+  selector: 'admin-holding-item-note',
+  template: `
     @if (note()) {
       <dl class="metadata">
         <dt>{{ note().type.toString() | translate }}</dt>
@@ -14,8 +14,7 @@ import { TranslatePipe } from '@ngx-translate/core';
       </dl>
     }
   `,
-    imports: [TranslatePipe],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  imports: [TranslatePipe],
 })
 export class HoldingItemNoteComponent {
   /** the item note */

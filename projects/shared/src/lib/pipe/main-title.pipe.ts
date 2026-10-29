@@ -4,7 +4,6 @@ import { Pipe, PipeTransform } from '@angular/core';
 
 @Pipe({ name: 'mainTitle' })
 export class MainTitlePipe implements PipeTransform {
-
   /**
    * extract the main title from document metadata
    * @param titleMetadata:  the document title metadata (as `getRecord` response with resolve=1)
@@ -14,9 +13,7 @@ export class MainTitlePipe implements PipeTransform {
     if (titleMetadata == null) {
       return null;
     }
-    const mainTitles: any[] = titleMetadata.filter(title => title.type === 'bf:Title');
-    return (mainTitles.length > 0)
-      ? mainTitles.pop()._text
-      : null;
+    const mainTitles: any[] = titleMetadata.filter((title) => title.type === 'bf:Title');
+    return mainTitles.length > 0 ? mainTitles.pop()._text : null;
   }
 }

@@ -33,9 +33,9 @@ export const esResultInitialState: EsResult = {
   aggregations: {},
   hits: {
     hits: [],
-    total: 0
+    total: 0,
   },
   links: {
-    self: ''
-  }
+    self: '',
+  },
 };

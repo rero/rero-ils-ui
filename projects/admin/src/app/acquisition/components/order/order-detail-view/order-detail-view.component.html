@@ -4,136 +4,133 @@ SPDX-FileCopyrightText: UCLouvain
 SPDX-License-Identifier: AGPL-3.0-or-later
 -->
 @if (store.order(); as o) {
-<div [ngClass]="{ 'ui:opacity-50': !o.is_current_budget }">
-  <!-- ROLLOVER INFO -->
-  @if (!o.is_current_budget) {
-    <p-message severity="warn" showTransitionOptions="0ms">
-      {{ 'Fiscal year closed' | translate }}
-    </p-message>
-  }
-
-  <!-- Place order button -->
-  <div class="ui:flex ui:gap-2 ui:justify-between ui:flex-wrap">
-    <h1>{{ o.reference }}</h1>
-    @if (o.is_current_budget && o.pid) {
-      @if (store.orderPermissions()?.update?.can && o.status === acqOrderStatus.PENDING) {
-        <section class="ui:flex ui:justify-end">
-          <p-button
-            (onClick)="placeOrderDialog()"
-            severity="primary"
-            [disabled]="!store.canPlaceOrder()"
-            icon="fa-solid fa-paper-plane"
-            [label]="'Place order' | translate"
-          />
-        </section>
-      }
+  <div [ngClass]="{ 'ui:opacity-50': !o.is_current_budget }">
+    <!-- ROLLOVER INFO -->
+    @if (!o.is_current_budget) {
+      <p-message severity="warn" showTransitionOptions="0ms">
+        {{ 'Fiscal year closed' | translate }}
+      </p-message>
     }
+
+    <!-- Place order button -->
+    <div class="ui:flex ui:gap-2 ui:justify-between ui:flex-wrap">
+      <h1>{{ o.reference }}</h1>
+      @if (o.is_current_budget && o.pid) {
+        @if (store.orderPermissions()?.update?.can && o.status === acqOrderStatus.PENDING) {
+          <section class="ui:flex ui:justify-end">
+            <p-button
+              (onClick)="placeOrderDialog()"
+              severity="primary"
+              [disabled]="!store.canPlaceOrder()"
+              icon="fa-solid fa-paper-plane"
+              [label]="'Place order' | translate" />
+          </section>
+        }
+      }
+    </div>
+    <!-- ORDER SUMMARY -->
+    <admin-order-summary>
+      @if (o.notes && o.notes.length > 0) {
+        <dt>{{ 'Notes' | translate }}</dt>
+        <dd>
+          @for (note of o.notes; track $index) {
+            <a href (click)="scrollTo($event, 'notes'); notesCollapsed = false">
+              <p-tag [severity]="$any(note | noteBadgeColor)">
+                {{ note.type | translate }}
+              </p-tag>
+            </a>
+          }
+        </dd>
+      }
+    </admin-order-summary>
+
+    <p-tabs class="ui:mt-3" [value]="tabActiveIndex()" (valueChange)="onTabChange($any($event))">
+      <p-tablist>
+        <p-tab value="order">{{ 'Order' | translate }}</p-tab>
+        <p-tab value="reception" [disabled]="store.disabledReceipts()">{{ 'Reception' | translate }}</p-tab>
+        <p-tab value="history">{{ 'History' | translate }}</p-tab>
+      </p-tablist>
+      <p-tabpanels>
+        <p-tabpanel value="order">
+          @if (tabActiveIndex() === 'order') {
+            <div class="ui:flex ui:flex-col ui:gap-2">
+              <p-accordion [multiple]="true" [value]="['lines']">
+                <p-accordion-panel value="lines">
+                  <p-accordion-header>
+                    <div class="ui:w-full ui:flex ui:justify-between ui:gap-2 ui:pr-3">
+                      <span class="ui:text-bold ui:text-xl">{{ 'Order lines' | translate }}</span>
+                      @if (store.canAddLine()) {
+                        <p-button
+                          (click)="$event.stopPropagation()"
+                          icon="fa-regular fa-square-plus"
+                          size="small"
+                          [outlined]="true"
+                          [label]="'Add' | translate"
+                          [routerLink]="['/acquisition', 'records', 'acq_order_lines', 'new']"
+                          [queryParams]="{ order: o.pid }" />
+                      }
+                    </div>
+                    <ng-template #tooltipContent>
+                      <span [innerHTML]="store.orderCreateInfoMessage() | nl2br"></span>
+                    </ng-template>
+                  </p-accordion-header>
+                  <p-accordion-content>
+                    <div class="ui:flex ui:justify-end ui:mb-2">
+                      <p-select
+                        appendTo="body"
+                        [options]="sortingCriteria()"
+                        optionValue="value"
+                        [ngModel]="store.linesSortCriteria()"
+                        (onChange)="store.setSortCriteria($event.value)"
+                        (onShow)="onSortSelectShow()">
+                        <ng-template #selectedItem let-item>
+                          <div class="ui:flex ui:items-center ui:gap-2">
+                            <i [class]="item.icon"></i>
+                            <div>{{ item.label }}</div>
+                          </div>
+                        </ng-template>
+                        <ng-template #item let-item>
+                          <div class="ui:flex ui:items-center ui:gap-2">
+                            <i [class]="item.icon"></i>
+                            <div>{{ item.label }}</div>
+                          </div>
+                        </ng-template>
+                      </p-select>
+                    </div>
+                    <admin-order-lines />
+                  </p-accordion-content>
+                </p-accordion-panel>
+                <p-accordion-panel value="notes">
+                  <p-accordion-header>
+                    <div class="ui:w-full ui:flex ui:mr-2 ui:items-center">
+                      @let orderNotesSize = o.notes?.length || 0;
+                      <span class="ui:grow ui:text-bold ui:text-xl">
+                        {{ orderNotesSize | i18nPlural: { '=0': 'Note', '=1': 'Note', other: 'Notes' } | translate }}
+                      </span>
+                      <p-badge [value]="orderNotesSize" />
+                    </div>
+                  </p-accordion-header>
+                  <p-accordion-content>
+                    <div class="ui:mt-2">
+                      <admin-notes [notes]="$any(o.notes)" />
+                    </div>
+                  </p-accordion-content>
+                </p-accordion-panel>
+              </p-accordion>
+            </div>
+          }
+        </p-tabpanel>
+        <p-tabpanel value="reception">
+          @if (tabActiveIndex() === 'reception') {
+            <admin-receipt-list />
+          }
+        </p-tabpanel>
+        <p-tabpanel value="history">
+          @if (tabActiveIndex() === 'history') {
+            <admin-order-history />
+          }
+        </p-tabpanel>
+      </p-tabpanels>
+    </p-tabs>
   </div>
-  <!-- ORDER SUMMARY -->
-  <admin-order-summary>
-    @if (o.notes && o.notes.length > 0) {
-    <dt translate>Notes</dt>
-    <dd>
-      @for (note of o.notes; track $index) {
-      <a href (click)="scrollTo($event, 'notes'); notesCollapsed = false">
-        <p-tag [severity]="$any(note | noteBadgeColor)">
-          {{ note.type | translate }}
-        </p-tag>
-      </a>
-      }
-    </dd>
-    }
-  </admin-order-summary>
-
-  <p-tabs class="ui:mt-3" [value]="tabActiveIndex()" (valueChange)="onTabChange($any($event))">
-    <p-tablist>
-      <p-tab value="order" translate>Order</p-tab>
-      <p-tab value="reception" [disabled]="store.disabledReceipts()" translate>Reception</p-tab>
-      <p-tab value="history" translate>History</p-tab>
-    </p-tablist>
-    <p-tabpanels>
-      <p-tabpanel value="order">
-        @if (tabActiveIndex() === 'order') {
-          <div class="ui:flex ui:flex-col ui:gap-2">
-            <p-accordion [multiple]="true" [value]="['lines']">
-              <p-accordion-panel value="lines">
-                <p-accordion-header>
-                  <div class="ui:w-full ui:flex ui:justify-between ui:gap-2 ui:pr-3">
-                    <span class="ui:text-bold ui:text-xl" translate>Order lines</span>
-                    @if (store.canAddLine()) {
-                      <p-button
-                        (click)="$event.stopPropagation()"
-                        icon="fa-regular fa-square-plus"
-                        size="small"
-                        [outlined]="true"
-                        [label]="'Add' | translate"
-                        [routerLink]="['/acquisition', 'records', 'acq_order_lines', 'new']"
-                        [queryParams]="{ order: o.pid }"
-                      />
-                    }
-                  </div>
-                  <ng-template #tooltipContent>
-                    <span [innerHTML]="store.orderCreateInfoMessage() | nl2br"></span>
-                  </ng-template>
-                </p-accordion-header>
-                <p-accordion-content>
-                  <div class="ui:flex ui:justify-end ui:mb-2">
-                    <p-select
-                      appendTo="body"
-                      [options]="sortingCriteria()"
-                      optionValue="value"
-                      [ngModel]="store.linesSortCriteria()"
-                      (onChange)="store.setSortCriteria($event.value)"
-                      (onShow)="onSortSelectShow()"
-                    >
-                      <ng-template #selectedItem let-item>
-                        <div class="ui:flex ui:items-center ui:gap-2">
-                          <i [class]="item.icon"></i>
-                          <div>{{ item.label }}</div>
-                        </div>
-                      </ng-template>
-                      <ng-template #item let-item>
-                        <div class="ui:flex ui:items-center ui:gap-2">
-                          <i [class]="item.icon"></i>
-                          <div>{{ item.label }}</div>
-                        </div>
-                      </ng-template>
-                    </p-select>
-                  </div>
-                  <admin-order-lines />
-                </p-accordion-content>
-              </p-accordion-panel>
-              <p-accordion-panel value="notes">
-                <p-accordion-header>
-                  <div class="ui:w-full ui:flex ui:mr-2 ui:items-center">
-                   @let orderNotesSize = o.notes?.length || 0;
-                    <span class="ui:grow ui:text-bold ui:text-xl">
-                      {{ orderNotesSize | i18nPlural : { "=0": "Note", "=1": "Note", other: "Notes" } | translate }}
-                    </span>
-                    <p-badge [value]="orderNotesSize" />
-                  </div>
-                </p-accordion-header>
-                <p-accordion-content>
-                  <div class="ui:mt-2">
-                    <admin-notes [notes]="$any(o.notes)" />
-                  </div>
-                </p-accordion-content>
-              </p-accordion-panel>
-            </p-accordion>
-          </div>
-        }
-      </p-tabpanel>
-      <p-tabpanel value="reception">
-        @if (tabActiveIndex() === 'reception') {
-          <admin-receipt-list />
-        }
-      </p-tabpanel>
-      <p-tabpanel value="history">
-        @if (tabActiveIndex() === 'history') {
-          <admin-order-history />
-        }
-      </p-tabpanel>
-    </p-tabpanels>
-  </p-tabs>
-</div>
 }

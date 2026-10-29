@@ -4,16 +4,16 @@ import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { ApiService, RecordService } from '@rero/ng-core';
-import { IQueryOptions, ISuggestionItem } from '@rero/ng-core';
+import { IQueryOptions, ISuggestionItem } from '@rero/ng-core/editor';
 import { AppStore, Entity } from '@rero/shared';
 import { catchError, forkJoin, map, Observable, of } from 'rxjs';
+
 import { IRemoteAutocomplete } from './i-remote-autocomplete';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class MefRemoteService implements IRemoteAutocomplete {
-
   private httpClient: HttpClient = inject(HttpClient);
   private translateService: TranslateService = inject(TranslateService);
   private appStore = inject(AppStore);
@@ -27,12 +27,15 @@ export class MefRemoteService implements IRemoteAutocomplete {
   /** Entry point API to get locale entity suggestions. */
   private localSearchEntrypoint = 'api/local_entities/search';
 
-
   getName(): string {
     return 'mef';
   }
 
-  getSuggestions(query: string, queryOptions: IQueryOptions, _currentPid: string | null): Observable<ISuggestionItem[]> {
+  getSuggestions(
+    query: string,
+    queryOptions: IQueryOptions,
+    _currentPid: string | null,
+  ): Observable<ISuggestionItem[]> {
     if (!query) {
       return of([]);
     }
@@ -46,37 +49,41 @@ export class MefRemoteService implements IRemoteAutocomplete {
     const params = new HttpParams().set('size', queryOptions.maxOfResult ?? 100);
     // Build API call to get remote suggestions.
     const remoteUrl = `${this.remoteSearchEntrypoint}/${searchCategory}/${query}/`;
-    const remoteSuggestions$ = this.httpClient.get(remoteUrl, {headers, params}).pipe(
-      map((results: any) => results?.hits?.total >= 0 ? results.hits.hits : []),
+    const remoteSuggestions$ = this.httpClient.get(remoteUrl, { headers, params }).pipe(
+      map((results: any) => (results?.hits?.total >= 0 ? results.hits.hits : [])),
       map((hits: any[]) => this.buildRemoteSuggestions(hits)),
-      catchError(e => {
+      catchError((e) => {
         switch (e.status) {
-          case 400: return of([]);
-          default: throw e;
+          case 400:
+            return of([]);
+          default:
+            throw e;
         }
-      })
+      }),
     );
 
     // Build API call to get local entity suggestions.
     const localUrl = `${this.localSearchEntrypoint}/${searchCategory}/${query}/`;
-    const localSuggestions$ = (this.httpClient.get(localUrl, {headers, params}) as Observable<any[]>).pipe(
+    const localSuggestions$ = (this.httpClient.get(localUrl, { headers, params }) as Observable<any[]>).pipe(
       map((hits: any[]) => this.buildLocalSuggestions(hits)),
-      catchError(e => {
+      catchError((e) => {
         switch (e.status) {
-          case 400: return of([]);
-          default: throw e;
+          case 400:
+            return of([]);
+          default:
+            throw e;
         }
-      })
+      }),
     );
     // Return the concatenation of both API request.
     return forkJoin([remoteSuggestions$, localSuggestions$]).pipe(
-      map(([remoteHits, localHits]) => [...remoteHits, ...localHits])
+      map(([remoteHits, localHits]) => [...remoteHits, ...localHits]),
     );
   }
   getValueAsHTML(queryOptions: IQueryOptions, item: ISuggestionItem): Observable<string> {
-    return (item.value!.match(/local_entities\/.*$/))
-       ? this.getLocalValueAsHTML(queryOptions, item.value!)
-       : this.getRemoteValueAsHTML(queryOptions, item.value!);
+    return item.value!.match(/local_entities\/.*$/)
+      ? this.getLocalValueAsHTML(queryOptions, item.value!)
+      : this.getRemoteValueAsHTML(queryOptions, item.value!);
   }
 
   private getRemoteValueAsHTML(_options: IQueryOptions, value: string): Observable<string> {
@@ -86,33 +93,31 @@ export class MefRemoteService implements IRemoteAutocomplete {
     const params = new HttpParams().set('url', value);
     const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
 
-    return this.httpClient
-      .get(this.apiProxyEntryPoint, {params, headers})
-      .pipe(
-        // TODO :: remove this `map` pipe when MEF api return correct properties
-        //   For MEF agents, the source URL is serialized into `identifier` properties ; for MEF concepts, this URL is found into an array
-        //   of identifiers. This `map` pipe harmonize MEF server response to allow a single (and simpler) URL extraction in next `map` pipe
-        //   Additionally, all identifier sources are transform to lowercase (MEF concepts response return "IdRef" instead of "idref")
-        map((data: any) => {
-          if (data?.metadata && data.metadata?.identifier) {
-            data.metadata['identifiedBy'] = [{source, 'type': 'uri', 'value': data.metadata.identifier}];
-            delete data.metadata.identifier;
-          }
-          if (data?.metadata && data?.metadata.identifiedBy) {
-            data.metadata.identifiedBy.map((identifier: any) => identifier.source = identifier.source.toLowerCase());
-          }
-          return data;
-        }),
-        map((data: any) => {
-          const entity = {
-            label: data?.metadata?.authorized_access_point,
-            type: data?.metadata?.type,
-            uri: this.get_source_uri(data?.metadata?.identifiedBy, source) || value,
-          };
-          const badges = [{label: source.toUpperCase()}];
-          return this.buildEntityResolutionResponse(entity, badges);
-        }),
-        catchError(e => this.handleEntityResolutionError(e, value))
+    return this.httpClient.get(this.apiProxyEntryPoint, { params, headers }).pipe(
+      // TODO :: remove this `map` pipe when MEF api return correct properties
+      //   For MEF agents, the source URL is serialized into `identifier` properties ; for MEF concepts, this URL is found into an array
+      //   of identifiers. This `map` pipe harmonize MEF server response to allow a single (and simpler) URL extraction in next `map` pipe
+      //   Additionally, all identifier sources are transform to lowercase (MEF concepts response return "IdRef" instead of "idref")
+      map((data: any) => {
+        if (data?.metadata && data.metadata?.identifier) {
+          data.metadata['identifiedBy'] = [{ source, type: 'uri', value: data.metadata.identifier }];
+          delete data.metadata.identifier;
+        }
+        if (data?.metadata && data?.metadata.identifiedBy) {
+          data.metadata.identifiedBy.map((identifier: any) => (identifier.source = identifier.source.toLowerCase()));
+        }
+        return data;
+      }),
+      map((data: any) => {
+        const entity = {
+          label: data?.metadata?.authorized_access_point,
+          type: data?.metadata?.type,
+          uri: this.get_source_uri(data?.metadata?.identifiedBy, source) || value,
+        };
+        const badges = [{ label: source.toUpperCase() }];
+        return this.buildEntityResolutionResponse(entity, badges);
+      }),
+      catchError((e) => this.handleEntityResolutionError(e, value)),
     );
   }
 
@@ -125,23 +130,21 @@ export class MefRemoteService implements IRemoteAutocomplete {
    */
   private getLocalValueAsHTML(_options: IQueryOptions, value: string): Observable<string> {
     const pid = value.split('/').slice(-1)[0];
-    return this.recordService
-      .getRecord('local_entities', pid)
-      .pipe(
-         map((data: any) => {
-           const entity = {
-             label: data.metadata.authorized_access_point,
-             type: data.metadata.type,
-             uri: this.buildLocalEntityDetailViewURI(data.metadata.pid)
-           };
-           const badges = [];
-           if (data.metadata?.source_catalog) {
-             badges.push({label: data.metadata.source_catalog});
-           }
-           return this.buildEntityResolutionResponse(entity, badges);
-         }),
-         catchError(e => this.handleEntityResolutionError(e, value))
-      );
+    return this.recordService.getRecord('local_entities', pid).pipe(
+      map((data: any) => {
+        const entity = {
+          label: data.metadata.authorized_access_point,
+          type: data.metadata.type,
+          uri: this.buildLocalEntityDetailViewURI(data.metadata.pid),
+        };
+        const badges = [];
+        if (data.metadata?.source_catalog) {
+          badges.push({ label: data.metadata.source_catalog });
+        }
+        return this.buildEntityResolutionResponse(entity, badges);
+      }),
+      catchError((e) => this.handleEntityResolutionError(e, value)),
+    );
   }
 
   /**
@@ -150,15 +153,18 @@ export class MefRemoteService implements IRemoteAutocomplete {
    * @param badges: badges list to append to the entity.
    * @returns the HTML representation for the entity.
    */
-  private buildEntityResolutionResponse(entity: {label:string, type: string, uri?: string}, badges: {label: string, type?: string}[]): string {
+  private buildEntityResolutionResponse(
+    entity: { label: string; type: string; uri?: string },
+    badges: { label: string; type?: string }[],
+  ): string {
     // Type of entity
     const icon = Entity.getIcon(entity.type);
     const title = this.translateService.instant(entity.type);
     let output = `<i class="${icon} ui:mr-1" title="${title}"></i>`;
-    output += (entity?.uri)
+    output += entity?.uri
       ? `<a href="${entity.uri}" target="_blank">${entity.label} <i class="fa-solid fa-up-right-from-square"></i></a>`
       : `<span>${entity.label}</span>`;
-    badges.forEach(badge => {
+    badges.forEach((badge) => {
       output += `<span class="ui:rounded-md ui:bg-surface-100 ui:ml-3 ui:py-1 ui:px-2">${badge.label}</span>`;
     });
     return output;
@@ -223,11 +229,14 @@ export class MefRemoteService implements IRemoteAutocomplete {
    * @param sourceName: the name of the source (idref, gnd, ...)
    * @return the corresponding URI or null if not found
    */
-  private get_source_uri(identifiers: {source:string, type:string, value:string}[], sourceName: string): string|undefined {
-    const identifier = identifiers.find(id => id.source.toLowerCase() == sourceName.toLowerCase() && id.type == 'uri');
-    return (identifier != undefined)
-      ? identifier.value
-      : undefined;
+  private get_source_uri(
+    identifiers: { source: string; type: string; value: string }[],
+    sourceName: string,
+  ): string | undefined {
+    const identifier = identifiers.find(
+      (id) => id.source.toLowerCase() == sourceName.toLowerCase() && id.type == 'uri',
+    );
+    return identifier != undefined ? identifier.value : undefined;
   }
 
   /**
@@ -238,9 +247,7 @@ export class MefRemoteService implements IRemoteAutocomplete {
     const language = this.translateService.getCurrentLang();
     const order: any = this.appStore.settings()?.agentLabelOrder;
     const key = language in order ? language : 'fallback';
-    const agentSources = (key === 'fallback')
-      ? order[order[key]]
-      : order[key];
+    const agentSources = key === 'fallback' ? order[order[key]] : order[key];
     return agentSources.filter((source: string) => source !== 'rero');
   }
 

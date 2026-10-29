@@ -4,21 +4,20 @@ import { inject, Injectable } from '@angular/core';
 import {
   PatronTransaction,
   PatronTransactionEvent,
-  PatronTransactionEventType
+  PatronTransactionEventType,
 } from '@app/admin/classes/patron-transaction';
 import { RouteToolService } from '@app/admin/routes/route-tool.service';
 import { TranslateService } from '@ngx-translate/core';
+import { MessageService } from '@openng/optimus-ui/api';
 import { CONFIG, RecordService } from '@rero/ng-core';
 import { AppStore, EsResult } from '@rero/shared';
-import { MessageService } from 'primeng/api';
 import { Observable, of } from 'rxjs';
 import { catchError, map, tap } from 'rxjs/operators';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class PatronTransactionService {
-
   private recordService: RecordService = inject(RecordService);
   private appStore = inject(AppStore);
   private routeToolService: RouteToolService = inject(RouteToolService);
@@ -30,22 +29,29 @@ export class PatronTransactionService {
    */
   private _buildQuery(patronPid?: string, loanPid?: string, type?: string, status?: string): string {
     const params: string[] = [];
-    if (patronPid !== undefined) { params.push(`patron.pid:${patronPid}`); }
-    if (loanPid !== undefined) { params.push(`loan.pid:${loanPid}`); }
-    if (type !== undefined) { params.push(`type:${type}`); }
-    if (status !== undefined) { params.push(`status:${status}`); }
+    if (patronPid !== undefined) {
+      params.push(`patron.pid:${patronPid}`);
+    }
+    if (loanPid !== undefined) {
+      params.push(`loan.pid:${loanPid}`);
+    }
+    if (type !== undefined) {
+      params.push(`type:${type}`);
+    }
+    if (status !== undefined) {
+      params.push(`status:${status}`);
+    }
     return params.join(' AND ');
   }
 
   private _loadPatronTransactions(query: string, sort = '-creation_date'): Observable<PatronTransaction[]> {
-    return this.recordService.getRecords(
-      'patron_transactions',
-      { query, page: 1, itemsPerPage: RecordService.MAX_REST_RESULTS_SIZE, sort }
-    ).pipe(
-      map((data: EsResult) => data.hits as any),
-      map((hits: any) => hits.total === 0 ? [] : hits.hits),
-      map((hits: any[]) => hits.map((hit: any) => new PatronTransaction(hit.metadata)))
-    );
+    return this.recordService
+      .getRecords('patron_transactions', { query, page: 1, itemsPerPage: RecordService.MAX_REST_RESULTS_SIZE, sort })
+      .pipe(
+        map((data: EsResult) => data.hits as any),
+        map((hits: any) => (hits.total === 0 ? [] : hits.hits)),
+        map((hits: any[]) => hits.map((hit: any) => new PatronTransaction(hit.metadata))),
+      );
   }
 
   /**
@@ -53,11 +59,13 @@ export class PatronTransactionService {
    */
   patronTransactionsByLoan(loanPid: string, type?: string, status?: string): Observable<PatronTransaction[]> {
     const query = this._buildQuery(undefined, loanPid, type, status);
-    return this.recordService.getRecords('patron_transactions', { query, page: 1, itemsPerPage: RecordService.MAX_REST_RESULTS_SIZE }).pipe(
-      map((data: EsResult) => data.hits as any),
-      map((hits: any) => hits.total === 0 ? [] : hits.hits),
-      map((hits: any[]) => hits.map((hit: any) => new PatronTransaction(hit.metadata)))
-    );
+    return this.recordService
+      .getRecords('patron_transactions', { query, page: 1, itemsPerPage: RecordService.MAX_REST_RESULTS_SIZE })
+      .pipe(
+        map((data: EsResult) => data.hits as any),
+        map((hits: any) => (hits.total === 0 ? [] : hits.hits)),
+        map((hits: any[]) => hits.map((hit: any) => new PatronTransaction(hit.metadata))),
+      );
   }
 
   /**
@@ -72,9 +80,9 @@ export class PatronTransactionService {
    * Load a single patron transaction by pid
    */
   loadTransaction(pid: string): Observable<PatronTransaction> {
-    return this.recordService.getRecord('patron_transactions', pid).pipe(
-      map((data: any) => new PatronTransaction(data.metadata))
-    );
+    return this.recordService
+      .getRecord('patron_transactions', pid)
+      .pipe(map((data: any) => new PatronTransaction(data.metadata)));
   }
 
   /**
@@ -82,11 +90,13 @@ export class PatronTransactionService {
    */
   loadTransactionHistory(transaction: PatronTransaction): Observable<any> {
     const query = `parent.pid:${transaction.pid}`;
-    return this.recordService.getRecords('patron_transaction_events', { query, page: 1, itemsPerPage: RecordService.MAX_REST_RESULTS_SIZE }).pipe(
-      map((data: EsResult) => data.hits as any),
-      map((hits: any) => hits.total === 0 ? [] : hits.hits),
-      map((hits: any[]) => hits.map((hit: any) => new PatronTransactionEvent(hit.metadata)))
-    );
+    return this.recordService
+      .getRecords('patron_transaction_events', { query, page: 1, itemsPerPage: RecordService.MAX_REST_RESULTS_SIZE })
+      .pipe(
+        map((data: EsResult) => data.hits as any),
+        map((hits: any) => (hits.total === 0 ? [] : hits.hits)),
+        map((hits: any[]) => hits.map((hit: any) => new PatronTransactionEvent(hit.metadata))),
+      );
   }
 
   // PatronTransaction API methods ================================================================
@@ -94,14 +104,14 @@ export class PatronTransactionService {
   private _buildTransactionEventsSkeleton(transaction: PatronTransaction): any {
     return {
       parent: {
-        $ref: this.routeToolService.apiService.getRefEndpoint('patron_transactions', transaction.pid)
+        $ref: this.routeToolService.apiService.getRefEndpoint('patron_transactions', transaction.pid),
       },
       operator: {
-        $ref: this.routeToolService.apiService.getRefEndpoint('patrons', this.appStore.user().patronLibrarian.pid)
+        $ref: this.routeToolService.apiService.getRefEndpoint('patrons', this.appStore.user().patronLibrarian.pid),
       },
       library: {
-        $ref: this.routeToolService.apiService.getRefEndpoint('libraries', this.appStore.currentLibraryPid())
-      }
+        $ref: this.routeToolService.apiService.getRefEndpoint('libraries', this.appStore.currentLibraryPid()),
+      },
     };
   }
 
@@ -136,14 +146,15 @@ export class PatronTransactionService {
           severity: 'success',
           summary: this.translateService.instant('Patron'),
           detail: this.translateService.instant('{{ type }} registered', { type: translateType }),
-          life: CONFIG.MESSAGE_LIFE
+          life: CONFIG.MESSAGE_LIFE,
         });
       }),
       map(() => void 0),
       catchError((error) => {
-        const errorMessage = (Object.hasOwn(error, 'message') && Object.hasOwn(error.message(), 'message'))
-          ? error.message.message
-          : 'Server error :: ' + (error.title || error.toString());
+        const errorMessage =
+          Object.hasOwn(error, 'message') && Object.hasOwn(error.message(), 'message')
+            ? error.message.message
+            : 'Server error :: ' + (error.title || error.toString());
         const message = '[' + error.status + ' - ' + error.statusText + '] ' + errorMessage;
         const translateType = this.translateService.instant(record.type);
         this.messageService.add({
@@ -151,10 +162,10 @@ export class PatronTransactionService {
           summary: this.translateService.instant('{{ type }} creation failed!', { type: translateType }),
           detail: message,
           sticky: true,
-          closable: true
+          closable: true,
         });
         return of(void 0);
-      })
+      }),
     );
   }
 }

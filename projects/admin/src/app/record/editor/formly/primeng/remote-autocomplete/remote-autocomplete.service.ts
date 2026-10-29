@@ -1,19 +1,19 @@
 // SPDX-FileCopyrightText: Fondation RERO+
 // SPDX-License-Identifier: AGPL-3.0-or-later
 import { Injectable } from '@angular/core';
-import { IRemoteAutocomplete } from './remote/i-remote-autocomplete';
-import { IQueryOptions, ISuggestionItem, IRemoteAutocomplete as NgCoreIRemoteAutocomplete } from '@rero/ng-core';
+import { IQueryOptions, ISuggestionItem, IRemoteAutocomplete as NgCoreIRemoteAutocomplete } from '@rero/ng-core/editor';
 import { Observable } from 'rxjs';
+
+import { IRemoteAutocomplete } from './remote/i-remote-autocomplete';
 
 export class IRemotes {
   [key: string]: IRemoteAutocomplete;
 }
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class RemoteAutocompleteService implements NgCoreIRemoteAutocomplete {
-
   private remotes: IRemotes = {};
 
   addRemote(remote: IRemoteAutocomplete): void {

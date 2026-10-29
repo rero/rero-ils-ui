@@ -2,16 +2,16 @@
 // SPDX-FileCopyrightText: UCLouvain
 // SPDX-License-Identifier: AGPL-3.0-or-later
 import { NgClass } from '@angular/common';
-import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
+import { Component, input, output } from '@angular/core';
 import { RouterLink } from '@angular/router';
+import { Bind } from '@openng/optimus-ui/bind';
+import { Button, ButtonSeverity } from '@openng/optimus-ui/button';
+import { Tooltip } from '@openng/optimus-ui/tooltip';
 import { Nl2brPipe } from '@rero/ng-core';
-import { Bind } from 'primeng/bind';
-import { Button, ButtonSeverity } from 'primeng/button';
-import { Tooltip } from 'primeng/tooltip';
 
 @Component({
-    selector: 'shared-action-button',
-    template: `
+  selector: 'shared-action-button',
+  template: `
     @if (!disabled()) {
       @if (routerLink()?.length > 0) {
         <p-button
@@ -23,8 +23,7 @@ import { Tooltip } from 'primeng/tooltip';
           [outlined]="outlined()"
           size="small"
           [routerLink]="routerLink()"
-          [queryParams]="queryParams()"
-        />
+          [queryParams]="queryParams()" />
       } @else {
         <p-button
           [label]="label()"
@@ -34,8 +33,7 @@ import { Tooltip } from 'primeng/tooltip';
           [class]="class()"
           [outlined]="outlined()"
           size="small"
-          (onClick)="onClick($event)"
-        />
+          (onClick)="onClick($event)" />
       }
     } @else {
       <p-button
@@ -50,15 +48,13 @@ import { Tooltip } from 'primeng/tooltip';
         tooltipPosition="top"
         [tooltipDisabled]="message() ? false : true"
         size="small"
-        (onClick)="onClick($event)"
-      />
+        (onClick)="onClick($event)" />
       <ng-template #tooltipContent>
         <span [innerHTML]="message() | nl2br"></span>
       </ng-template>
     }
   `,
-    imports: [Bind, Button, Tooltip, RouterLink, NgClass, Nl2brPipe],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  imports: [Bind, Button, Tooltip, RouterLink, NgClass, Nl2brPipe],
 })
 export class ActionButtonComponent {
   label = input<string>();

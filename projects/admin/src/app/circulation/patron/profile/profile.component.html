@@ -2,46 +2,44 @@
 SPDX-FileCopyrightText: Fondation RERO+
 SPDX-License-Identifier: AGPL-3.0-or-later
 -->
-@defer(when patron() !== undefined) {
+@defer (when patron() !== undefined) {
   <dl class="metadata">
-    <dt translate>Username</dt>
+    <dt>{{ 'Username' | translate }}</dt>
     <dd>
       {{ $any(patron()).username }}
     </dd>
-    <dt translate>Street</dt>
+    <dt>{{ 'Street' | translate }}</dt>
     <dd>
       {{ $any(patron()).street }}
     </dd>
-    <dt translate>City</dt>
-    <dd>
-      {{ $any(patron()).postal_code }} {{ $any(patron()).city }}
-    </dd>
+    <dt>{{ 'City' | translate }}</dt>
+    <dd>{{ $any(patron()).postal_code }} {{ $any(patron()).city }}</dd>
     @if ($any(patron()).country) {
-      <dt translate>Country</dt>
+      <dt>{{ 'Country' | translate }}</dt>
       <dd>
         {{ 'country_' + $any(patron()).country | translate }}
       </dd>
     }
     @if ($any(patron()).home_phone) {
-      <dt translate>Home phone number</dt>
+      <dt>{{ 'Home phone number' | translate }}</dt>
       <dd>
         {{ $any(patron()).home_phone }}
       </dd>
     }
     @if ($any(patron()).business_phone) {
-      <dt translate>Business phone number</dt>
+      <dt>{{ 'Business phone number' | translate }}</dt>
       <dd>
         {{ $any(patron()).business_phone }}
       </dd>
     }
     @if ($any(patron()).mobile_phone) {
-      <dt translate>Mobile phone</dt>
+      <dt>{{ 'Mobile phone' | translate }}</dt>
       <dd>
         {{ $any(patron()).mobile_phone }}
       </dd>
     }
     @if ($any(patron()).other_phone) {
-      <dt translate>Other phone</dt>
+      <dt>{{ 'Other phone' | translate }}</dt>
       <dd>
         {{ $any(patron()).other_phone }}
       </dd>
@@ -53,36 +51,37 @@ SPDX-License-Identifier: AGPL-3.0-or-later
       </dd>
     }
     @if ($any(patron()).source) {
-      <dt translate>Source</dt>
+      <dt>{{ 'Source' | translate }}</dt>
       <dd>
         {{ $any(patron()).source }}
       </dd>
     }
     @if ($any(patron()).local_code) {
-      <dt translate>Local code</dt>
+      <dt>{{ 'Local code' | translate }}</dt>
       <dd>
         {{ $any(patron()).local_code }}
       </dd>
     }
-    <dt translate>Keep history</dt>
+    <dt>{{ 'Keep history' | translate }}</dt>
     <dd>
-      <i [ngClass]="$any(patron()).keep_history ? 'fa-solid fa-check text-success' : 'fa-solid fa-xmark text-error'"
+      <i
+        [ngClass]="$any(patron()).keep_history ? 'fa-solid fa-check text-success' : 'fa-solid fa-xmark text-error'"
         aria-hidden="true">
       </i>
     </dd>
   </dl>
 
   @if ($any(patron()).second_address) {
-    <h4 class="ui:mt-4" translate>Second address</h4>
+    <h4 class="ui:mt-4">{{ 'Second address' | translate }}</h4>
     <dl class="metadata">
       @if ($any(patron()).second_address.street) {
-        <dt translate>Street</dt>
+        <dt>{{ 'Street' | translate }}</dt>
         <dd>
           {{ $any(patron()).second_address.street }}
         </dd>
       }
-      @if ($any(patron()).second_address.postal_code ||  $any(patron()).second_address.city) {
-        <dt translate>City</dt>
+      @if ($any(patron()).second_address.postal_code || $any(patron()).second_address.city) {
+        <dt>{{ 'City' | translate }}</dt>
         <dd>
           @if ($any(patron()).second_address.postal_code) {
             {{ $any(patron()).second_address.postal_code }}
@@ -93,7 +92,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
         </dd>
       }
       @if ($any(patron()).second_address.country) {
-        <dt translate>Country</dt>
+        <dt>{{ 'Country' | translate }}</dt>
         <dd>
           {{ 'country_' + $any(patron()).second_address.country | translate }}
         </dd>
@@ -102,45 +101,45 @@ SPDX-License-Identifier: AGPL-3.0-or-later
   }
 
   @if ($any(patron()).isLibrarian) {
-    <h4 class="ui:mt-4" translate>Librarian Information</h4>
+    <h4 class="ui:mt-4">{{ 'Librarian Information' | translate }}</h4>
     <dl class="metadata">
-      <dt translate>Library</dt>
+      <dt>{{ 'Library' | translate }}</dt>
       <dd>
         {{ $any(patron()).library.pid | getRecord: 'libraries' : 'field' : 'name' | async }}
       </dd>
     </dl>
   }
   @if ($any(patron()).patron) {
-    <h4 class="ui:mt-4" translate>Patron Information</h4>
+    <h4 class="ui:mt-4">{{ 'Patron Information' | translate }}</h4>
     <dl class="metadata">
       <dt>
         <span [ngPlural]="$any(patron()).roles.length">
-          <ng-template ngPluralCase="0" translate>Role</ng-template>
-          <ng-template ngPluralCase="=1" translate>Role</ng-template>
-          <ng-template ngPluralCase="other" translate>Roles</ng-template>
+          <ng-template ngPluralCase="0">{{ 'Role' | translate }}</ng-template>
+          <ng-template ngPluralCase="=1">{{ 'Role' | translate }}</ng-template>
+          <ng-template ngPluralCase="other">{{ 'Roles' | translate }}</ng-template>
         </span>
       </dt>
       <dd>
-        @for (role of $any(patron()).roles; track $index; let last=$last) {
+        @for (role of $any(patron()).roles; track $index; let last = $last) {
           {{ role | translate }}{{ last ? '' : ', ' }}
         }
       </dd>
-      <dt translate>Patron's barcodes or cards number</dt>
+      <dt>{{ "Patron's barcodes or cards number" | translate }}</dt>
       <dd>
         <a [routerLink]="['/circulation', 'patron', $any(patron()).patron.barcode[0]]">
-          {{ $any(patron()).patron.barcode | join: ', '}}
+          {{ $any(patron()).patron.barcode | join: ', ' }}
         </a>
       </dd>
-      <dt translate>Type</dt>
+      <dt>{{ 'Type' | translate }}</dt>
       <dd>
         {{ $any(patron()).patron.type.pid | getRecord: 'patron_types' : 'field' : 'name' | async }}
       </dd>
-      <dt translate>Account expiration</dt>
+      <dt>{{ 'Account expiration' | translate }}</dt>
       <dd>
-        {{ $any(patron()).patron.expiration_date | dateTranslate:'mediumDate' }}
+        {{ $any(patron()).patron.expiration_date | dateTranslate: 'mediumDate' }}
       </dd>
       @if ($any(patron()).libraries && $any(patron()).libraries.length > 0) {
-        <dt translate>Affiliation libraries</dt>
+        <dt>{{ 'Affiliation libraries' | translate }}</dt>
         <dd>
           <ul class="ui:list-none">
             @for (library of $any(patron()).libraries; track $index) {
@@ -156,16 +155,14 @@ SPDX-License-Identifier: AGPL-3.0-or-later
     <div class="ui:flex ui:gap-1 ui:mt-4">
       <p-button
         id="profile-change-password-button"
-        [label]="'Change Password'|translate"
-        (onClick)="updatePatronPassword(patron())"
-      />
+        [label]="'Change Password' | translate"
+        (onClick)="updatePatronPassword(patron())" />
       <p-button
         id="profile-edit-button"
         [label]="'Edit' | translate"
-        [routerLink]="['/records','patrons','edit', $any(patron()).pid]"
-      />
+        [routerLink]="['/records', 'patrons', 'edit', $any(patron()).pid]" />
     </div>
   }
 } @placeholder {
-  <div class="ui:font-bold ui:mx-2 ui:my-6" translate>Loading in progress</div>
+  <div class="ui:font-bold ui:mx-2 ui:my-6">{{ 'Loading in progress' | translate }}</div>
 }

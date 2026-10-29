@@ -4,15 +4,13 @@ import { Location } from '@angular/common';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ReactiveFormsModule, UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
 import { TranslateService } from '@ngx-translate/core';
+import { MessageService } from '@openng/optimus-ui/api';
 import { HttpPendingService } from '@rero/ng-core';
-import { MessageService } from 'primeng/api';
 import { of, throwError } from 'rxjs';
 import { afterEach } from 'vitest';
+
 import { UserApiService } from '../../api/user-api.service';
-import {
-  fieldPasswordMatchValidator,
-  PatronProfilePasswordComponent
-} from './patron-profile-password.component';
+import { fieldPasswordMatchValidator, PatronProfilePasswordComponent } from './patron-profile-password.component';
 
 describe('PatronProfilePasswordComponent', () => {
   let component: PatronProfilePasswordComponent;
@@ -24,7 +22,7 @@ describe('PatronProfilePasswordComponent', () => {
   const httpPendingServiceSpy = { isPending: vi.fn() };
   const userApiServiceSpy = {
     updatePassword: vi.fn(),
-    validatePassword: vi.fn()
+    validatePassword: vi.fn(),
   };
 
   beforeEach(async () => {
@@ -39,8 +37,8 @@ describe('PatronProfilePasswordComponent', () => {
         { provide: MessageService, useValue: messageServiceSpy },
         { provide: TranslateService, useValue: translateServiceSpy },
         { provide: HttpPendingService, useValue: httpPendingServiceSpy },
-        { provide: UserApiService, useValue: userApiServiceSpy }
-      ]
+        { provide: UserApiService, useValue: userApiServiceSpy },
+      ],
     })
       .overrideComponent(PatronProfilePasswordComponent, {
         set: {
@@ -52,18 +50,21 @@ describe('PatronProfilePasswordComponent', () => {
               <input id="confirmPassword" formControlName="confirmPassword">
               <button id="save" [disabled]="!form.valid || httpPending.isPending()">Save</button>
             </form>
-          `
-        }
+          `,
+        },
       })
       .compileComponents();
 
     fixture = TestBed.createComponent(PatronProfilePasswordComponent);
     component = fixture.componentInstance;
-    component.form = new UntypedFormGroup({
-      password: new UntypedFormControl('', Validators.required),
-      newPassword: new UntypedFormControl('', [Validators.required, Validators.minLength(8)]),
-      confirmPassword: new UntypedFormControl('', [Validators.required, Validators.minLength(8)])
-    }, fieldPasswordMatchValidator);
+    component.form = new UntypedFormGroup(
+      {
+        password: new UntypedFormControl('', Validators.required),
+        newPassword: new UntypedFormControl('', [Validators.required, Validators.minLength(8)]),
+        confirmPassword: new UntypedFormControl('', [Validators.required, Validators.minLength(8)]),
+      },
+      fieldPasswordMatchValidator,
+    );
     fixture.detectChanges();
   });
 
@@ -76,10 +77,12 @@ describe('PatronProfilePasswordComponent', () => {
   }
 
   function returnPasswordError(message: string): void {
-    userApiServiceSpy.updatePassword.mockReturnValue(throwError(() => ({
-      message: 'Validation error.',
-      error: { errors: [{ field: 'password', message }] }
-    })));
+    userApiServiceSpy.updatePassword.mockReturnValue(
+      throwError(() => ({
+        message: 'Validation error.',
+        error: { errors: [{ field: 'password', message }] },
+      })),
+    );
   }
 
   function editPasswordField(field: string, value: string): void {
@@ -91,23 +94,20 @@ describe('PatronProfilePasswordComponent', () => {
   it('should attach a same-password error to the new password field', () => {
     setPasswords('Current123', 'Current123', 'Current123');
     returnPasswordError('Password is the same.');
-    const focusSpy = vi.spyOn(
-      fixture.nativeElement.querySelector('#newPassword') as HTMLInputElement,
-      'focus'
-    );
+    const focusSpy = vi.spyOn(fixture.nativeElement.querySelector('#newPassword') as HTMLInputElement, 'focus');
 
     component.submit();
 
     expect(component.form.get('password').errors).toBeNull();
     expect(component.form.get('newPassword').errors?.invalid).toEqual({
-      message: 'Password is the same.'
+      message: 'Password is the same.',
     });
     expect(focusSpy).toHaveBeenCalled();
   });
 
   it.each([
     ['newPassword', 'confirmPassword'],
-    ['confirmPassword', 'newPassword']
+    ['confirmPassword', 'newPassword'],
   ])('should clear the same-password error when %s changes', (field, matchingField) => {
     setPasswords('Current123', 'Current123', 'Current123');
     returnPasswordError('Password is the same.');
@@ -132,7 +132,7 @@ describe('PatronProfilePasswordComponent', () => {
       ...newPasswordControl.errors,
       required: true,
       minlength: { requiredLength: 8, actualLength: 0 },
-      validatePassword: true
+      validatePassword: true,
     });
 
     component.form.get('confirmPassword').setValue('Different123');
@@ -152,17 +152,20 @@ describe('PatronProfilePasswordComponent', () => {
     component.form.get('confirmPassword').setValue('Another123');
 
     expect(component.form.get('password').errors?.invalid).toEqual({
-      message: 'Invalid password.'
+      message: 'Invalid password.',
     });
     expect(component.form.get('newPassword').errors).toBeNull();
   });
 
   it.each([
     ['missing error details', { message: 'Validation error.', error: {} }],
-    ['an unmapped field', {
-      message: 'Validation error.',
-      error: { errors: [{ field: 'unknown', message: 'Unexpected error.' }] }
-    }]
+    [
+      'an unmapped field',
+      {
+        message: 'Validation error.',
+        error: { errors: [{ field: 'unknown', message: 'Unexpected error.' }] },
+      },
+    ],
   ])('should show a generic form error for %s', (_scenario, errorResponse) => {
     setPasswords('Current123', 'Different123', 'Different123');
     userApiServiceSpy.updatePassword.mockReturnValue(throwError(() => errorResponse));
@@ -173,7 +176,7 @@ describe('PatronProfilePasswordComponent', () => {
       severity: 'error',
       summary: 'Error',
       detail: 'The form contains errors.',
-      closable: true
+      closable: true,
     });
   });
 });

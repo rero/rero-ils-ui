@@ -7,30 +7,24 @@ import { RecordService } from '@rero/ng-core';
 import { AppStore } from '@rero/shared';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
+
 import { CircPolicy } from '../classes/circ-policy';
 import { LoanState } from '../classes/loans';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class LoanService {
-
   private recordService: RecordService = inject(RecordService);
   private httpClient: HttpClient = inject(HttpClient);
   private appStore = inject(AppStore);
 
   // SERVICE CONSTANTS ========================================================
   /** Statuses of a borrow loan */
-  static borrowStatuses = [
-    LoanState.ITEM_ON_LOAN
-  ];
+  static borrowStatuses = [LoanState.ITEM_ON_LOAN];
 
   /** Statuses of a request loan */
-  static requestStatuses = [
-    LoanState.ITEM_AT_DESK,
-    LoanState.PENDING,
-    LoanState.ITEM_IN_TRANSIT_FOR_PICKUP
-  ];
+  static requestStatuses = [LoanState.ITEM_AT_DESK, LoanState.PENDING, LoanState.ITEM_IN_TRANSIT_FOR_PICKUP];
 
   // SERVICES FUNCTIONS =======================================================
   /**
@@ -39,10 +33,7 @@ export class LoanService {
    * @returns Observable about borrowed loans
    */
   borrowedBy$(itemPid: string): Observable<any> {
-    return this.loans$(itemPid, LoanService.borrowStatuses)
-      .pipe(
-        map((results: any) => results.hits.hits)
-      );
+    return this.loans$(itemPid, LoanService.borrowStatuses).pipe(map((results: any) => results.hits.hits));
   }
 
   /**
@@ -51,10 +42,7 @@ export class LoanService {
    * @returns Observable about requested loans
    */
   requestedBy$(itemPid: string): Observable<any> {
-    return this.loans$(itemPid, LoanService.requestStatuses)
-      .pipe(
-        map((results: any) => results.hits.hits)
-    );
+    return this.loans$(itemPid, LoanService.requestStatuses).pipe(map((results: any) => results.hits.hits));
   }
 
   /**
@@ -64,8 +52,9 @@ export class LoanService {
    */
   canCancelRequest(loan: any): boolean {
     // TODO: To increase the complexity, it is better to implement a backend api
-    return [LoanState.PENDING, LoanState.ITEM_IN_TRANSIT_FOR_PICKUP, LoanState.ITEM_AT_DESK]
-      .some((element) => element === loan.metadata.state)
+    return [LoanState.PENDING, LoanState.ITEM_IN_TRANSIT_FOR_PICKUP, LoanState.ITEM_AT_DESK].some(
+      (element) => element === loan.metadata.state,
+    );
   }
 
   /**
@@ -77,19 +66,21 @@ export class LoanService {
    */
   cancelLoan(itemPid: string, loanPid: string, transactionLibraryPid: string): Observable<any> {
     const url = '/api/item/cancel_item_request';
-    return this.httpClient.post<any>(url, {
-      item_pid: itemPid,
-      pid: loanPid,
-      transaction_library_pid: transactionLibraryPid,
-      // TODO: Fix this with multiple patron
-      transaction_user_pid: this.appStore.user()?.patrons[0].pid
-    }).pipe(
-      map(data => {
-        const itemData = data.metadata;
-        itemData.loan = data.action_applied.cancel;
-        return itemData;
+    return this.httpClient
+      .post<any>(url, {
+        item_pid: itemPid,
+        pid: loanPid,
+        transaction_library_pid: transactionLibraryPid,
+        // TODO: Fix this with multiple patron
+        transaction_user_pid: this.appStore.user()?.patrons[0].pid,
       })
-    );
+      .pipe(
+        map((data) => {
+          const itemData = data.metadata;
+          itemData.loan = data.action_applied.cancel;
+          return itemData;
+        }),
+      );
   }
 
   /**
@@ -98,8 +89,9 @@ export class LoanService {
    */
   canUpdateRequestPickupLocation(transaction: any): boolean {
     // TODO: To increase the complexity, it is better to implement a backend api
-    return [LoanState.PENDING, LoanState.ITEM_IN_TRANSIT_FOR_PICKUP]
-      .some((element) => element === transaction.metadata.state)
+    return [LoanState.PENDING, LoanState.ITEM_IN_TRANSIT_FOR_PICKUP].some(
+      (element) => element === transaction.metadata.state,
+    );
   }
 
   /**
@@ -112,7 +104,7 @@ export class LoanService {
     const url = '/api/item/update_loan_pickup_location';
     return this.httpClient.post<any>(url, {
       pid: loanPid,
-      pickup_location_pid: pickupLocationPid
+      pickup_location_pid: pickupLocationPid,
     });
   }
 
@@ -137,8 +129,14 @@ export class LoanService {
     let query = `item_pid.value:${itemPid}`;
     if (statuses !== undefined) {
       const states = statuses.join(' OR state:');
-      query +=  ` AND (state:${states})`;
+      query += ` AND (state:${states})`;
     }
-    return this.recordService.getRecords('loans', { query, page: 1, itemsPerPage: 100, aggregationsFilters: [], sort: 'created' });
+    return this.recordService.getRecords('loans', {
+      query,
+      page: 1,
+      itemsPerPage: 100,
+      aggregationsFilters: [],
+      sort: 'created',
+    });
   }
 }

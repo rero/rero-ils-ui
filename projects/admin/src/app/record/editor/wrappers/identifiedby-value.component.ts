@@ -1,20 +1,21 @@
 // SPDX-FileCopyrightText: Fondation RERO+
 // SPDX-License-Identifier: AGPL-3.0-or-later
-import { ChangeDetectionStrategy, Component, inject, OnInit } from '@angular/core';
-import { _, TranslatePipe } from "@ngx-translate/core";
+import { AsyncPipe } from '@angular/common';
+import { Component, inject, OnInit } from '@angular/core';
+import { RouterLink } from '@angular/router';
 import { FieldWrapper } from '@ngx-formly/core';
+import { _, TranslatePipe } from '@ngx-translate/core';
 import { RecordService } from '@rero/ng-core';
 import issn from 'issn';
 import { combineLatest, Observable, of } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
 import { isbn } from 'simple-isbn';
+
 import { IdentifierTypes } from '../../../classes/identifiers';
-import { RouterLink } from '@angular/router';
-import { AsyncPipe } from '@angular/common';
 
 @Component({
-    selector: 'admin-identifiedby-value',
-    template: `
+  selector: 'admin-identifiedby-value',
+  template: `
     <ng-container #fieldComponent></ng-container>
     @if (message$ | async; as message) {
       <div class="text-error ui:block">
@@ -30,11 +31,9 @@ import { AsyncPipe } from '@angular/common';
       </div>
     }
   `,
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [RouterLink, AsyncPipe, TranslatePipe]
+  imports: [RouterLink, AsyncPipe, TranslatePipe],
 })
 export class IdentifiedbyValueComponent extends FieldWrapper implements OnInit {
-
   private recordService: RecordService = inject(RecordService);
 
   /** Message observable */
@@ -65,37 +64,39 @@ export class IdentifiedbyValueComponent extends FieldWrapper implements OnInit {
    * @param obs - Observable
    */
   private _initializeObservableMessage(obs: Observable<any>): void {
-    this.message$ = obs.pipe(map(([vValue, vType]) => {
-      switch (vType) {
-        case 'bf:Ean':
-          if (vValue.indexOf('-') > -1) {
-            return _('Should not contain hyphens.');
-          }
-          if (vValue && !isbn.isValidIsbn(vValue)) {
-            return _('This EAN is not valid.');
-          }
-          break;
-        case 'bf:Isbn':
-          if (vValue.indexOf('-') > -1) {
-            return _('Do not enter the hyphens.');
-          }
-          if (vValue && !isbn.isValidIsbn(vValue)) {
-            return _('This ISBN is not valid.');
-          }
-          break;
-        case 'bf:Issn':
-          if (vValue && !issn(vValue)) {
-            return _('This ISSN is not valid.');
-          }
-          break;
-        case 'bf:IssnL':
-          if (vValue && !issn(vValue)) {
-            return _('This ISSN-L is not valid.');
-          }
-          break;
-      }
-      return null;
-    }));
+    this.message$ = obs.pipe(
+      map(([vValue, vType]) => {
+        switch (vType) {
+          case 'bf:Ean':
+            if (vValue.indexOf('-') > -1) {
+              return _('Should not contain hyphens.');
+            }
+            if (vValue && !isbn.isValidIsbn(vValue)) {
+              return _('This EAN is not valid.');
+            }
+            break;
+          case 'bf:Isbn':
+            if (vValue.indexOf('-') > -1) {
+              return _('Do not enter the hyphens.');
+            }
+            if (vValue && !isbn.isValidIsbn(vValue)) {
+              return _('This ISBN is not valid.');
+            }
+            break;
+          case 'bf:Issn':
+            if (vValue && !issn(vValue)) {
+              return _('This ISSN is not valid.');
+            }
+            break;
+          case 'bf:IssnL':
+            if (vValue && !issn(vValue)) {
+              return _('This ISSN-L is not valid.');
+            }
+            break;
+        }
+        return null;
+      }),
+    );
   }
 
   /**
@@ -104,29 +105,31 @@ export class IdentifiedbyValueComponent extends FieldWrapper implements OnInit {
    * @param obs - The observable to listen to detect change on identifiers
    */
   private _initializeObservableAsyncRecord(obs: Observable<any>): void {
-    this.asyncRecord$ = obs.pipe(switchMap(([vValue, vType]) => {
-      if (vValue == null) {
-        return of(null);
-      }
-      vValue = vValue.trim();
-      if (!vValue) {
-        return of(null);
-      }
-      const identifiersTypesToCheck = [];
-      switch (vType) {
-        case 'bf:Ean':
-        case 'bf:Isbn':
-          identifiersTypesToCheck.push(...[IdentifierTypes.EAN, IdentifierTypes.ISBN]);
-          break;
-        case 'bf:Issn':
-        case 'bf:IssnL':
-          identifiersTypesToCheck.push(...[IdentifierTypes.ISSN, IdentifierTypes.L_ISSN]);
-          break;
-      }
-      return (identifiersTypesToCheck.length > 0)
-        ? this._queryCheck(identifiersTypesToCheck.map(type => `(${type})${vValue}`))
-        : of(null);
-    }));
+    this.asyncRecord$ = obs.pipe(
+      switchMap(([vValue, vType]) => {
+        if (vValue == null) {
+          return of(null);
+        }
+        vValue = vValue.trim();
+        if (!vValue) {
+          return of(null);
+        }
+        const identifiersTypesToCheck = [];
+        switch (vType) {
+          case 'bf:Ean':
+          case 'bf:Isbn':
+            identifiersTypesToCheck.push(...[IdentifierTypes.EAN, IdentifierTypes.ISBN]);
+            break;
+          case 'bf:Issn':
+          case 'bf:IssnL':
+            identifiersTypesToCheck.push(...[IdentifierTypes.ISSN, IdentifierTypes.L_ISSN]);
+            break;
+        }
+        return identifiersTypesToCheck.length > 0
+          ? this._queryCheck(identifiersTypesToCheck.map((type) => `(${type})${vValue}`))
+          : of(null);
+      }),
+    );
   }
 
   /**
@@ -139,14 +142,10 @@ export class IdentifiedbyValueComponent extends FieldWrapper implements OnInit {
       .getRecords('documents', { page: 1, itemsPerPage: 1, preFilters: { identifiers: identifierValues } })
       .pipe(
         map((result: any) => {
-          return (
-            result.hits.total > 0
-            && result.hits.hits[0].metadata.pid !== this.recordPid
-          )
+          return result.hits.total > 0 && result.hits.hits[0].metadata.pid !== this.recordPid
             ? result.hits.hits[0].metadata
             : null;
-        })
+        }),
       );
   }
-
 }

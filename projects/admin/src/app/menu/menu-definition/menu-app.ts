@@ -1,9 +1,10 @@
 // SPDX-FileCopyrightText: Fondation RERO+
 // SPDX-FileCopyrightText: UCLouvain
 // SPDX-License-Identifier: AGPL-3.0-or-later
-import { PERMISSIONS, PERMISSION_OPERATOR } from "@rero/shared";
-import { MenuItem } from "primeng/api";
-import { MENU_IDS } from "./menu-ids";
+import { MenuItem } from '@openng/optimus-ui/api';
+import { PERMISSION_OPERATOR, PERMISSIONS } from '@rero/shared';
+
+import { MENU_IDS } from './menu-ids';
 
 export const MENU_APP: MenuItem[] = [
   /** USER MENU */
@@ -21,8 +22,8 @@ export const MENU_APP: MenuItem[] = [
         routerLink: ['/', 'circulation'],
         shortcut: 'c',
         access: {
-          permissions: [PERMISSIONS.CIRC_ADMIN]
-        }
+          permissions: [PERMISSIONS.CIRC_ADMIN],
+        },
       },
       {
         label: 'Requests',
@@ -32,8 +33,8 @@ export const MENU_APP: MenuItem[] = [
         routerLink: ['/', 'circulation', 'requests'],
         shortcut: 'r',
         access: {
-          permissions: [PERMISSIONS.CIRC_ADMIN]
-        }
+          permissions: [PERMISSIONS.CIRC_ADMIN],
+        },
       },
       {
         label: 'ILL requests',
@@ -46,11 +47,11 @@ export const MENU_APP: MenuItem[] = [
           page: '1',
           size: '10',
           simple: '1',
-          library: '$currentLibrary'
+          library: '$currentLibrary',
         },
         access: {
-          permissions: [PERMISSIONS.ILL_ACCESS]
-        }
+          permissions: [PERMISSIONS.ILL_ACCESS],
+        },
       },
       {
         label: 'Users',
@@ -62,12 +63,12 @@ export const MENU_APP: MenuItem[] = [
           q: '',
           page: '1',
           size: '10',
-          simple: '1'
+          simple: '1',
         },
         shortcut: 'p',
         access: {
-          permissions: [PERMISSIONS.PTRN_ACCESS]
-        }
+          permissions: [PERMISSIONS.PTRN_ACCESS],
+        },
       },
       {
         label: 'Exhibition/course',
@@ -81,11 +82,11 @@ export const MENU_APP: MenuItem[] = [
           size: '10',
           sort: 'title',
           simple: '1',
-          library: '$currentLibrary'
+          library: '$currentLibrary',
         },
         access: {
-          permissions: [PERMISSIONS.COLL_ACCESS]
-        }
+          permissions: [PERMISSIONS.COLL_ACCESS],
+        },
       },
       {
         label: 'Current loans',
@@ -98,13 +99,13 @@ export const MENU_APP: MenuItem[] = [
           page: '1',
           size: '10',
           simple: '1',
-          owner_library: '$currentLibrary'
+          owner_library: '$currentLibrary',
         },
         access: {
-          permissions: [PERMISSIONS.CIRC_ADMIN]
-        }
-      }
-    ]
+          permissions: [PERMISSIONS.CIRC_ADMIN],
+        },
+      },
+    ],
   },
   /** CATALOG MENU */
   {
@@ -124,15 +125,12 @@ export const MENU_APP: MenuItem[] = [
           page: '1',
           size: '10',
           simple: '1',
-          organisation: '$currentOrganisation'
+          organisation: '$currentOrganisation',
         },
         access: {
-          permissions: [
-            PERMISSIONS.DOC_ACCESS,
-            PERMISSIONS.DOC_SEARCH
-          ],
-          operator: PERMISSION_OPERATOR.AND
-        }
+          permissions: [PERMISSIONS.DOC_ACCESS, PERMISSIONS.DOC_SEARCH],
+          operator: PERMISSION_OPERATOR.AND,
+        },
       },
       {
         label: 'Create a bibliographic record',
@@ -141,8 +139,8 @@ export const MENU_APP: MenuItem[] = [
         icon: 'fa-solid fa-file-circle-plus',
         routerLink: ['/', 'records', 'documents', 'new'],
         access: {
-          permissions: [PERMISSIONS.DOC_CREATE]
-        }
+          permissions: [PERMISSIONS.DOC_CREATE],
+        },
       },
       {
         label: 'Import from the web',
@@ -153,11 +151,11 @@ export const MENU_APP: MenuItem[] = [
         queryParams: {
           q: '',
           page: '1',
-          size: '10'
+          size: '10',
         },
         access: {
-          permissions: [PERMISSIONS.DOC_CREATE]
-        }
+          permissions: [PERMISSIONS.DOC_CREATE],
+        },
       },
       {
         label: 'Entities',
@@ -168,10 +166,10 @@ export const MENU_APP: MenuItem[] = [
         queryParams: {
           q: '',
           page: '1',
-          size: '10'
-        }
-      }
-    ]
+          size: '10',
+        },
+      },
+    ],
   },
   /** ACQUISITION MENU */
   {
@@ -191,11 +189,11 @@ export const MENU_APP: MenuItem[] = [
           page: '1',
           size: '10',
           sort: 'name_asc',
-          simple: '1'
+          simple: '1',
         },
         access: {
-          permissions: [PERMISSIONS.VNDR_ACCESS]
-        }
+          permissions: [PERMISSIONS.VNDR_ACCESS],
+        },
       },
       {
         label: 'Orders',
@@ -212,8 +210,8 @@ export const MENU_APP: MenuItem[] = [
           simple: '1',
         },
         access: {
-          permissions: [PERMISSIONS.ACOR_ACCESS]
-        }
+          permissions: [PERMISSIONS.ACOR_ACCESS],
+        },
       },
       {
         label: 'Budgets',
@@ -228,8 +226,8 @@ export const MENU_APP: MenuItem[] = [
           simple: '1',
         },
         access: {
-          permissions: [PERMISSIONS.BUDG_ACCESS]
-        }
+          permissions: [PERMISSIONS.BUDG_ACCESS],
+        },
       },
       {
         label: 'Accounts',
@@ -238,8 +236,8 @@ export const MENU_APP: MenuItem[] = [
         icon: 'fa-solid fa-wallet',
         routerLink: ['/', 'acquisition', 'accounts'],
         access: {
-          permissions: [PERMISSIONS.ACAC_ACCESS]
-        }
+          permissions: [PERMISSIONS.ACAC_ACCESS],
+        },
       },
       {
         label: 'Late issues',
@@ -255,10 +253,10 @@ export const MENU_APP: MenuItem[] = [
           simple: '1',
         },
         access: {
-          permissions: [PERMISSIONS.ISSUE_MANAGEMENT]
-        }
+          permissions: [PERMISSIONS.ISSUE_MANAGEMENT],
+        },
       },
-    ]
+    ],
   },
   /** REPORT & MONITORING MENU */
   {
@@ -281,8 +279,8 @@ export const MENU_APP: MenuItem[] = [
         },
         shortcut: 'i',
         access: {
-          permissions: [PERMISSIONS.ITEM_ACCESS]
-        }
+          permissions: [PERMISSIONS.ITEM_ACCESS],
+        },
       },
       {
         label: 'Fees',
@@ -296,11 +294,11 @@ export const MENU_APP: MenuItem[] = [
           size: '10',
           owning_library: '$currentLibrary',
           transaction_date: '$currentDayRange',
-          simple: '1'
+          simple: '1',
         },
         access: {
-          permissions: [PERMISSIONS.PTTR_ACCESS]
-        }
+          permissions: [PERMISSIONS.PTTR_ACCESS],
+        },
       },
       {
         label: 'Report configuration',
@@ -312,15 +310,15 @@ export const MENU_APP: MenuItem[] = [
           q: '',
           page: '1',
           size: '10',
-          library: "$currentLibrary",
-          active: "true",
-          simple: '1'
+          library: '$currentLibrary',
+          active: 'true',
+          simple: '1',
         },
         access: {
           permissions: [PERMISSIONS.STAT_CFG_ACCESS],
         },
       },
-    ]
+    ],
   },
   /** ADMIN MENU */
   {
@@ -343,8 +341,8 @@ export const MENU_APP: MenuItem[] = [
           simple: '1',
         },
         access: {
-          permissions: [PERMISSIONS.CIPO_ACCESS]
-        }
+          permissions: [PERMISSIONS.CIPO_ACCESS],
+        },
       },
       {
         label: 'Item types',
@@ -360,13 +358,13 @@ export const MENU_APP: MenuItem[] = [
           simple: '1',
         },
         access: {
-          permissions: [PERMISSIONS.ITTY_ACCESS]
-        }
+          permissions: [PERMISSIONS.ITTY_ACCESS],
+        },
       },
       {
         label: 'Patron types',
         translateLabel: 'Patron types',
-        id:MENU_IDS.APP.ADMIN.PATRON_TYPE,
+        id: MENU_IDS.APP.ADMIN.PATRON_TYPE,
         icon: 'fa-solid fa-user-tag',
         routerLink: ['/', 'records', 'patron_types'],
         queryParams: {
@@ -377,8 +375,8 @@ export const MENU_APP: MenuItem[] = [
           simple: '1',
         },
         access: {
-          permissions: [PERMISSIONS.PTTY_ACCESS]
-        }
+          permissions: [PERMISSIONS.PTTY_ACCESS],
+        },
       },
       {
         label: 'My organisation',
@@ -387,8 +385,8 @@ export const MENU_APP: MenuItem[] = [
         icon: 'fa-solid fa-sitemap',
         routerLink: ['/', 'records', 'organisations', 'detail', '$currentOrganisation'],
         access: {
-          permissions: [PERMISSIONS.ORG_ACCESS]
-        }
+          permissions: [PERMISSIONS.ORG_ACCESS],
+        },
       },
       {
         label: 'My library',
@@ -397,8 +395,8 @@ export const MENU_APP: MenuItem[] = [
         icon: 'fa-solid fa-building-columns',
         routerLink: ['/', 'records', 'libraries', 'detail', '$currentLibrary'],
         access: {
-          permissions: [PERMISSIONS.LIB_ACCESS]
-        }
+          permissions: [PERMISSIONS.LIB_ACCESS],
+        },
       },
       {
         label: 'Libraries',
@@ -414,8 +412,8 @@ export const MENU_APP: MenuItem[] = [
           simple: '1',
         },
         access: {
-          permissions: [PERMISSIONS.LIB_ACCESS]
-        }
+          permissions: [PERMISSIONS.LIB_ACCESS],
+        },
       },
       {
         label: 'Templates',
@@ -431,8 +429,8 @@ export const MENU_APP: MenuItem[] = [
           simple: '1',
         },
         access: {
-          permissions: [PERMISSIONS.TMPL_ACCESS]
-        }
+          permissions: [PERMISSIONS.TMPL_ACCESS],
+        },
       },
       {
         label: 'Permissions matrix',
@@ -441,8 +439,8 @@ export const MENU_APP: MenuItem[] = [
         icon: 'fa-solid fa-table-cells',
         routerLink: ['/', 'permissions', 'matrix'],
         access: {
-          permissions: [PERMISSIONS.PERM_MANAGEMENT]
-        }
+          permissions: [PERMISSIONS.PERM_MANAGEMENT],
+        },
       },
       {
         name: 'Migrations',
@@ -451,9 +449,9 @@ export const MENU_APP: MenuItem[] = [
         icon: 'fa-solid fa-database',
         routerLink: ['/', 'migrations', 'records', 'migrations'],
         access: {
-          permissions: [PERMISSIONS.MIG_ACCESS]
-        }
+          permissions: [PERMISSIONS.MIG_ACCESS],
+        },
       },
-    ]
-  }
-]
+    ],
+  },
+];

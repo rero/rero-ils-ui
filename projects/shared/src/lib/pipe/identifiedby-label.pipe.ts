@@ -5,7 +5,6 @@ import { Pipe, PipeTransform } from '@angular/core';
 
 @Pipe({ name: 'identifiedByLabel' })
 export class IdentifiedByLabelPipe implements PipeTransform {
-
   /**
    * Pipe transformation method.
    * Format identifiedBy as a string.
@@ -15,11 +14,10 @@ export class IdentifiedByLabelPipe implements PipeTransform {
    * @return the entity label
    */
   transform(identifiedBy: any[], types: string[] = [], separator = ', '): string | null {
-    const identifiers: any[] = (types.length && identifiedBy?.length)
-      ? identifiedBy.filter(identifier => types.includes(identifier.type))
-      : identifiedBy;
-    return identifiers
-      ? identifiers.map(data => data.value).join(separator)
-      : null;
+    const identifiers: any[] =
+      types.length && identifiedBy?.length
+        ? identifiedBy.filter((identifier) => types.includes(identifier.type))
+        : identifiedBy;
+    return identifiers ? identifiers.map((data) => data.value).join(separator) : null;
   }
 }

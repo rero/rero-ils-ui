@@ -10,8 +10,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
         class="ui:flex ui:items-center p-menubar-item-link"
         [id]="item.id"
         [routerLink]="item.routerLink"
-        [queryParams]="item.queryParams"
-      >
+        [queryParams]="item.queryParams">
         @if (item.icon) {
           <span [class]="item.icon" class="p-menubar-item-icon"></span>
         }
@@ -20,7 +19,10 @@ SPDX-License-Identifier: AGPL-3.0-or-later
           <p-badge [ngClass]="{ 'ui:ml-auto': !root, 'ui:ml-2': root }" [value]="item.badge"></p-badge>
         }
         @if (item.shortcut) {
-          <span class="ui:ml-auto ui:border ui:border-surface ui:rounded ui:bg-surface-100 ui:bg-emphasis ui:text-muted-color ui:text-xs ui:p-1">{{ item.shortcut }}</span>
+          <span
+            class="ui:ml-auto ui:border ui:border-surface ui:rounded ui:bg-surface-100 ui:bg-emphasis ui:text-muted-color ui:text-xs ui:p-1"
+            >{{ item.shortcut }}</span
+          >
         }
       </span>
     }
@@ -30,8 +32,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
         class="ui:flex ui:items-center p-menubar-item-link"
         [id]="item.id"
         [href]="item.url"
-        [target]="item.target || '_self'"
-      >
+        [target]="item.target || '_self'">
         @if (item.icon) {
           <span [class]="item.icon" class="p-menubar-item-icon"></span>
         }
@@ -40,7 +41,10 @@ SPDX-License-Identifier: AGPL-3.0-or-later
           <p-badge [ngClass]="{ 'ui:ml-auto': !root, 'ui:ml-2': root }" [value]="item.badge"></p-badge>
         }
         @if (item.shortcut) {
-          <span class="ui:ml-auto ui:border ui:border-surface ui:rounded ui:bg-surface-100 ui:bg-emphasis ui:text-muted-color ui:text-xs ui:p-1">{{ item.shortcut }}</span>
+          <span
+            class="ui:ml-auto ui:border ui:border-surface ui:rounded ui:bg-surface-100 ui:bg-emphasis ui:text-muted-color ui:text-xs ui:p-1"
+            >{{ item.shortcut }}</span
+          >
         }
       </a>
     }

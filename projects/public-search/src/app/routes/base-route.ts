@@ -5,6 +5,5 @@ import { inject } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 
 export class BaseRoute {
-
   protected translateService: TranslateService = inject(TranslateService);
 }

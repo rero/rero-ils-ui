@@ -5,13 +5,13 @@ import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
+
 import { PredictionIssue } from './holdings.service';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class EditorService {
-
   private httpClient: HttpClient = inject(HttpClient);
 
   /**
@@ -23,11 +23,11 @@ export class EditorService {
    */
   getRecordFromExternal(source: string, pid: string): Observable<any> {
     return this.httpClient.get<any>(`/api/import_${source}/${pid}`).pipe(
-      catchError(e => {
+      catchError((e) => {
         if (e.status === 404) {
           return of(null);
         }
-      })
+      }),
     );
   }
 
@@ -38,11 +38,11 @@ export class EditorService {
    * @returns an object with an issues property containing the list of samples
    */
   getHoldingPatternPreview(data: any, size = 10): Observable<PredictionIssue[]> {
-    return this.httpClient.post<any>(`/api/holding/pattern/preview`, {
-      data: data.patterns,
-      size
-    }).pipe(
-      map(result => result.issues)
-    );
+    return this.httpClient
+      .post<any>(`/api/holding/pattern/preview`, {
+        data: data.patterns,
+        size,
+      })
+      .pipe(map((result) => result.issues));
   }
 }

@@ -1,6 +1,7 @@
 // SPDX-FileCopyrightText: Fondation RERO+
 // SPDX-License-Identifier: AGPL-3.0-or-later
 import { Routes } from '@angular/router';
+
 import { ErrorPageComponent } from './error/error-page.component';
 import { MainComponent } from './main/main.component';
 import { collectionsRouteResolver } from './routes/collections-route';

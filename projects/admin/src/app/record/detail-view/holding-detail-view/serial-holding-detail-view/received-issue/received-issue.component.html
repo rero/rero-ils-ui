@@ -3,17 +3,19 @@ SPDX-FileCopyrightText: Fondation RERO+
 SPDX-FileCopyrightText: UCLouvain
 SPDX-License-Identifier: AGPL-3.0-or-later
 -->
-@defer(when issue) {
-  <div class="ui:grid ui:grid-cols-12 ui:gap-4 ui:p-1 ui:mb-1 ui:border ui:rounded-md ui:border-surface" [ngClass]="{'text-error': issue().metadata.issue.status === 'deleted'}">
+@defer (when issue) {
+  <div
+    class="ui:grid ui:grid-cols-12 ui:gap-4 ui:p-1 ui:mb-1 ui:border ui:rounded-md ui:border-surface"
+    [ngClass]="{ 'text-error': issue().metadata.issue.status === 'deleted' }">
     <div class="ui:col-span-10">
       <div class="ui:grid ui:grid-cols-12 ui:gap-4 ui:p-2 ui:items-center">
         <div class="ui:col-span-1 ui:flex ui:items-center">
           <div class="ui:grow">
             <shared-open-close-button (status)="isCollapsed = $event" />
           </div>
-            @if (isCollapsed) {
-              <i class="ui:mr-2" [ngClass]="getIcon()" [title]="iconTitle"></i>
-            }
+          @if (isCollapsed) {
+            <i class="ui:mr-2" [ngClass]="getIcon()" [title]="iconTitle"></i>
+          }
         </div>
         <div class="ui:col-span-8">
           <a [routerLink]="['/records', 'items', 'detail', issue().metadata.pid]" class="ui:line-through">
@@ -32,7 +34,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
         </div>
         @if (isCollapsed) {
           <span class="ui:col-span-3 ui:text-right">
-            {{ issue().metadata.issue.status_date | dateTranslate : 'shortDate' }}
+            {{ issue().metadata.issue.status_date | dateTranslate: 'shortDate' }}
           </span>
         }
         @if (!isCollapsed) {
@@ -45,26 +47,26 @@ SPDX-License-Identifier: AGPL-3.0-or-later
                   {{ 'This issue has been marked as masked' | translate }}
                 </dd>
               }
-              <dt translate>Status</dt>
+              <dt>{{ 'Status' | translate }}</dt>
               <dd>
                 <i [class]="getIcon(true)"></i>&nbsp;
                 {{ issue().metadata.issue.status | translate }}
-                <span class="ui:text-sm  ui:text-muted-color">
+                <span class="ui:text-sm ui:text-muted-color">
                   ({{ 'Assigned on' | translate }} {{ issue().metadata.issue.status_date | dateTranslate }})
                 </span>
               </dd>
               @if (issue().metadata.issue.sort_date) {
-                <dt translate>Sorting date</dt>
+                <dt>{{ 'Sorting date' | translate }}</dt>
                 <dd>{{ issue().metadata.issue.sort_date | dateTranslate }}</dd>
               }
-              <dt translate>Expected date</dt>
+              <dt>{{ 'Expected date' | translate }}</dt>
               <dd>{{ issue().metadata.issue.expected_date | dateTranslate }}</dd>
               @if (issue().metadata.issue.status === issueItemStatusRef.RECEIVED) {
-                <dt translate>Received date</dt>
+                <dt>{{ 'Received date' | translate }}</dt>
                 <dd>{{ issue().metadata.issue.received_date | dateTranslate }}</dd>
               }
               @if (issue().metadata?.issue?.claims?.counter > 0) {
-                <dt translate>
+                <dt>
                   <span [ngPlural]="issue().metadata.issue.claims.counter">
                     <ng-template ngPluralCase="=1">{{ 'Claim' | translate }}</ng-template>
                     <ng-template ngPluralCase="other">{{ 'Claims' | translate }}</ng-template>
@@ -72,7 +74,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
                 </dt>
                 <dd>
                   {{ issue().metadata.issue.claims.counter }}
-                  <span class="ui:text-sm  ui:text-muted-color">
+                  <span class="ui:text-sm ui:text-muted-color">
                     ({{ 'last claim' | translate }}: {{ claimLastDate | dateTranslate: 'short' }})
                   </span>
                 </dd>
@@ -89,20 +91,18 @@ SPDX-License-Identifier: AGPL-3.0-or-later
           <p-button
             icon="fa-solid fa-bell-concierge"
             size="small"
-            [title]="'Claim'|translate"
+            [title]="'Claim' | translate"
             outlined
-            (onClick)="openClaimEmailDialog()"
-          />
+            (onClick)="openClaimEmailDialog()" />
         }
         <!-- EDIT BUTTON -->
         <p-button
           icon="fa-solid fa-pencil"
           size="small"
-          [title]="'Edit'|translate"
+          [title]="'Edit' | translate"
           outlined
           [routerLink]="['/records', 'items', 'edit', issue().metadata.pid]"
-          [queryParams]="{'redirectTo': 'records/holdings/detail/' + holding().metadata.pid }"
-        />
+          [queryParams]="{ redirectTo: 'records/holdings/detail/' + holding().metadata.pid }" />
       }
 
       <!-- DELETE BUTTON -->
@@ -111,14 +111,13 @@ SPDX-License-Identifier: AGPL-3.0-or-later
         size="small"
         icon="fa-solid fa-trash-can"
         severity="danger"
-        [title]="'Delete'|translate"
+        [title]="'Delete' | translate"
         outlined
         [pTooltip]="tooltipContent"
         tooltipPosition="top"
         [disabled]="!recordPermissions()?.delete?.can"
         [tooltipDisabled]="recordPermissions()?.delete?.can"
-        (onClick)="store.deleteItem(issue())"
-      />
+        (onClick)="store.deleteItem(issue())" />
       <ng-template #tooltipContent>
         <span [innerHTML]="deleteInfoMessage()"></span>
       </ng-template>

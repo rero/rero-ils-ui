@@ -1,8 +1,9 @@
 // SPDX-FileCopyrightText: Fondation RERO+
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-import { TestBed } from "@angular/core/testing";
-import { ProvisionActivityPipe, ProvisionActivityType } from "./provision-activity.pipe";
+import { TestBed } from '@angular/core/testing';
+
+import { ProvisionActivityPipe, ProvisionActivityType } from './provision-activity.pipe';
 
 describe('ProvisionActivityPipe', () => {
   let pipe: ProvisionActivityPipe;
@@ -11,24 +12,18 @@ describe('ProvisionActivityPipe', () => {
     provisionActivity: [
       {
         type: ProvisionActivityType.PUBLICATION,
-        _text: [
-          { value: 'Provision activity Publication'}
-        ]
+        _text: [{ value: 'Provision activity Publication' }],
       },
       {
         type: ProvisionActivityType.MANUFACTURE,
-        _text: [
-          { value: 'Provision activity Manufacture'}
-        ]
+        _text: [{ value: 'Provision activity Manufacture' }],
       },
-    ]
+    ],
   };
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [
-        ProvisionActivityPipe
-      ]
+      providers: [ProvisionActivityPipe],
     });
     pipe = TestBed.inject(ProvisionActivityPipe);
   });
@@ -43,10 +38,9 @@ describe('ProvisionActivityPipe', () => {
 
   it('should return the value of provision activity with selection by type', () => {
     expect(pipe.transform(provisionActivities)).toEqual('Provision activity Publication');
-    expect(pipe.transform(
-      provisionActivities,
-      ProvisionActivityType.MANUFACTURE)
-    ).toEqual('Provision activity Manufacture');
+    expect(pipe.transform(provisionActivities, ProvisionActivityType.MANUFACTURE)).toEqual(
+      'Provision activity Manufacture',
+    );
   });
 
   it('should return the value of enum', () => {

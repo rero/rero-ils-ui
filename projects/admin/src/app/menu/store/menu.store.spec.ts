@@ -1,14 +1,16 @@
 // SPDX-FileCopyrightText: Fondation RERO+
 // SPDX-License-Identifier: AGPL-3.0-or-later
-import { DOCUMENT } from '@angular/common';
-import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClient, withXhr } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
+import { DOCUMENT } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
-import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { LIBRARIAN_STORAGE_KEYS } from '@app/admin/service/librarian-storage-keys';
+import { provideTranslateService, TranslateService } from '@ngx-translate/core';
+import { MenuItem, MenuItemCommandEvent } from '@openng/optimus-ui/api';
 import { CoreConfigService } from '@rero/ng-core';
 import { AppStore, testPermissions, testUserLibrarianWithSettings, User } from '@rero/shared';
-import { MenuItem, MenuItemCommandEvent } from 'primeng/api';
 import { of } from 'rxjs';
+
 import { LibraryApiService } from '../api/library-api.service';
 import { LibrarySwitchStorageService } from '../service/library-switch-storage.service';
 import { ISwitchLibrary, MenuStore } from './menu.store';
@@ -21,8 +23,8 @@ const libraryRecords = [
 const esResult = {
   hits: {
     total: 2,
-    hits: libraryRecords
-  }
+    hits: libraryRecords,
+  },
 };
 
 const libUser = new User(testUserLibrarianWithSettings);
@@ -40,7 +42,7 @@ describe('MenuStore', () => {
   };
 
   const libraryApiSpy = {
-    findByLibrariesPidAndOrderBy$: vi.fn()
+    findByLibrariesPidAndOrderBy$: vi.fn(),
   };
 
   const librarySwitchStorageSpy = {
@@ -57,13 +59,13 @@ describe('MenuStore', () => {
   };
 
   const coreConfigServiceSpy = {
-    languages: ['fr', 'de', 'en', 'it']
+    languages: ['fr', 'de', 'en', 'it'],
   };
 
   // jsdom does not allow to spy on location.reload
   const documentSpy = {
     cookie: '',
-    location: { reload: vi.fn() }
+    location: { reload: vi.fn() },
   };
 
   beforeEach(() => {
@@ -81,8 +83,8 @@ describe('MenuStore', () => {
     translateServiceSpy.getCurrentLang.mockReturnValue('fr');
 
     store = TestBed.configureTestingModule({
-      imports: [TranslateModule.forRoot()],
       providers: [
+        provideTranslateService(),
         MenuStore,
         { provide: AppStore, useValue: appStoreSpy },
         { provide: LibraryApiService, useValue: libraryApiSpy },
@@ -90,9 +92,9 @@ describe('MenuStore', () => {
         { provide: TranslateService, useValue: translateServiceSpy },
         { provide: CoreConfigService, useValue: coreConfigServiceSpy },
         { provide: DOCUMENT, useValue: documentSpy },
-        provideHttpClient(),
+        provideHttpClient(withXhr()),
         provideHttpClientTesting(),
-      ]
+      ],
     }).inject(MenuStore);
   });
 
@@ -159,6 +161,15 @@ describe('MenuStore', () => {
       store.logout();
       expect(store.logoutCounter()).toBe(2);
     });
+
+    it('should remove the data kept for the librarian, even when their owners are not instantiated', () => {
+      Object.values(LIBRARIAN_STORAGE_KEYS).forEach((key) => localStorage.setItem(key, '{}'));
+      localStorage.setItem('other', '{}');
+      store.logout();
+      Object.values(LIBRARIAN_STORAGE_KEYS).forEach((key) => expect(localStorage.getItem(key)).toBeNull());
+      expect(localStorage.getItem('other')).toBe('{}');
+      localStorage.removeItem('other');
+    });
   });
 
   describe('switchLibrary()', () => {
@@ -203,9 +214,7 @@ describe('MenuStore', () => {
 
     it('should strip the access property from kept items', () => {
       appStoreSpy.canAccess.mockReturnValue(true);
-      const menuItems: MenuItem[] = [
-        { label: 'Item', id: 'item', access: { permissions: ['some-perm'] } } as any,
-      ];
+      const menuItems: MenuItem[] = [{ label: 'Item', id: 'item', access: { permissions: ['some-perm'] } } as any];
       store.generateAppMenu(menuItems);
       expect((store.applicationMenuItems()[0] as any).access).toBeUndefined();
     });
@@ -248,9 +257,7 @@ describe('MenuStore', () => {
   describe('updateLibraryQueryParams()', () => {
     it('should update queryParams with library pid', () => {
       const lib: ISwitchLibrary = { pid: '2', code: 'LIB2', name: 'Library Two' };
-      store.generateAppMenu([
-        { label: 'Catalog', queryParams: { library: '1', other: 'keep' } }
-      ]);
+      store.generateAppMenu([{ label: 'Catalog', queryParams: { library: '1', other: 'keep' } }]);
       store.updateLibraryQueryParams(lib);
       const item = store.applicationMenuItems()[0];
       expect(item.queryParams?.['library']).toBe('2');

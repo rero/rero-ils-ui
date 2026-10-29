@@ -3,14 +3,20 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 import { ResolveFn, Routes } from '@angular/router';
 import { _ } from '@ngx-translate/core';
-import { ActionStatus, RecordData, RecordSearchPageComponent, RecordType, RouteDataTypesInterface } from '@rero/ng-core';
+import {
+  ActionStatus,
+  RecordData,
+  RecordSearchPageComponent,
+  RecordType,
+  RouteDataTypesInterface,
+} from '@rero/ng-core';
 import { EntityBriefViewComponent, PERMISSIONS } from '@rero/shared';
 import { Observable, of } from 'rxjs';
 import { map } from 'rxjs/operators';
+
 import { BaseRoute } from './base-route';
 
-export const entitiesRouteResolver: ResolveFn<Partial<RecordType>[]> = () =>
-  new EntitiesRoute().getTypes();
+export const entitiesRouteResolver: ResolveFn<Partial<RecordType>[]> = () => new EntitiesRoute().getTypes();
 
 export const entitiesRoutes: Routes = [
   {
@@ -85,7 +91,7 @@ class EntitiesRoute extends BaseRoute implements RouteDataTypesInterface {
           message: permissions?.canUpdate?.message || '',
           routerLink: ['/records', this.recordType, 'edit', record.metadata.pid],
         };
-      })
+      }),
     );
   }
 
@@ -105,7 +111,7 @@ class EntitiesRoute extends BaseRoute implements RouteDataTypesInterface {
           message: permissions?.canDelete?.message || '',
           type: this.recordType,
         };
-      })
+      }),
     );
   }
 

@@ -5,13 +5,14 @@ import { TestBed } from '@angular/core/testing';
 import { patchState, signalStore, withMethods, withProps, withState } from '@ngrx/signals';
 import { BaseApi } from '@rero/shared';
 import { of } from 'rxjs';
+
 import { IllRequestApiService } from '../../api/ill-request-api.service';
 import { withIllRequestsFeature } from './ill-requests-feature';
 
 const IllRequestsFeatureStore = signalStore(
   withState({ activeTab: null as string | null }),
   withProps(() => ({ patronPid: signal<string | null>(null) })),
-  withMethods(store => ({
+  withMethods((store) => ({
     setPatronPid(patronPid: string | null): void {
       store.patronPid.set(patronPid);
     },
@@ -19,7 +20,7 @@ const IllRequestsFeatureStore = signalStore(
       patchState(store, { activeTab });
     },
   })),
-  withIllRequestsFeature()
+  withIllRequestsFeature(),
 );
 
 describe('IllRequestsFeature', () => {
@@ -29,10 +30,7 @@ describe('IllRequestsFeature', () => {
   beforeEach(() => {
     vi.resetAllMocks();
     store = TestBed.configureTestingModule({
-      providers: [
-        IllRequestsFeatureStore,
-        { provide: IllRequestApiService, useValue: illRequestApiService },
-      ],
+      providers: [IllRequestsFeatureStore, { provide: IllRequestApiService, useValue: illRequestApiService }],
     }).inject(IllRequestsFeatureStore);
   });
 
@@ -90,7 +88,7 @@ describe('IllRequestsFeature', () => {
       10,
       BaseApi.reroJsonheaders,
       '-created',
-      { remove_archived: '1' }
+      { remove_archived: '1' },
     );
     expect(illRequestApiService.getPublicIllRequest).toHaveBeenNthCalledWith(
       2,
@@ -99,7 +97,7 @@ describe('IllRequestsFeature', () => {
       10,
       BaseApi.reroJsonheaders,
       '-created',
-      { remove_archived: '1' }
+      { remove_archived: '1' },
     );
     expect(store.illRequests()).toEqual([secondRequest]);
     expect(store.illRequestsTotal()).toBe(2);

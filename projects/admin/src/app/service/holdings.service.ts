@@ -13,14 +13,12 @@ import { catchError, map } from 'rxjs/operators';
 export type PredictionIssue = {
   issue: string;
   expected_date: string;
-}
-
+};
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class HoldingsService {
-
   private httpClient: HttpClient = inject(HttpClient);
 
   /**
@@ -33,9 +31,7 @@ export class HoldingsService {
     const url = `/api/holding/${holdingPid}/patterns/preview`;
     let params = new HttpParams();
     params = params.set('size', size.toString());
-    return this.httpClient.get<any>(url, { params }).pipe(
-      map(data => data.issues.reverse())
-    );
+    return this.httpClient.get<any>(url, { params }).pipe(map((data) => data.issues.reverse()));
   }
 
   /**
@@ -66,11 +62,16 @@ export class HoldingsService {
    */
   getIcon(status: IssueItemStatus): string {
     switch (status) {
-      case IssueItemStatus.DELETED: return 'fa-solid fa-circle text-error';
-      case IssueItemStatus.RECEIVED: return 'fa-solid fa-circle text-success';
-      case IssueItemStatus.LATE: return 'fa-solid fa-hourglass-half text-warning';
-      case IssueItemStatus.EXPECTED: return 'fa-solid fa-circle text-secondary';
-      default: return 'fa-solid fa-circle text-dark';
+      case IssueItemStatus.DELETED:
+        return 'fa-solid fa-circle text-error';
+      case IssueItemStatus.RECEIVED:
+        return 'fa-solid fa-circle text-success';
+      case IssueItemStatus.LATE:
+        return 'fa-solid fa-hourglass-half text-warning';
+      case IssueItemStatus.EXPECTED:
+        return 'fa-solid fa-circle text-secondary';
+      default:
+        return 'fa-solid fa-circle text-dark';
     }
   }
 
@@ -81,7 +82,7 @@ export class HoldingsService {
    * @param patronBarcode: the patron barcode to check
    * @return an observable on the API call response
    */
-   canRequest(holdingPid: string, libraryPid?: string, patronBarcode?: string): Observable<any> {
+  canRequest(holdingPid: string, libraryPid?: string, patronBarcode?: string): Observable<any> {
     let params = new HttpParams();
     if (libraryPid != null) {
       params = params.set('library_pid', libraryPid);
@@ -97,15 +98,15 @@ export class HoldingsService {
    * @param itemPid: the item pid to be requested
    * @return an observable on the API call response
    */
-   getPickupLocations(holdingPid: string): Observable<any> {
+  getPickupLocations(holdingPid: string): Observable<any> {
     const url = `/api/holding/${holdingPid}/pickup_locations`;
     return this.httpClient.get<any>(url).pipe(
-      map(data => data.locations),
-      catchError(e => {
+      map((data) => data.locations),
+      catchError((e) => {
         if (e.status === 404) {
           return of(null);
         }
-      })
+      }),
     );
   }
 }

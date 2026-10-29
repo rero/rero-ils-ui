@@ -1,16 +1,14 @@
 // SPDX-FileCopyrightText: Fondation RERO+
 // SPDX-License-Identifier: AGPL-3.0-or-later
 import { inject, Injectable } from '@angular/core';
-import { RecordService } from '@rero/ng-core';
-import type { Error } from '@rero/ng-core';
+import { RecordService, type Error } from '@rero/ng-core';
 import { BaseApi, EsResult } from '@rero/shared';
 import { Observable } from 'rxjs';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class IllRequestApiService extends BaseApi {
-
   private recordService: RecordService = inject(RecordService);
 
   /**
@@ -25,7 +23,7 @@ export class IllRequestApiService extends BaseApi {
     patronPid: string,
     page: number,
     itemsPerPage = 10,
-    headers = BaseApi.reroJsonheaders
+    headers = BaseApi.reroJsonheaders,
   ): Observable<EsResult | Error> {
     const query = `patron.pid:${patronPid}`;
     return this.recordService.getRecords('ill_requests', { query, page, itemsPerPage, headers });
@@ -46,9 +44,16 @@ export class IllRequestApiService extends BaseApi {
     headers = BaseApi.reroJsonheaders,
     sort = '-created',
     // eslint-disable-next-line @typescript-eslint/consistent-indexed-object-style
-    filters?: {[key: string]: string}
+    filters?: { [key: string]: string },
   ): Observable<EsResult | Error> {
     const query = `patron.pid:${patronPid}`;
-    return this.recordService.getRecords('ill_requests', { query, page, itemsPerPage, preFilters: filters, headers, sort });
+    return this.recordService.getRecords('ill_requests', {
+      query,
+      page,
+      itemsPerPage,
+      preFilters: filters,
+      headers,
+      sort,
+    });
   }
 }
