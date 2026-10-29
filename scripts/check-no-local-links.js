@@ -6,8 +6,8 @@
 // `pnpm run pack` never silently bundles an unpublished local version.
 //
 // Set ALLOW_LOCAL_LINKS (comma-separated package names, or "*" for any)
-// to permit an intentional local install, e.g. CI building against an
-// unpublished ng-core ref via `pnpm add ng-core/dist/rero/ng-core`.
+// to permit an intentional local install, e.g. packing against an
+// ng-core linked through the override in pnpm-workspace.yaml.
 
 const fs = require('fs');
 const path = require('path');

@@ -251,7 +251,8 @@
         "test": {
           "builder": "@angular/build:unit-test",
           "options": {
-            "tsConfig": "projects/public-holdings-items/tsconfig.spec.json"
+            "tsConfig": "projects/public-holdings-items/tsconfig.spec.json",
+            "runnerConfig": "projects/public-holdings-items/vitest.config.ts"
           }
         },
         "serve": {
@@ -738,7 +739,8 @@
         "test": {
           "builder": "@angular/build:unit-test",
           "options": {
-            "tsConfig": "projects/public-patron-profile/tsconfig.spec.json"
+            "tsConfig": "projects/public-patron-profile/tsconfig.spec.json",
+            "runnerConfig": "projects/public-patron-profile/vitest.config.ts"
           }
         },
         "serve": {
