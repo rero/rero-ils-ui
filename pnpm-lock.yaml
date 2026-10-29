@@ -69,8 +69,8 @@ importers:
         specifier: ^2.0.3
         version: 2.0.3
       '@rero/ng-core':
-        specifier: ^21.4.0
-        version: 21.4.0(51f2c12147d6cee104ede83dd877af06)
+        specifier: ^21.4.1
+        version: 21.4.1(51f2c12147d6cee104ede83dd877af06)
       barcode-detector:
         specifier: ^3.2.2
         version: 3.2.2(@types/emscripten@1.41.6)
@@ -2349,8 +2349,8 @@ packages:
     resolution: {integrity: sha512-pmEbSfP0Phf9W9RweiM66zXnkn73ZeKyYINElbX3uZ2+stzzaba2svLAl3B1pHVcRw5t43O0VciaGe4ye2EXKw==}
     engines: {node: '>=12.11.0'}
 
-  '@rero/ng-core@21.4.0':
-    resolution: {integrity: sha512-47fAi2lOWaB3k9S9Y6EFtztDxgNaD1l4pZX4/GNaFG/R/c9gz7fT4HUrpb1nraHsfNZl6kmZBmmMZK8qdHHWCw==}
+  '@rero/ng-core@21.4.1':
+    resolution: {integrity: sha512-T5ORjrq+ugiIJELn0McGD/2Of19fDS4ypwhryKSAWnMzrQZe3QEEqu5VvxXOYzg3YoW+7OwdC9uYo3HJeTYK2A==}
     peerDependencies:
       '@angular/cdk': ^21.2.1
       '@angular/common': ^21.2.1
@@ -9262,7 +9262,7 @@ snapshots:
 
   '@primeuix/utils@0.7.2': {}
 
-  '@rero/ng-core@21.4.0(51f2c12147d6cee104ede83dd877af06)':
+  '@rero/ng-core@21.4.1(51f2c12147d6cee104ede83dd877af06)':
     dependencies:
       '@angular/cdk': 21.2.14(@angular/common@21.2.18(@angular/core@21.2.18(@angular/compiler@21.2.18)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@21.2.18(@angular/compiler@21.2.18)(rxjs@7.8.2))(@angular/platform-browser@21.2.18(@angular/animations@21.2.18(@angular/core@21.2.18(@angular/compiler@21.2.18)(rxjs@7.8.2)))(@angular/common@21.2.18(@angular/core@21.2.18(@angular/compiler@21.2.18)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@21.2.18(@angular/compiler@21.2.18)(rxjs@7.8.2)))(rxjs@7.8.2)
       '@angular/common': 21.2.18(@angular/core@21.2.18(@angular/compiler@21.2.18)(rxjs@7.8.2))(rxjs@7.8.2)
