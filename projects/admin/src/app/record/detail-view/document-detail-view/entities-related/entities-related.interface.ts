@@ -6,7 +6,7 @@ export type IEntityRelated = {
   resource_type: string;
   type: string;
   icon: string;
-}
+};
 
 /**
  * An entity of a document field, as described by the fields holding a `$ref`.

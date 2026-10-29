@@ -3,24 +3,24 @@
 import { ResolveFn, Routes } from '@angular/router';
 import { _ } from '@ngx-translate/core';
 import {
-  ComponentCanDeactivateGuard,
   DetailComponent,
-  EditorComponent,
   RecordData,
   RecordSearchPageComponent,
   RecordType,
   RouteDataTypesInterface,
+  unsavedChangesGuard,
 } from '@rero/ng-core';
-import { PERMISSIONS, PERMISSION_OPERATOR } from '@rero/shared';
+import { EditorComponent } from '@rero/ng-core/editor';
+import { PERMISSION_OPERATOR, PERMISSIONS } from '@rero/shared';
 import { of } from 'rxjs';
+
 import { CAN_ACCESS_ACTIONS, canAccessGuard } from '../../guard/can-access.guard';
 import { permissionGuard } from '../../guard/permission.guard';
 import { BaseRoute } from '../../routes/base-route';
 import { VendorBriefViewComponent } from '../components/vendors/vendor-brief-view.component';
 import { VendorDetailViewComponent } from '../components/vendors/vendor-detail-view/vendor-detail-view.component';
 
-export const vendorsRouteResolver: ResolveFn<Partial<RecordType>[]> = () =>
-  new VendorsRoute().getTypes();
+export const vendorsRouteResolver: ResolveFn<Partial<RecordType>[]> = () => new VendorsRoute().getTypes();
 
 export const vendorsRoutes: Routes = [
   {
@@ -47,7 +47,7 @@ export const vendorsRoutes: Routes = [
     component: EditorComponent,
     title: _('Vendor'),
     canActivate: [canAccessGuard],
-    canDeactivate: [ComponentCanDeactivateGuard],
+    canDeactivate: [unsavedChangesGuard],
     data: {
       action: CAN_ACCESS_ACTIONS.UPDATE,
     },
@@ -57,7 +57,7 @@ export const vendorsRoutes: Routes = [
     component: EditorComponent,
     title: _('Vendor'),
     canActivate: [permissionGuard],
-    canDeactivate: [ComponentCanDeactivateGuard],
+    canDeactivate: [unsavedChangesGuard],
     data: {
       permissions: [PERMISSIONS.VNDR_CREATE],
     },
@@ -82,7 +82,10 @@ class VendorsRoute extends BaseRoute implements RouteDataTypesInterface {
         permissions: (record: RecordData) => this.routeToolService.permissions(record, this.recordType),
         preCreateRecord: (data: any) => {
           data.organisation = {
-            $ref: this.routeToolService.apiService.getRefEndpoint('organisations', this.routeToolService.appStore.currentOrganisationPid()),
+            $ref: this.routeToolService.apiService.getRefEndpoint(
+              'organisations',
+              this.routeToolService.appStore.currentOrganisationPid(),
+            ),
           };
           return data;
         },

@@ -5,7 +5,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 <div class="ui:col-span-4 ui:flex ui:flex-col">
   @if (documentNotFound()) {
     {{ documentTitle() }}
-    <small class="ui:text-muted-color ui:italic" translate>Document not found.</small>
+    <small class="ui:text-muted-color ui:italic">{{ 'Document not found.' | translate }}</small>
   } @else {
     <a [routerLink]="['/records', 'documents', 'detail', documentPid()]" (click)="closeRequested.emit()">
       {{ documentTitle() }}

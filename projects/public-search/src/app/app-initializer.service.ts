@@ -7,22 +7,20 @@ import { NgCoreTranslateService } from '@rero/ng-core';
 import { AppStore, AppTranslateLanguageService } from '@rero/shared';
 import { from, Observable } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
+
 import { AppConfigService } from './app-config.service';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class AppInitializerService {
-
   private appStore = inject(AppStore);
   private translateService = inject(NgCoreTranslateService);
   private translateLanguageService = inject(AppTranslateLanguageService);
   private appConfigService = inject(AppConfigService);
 
   load(): Observable<InterpolatableTranslationObject> {
-    return this.appStore.load().pipe(
-      switchMap(() => this.initTranslateService())
-    );
+    return this.appStore.load().pipe(switchMap(() => this.initTranslateService()));
   }
 
   private initTranslateService(): Observable<InterpolatableTranslationObject> {
@@ -37,7 +35,7 @@ export class AppInitializerService {
       }
     }
     return from(this.translateLanguageService.loadLanguageNow(language)).pipe(
-      switchMap(() => this.translateService.use(language))
+      switchMap(() => this.translateService.use(language)),
     );
   }
 }

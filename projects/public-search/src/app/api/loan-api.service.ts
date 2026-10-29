@@ -3,18 +3,17 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { LoanOverduePreview } from '@app/admin/classes/loans';
-import { ApiService, RecordService } from '@rero/ng-core';
-import type { Error } from '@rero/ng-core';
+import { ApiService, RecordService, type Error } from '@rero/ng-core';
 import { BaseApi, EsResult } from '@rero/shared';
 import { Observable, of } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
+
 import type { PatronLoan } from '../patron-profile/patron-profile-loans/types';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class LoanApiService extends BaseApi {
-
   private recordService: RecordService = inject(RecordService);
   private httpClient: HttpClient = inject(HttpClient);
   private apiService: ApiService = inject(ApiService);
@@ -28,14 +27,20 @@ export class LoanApiService extends BaseApi {
    * @return Observable
    */
   getOnLoan(
-    patronPid: string, page: number,
-    itemsPerPage = 20, headers = BaseApi.reroJsonheaders,
-    sort?: string
+    patronPid: string,
+    page: number,
+    itemsPerPage = 20,
+    headers = BaseApi.reroJsonheaders,
+    sort?: string,
   ): Observable<EsResult<PatronLoan['metadata']> | Error> {
     const loanStates = ['ITEM_ON_LOAN'];
-    return this.recordService.getRecords<EsResult<PatronLoan['metadata']>>(
-      'loans', { query: this._patronStateQuery(patronPid, loanStates), page, itemsPerPage, headers, sort }
-    );
+    return this.recordService.getRecords<EsResult<PatronLoan['metadata']>>('loans', {
+      query: this._patronStateQuery(patronPid, loanStates),
+      page,
+      itemsPerPage,
+      headers,
+      sort,
+    });
   }
 
   /**
@@ -47,13 +52,18 @@ export class LoanApiService extends BaseApi {
    * @return Observable
    */
   getRequest(
-    patronPid: string, page: number,
-    itemsPerPage = 10, headers = BaseApi.reroJsonheaders
+    patronPid: string,
+    page: number,
+    itemsPerPage = 10,
+    headers = BaseApi.reroJsonheaders,
   ): Observable<EsResult | Error> {
     const requestStates = ['PENDING', 'ITEM_AT_DESK', 'ITEM_IN_TRANSIT_FOR_PICKUP'];
-    return this.recordService.getRecords(
-      'loans', { query: this._patronStateQuery(patronPid, requestStates), page, itemsPerPage, headers }
-    );
+    return this.recordService.getRecords('loans', {
+      query: this._patronStateQuery(patronPid, requestStates),
+      page,
+      itemsPerPage,
+      headers,
+    });
   }
 
   /**
@@ -62,11 +72,10 @@ export class LoanApiService extends BaseApi {
    * @returns Observable
    */
   canExtend(loanPid: string): Observable<CanExtend> {
-    return this.httpClient.get(`/api/loan/${loanPid}/can_extend`)
-      .pipe(
-        catchError(() => of(undefined)),
-        map((response: any) => response)
-      );
+    return this.httpClient.get(`/api/loan/${loanPid}/can_extend`).pipe(
+      catchError(() => of(undefined)),
+      map((response: any) => response),
+    );
   }
 
   /**
@@ -74,16 +83,18 @@ export class LoanApiService extends BaseApi {
    * @param data, object
    * @return Observable
    */
-  renew(data: { pid: string, item_pid: string, transaction_location_pid: string, transaction_user_pid: string }): Observable<any> {
-    return this.httpClient.post('/api/item/extend_loan', data)
-      .pipe(
-        catchError(() => of(undefined)),
-        map((response: any) => {
-          return (response !== undefined)
-            ? response.action_applied.extend_loan
-            : response;
-        })
-      );
+  renew(data: {
+    pid: string;
+    item_pid: string;
+    transaction_location_pid: string;
+    transaction_user_pid: string;
+  }): Observable<any> {
+    return this.httpClient.post('/api/item/extend_loan', data).pipe(
+      catchError(() => of(undefined)),
+      map((response: any) => {
+        return response !== undefined ? response.action_applied.extend_loan : response;
+      }),
+    );
   }
 
   /**
@@ -91,16 +102,13 @@ export class LoanApiService extends BaseApi {
    * @param data, object
    * @return Observable
    */
-  cancel(data: { pid: string, transaction_location_pid: string, transaction_user_pid: string }): Observable<any> {
-    return this.httpClient.post('/api/item/cancel_item_request', data)
-      .pipe(
-        catchError(() => of(undefined)),
-        map((response: any) => {
-          return (response !== undefined)
-            ? response.action_applied.cancel
-            : response;
-        })
-      );
+  cancel(data: { pid: string; transaction_location_pid: string; transaction_user_pid: string }): Observable<any> {
+    return this.httpClient.post('/api/item/cancel_item_request', data).pipe(
+      catchError(() => of(undefined)),
+      map((response: any) => {
+        return response !== undefined ? response.action_applied.cancel : response;
+      }),
+    );
   }
 
   /**
@@ -128,4 +136,4 @@ export class LoanApiService extends BaseApi {
 export type CanExtend = {
   can: boolean;
   reasons: Record<string, string>;
-}
+};

@@ -2,37 +2,37 @@
 // SPDX-FileCopyrightText: UCLouvain
 // SPDX-License-Identifier: AGPL-3.0-or-later
 import { NgClass } from '@angular/common';
-import { ChangeDetectionStrategy, Component, input } from '@angular/core';
+import { Component, input } from '@angular/core';
 import { OpeningHours } from '@app/admin/classes/library';
-import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
-    selector: 'admin-day-opening-hours',
-    template: `
+  selector: 'admin-day-opening-hours',
+  template: `
     <dl class="metadata ui:mx-2">
       <dt>{{ day().day | translate }}</dt>
       <dd>
         <div class="ui:flex ui:gap-x-3 ui:items-center">
-        <i [ngClass]="{
-          'fa-solid fa-circle-xmark text-error': !day().is_open,
-          'fa-solid fa-circle text-success': day().is_open
-        }"></i>
-        @if (day().is_open) {
+          <i
+            [ngClass]="{
+              'fa-solid fa-circle-xmark text-error': !day().is_open,
+              'fa-solid fa-circle text-success': day().is_open,
+            }"></i>
+          @if (day().is_open) {
             @for (time of day().times; track $index; let last = $last) {
               <span>{{ time.start_time }} - {{ time.end_time }}</span>
               @if (!last) {
                 /
               }
             }
-        } @else {
-          <span class="text-error" translate>Closed</span>
-        }
+          } @else {
+            <span class="text-error">{{ 'Closed' | translate }}</span>
+          }
         </div>
       </dd>
     </dl>
   `,
-    imports: [NgClass, TranslateDirective, TranslatePipe],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  imports: [NgClass, TranslatePipe],
 })
 export class DayOpeningHoursComponent {
   day = input.required<OpeningHours>();

@@ -1,17 +1,16 @@
 // SPDX-FileCopyrightText: Fondation RERO+
 // SPDX-License-Identifier: AGPL-3.0-or-later
+import { provideHttpClient, withXhr } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { Router, RouterModule, RouterStateSnapshot, UrlTree } from '@angular/router';
-import { TranslateModule } from '@ngx-translate/core';
+import { provideTranslateService } from '@ngx-translate/core';
 import { cloneDeep } from 'lodash-es';
-import { firstValueFrom } from 'rxjs';
-import { of } from 'rxjs';
+import { firstValueFrom, of } from 'rxjs';
+
 import { ErrorPageComponent } from '../error/error-page/error-page.component';
 import { RecordPermissionService } from '../service/record-permission.service';
 import { CAN_ACCESS_ACTIONS, canAccessGuard } from './can-access.guard';
-import { provideHttpClient } from '@angular/common/http';
-
 
 describe('canAccessGuard', () => {
   let router: Router;
@@ -20,55 +19,47 @@ describe('canAccessGuard', () => {
   const routes = [
     {
       path: 'errors/400',
-      component: ErrorPageComponent
+      component: ErrorPageComponent,
     },
     {
       path: 'errors/403',
-      component: ErrorPageComponent
-    }
+      component: ErrorPageComponent,
+    },
   ];
 
   const permissions = {
-    "create": {
-      "can": false
+    create: {
+      can: false,
     },
-    "delete": {
-      "can": false,
-      "reasons": {
-        "links": {
-          "loans": 1 }
-      }
+    delete: {
+      can: false,
+      reasons: {
+        links: {
+          loans: 1,
+        },
+      },
     },
-    "list": {
-      "can": false
+    list: {
+      can: false,
     },
-    "read": {
-      "can": false
+    read: {
+      can: false,
     },
-    "update": {
-      "can": false
-    }
-  }
+    update: {
+      can: false,
+    },
+  };
 
-
-  const activatedRouteSnapshotSpy = { } as any;
+  const activatedRouteSnapshotSpy = {} as any;
   activatedRouteSnapshotSpy.params = { type: 'items', pid: '1' };
 
   const runGuard = (route: any) =>
-    TestBed.runInInjectionContext(() =>
-      canAccessGuard(route, {} as RouterStateSnapshot)
-    ) as any;
+    TestBed.runInInjectionContext(() => canAccessGuard(route, {} as RouterStateSnapshot)) as any;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [
-        RouterModule.forRoot(routes),
-        TranslateModule.forRoot()
-      ],
-      providers: [
-          provideHttpClient(),
-          provideHttpClientTesting()
-      ]
+      imports: [RouterModule.forRoot(routes)],
+      providers: [provideTranslateService(), provideHttpClient(withXhr()), provideHttpClientTesting()],
     });
     router = TestBed.inject(Router);
     recordPermissionService = TestBed.inject(RecordPermissionService);

@@ -3,9 +3,9 @@
 import { inject } from '@angular/core';
 import { ActivatedRouteSnapshot, CanActivateFn, Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
+import { MessageService } from '@openng/optimus-ui/api';
 import { CONFIG, extractIdOnRef, RecordService } from '@rero/ng-core';
 import { AppStore, EsResult } from '@rero/shared';
-import { MessageService } from 'primeng/api';
 import { map, switchMap } from 'rxjs/operators';
 
 /**
@@ -33,9 +33,7 @@ export const itemAccessGuard: CanActivateFn = (route: ActivatedRouteSnapshot) =>
     map((data: any) => extractIdOnRef(data.metadata.holding.$ref)),
     switchMap((holdingPid: string) =>
       recordService.getRecords('holdings', { query: `pid:${holdingPid}`, page: 1, itemsPerPage: 1 }).pipe(
-        map((result: EsResult) =>
-          result.hits.total === 0 ? null : result.hits.hits[0]
-        ),
+        map((result: EsResult) => (result.hits.total === 0 ? null : result.hits.hits[0])),
         map((data: any) => {
           if (data === null) {
             return deny('Item not found');
@@ -44,8 +42,8 @@ export const itemAccessGuard: CanActivateFn = (route: ActivatedRouteSnapshot) =>
             return deny('Access denied');
           }
           return true;
-        })
-      )
-    )
+        }),
+      ),
+    ),
   );
 };

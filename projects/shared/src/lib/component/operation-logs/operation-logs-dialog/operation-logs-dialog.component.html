@@ -5,9 +5,8 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 <p-button
   icon="fa-solid fa-clock-rotate-left"
   id="{{ resourceType() }}-operation-history"
-  [label]="'Operation history'|translate"
+  [label]="'Operation history' | translate"
   severity="secondary"
   outlined
   [permissions]="permissions.OPLG_SEARCH"
-  (onClick)="openDialog()"
-/>
+  (onClick)="openDialog()" />

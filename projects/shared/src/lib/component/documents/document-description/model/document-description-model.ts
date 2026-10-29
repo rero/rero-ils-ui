@@ -99,7 +99,7 @@ export type WorkAccessAgent = {
 export type WorkAccessPoint = {
   title: string;
   creator?: WorkAccessAgent;
-  part?: { partNumber?: string, partName?: string }[];
+  part?: { partNumber?: string; partName?: string }[];
   form_subdivision?: string[];
   miscellaneous_information?: string;
   language?: string;
@@ -133,7 +133,7 @@ export type DocumentMetadata = {
   cartographicAttributes?: CartographicAttribute[];
   classification?: Classification[];
   colorContent?: string[];
-  contentMediaCarrier?: { carrierType: string, contentType?: string[] }[];
+  contentMediaCarrier?: { carrierType: string; contentType?: string[] }[];
   copyrightDate?: string[];
   credits?: string[];
   dimensions?: string[];
@@ -143,8 +143,8 @@ export type DocumentMetadata = {
   identifiedBy?: RawIdentifier[];
   illustrativeContent?: string[];
   intendedAudience?: { value: string }[];
-  issuance?: { main_type: string, subtype: string };
-  language?: { value: string, note?: string }[];
+  issuance?: { main_type: string; subtype: string };
+  language?: { value: string; note?: string }[];
   note?: Note[];
   originalLanguage?: string[];
   originalTitle?: string[];

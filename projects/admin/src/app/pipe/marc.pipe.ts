@@ -4,12 +4,11 @@ import { Pipe, PipeTransform } from '@angular/core';
 
 @Pipe({ name: 'marc' })
 export class MarcPipe implements PipeTransform {
-
   transform(value: any): any {
     const values: any = {};
 
     const field: string = value[0];
-    const subFields: string|any[] = value[1];
+    const subFields: string | any[] = value[1];
     let subFieldsStr = subFields;
     if (field.length === 6 && field !== 'leader') {
       const f = field.substring(0, 3);
@@ -37,5 +36,4 @@ export class MarcPipe implements PipeTransform {
     values.value = subFieldsStr;
     return values;
   }
-
 }

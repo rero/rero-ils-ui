@@ -1,14 +1,14 @@
 // SPDX-FileCopyrightText: Fondation RERO+
 // SPDX-License-Identifier: AGPL-3.0-or-later
-import { HttpClient, provideHttpClient } from '@angular/common/http';
+import { HttpClient, provideHttpClient, withXhr } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { LoanOverduePreview } from '@app/admin/classes/loans';
-import { TranslateModule } from '@ngx-translate/core';
+import { provideTranslateService } from '@ngx-translate/core';
 import { ApiService, RecordService } from '@rero/ng-core';
 import { of } from 'rxjs';
-import { CanExtend, LoanApiService } from './loan-api.service';
 
+import { CanExtend, LoanApiService } from './loan-api.service';
 
 describe('LoanApiService', () => {
   let service: LoanApiService;
@@ -17,45 +17,43 @@ describe('LoanApiService', () => {
   const record = {
     medatadata: {
       pid: '1',
-      name: 'item name'
-    }
+      name: 'item name',
+    },
   };
 
   const apiResponse = {
     aggregations: {},
     hits: {
       total: 1,
-      hits: [
-        record
-      ]
+      hits: [record],
     },
-    links: {}
+    links: {},
   };
 
   const canExtend = {
     can: true,
-    reasons: {}
+    reasons: {},
   };
 
   const renew = {
     action_applied: {
       extend_loan: {
-        pid: 'renew'
-      }
-    }
+        pid: 'renew',
+      },
+    },
   };
 
   const cancel = {
     action_applied: {
       cancel: {
-        pid: 'cancel'
-      }
-    }
+        pid: 'cancel',
+      },
+    },
   };
 
   const loanOverduePreview = {
     steps: [],
-    total: 1
+    total: 1,
   };
 
   const recordServiceSpy = { getRecords: vi.fn() };
@@ -63,15 +61,13 @@ describe('LoanApiService', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [
-        TranslateModule.forRoot(),
-        ],
       providers: [
+        provideTranslateService(),
         { provide: RecordService, useValue: recordServiceSpy },
         { provide: ApiService, useValue: { getEndpointByType: vi.fn().mockReturnValue('/api/loan') } },
-        provideHttpClient(),
-        provideHttpClientTesting()
-      ]
+        provideHttpClient(withXhr()),
+        provideHttpClientTesting(),
+      ],
     });
     service = TestBed.inject(LoanApiService);
     httpClient = TestBed.inject(HttpClient);
@@ -82,36 +78,36 @@ describe('LoanApiService', () => {
   });
 
   it('should load the loans', () => {
-    service.getOnLoan('1', 1, 10)
-      .subscribe((response: any) => expect(response.hits.hits[0]).toEqual(record));
+    service.getOnLoan('1', 1, 10).subscribe((response: any) => expect(response.hits.hits[0]).toEqual(record));
   });
 
   it('should load the requests', () => {
-    service.getRequest('1', 1, 10)
-      .subscribe((response: any) => expect(response.hits.hits[0]).toEqual(record));
+    service.getRequest('1', 1, 10).subscribe((response: any) => expect(response.hits.hits[0]).toEqual(record));
   });
 
   it('should extend the loan', () => {
     vi.spyOn(httpClient, 'get').mockReturnValue(of(canExtend));
-    service.canExtend('1')
-      .subscribe((response: CanExtend) => expect(response).toEqual(canExtend));
+    service.canExtend('1').subscribe((response: CanExtend) => expect(response).toEqual(canExtend));
   });
 
   it('should extend the loan', () => {
     vi.spyOn(httpClient, 'post').mockReturnValue(of(renew));
-    service.renew({pid: '1', item_pid: '1', transaction_location_pid: '1', transaction_user_pid: '1'})
+    service
+      .renew({ pid: '1', item_pid: '1', transaction_location_pid: '1', transaction_user_pid: '1' })
       .subscribe((response: any) => expect(response.pid).toEqual('renew'));
   });
 
   it('should cancel the loan', () => {
     vi.spyOn(httpClient, 'post').mockReturnValue(of(cancel));
-    service.cancel({pid: '1', transaction_location_pid: '1', transaction_user_pid: '1'})
+    service
+      .cancel({ pid: '1', transaction_location_pid: '1', transaction_user_pid: '1' })
       .subscribe((response: any) => expect(response.pid).toEqual('cancel'));
   });
 
   it('should return the list of projected expenses', () => {
     vi.spyOn(httpClient, 'get').mockReturnValue(of(loanOverduePreview));
-    service.getPreviewOverdue('1')
+    service
+      .getPreviewOverdue('1')
       .subscribe((response: LoanOverduePreview) => expect(response).toEqual(loanOverduePreview));
   });
 });

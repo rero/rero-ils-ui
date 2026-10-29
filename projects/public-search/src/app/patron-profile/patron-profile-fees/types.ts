@@ -13,10 +13,10 @@ export type Fee = {
 
 export type OverdueFee = {
   fees: {
-    steps: [],
+    steps: [];
     total: number;
-  },
+  };
   loan: {
     pid: string;
-  }
+  };
 };

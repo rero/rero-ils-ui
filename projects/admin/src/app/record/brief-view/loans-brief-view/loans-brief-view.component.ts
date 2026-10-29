@@ -1,29 +1,39 @@
 // SPDX-FileCopyrightText: Fondation RERO+
 // SPDX-FileCopyrightText: UCLouvain
 // SPDX-License-Identifier: AGPL-3.0-or-later
-import { Component, inject, input, OnInit, ChangeDetectionStrategy} from '@angular/core';
-
+import { DatePipe, JsonPipe, NgClass } from '@angular/common';
+import { Component, inject, input, OnInit } from '@angular/core';
+import { RouterLink } from '@angular/router';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
+import { Bind } from '@openng/optimus-ui/bind';
+import { Button } from '@openng/optimus-ui/button';
+import { DialogService } from '@openng/optimus-ui/dynamicdialog';
+import { ScrollPanel } from '@openng/optimus-ui/scrollpanel';
+import { Tag } from '@openng/optimus-ui/tag';
 import { AppStore, InheritedCallNumberComponent, MainTitlePipe } from '@rero/shared';
 import { DateTime } from 'luxon';
-import { DialogService } from 'primeng/dynamicdialog';
+
 import { LoanState } from '../../../classes/loans';
 import { CirculationLogsComponent } from '../../circulation-logs/circulation-logs.component';
-import { TranslateService, TranslateDirective, TranslatePipe } from '@ngx-translate/core';
-import { Bind } from 'primeng/bind';
-import { Button } from 'primeng/button';
-import { RouterLink } from '@angular/router';
-import { Tag } from 'primeng/tag';
-import { NgClass, JsonPipe, DatePipe } from '@angular/common';
-import { ScrollPanel } from 'primeng/scrollpanel';
 
 @Component({
-    selector: 'admin-loans-brief-view',
-    templateUrl: './loans-brief-view.component.html',
-    imports: [Bind, Button, TranslateDirective, InheritedCallNumberComponent, RouterLink, Tag, NgClass, ScrollPanel, JsonPipe, DatePipe, TranslatePipe, MainTitlePipe],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  selector: 'admin-loans-brief-view',
+  templateUrl: './loans-brief-view.component.html',
+  imports: [
+    Bind,
+    Button,
+    InheritedCallNumberComponent,
+    RouterLink,
+    Tag,
+    NgClass,
+    ScrollPanel,
+    JsonPipe,
+    DatePipe,
+    TranslatePipe,
+    MainTitlePipe,
+  ],
 })
 export class LoansBriefViewComponent implements OnInit {
-
   private dialogService: DialogService = inject(DialogService);
   private appStore = inject(AppStore);
   private translateService: TranslateService = inject(TranslateService);
@@ -70,14 +80,14 @@ export class LoansBriefViewComponent implements OnInit {
   /** Open transaction history logs dialog */
   openTransactionHistoryDialog(loanPid: string): void {
     this.dialogService.open(CirculationLogsComponent, {
-      header: this.translateService.instant("Circulation history"),
+      header: this.translateService.instant('Circulation history'),
       modal: true,
       width: '60vw',
       closable: true,
       data: {
         resourcePid: loanPid,
-        resourceType: 'loan'
-      }
+        resourceType: 'loan',
+      },
     });
   }
 

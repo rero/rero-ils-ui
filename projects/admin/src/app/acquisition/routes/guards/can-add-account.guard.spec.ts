@@ -1,13 +1,14 @@
 // SPDX-FileCopyrightText: Fondation RERO+
 // SPDX-License-Identifier: AGPL-3.0-or-later
+import { provideHttpClient, withXhr } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { NavigationEnd, Router, RouterModule, RouterStateSnapshot } from '@angular/router';
-import { TranslateModule } from '@ngx-translate/core';
+import { provideTranslateService } from '@ngx-translate/core';
 import { filter, firstValueFrom } from 'rxjs';
+
 import { ErrorPageComponent } from '../../../error/error-page/error-page.component';
 import { canAddAccountGuard } from './can-add-account.guard';
-import { provideHttpClient } from '@angular/common/http';
 
 describe('canAddAccountGuard', () => {
   let router: Router;
@@ -15,26 +16,23 @@ describe('canAddAccountGuard', () => {
   const routes = [
     {
       path: 'errors/400',
-      component: ErrorPageComponent
-    }
+      component: ErrorPageComponent,
+    },
   ];
 
-  const activatedRouteSnapshotSpy = { } as any;
-  activatedRouteSnapshotSpy.queryParams = { };
+  const activatedRouteSnapshotSpy = {} as any;
+  activatedRouteSnapshotSpy.queryParams = {};
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-    imports: [RouterModule.forRoot(routes),
-        TranslateModule.forRoot()],
-    providers: [provideHttpClient(), provideHttpClientTesting()]
-});
+      imports: [RouterModule.forRoot(routes)],
+      providers: [provideTranslateService(), provideHttpClient(withXhr()), provideHttpClientTesting()],
+    });
     router = TestBed.inject(Router);
   });
 
   async function waitForNavigation(): Promise<void> {
-    await firstValueFrom(
-      router.events.pipe(filter(e => e instanceof NavigationEnd))
-    );
+    await firstValueFrom(router.events.pipe(filter((e) => e instanceof NavigationEnd)));
   }
 
   it('should be created', () => {
@@ -45,8 +43,8 @@ describe('canAddAccountGuard', () => {
     const navPromise = waitForNavigation();
     await firstValueFrom(
       TestBed.runInInjectionContext(() =>
-        canAddAccountGuard(activatedRouteSnapshotSpy, {} as RouterStateSnapshot)
-      ) as any
+        canAddAccountGuard(activatedRouteSnapshotSpy, {} as RouterStateSnapshot),
+      ) as any,
     );
     await navPromise;
     expect(router.url).toBe('/errors/400');

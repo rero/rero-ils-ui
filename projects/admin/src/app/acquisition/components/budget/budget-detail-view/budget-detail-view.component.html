@@ -7,7 +7,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
   <!-- ROLLOVER INFO -->
   @if (!record.metadata.is_active) {
     <p-message severity="warn" showTransitionOptions="0ms">
-      {{ 'Fiscal year closed'|translate }}
+      {{ 'Fiscal year closed' | translate }}
     </p-message>
   }
   <header class="ui:my-3">
@@ -15,8 +15,8 @@ SPDX-License-Identifier: AGPL-3.0-or-later
   </header>
   <section>
     <dl class="metadata">
-      <dt translate>Total</dt>
-      <dd>{{ totalAmount() | currency:currencyCode:'symbol' }}</dd>
+      <dt>{{ 'Total' | translate }}</dt>
+      <dd>{{ totalAmount() | currency: currencyCode : 'symbol' }}</dd>
     </dl>
   </section>
 }

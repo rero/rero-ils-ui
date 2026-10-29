@@ -1,21 +1,19 @@
 // SPDX-FileCopyrightText: Fondation RERO+
 // SPDX-License-Identifier: AGPL-3.0-or-later
 import { NgClass } from '@angular/common';
-import { Component, inject, input, ChangeDetectionStrategy} from '@angular/core';
+import { Component, inject, input } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
+import { ButtonModule } from '@openng/optimus-ui/button';
 import { DateTranslatePipe } from '@rero/ng-core';
 import { AppStore, IPatron, IUser, JoinPipe } from '@rero/shared';
-import { ButtonModule } from 'primeng/button';
 
 @Component({
-    selector: 'public-search-patron-profile-personal',
-    templateUrl: './patron-profile-personal.component.html',
-    imports: [NgClass, RouterLink, TranslateDirective, TranslatePipe, DateTranslatePipe, JoinPipe, ButtonModule],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  selector: 'public-search-patron-profile-personal',
+  templateUrl: './patron-profile-personal.component.html',
+  imports: [NgClass, RouterLink, TranslatePipe, DateTranslatePipe, JoinPipe, ButtonModule],
 })
 export class PatronProfilePersonalComponent {
-
   private appStore = inject(AppStore);
 
   /** User record */

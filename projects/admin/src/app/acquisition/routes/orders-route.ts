@@ -6,18 +6,19 @@ import { toObservable } from '@angular/core/rxjs-interop';
 import { ResolveFn, Routes } from '@angular/router';
 import { _ } from '@ngx-translate/core';
 import {
-  ComponentCanDeactivateGuard,
   DetailComponent,
-  EditorComponent,
   IFilter,
   RecordData,
   RecordSearchPageComponent,
   RecordService,
   RecordType,
   RouteDataTypesInterface,
+  unsavedChangesGuard,
 } from '@rero/ng-core';
-import { PERMISSIONS, PERMISSION_OPERATOR } from '@rero/shared';
-import { Observable, filter, map, merge, of, skip, switchMap } from 'rxjs';
+import { EditorComponent } from '@rero/ng-core/editor';
+import { PERMISSION_OPERATOR, PERMISSIONS } from '@rero/shared';
+import { filter, map, merge, Observable, of, skip, switchMap } from 'rxjs';
+
 import { acqOrderLineGuard } from '../../guard/acq-order-line.guard';
 import { CAN_ACCESS_ACTIONS, canAccessGuard } from '../../guard/can-access.guard';
 import { permissionGuard } from '../../guard/permission.guard';
@@ -29,8 +30,7 @@ import { OrderDetailViewComponent } from '../components/order/order-detail-view/
 import { OrderReceiptViewComponent } from '../components/receipt/receipt-form/order-receipt-view.component';
 import { canOrderReceiptGuard } from './guards/can-order-receipt.guard';
 
-export const ordersRouteResolver: ResolveFn<Partial<RecordType>[]> = () =>
-  new OrdersRoute().getTypes();
+export const ordersRouteResolver: ResolveFn<Partial<RecordType>[]> = () => new OrdersRoute().getTypes();
 
 export const ordersRoutes: Routes = [
   {
@@ -57,7 +57,7 @@ export const ordersRoutes: Routes = [
     component: EditorComponent,
     title: _('Order'),
     canActivate: [canAccessGuard, acqOrderLineGuard],
-    canDeactivate: [ComponentCanDeactivateGuard],
+    canDeactivate: [unsavedChangesGuard],
     data: {
       action: CAN_ACCESS_ACTIONS.UPDATE,
       permissions: [PERMISSIONS.ACOR_SEARCH],
@@ -68,7 +68,7 @@ export const ordersRoutes: Routes = [
     component: EditorComponent,
     title: _('Order'),
     canActivate: [permissionGuard],
-    canDeactivate: [ComponentCanDeactivateGuard],
+    canDeactivate: [unsavedChangesGuard],
     data: {
       permissions: [PERMISSIONS.ACOR_CREATE],
     },
@@ -85,7 +85,7 @@ export class OrdersRoute extends BaseRoute implements RouteDataTypesInterface {
   protected recordService = inject(RecordService);
   private readonly deletedReceipt$ = toObservable(inject(AcqReceiptApiService).lastDeletedReceipt).pipe(
     skip(1),
-    filter((receipt): receipt is IAcqReceipt => receipt !== null)
+    filter((receipt): receipt is IAcqReceipt => receipt !== null),
   );
 
   /** Route name */
@@ -101,14 +101,11 @@ export class OrdersRoute extends BaseRoute implements RouteDataTypesInterface {
       detailComponent: OrderDetailViewComponent,
       searchFilters: [this.expertSearchFilter()],
       canAdd: () => of({ can: this.routeToolService.appStore.canAccess(PERMISSIONS.ACOR_CREATE), message: '' }),
-      permissions: (record: RecordData) => merge(
-        of(null),
-        this.deletedReceipt$.pipe(
-          filter((receipt) => receipt.acq_order.pid === record.metadata['pid'])
-        )
-      ).pipe(
-        switchMap(() => this.routeToolService.permissions(record, this.recordType, true))
-      ),
+      permissions: (record: RecordData) =>
+        merge(
+          of(null),
+          this.deletedReceipt$.pipe(filter((receipt) => receipt.acq_order.pid === record.metadata['pid'])),
+        ).pipe(switchMap(() => this.routeToolService.permissions(record, this.recordType, true))),
       processFilterName: (filter: IFilter) => this.processFilterName(filter),
       preCreateRecord: (data: any) => this._addDefaultInformation(data),
       preUpdateRecord: (data: any) => this._cleanRecord(data),
@@ -174,10 +171,16 @@ export class OrdersRoute extends BaseRoute implements RouteDataTypesInterface {
    */
   private _addDefaultInformation(data: any): any {
     data.organisation = {
-      $ref: this.routeToolService.apiService.getRefEndpoint('organisations', this.routeToolService.appStore.currentOrganisationPid()),
+      $ref: this.routeToolService.apiService.getRefEndpoint(
+        'organisations',
+        this.routeToolService.appStore.currentOrganisationPid(),
+      ),
     };
     data.library = {
-      $ref: this.routeToolService.apiService.getRefEndpoint('libraries', this.routeToolService.appStore.currentLibraryPid()),
+      $ref: this.routeToolService.apiService.getRefEndpoint(
+        'libraries',
+        this.routeToolService.appStore.currentLibraryPid(),
+      ),
     };
     return data;
   }
@@ -195,13 +198,28 @@ export class OrdersRoute extends BaseRoute implements RouteDataTypesInterface {
   }
 
   private processFilterName(filter: IFilter): Observable<string> {
-    if(filter.name) { return of(filter.name); }
+    if (filter.name) {
+      return of(filter.name);
+    }
     switch (filter.aggregationKey) {
-      case 'budget': return this.recordService.getRecord<{metadata: {name: string}}>('budgets', filter.key).pipe(map(record => record.metadata.name));
-      case 'account': return this.recordService.getRecord<{metadata: {name: string}}>('acq_accounts', filter.key).pipe(map(record => record.metadata.name));
-      case 'library': return this.recordService.getRecord<{metadata: {name: string}}>('libraries', filter.key).pipe(map(record => record.metadata.name));
-      case 'vendor': return this.recordService.getRecord<{metadata: {name: string}}>('vendors', filter.key).pipe(map(record => record.metadata.name));
-      default: return this.routeToolService.translateService.stream(filter.key);
+      case 'budget':
+        return this.recordService
+          .getRecord<{ metadata: { name: string } }>('budgets', filter.key)
+          .pipe(map((record) => record.metadata.name));
+      case 'account':
+        return this.recordService
+          .getRecord<{ metadata: { name: string } }>('acq_accounts', filter.key)
+          .pipe(map((record) => record.metadata.name));
+      case 'library':
+        return this.recordService
+          .getRecord<{ metadata: { name: string } }>('libraries', filter.key)
+          .pipe(map((record) => record.metadata.name));
+      case 'vendor':
+        return this.recordService
+          .getRecord<{ metadata: { name: string } }>('vendors', filter.key)
+          .pipe(map((record) => record.metadata.name));
+      default:
+        return this.routeToolService.translateService.stream(filter.key);
     }
   }
 }

@@ -8,5 +8,5 @@ export enum ILLRequestStatus {
   PENDING = 'pending',
   VALIDATED = 'validated',
   DENIED = 'denied',
-  CLOSED = 'closed'
+  CLOSED = 'closed',
 }

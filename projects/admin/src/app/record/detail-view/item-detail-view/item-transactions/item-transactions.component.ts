@@ -1,29 +1,28 @@
 // SPDX-FileCopyrightText: Fondation RERO+
 // SPDX-FileCopyrightText: UCLouvain
 // SPDX-License-Identifier: AGPL-3.0-or-later
-import { Component, computed, DestroyRef, effect, inject, input, output, signal, ChangeDetectionStrategy } from '@angular/core';
+import { Component, computed, DestroyRef, effect, inject, input, output, signal } from '@angular/core';
 import { takeUntilDestroyed, toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { LoanService } from '@app/admin/service/loan.service';
-import { TranslateService, TranslateDirective, TranslatePipe } from '@ngx-translate/core';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
+import { MessageService } from '@openng/optimus-ui/api';
+import { Bind } from '@openng/optimus-ui/bind';
+import { Button } from '@openng/optimus-ui/button';
+import { DialogService } from '@openng/optimus-ui/dynamicdialog';
+import { Panel } from '@openng/optimus-ui/panel';
 import { CONFIG } from '@rero/ng-core';
 import { AppStore, IPermissions, PERMISSIONS, PermissionsDirective } from '@rero/shared';
-import { MessageService } from 'primeng/api';
-import { DialogService } from 'primeng/dynamicdialog';
 import { forkJoin, of, switchMap } from 'rxjs';
+
 import { ItemRequestComponent } from '../../document-detail-view/item-request/item-request.component';
-import { Bind } from 'primeng/bind';
-import { Panel } from 'primeng/panel';
 import { ItemTransactionComponent } from '../item-transaction/item-transaction.component';
-import { Button } from 'primeng/button';
 
 @Component({
-    selector: 'admin-item-transactions',
-    templateUrl: './item-transactions.component.html',
-    imports: [Bind, Panel, PermissionsDirective, TranslateDirective, ItemTransactionComponent, Button, TranslatePipe],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  selector: 'admin-item-transactions',
+  templateUrl: './item-transactions.component.html',
+  imports: [Bind, Panel, PermissionsDirective, ItemTransactionComponent, Button, TranslatePipe],
 })
 export class ItemTransactionsComponent {
-
   private messageService: MessageService = inject(MessageService);
   private dialogService: DialogService = inject(DialogService);
   private loanService: LoanService = inject(LoanService);
@@ -37,12 +36,11 @@ export class ItemTransactionsComponent {
 
   private readonly _loans = toSignal(
     toObservable(this.itemPid).pipe(
-      switchMap(pid => pid
-        ? forkJoin([this.loanService.borrowedBy$(pid), this.loanService.requestedBy$(pid)])
-        : of([[], []])
-      )
+      switchMap((pid) =>
+        pid ? forkJoin([this.loanService.borrowedBy$(pid), this.loanService.requestedBy$(pid)]) : of([[], []]),
+      ),
     ),
-    { initialValue: [[], []] }
+    { initialValue: [[], []] },
   );
 
   readonly borrowedBy = computed(() => this._loans()[0] as any[]);
@@ -64,7 +62,7 @@ export class ItemTransactionsComponent {
       modal: true,
       width: '40vw',
       closable: true,
-      data: { recordPid: this.itemPid(), recordType: 'item' }
+      data: { recordPid: this.itemPid(), recordType: 'item' },
     });
     ref.onClose.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((value: boolean) => {
       if (value) {
@@ -86,7 +84,7 @@ export class ItemTransactionsComponent {
           severity: 'warn',
           summary: this.translateService.instant('Request'),
           detail: this.translateService.instant('The pending request has been cancelled.'),
-          life: CONFIG.MESSAGE_LIFE
+          life: CONFIG.MESSAGE_LIFE,
         });
         this.requestEvent.emit(null);
         this._refreshRequestList();
@@ -100,12 +98,12 @@ export class ItemTransactionsComponent {
   updateRequestPickupLocation(data: any): void {
     this.loanService
       .updateLoanPickupLocation(data.transaction.metadata.pid, data.pickupLocationPid)
-      .subscribe(_result => {
+      .subscribe((_result) => {
         this.messageService.add({
           severity: 'success',
           summary: this.translateService.instant('Request'),
           detail: this.translateService.instant('The pickup location has been changed.'),
-          life: CONFIG.MESSAGE_LIFE
+          life: CONFIG.MESSAGE_LIFE,
         });
         this._refreshRequestList();
       });
@@ -116,8 +114,6 @@ export class ItemTransactionsComponent {
    * Refresh the request list
    */
   private _refreshRequestList(): void {
-    this.loanService
-      .requestedBy$(this.itemPid())
-      .subscribe(requestedLoans => this.requestedBy.set(requestedLoans));
+    this.loanService.requestedBy$(this.itemPid()).subscribe((requestedLoans) => this.requestedBy.set(requestedLoans));
   }
 }

@@ -1,8 +1,8 @@
 // SPDX-FileCopyrightText: Fondation RERO+
 // SPDX-License-Identifier: AGPL-3.0-or-later
 import { TestBed } from '@angular/core/testing';
-import { AppConfigService } from './app-config-service.service';
 
+import { AppConfigService } from './app-config-service.service';
 
 describe('AppConfigServiceService', () => {
   let service: AppConfigService;

@@ -1,14 +1,13 @@
 // SPDX-FileCopyrightText: Fondation RERO+
 // SPDX-License-Identifier: AGPL-3.0-or-later
-import { ChangeDetectionStrategy, Component, input } from '@angular/core';
-import { _, TranslateDirective } from '@ngx-translate/core';
-import { Accordion, AccordionContent, AccordionHeader, AccordionPanel } from 'primeng/accordion';
+import { Component, input } from '@angular/core';
+import { _, TranslateDirective, TranslatePipe } from '@ngx-translate/core';
+import { Accordion, AccordionContent, AccordionHeader, AccordionPanel } from '@openng/optimus-ui/accordion';
 
 @Component({
   selector: 'admin-organisation-detail-view',
-  imports: [TranslateDirective, Accordion, AccordionPanel, AccordionHeader, AccordionContent],
+  imports: [TranslatePipe, TranslateDirective, Accordion, AccordionPanel, AccordionHeader, AccordionContent],
   templateUrl: './organisation-detail-view.component.html',
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class OrganisationDetailViewComponent {
   readonly record = input.required<any>();

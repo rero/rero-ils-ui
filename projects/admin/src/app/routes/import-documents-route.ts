@@ -3,11 +3,12 @@
 
 import { inject } from '@angular/core';
 import { ResolveFn, Routes } from '@angular/router';
-import { TranslateService, _ } from '@ngx-translate/core';
+import { _, TranslateService } from '@ngx-translate/core';
 import { Bucket, IFilter, RecordType } from '@rero/ng-core';
-import { PERMISSIONS, PERMISSION_OPERATOR } from '@rero/shared';
+import { PERMISSION_OPERATOR, PERMISSIONS } from '@rero/shared';
 import { Observable, of } from 'rxjs';
 import { map } from 'rxjs/operators';
+
 import { ImportSourceApiService } from '../api/import-source-api.service';
 import { ExternalSourceSetting } from '../classes/external-source';
 import { permissionGuard } from '../guard/permission.guard';
@@ -65,9 +66,9 @@ class ImportDocumentsRoute extends BaseRoute {
    * @returns observable of the array of record type configurations.
    */
   getTypeConfigs(): Observable<Partial<RecordType>[]> {
-    return this.importSourceApiService.getSources().pipe(
-      map((sources: ExternalSourceSetting[]) => sources.map((source) => this._loadConfigSource(source)))
-    );
+    return this.importSourceApiService
+      .getSources()
+      .pipe(map((sources: ExternalSourceSetting[]) => sources.map((source) => this._loadConfigSource(source))));
   }
 
   /**
@@ -104,10 +105,14 @@ class ImportDocumentsRoute extends BaseRoute {
    * @return Observable of the name.
    */
   private processName(bucketOrFilter: Bucket | IFilter): Observable<string> {
-    if(bucketOrFilter.name) { return of(bucketOrFilter.name); }
+    if (bucketOrFilter.name) {
+      return of(bucketOrFilter.name);
+    }
     switch (bucketOrFilter.aggregationKey) {
-      case 'language': return of(this.routeToolService.translateService.instant(`lang_${bucketOrFilter.key}`));
-      default: return this.routeToolService.translateService.stream(bucketOrFilter.key);
+      case 'language':
+        return of(this.routeToolService.translateService.instant(`lang_${bucketOrFilter.key}`));
+      default:
+        return this.routeToolService.translateService.stream(bucketOrFilter.key);
     }
   }
 }

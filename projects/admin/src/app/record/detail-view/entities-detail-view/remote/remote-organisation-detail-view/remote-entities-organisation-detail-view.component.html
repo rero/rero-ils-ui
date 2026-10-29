@@ -4,48 +4,48 @@ SPDX-FileCopyrightText: UCLouvain
 SPDX-License-Identifier: AGPL-3.0-or-later
 -->
 <dl class="metadata">
-<!-- AUTHORIZED ACCESS POINT -->
-@if (record().authorized_access_point) {
-  <dt translate>Authorized access point</dt>
-  <dd>{{ record().authorized_access_point }}</dd>
-}
+  <!-- AUTHORIZED ACCESS POINT -->
+  @if (record().authorized_access_point) {
+    <dt>{{ 'Authorized access point' | translate }}</dt>
+    <dd>{{ record().authorized_access_point }}</dd>
+  }
 
-<!-- DATE OF ESTABLISHMENT -->
-@if (record().date_of_establishment) {
-  <dt translate>Date of establishment</dt>
-  <dd>{{ record().date_of_establishment }}</dd>
-}
-<!-- DATE OF TERMINATION -->
-@if (record().date_of_termination) {
-  <dt translate>Date of termination</dt>
-  <dd>{{ record().date_of_termination }}</dd>
-}
+  <!-- DATE OF ESTABLISHMENT -->
+  @if (record().date_of_establishment) {
+    <dt>{{ 'Date of establishment' | translate }}</dt>
+    <dd>{{ record().date_of_establishment }}</dd>
+  }
+  <!-- DATE OF TERMINATION -->
+  @if (record().date_of_termination) {
+    <dt>{{ 'Date of termination' | translate }}</dt>
+    <dd>{{ record().date_of_termination }}</dd>
+  }
   <!-- LANGUAGE -->
-@if (record().language) {
-  <dt translate>Language</dt>
-  <dd>
-    <ul class="ui:list-none">
-      @for (language of record().language; track $index) {
-        <li>{{ ('lang_' + language) | translate }}</li>
-      }
-    </ul>
-  </dd>
-}
-<!-- COUNTRY ASSOCIATED -->
-@if (record().country_associated) {
-  <dt translate>Country associated</dt>
-  <dd>{{ 'country_' + record().country_associated | translate }}</dd>
-}
+  @if (record().language) {
+    <dt>{{ 'Language' | translate }}</dt>
+    <dd>
+      <ul class="ui:list-none">
+        @for (language of record().language; track $index) {
+          <li>{{ 'lang_' + language | translate }}</li>
+        }
+      </ul>
+    </dd>
+  }
+  <!-- COUNTRY ASSOCIATED -->
+  @if (record().country_associated) {
+    <dt>{{ 'Country associated' | translate }}</dt>
+    <dd>{{ 'country_' + record().country_associated | translate }}</dd>
+  }
 
-<!-- VARIANT NAME -->
-@if (record().variant_access_point) {
-  <dt translate>Variant name</dt>
-  <dd>
-    <ul class="ui:list-none">
-      @for (variant_name of record().variant_access_point; track $index) {
-        <li>{{ variant_name }}</li>
-      }
-    </ul>
-  </dd>
-}
+  <!-- VARIANT NAME -->
+  @if (record().variant_access_point) {
+    <dt>{{ 'Variant name' | translate }}</dt>
+    <dd>
+      <ul class="ui:list-none">
+        @for (variant_name of record().variant_access_point; track $index) {
+          <li>{{ variant_name }}</li>
+        }
+      </ul>
+    </dd>
+  }
 </dl>

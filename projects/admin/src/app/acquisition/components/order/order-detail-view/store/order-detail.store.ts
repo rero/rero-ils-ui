@@ -7,17 +7,13 @@ import { rxMethod } from '@ngrx/signals/rxjs-interop';
 import { AppStore, RecordPermissions } from '@rero/shared';
 import { EMPTY, forkJoin, of, pipe } from 'rxjs';
 import { catchError, filter, map, switchMap, tap } from 'rxjs/operators';
+
+import { RecordPermissionService } from '../../../../../service/record-permission.service';
 import { AcqOrderApiService } from '../../../../api/acq-order-api.service';
 import { AcqReceiptApiService } from '../../../../api/acq-receipt-api.service';
-import { RecordPermissionService } from '../../../../../service/record-permission.service';
-import { validateReceivedOrderPermissions } from '../../../../utils/permissions';
-import {
-  AcqOrderHistoryVersion,
-  AcqOrderStatus,
-  IAcqOrder,
-  IAcqOrderLine,
-} from '../../../../classes/order';
+import { AcqOrderHistoryVersion, AcqOrderStatus, IAcqOrder, IAcqOrderLine } from '../../../../classes/order';
 import { IAcqReceipt } from '../../../../classes/receipt';
+import { validateReceivedOrderPermissions } from '../../../../utils/permissions';
 
 export type OrderDetailState = {
   order: IAcqOrder | undefined;
@@ -46,10 +42,9 @@ export const OrderDetailStore = signalStore(
     },
     canAddLine: () =>
       store.order()?.status === AcqOrderStatus.PENDING && store.orderPermissions()?.update?.can === true,
-    disabledReceipts: () =>
-      [AcqOrderStatus.PENDING, AcqOrderStatus.CANCELLED].some(s => s === store.order()?.status),
+    disabledReceipts: () => [AcqOrderStatus.PENDING, AcqOrderStatus.CANCELLED].some((s) => s === store.order()?.status),
     canAddReceipt: () =>
-      [AcqOrderStatus.ORDERED, AcqOrderStatus.PARTIALLY_RECEIVED].some(s => s === store.order()?.status),
+      [AcqOrderStatus.ORDERED, AcqOrderStatus.PARTIALLY_RECEIVED].some((s) => s === store.order()?.status),
     sortedOrderLines: (): IAcqOrderLine[] => {
       const linesSortCriteria = store.linesSortCriteria();
       const desc = linesSortCriteria.startsWith('-');
@@ -71,119 +66,122 @@ export const OrderDetailStore = signalStore(
       });
     },
   })),
-  withMethods((store,
-    acqOrderService = inject(AcqOrderApiService),
-    acqReceiptService = inject(AcqReceiptApiService),
-    recordPermissionService = inject(RecordPermissionService),
-    appStore = inject(AppStore)
-  ) => ({
-    setFromRecord(record: any): void {
-      if (record?.metadata?.pid) {
-        patchState(store, { order: record.metadata });
-      }
-    },
+  withMethods(
+    (
+      store,
+      acqOrderService = inject(AcqOrderApiService),
+      acqReceiptService = inject(AcqReceiptApiService),
+      recordPermissionService = inject(RecordPermissionService),
+      appStore = inject(AppStore),
+    ) => ({
+      setFromRecord(record: any): void {
+        if (record?.metadata?.pid) {
+          patchState(store, { order: record.metadata });
+        }
+      },
 
-    updateOrder(order: IAcqOrder): void {
-      patchState(store, { order });
-    },
+      updateOrder(order: IAcqOrder): void {
+        patchState(store, { order });
+      },
 
-    setSortCriteria(linesSortCriteria: string): void {
-      patchState(store, { linesSortCriteria });
-    },
+      setSortCriteria(linesSortCriteria: string): void {
+        patchState(store, { linesSortCriteria });
+      },
 
-    orderCreateInfoMessage(): string {
-      return recordPermissionService.generateTooltipMessage(store.orderPermissions()?.create?.reasons, 'create');
-    },
+      orderCreateInfoMessage(): string {
+        return recordPermissionService.generateTooltipMessage(store.orderPermissions()?.create?.reasons, 'create');
+      },
 
-    receiptCreateInfoMessage(): string {
-      return recordPermissionService.generateTooltipMessage(store.receiptPermissions()?.create?.reasons, 'create');
-    },
+      receiptCreateInfoMessage(): string {
+        return recordPermissionService.generateTooltipMessage(store.receiptPermissions()?.create?.reasons, 'create');
+      },
 
-    loadOrderPermissions: rxMethod<string>(
-      pipe(
-        filter(Boolean),
-        switchMap(pid =>
-          recordPermissionService.getPermission('acq_orders', pid).pipe(
-            map(p => appStore.validateLibraryPermissions(p, store.order()?.library?.pid ?? '')),
-            tap(orderPermissions => patchState(store, { orderPermissions })),
-            catchError(() => EMPTY)
-          )
-        )
-      )
-    ),
-
-    loadOrderLines: rxMethod<string>(
-      pipe(
-        filter(Boolean),
-        switchMap(pid =>
-          forkJoin([
-            acqOrderService.getOrderLines(pid),
-            acqOrderService.getOrderLinesDocumentTitles(pid).pipe(catchError(() => of(new Map<string, string>()))),
-          ]).pipe(
-            map(([orderLines, documentTitles]) =>
-              orderLines.map(orderLine => ({
-                ...orderLine,
-                documentTitle: documentTitles.get(orderLine.pid ?? ''),
-              }))
+      loadOrderPermissions: rxMethod<string>(
+        pipe(
+          filter(Boolean),
+          switchMap((pid) =>
+            recordPermissionService.getPermission('acq_orders', pid).pipe(
+              map((p) => appStore.validateLibraryPermissions(p, store.order()?.library?.pid ?? '')),
+              tap((orderPermissions) => patchState(store, { orderPermissions })),
+              catchError(() => EMPTY),
             ),
-            tap(orderLines => patchState(store, { orderLines })),
-            catchError(() => EMPTY)
-          )
-        )
-      )
-    ),
+          ),
+        ),
+      ),
 
-    loadReceipts: rxMethod<string>(
-      pipe(
-        filter(Boolean),
-        switchMap(pid =>
-          acqReceiptService.getReceiptsForOrder(pid).pipe(
-            tap(receipts => patchState(store, { receipts })),
-            catchError(() => EMPTY)
-          )
-        )
-      )
-    ),
+      loadOrderLines: rxMethod<string>(
+        pipe(
+          filter(Boolean),
+          switchMap((pid) =>
+            forkJoin([
+              acqOrderService.getOrderLines(pid),
+              acqOrderService.getOrderLinesDocumentTitles(pid).pipe(catchError(() => of(new Map<string, string>()))),
+            ]).pipe(
+              map(([orderLines, documentTitles]) =>
+                orderLines.map((orderLine) => ({
+                  ...orderLine,
+                  documentTitle: documentTitles.get(orderLine.pid ?? ''),
+                })),
+              ),
+              tap((orderLines) => patchState(store, { orderLines })),
+              catchError(() => EMPTY),
+            ),
+          ),
+        ),
+      ),
 
-    loadReceiptPermissions: rxMethod<string>(
-      pipe(
-        filter(Boolean),
-        switchMap(pid =>
-          recordPermissionService.getPermission('acq_orders', pid).pipe(
-            map(p => appStore.validateLibraryPermissions(p, store.order()?.library?.pid ?? '')),
-            map(p => validateReceivedOrderPermissions(p, store.order()!)),
-            tap(receiptPermissions => patchState(store, { receiptPermissions })),
-            catchError(() => EMPTY)
-          )
-        )
-      )
-    ),
+      loadReceipts: rxMethod<string>(
+        pipe(
+          filter(Boolean),
+          switchMap((pid) =>
+            acqReceiptService.getReceiptsForOrder(pid).pipe(
+              tap((receipts) => patchState(store, { receipts })),
+              catchError(() => EMPTY),
+            ),
+          ),
+        ),
+      ),
 
-    loadHistory: rxMethod<string>(
-      pipe(
-        filter(Boolean),
-        switchMap(pid =>
-          acqOrderService.getOrderHistory(pid).pipe(
-            map(versions => versions.filter(Boolean).map(v => new AcqOrderHistoryVersion(v))),
-            tap(historyVersions => patchState(store, { historyVersions })),
-            catchError(() => EMPTY)
-          )
-        )
-      )
-    ),
+      loadReceiptPermissions: rxMethod<string>(
+        pipe(
+          filter(Boolean),
+          switchMap((pid) =>
+            recordPermissionService.getPermission('acq_orders', pid).pipe(
+              map((p) => appStore.validateLibraryPermissions(p, store.order()?.library?.pid ?? '')),
+              map((p) => validateReceivedOrderPermissions(p, store.order()!)),
+              tap((receiptPermissions) => patchState(store, { receiptPermissions })),
+              catchError(() => EMPTY),
+            ),
+          ),
+        ),
+      ),
 
-    reloadOrder: rxMethod<string | null | undefined>(
-      pipe(
-        filter((pid): pid is string => !!pid),
-        switchMap(pid =>
-          acqOrderService.getOrder(pid, 1).pipe(
-            tap(order => patchState(store, { order })),
-            catchError(() => EMPTY)
-          )
-        )
-      )
-    ),
-  })),
+      loadHistory: rxMethod<string>(
+        pipe(
+          filter(Boolean),
+          switchMap((pid) =>
+            acqOrderService.getOrderHistory(pid).pipe(
+              map((versions) => versions.filter(Boolean).map((v) => new AcqOrderHistoryVersion(v))),
+              tap((historyVersions) => patchState(store, { historyVersions })),
+              catchError(() => EMPTY),
+            ),
+          ),
+        ),
+      ),
+
+      reloadOrder: rxMethod<string | null | undefined>(
+        pipe(
+          filter((pid): pid is string => !!pid),
+          switchMap((pid) =>
+            acqOrderService.getOrder(pid, 1).pipe(
+              tap((order) => patchState(store, { order })),
+              catchError(() => EMPTY),
+            ),
+          ),
+        ),
+      ),
+    }),
+  ),
   withHooks((store) => {
     const acqOrderService = inject(AcqOrderApiService);
     const acqReceiptService = inject(AcqReceiptApiService);
@@ -206,7 +204,7 @@ export const OrderDetailStore = signalStore(
           const line = acqOrderService.lastDeletedOrderLine();
           if (!line) return;
           patchState(store, {
-            orderLines: untracked(() => store.orderLines()).filter(l => l.pid !== line.pid),
+            orderLines: untracked(() => store.orderLines()).filter((l) => l.pid !== line.pid),
           });
           store.reloadOrder(untracked(() => store.order()?.pid));
         });
@@ -216,11 +214,11 @@ export const OrderDetailStore = signalStore(
           const receipt = acqReceiptService.lastDeletedReceipt();
           if (!receipt) return;
           patchState(store, {
-            receipts: untracked(() => store.receipts()).filter(r => r.pid !== receipt.pid),
+            receipts: untracked(() => store.receipts()).filter((r) => r.pid !== receipt.pid),
           });
           store.reloadOrder(untracked(() => store.order()?.pid));
         });
       },
     };
-  })
+  }),
 );

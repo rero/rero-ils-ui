@@ -3,115 +3,90 @@ SPDX-FileCopyrightText: Fondation RERO+
 SPDX-License-Identifier: AGPL-3.0-or-later
 -->
 @if (record()) {
-<div class="ui:flex ui:justify-between ui:mb-2">
-  <div class="ui:flex ui:items-center ui:justify-center">
-    <p-inplace #inplace (onActivate)="focusInput()">
-      <ng-template #display>
-        <div class="ui:flex ui:gap-2">
-          <span><strong>ILS pid:</strong> {{ ilsPid() }}</span>
-          <span><i class="fa-solid fa-pencil"></i></span>
-        </div>
-      </ng-template>
-      <ng-template #content let-closeCallback="closeCallback">
-        <div class="ui:flex ui:gap-2">
-          <input
-            #ilsPidInput
-            [ngModel]="ilsPid()"
-            (keyup.enter)="saveIlsPid($event); inplace.deactivate()"
-            (keydown.escape)="inplace.deactivate()"
-            type="text"
-            pInputText
-            onFocus="this.setSelectionRange(0, this.value.length)"
-          />
-          <button type="button" pButton (click)="closeCallback($event)" text>
-            <i class="fa-solid fa-xmark"></i>
-          </button>
-        </div>
-      </ng-template>
-    </p-inplace>
-  </div>
-  <div class="ui:flex ui:items-center ui:justify-center">
-    <p-button
-      icon="fa-solid fa-chevron-left"
-      (onClick)="previousCandidate()"
-      [disabled]="!hasPrevious()"
-      [text]="true"
-    />
-    <small>
-      {{ currentCandidateIndex() + 1 }}&nbsp;/&nbsp;{{ candidates().length }}
-    </small>
-    <p-button
-      icon="fa-solid fa-chevron-right"
-      (onClick)="nextCandidate()"
-      [disabled]="!hasNext()"
-      [text]="true"
-    />
-  </div>
-  <div class="ui:flex ui:items-center ui:gap-2 ui:justify-center">
-    <p-button
-      size="small"
-      [outlined]="true"
-      [label]="'Validate' | translate"
-      (onClick)="save()"
-      icon="fa-solid fa-check"
-      [disabled]="httpPending.isPending()"
-    />
-    <p-button
-      [outlined]="true"
-      size="small"
-      [label]="'Reject' | translate"
-      (onClick)="reject()"
-      icon="fa-solid fa-trash-can"
-      severity="danger"
-      [disabled]="httpPending.isPending()"
-    />
-  </div>
-</div>
-
-@for (message of messages(); track $index) {
-  <p-message
-    styleClass="ui:my-2"
-    [severity]="$any(message.severity)"
-    showTransitionOptions="0ms"
-  >
-    {{ message.detail }}
-  </p-message>
-}
-
-<div class="ui:flex ui:justify-between ui:mb-1">
-  <div class="ui:flex ui:items-center ui:justify-center">
-    <p-tag
-      [severity]="
-        status() === 'match'
-          ? 'success'
-          : status().endsWith('check')
-          ? 'warn'
-          : 'secondary'
-      "
-      [value]="record().metadata.deduplication.status | translate"
-    />
-    @if (record()?.metadata?.deduplication?.modified_by) {
-    <small class="ui:ml-2">
-      ({{ record()?.metadata?.deduplication?.modified_by }} /
-      {{ record()?.metadata?.deduplication?.modified_at | dateTranslate : "medium" }})
-    </small>
-    }
+  <div class="ui:flex ui:justify-between ui:mb-2">
+    <div class="ui:flex ui:items-center ui:justify-center">
+      <p-inplace #inplace (onActivate)="focusInput()">
+        <ng-template #display>
+          <div class="ui:flex ui:gap-2">
+            <span><strong>ILS pid:</strong> {{ ilsPid() }}</span>
+            <span><i class="fa-solid fa-pencil"></i></span>
+          </div>
+        </ng-template>
+        <ng-template #content let-closeCallback="closeCallback">
+          <div class="ui:flex ui:gap-2">
+            <input
+              #ilsPidInput
+              [ngModel]="ilsPid()"
+              (keyup.enter)="saveIlsPid($event); inplace.deactivate()"
+              (keydown.escape)="inplace.deactivate()"
+              type="text"
+              pInputText
+              onFocus="this.setSelectionRange(0, this.value.length)" />
+            <button type="button" pButton (click)="closeCallback($event)" text>
+              <i class="fa-solid fa-xmark"></i>
+            </button>
+          </div>
+        </ng-template>
+      </p-inplace>
+    </div>
+    <div class="ui:flex ui:items-center ui:justify-center">
+      <p-button
+        icon="fa-solid fa-chevron-left"
+        (onClick)="previousCandidate()"
+        [disabled]="!hasPrevious()"
+        [text]="true" />
+      <small> {{ currentCandidateIndex() + 1 }}&nbsp;/&nbsp;{{ candidates().length }} </small>
+      <p-button icon="fa-solid fa-chevron-right" (onClick)="nextCandidate()" [disabled]="!hasNext()" [text]="true" />
+    </div>
+    <div class="ui:flex ui:items-center ui:gap-2 ui:justify-center">
+      <p-button
+        size="small"
+        [outlined]="true"
+        [label]="'Validate' | translate"
+        (onClick)="save()"
+        icon="fa-solid fa-check"
+        [disabled]="httpPending.isPending()" />
+      <p-button
+        [outlined]="true"
+        size="small"
+        [label]="'Reject' | translate"
+        (onClick)="reject()"
+        icon="fa-solid fa-trash-can"
+        severity="danger"
+        [disabled]="httpPending.isPending()" />
+    </div>
   </div>
 
-  @if (currentCandidate()) {
-  <div class="ui:flex ui:items-center ui:justify-center">
-    @if(currentCandidate()?.score) {
-    <strong translate>Score</strong>&nbsp;{{ currentCandidate()!.score | number }}
-    } @else {
-    <strong translate>Manually added</strong>
-    }
-  </div>
+  @for (message of messages(); track $index) {
+    <p-message styleClass="ui:my-2" [severity]="$any(message.severity)" showTransitionOptions="0ms">
+      {{ message.detail }}
+    </p-message>
   }
-</div>
 
-<admin-migration-metadata
-  class="ui:mb-2"
-  [record]="record()"
-  [candidate]="currentCandidate()"
-/>
+  <div class="ui:flex ui:justify-between ui:mb-1">
+    <div class="ui:flex ui:items-center ui:justify-center">
+      <p-tag
+        [severity]="status() === 'match' ? 'success' : status().endsWith('check') ? 'warn' : 'secondary'"
+        [value]="record().metadata.deduplication.status | translate" />
+      @if (record()?.metadata?.deduplication?.modified_by) {
+        <small class="ui:ml-2">
+          ({{ record()?.metadata?.deduplication?.modified_by }} /
+          {{ record()?.metadata?.deduplication?.modified_at | dateTranslate: 'medium' }})
+        </small>
+      }
+    </div>
+
+    @if (currentCandidate()) {
+      <div class="ui:flex ui:items-center ui:justify-center">
+        @if (currentCandidate()?.score) {
+          <strong>{{ 'Score' | translate }}</strong
+          >&nbsp;{{ currentCandidate()!.score | number }}
+        } @else {
+          <strong>{{ 'Manually added' | translate }}</strong>
+        }
+      </div>
+    }
+  </div>
+
+  <admin-migration-metadata class="ui:mb-2" [record]="record()" [candidate]="currentCandidate()" />
 }

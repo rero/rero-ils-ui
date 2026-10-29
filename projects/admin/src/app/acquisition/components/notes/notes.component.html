@@ -5,10 +5,9 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 -->
 <dl class="metadata">
   @for (note of notes(); track $index) {
-    <dt translate>
-      {{ note.type }}
+    <dt>
+      {{ note.type | translate }}
     </dt>
-    <dd [innerHTML]="note.content | nl2br">
-    </dd>
+    <dd [innerHTML]="note.content | nl2br"></dd>
   }
 </dl>

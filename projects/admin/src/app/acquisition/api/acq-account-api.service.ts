@@ -8,13 +8,13 @@ import { RecordService } from '@rero/ng-core';
 import { BaseApi, type EsResult } from '@rero/shared';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
+
 import { accountDefaultData, IAcqAccount } from '../classes/account';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class AcqAccountApiService {
-
   private httpClient: HttpClient = inject(HttpClient);
   private recordService: RecordService = inject(RecordService);
 
@@ -33,9 +33,9 @@ export class AcqAccountApiService {
     return this.recordService
       .getRecords(this.resourceName, { query: `pid:${accountPid}`, page: 1, itemsPerPage: 1 })
       .pipe(
-        map((result: EsResult) => result.hits.total === 0 ? [] : result.hits.hits),
-        map((hits: any[]) => hits.map((hit: any) => ({...accountDefaultData, ...hit.metadata}) )),
-        map((hits: IAcqAccount[]) => hits.find(Boolean))  // Get first element of array if exists
+        map((result: EsResult) => (result.hits.total === 0 ? [] : result.hits.hits)),
+        map((hits: any[]) => hits.map((hit: any) => ({ ...accountDefaultData, ...hit.metadata }))),
+        map((hits: IAcqAccount[]) => hits.find(Boolean)), // Get first element of array if exists
       );
   }
 
@@ -46,28 +46,25 @@ export class AcqAccountApiService {
    * @param options: the additional options to get the records (optional)
    * @return: an observable of ElasticSearch response corresponding to search criteria
    */
-   getAccounts(libraryPid: string, parentPid?: string, options?: { sort?: string }): Observable<IAcqAccount[]> {
-    const defaultQueryParams = [
-      'is_active:true',
-      `library.pid:${libraryPid}`
-    ];
+  getAccounts(libraryPid: string, parentPid?: string, options?: { sort?: string }): Observable<IAcqAccount[]> {
+    const defaultQueryParams = ['is_active:true', `library.pid:${libraryPid}`];
     if (parentPid !== undefined) {
-      const parentParam = (parentPid === null) ? 'depth:0' : `parent.pid:${parentPid}`;
+      const parentParam = parentPid === null ? 'depth:0' : `parent.pid:${parentPid}`;
       defaultQueryParams.push(parentParam);
     }
     const query = defaultQueryParams.join(' AND ');
-    options = { ...{sort: 'name'}, ...options };  // add some default params
+    options = { ...{ sort: 'name' }, ...options }; // add some default params
     return this.recordService
       .getRecords(this.resourceName, {
         query,
         page: 1,
         itemsPerPage: RecordService.MAX_REST_RESULTS_SIZE,
         headers: BaseApi.reroJsonheaders,
-        sort: options.sort
+        sort: options.sort,
       })
       .pipe(
-        map((result: EsResult) => result.hits.total === 0 ? [] : result.hits.hits),
-        map((hits: any[]) => hits.map(hit => ({...accountDefaultData, ...hit.metadata}) ))
+        map((result: EsResult) => (result.hits.total === 0 ? [] : result.hits.hits)),
+        map((hits: any[]) => hits.map((hit) => ({ ...accountDefaultData, ...hit.metadata }))),
       );
   }
 
@@ -80,10 +77,7 @@ export class AcqAccountApiService {
    */
   transferFunds(sourcePid: string, targetPid: string, amount: number): Observable<any> {
     const apiUrl = '/api/acq_accounts/transfer_funds';
-    const params = new HttpParams()
-      .set('source', sourcePid)
-      .set('target', targetPid)
-      .set('amount', amount.toString());
+    const params = new HttpParams().set('source', sourcePid).set('target', targetPid).set('amount', amount.toString());
     return this.httpClient.get<any>(apiUrl, { params });
   }
 }

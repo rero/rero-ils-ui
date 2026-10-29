@@ -2,27 +2,26 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 import { HttpErrorResponse } from '@angular/common/http';
-import { ChangeDetectionStrategy, Component, inject, input, OnInit, output, signal } from '@angular/core';
+import { Component, inject, input, OnInit, output, signal } from '@angular/core';
 import { FormsModule, ReactiveFormsModule, UntypedFormGroup } from '@angular/forms';
 import { HoldingPatronRequest } from '@app/public-search/classes/holdings';
 import { FormlyFieldConfig, FormlyModule } from '@ngx-formly/core';
 import { _, TranslatePipe, TranslateService } from '@ngx-translate/core';
-import { Button } from 'primeng/button';
-import { Message } from 'primeng/message';
-import { Observable } from 'rxjs';
+import { Button } from '@openng/optimus-ui/button';
+import { Message } from '@openng/optimus-ui/message';
+import { Observable, of } from 'rxjs';
 import { finalize } from 'rxjs/operators';
+
 import { HoldingsApiService } from '../../../api/holdings-api.service';
 import { ItemApiService } from '../../../api/item-api.service';
 import { LocationApiService } from '../../../api/location-api.service';
 
 @Component({
-    selector: 'public-search-pickup-location',
-    templateUrl: './pickup-location.component.html',
-    imports: [Message, FormsModule, ReactiveFormsModule, FormlyModule, Button, TranslatePipe],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  selector: 'public-search-pickup-location',
+  templateUrl: './pickup-location.component.html',
+  imports: [Message, FormsModule, ReactiveFormsModule, FormlyModule, Button, TranslatePipe],
 })
 export class PickupLocationComponent implements OnInit {
-
   private locationApiService: LocationApiService = inject(LocationApiService);
   private itemApiService: ItemApiService = inject(ItemApiService);
   private holdingsApiService: HoldingsApiService = inject(HoldingsApiService);
@@ -58,16 +57,16 @@ export class PickupLocationComponent implements OnInit {
   apiRequest?: Observable<HoldingPatronRequest>;
 
   /** User message */
-  readonly requestMessage = signal<{success: boolean, message: string} | null>(null);
+  readonly requestMessage = signal<{ success: boolean; message: string } | null>(null);
 
   /** OnInit hook */
   ngOnInit(): void {
     this.locationApiService
       .getPickupLocationsByRecordId(this.recordType(), this.record()?.metadata?.pid)
       .subscribe((pickups: any) => {
-        const options: {label: string, value: string}[] = [];
+        const options: { label: string; value: string }[] = [];
         pickups.forEach((pickup: any) => {
-          options.push({label: pickup.name, value: pickup.pid });
+          options.push({ label: pickup.name, value: pickup.pid });
         });
         const newFields: FormlyFieldConfig[] = [];
         // Text area Year/Volume/Number/Pages
@@ -80,7 +79,7 @@ export class PickupLocationComponent implements OnInit {
               placeholder: this.translateService.instant('Year / Volume / Number / Pages'),
               maxLength: 100,
               required: true,
-            }
+            },
           });
         }
         // Menu to select pickup location
@@ -92,8 +91,9 @@ export class PickupLocationComponent implements OnInit {
             filter: true,
             appendTo: 'body',
             required: true,
-            options
-          }
+            // The select type of ng-core expects the options as an observable.
+            options: of(options),
+          },
         });
         this.fields.set(newFields);
       });
@@ -121,27 +121,29 @@ export class PickupLocationComponent implements OnInit {
     }
 
     if (this.apiRequest) {
-      this.apiRequest.pipe(
-        finalize(() => {
-          this.showForm = false;
-          this.requestInProgress = false;
-          this.requested = true;
-        })
-      ).subscribe({
-        next: () => {
-          this.requestMessage.set({
-            success: true,
-            message: this.translateService.instant('Your request has been placed.')
-          });
-        },
-        error: (err: HttpErrorResponse) => {
-          const message = (err.error?.message) ? err.error.message : _('Error on this request.');
-          this.requestMessage.set({
-            success: false,
-            message: this.translateService.instant(message)
-          });
-        }
-      });
+      this.apiRequest
+        .pipe(
+          finalize(() => {
+            this.showForm = false;
+            this.requestInProgress = false;
+            this.requested = true;
+          }),
+        )
+        .subscribe({
+          next: () => {
+            this.requestMessage.set({
+              success: true,
+              message: this.translateService.instant('Your request has been placed.'),
+            });
+          },
+          error: (err: HttpErrorResponse) => {
+            const message = err.error?.message ? err.error.message : _('Error on this request.');
+            this.requestMessage.set({
+              success: false,
+              message: this.translateService.instant(message),
+            });
+          },
+        });
     }
   }
 }

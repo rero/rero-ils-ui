@@ -2,11 +2,11 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { provideNoopAnimations } from '@angular/platform-browser/animations';
-import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { provideTranslateService, TranslateService } from '@ngx-translate/core';
+import { DialogService, DynamicDialogModule } from '@openng/optimus-ui/dynamicdialog';
 import { AppStore } from '@rero/shared';
-import { DialogService, DynamicDialogModule } from 'primeng/dynamicdialog';
 import { Subject } from 'rxjs';
+
 import { TransactionsHistoryComponent } from '../transactions-history/transactions-history.component';
 import { TransactionsHistoryDialogComponent } from './transactions-history-dialog.component';
 
@@ -33,12 +33,8 @@ describe('TransactionsHistoryDialogComponent', () => {
     appStoreMock.user.mockReturnValue(USER);
 
     await TestBed.configureTestingModule({
-      imports: [TranslateModule.forRoot(), DynamicDialogModule, TransactionsHistoryDialogComponent],
-      providers: [
-        provideNoopAnimations(),
-        DialogService,
-        { provide: AppStore, useValue: appStoreMock },
-      ],
+      imports: [DynamicDialogModule, TransactionsHistoryDialogComponent],
+      providers: [provideTranslateService(), DialogService, { provide: AppStore, useValue: appStoreMock }],
     }).compileComponents();
 
     dialogService = TestBed.inject(DialogService);

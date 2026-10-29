@@ -1,26 +1,36 @@
 // SPDX-FileCopyrightText: Fondation RERO+
 // SPDX-License-Identifier: AGPL-3.0-or-later
-import { Component, effect, inject, input, model, ChangeDetectionStrategy} from '@angular/core';
-import { EsRecord, PaginatorComponent, SafeUrlPipe } from '@rero/shared';
-import { ItemsStore } from '../store/items-store';
-import { Bind } from 'primeng/bind';
-import { InputGroup } from 'primeng/inputgroup';
+import { Component, effect, inject, input, model } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { InputText } from 'primeng/inputtext';
-import { InputGroupAddon } from 'primeng/inputgroupaddon';
-import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
-import { SerialHoldingItemComponent } from '../serial-holding-item/serial-holding-item.component';
+import { TranslatePipe } from '@ngx-translate/core';
+import { Bind } from '@openng/optimus-ui/bind';
+import { InputGroup } from '@openng/optimus-ui/inputgroup';
+import { InputGroupAddon } from '@openng/optimus-ui/inputgroupaddon';
+import { InputText } from '@openng/optimus-ui/inputtext';
+import { EsRecord, PaginatorComponent, SafeUrlPipe } from '@rero/shared';
+
 import { DefaultHoldingItemComponent } from '../default-holding-item/default-holding-item.component';
+import { SerialHoldingItemComponent } from '../serial-holding-item/serial-holding-item.component';
+import { ItemsStore } from '../store/items-store';
 
 @Component({
-    selector: 'admin-holding-content',
-    providers: [ItemsStore],
-    templateUrl: './holding-content.component.html',
-    imports: [Bind, InputGroup, FormsModule, InputText, InputGroupAddon, TranslateDirective, SerialHoldingItemComponent, DefaultHoldingItemComponent, PaginatorComponent, TranslatePipe, SafeUrlPipe],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  selector: 'admin-holding-content',
+  providers: [ItemsStore],
+  templateUrl: './holding-content.component.html',
+  imports: [
+    Bind,
+    InputGroup,
+    FormsModule,
+    InputText,
+    InputGroupAddon,
+    SerialHoldingItemComponent,
+    DefaultHoldingItemComponent,
+    PaginatorComponent,
+    TranslatePipe,
+    SafeUrlPipe,
+  ],
 })
 export class HoldingContentComponent {
-
   protected store = inject(ItemsStore);
 
   holding = input.required<EsRecord>();

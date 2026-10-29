@@ -3,32 +3,31 @@ SPDX-FileCopyrightText: Fondation RERO+
 SPDX-License-Identifier: AGPL-3.0-or-later
 -->
 @if (settings().length) {
-    <p-table stripedRows [value]="settings()" size="small">
-      <ng-template #header>
-        <tr>
-            <th>&nbsp;</th>
-            @for (patronType of patronTypes(); track $index) {
-              <th class="ui:text-center">
-                {{ patronType.metadata.name }}
-              </th>
-            }
-        </tr>
-        </ng-template>
-        <ng-template #body let-itemType>
-          <tr>
-            <td>{{ itemType.label }}</td>
-            @for (patronType of itemType.patronTypes; track $index) {
-              <td class="ui:text-center">
-                <input
-                  type="checkbox"
-                  [checked]="patronType.checked"
-                  [disabled]="patronType.disabled"
-                  [indeterminate]="patronType.disabled"
-                  (change)="onClick($any($event.target).checked, itemType.pid, patronType.pid)"
-                >
-              </td>
-            }
-          </tr>
-        </ng-template>
-    </p-table>
+  <p-table stripedRows [value]="settings()" size="small">
+    <ng-template #header>
+      <tr>
+        <th>&nbsp;</th>
+        @for (patronType of patronTypes(); track $index) {
+          <th class="ui:text-center">
+            {{ patronType.metadata.name }}
+          </th>
+        }
+      </tr>
+    </ng-template>
+    <ng-template #body let-itemType>
+      <tr>
+        <td>{{ itemType.label }}</td>
+        @for (patronType of itemType.patronTypes; track $index) {
+          <td class="ui:text-center">
+            <input
+              type="checkbox"
+              [checked]="patronType.checked"
+              [disabled]="patronType.disabled"
+              [indeterminate]="patronType.disabled"
+              (change)="onClick($any($event.target).checked, itemType.pid, patronType.pid)" />
+          </td>
+        }
+      </tr>
+    </ng-template>
+  </p-table>
 }

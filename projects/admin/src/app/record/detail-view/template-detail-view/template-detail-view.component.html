@@ -12,19 +12,17 @@ SPDX-License-Identifier: AGPL-3.0-or-later
   <dl class="metadata">
     <!-- DESCRIPTION -->
     @if (rec.metadata.description) {
-      <dt translate>Description</dt>
+      <dt>{{ 'Description' | translate }}</dt>
       <dd id="template-description" [innerHTML]="rec.metadata.description | nl2br"></dd>
     }
     <!-- CREATOR -->
     @if (rec.metadata.creator.pid | getRecord: 'patrons' | async; as creator) {
-      <dt translate>Creator</dt>
-      <dd>
-        {{ $any(creator).metadata.first_name }} {{ $any(creator).metadata.last_name }}
-      </dd>
+      <dt>{{ 'Creator' | translate }}</dt>
+      <dd>{{ $any(creator).metadata.first_name }} {{ $any(creator).metadata.last_name }}</dd>
     }
     <!-- TYPE -->
     @if (rec.metadata.template_type) {
-      <dt translate>Type</dt>
+      <dt>{{ 'Type' | translate }}</dt>
       <dd id="template-type">
         {{ rec.metadata.template_type }}
       </dd>

@@ -10,10 +10,12 @@ export const keepHistoryGuard: CanActivateFn = (route, state) => {
   const router: Router = inject(Router);
 
   const patronPid = state.url.split('/').splice(-2)[0];
-  return patronService.getPatron(patronPid).pipe(map((patron: any) => {
-    if (!patron.keep_history) {
-      router.navigate(['/errors/403'], { skipLocationChange: true });
-    }
-    return patron.keep_history
-  }));
+  return patronService.getPatron(patronPid).pipe(
+    map((patron: any) => {
+      if (!patron.keep_history) {
+        router.navigate(['/errors/403'], { skipLocationChange: true });
+      }
+      return patron.keep_history;
+    }),
+  );
 };

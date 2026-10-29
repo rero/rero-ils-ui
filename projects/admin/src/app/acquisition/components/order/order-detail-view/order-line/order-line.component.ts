@@ -1,30 +1,42 @@
 // SPDX-FileCopyrightText: Fondation RERO+
 // SPDX-FileCopyrightText: UCLouvain
 // SPDX-License-Identifier: AGPL-3.0-or-later
-import { ChangeDetectionStrategy, Component, computed, inject, input } from '@angular/core';
+import { CurrencyPipe, NgClass } from '@angular/common';
+import { Component, computed, inject, input } from '@angular/core';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
+import { RouterLink } from '@angular/router';
 import { DocumentApiService } from '@app/admin/api/document-api.service';
 import { RecordPermissions } from '@app/admin/classes/permissions';
 import { RecordPermissionService } from '@app/admin/service/record-permission.service';
+import { TranslatePipe } from '@ngx-translate/core';
+import { Bind } from '@openng/optimus-ui/bind';
+import { Tag } from '@openng/optimus-ui/tag';
 import { RecordService } from '@rero/ng-core';
+import { ActionButtonComponent, AppStore, DocumentBriefViewComponent, OpenCloseButtonComponent } from '@rero/shared';
 import { forkJoin, of } from 'rxjs';
 import { catchError, map, switchMap } from 'rxjs/operators';
+
 import { AcqOrderApiService } from '../../../../api/acq-order-api.service';
 import { AcqOrderLineStatus, IAcqOrderLine } from '../../../../classes/order';
-import { AppStore, OpenCloseButtonComponent, DocumentBriefViewComponent, ActionButtonComponent } from '@rero/shared';
-import { NgClass, CurrencyPipe } from '@angular/common';
-import { Bind } from 'primeng/bind';
-import { Tag } from 'primeng/tag';
-import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
-import { NotesComponent } from '../../../notes/notes.component';
-import { RouterLink } from '@angular/router';
 import { NoteBadgeColorPipe } from '../../../../pipes/note-badge-color.pipe';
+import { NotesComponent } from '../../../notes/notes.component';
 
 @Component({
-    selector: 'admin-order-line',
-    templateUrl: './order-line.component.html',
-    imports: [OpenCloseButtonComponent, NgClass, DocumentBriefViewComponent, Bind, Tag, TranslateDirective, NotesComponent, ActionButtonComponent, RouterLink, CurrencyPipe, TranslatePipe, NoteBadgeColorPipe],
-    changeDetection: ChangeDetectionStrategy.OnPush
+  selector: 'admin-order-line',
+  templateUrl: './order-line.component.html',
+  imports: [
+    OpenCloseButtonComponent,
+    NgClass,
+    DocumentBriefViewComponent,
+    Bind,
+    Tag,
+    NotesComponent,
+    ActionButtonComponent,
+    RouterLink,
+    CurrencyPipe,
+    TranslatePipe,
+    NoteBadgeColorPipe,
+  ],
 })
 export class OrderLineComponent {
   private recordPermissionService = inject(RecordPermissionService);
@@ -41,14 +53,16 @@ export class OrderLineComponent {
 
   private readonly lineData = toSignal(
     toObservable(this.orderLine).pipe(
-      switchMap(line => forkJoin([
-        this.recordPermissionService.getPermission('acq_order_lines', line.pid).pipe(
-          map(p => this.appStore.validateLibraryPermissions(p, this.order()?.library?.pid ?? ''))
-        ),
-        this.recordService.getRecord('acq_accounts', line.acq_account.pid),
-        this.documentApiService.getDocument(line.document.pid).pipe(catchError(() => of(null)))
-      ]))
-    )
+      switchMap((line) =>
+        forkJoin([
+          this.recordPermissionService
+            .getPermission('acq_order_lines', line.pid)
+            .pipe(map((p) => this.appStore.validateLibraryPermissions(p, this.order()?.library?.pid ?? ''))),
+          this.recordService.getRecord('acq_accounts', line.acq_account.pid),
+          this.documentApiService.getDocument(line.document.pid).pipe(catchError(() => of(null))),
+        ]),
+      ),
+    ),
   );
 
   readonly recordPermissions = computed(() => this.lineData()?.[0] as RecordPermissions | undefined);
@@ -57,7 +71,8 @@ export class OrderLineComponent {
 
   get deleteInfoMessage(): string | null {
     return !this.recordPermissions()?.delete?.can
-      ? this.recordPermissionService.generateTooltipMessage(this.recordPermissions()?.delete?.reasons, 'delete') ?? null
+      ? (this.recordPermissionService.generateTooltipMessage(this.recordPermissions()?.delete?.reasons, 'delete') ??
+          null)
       : null;
   }
 
@@ -67,11 +82,16 @@ export class OrderLineComponent {
 
   severity(): 'success' | 'secondary' | 'info' | 'warn' | 'danger' {
     switch (this.orderLine().priority) {
-      case 2: return 'success';
-      case 3: return 'info';
-      case 4: return 'warn';
-      case 5: return 'danger';
-      default: return 'secondary';
+      case 2:
+        return 'success';
+      case 3:
+        return 'info';
+      case 4:
+        return 'warn';
+      case 5:
+        return 'danger';
+      default:
+        return 'secondary';
     }
   }
 }

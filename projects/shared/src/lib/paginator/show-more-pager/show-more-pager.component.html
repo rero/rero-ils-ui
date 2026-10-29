@@ -3,16 +3,14 @@ SPDX-FileCopyrightText: Fondation RERO+
 SPDX-License-Identifier: AGPL-3.0-or-later
 -->
 @if (paginator() && paginator()?.getRecordsCount() > 0 && paginator()?.isShowMore()) {
-<div class="ui:flex ui:items-center">
-  <p-button
-    severity="secondary"
-    [text]="true"
-    (onClick)="paginator().next()"
-  >
-  <i class="fa-regular fa-square-plus"></i>&nbsp;{{ 'Show more' | translate }}
-  @if(paginator().getHiddenInfo()) {
-    &nbsp;<small [translate]="paginator().getHiddenInfo()" [translateParams]="{ count: paginator().getHiddenCount() }"></small>
-  }
-  </p-button>
-</div>
+  <div class="ui:flex ui:items-center">
+    <p-button severity="secondary" [text]="true" (onClick)="paginator().next()">
+      <i class="fa-regular fa-square-plus"></i>&nbsp;{{ 'Show more' | translate }}
+      @if (paginator().getHiddenInfo()) {
+        &nbsp;<small
+          [translate]="paginator().getHiddenInfo()"
+          [translateParams]="{ count: paginator().getHiddenCount() }"></small>
+      }
+    </p-button>
+  </div>
 }

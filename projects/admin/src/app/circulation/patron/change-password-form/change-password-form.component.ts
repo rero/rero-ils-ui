@@ -1,25 +1,23 @@
 // SPDX-FileCopyrightText: Fondation RERO+
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-import { Component, inject, OnInit, signal, ChangeDetectionStrategy } from '@angular/core';
-import { UntypedFormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { Component, inject, OnInit, signal } from '@angular/core';
+import { FormsModule, ReactiveFormsModule, UntypedFormGroup } from '@angular/forms';
 import { FormlyFieldConfig, FormlyModule } from '@ngx-formly/core';
-import { TranslateService, TranslatePipe } from '@ngx-translate/core';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
+import { MessageService } from '@openng/optimus-ui/api';
+import { Bind } from '@openng/optimus-ui/bind';
+import { Button } from '@openng/optimus-ui/button';
+import { DynamicDialogConfig, DynamicDialogRef } from '@openng/optimus-ui/dynamicdialog';
 import { CONFIG, HttpPendingService } from '@rero/ng-core';
 import { User, UserApiService } from '@rero/shared';
-import { MessageService } from 'primeng/api';
-import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
-import { Bind } from 'primeng/bind';
-import { Button } from 'primeng/button';
 
 @Component({
-    selector: 'admin-change-password-form',
-    templateUrl: './change-password-form.component.html',
-    imports: [FormsModule, ReactiveFormsModule, FormlyModule, Bind, Button, TranslatePipe],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  selector: 'admin-change-password-form',
+  templateUrl: './change-password-form.component.html',
+  imports: [FormsModule, ReactiveFormsModule, FormlyModule, Bind, Button, TranslatePipe],
 })
 export class ChangePasswordFormComponent implements OnInit {
-
   private messageService: MessageService = inject(MessageService);
   private dynamicDialogRef: DynamicDialogRef = inject(DynamicDialogRef);
   private dynamicDialogConfig: DynamicDialogConfig = inject(DynamicDialogConfig);
@@ -51,9 +49,9 @@ export class ChangePasswordFormComponent implements OnInit {
             if (event.key === 'Enter') {
               event.preventDefault();
             }
-          }
-        }
-      }
+          },
+        },
+      },
     ]);
   }
 
@@ -63,7 +61,9 @@ export class ChangePasswordFormComponent implements OnInit {
    * @param model - Object
    */
   submit(patron: any) {
-    if (this.httpPending.isPending()) { return; }
+    if (this.httpPending.isPending()) {
+      return;
+    }
     const password = this.form().get('password')?.value;
     if (!password || !this.form().valid) {
       return;
@@ -74,7 +74,7 @@ export class ChangePasswordFormComponent implements OnInit {
           severity: 'success',
           summary: this.translateService.instant('Patron'),
           detail: this.translateService.instant('The patron password has been changed.'),
-          life: CONFIG.MESSAGE_LIFE
+          life: CONFIG.MESSAGE_LIFE,
         });
         this.closeModal();
       },
@@ -88,10 +88,10 @@ export class ChangePasswordFormComponent implements OnInit {
           summary: this.translateService.instant('Patron'),
           detail: `${this.translateService.instant('Update Patron Password')}.<br/>${error}`,
           sticky: true,
-          closable: true
+          closable: true,
         });
         this.closeModal();
-      }
+      },
     });
   }
 

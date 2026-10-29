@@ -4,6 +4,7 @@
 
 // required as json properties is not lowerCamelCase
 import { extractIdOnRef } from '@rero/ng-core';
+
 import { IAcqBaseResource, IAcqResourceWithNotes, IObjectReference } from './common';
 
 // ORDER ======================================================================
@@ -11,7 +12,7 @@ import { IAcqBaseResource, IAcqResourceWithNotes, IObjectReference } from './com
 export type AcqAddressRecipient = {
   type: string;
   address: string;
-}
+};
 
 /** Enumeration about order status */
 export enum AcqOrderStatus {
@@ -26,7 +27,7 @@ export enum AcqOrderStatus {
 export type IAcqOrderAccountingInformation = {
   total_amount: number;
   quantity: number;
-}
+};
 
 /** interface to describe an AcqOrder */
 export type IAcqOrder = {
@@ -36,19 +37,20 @@ export type IAcqOrder = {
   currency: string;
   order_date: Date;
   account_statement: {
-    provisional: IAcqOrderAccountingInformation,
-    expenditure: IAcqOrderAccountingInformation
-  }
+    provisional: IAcqOrderAccountingInformation;
+    expenditure: IAcqOrderAccountingInformation;
+  };
   order_lines?: IAcqOrderLine[];
   vendor: IObjectReference;
   is_current_budget: boolean;
-} & IAcqBaseResource & IAcqResourceWithNotes
+} & IAcqBaseResource &
+  IAcqResourceWithNotes;
 
 /** Default values */
 export const orderDefaultData = {
   priority: 0,
   status: AcqOrderStatus.PENDING,
-  notes: []
+  notes: [],
 };
 
 // ORDER LINES ================================================================
@@ -58,7 +60,7 @@ export enum AcqOrderLineStatus {
   CANCELLED = 'cancelled',
   ORDERED = 'ordered',
   PARTIALLY_RECEIVED = 'partially_received',
-  RECEIVED = 'received'
+  RECEIVED = 'received',
 }
 
 /** Interface to describe an OrderLine */
@@ -72,13 +74,16 @@ export type IAcqOrderLine = {
   total_amount: number;
   acq_account: IObjectReference;
   acq_order: IObjectReference;
-  document: IObjectReference|{
-    pid: string,
-    title: string,
-    identifiers: string[],
-  };
+  document:
+    | IObjectReference
+    | {
+        pid: string;
+        title: string;
+        identifiers: string[];
+      };
   documentTitle?: string;
-} & IAcqBaseResource & IAcqResourceWithNotes
+} & IAcqBaseResource &
+  IAcqResourceWithNotes;
 
 /** Default values */
 export const orderLineDefaultData = {
@@ -88,7 +93,7 @@ export const orderLineDefaultData = {
   received_quantity: 0,
   amount: 0,
   total_amount: 0,
-  notes: []
+  notes: [],
 };
 
 // ORDER HISTORY ==============================================================
@@ -99,7 +104,7 @@ export type AcqOrderHistoryVersionResponseInterface = {
   created: Date;
   updated: Date;
   current: boolean;
-}
+};
 export class AcqOrderHistoryVersion {
   label: string = null;
   description: string = null;
@@ -118,7 +123,3 @@ export class AcqOrderHistoryVersion {
     this.pid = extractIdOnRef(obj.$ref);
   }
 }
-
-
-
-

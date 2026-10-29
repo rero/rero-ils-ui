@@ -22,9 +22,9 @@ describe('Tools', () => {
         { address: 'bar@gmail.com', type: 'reply_to' },
         { address: 'bar@gmail.com', type: 'cc' },
         { address: 'vendor1@gmail.com', type: 'to' },
-        { address: 'vendor2@gmail.com', type: 'to' }
-      ]
-    }
+        { address: 'vendor2@gmail.com', type: 'to' },
+      ],
+    };
     expect(Tools.processRecipientSuggestions(recipientSuggestions)).toEqual(output);
   });
 });

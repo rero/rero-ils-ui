@@ -21,7 +21,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
       <!-- INHERITED CALL NUMBER -->
       @if (record() | itemHoldingsCallNumber | async; as callNumber) {
         @if ((callNumber | json) !== ({ first: {}, second: {} } | json)) {
-          <dt translate>Call number</dt>
+          <dt>{{ 'Call number' | translate }}</dt>
           <dd>
             <shared-inherited-call-number [item]="record()" context="first" />
           </dd>
@@ -29,101 +29,105 @@ SPDX-License-Identifier: AGPL-3.0-or-later
       }
       <!-- SECOND CALL NUMBER -->
       @if (record()?.metadata.second_call_number) {
-        <dt translate>Second call number</dt>
+        <dt>{{ 'Second call number' | translate }}</dt>
         <dd>{{ record()?.metadata.second_call_number }}</dd>
       }
       <!-- ENUMERATION AND CHRONOLOGY / UNIT -->
       @if (record()?.metadata.enumerationAndChronology) {
-        <dt translate>Unit</dt>
+        <dt>{{ 'Unit' | translate }}</dt>
         <dd>{{ record()?.metadata.enumerationAndChronology }}</dd>
       }
       <!-- ITEM TYPE -->
-      @let defaultItty = record()?.metadata.item_type.pid | getRecord:'item_types': 'field':'name' | async;
-      <dt translate>Type</dt>
+      @let defaultItty = record()?.metadata.item_type.pid | getRecord: 'item_types' : 'field' : 'name' | async;
+      <dt>{{ 'Type' | translate }}</dt>
       <dd>
         @if (hasTemporaryItemType()) {
           <del class="text-error">{{ defaultItty }}</del>
           <span class="text-success">
-          {{ record()?.metadata.temporary_item_type.pid | getRecord:'item_types': 'field':'name' | async }}
-          @if (record()?.metadata.temporary_item_type.end_date; as endDate) {
-            <span class="ui:text-sm">
-              <i class="fa-solid fa-arrow-right-long" aria-hidden="true"></i> {{ endDate | dateTranslate :'shortDate' }}
-            </span>
-          }
-        </span>
+            {{ record()?.metadata.temporary_item_type.pid | getRecord: 'item_types' : 'field' : 'name' | async }}
+            @if (record()?.metadata.temporary_item_type.end_date; as endDate) {
+              <span class="ui:text-sm">
+                <i class="fa-solid fa-arrow-right-long" aria-hidden="true"></i>
+                {{ endDate | dateTranslate: 'shortDate' }}
+              </span>
+            }
+          </span>
         } @else {
           {{ defaultItty }}
         }
       </dd>
       <!-- DOCUMENT -->
-      <dt translate>Document</dt>
+      <dt>{{ 'Document' | translate }}</dt>
       <dd>
         <a [routerLink]="['/records', 'documents', 'detail', record()?.metadata.document.pid]">
-          {{ record()?.metadata.document.pid | getRecord:'documents': 'field' :'title' | async | mainTitle }}
+          {{ record()?.metadata.document.pid | getRecord: 'documents' : 'field' : 'title' | async | mainTitle }}
         </a>
       </dd>
       <!-- LIBRARY -->
       @if (location()) {
-        <dt translate>Library</dt>
+        <dt>{{ 'Library' | translate }}</dt>
         <dd>
-          {{ location().metadata.library.pid | getRecord: 'libraries': 'field': 'name' | async }}
+          {{ location().metadata.library.pid | getRecord: 'libraries' : 'field' : 'name' | async }}
         </dd>
       }
       <!-- LOCATION -->
       @if (location()) {
-        <dt translate>Location</dt>
+        <dt>{{ 'Location' | translate }}</dt>
         <dd>{{ location().metadata.name }}</dd>
       }
       <!-- TEMPORARY LOCATION -->
       @if (record()?.metadata.temporary_location) {
-        <dt translate>Temporary location</dt>
+        <dt>{{ 'Temporary location' | translate }}</dt>
         <dd>{{ record()?.metadata.temporary_location.pid | getRecord: 'locations' : 'field' : 'name' | async }}</dd>
       }
       <!-- ITEM IN COLLECTION -->
       @if (record()?.metadata.pid | itemInCollection | async; as collections) {
         @if (collections.length > 0) {
-          <dt translate>Exhibition/course</dt>
+          <dt>{{ 'Exhibition/course' | translate }}</dt>
           <dd>
-            @for (collection of collections; track $any(collection).metadata.pid; let last=$last) {
-              <a
-                [routerLink]="['/records', 'collections', 'detail', $any(collection).metadata.pid]"
-              >{{ $any(collection).metadata.title }}</a>
+            @for (collection of collections; track $any(collection).metadata.pid; let last = $last) {
+              <a [routerLink]="['/records', 'collections', 'detail', $any(collection).metadata.pid]">{{
+                $any(collection).metadata.title
+              }}</a>
               {{ last ? '' : '; ' }}
             }
           </dd>
         }
       }
       <!-- AVAILABILITY -->
-      <dt translate>Availability</dt>
+      <dt>{{ 'Availability' | translate }}</dt>
       <dd>
         <shared-availability recordType="item" [record]="record()" [apiService]="itemApiService" />
       </dd>
       <!-- ACQUISITION -->
-      <dt translate>New acquisition</dt>
+      <dt>{{ 'New acquisition' | translate }}</dt>
       <dd>
         <i
-          [ngClass]="(record()?.metadata.acquisition_date) ? 'fa-solid fa-check text-success' : 'fa-solid fa-xmark text-error'"
-          aria-hidden="true"
-        >
+          [ngClass]="
+            record()?.metadata.acquisition_date ? 'fa-solid fa-check text-success' : 'fa-solid fa-xmark text-error'
+          "
+          aria-hidden="true">
         </i>
         @if (record()?.metadata.acquisition_date) {
-          ({{ record()?.metadata.acquisition_date | dateTranslate : 'shortDate' }})
+          ({{ record()?.metadata.acquisition_date | dateTranslate: 'shortDate' }})
         }
       </dd>
       <!-- PRICE -->
-      @if (record()?.metadata | keyExists:'price') {
-        <dt translate>Price</dt>
-        <dd>{{ record()?.metadata.price | currency:organisationCurrency:'symbol' }}</dd>
+      @if (record()?.metadata | keyExists: 'price') {
+        <dt>{{ 'Price' | translate }}</dt>
+        <dd>{{ record()?.metadata.price | currency: organisationCurrency : 'symbol' }}</dd>
       }
       <!-- PAC CODE -->
-      @if (record()?.metadata | keyExists:'pac_code') {
-        <dt translate>PAC code</dt>
+      @if (record()?.metadata | keyExists: 'pac_code') {
+        <dt>{{ 'PAC code' | translate }}</dt>
         <dd>{{ record()?.metadata.pac_code | translate }}</dd>
       }
       <!-- URL -->
-      @if (record()?.metadata | keyExists:'url') {
-        <dt translate>Online access</dt>
-        <dd><a [href]="record()?.metadata.url | safeUrl ">{{ record()?.metadata.url }}</a></dd>
+      @if (record()?.metadata | keyExists: 'url') {
+        <dt>{{ 'Online access' | translate }}</dt>
+        <dd>
+          <a [href]="record()?.metadata.url | safeUrl">{{ record()?.metadata.url }}</a>
+        </dd>
       }
     </dl>
   </section>
@@ -131,35 +135,36 @@ SPDX-License-Identifier: AGPL-3.0-or-later
   <!-- ISSUE DATA -->
   @if (record()?.metadata.type === 'issue') {
     <section class="ui:mt-4">
-      <h3 translate>Issue data</h3>
+      <h3>{{ 'Issue data' | translate }}</h3>
       <dl class="metadata">
         <!-- is regular -->
-        <dt translate>Regular issue</dt>
+        <dt>{{ 'Regular issue' | translate }}</dt>
         <dd>
           <i
-            [ngClass]="record()?.metadata.issue.regular ? 'fa-solid fa-check text-success' : 'fa-solid fa-xmark text-error'"
-            aria-hidden="true"
-          >
+            [ngClass]="
+              record()?.metadata.issue.regular ? 'fa-solid fa-check text-success' : 'fa-solid fa-xmark text-error'
+            "
+            aria-hidden="true">
           </i>
         </dd>
         @if (record()?.metadata.issue.sort_date) {
-          <dt translate>Sorting date</dt>
+          <dt>{{ 'Sorting date' | translate }}</dt>
           <dd>{{ record()?.metadata.issue.sort_date | dateTranslate }}</dd>
         }
         <!-- expected date -->
-        <dt translate>Expected date</dt>
+        <dt>{{ 'Expected date' | translate }}</dt>
         <dd>{{ record()?.metadata.issue.expected_date | dateTranslate }}</dd>
         <!-- received date -->
-        <dt translate>Received date</dt>
+        <dt>{{ 'Received date' | translate }}</dt>
         <dd>
           @if (record()?.metadata.issue.status === issueItemStatus.RECEIVED) {
             {{ record()?.metadata.issue.received_date | dateTranslate }}
           } @else {
-            <span class=" ui:text-muted-color ui:italic" translate>Not yet received</span>
+            <span class="ui:text-muted-color ui:italic">{{ 'Not yet received' | translate }}</span>
           }
         </dd>
         <!-- issue status -->
-        <dt translate>Status</dt>
+        <dt>{{ 'Status' | translate }}</dt>
         <dd>
           <i [ngClass]="getIcon(record()?.metadata.issue.status)"></i>
           {{ record()?.metadata.issue.status | translate }} ({{ record()?.metadata.issue.status_date | dateTranslate }})
@@ -171,21 +176,21 @@ SPDX-License-Identifier: AGPL-3.0-or-later
   <!-- NOTES -->
   @if (record()?.metadata.notes) {
     <section class="ui:mt-4">
-      <h3 translate>Notes</h3>
+      <h3>{{ 'Notes' | translate }}</h3>
       <dl class="metadata">
         @for (note of record()?.metadata.notes; track $index) {
-            <dt>
-              <i class="fa-solid ui:text-sm"
-                [pTooltip]="isPublicNote(note)? ('Public notes' | translate): ('Staff notes' | translate)"
-                tooltipPosition="top"
-                [ngClass]="{
-                  'fa-eye text-success': isPublicNote(note),
-                  'fa-eye-slash ui:text-muted-color': !isPublicNote(note)
-                }"
-              ></i>
-              &nbsp;{{ note.type | translate }}
-            </dt>
-            <dd [innerHTML]="note.content | nl2br"></dd>
+          <dt>
+            <i
+              class="fa-solid ui:text-sm"
+              [pTooltip]="isPublicNote(note) ? ('Public notes' | translate) : ('Staff notes' | translate)"
+              tooltipPosition="top"
+              [ngClass]="{
+                'fa-eye text-success': isPublicNote(note),
+                'fa-eye-slash ui:text-muted-color': !isPublicNote(note),
+              }"></i>
+            &nbsp;{{ note.type | translate }}
+          </dt>
+          <dd [innerHTML]="note.content | nl2br"></dd>
         }
       </dl>
     </section>
@@ -196,12 +201,12 @@ SPDX-License-Identifier: AGPL-3.0-or-later
       <p-tablist>
         <p-tab value="circulation" class="ui:flex ui:items-center ui:!gap-2">
           <i class="fa-solid fa-right-left"></i>
-          <span translate>Circulation</span>
+          <span>{{ 'Circulation' | translate }}</span>
         </p-tab>
         @if (showLocalFieldsTab()) {
           <p-tab value="field" class="ui:flex ui:items-center ui:!gap-2">
             <i class="fa-solid fa-building-columns"></i>&nbsp;
-            <span translate>Local fields</span>
+            <span>{{ 'Local fields' | translate }}</span>
           </p-tab>
         }
         @if (record()?.metadata?.issue?.claims) {
@@ -224,15 +229,15 @@ SPDX-License-Identifier: AGPL-3.0-or-later
             </div>
             <admin-item-transactions [itemPid]="$any(record()?.metadata.pid)" (requestEvent)="updateItemStatus()" />
             <admin-item-fees [itemPid]="$any(record()?.metadata.pid)" [permissions]="permissions.PTTR_ACCESS" />
-            @if (record()?.metadata | keyExists:'legacy_checkout_count') {
+            @if (record()?.metadata | keyExists: 'legacy_checkout_count') {
               <section class="ui:border ui:rounded-border ui:border-surface ui:p-2">
                 <dl class="metadata">
-                    <dt translate>
-                      Legacy checkout count
-                    </dt>
-                    <dd>
-                      {{ record()?.metadata.legacy_checkout_count }}
-                    </dd>
+                  <dt>
+                    {{ 'Legacy checkout count' | translate }}
+                  </dt>
+                  <dd>
+                    {{ record()?.metadata.legacy_checkout_count }}
+                  </dd>
                 </dl>
               </section>
             }
@@ -243,17 +248,14 @@ SPDX-License-Identifier: AGPL-3.0-or-later
             <admin-local-field
               [resourceType]="'items'"
               [resourcePid]="$any(record()?.metadata.pid)"
-              [resourceLibraryPid]="record()?.metadata.library.pid"
-            />
+              [resourceLibraryPid]="record()?.metadata.library.pid" />
           </p-tabpanel>
         }
         @if (record()?.metadata?.issue?.claims) {
           <p-tabpanel value="claim">
             <ul class="ui:list-none">
               @for (date of claimsDates; track $index) {
-                <li>
-                  {{ date | dateTranslate: 'shortDate' }} - {{ date | dateTranslate: 'shortTime' }}
-                </li>
+                <li>{{ date | dateTranslate: 'shortDate' }} - {{ date | dateTranslate: 'shortTime' }}</li>
               }
             </ul>
           </p-tabpanel>

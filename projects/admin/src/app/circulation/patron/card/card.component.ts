@@ -1,25 +1,36 @@
 // SPDX-FileCopyrightText: Fondation RERO+
 // SPDX-License-Identifier: AGPL-3.0-or-later
-import { Component, DestroyRef, effect, inject, input, output, signal, ChangeDetectionStrategy } from '@angular/core';
+import { AsyncPipe, NgClass } from '@angular/common';
+import { Component, DestroyRef, effect, inject, input, output, signal } from '@angular/core';
+import { RouterLink } from '@angular/router';
+import { TranslatePipe } from '@ngx-translate/core';
+import { Bind } from '@openng/optimus-ui/bind';
+import { Button } from '@openng/optimus-ui/button';
+import { MessageModule } from '@openng/optimus-ui/message';
+import { DateTranslatePipe, GetRecordPipe, Nl2brPipe, UpperCaseFirstPipe } from '@rero/ng-core';
 import { DateTime } from 'luxon';
+
 import { getSeverity } from '../../../utils/utils';
 import { CirculationStore } from '../../store/circulation.store';
-import { NgClass, AsyncPipe } from '@angular/common';
-import { RouterLink } from '@angular/router';
-import { Bind } from 'primeng/bind';
-import { Button } from 'primeng/button';
-import { DateTranslatePipe, GetRecordPipe, Nl2brPipe, UpperCaseFirstPipe } from '@rero/ng-core';
-import { TranslatePipe } from '@ngx-translate/core';
-import { MessageModule } from 'primeng/message';
 
 @Component({
-    selector: 'admin-circulation-patron-detailed',
-    templateUrl: './card.component.html',
-    imports: [NgClass, RouterLink, Bind, Button, AsyncPipe, DateTranslatePipe, GetRecordPipe, Nl2brPipe, UpperCaseFirstPipe, TranslatePipe, MessageModule],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  selector: 'admin-circulation-patron-detailed',
+  templateUrl: './card.component.html',
+  imports: [
+    NgClass,
+    RouterLink,
+    Bind,
+    Button,
+    AsyncPipe,
+    DateTranslatePipe,
+    GetRecordPipe,
+    Nl2brPipe,
+    UpperCaseFirstPipe,
+    TranslatePipe,
+    MessageModule,
+  ],
 })
 export class CardComponent {
-
   protected store = inject(CirculationStore);
 
   // COMPONENT ATTRIBUTES =====================================================
@@ -47,9 +58,9 @@ export class CardComponent {
       const patron = this.patron();
       if (patron) {
         this.patronLink.set(
-          (this.linkMode() === 'detail')
+          this.linkMode() === 'detail'
             ? '/records/patrons/detail/' + patron.pid
-            : '/circulation/patron/' + this.barcode() + '/loan'
+            : '/circulation/patron/' + this.barcode() + '/loan',
         );
         if (patron.birth_date) {
           const today = DateTime.now().toFormat('M-dd');

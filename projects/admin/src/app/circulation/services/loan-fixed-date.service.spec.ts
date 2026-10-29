@@ -1,17 +1,18 @@
 // SPDX-FileCopyrightText: Fondation RERO+
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-import { signal } from "@angular/core";
-import { TestBed } from "@angular/core/testing";
-import { LoanFixedDateService } from "./loan-fixed-date.service";
-import { LocalStorageService } from "@rero/ng-core";
-import { MenuStore } from "@app/admin/menu/store/menu.store";
-import { vi } from "vitest";
+import { signal } from '@angular/core';
+import { TestBed } from '@angular/core/testing';
+import { MenuStore } from '@app/admin/menu/store/menu.store';
+import { LocalStorageService } from '@rero/ng-core';
+import { vi } from 'vitest';
+
+import { LoanFixedDateService } from './loan-fixed-date.service';
 
 describe('LoanFixedDateService', () => {
   let service: LoanFixedDateService;
 
-  const menuStoreSpy = { } as any;
+  const menuStoreSpy = {} as any;
   menuStoreSpy.selectedLibrary = signal(null);
   menuStoreSpy.logoutCounter = signal(0);
 
@@ -31,8 +32,8 @@ describe('LoanFixedDateService', () => {
       providers: [
         LoanFixedDateService,
         { provide: LocalStorageService, useValue: localStorageMock },
-        { provide: MenuStore, useValue: menuStoreSpy }
-      ]
+        { provide: MenuStore, useValue: menuStoreSpy },
+      ],
     });
 
     service = TestBed.inject(LoanFixedDateService);

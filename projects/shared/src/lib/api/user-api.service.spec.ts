@@ -5,33 +5,33 @@ import { HttpClient } from '@angular/common/http';
 import { TestBed } from '@angular/core/testing';
 import { ApiService } from '@rero/ng-core';
 import { of } from 'rxjs';
+
 import { UserApiService } from './user-api.service';
 
 describe('Service: UserApi', () => {
-
   let userApiService: UserApiService;
 
   const record = {
     medatadata: { pid: 1 },
-    settings: { language: 'fr' }
+    settings: { language: 'fr' },
   };
 
   const httpClientSpy = {
     get: vi.fn().mockReturnValue(of(record)),
-    post: vi.fn().mockReturnValue(of(true))
+    post: vi.fn().mockReturnValue(of(true)),
   };
 
   const apiServiceSpy = { endpointPrefix: '/api' };
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-    imports: [],
-    providers: [
+      imports: [],
+      providers: [
         UserApiService,
         { provide: HttpClient, useValue: httpClientSpy },
-        { provide: ApiService, useValue: apiServiceSpy }
-    ]
-});
+        { provide: ApiService, useValue: apiServiceSpy },
+      ],
+    });
     userApiService = TestBed.inject(UserApiService);
   });
 

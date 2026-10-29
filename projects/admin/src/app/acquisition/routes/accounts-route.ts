@@ -1,25 +1,25 @@
 // SPDX-FileCopyrightText: Fondation RERO+
 // SPDX-FileCopyrightText: UCLouvain
 // SPDX-License-Identifier: AGPL-3.0-or-later
+import { ResolveFn, Routes } from '@angular/router';
 import { AccountDetailViewComponent } from '@app/admin/acquisition/components/account/account-detail-view/account-detail-view.component';
 import { canAddAccountGuard } from '@app/admin/acquisition/routes/guards/can-add-account.guard';
 import { CAN_ACCESS_ACTIONS, canAccessGuard } from '@app/admin/guard/can-access.guard';
 import { permissionGuard } from '@app/admin/guard/permission.guard';
 import { BaseRoute } from '@app/admin/routes/base-route';
-import { ResolveFn, Routes } from '@angular/router';
 import { FormlyFieldConfig } from '@ngx-formly/core';
 import { _ } from '@ngx-translate/core';
 import {
-  ComponentCanDeactivateGuard,
   DetailComponent,
-  EditorComponent,
   JSONSchema7,
   RecordData,
   RecordType,
   RouteDataTypesInterface,
+  unsavedChangesGuard,
 } from '@rero/ng-core';
-import { of } from 'rxjs';
+import { EditorComponent } from '@rero/ng-core/editor';
 import { PERMISSIONS, Tools } from '@rero/shared';
+import { of } from 'rxjs';
 
 /** Export formats configuration. */
 export const exportFormats = [
@@ -35,8 +35,7 @@ export const exportFormats = [
   },
 ];
 
-export const accountsRouteResolver: ResolveFn<Partial<RecordType>[]> = () =>
-  new AccountsRoute().getTypes();
+export const accountsRouteResolver: ResolveFn<Partial<RecordType>[]> = () => new AccountsRoute().getTypes();
 
 export const accountsRoutes: Routes = [
   {
@@ -53,7 +52,7 @@ export const accountsRoutes: Routes = [
     component: EditorComponent,
     title: _('Account'),
     canActivate: [canAccessGuard],
-    canDeactivate: [ComponentCanDeactivateGuard],
+    canDeactivate: [unsavedChangesGuard],
     data: {
       action: CAN_ACCESS_ACTIONS.UPDATE,
     },
@@ -63,7 +62,7 @@ export const accountsRoutes: Routes = [
     component: EditorComponent,
     title: _('Account'),
     canActivate: [permissionGuard, canAddAccountGuard],
-    canDeactivate: [ComponentCanDeactivateGuard],
+    canDeactivate: [unsavedChangesGuard],
     data: {
       permissions: [PERMISSIONS.ACAC_CREATE],
     },
@@ -103,12 +102,15 @@ class AccountsRoute extends BaseRoute implements RouteDataTypesInterface {
    */
   private _addDefaultInformation(data: any): any {
     data.library = {
-      $ref: this.routeToolService.apiService.getRefEndpoint('libraries', this.routeToolService.appStore.currentLibraryPid()),
+      $ref: this.routeToolService.apiService.getRefEndpoint(
+        'libraries',
+        this.routeToolService.appStore.currentLibraryPid(),
+      ),
     };
     data.budget = {
       $ref: this.routeToolService.apiService.getRefEndpoint(
         'budgets',
-        this.routeToolService.getRouteQueryParam('budget')
+        this.routeToolService.getRouteQueryParam('budget'),
       ),
     };
     return data;

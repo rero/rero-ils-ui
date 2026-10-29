@@ -21,13 +21,13 @@ export const isBudgetActiveGuard: CanActivateFn = (route: ActivatedRouteSnapshot
   }
 
   return recordService.getRecord(type, pid, { resolve: 0, headers: BaseApi.reroJsonheaders }).pipe(
-    map(record => ('metadata' in record) ? record.metadata : record),
+    map((record) => ('metadata' in record ? record.metadata : record)),
     map((record: any) => {
       if (!record.is_current_budget) {
         router.navigate(['/errors/403'], { skipLocationChange: true });
         return false;
       }
       return true;
-    })
+    }),
   );
 };

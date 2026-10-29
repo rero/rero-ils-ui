@@ -1,8 +1,8 @@
 // SPDX-FileCopyrightText: Fondation RERO+
 // SPDX-License-Identifier: AGPL-3.0-or-later
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { InheritedCallNumberComponent } from './inherited-call-number.component';
 
+import { InheritedCallNumberComponent } from './inherited-call-number.component';
 
 describe('InheritedCallNumberComponent', () => {
   let component: InheritedCallNumberComponent;
@@ -10,9 +10,8 @@ describe('InheritedCallNumberComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-    imports: [InheritedCallNumberComponent]
-})
-    .compileComponents();
+      imports: [InheritedCallNumberComponent],
+    }).compileComponents();
   });
 
   beforeEach(() => {

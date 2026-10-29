@@ -1,22 +1,33 @@
 // SPDX-FileCopyrightText: Fondation RERO+
 // SPDX-License-Identifier: AGPL-3.0-or-later
-import { Component, inject, input, ChangeDetectionStrategy} from '@angular/core';
-import { TranslateService, TranslateDirective, TranslatePipe } from '@ngx-translate/core';
-import { Bind } from 'primeng/bind';
-import { Tag } from 'primeng/tag';
-import { Tabs, TabList, Tab, TabPanels, TabPanel } from 'primeng/tabs';
-import { Ripple } from 'primeng/ripple';
-import { AddressTypeComponent } from '../../address-type/address-type.component';
+import { Component, inject, input } from '@angular/core';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
+import { Bind } from '@openng/optimus-ui/bind';
+import { Ripple } from '@openng/optimus-ui/ripple';
+import { Tab, TabList, TabPanel, TabPanels, Tabs } from '@openng/optimus-ui/tabs';
+import { Tag } from '@openng/optimus-ui/tag';
 import { TranslateLanguagePipe } from '@rero/ng-core';
 
+import { AddressTypeComponent } from '../../address-type/address-type.component';
+
 @Component({
-    selector: 'admin-vendor-detail-view',
-    templateUrl: './vendor-detail-view.component.html',
-    imports: [TranslateDirective, Bind, Tag, Tabs, TabList, Ripple, Tab, TabPanels, TabPanel, AddressTypeComponent, TranslateLanguagePipe, TranslatePipe],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  selector: 'admin-vendor-detail-view',
+  templateUrl: './vendor-detail-view.component.html',
+  imports: [
+    Bind,
+    Tag,
+    Tabs,
+    TabList,
+    Ripple,
+    Tab,
+    TabPanels,
+    TabPanel,
+    AddressTypeComponent,
+    TranslateLanguagePipe,
+    TranslatePipe,
+  ],
 })
 export class VendorDetailViewComponent {
-
   private translateService: TranslateService = inject(TranslateService);
 
   /** Record data */

@@ -7,9 +7,9 @@ export type IAvailability = {
   circulation_message?: ICirculationMessage[];
   number_of_request?: number;
   due_date?: string;
-}
+};
 
 export type ICirculationMessage = {
   label: string;
   language: string;
-}
+};

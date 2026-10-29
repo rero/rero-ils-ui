@@ -1,22 +1,30 @@
 // SPDX-FileCopyrightText: Fondation RERO+
 // SPDX-License-Identifier: AGPL-3.0-or-later
 import { NgClass, NgTemplateOutlet } from '@angular/common';
-import { ChangeDetectionStrategy, Component, computed, inject, input } from '@angular/core';
+import { Component, computed, inject, input } from '@angular/core';
 import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
+import { ButtonModule } from '@openng/optimus-ui/button';
 import { DateTranslatePipe, RecordData } from '@rero/ng-core';
 import { OpenCloseButtonComponent } from '@rero/shared';
-import { ButtonModule } from 'primeng/button';
+
 import { PatronProfileDocumentComponent } from '../../patron-profile-document/patron-profile-document.component';
 import { PatronProfileStore } from '../../store/patron-profile.store';
 
 @Component({
   selector: 'public-search-patron-profile-request',
   templateUrl: './patron-profile-request.component.html',
-  imports: [NgClass, NgTemplateOutlet, TranslateDirective, TranslatePipe, DateTranslatePipe, OpenCloseButtonComponent, ButtonModule, PatronProfileDocumentComponent],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  imports: [
+    NgClass,
+    NgTemplateOutlet,
+    TranslateDirective,
+    TranslatePipe,
+    DateTranslatePipe,
+    OpenCloseButtonComponent,
+    ButtonModule,
+    PatronProfileDocumentComponent,
+  ],
 })
 export class PatronProfileRequestComponent {
-
   protected readonly store = inject(PatronProfileStore);
 
   // COMPONENT ATTRIBUTES =====================================================
@@ -27,9 +35,7 @@ export class PatronProfileRequestComponent {
   isCollapsed = true;
 
   /** Cancel in progress */
-  readonly cancelInProgress = computed(
-    () => this.store.cancellingRequestPid() === this.record()?.metadata.pid
-  );
+  readonly cancelInProgress = computed(() => this.store.cancellingRequestPid() === this.record()?.metadata.pid);
 
   // GETTER & SETTER ==========================================================
   /** Get current viewcode */

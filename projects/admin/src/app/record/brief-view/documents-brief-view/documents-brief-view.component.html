@@ -11,14 +11,22 @@ SPDX-License-Identifier: AGPL-3.0-or-later
     <div class="ui:grow">
       <!-- document title -->
       <h4 class="ui:mb-1">
-        <a target="_self" [routerLink]="['/records', type().startsWith('import_') ? type(): 'documents', 'detail', record().metadata.pid]">{{ record().metadata.title | mainTitle }}</a>
+        <a
+          target="_self"
+          [routerLink]="[
+            '/records',
+            type().startsWith('import_') ? type() : 'documents',
+            'detail',
+            record().metadata.pid,
+          ]"
+          >{{ record().metadata.title | mainTitle }}</a
+        >
       </h4>
       <!-- contribution -->
       <shared-contribution
         [contributions]="record().metadata?.contribution"
         [limitRecord]="3"
-        [activateLink]="!type().startsWith('import_')"
-      />
+        [activateLink]="!type().startsWith('import_')" />
       <!-- provision activity publications -->
       @if (provisionActivityPublications.length > 0) {
         <ul class="ui:list-none">
@@ -39,11 +47,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
       }
       <!-- availability -->
       @if (!type().startsWith('import_') && record().metadata.type !== 'ebook') {
-        <shared-availability
-          recordType="document"
-          [record]="record()"
-          [apiService]="documentApiService"
-        />
+        <shared-availability recordType="document" [record]="record()" [apiService]="documentApiService" />
       }
     </div>
   </article>

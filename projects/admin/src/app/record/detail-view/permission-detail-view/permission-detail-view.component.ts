@@ -1,11 +1,12 @@
 // SPDX-FileCopyrightText: Fondation RERO+
 // SPDX-FileCopyrightText: UCLouvain
 // SPDX-License-Identifier: AGPL-3.0-or-later
-import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
-import { toSignal } from '@angular/core/rxjs-interop';
 import { NgClass } from '@angular/common';
-import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
-import { InputText } from 'primeng/inputtext';
+import { Component, computed, inject, signal } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { TranslatePipe } from '@ngx-translate/core';
+import { InputText } from '@openng/optimus-ui/inputtext';
+
 import { PermissionApiService } from '../../../api/permission-api.service';
 
 type IRole = {
@@ -16,27 +17,19 @@ type IRole = {
 @Component({
   selector: 'admin-permission-detail-view',
   templateUrl: './permission-detail-view.component.html',
-  imports: [TranslateDirective, InputText, NgClass, TranslatePipe],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  imports: [InputText, NgClass, TranslatePipe],
 })
 export class PermissionDetailViewComponent {
-
   private readonly permissionApiService = inject(PermissionApiService);
 
-  readonly globalPermissions = toSignal(
-    this.permissionApiService.getAllPermissionsByRole()
-  );
+  readonly globalPermissions = toSignal(this.permissionApiService.getAllPermissionsByRole());
 
   readonly roles = computed<IRole[]>(() => {
     const permissions = this.globalPermissions();
     if (!permissions) return [];
     return Object.keys(permissions)
-      .map(roleName => ({ name: roleName, type: permissions[roleName].type }))
-      .sort((a, b) =>
-        a.type === b.type
-          ? a.name.localeCompare(b.name)
-          : a.type === 'system_role' ? -1 : 1
-      );
+      .map((roleName) => ({ name: roleName, type: permissions[roleName].type }))
+      .sort((a, b) => (a.type === b.type ? a.name.localeCompare(b.name) : a.type === 'system_role' ? -1 : 1));
   });
 
   private readonly permissionNames = computed<string[]>(() => {
@@ -53,7 +46,7 @@ export class PermissionDetailViewComponent {
     const names = this.permissionNames();
     if (!filter) return names;
     const regexp = new RegExp(filter, 'g');
-    return names.filter(name => name.match(regexp));
+    return names.filter((name) => name.match(regexp));
   });
 
   roleClass(type: string): string {

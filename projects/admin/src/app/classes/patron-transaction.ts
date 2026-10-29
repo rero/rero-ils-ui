@@ -7,17 +7,16 @@ import { DateTime } from 'luxon';
 
 export enum PatronTransactionStatus {
   OPEN = 'open',
-  CLOSED = 'closed'
+  CLOSED = 'closed',
 }
 export enum PatronTransactionEventType {
   FEE = 'fee',
   PAYMENT = 'payment',
   DISPUTE = 'dispute',
-  CANCEL = 'cancel'
+  CANCEL = 'cancel',
 }
 
 export class PatronTransaction {
-
   pid: string;
   creation_date: string;
   type: string;
@@ -47,9 +46,7 @@ export class PatronTransaction {
   }
 }
 
-
 export class PatronTransactionEvent {
-
   pid?: string;
   creation_date: string = null;
   amount = 0;
@@ -59,9 +56,9 @@ export class PatronTransactionEvent {
   library?: any;
   operator: any;
   parent: PatronTransaction;
-  steps?: {timestamp: string, amount: string}[];
+  steps?: { timestamp: string; amount: string }[];
 
-  constructor(obj?: any){
+  constructor(obj?: any) {
     Object.assign(this, obj);
   }
 }

@@ -1,32 +1,30 @@
 // SPDX-FileCopyrightText: Fondation RERO+
 // SPDX-License-Identifier: AGPL-3.0-or-later
-import { Component, inject, input, ChangeDetectionStrategy} from '@angular/core';
-import { TranslateService, TranslatePipe } from '@ngx-translate/core';
+import { Component, inject, input } from '@angular/core';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
+import { Bind } from '@openng/optimus-ui/bind';
+import { Button } from '@openng/optimus-ui/button';
+import { DialogService } from '@openng/optimus-ui/dynamicdialog';
 import { IPermissions, PERMISSION_OPERATOR, PERMISSIONS, PermissionsDirective } from '@rero/shared';
-import { DialogService } from 'primeng/dynamicdialog';
+
 import { CirculationLogsComponent } from './circulation-logs.component';
-import { Bind } from 'primeng/bind';
-import { Button } from 'primeng/button';
 
 @Component({
-    selector: 'admin-circulation-logs-dialog',
-    template: `
+  selector: 'admin-circulation-logs-dialog',
+  template: `
     <p-button
       icon="fa-solid fa-clock-rotate-left"
       id="{{ resourceType() }}-circulation-history"
-      [label]="'Circulation history'|translate"
+      [label]="'Circulation history' | translate"
       outlined
       severity="secondary"
       [permissions]="[permissions.CIRC_ADMIN, permissions.OPLG_SEARCH]"
-      [operator] = permissionOperator.AND
-      (onClick)="openDialog()"
-    />
+      [operator]="permissionOperator.AND"
+      (onClick)="openDialog()" />
   `,
-    imports: [Bind, Button, PermissionsDirective, TranslatePipe],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  imports: [Bind, Button, PermissionsDirective, TranslatePipe],
 })
 export class CirculationLogsDialogComponent {
-
   private dialogService: DialogService = inject(DialogService);
   private translateService: TranslateService = inject(TranslateService);
   // COMPONENT ATTRIBUTES =====================================================
@@ -52,8 +50,8 @@ export class CirculationLogsDialogComponent {
       position: 'top',
       data: {
         resourceType: this.resourceType(),
-        resourcePid: this.resourcePid()
-      }
+        resourcePid: this.resourcePid(),
+      },
     });
   }
 }

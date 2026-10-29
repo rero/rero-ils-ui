@@ -3,6 +3,7 @@
 import { HttpClient } from '@angular/common/http';
 import { TestBed } from '@angular/core/testing';
 import { of } from 'rxjs';
+
 import { Message, PatronApiService } from './patron-api.service';
 
 describe('PatronApiService', () => {
@@ -11,8 +12,8 @@ describe('PatronApiService', () => {
   const messages = [
     {
       content: 'This person will be in vacations.',
-      type: 'warning'
-    }
+      type: 'warning',
+    },
   ];
 
   const httpClientSpy = { get: vi.fn() };
@@ -20,9 +21,7 @@ describe('PatronApiService', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [
-        { provide: HttpClient, useValue: httpClientSpy }
-      ]
+      providers: [{ provide: HttpClient, useValue: httpClientSpy }],
     });
     service = TestBed.inject(PatronApiService);
   });
@@ -32,7 +31,6 @@ describe('PatronApiService', () => {
   });
 
   it('should return user messages', () => {
-    service.getMessages('4')
-      .subscribe((response: Message[]) => expect(response).toEqual(messages));
+    service.getMessages('4').subscribe((response: Message[]) => expect(response).toEqual(messages));
   });
 });

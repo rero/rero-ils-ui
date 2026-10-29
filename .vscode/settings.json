@@ -1,0 +1,22 @@
+{
+  "typescript.tsdk": "node_modules/typescript/lib",
+  "typescript.enablePromptUseWorkspaceTsdk": true,
+  "editor.formatOnSave": true,
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "prettier.requireConfig": true,
+  "cSpell.words": [
+    "bestmatch",
+    "checkin",
+    "Checkin",
+    "exceedance",
+    "formly",
+    "fulltext",
+    "Interpolatable",
+    "invenio",
+    "mostrecent",
+    "rero",
+    "toggleswitch",
+    "ucfirst",
+    "viewcode"
+  ]
+}

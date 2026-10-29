@@ -3,6 +3,7 @@
 import { TestBed } from '@angular/core/testing';
 import { RecordService } from '@rero/ng-core';
 import { of, throwError } from 'rxjs';
+
 import { ExceptionDates, Library } from '../../../classes/library';
 import { NotificationType } from '../../../classes/notification';
 import { LibraryStore } from './library.store';
@@ -68,7 +69,7 @@ const mockLocation = (pid: string) => ({ metadata: { pid, name: `Location ${pid}
 
 const mockEtagResponse = (metadata: any, etag = '"test-etag"') => ({
   body: { metadata },
-  headers: { get: (key: string) => key === 'ETag' ? etag : null }
+  headers: { get: (key: string) => (key === 'ETag' ? etag : null) },
 });
 
 const exceptionOlder: ExceptionDates = { title: 'Older', is_open: false, start_date: '2025-01-01' };
@@ -90,14 +91,11 @@ const setupStore = () => {
   // withHooks calls loadSchemas on init — provide a default so tests that don't
   // care about schemas don't blow up.
   recordServiceSpy.getSchemaForm.mockImplementation((type: string) =>
-    type === 'libraries' ? of(mockLibrarySchema) : of(mockNotificationSchema)
+    type === 'libraries' ? of(mockLibrarySchema) : of(mockNotificationSchema),
   );
 
   TestBed.configureTestingModule({
-    providers: [
-      LibraryStore,
-      { provide: RecordService, useValue: recordServiceSpy },
-    ],
+    providers: [LibraryStore, { provide: RecordService, useValue: recordServiceSpy }],
   });
   return TestBed.inject(LibraryStore);
 };
@@ -222,10 +220,7 @@ describe('LibraryStore', () => {
       // Configure error BEFORE TestBed setup so the onInit hook also gets the error mock.
       recordServiceSpy.getSchemaForm.mockReturnValue(throwError(() => new Error('network error')));
       TestBed.configureTestingModule({
-        providers: [
-          LibraryStore,
-          { provide: RecordService, useValue: recordServiceSpy },
-        ],
+        providers: [LibraryStore, { provide: RecordService, useValue: recordServiceSpy }],
       });
       const store = TestBed.inject(LibraryStore);
       expect(store.availableCommunicationLanguages()).toEqual([]);
@@ -317,7 +312,7 @@ describe('LibraryStore', () => {
       store.loadLocations('lib1');
       expect(recordServiceSpy.getRecords).toHaveBeenCalledWith(
         'locations',
-        expect.objectContaining({ query: 'library.pid:lib1', sort: 'name' })
+        expect.objectContaining({ query: 'library.pid:lib1', sort: 'name' }),
       );
     });
   });
@@ -336,7 +331,9 @@ describe('LibraryStore', () => {
     it('should reset exceptionDates to empty array', () => {
       const store = setupStore();
       // Pre-load some exceptions
-      recordServiceSpy.getRecordWithEtag.mockReturnValue(of(mockEtagResponse({ ...mockLibraryMetadata, exception_dates: [exceptionOlder] })));
+      recordServiceSpy.getRecordWithEtag.mockReturnValue(
+        of(mockEtagResponse({ ...mockLibraryMetadata, exception_dates: [exceptionOlder] })),
+      );
       store.loadLibrary('lib1');
       expect(store.exceptionDates().length).toBe(1);
 
@@ -361,7 +358,7 @@ describe('LibraryStore', () => {
       store.addExceptionDate(exceptionOlder);
       store.addExceptionDate(exceptionNewest);
       store.addExceptionDate(exceptionNewer);
-      const dates = store.exceptionDates().map(e => e.start_date);
+      const dates = store.exceptionDates().map((e) => e.start_date);
       expect(dates).toEqual(['2025-12-01', '2025-06-01', '2025-01-01']);
     });
   });

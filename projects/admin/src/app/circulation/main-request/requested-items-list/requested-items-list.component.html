@@ -9,12 +9,12 @@ SPDX-License-Identifier: AGPL-3.0-or-later
         <div class="ui:col-span-3">
           <div class="ui:flex ui:gap-2 ui:items-center">
             <shared-open-close-button (status)="isCollapsed = $event" [collapsed]="isCollapsed" />
-            <span translate>Item</span>
+            <span>{{ 'Item' | translate }}</span>
           </div>
         </div>
-        <div class="ui:col-span-4" translate>Document</div>
-        <div class="ui:col-span-2" translate>Call number</div>
-        <div class="ui:col-span-2" translate>Request date</div>
+        <div class="ui:col-span-4">{{ 'Document' | translate }}</div>
+        <div class="ui:col-span-2">{{ 'Call number' | translate }}</div>
+        <div class="ui:col-span-2">{{ 'Request date' | translate }}</div>
       </div>
     </ng-template>
     @if (itemList.length > 0) {
@@ -24,8 +24,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
             [item]="item"
             [isCollapsed]="isCollapsed"
             [callout]="getItemCallout(item)"
-            (requestValidated)="validateRequest($event)"
-          />
+            (requestValidated)="validateRequest($event)" />
         </div>
       }
     } @else {
@@ -35,5 +34,5 @@ SPDX-License-Identifier: AGPL-3.0-or-later
     }
   </p-card>
 } @else {
-  <div class="ui:mx-2 ui:my-6" translate>Loading in progress</div>
+  <div class="ui:mx-2 ui:my-6">{{ 'Loading in progress' | translate }}</div>
 }

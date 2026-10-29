@@ -4,31 +4,31 @@
 // required as json properties is not lowerCamelCase
 
 import { WeekDay } from '@angular/common';
-import { NotificationType } from './notification';
-import { WeekDays } from './week-days';
 import { DateTime } from 'luxon';
 
+import { NotificationType } from './notification';
+import { WeekDays } from './week-days';
 
 export type OpeningHours = {
   day: string;
   is_open: boolean;
   times: Hours[];
-}
+};
 
 export type Repeat = {
   interval: number;
   period: string;
   data: number[];
-}
+};
 
 export type Hours = {
   start_time: string;
   end_time: string;
-}
+};
 
 export type Organisation = {
   $ref: string;
-}
+};
 
 export type ExceptionDates = {
   title: string;
@@ -37,18 +37,18 @@ export type ExceptionDates = {
   end_date?: string | DateTime;
   times?: Hours[];
   repeat?: Repeat;
-}
+};
 
 export type NotificationSettings = {
   type: NotificationType;
   email: string;
   delay?: number;
-}
+};
 
 export type AcquisitionInformations = {
   shipping_informations: AcquisitionInformationDetail;
   billing_informations?: AcquisitionInformationDetail;
-}
+};
 
 export type AcquisitionInformationDetail = {
   name: string;
@@ -56,21 +56,20 @@ export type AcquisitionInformationDetail = {
   phone?: string;
   extra?: string;
   address: Address;
-}
+};
 
 export type Address = {
   street: string;
   zip_code: string;
   city: string;
   country: string;
-}
+};
 
 export type RolloverSettings = {
-  account_transfer: string
-}
+  account_transfer: string;
+};
 
 export class Library {
-
   // CLASS ATTRIBUTES ================================================
   $schema: string = null;
   pid: string = null;
@@ -91,9 +90,9 @@ export class Library {
   /** Allow to get all closed days for the library */
   get closedDays(): WeekDay[] {
     return this.opening_hours
-      .filter(day => !day.is_open)
-      .map(day => Library.convertDayToWeekDay(day.day))
-      .filter(day => day !== null);
+      .filter((day) => !day.is_open)
+      .map((day) => Library.convertDayToWeekDay(day.day))
+      .filter((day) => day !== null);
   }
 
   // CONSTRUCTOR ===================================================
@@ -114,14 +113,16 @@ export class Library {
     //   * At the end, for user best comprehension, the exception dates list will be sorted on event start date for more
     //     readability for users.
     this.exception_dates = this.exception_dates.map((exception) => {
-      if (exception.repeat){
-        while(Library.isExceptionDateOver(exception, false)) {
+      if (exception.repeat) {
+        while (Library.isExceptionDateOver(exception, false)) {
           exception = Library._incrementExceptionDate(exception);
         }
       }
       return exception;
     });
-    this.exception_dates = this.exception_dates.sort((a, b) => DateTime.fromISO(b.start_date) - DateTime.fromISO(a.start_date));
+    this.exception_dates = this.exception_dates.sort(
+      (a, b) => DateTime.fromISO(b.start_date) - DateTime.fromISO(a.start_date),
+    );
   }
 
   /**
@@ -150,7 +151,9 @@ export class Library {
     if (exception.repeat && checkRepeat) {
       return false;
     }
-    const checked_date = (exception.end_date) ? DateTime.fromISO(exception.end_date) : DateTime.fromISO(exception.start_date);
+    const checked_date = exception.end_date
+      ? DateTime.fromISO(exception.end_date)
+      : DateTime.fromISO(exception.start_date);
     return checked_date < DateTime.now();
   }
 
@@ -162,17 +165,17 @@ export class Library {
       this.opening_hours.push({
         day: days[step],
         is_open: false,
-        times: []
+        times: [],
       });
     }
   }
 
   /** clean the opening hours/day attribute */
   private _cleanOpeningHours() {
-    this.opening_hours.forEach(opening => {
+    this.opening_hours.forEach((opening) => {
       const times = [];
-      opening.times.map(time => {
-        if(time.start_time !== '00:00' && time.end_time !== '00:00') {
+      opening.times.map((time) => {
+        if (time.start_time !== '00:00' && time.end_time !== '00:00') {
           times.push(time);
         }
       });
@@ -183,10 +186,11 @@ export class Library {
 
   /** reorder the opening hour/day attribute */
   private _reorderOpeningHours() {
-    this.opening_hours.forEach(opening => {
+    this.opening_hours.forEach((opening) => {
       if (opening.times.length > 1) {
         opening.times.sort((a, b) =>
-          DateTime.fromFormat(a.start_time, 'HH:mm').diff(DateTime.fromFormat(b.start_time, 'HH:mm')));
+          DateTime.fromFormat(a.start_time, 'HH:mm').diff(DateTime.fromFormat(b.start_time, 'HH:mm')),
+        );
       }
     });
   }
@@ -201,21 +205,19 @@ export class Library {
     if (!exception.repeat) {
       throw new Error('Unable to increment not repeatable exception date.');
     }
-    const jsUnitMapper = {daily: 'days', weekly: 'weeks', monthly: 'months', yearly: 'years'};
-    const unity = (Object.hasOwn(jsUnitMapper, exception.repeat.period))
-      ? jsUnitMapper[exception.repeat.period]
-      : 'days';
+    const jsUnitMapper = { daily: 'days', weekly: 'weeks', monthly: 'months', yearly: 'years' };
+    const unity = Object.hasOwn(jsUnitMapper, exception.repeat.period) ? jsUnitMapper[exception.repeat.period] : 'days';
     if (typeof exception.start_date === 'string') {
       exception.start_date = DateTime.fromFormat(exception.start_date, 'yyyy-LL-dd');
     }
     exception.start_date = exception.start_date.plus({ [unity]: exception.repeat.interval }).toISODate();
 
     if (exception.end_date) {
-        if (typeof exception.end_date === 'string') {
-          exception.end_date = DateTime.fromFormat(exception.end_date, 'yyyy-LL-dd');
-        }
-        exception.end_date = exception.end_date.plus({ [unity]: exception.repeat.interval }).toISODate();
+      if (typeof exception.end_date === 'string') {
+        exception.end_date = DateTime.fromFormat(exception.end_date, 'yyyy-LL-dd');
       }
+      exception.end_date = exception.end_date.plus({ [unity]: exception.repeat.interval }).toISODate();
+    }
     return exception;
   }
 
@@ -231,7 +233,12 @@ export class Library {
     if (this.acquisition_settings) {
       Object.keys(this.acquisition_settings).forEach((key) => {
         const data = this.acquisition_settings[key];
-        if (Object.keys(data).length == 1 && data.address && Object.keys(data.address).length == 1 && data.address.country) {
+        if (
+          Object.keys(data).length == 1 &&
+          data.address &&
+          Object.keys(data.address).length == 1 &&
+          data.address.country
+        ) {
           delete this.acquisition_settings[key];
         }
       });
@@ -242,7 +249,12 @@ export class Library {
     if (this.serial_acquisition_settings) {
       Object.keys(this.serial_acquisition_settings).forEach((key) => {
         const data = this.serial_acquisition_settings[key];
-        if (Object.keys(data).length == 1 && data.address && Object.keys(data.address).length == 1 && data.address.country) {
+        if (
+          Object.keys(data).length == 1 &&
+          data.address &&
+          Object.keys(data.address).length == 1 &&
+          data.address.country
+        ) {
           delete this.serial_acquisition_settings[key];
         }
       });
@@ -259,16 +271,14 @@ export class Library {
    */
   private static convertDayToWeekDay(dayName: string): WeekDay | null {
     const daysOfWeek = {
-      'sunday': WeekDay.Sunday,
-      'monday': WeekDay.Monday,
-      'tuesday': WeekDay.Tuesday,
-      'wednesday': WeekDay.Wednesday,
-      'thursday': WeekDay.Thursday,
-      'friday': WeekDay.Friday,
-      'saturday': WeekDay.Saturday,
+      sunday: WeekDay.Sunday,
+      monday: WeekDay.Monday,
+      tuesday: WeekDay.Tuesday,
+      wednesday: WeekDay.Wednesday,
+      thursday: WeekDay.Thursday,
+      friday: WeekDay.Friday,
+      saturday: WeekDay.Saturday,
     };
-    return dayName.toLowerCase() in daysOfWeek
-      ? daysOfWeek[dayName.toLowerCase()]
-      : null;
+    return dayName.toLowerCase() in daysOfWeek ? daysOfWeek[dayName.toLowerCase()] : null;
   }
 }

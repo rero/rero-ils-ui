@@ -4,9 +4,10 @@
 import { Component, input, output, signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { TransactionRecord } from '@app/admin/circulation/model/circulation.model';
-import { TranslateModule } from '@ngx-translate/core';
+import { provideTranslateService } from '@ngx-translate/core';
 import { AppStore, OperationLogsApiService } from '@rero/shared';
 import { of } from 'rxjs';
+
 import { TransactionHistoryComponent } from './transaction-history/transaction-history.component';
 import { TransactionsHistoryComponent } from './transactions-history.component';
 
@@ -74,8 +75,9 @@ describe('TransactionsHistoryComponent', () => {
     appStoreMock.user.set(null);
 
     await TestBed.configureTestingModule({
-      imports: [TranslateModule.forRoot(), TransactionsHistoryComponent],
+      imports: [TransactionsHistoryComponent],
       providers: [
+        provideTranslateService(),
         { provide: OperationLogsApiService, useValue: operationLogsApiServiceMock },
         { provide: AppStore, useValue: appStoreMock },
       ],
@@ -126,11 +128,11 @@ describe('TransactionsHistoryComponent', () => {
     connectLibrarian('patron-1');
 
     let emitted = false;
-    component.closeRequested.subscribe(() => emitted = true);
+    component.closeRequested.subscribe(() => (emitted = true));
 
-    const line: MockTransactionHistoryComponent = fixture.debugElement
-      .query((debugElement) => debugElement.componentInstance instanceof MockTransactionHistoryComponent)
-      .componentInstance;
+    const line: MockTransactionHistoryComponent = fixture.debugElement.query(
+      (debugElement) => debugElement.componentInstance instanceof MockTransactionHistoryComponent,
+    ).componentInstance;
     line.closeRequested.emit();
 
     expect(emitted).toBe(true);
@@ -138,18 +140,12 @@ describe('TransactionsHistoryComponent', () => {
 
   describe('sortByDateDesc()', () => {
     it('should sort keys in descending order', () => {
-      const result = component['sortByDateDesc'](
-        { key: '2026-09-20', value: [] },
-        { key: '2026-09-22', value: [] }
-      );
+      const result = component['sortByDateDesc']({ key: '2026-09-20', value: [] }, { key: '2026-09-22', value: [] });
       expect(result).toBeGreaterThan(0);
     });
 
     it('should return 0 for equal keys', () => {
-      const result = component['sortByDateDesc'](
-        { key: '2026-09-22', value: [] },
-        { key: '2026-09-22', value: [] }
-      );
+      const result = component['sortByDateDesc']({ key: '2026-09-22', value: [] }, { key: '2026-09-22', value: [] });
       expect(result).toBe(0);
     });
   });

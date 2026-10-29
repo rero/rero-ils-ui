@@ -8,5 +8,5 @@ export enum WeekDays {
   thursday = 'thursday',
   friday = 'friday',
   saturday = 'saturday',
-  sunday = 'sunday'
+  sunday = 'sunday',
 }

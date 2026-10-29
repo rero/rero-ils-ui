@@ -1,18 +1,18 @@
 // SPDX-FileCopyrightText: Fondation RERO+
 // SPDX-FileCopyrightText: UCLouvain
 // SPDX-License-Identifier: AGPL-3.0-or-later
-import { Component, inject, input, OnInit, ChangeDetectionStrategy} from '@angular/core';
+import { Component, inject, input, OnInit } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-import { PaymentData } from '../../interfaces';
+import { Bind } from '@openng/optimus-ui/bind';
+import { UIChart } from '@openng/optimus-ui/chart';
 import { AppStore } from '@rero/shared';
-import { Bind } from 'primeng/bind';
-import { UIChart } from 'primeng/chart';
+
+import { PaymentData } from '../../interfaces';
 
 @Component({
-    selector: 'admin-payments-data-pie',
-    templateUrl: './payment-data-pie.component.html',
-    imports: [Bind, UIChart],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  selector: 'admin-payments-data-pie',
+  templateUrl: './payment-data-pie.component.html',
+  imports: [Bind, UIChart],
 })
 export class PaymentDataPieComponent implements OnInit {
   private appStore = inject(AppStore);

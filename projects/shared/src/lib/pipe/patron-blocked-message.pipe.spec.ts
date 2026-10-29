@@ -1,16 +1,17 @@
 // SPDX-FileCopyrightText: Fondation RERO+
 // SPDX-License-Identifier: AGPL-3.0-or-later
 import { TestBed } from '@angular/core/testing';
+import { provideTranslateService, TranslateService } from '@ngx-translate/core';
+
 import { PatronBlockedMessagePipe } from './patron-blocked-message.pipe';
-import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 const blockedMessage = 'Blocked message note';
 
 class Patron {
   patron: {
-    blocked: boolean,
+    blocked: boolean;
     blocked_note: string;
-  }
+  };
 }
 
 const output = 'This patron is currently blocked. Reason: ' + blockedMessage;
@@ -20,13 +21,7 @@ describe('PatronBlockedMessagePipe', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [
-        PatronBlockedMessagePipe,
-        TranslateService
-      ],
-      imports: [
-        TranslateModule.forRoot()
-      ]
+      providers: [provideTranslateService(), PatronBlockedMessagePipe, TranslateService],
     });
     pipe = TestBed.inject(PatronBlockedMessagePipe);
   });

@@ -3,7 +3,7 @@ SPDX-FileCopyrightText: Fondation RERO+
 SPDX-License-Identifier: AGPL-3.0-or-later
 -->
 @if (document()) {
-  <a href="/{{ viewcode }}/documents/{{ record().metadata.document.pid }}" >
+  <a href="/{{ viewcode }}/documents/{{ record().metadata.document.pid }}">
     {{ record().metadata.document.title | mainTitle }}
   </a>
   @if (record().metadata.item.enumerationAndChronology && !showAdditionalInformation()) {
@@ -11,18 +11,18 @@ SPDX-License-Identifier: AGPL-3.0-or-later
   }
   <shared-contribution [contributions]="$any(document())?.contribution" [view]="viewcode" [limitRecord]="3" />
   @if (record().metadata && showAdditionalInformation()) {
-      <dl class="ui:md:grid ui:grid-cols-4">
-        <!-- CALL NUMBER -->
-        @if (callNumbers(); as formattedCallNumbers) {
-          <dt class="ui:font-bold ui:mr-2" translate>Call number</dt>
-          <dd class="ui:col-span-3">{{ formattedCallNumbers }}</dd>
-        }
-        <!-- ENUMERATION AND CHRONOLOGY -->
-        @if (record().metadata.item.enumerationAndChronology) {
-          <dt class="ui:font-bold ui:mr-2" translate>Unit</dt>
-          <dd class="ui:col-span-3">{{ record().metadata.item.enumerationAndChronology }}</dd>
-        }
-      </dl>
-      <ng-content select="[additional-metadata]" />
+    <dl class="ui:md:grid ui:grid-cols-4">
+      <!-- CALL NUMBER -->
+      @if (callNumbers(); as formattedCallNumbers) {
+        <dt class="ui:font-bold ui:mr-2">{{ 'Call number' | translate }}</dt>
+        <dd class="ui:col-span-3">{{ formattedCallNumbers }}</dd>
+      }
+      <!-- ENUMERATION AND CHRONOLOGY -->
+      @if (record().metadata.item.enumerationAndChronology) {
+        <dt class="ui:font-bold ui:mr-2">{{ 'Unit' | translate }}</dt>
+        <dd class="ui:col-span-3">{{ record().metadata.item.enumerationAndChronology }}</dd>
+      }
+    </dl>
+    <ng-content select="[additional-metadata]" />
   }
 }

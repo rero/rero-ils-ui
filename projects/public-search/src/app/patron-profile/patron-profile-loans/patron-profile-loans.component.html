@@ -3,7 +3,7 @@ SPDX-FileCopyrightText: Fondation RERO+
 SPDX-License-Identifier: AGPL-3.0-or-later
 -->
 <ngx-spinner name="renew-all-loans" color="#fff" size="medium" type="ball-zig-zag" [fullScreen]="true">
-  <p class="ui:text-white" translate>Loading…</p>
+  <p class="ui:text-white">{{ 'Loading…' | translate }}</p>
 </ngx-spinner>
 
 <!-- Due date dropdown menu -->
@@ -38,27 +38,28 @@ SPDX-License-Identifier: AGPL-3.0-or-later
   <p-panel>
     <ng-template #header>
       <div class="ui:hidden ui:w-full ui:md:grid ui:grid-cols-12 ui:gap-4 ui:text-lg ui:font-bold ui:items-center">
-        <div class="ui:col-span-8" translate>Document</div>
-        <div class="ui:col-span-2" translate>Due date</div>
-        <p-button class="ui:md:col-span-2 ui:col-span-12 ui:flex ui:justify-end"
+        <div class="ui:col-span-8">{{ 'Document' | translate }}</div>
+        <div class="ui:col-span-2">{{ 'Due date' | translate }}</div>
+        <p-button
+          class="ui:md:col-span-2 ui:col-span-12 ui:flex ui:justify-end"
           [label]="'Renew all' | translate"
           icon="fa fa-refresh"
           [disabled]="store.renewableLoans().length === 0 || store.renewingLoans()"
           (onClick)="store.renewAllLoans()" />
       </div>
     </ng-template>
-  @if (store.loansLoaded()) {
-    @if (store.loans().length > 0) {
-      @for (loan of store.loans(); track loan.metadata.pid) {
-        <div class="ui:odd:bg-surface-50 ui:my-1">
-          <public-search-patron-profile-loan [record]="loan" id="loan-{{ loan.metadata.pid }}" />
-        </div>
+    @if (store.loansLoaded()) {
+      @if (store.loans().length > 0) {
+        @for (loan of store.loans(); track loan.metadata.pid) {
+          <div class="ui:odd:bg-surface-50 ui:my-1">
+            <public-search-patron-profile-loan [record]="loan" id="loan-{{ loan.metadata.pid }}" />
+          </div>
+        }
+      } @else {
+        <div class="ui:font-bold ui:mx-2 ui:my-6">{{ 'No loan' | translate }}</div>
       }
     } @else {
-        <div class="ui:font-bold ui:mx-2 ui:my-6" translate>No loan</div>
+      <div class="ui:font-bold ui:mx-2 ui:my-6">{{ 'Loading in progress' | translate }}</div>
     }
-  } @else {
-      <div class="ui:font-bold ui:mx-2 ui:my-6" translate>Loading in progress</div>
-  }
   </p-panel>
 </section>

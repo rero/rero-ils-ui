@@ -1,21 +1,18 @@
 // SPDX-FileCopyrightText: Fondation RERO+
 // SPDX-FileCopyrightText: UCLouvain
 // SPDX-License-Identifier: AGPL-3.0-or-later
+import { inject } from '@angular/core';
 import { ResolveFn, Routes } from '@angular/router';
 import { _ } from '@ngx-translate/core';
 import { ActionStatus, Bucket, IFilter, RecordData, RecordType, RouteDataTypesInterface } from '@rero/ng-core';
 import { PERMISSION_OPERATOR, PERMISSIONS } from '@rero/shared';
 import { map, Observable, of } from 'rxjs';
-import { permissionGuard } from '../guard/permission.guard';
-import {
-  PatronTransactionEventsBriefViewComponent,
-} from '../record/brief-view/patron-transaction-events-brief-view/patron-transaction-events-brief-view.component';
-import {
-  PatronTransactionEventSearchViewComponent,
-} from '../record/search-view/patron-transaction-event-search-view/patron-transaction-event-search-view.component';
-import { BaseRoute } from './base-route';
+
 import { LibraryApiService } from '../api/library-api.service';
-import { inject } from '@angular/core';
+import { permissionGuard } from '../guard/permission.guard';
+import { PatronTransactionEventsBriefViewComponent } from '../record/brief-view/patron-transaction-events-brief-view/patron-transaction-events-brief-view.component';
+import { PatronTransactionEventSearchViewComponent } from '../record/search-view/patron-transaction-event-search-view/patron-transaction-event-search-view.component';
+import { BaseRoute } from './base-route';
 
 export const patronTransactionEventsRouteResolver: ResolveFn<Partial<RecordType>[]> = () =>
   new PatronTransactionEventsRoute().getTypes();
@@ -42,16 +39,20 @@ class PatronTransactionEventsRoute extends BaseRoute implements RouteDataTypesIn
   readonly recordType = 'patron_transaction_events';
 
   /**
- * Process bucket or filter name.
- *
- * @param bucketOrFilter Bucket or filter.
- * @return Observable of the name.
- */
+   * Process bucket or filter name.
+   *
+   * @param bucketOrFilter Bucket or filter.
+   * @return Observable of the name.
+   */
   private processName(bucketOrFilter: Bucket | IFilter): Observable<string> {
     switch (bucketOrFilter.aggregationKey) {
       case 'owning_library':
-      case 'transaction_library': return this.libraryApiService.getByPid(bucketOrFilter.key).pipe(map(record => record.name));
-      default: return bucketOrFilter.name ? of(bucketOrFilter.name) : this.routeToolService.translateService.stream(bucketOrFilter.key);
+      case 'transaction_library':
+        return this.libraryApiService.getByPid(bucketOrFilter.key).pipe(map((record) => record.name));
+      default:
+        return bucketOrFilter.name
+          ? of(bucketOrFilter.name)
+          : this.routeToolService.translateService.stream(bucketOrFilter.key);
     }
   }
 
@@ -86,7 +87,12 @@ class PatronTransactionEventsRoute extends BaseRoute implements RouteDataTypesIn
         sortOptions: [
           { label: _('Amount (highest)'), value: '-amount', icon: 'fa-solid fa-arrow-down-9-1' },
           { label: _('Amount (lowest)'), value: 'amount', icon: 'fa-solid fa-arrow-down-1-9' },
-          { label: _('Transaction date (newest)'), value: '-created', defaultQuery: true, icon: 'fa-solid fa-arrow-down-wide-short' },
+          {
+            label: _('Transaction date (newest)'),
+            value: '-created',
+            defaultQuery: true,
+            icon: 'fa-solid fa-arrow-down-wide-short',
+          },
           { label: _('Transaction date (oldest)'), value: 'created', icon: 'fa-solid fa-arrow-down-short-wide' },
         ],
         exportFormats: [

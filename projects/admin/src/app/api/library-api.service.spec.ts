@@ -1,12 +1,13 @@
 // SPDX-FileCopyrightText: Fondation RERO+
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-import { provideHttpClient } from "@angular/common/http";
-import { provideHttpClientTesting } from "@angular/common/http/testing";
-import { TestBed } from "@angular/core/testing";
-import { RecordService } from "@rero/ng-core";
-import { of } from "rxjs";
-import { LibraryApiService } from "./library-api.service";
+import { provideHttpClient, withXhr } from '@angular/common/http';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
+import { TestBed } from '@angular/core/testing';
+import { RecordService } from '@rero/ng-core';
+import { of } from 'rxjs';
+
+import { LibraryApiService } from './library-api.service';
 
 describe('LibraryApiService', () => {
   let service: LibraryApiService;
@@ -15,8 +16,8 @@ describe('LibraryApiService', () => {
     metadata: {
       code: 'FOO-BAR',
       name: 'FOO BAR',
-      pid: 1
-    }
+      pid: 1,
+    },
   };
   const recordServiceSpy = { getRecord: vi.fn() };
   recordServiceSpy.getRecord.mockReturnValue(of(library));
@@ -26,9 +27,10 @@ describe('LibraryApiService', () => {
       providers: [
         LibraryApiService,
         { provide: RecordService, useValue: recordServiceSpy },
-        provideHttpClient(),
+        provideHttpClient(withXhr()),
         provideHttpClientTesting(),
-      ] });
+      ],
+    });
 
     service = TestBed.inject(LibraryApiService);
   });

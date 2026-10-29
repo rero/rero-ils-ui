@@ -2,24 +2,22 @@
 SPDX-FileCopyrightText: Fondation RERO+
 SPDX-License-Identifier: AGPL-3.0-or-later
 -->
-<div class="ui:font-bold ui:mb-4" translate>
-    One item and one patron were found.
+<div class="ui:font-bold ui:mb-4">
+  {{ 'One item and one patron were found.' | translate }}
 </div>
 <div class="ui:flex ui:gap-2" tabindex="0" (keyup.enter)="checkinItemOnEnterKey($event)">
   <p-button
     id="action-patron"
     icon="fa-solid fa-user"
     styleClass="ui:outline-0"
-    [label]="'Patron account'|translate"
+    [label]="'Patron account' | translate"
     outlined
-    (onClick)="setAction('patron')"
-  />
+    (onClick)="setAction('patron')" />
   <p-button
     id="action-item"
     icon="fa-solid fa-right-left"
     styleClass="ui:outline-0"
-    [label]="'Checkin the item'|translate"
+    [label]="'Checkin the item' | translate"
     outlined
-    (onClick)="setAction('item')"
-  />
+    (onClick)="setAction('item')" />
 </div>

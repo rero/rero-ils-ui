@@ -4,17 +4,25 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { RecordService } from '@rero/ng-core';
-import { BaseApi, EsRecord, EsResult, esResultInitialState, IAvailability, IAvailabilityService, IssueItemStatus } from '@rero/shared';
+import {
+  BaseApi,
+  EsRecord,
+  EsResult,
+  esResultInitialState,
+  IAvailability,
+  IAvailabilityService,
+  IssueItemStatus,
+} from '@rero/shared';
 import { Observable, of } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
+
 import { AppConfigService } from '../app-config.service';
 import { canRequest } from '../document-detail/model/can-request-model';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class ItemApiService extends BaseApi implements IAvailabilityService {
-
   private recordService: RecordService = inject(RecordService);
   private httpClient: HttpClient = inject(HttpClient);
   private appConfigService: AppConfigService = inject(AppConfigService);
@@ -28,21 +36,32 @@ export class ItemApiService extends BaseApi implements IAvailabilityService {
    * @return Observable<EsResult>
    */
   getItemsByHoldingsAndViewcode(
-    holdings: Partial<EsRecord>, viewcode: string, page: number, itemsPerPage = 9999, filter = ''): Observable<EsResult> {
-    const sort = (holdings.metadata.holdings_type === 'serial')
-      ? '-issue_sort_date'
-      : 'enumeration_chronology';
-    let query = (holdings.metadata.holdings_type === 'serial')
-      ? `holding.pid:${holdings.metadata.pid} AND issue.status:${IssueItemStatus.RECEIVED}`
-      : `holding.pid:${holdings.metadata.pid}`;
+    holdings: Partial<EsRecord>,
+    viewcode: string,
+    page: number,
+    itemsPerPage = 9999,
+    filter = '',
+  ): Observable<EsResult> {
+    const sort = holdings.metadata.holdings_type === 'serial' ? '-issue_sort_date' : 'enumeration_chronology';
+    let query =
+      holdings.metadata.holdings_type === 'serial'
+        ? `holding.pid:${holdings.metadata.pid} AND issue.status:${IssueItemStatus.RECEIVED}`
+        : `holding.pid:${holdings.metadata.pid}`;
     if (filter !== '') {
       query += ` AND (enumerationAndChronology.analyzed:"${filter}" OR call_numbers:(*${filter}*) OR barcode:(*${filter}*))`;
     }
     return this.recordService
-      .getRecords('items', { query, page, itemsPerPage, preFilters: { view: viewcode }, headers: BaseApi.reroJsonheaders, sort })
+      .getRecords('items', {
+        query,
+        page,
+        itemsPerPage,
+        preFilters: { view: viewcode },
+        headers: BaseApi.reroJsonheaders,
+        sort,
+      })
       .pipe(
         catchError(() => of(esResultInitialState)),
-        map((response: EsResult) => response)
+        map((response: EsResult) => response),
       );
   }
 
@@ -54,10 +73,9 @@ export class ItemApiService extends BaseApi implements IAvailabilityService {
    * @return Observable
    */
   canRequest(itemPid: string, libraryPid: string, patronBarcode: string): Observable<canRequest> {
-    return this.httpClient
-      .get<canRequest>(
-        `${this.appConfigService.apiEndpointPrefix}/item/${itemPid}/can_request?library_pid=${libraryPid}&patron_barcode=${patronBarcode}`
-      );
+    return this.httpClient.get<canRequest>(
+      `${this.appConfigService.apiEndpointPrefix}/item/${itemPid}/can_request?library_pid=${libraryPid}&patron_barcode=${patronBarcode}`,
+    );
   }
 
   /**
@@ -65,7 +83,7 @@ export class ItemApiService extends BaseApi implements IAvailabilityService {
    * @param data - Object
    * @return Observable
    */
-  request(data: { item_pid: string, pickup_location_pid: string }): Observable<any> {
+  request(data: { item_pid: string; pickup_location_pid: string }): Observable<any> {
     return this.httpClient.post(`${this.appConfigService.apiEndpointPrefix}/item/patron_request`, data);
   }
 

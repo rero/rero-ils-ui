@@ -1,7 +1,7 @@
 // SPDX-FileCopyrightText: Fondation RERO+
 // SPDX-License-Identifier: AGPL-3.0-or-later
 import { APP_BASE_HREF, DatePipe, PlatformLocation } from '@angular/common';
-import { provideHttpClient, withInterceptors } from '@angular/common/http';
+import { provideHttpClient, withInterceptors, withXhr } from '@angular/common/http';
 import {
   ApplicationConfig,
   importProvidersFrom,
@@ -9,27 +9,31 @@ import {
   provideAppInitializer,
   provideZonelessChangeDetection,
 } from '@angular/core';
-import { provideAnimations } from '@angular/platform-browser/animations';
-import { provideRouter, withRouterConfig } from '@angular/router';
+import { provideRouter } from '@angular/router';
 import { FORMLY_CONFIG, FormlyModule } from '@ngx-formly/core';
 import { LoadingBarHttpClientModule } from '@ngx-loading-bar/http-client';
 import { provideTranslateLoader, provideTranslateService, TranslateService } from '@ngx-translate/core';
+import { provideOptimus } from '@openng/optimus-ui/config';
 import {
-  ComponentCanDeactivateGuard,
   CoreConfigService,
   RecordHandleErrorService as CoreRecordHandleErrorService,
   httpPendingInterceptor,
   NgCoreTranslateService,
   noCacheInterceptor,
-  PasswordGeneratorComponent,
-  primeNGConfig,
+  optimusUIConfig,
   provideCore,
-  RemoteAutocompleteService,
   TranslateLanguageService,
-  TruncateTextPipe
+  TruncateTextPipe,
 } from '@rero/ng-core';
-import { AppTranslateLanguageService, AppTranslateLoader, AppTranslateService, ItemHoldingsCallNumberPipe, MainTitlePipe } from '@rero/shared';
-import { providePrimeNG } from 'primeng/config';
+import { PasswordGeneratorComponent, provideCoreFormly, RemoteAutocompleteService } from '@rero/ng-core/editor';
+import {
+  AppTranslateLanguageService,
+  AppTranslateLoader,
+  AppTranslateService,
+  ItemHoldingsCallNumberPipe,
+  MainTitlePipe,
+} from '@rero/shared';
+
 import { SelectAccountEditorWidgetComponent } from './acquisition/components/editor/widget/select-account-editor-widget/select-account-editor-widget.component';
 import { registerFormlyExtension } from './acquisition/formly/extension';
 import { OrderLineTypeComponent } from './acquisition/formly/type/field-order-line.type';
@@ -56,9 +60,8 @@ import { RecordHandleErrorService } from './service/record.handle-error.service'
 
 export const appConfig: ApplicationConfig = {
   providers: [
-    provideAnimations(),
     provideZonelessChangeDetection(),
-    provideRouter(routes, withRouterConfig({ paramsInheritanceStrategy: 'always' })),
+    provideRouter(routes),
     provideAppInitializer(() => initializeApp()),
     {
       provide: APP_BASE_HREF,
@@ -83,16 +86,19 @@ export const appConfig: ApplicationConfig = {
     ItemHoldingsCallNumberPipe,
     CountryCodeTranslatePipe,
     { provide: CoreRecordHandleErrorService, useExisting: RecordHandleErrorService },
-    provideHttpClient(withInterceptors([httpPendingInterceptor, noCacheInterceptor, userCurrentLibraryInterceptor])),
+    provideHttpClient(
+      withXhr(),
+      withInterceptors([httpPendingInterceptor, noCacheInterceptor, userCurrentLibraryInterceptor]),
+    ),
     provideCore(),
+    provideCoreFormly(),
     {
       provide: FORMLY_CONFIG,
       multi: true,
       useFactory: registerFormlyExtension,
       deps: [TranslateService],
     },
-    ComponentCanDeactivateGuard,
-    providePrimeNG(primeNGConfig),
+    provideOptimus(optimusUIConfig),
     provideTranslateService({
       loader: provideTranslateLoader(AppTranslateLoader),
     }),
@@ -114,7 +120,7 @@ export const appConfig: ApplicationConfig = {
           { name: 'user-id', component: UserIdComponent },
         ],
       }),
-      LoadingBarHttpClientModule
+      LoadingBarHttpClientModule,
     ),
     { provide: TranslateService, useExisting: NgCoreTranslateService },
     { provide: NgCoreTranslateService, useExisting: AppTranslateService },

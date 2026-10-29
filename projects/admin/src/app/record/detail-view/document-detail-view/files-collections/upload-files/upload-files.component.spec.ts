@@ -4,10 +4,11 @@
 import { TestBed } from '@angular/core/testing';
 import { ResourcesFilesService } from '@app/admin/service/resources-files.service';
 import { TranslateService } from '@ngx-translate/core';
+import { ConfirmationService, MessageService } from '@openng/optimus-ui/api';
 import { NgxSpinnerService } from 'ngx-spinner';
-import { ConfirmationService, MessageService } from 'primeng/api';
 import { of } from 'rxjs';
 import { vi } from 'vitest';
+
 import { UploadedFile, UploadFilesComponent } from './upload-files.component';
 
 describe('UploadFilesComponent', () => {

@@ -7,25 +7,24 @@ SPDX-License-Identifier: AGPL-3.0-or-later
   <span [innerHTML]="rec.metadata.description | nl2br"></span>
   <section class="ui:mt-4">
     <dl class="metadata">
-      <dt translate>Library</dt>
+      <dt>{{ 'Library' | translate }}</dt>
       <dd>{{ rec.metadata.library.$ref | getRecord: 'libraries' : 'field' : 'name' | async }}</dd>
 
-      <dt translate>Is active</dt>
+      <dt>{{ 'Is active' | translate }}</dt>
       <dd>
         <i
           class="fa-solid fa-circle"
-          [ngClass]="{'text-success': rec.metadata.is_active, 'text-error': !rec.metadata.is_active}"
-        ></i>
+          [ngClass]="{ 'text-success': rec.metadata.is_active, 'text-error': !rec.metadata.is_active }"></i>
       </dd>
-      <dt translate>Frequency</dt>
+      <dt>{{ 'Frequency' | translate }}</dt>
       <dd>{{ rec.metadata.frequency | translate }}</dd>
       @if (rec.metadata.filter_by_libraries?.length > 0) {
-        <dt translate>Filter numbers by libraries</dt>
+        <dt>{{ 'Filter numbers by libraries' | translate }}</dt>
         <dd>
           <ul class="ui:list-none">
             @for (lib of rec.metadata.filter_by_libraries; track lib.$ref) {
               <li>
-                {{ lib.$ref| getRecord: 'libraries' : 'field' : 'name' | async }}
+                {{ lib.$ref | getRecord: 'libraries' : 'field' : 'name' | async }}
               </li>
             }
           </ul>
@@ -35,22 +34,21 @@ SPDX-License-Identifier: AGPL-3.0-or-later
   </section>
 
   <section class="ui:mt-4">
-    <p-fieldset [legend]="'Configuration'|translate">
+    <p-fieldset [legend]="'Configuration' | translate">
       <dl class="metadata">
-
-        <dt translate>Category</dt>
+        <dt>{{ 'Category' | translate }}</dt>
         <dd>{{ rec.metadata.category.type | translate }}</dd>
 
-        <dt translate>Indicator</dt>
+        <dt>{{ 'Indicator' | translate }}</dt>
         <dd>{{ rec.metadata.category.indicator.type | translate }}</dd>
 
         @if (rec.metadata.category.indicator.period) {
-          <dt translate>Period</dt>
+          <dt>{{ 'Period' | translate }}</dt>
           <dd>{{ rec.metadata.category.indicator.period | translate }}</dd>
         }
 
         @if (rec.metadata.category.indicator.distributions) {
-          <dt translate>Distributions</dt>
+          <dt>{{ 'Distributions' | translate }}</dt>
           <dd>
             <ul class="ui:list-none">
               @for (dist of rec.metadata.category.indicator.distributions; track $index; let last = $last) {
@@ -60,15 +58,15 @@ SPDX-License-Identifier: AGPL-3.0-or-later
           </dd>
         }
         @if (rec.metadata.category.indicator.filter) {
-          <dt translate>Filter</dt>
+          <dt>{{ 'Filter' | translate }}</dt>
           <dd>{{ rec.metadata.category.indicator.filter }}</dd>
         }
         @if (rec.created) {
-          <dt translate>Created at</dt>
+          <dt>{{ 'Created at' | translate }}</dt>
           <dd>{{ rec.created | dateTranslate: 'medium' }}</dd>
         }
         @if (rec.updated) {
-          <dt translate>Updated at</dt>
+          <dt>{{ 'Updated at' | translate }}</dt>
           <dd>{{ rec.updated | dateTranslate: 'medium' }}</dd>
         }
       </dl>
@@ -78,8 +76,8 @@ SPDX-License-Identifier: AGPL-3.0-or-later
   <section class="ui:mt-4">
     <p-tabs value="report">
       <p-tablist>
-        <p-tab value="report" translate>Reports</p-tab>
-        <p-tab value="live" translate (click)="requestLiveValues()">Live Values</p-tab>
+        <p-tab value="report">{{ 'Reports' | translate }}</p-tab>
+        <p-tab value="live" (click)="requestLiveValues()">{{ 'Live Values' | translate }}</p-tab>
       </p-tablist>
       <p-tabpanels>
         <p-tabpanel value="report">

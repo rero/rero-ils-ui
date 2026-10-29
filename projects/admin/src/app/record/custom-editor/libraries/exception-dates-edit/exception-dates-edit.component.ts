@@ -1,27 +1,38 @@
 // SPDX-FileCopyrightText: Fondation RERO+
 // SPDX-License-Identifier: AGPL-3.0-or-later
 import { TitleCasePipe } from '@angular/common';
-import { ChangeDetectionStrategy, Component, inject, OnDestroy, OnInit, signal } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit, signal } from '@angular/core';
 import { FormsModule, ReactiveFormsModule, UntypedFormArray, Validators } from '@angular/forms';
-import { TranslateDirective, TranslatePipe, TranslateService } from '@ngx-translate/core';
-import { Bind } from 'primeng/bind';
-import { Button } from 'primeng/button';
-import { DatePicker } from 'primeng/datepicker';
-import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
-import { InputNumber } from 'primeng/inputnumber';
-import { InputText } from 'primeng/inputtext';
-import { Select } from 'primeng/select';
-import { ToggleSwitch } from 'primeng/toggleswitch';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
+import { Bind } from '@openng/optimus-ui/bind';
+import { Button } from '@openng/optimus-ui/button';
+import { DatePicker } from '@openng/optimus-ui/datepicker';
+import { DynamicDialogConfig, DynamicDialogRef } from '@openng/optimus-ui/dynamicdialog';
+import { InputNumber } from '@openng/optimus-ui/inputnumber';
+import { InputText } from '@openng/optimus-ui/inputtext';
+import { Select } from '@openng/optimus-ui/select';
+import { ToggleSwitch } from '@openng/optimus-ui/toggleswitch';
+
 import { LibraryExceptionFormService } from '../library-exception-form.service';
 
 @Component({
-    selector: 'admin-libraries-exception-dates-edit',
-    templateUrl: './exception-dates-edit.component.html',
-    imports: [FormsModule, ReactiveFormsModule, Bind, InputText, TranslateDirective, Button, ToggleSwitch, InputNumber, Select, TitleCasePipe, TranslatePipe, DatePicker],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  selector: 'admin-libraries-exception-dates-edit',
+  templateUrl: './exception-dates-edit.component.html',
+  imports: [
+    FormsModule,
+    ReactiveFormsModule,
+    Bind,
+    InputText,
+    Button,
+    ToggleSwitch,
+    InputNumber,
+    Select,
+    TitleCasePipe,
+    TranslatePipe,
+    DatePicker,
+  ],
 })
 export class ExceptionDatesEditComponent implements OnInit, OnDestroy {
-
   private dynamicDialogConfig: DynamicDialogConfig = inject(DynamicDialogConfig);
   private dynamicDialogRef: DynamicDialogRef = inject(DynamicDialogRef);
   protected formService: LibraryExceptionFormService = inject(LibraryExceptionFormService);
@@ -32,16 +43,16 @@ export class ExceptionDatesEditComponent implements OnInit, OnDestroy {
   periods: { label: string; value: string }[] = [
     {
       label: this.translateService.instant('week'),
-      value: 'weekly'
+      value: 'weekly',
     },
     {
       label: this.translateService.instant('month'),
-      value: 'monthly'
+      value: 'monthly',
     },
     {
       label: this.translateService.instant('year'),
-      value: 'yearly'
-    }
+      value: 'yearly',
+    },
   ];
 
   ngOnInit() {
@@ -56,7 +67,9 @@ export class ExceptionDatesEditComponent implements OnInit, OnDestroy {
   }
 
   onSubmit(): void {
-    if (this.isSending()) { return; }
+    if (this.isSending()) {
+      return;
+    }
     this.isSending.set(true);
     this.dynamicDialogRef.close(this.formService.getValue());
   }

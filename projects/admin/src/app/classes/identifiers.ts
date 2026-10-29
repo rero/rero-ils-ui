@@ -25,5 +25,5 @@ export enum IdentifierTypes {
   UPC = 'bf:Upc',
   URN = 'bf:Urn',
   VIDEO_RECORDING_NUMBER = 'bf:VideoRecordingNumber',
-  URI = 'uri'
+  URI = 'uri',
 }

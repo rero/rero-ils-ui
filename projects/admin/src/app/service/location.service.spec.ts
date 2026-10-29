@@ -1,27 +1,23 @@
 // SPDX-FileCopyrightText: Fondation RERO+
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-import { TestBed } from "@angular/core/testing";
-import { LocationService } from "./location.service";
-import { of } from "rxjs";
-import { apiResponse } from "@rero/shared";
-import { RecordService } from "@rero/ng-core";
-import { location } from "@rero/shared";
+import { TestBed } from '@angular/core/testing';
+import { RecordService } from '@rero/ng-core';
+import { apiResponse, location } from '@rero/shared';
+import { of } from 'rxjs';
+
+import { LocationService } from './location.service';
 
 describe('LocationService', () => {
   let service: LocationService;
 
-  const response = {...apiResponse};
+  const response = { ...apiResponse };
 
   const recordServiceSpy = { getRecords: vi.fn() };
 
-
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [
-        LocationService,
-        { provide: RecordService, useValue: recordServiceSpy }
-      ]
+      providers: [LocationService, { provide: RecordService, useValue: recordServiceSpy }],
     });
 
     service = TestBed.inject(LocationService);
@@ -32,10 +28,9 @@ describe('LocationService', () => {
   });
 
   it('should return a list of locations in relation to libraries', () => {
-    response.hits.hits = [{...location}];
+    response.hits.hits = [{ ...location }];
     response.hits.total = response.hits.hits.length;
     recordServiceSpy.getRecords.mockReturnValue(of(response));
-    service.getLocationsByLibraries$(['1'])
-      .subscribe((result: any) => expect(result).toEqual([location]));
+    service.getLocationsByLibraries$(['1']).subscribe((result: any) => expect(result).toEqual([location]));
   });
 });

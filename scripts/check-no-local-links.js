@@ -19,7 +19,7 @@ const allowed = (process.env.ALLOW_LOCAL_LINKS || '')
 
 const pkg = JSON.parse(fs.readFileSync('package.json', 'utf8'));
 const deps = Object.keys({ ...pkg.dependencies, ...pkg.devDependencies }).filter(
-  (name) => !allowed.includes('*') && !allowed.includes(name)
+  (name) => !allowed.includes('*') && !allowed.includes(name),
 );
 
 const offenders = deps.filter((name) => {

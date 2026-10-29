@@ -14,7 +14,7 @@ export enum LoanState {
   ITEM_IN_TRANSIT_FOR_PICKUP = 'ITEM_IN_TRANSIT_FOR_PICKUP',
   ITEM_IN_TRANSIT_TO_HOUSE = 'ITEM_IN_TRANSIT_TO_HOUSE',
   ITEM_AT_DESK = 'ITEM_AT_DESK',
-  CANCELLED = 'CANCELLED'
+  CANCELLED = 'CANCELLED',
 }
 
 // INTERFACE ===================================================================
@@ -22,7 +22,7 @@ export enum LoanState {
 export type LoanOverduePreview = {
   steps: any[];
   total: number;
-}
+};
 
 // CLASSES =====================================================================
 export class LoanDestination {
@@ -32,7 +32,7 @@ export class LoanDestination {
   location_code?: string;
 
   constructor(obj?: any) {
-    Object.assign(this, obj)
+    Object.assign(this, obj);
   }
 }
 
@@ -42,7 +42,7 @@ export class Loan {
   transaction_date?: DateTime;
   patron_pid?: string;
   document_pid?: string;
-  item_pid?: {type: string, value: string};
+  item_pid?: { type: string; value: string };
   start_date?: DateTime;
   end_date?: DateTime;
   request_expire_date?: DateTime;
@@ -67,25 +67,24 @@ export class Loan {
    * Convert a string representation of a date to a `DateTime`
    * @param data: the date to parse
    */
-  private static _convertToDate(data?: string): DateTime|null {
-    return (data)
-      ? DateTime.fromISO(data)
-      : null;
+  private static _convertToDate(data?: string): DateTime | null {
+    return data ? DateTime.fromISO(data) : null;
   }
 
   /** Return the due date about the loan */
   get dueDate(): DateTime {
     switch (this.state) {
-      case LoanState.PENDING: return this.request_expire_date;
-      case LoanState.ITEM_ON_LOAN: return this.end_date;
-      default: return null;
+      case LoanState.PENDING:
+        return this.request_expire_date;
+      case LoanState.ITEM_ON_LOAN:
+        return this.end_date;
+      default:
+        return null;
     }
   }
 
   /** Is the loan is expired or not ? */
   public get expired(): boolean {
-    return (this.dueDate)
-      ? this.dueDate < DateTime.now()
-      : false;
+    return this.dueDate ? this.dueDate < DateTime.now() : false;
   }
 }

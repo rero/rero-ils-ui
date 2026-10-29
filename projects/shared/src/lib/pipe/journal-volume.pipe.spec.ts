@@ -2,7 +2,8 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 import { TestBed } from '@angular/core/testing';
-import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { provideTranslateService, TranslateService } from '@ngx-translate/core';
+
 import { JournalVolumePipe } from './journal-volume.pipe';
 
 describe('JournalVolumePipe', () => {
@@ -11,19 +12,14 @@ describe('JournalVolumePipe', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [
-        TranslateModule.forRoot()
-      ],
-      providers: [
-        JournalVolumePipe
-      ]
+      providers: [provideTranslateService(), JournalVolumePipe],
     });
     translate = TestBed.inject(TranslateService);
     pipe = TestBed.inject(JournalVolumePipe);
 
     translate.setTranslation('fr', {
       'Vol. {{ volume }}': 'Volume {{ volume }}',
-      'n°. {{ number }}': 'n°. {{ number }}'
+      'n°. {{ number }}': 'n°. {{ number }}',
     });
     translate.use('fr');
   });

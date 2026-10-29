@@ -1,17 +1,16 @@
 // SPDX-FileCopyrightText: Fondation RERO+
 // SPDX-License-Identifier: AGPL-3.0-or-later
 import { TestBed } from '@angular/core/testing';
+import { LocalStorageService } from '@rero/ng-core';
 
 import { ILibrarySwitchDataStorage, LibrarySwitchStorageService } from './library-switch-storage.service';
-import { LocalStorageService } from '@rero/ng-core';
 
 describe('LibrarySwitchStorageService', () => {
   let service: LibrarySwitchStorageService;
 
   const data: ILibrarySwitchDataStorage = {
-    userId: 1,
     currentLibrary: 'library',
-    libraryName: 'library name'
+    libraryName: 'library name',
   };
 
   const localStorageSpy = { has: vi.fn(), get: vi.fn(), set: vi.fn(), remove: vi.fn() };
@@ -20,9 +19,7 @@ describe('LibrarySwitchStorageService', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [
-        { provide: LocalStorageService, useValue: localStorageSpy }
-      ]
+      providers: [{ provide: LocalStorageService, useValue: localStorageSpy }],
     });
     service = TestBed.inject(LibrarySwitchStorageService);
   });
@@ -46,5 +43,4 @@ describe('LibrarySwitchStorageService', () => {
   it('should delete the data', () => {
     expect(service.remove()).toBe(void 0);
   });
-
 });

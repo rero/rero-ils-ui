@@ -8,8 +8,8 @@ SPDX-License-Identifier: AGPL-3.0-or-later
     <div class="ui:py-3">
       @for (field of localFields(); track $index) {
         <dl class="metadata ui:odd:bg-surface-50">
-          <dt translate>{{ 'local_' + field.name }}</dt>
-          <dd>{{ field.value | join:'; ' }}</dd>
+          <dt>{{ 'local_' + field.name | translate }}</dt>
+          <dd>{{ field.value | join: '; ' }}</dd>
         </dl>
       }
     </div>
@@ -20,37 +20,33 @@ SPDX-License-Identifier: AGPL-3.0-or-later
         @if ($any(recordPermissions())?.update?.can) {
           <p-button
             icon="fa-solid fa-pencil"
-            [label]="'Edit'|translate"
+            [label]="'Edit' | translate"
             outlined
             [routerLink]="['/records', 'local_fields', 'edit', pid()]"
             [queryParams]="{ type: resourceType(), ref: resourcePid() }"
-            size="small"
-          />
+            size="small" />
         }
         @if ($any(recordPermissions())?.delete?.can) {
           <p-button
             icon="fa-solid fa-trash-can"
-            [label]="'Delete'|translate"
+            [label]="'Delete' | translate"
             severity="danger"
             outlined
             size="small"
-            (onClick)="delete()"
-          />
+            (onClick)="delete()" />
         }
       </div>
     } @else if (canAdd()) {
       <div class="ui:flex ui:justify-end">
         <p-button
           icon="fa-regular fa-square-plus"
-          [label]="'Add local fields'|translate"
+          [label]="'Add local fields' | translate"
           outlined
           [routerLink]="['/records', 'local_fields', 'new']"
-          [queryParams]="{ type: resourceType(), ref: resourcePid() }"
-        />
+          [queryParams]="{ type: resourceType(), ref: resourcePid() }" />
       </div>
     }
   }
-
 } @placeholder {
   <i class="fa-solid fa-spin fa-spinner"></i>&nbsp;{{ 'Loading in progress…' | translate }}
 }

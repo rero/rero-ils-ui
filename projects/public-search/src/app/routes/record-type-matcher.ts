@@ -1,6 +1,6 @@
 // SPDX-FileCopyrightText: Fondation RERO+
 // SPDX-License-Identifier: AGPL-3.0-or-later
-import { UrlMatcher, UrlSegment } from "@angular/router";
+import { UrlMatcher, UrlSegment } from '@angular/router';
 
 export function recordTypeMatcher(type: string): UrlMatcher {
   return (url: UrlSegment[]) => {

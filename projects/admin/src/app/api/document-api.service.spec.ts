@@ -2,12 +2,13 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 import { HttpClient } from '@angular/common/http';
 import { TestBed } from '@angular/core/testing';
-import { TranslateModule } from '@ngx-translate/core';
+import { provideTranslateService } from '@ngx-translate/core';
 import { RecordData, RecordService } from '@rero/ng-core';
-import { AppConfigService } from '../service/app-config.service';
 import { IAvailability } from '@rero/shared';
 import { of } from 'rxjs';
+
 import { IAdvancedSearchConfig } from '../record/search-view/document-advanced-search-form/i-advanced-search-config-interface';
+import { AppConfigService } from '../service/app-config.service';
 import { DocumentApiService } from './document-api.service';
 
 describe('DocumentApiService', () => {
@@ -18,23 +19,25 @@ describe('DocumentApiService', () => {
     aggregations: {},
     hits: {
       total: 2,
-      hits: [{
-        metadata: {
-          pid: 1
-        }
-      },
-      {
-        metadata: {
-          pid: 2
-        }
-      }]
+      hits: [
+        {
+          metadata: {
+            pid: 1,
+          },
+        },
+        {
+          metadata: {
+            pid: 2,
+          },
+        },
+      ],
     },
-    links: {}
+    links: {},
   };
 
   const availability: IAvailability = {
-    available: true
-  }
+    available: true,
+  };
 
   const advancedSearchConfig: IAdvancedSearchConfig = {
     fieldsConfig: [],
@@ -43,21 +46,20 @@ describe('DocumentApiService', () => {
       country: [],
       rdaCarrierType: [],
       rdaContentType: [],
-      rdaMediaType: [] }
+      rdaMediaType: [],
+    },
   };
 
   const httpClientSpy = { get: vi.fn() };
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [
-        TranslateModule.forRoot()
-      ],
       providers: [
+        provideTranslateService(),
         { provide: HttpClient, useValue: httpClientSpy },
         { provide: RecordService, useValue: { getRecord: vi.fn(), getRecords: vi.fn() } },
-        { provide: AppConfigService, useValue: {} }
-      ]
+        { provide: AppConfigService, useValue: {} },
+      ],
     });
     service = TestBed.inject(DocumentApiService);
     recordService = TestBed.inject(RecordService);
@@ -73,12 +75,14 @@ describe('DocumentApiService', () => {
       id: '1',
       links: { self: 'https://localhost/api/documents/1' },
       metadata: { pid: '1' },
-      updated: '2025-01-01T00:00:00+00:00'
+      updated: '2025-01-01T00:00:00+00:00',
     };
     vi.spyOn(recordService, 'getRecord').mockReturnValue(of(record));
     service.getDocument('1').subscribe((response) => expect(response).toEqual(record));
-    expect(recordService.getRecord).toHaveBeenCalledWith(
-      'documents', '1', { resolve: 1, headers: { Accept: 'application/rero+json' } });
+    expect(recordService.getRecord).toHaveBeenCalledWith('documents', '1', {
+      resolve: 1,
+      headers: { Accept: 'application/rero+json' },
+    });
   });
 
   it('should return the number of linked documents', () => {
@@ -90,13 +94,13 @@ describe('DocumentApiService', () => {
 
   it('should return the availability of the document', () => {
     httpClientSpy.get.mockReturnValue(of(availability));
-    service.getAvailability('1')
-      .subscribe((response: IAvailability) => expect(response).toEqual(availability));
+    service.getAvailability('1').subscribe((response: IAvailability) => expect(response).toEqual(availability));
   });
 
   it('should return the advanced search configuration ', () => {
     httpClientSpy.get.mockReturnValue(of(advancedSearchConfig));
-    service.getAdvancedSearchConfig()
+    service
+      .getAdvancedSearchConfig()
       .subscribe((config: IAdvancedSearchConfig) => expect(config).toEqual(advancedSearchConfig));
   });
 });

@@ -1,14 +1,15 @@
 // SPDX-FileCopyrightText: Fondation RERO+
 // SPDX-License-Identifier: AGPL-3.0-or-later
 import { APP_BASE_HREF, CurrencyPipe, KeyValue, KeyValuePipe } from '@angular/common';
-import { afterNextRender, ChangeDetectionStrategy, Component, effect, inject, model, OnInit, signal, untracked } from '@angular/core';
-import { TranslateDirective, TranslatePipe, TranslateService } from '@ngx-translate/core';
+import { afterNextRender, Component, effect, inject, model, OnInit, signal, untracked } from '@angular/core';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
+import { BadgeModule } from '@openng/optimus-ui/badge';
+import { TabsModule } from '@openng/optimus-ui/tabs';
+import { TooltipModule } from '@openng/optimus-ui/tooltip';
 import { AppStore, EsResult } from '@rero/shared';
 import JsBarcode from 'jsbarcode';
-import { BadgeModule } from 'primeng/badge';
-import { TabsModule } from 'primeng/tabs';
-import { TooltipModule } from 'primeng/tooltip';
 import { forkJoin, of } from 'rxjs';
+
 import { IllRequestApiService } from '../api/ill-request-api.service';
 import { LoanApiService } from '../api/loan-api.service';
 import { OperationLogsApiService } from '../api/operation-logs-api.service';
@@ -33,7 +34,7 @@ type Tab = {
   order: number;
   tooltip?: string;
   display: boolean;
-}
+};
 
 type Tabs = {
   loan: Tab;
@@ -42,7 +43,7 @@ type Tabs = {
   history: Tab;
   illRequest: Tab;
   personalDetails: Tab;
-}
+};
 
 @Component({
   selector: 'public-search-patron-profile',
@@ -50,7 +51,6 @@ type Tabs = {
   imports: [
     CurrencyPipe,
     KeyValuePipe,
-    TranslateDirective,
     TranslatePipe,
     BadgeModule,
     TabsModule,
@@ -64,7 +64,6 @@ type Tabs = {
     PatronProfileIllRequestsComponent,
     PatronProfilePersonalComponent,
   ],
-  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class PatronProfileComponent implements OnInit {
   private patronTransactionApiService = inject(PatronTransactionApiService);
@@ -93,39 +92,39 @@ export class PatronProfileComponent implements OnInit {
       title: this.translateService.instant('Loans'),
       order: 0,
       tooltip: this.translateService.instant('Fees to date'),
-      display: true
+      display: true,
     },
     request: {
       loaded: false,
       count: 0,
       title: this.translateService.instant('Requests'),
       order: 1,
-      display: true
+      display: true,
     },
     fee: {
       title: this.translateService.instant('Fees'),
       order: 2,
       feeTotal: 0,
-      display: true
+      display: true,
     },
     illRequest: {
       loaded: false,
       count: 0,
       title: this.translateService.instant('Interlibrary loan'),
       order: 4,
-      display: true
+      display: true,
     },
     history: {
       loaded: false,
       count: 0,
       title: this.translateService.instant('History'),
       order: 3,
-      display: true
+      display: true,
     },
     personalDetails: {
       title: this.translateService.instant('Personal details'),
       order: 5,
-      display: true
+      display: true,
     },
   });
 
@@ -137,8 +136,7 @@ export class PatronProfileComponent implements OnInit {
     return this.store.currentPatron();
   }
 
-  sortTabs = (a: KeyValue<string, any>, b: KeyValue<string, any>): number =>
-    a.value.order - b.value.order;
+  sortTabs = (a: KeyValue<string, any>, b: KeyValue<string, any>): number => a.value.order - b.value.order;
 
   getTabKeyByIndex(index: number): string | null {
     for (const [key, value] of Object.entries(this.tabs())) {
@@ -159,7 +157,7 @@ export class PatronProfileComponent implements OnInit {
       const tab = this.activeTab();
       if (tab) {
         untracked(() => {
-          this.tabs.update(t => ({ ...t, [tab]: { ...t[tab as keyof Tabs], loaded: true } }));
+          this.tabs.update((t) => ({ ...t, [tab]: { ...t[tab as keyof Tabs], loaded: true } }));
           this.store.changeTab(tab);
         });
       }
@@ -175,14 +173,14 @@ export class PatronProfileComponent implements OnInit {
       const pid = this.store.cancelledRequestPid();
       if (!pid) return;
       untracked(() => {
-        this.tabs.update(t => ({ ...t, request: { ...t.request, count: (t.request.count ?? 0) - 1 } }));
+        this.tabs.update((t) => ({ ...t, request: { ...t.request, count: (t.request.count ?? 0) - 1 } }));
         const keepHistory = this.appStore.user()?.keep_history ?? false;
         if (keepHistory) {
           const patronPid = this.store.currentPatron()?.pid;
           if (patronPid) {
             this.operationLogsApiService.getHistory(patronPid, 1, 1).subscribe((r) => {
               if (!('hits' in r)) return;
-              this.tabs.update(t => ({
+              this.tabs.update((t) => ({
                 ...t,
                 history: { ...t.history, loaded: false, count: r.hits.total },
               }));
@@ -200,7 +198,7 @@ export class PatronProfileComponent implements OnInit {
     this.user = this.appStore.user();
     if (this.user.isAuthenticated && this.user.isPatron) {
       const keepHistory = this.user.keep_history ?? false;
-      this.tabs.update(t => ({ ...t, history: { ...t.history, display: keepHistory } }));
+      this.tabs.update((t) => ({ ...t, history: { ...t.history, display: keepHistory } }));
       this.store.changePatron(this._currentPatronPid(this.viewcode));
     }
   }
@@ -220,15 +218,19 @@ export class PatronProfileComponent implements OnInit {
       this.activeTab.set('loan');
       const feeTotal = overdueResponse.reduce(
         (acc: number, fee: OverdueFee) => acc + +fee.fees.total,
-        (feeResponse.aggregations as any).total.value
+        (feeResponse.aggregations as any).total.value,
       );
-      this.tabs.update(t => ({
+      this.tabs.update((t) => ({
         ...t,
         loan: { ...t.loan, loaded: false, count: loanResponse.hits.total },
         request: { ...t.request, loaded: false, count: requestResponse.hits.total },
         fee: { ...t.fee, loaded: false, feeTotal },
         illRequest: { ...t.illRequest, loaded: false, count: illRequestResponse.hits.total },
-        history: { ...t.history, loaded: false, count: historyResponse?.hits ? historyResponse.hits.total : t.history.count },
+        history: {
+          ...t.history,
+          loaded: false,
+          count: historyResponse?.hits ? historyResponse.hits.total : t.history.count,
+        },
         personalDetails: { ...t.personalDetails, loaded: false },
       }));
     });

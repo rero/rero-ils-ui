@@ -4,11 +4,10 @@
 import { Pipe, PipeTransform } from '@angular/core';
 
 @Pipe({
-    name: 'join',
-    pure: false
+  name: 'join',
+  pure: false,
 })
 export class JoinPipe implements PipeTransform {
-
   /**
    * Join all parts of an array as a string.
    * @param parts: string or string array
@@ -19,6 +18,6 @@ export class JoinPipe implements PipeTransform {
     if (!Array.isArray(parts)) {
       parts = [parts];
     }
-    return parts.map(part => part.toString()).join(glue);
+    return parts.map((part) => part.toString()).join(glue);
   }
 }

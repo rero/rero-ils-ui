@@ -1,16 +1,18 @@
 // SPDX-FileCopyrightText: Fondation RERO+
 // SPDX-FileCopyrightText: UCLouvain
 // SPDX-License-Identifier: AGPL-3.0-or-later
-import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
+import { LIBRARIAN_STORAGE_KEYS } from '@app/admin/service/librarian-storage-keys';
 import { FormlyFieldConfig, FormlyFormBuilder, FormlyFormOptions, FormlyModule } from '@ngx-formly/core';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
+import { Bind } from '@openng/optimus-ui/bind';
+import { Button } from '@openng/optimus-ui/button';
+import { DynamicDialogRef } from '@openng/optimus-ui/dynamicdialog';
 import { LocalStorageService } from '@rero/ng-core';
-import { Bind } from 'primeng/bind';
-import { Button } from 'primeng/button';
-import { DynamicDialogRef } from 'primeng/dynamicdialog';
 import { BehaviorSubject } from 'rxjs';
+
 import { AdvancedSearchService } from './advanced-search.service';
 import { IFieldsData, IFieldsType, ISearchModel } from './i-advanced-search-config-interface';
 
@@ -18,10 +20,8 @@ import { IFieldsData, IFieldsType, ISearchModel } from './i-advanced-search-conf
   selector: 'admin-document-advanced-search-form',
   templateUrl: './document-advanced-search-form.component.html',
   imports: [FormsModule, ReactiveFormsModule, FormlyModule, Bind, Button, TranslatePipe],
-  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class DocumentAdvancedSearchFormComponent {
-
   private dynamicDialogRef = inject(DynamicDialogRef);
   private route = inject(ActivatedRoute);
   private localeStorage = inject(LocalStorageService);
@@ -29,7 +29,7 @@ export class DocumentAdvancedSearchFormComponent {
   private advancedSearchService = inject(AdvancedSearchService);
   private formBuilder = inject(FormlyFormBuilder);
 
-  private static LOCALE_STORAGE_NAME = 'advancedSearch';
+  private static LOCALE_STORAGE_NAME = LIBRARIAN_STORAGE_KEYS.advancedSearch;
   private static LOCALE_STORAGE_EXPIRED_IN_SECONDS = 600;
 
   protected configurationLoaded = signal(false);
@@ -83,7 +83,7 @@ export class DocumentAdvancedSearchFormComponent {
   /** Submit */
   submit(): void {
     this.localeStorage.set(DocumentAdvancedSearchFormComponent.LOCALE_STORAGE_NAME, this.model);
-    this.dynamicDialogRef.close(this.generateQueryByModel(this.model))
+    this.dynamicDialogRef.close(this.generateQueryByModel(this.model));
   }
 
   /** Init formly model */
@@ -92,13 +92,15 @@ export class DocumentAdvancedSearchFormComponent {
       field: 'title',
       term: '',
       searchType: AdvancedSearchService.SEARCH_TYPE_CONTAINS,
-      search: [{
-        operator: AdvancedSearchService.OPERATOR_AND,
-        field: 'title',
-        term: '',
-        searchType: AdvancedSearchService.SEARCH_TYPE_CONTAINS
-      }],
-    }
+      search: [
+        {
+          operator: AdvancedSearchService.OPERATOR_AND,
+          field: 'title',
+          term: '',
+          searchType: AdvancedSearchService.SEARCH_TYPE_CONTAINS,
+        },
+      ],
+    };
   }
 
   /**
@@ -107,10 +109,12 @@ export class DocumentAdvancedSearchFormComponent {
    */
   private loadOrResetStorage(q: string): void {
     if (this.localeStorage.has(DocumentAdvancedSearchFormComponent.LOCALE_STORAGE_NAME)) {
-      if (this.localeStorage.isExpired(
-        DocumentAdvancedSearchFormComponent.LOCALE_STORAGE_NAME,
-        DocumentAdvancedSearchFormComponent.LOCALE_STORAGE_EXPIRED_IN_SECONDS
-      )) {
+      if (
+        this.localeStorage.isExpired(
+          DocumentAdvancedSearchFormComponent.LOCALE_STORAGE_NAME,
+          DocumentAdvancedSearchFormComponent.LOCALE_STORAGE_EXPIRED_IN_SECONDS,
+        )
+      ) {
         this.localeStorage.remove(DocumentAdvancedSearchFormComponent.LOCALE_STORAGE_NAME);
       } else {
         const queryModel = this.localeStorage.get(DocumentAdvancedSearchFormComponent.LOCALE_STORAGE_NAME);
@@ -130,15 +134,15 @@ export class DocumentAdvancedSearchFormComponent {
    * @param subject - Behavior Event
    */
   private initField(field: any, fieldParentKey: string): void {
-    if (Object.keys(this.fieldDataConfig).some(key => key === fieldParentKey)) {
+    if (Object.keys(this.fieldDataConfig).some((key) => key === fieldParentKey)) {
       field.props.group = false;
       field.props.translated = false;
       field.props.minItemsToDisplaySearch = 10;
       field.props.sort = true;
-      field.props.placeholder = this.translateService.instant("Select…");
-      field.props.sortOrder = "asc";
-      field.props.class = "ui:w-full";
-      field.props.styleClass = "ui:w-full";
+      field.props.placeholder = this.translateService.instant('Select…');
+      field.props.sortOrder = 'asc';
+      field.props.class = 'ui:w-full';
+      field.props.styleClass = 'ui:w-full';
       field.props.filter = true;
       field.props.required = true;
       field.type = 'select';
@@ -160,15 +164,12 @@ export class DocumentAdvancedSearchFormComponent {
    * @param subject - Behavior Event
    */
   private initFieldSearchType(field: any, fieldParentKey: string): void {
-    if (Object.keys(this.fieldsSearchTypeConfig).some(key => key === fieldParentKey)) {
+    if (Object.keys(this.fieldsSearchTypeConfig).some((key) => key === fieldParentKey)) {
       field.props.sort = false;
       field.props.disabled = this.fieldsSearchTypeConfig[fieldParentKey].length < 2;
       field.props.options.next(this.fieldsSearchTypeConfig[fieldParentKey]);
       const fieldSearchTypeValue = this.fieldsSearchTypeConfig[fieldParentKey][0].value;
-      if (
-        !field.formControl.value
-        || (field.formControl.value && fieldSearchTypeValue !== field.formControl.value)
-      ) {
+      if (!field.formControl.value || (field.formControl.value && fieldSearchTypeValue !== field.formControl.value)) {
         field.formControl.setValue(fieldSearchTypeValue);
       }
     }
@@ -206,7 +207,7 @@ export class DocumentAdvancedSearchFormComponent {
                   required: true,
                   minItemsToDisplaySearch: 999,
                   options: this.advancedSearchService.getFieldsConfig(),
-                  appendTo: 'body'
+                  appendTo: 'body',
                 },
               },
               {
@@ -218,11 +219,11 @@ export class DocumentAdvancedSearchFormComponent {
                   required: true,
                   hideLabelSelectOption: true,
                   options: new BehaviorSubject([]),
-                  appendTo: 'body'
+                  appendTo: 'body',
                 },
                 hooks: {
-                  onInit: (field) => this.fieldSearchTypeHook(field, 'field')
-                }
+                  onInit: (field) => this.fieldSearchTypeHook(field, 'field'),
+                },
               },
               {
                 className: 'ui:col-span-4',
@@ -231,13 +232,13 @@ export class DocumentAdvancedSearchFormComponent {
                 props: {
                   required: true,
                   options: new BehaviorSubject([]),
-                  appendTo: 'body'
+                  appendTo: 'body',
                 },
                 hooks: {
-                  onInit: (field) => this.fieldHook(field, 'field')
-                }
+                  onInit: (field) => this.fieldHook(field, 'field'),
+                },
               },
-            ]
+            ],
           },
         ],
       },
@@ -262,7 +263,7 @@ export class DocumentAdvancedSearchFormComponent {
                     hideLabel: true,
                     required: true,
                     options: this.advancedSearchService.getOperators(),
-                    appendTo: 'body'
+                    appendTo: 'body',
                   },
                 },
                 {
@@ -276,7 +277,7 @@ export class DocumentAdvancedSearchFormComponent {
                     required: true,
                     minItemsToDisplaySearch: 999,
                     options: this.advancedSearchService.getFieldsConfig(),
-                    appendTo: 'body'
+                    appendTo: 'body',
                   },
                 },
                 {
@@ -288,11 +289,11 @@ export class DocumentAdvancedSearchFormComponent {
                     required: true,
                     hideLabelSelectOption: true,
                     options: new BehaviorSubject([]),
-                    appendTo: 'body'
+                    appendTo: 'body',
                   },
                   hooks: {
-                    onInit: (field) => this.fieldSearchTypeHook(field, 'field')
-                  }
+                    onInit: (field) => this.fieldSearchTypeHook(field, 'field'),
+                  },
                 },
                 {
                   className: 'ui:col-span-4',
@@ -300,17 +301,17 @@ export class DocumentAdvancedSearchFormComponent {
                   key: 'term',
                   props: {
                     options: new BehaviorSubject([]),
-                    appendTo: 'body'
+                    appendTo: 'body',
                   },
                   hooks: {
-                    onInit: (field) => this.fieldHook(field, 'field')
-                  }
+                    onInit: (field) => this.fieldHook(field, 'field'),
+                  },
                 },
               ],
             },
           ],
         },
       },
-    ]
+    ];
   }
 }

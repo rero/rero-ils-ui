@@ -1,23 +1,22 @@
 // SPDX-FileCopyrightText: Fondation RERO+
 // SPDX-FileCopyrightText: UCLouvain
 // SPDX-License-Identifier: AGPL-3.0-or-later
-import { Component, inject, input, ChangeDetectionStrategy} from '@angular/core';
-import { toObservable, toSignal } from '@angular/core/rxjs-interop';
-import { filter, switchMap } from 'rxjs';
-import { AppStore } from '@rero/shared';
-import { AcqBudgetApiService } from '../../../api/acq-budget-api.service';
-import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
 import { CurrencyPipe } from '@angular/common';
-import { MessageModule } from 'primeng/message';
+import { Component, inject, input } from '@angular/core';
+import { toObservable, toSignal } from '@angular/core/rxjs-interop';
+import { TranslatePipe } from '@ngx-translate/core';
+import { MessageModule } from '@openng/optimus-ui/message';
+import { AppStore } from '@rero/shared';
+import { filter, switchMap } from 'rxjs';
+
+import { AcqBudgetApiService } from '../../../api/acq-budget-api.service';
 
 @Component({
-    selector: 'admin-budget-detail-view',
-    templateUrl: './budget-detail-view.component.html',
-    imports: [TranslateDirective, CurrencyPipe, TranslatePipe, MessageModule],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  selector: 'admin-budget-detail-view',
+  templateUrl: './budget-detail-view.component.html',
+  imports: [CurrencyPipe, TranslatePipe, MessageModule],
 })
 export class BudgetDetailViewComponent {
-
   private budgetApiService: AcqBudgetApiService = inject(AcqBudgetApiService);
   private appStore = inject(AppStore);
 
@@ -31,9 +30,9 @@ export class BudgetDetailViewComponent {
   readonly totalAmount = toSignal(
     toObservable(this.record).pipe(
       filter((record: any) => !!record?.metadata?.pid),
-      switchMap((record: any) => this.budgetApiService.getBudgetTotalAmount(record.metadata.pid))
+      switchMap((record: any) => this.budgetApiService.getBudgetTotalAmount(record.metadata.pid)),
     ),
-    { initialValue: 0 }
+    { initialValue: 0 },
   );
 
   // GETTER & SETTER ==========================================================

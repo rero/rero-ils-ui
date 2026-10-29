@@ -1,27 +1,26 @@
 // SPDX-FileCopyrightText: Fondation RERO+
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
+import { JsonPipe } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
-import { Component, computed, inject, ChangeDetectionStrategy} from '@angular/core';
+import { Component, computed, inject } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute } from '@angular/router';
+import { TranslatePipe } from '@ngx-translate/core';
+import { Bind } from '@openng/optimus-ui/bind';
+import { Message } from '@openng/optimus-ui/message';
+import { Tag } from '@openng/optimus-ui/tag';
 import { ApiService, DateTranslatePipe, MarkdownPipe } from '@rero/ng-core';
 import { of, switchMap } from 'rxjs';
-import { Bind } from 'primeng/bind';
-import { Tag } from 'primeng/tag';
-import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
-import { JsonPipe } from '@angular/common';
+
 import { HighlightJsonPipe } from '../pipes/highlight-json.pipe';
-import { Message } from 'primeng/message';
 
 @Component({
-    selector: 'admin-migration-data',
-    templateUrl: './migration-data.component.html',
-    imports: [Bind, Tag, TranslateDirective, JsonPipe, DateTranslatePipe, TranslatePipe, HighlightJsonPipe, Message, MarkdownPipe],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  selector: 'admin-migration-data',
+  templateUrl: './migration-data.component.html',
+  imports: [Bind, Tag, JsonPipe, DateTranslatePipe, TranslatePipe, HighlightJsonPipe, Message, MarkdownPipe],
 })
 export class MigrationDataDetailComponent {
-
   // services
   protected route: ActivatedRoute = inject(ActivatedRoute);
   protected http: HttpClient = inject(HttpClient);
@@ -40,15 +39,13 @@ export class MigrationDataDetailComponent {
           return of(null);
         }
         // get the record from the backend
-        return this.http.get<any>(
-          `${this.apiService.getEndpointByType(docType, true)}/${id}?migration=${migrationId}`
-        );
-      })
-    )
+        return this.http.get<any>(`${this.apiService.getEndpointByType(docType, true)}/${id}?migration=${migrationId}`);
+      }),
+    ),
   );
 
   // log messages from the backend
-  messages = computed((): {severity: string, detail: string}[] => this.getMessages());
+  messages = computed((): { severity: string; detail: string }[] => this.getMessages());
 
   // conversion status
   status = computed((): string => this.record()?.conversion?.status);
@@ -57,8 +54,8 @@ export class MigrationDataDetailComponent {
    *
    * @returns the list messages on the primeng format.
    */
-  getMessages(): {severity: string, detail: string}[] {
-    const messages: { severity: string, detail: string }[] = [];
+  getMessages(): { severity: string; detail: string }[] {
+    const messages: { severity: string; detail: string }[] = [];
     if (this.record()?.conversion.logs) {
       ['info', 'warning', 'error'].map((field) => {
         const log = this.record().conversion.logs[field];
@@ -72,5 +69,4 @@ export class MigrationDataDetailComponent {
     }
     return messages;
   }
-
 }

@@ -3,8 +3,12 @@ SPDX-FileCopyrightText: Fondation RERO+
 SPDX-License-Identifier: AGPL-3.0-or-later
 -->
 
-<ng-core-search-input [placeholder]="'username or email' | translate" [searchText]="searchText"
-  (searchQuery)="searchValueUpdated($event)" [focus]="false" [displayLabel]="false"
+<ng-core-search-input
+  [placeholder]="'username or email' | translate"
+  [searchText]="searchText"
+  (searchQuery)="searchValueUpdated($event)"
+  [focus]="false"
+  [displayLabel]="false"
   [disabled]="httpPending.isPending()">
 </ng-core-search-input>
 <p-divider></p-divider>
@@ -18,16 +22,14 @@ SPDX-License-Identifier: AGPL-3.0-or-later
       id="user-editor-delete-button"
       (onClick)="closeDialog()"
       icon="fa-solid fa-xmark"
-      [label]="'Cancel' | translate"
-    />
+      [label]="'Cancel' | translate" />
     <p-button
       type="submit"
       id="user-editor-save-button"
       size="small"
       icon="fa-solid fa-floppy-disk"
       [disabled]="httpPending.isPending()"
-      [label]="'Save' | translate"
-    />
+      [label]="'Save' | translate" />
   </div>
   <formly-form [model]="model()" [fields]="fields" [form]="form" />
 </form>

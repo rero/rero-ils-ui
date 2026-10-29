@@ -4,10 +4,10 @@ SPDX-FileCopyrightText: UCLouvain
 SPDX-License-Identifier: AGPL-3.0-or-later
 -->
 <ng-core-record-search class="core:my-1">
-@if (showLink()) {
+  @if (showLink()) {
     <div class="ui:my-6">
-      <a href="#" (click)="linkToGlobalDocuments($event)" translate>
-        Expand to all organisations
+      <a href="#" (click)="linkToGlobalDocuments($event)">
+        {{ 'Expand to all organisations' | translate }}
       </a>
     </div>
   }

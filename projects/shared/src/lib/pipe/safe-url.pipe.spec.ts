@@ -3,6 +3,7 @@
 
 import { TestBed } from '@angular/core/testing';
 import { BrowserModule, DomSanitizer } from '@angular/platform-browser';
+
 import { SafeUrlPipe } from './safe-url.pipe';
 
 describe('MainTitlePipe', () => {
@@ -16,13 +17,8 @@ describe('MainTitlePipe', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [
-        SafeUrlPipe,
-        { provide: DomSanitizer, useClass: domSanitizerSpy }
-      ],
-      imports: [
-        BrowserModule
-      ]
+      providers: [SafeUrlPipe, { provide: DomSanitizer, useClass: domSanitizerSpy }],
+      imports: [BrowserModule],
     });
 
     pipe = TestBed.inject(SafeUrlPipe);

@@ -11,8 +11,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
     [header]="'Confirmation' | translate"
     icon="fa fa-exclamation-triangle fa-2x core:text-red-500"
     acceptButtonStyleClass="core:bg-red-500 core:border-red-500"
-    rejectButtonStyleClass="p-button-text"
-  />
+    rejectButtonStyleClass="p-button-text" />
   @if (record()) {
     <ng-core-detail-button
       [record]="record() ?? null"
@@ -22,8 +21,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
       [updateStatus]="updateStatus()"
       [deleteStatus]="refreshedDeleteStatus()"
       (recordEvent)="recordEvent($event)"
-      (deleteMessageEvent)="showDeleteMessage($event)"
-    >
+      (deleteMessageEvent)="showDeleteMessage($event)">
       <ng-container beforeButton>
         @if (record()) {
           <a
@@ -31,10 +29,8 @@ SPDX-License-Identifier: AGPL-3.0-or-later
             icon="fa-solid fa-users"
             severity="secondary"
             outlined
-            href="/{{ appStore.settings.globalView() }}/documents/{{ $any(record()).metadata.pid }}"
-            translate
-          >
-            See in public interface
+            href="/{{ appStore.settings.globalView() }}/documents/{{ $any(record()).metadata.pid }}">
+            {{ 'See in public interface' | translate }}
           </a>
           @if (appStore.isLogVisible('documents') && record()?.metadata.pid) {
             <shared-operation-logs-dialog resourceType="documents" [resourcePid]="$any(record()?.metadata.pid)" />
@@ -42,21 +38,19 @@ SPDX-License-Identifier: AGPL-3.0-or-later
           @if (!record()?.metadata.pid && source) {
             <p-button
               icon="fa-solid fa-cloud-arrow-down"
-              [label]="'Import'|translate"
+              [label]="'Import' | translate"
               outlined
               [permissions]="permissions.DOC_CREATE"
-              (onClick)="importDocument($event, record(), { source: source, pid: pid() })"
-            />
+              (onClick)="importDocument($event, record(), { source: source, pid: pid() })" />
           }
           @if (record()?.metadata.pid) {
             <p-button
               icon="fa-regular fa-copy"
-              [label]="'Duplicate'|translate"
+              [label]="'Duplicate' | translate"
               outlined
               [permissions]="permissions.DOC_CREATE"
               [routerLink]="['/records', 'documents', 'duplicate']"
-              [queryParams]="{type: 'documents', pid: record()?.metadata.pid}"
-            />
+              [queryParams]="{ type: 'documents', pid: record()?.metadata.pid }" />
           }
         }
       </ng-container>

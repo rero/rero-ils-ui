@@ -1,21 +1,20 @@
 // SPDX-FileCopyrightText: Fondation RERO+
 // SPDX-License-Identifier: AGPL-3.0-or-later
-import { ChangeDetectionStrategy, Component, effect, inject, OnInit, signal, untracked } from '@angular/core';
-import { _, TranslateDirective } from "@ngx-translate/core";
+import { Component, effect, inject, OnInit, signal, untracked } from '@angular/core';
+import { _, TranslatePipe } from '@ngx-translate/core';
+import { PanelModule } from '@openng/optimus-ui/panel';
 import { Paginator, ShowMorePagerComponent } from '@rero/shared';
-import { PanelModule } from 'primeng/panel';
+
 import { OperationLogsApiService } from '../../api/operation-logs-api.service';
 import { PatronProfileStore } from '../store/patron-profile.store';
 import { PatronProfileHistoryComponent } from './patron-profile-history/patron-profile-history.component';
 
 @Component({
-    selector: 'public-search-patron-profile-histories',
-    templateUrl: './patron-profile-histories.component.html',
-    imports: [TranslateDirective, PanelModule, ShowMorePagerComponent, PatronProfileHistoryComponent],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  selector: 'public-search-patron-profile-histories',
+  templateUrl: './patron-profile-histories.component.html',
+  imports: [TranslatePipe, PanelModule, ShowMorePagerComponent, PatronProfileHistoryComponent],
 })
 export class PatronProfileHistoriesComponent implements OnInit {
-
   private operationLogsApiService = inject(OperationLogsApiService);
   private store = inject(PatronProfileStore);
 
@@ -49,14 +48,11 @@ export class PatronProfileHistoriesComponent implements OnInit {
 
   ngOnInit(): void {
     this.paginator = new Paginator();
-    this.paginator.setHiddenInfo(
-      _('({{ count }} hidden history)'),
-      _('({{ count }} hidden histories)')
-    );
+    this.paginator.setHiddenInfo(_('({{ count }} hidden history)'), _('({{ count }} hidden histories)'));
     this.paginator.more$.subscribe((page: number) => {
       this._historyQuery(page).subscribe((response) => {
         if (!('hits' in response)) return;
-        this.records.update(r => [...r, ...response.hits.hits]);
+        this.records.update((r) => [...r, ...response.hits.hits]);
       });
     });
   }

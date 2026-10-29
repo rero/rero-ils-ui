@@ -2,26 +2,27 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
+import { AsyncPipe, NgClass } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
-import { Component, computed, inject, input, signal, Signal, ChangeDetectionStrategy } from '@angular/core';
+import { Component, computed, inject, input, signal, Signal } from '@angular/core';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
-import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
-import { TranslateService, TranslatePipe } from '@ngx-translate/core';
-import { ApiService } from '@rero/ng-core';
-import type { EsResult } from '../../../model/es-result-model';
-import { DialogService } from 'primeng/dynamicdialog';
-import { catchError, forkJoin, map, Observable, of, switchMap, tap } from 'rxjs';
-import { Bind } from 'primeng/bind';
-import { Tag } from 'primeng/tag';
-import { RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
-import { Carousel } from 'primeng/carousel';
-import { NgClass, AsyncPipe } from '@angular/common';
-import { Paginator } from 'primeng/paginator';
-import { Dialog } from 'primeng/dialog';
-import { InputGroup } from 'primeng/inputgroup';
-import { InputGroupAddon } from 'primeng/inputgroupaddon';
-import { InputText } from 'primeng/inputtext';
+import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
+import { RouterLink } from '@angular/router';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
+import { Bind } from '@openng/optimus-ui/bind';
+import { Carousel } from '@openng/optimus-ui/carousel';
+import { Dialog } from '@openng/optimus-ui/dialog';
+import { DialogService } from '@openng/optimus-ui/dynamicdialog';
+import { InputGroup } from '@openng/optimus-ui/inputgroup';
+import { InputGroupAddon } from '@openng/optimus-ui/inputgroupaddon';
+import { InputText } from '@openng/optimus-ui/inputtext';
+import { Paginator } from '@openng/optimus-ui/paginator';
+import { Tag } from '@openng/optimus-ui/tag';
+import { ApiService } from '@rero/ng-core';
+import { catchError, forkJoin, map, Observable, of, switchMap, tap } from 'rxjs';
+
+import type { EsResult } from '../../../model/es-result-model';
 import { FaIconClassPipe } from '../../../pipe/fa-icon-class.pipe';
 
 // file interface
@@ -34,17 +35,30 @@ export type File = {
   label: string;
   // preview URL
   preview?: string;
-}
+};
 
 // Component itself
 @Component({
-    selector: 'shared-doc-files',
-    templateUrl: './files.component.html',
-    imports: [Bind, Tag, RouterLink, FormsModule, Carousel, NgClass, Paginator, Dialog, InputGroup, InputGroupAddon, InputText, AsyncPipe, TranslatePipe, FaIconClassPipe],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  selector: 'shared-doc-files',
+  templateUrl: './files.component.html',
+  imports: [
+    Bind,
+    Tag,
+    RouterLink,
+    FormsModule,
+    Carousel,
+    NgClass,
+    Paginator,
+    Dialog,
+    InputGroup,
+    InputGroupAddon,
+    InputText,
+    AsyncPipe,
+    TranslatePipe,
+    FaIconClassPipe,
+  ],
 })
 export class FilesComponent {
-
   protected httpService: HttpClient = inject(HttpClient);
   protected translateService: TranslateService = inject(TranslateService);
   protected apiService: ApiService = inject(ApiService);
@@ -76,43 +90,45 @@ export class FilesComponent {
           if (this.breakpointObserver.isMatched(Breakpoints.Small)) return 2;
           if (this.breakpointObserver.isMatched(Breakpoints.Medium)) return 4;
           return 5;
-        })
+        }),
       ),
-    { initialValue: 5 }
+    { initialValue: 5 },
   );
 
   /** Source of truth: files + collections fetched from the API */
   private readonly _data = toSignal(
     toObservable(this.documentPid).pipe(
       tap(() => this.isLoading.set(true)),
-      switchMap(pid => {
+      switchMap((pid) => {
         const baseUrl = this.apiService.getEndpointByType('records');
         return this.httpService.get(`${baseUrl}?q=metadata.document.pid:${pid}`).pipe(
-          map((result: EsResult) =>
-            result.hits.total === 0 ? [] : result.hits.hits
-          ),
+          map((result: EsResult) => (result.hits.total === 0 ? [] : result.hits.hits)),
           switchMap((hits: any[]) => {
-            const collections = Array.from(new Set(
-              hits.flatMap(hit => Array.isArray(hit.metadata.collections) ? hit.metadata.collections as string[] : [])
-            ));
-            const obs = hits.map(hit =>
-              this.httpService.get(`${baseUrl}/${hit.id}/files`).pipe(
-                map((res: any) => ({ id: hit.id, entries: res.entries }))
-              )
+            const collections = Array.from(
+              new Set(
+                hits.flatMap((hit) =>
+                  Array.isArray(hit.metadata.collections) ? (hit.metadata.collections as string[]) : [],
+                ),
+              ),
+            );
+            const obs = hits.map((hit) =>
+              this.httpService
+                .get(`${baseUrl}/${hit.id}/files`)
+                .pipe(map((res: any) => ({ id: hit.id, entries: res.entries }))),
             );
             return (obs.length > 0 ? forkJoin(obs) : of([])).pipe(
-              map((recs: any[]) => ({ files: this._processFiles(recs), collections }))
+              map((recs: any[]) => ({ files: this._processFiles(recs), collections })),
             );
           }),
           tap(() => this.isLoading.set(false)),
           catchError(() => {
             this.isLoading.set(false);
             return of({ files: [], collections: [] });
-          })
+          }),
         );
-      })
+      }),
     ),
-    { initialValue: null }
+    { initialValue: null },
   );
 
   readonly files: Signal<File[]> = computed(() => this._data()?.files ?? []);
@@ -121,7 +137,7 @@ export class FilesComponent {
   readonly filteredFiles: Signal<File[]> = computed(() => {
     const text = this.filterText().toLowerCase();
     const files = this.files();
-    return text ? files.filter(f => f.label.toLowerCase().includes(text)) : files;
+    return text ? files.filter((f) => f.label.toLowerCase().includes(text)) : files;
   });
 
   // PUBLIC FUNCTIONS =========================================================
@@ -162,14 +178,22 @@ export class FilesComponent {
     const { mimetype } = file;
     if (mimetype == null) return 'fa-regular fa-file';
     switch (true) {
-      case mimetype.startsWith('image/'): return 'fa-regular fa-file-image';
-      case mimetype.startsWith('audio/'): return 'fa-regular fa-file-audio';
-      case mimetype.startsWith('text/'): return 'fa-regular fa-file-lines';
-      case mimetype.startsWith('video/'): return 'fa-regular fa-file-video';
-      case mimetype.startsWith('application/vnd.openxmlformats-officedocument.presentationml'): return 'fa-regular fa-file-powerpoint';
-      case mimetype.startsWith('application/vnd.openxmlformats-officedocument.wordprocessingml'): return 'fa-regular fa-file-word';
-      case mimetype.startsWith('application/vnd.openxmlformats-officedocument.spreadsheetml'): return 'fa-regular fa-file-excel';
-      case mimetype.startsWith('application/pdf'): return 'fa-regular fa-file-pdf';
+      case mimetype.startsWith('image/'):
+        return 'fa-regular fa-file-image';
+      case mimetype.startsWith('audio/'):
+        return 'fa-regular fa-file-audio';
+      case mimetype.startsWith('text/'):
+        return 'fa-regular fa-file-lines';
+      case mimetype.startsWith('video/'):
+        return 'fa-regular fa-file-video';
+      case mimetype.startsWith('application/vnd.openxmlformats-officedocument.presentationml'):
+        return 'fa-regular fa-file-powerpoint';
+      case mimetype.startsWith('application/vnd.openxmlformats-officedocument.wordprocessingml'):
+        return 'fa-regular fa-file-word';
+      case mimetype.startsWith('application/vnd.openxmlformats-officedocument.spreadsheetml'):
+        return 'fa-regular fa-file-excel';
+      case mimetype.startsWith('application/pdf'):
+        return 'fa-regular fa-file-pdf';
     }
     return 'fa-regular fa-file';
   }
@@ -186,7 +210,7 @@ export class FilesComponent {
 
   private _processFiles(recs: any[]): File[] {
     const files: File[] = [];
-    recs.forEach(rec => {
+    recs.forEach((rec) => {
       const data: Record<string, File> = {};
       rec.entries.forEach((entry: any) => {
         if (!['thumbnail', 'fulltext'].includes(entry?.metadata?.type)) {
@@ -200,7 +224,7 @@ export class FilesComponent {
           data[entry.key] = dataFile;
         }
       });
-      Object.values(data).forEach(d => files.push(d));
+      Object.values(data).forEach((d) => files.push(d));
     });
     files.sort((a, b) => a.label.localeCompare(b.label, 'en', { numeric: true }));
     return files;

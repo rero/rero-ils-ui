@@ -3,30 +3,28 @@ SPDX-FileCopyrightText: Fondation RERO+
 SPDX-License-Identifier: AGPL-3.0-or-later
 -->
 @if (loaded()) {
-<form class="ui:flex ui:flex-col ui:gap-2" [formGroup]="form" (ngSubmit)="onSubmit(model)">
-  <!-- FORM HEADER :: title and action buttons -->
-  <section class="ui:flex ui:gap-2 ui:justify-between ui:items-center">
-    <h1 translate>Receipt</h1>
-    <div class="ui:flex ui:gap-1">
-      <p-button
-        outlined
-        severity="danger"
-        size="small"
-        (onClick)="redirectToOrder()"
-        icon="fa-solid fa-xmark"
-        [label]="'Cancel' | translate"
-      />
-      <p-button
-        type="submit"
-        size="small"
-        [disabled]="!form.valid || httpPending.isPending()"
-        [icon]="httpPending.isPending() ? 'fa-solid fa-spinner fa-pulse' : 'fa-solid fa-floppy-disk'"
-        [label]="'Save' | translate"
-      />
-    </div>
-  </section>
+  <form class="ui:flex ui:flex-col ui:gap-2" [formGroup]="form" (ngSubmit)="onSubmit(model)">
+    <!-- FORM HEADER :: title and action buttons -->
+    <section class="ui:flex ui:gap-2 ui:justify-between ui:items-center">
+      <h1>{{ 'Receipt' | translate }}</h1>
+      <div class="ui:flex ui:gap-1">
+        <p-button
+          outlined
+          severity="danger"
+          size="small"
+          (onClick)="redirectToOrder()"
+          icon="fa-solid fa-xmark"
+          [label]="'Cancel' | translate" />
+        <p-button
+          type="submit"
+          size="small"
+          [disabled]="!form.valid || httpPending.isPending()"
+          [icon]="httpPending.isPending() ? 'fa-solid fa-spinner fa-pulse' : 'fa-solid fa-floppy-disk'"
+          [label]="'Save' | translate" />
+      </div>
+    </section>
 
-  <!-- FORMLY FORM -->
+    <!-- FORMLY FORM -->
     <formly-form [form]="form" [fields]="fields()" [model]="model" />
-</form>
+  </form>
 }

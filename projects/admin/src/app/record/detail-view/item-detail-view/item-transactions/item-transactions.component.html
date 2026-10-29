@@ -8,36 +8,36 @@ SPDX-License-Identifier: AGPL-3.0-or-later
     <p-panel [header]="'Borrowed by' | translate" id="item-loans-requests" [permissions]="permissions.CIRC_ADMIN">
       <div class="ui:pb-3">
         <div class="ui:grid ui:grid-cols-12 ui:gap-4 ui:px-4 ui:py-2">
-          <div class="ui:col-span-4 ui:font-bold" translate>Patron</div>
-          <div class="ui:col-span-4 ui:font-bold" translate>Renewal</div>
-          <div class="ui:col-span-3 ui:font-bold" translate>Due date</div>
+          <div class="ui:col-span-4 ui:font-bold">{{ 'Patron' | translate }}</div>
+          <div class="ui:col-span-4 ui:font-bold">{{ 'Renewal' | translate }}</div>
+          <div class="ui:col-span-3 ui:font-bold">{{ 'Due date' | translate }}</div>
         </div>
         <admin-item-transaction type="loan_borrow" [transaction]="borrowedBy()[0]" />
       </div>
     </p-panel>
   }
   <p-panel>
-  <!-- Loan requested -->
+    <!-- Loan requested -->
     <ng-template #header>
       <div class="ui:flex ui:w-full ui:items-center">
-      <div class="p-panel-title ui:grow" translate>
-        Requested by
+        <div class="p-panel-title ui:grow">
+          {{ 'Requested by' | translate }}
+        </div>
+        <div class="ui:order-2">
+          <p-button
+            outlined
+            size="small"
+            icon="fa-regular fa-square-plus"
+            label="{{ 'Add' | translate }} …"
+            (onClick)="addRequest()" />
+        </div>
       </div>
-      <div class="ui:order-2">
-        <p-button
-          outlined size="small"
-          icon="fa-regular fa-square-plus"
-          label="{{ 'Add' | translate }} …"
-          (onClick)="addRequest()"
-        />
-      </div>
-    </div>
     </ng-template>
     @if (requestedBy().length > 0) {
       <div class="ui:grid ui:grid-cols-12 ui:gap-4 ui:px-4">
-        <div class="ui:col-span-4 ui:font-bold" translate>Patron</div>
-        <div class="ui:col-span-4 ui:font-bold" translate>Pick-up Location</div>
-        <div class="ui:col-span-3 ui:font-bold" translate>Request date</div>
+        <div class="ui:col-span-4 ui:font-bold">{{ 'Patron' | translate }}</div>
+        <div class="ui:col-span-4 ui:font-bold">{{ 'Pick-up Location' | translate }}</div>
+        <div class="ui:col-span-3 ui:font-bold">{{ 'Request date' | translate }}</div>
       </div>
       <div>
         @for (request of requestedBy(); track request.id) {
@@ -47,13 +47,12 @@ SPDX-License-Identifier: AGPL-3.0-or-later
               [transaction]="request"
               [itemPid]="itemPid()"
               (cancelRequestEvent)="cancelRequest($event)"
-              (updatePickupLocationEvent)="updateRequestPickupLocation($event)"
-            />
+              (updatePickupLocationEvent)="updateRequestPickupLocation($event)" />
           </div>
         }
       </div>
     } @else {
-      <div class="ui:p-4" translate>No pending request</div>
+      <div class="ui:p-4">{{ 'No pending request' | translate }}</div>
     }
   </p-panel>
 </div>

@@ -1,8 +1,9 @@
 // SPDX-FileCopyrightText: Fondation RERO+
 // SPDX-License-Identifier: AGPL-3.0-or-later
 import { Routes } from '@angular/router';
-import { _ } from "@ngx-translate/core";
+import { _ } from '@ngx-translate/core';
 import { PERMISSIONS } from '@rero/shared';
+
 import { permissionGuard } from '../guard/permission.guard';
 import { CheckinComponent } from './checkin/checkin.component';
 import { CirculationMainComponent } from './circulation-main.component';
@@ -31,19 +32,19 @@ export const circulationRoutes: Routes = [
         path: 'checkout',
         component: CheckinComponent,
         title: _('Checkout/checkin'),
-        canActivate: [ permissionGuard ],
+        canActivate: [permissionGuard],
         data: {
-          permissions: [ PERMISSIONS.CIRC_ADMIN ]
-        }
+          permissions: [PERMISSIONS.CIRC_ADMIN],
+        },
       },
       {
         path: 'requests',
         component: MainRequestComponent,
         title: _('Requests'),
-        canActivate: [ permissionGuard ],
+        canActivate: [permissionGuard],
         data: {
-          permissions: [ PERMISSIONS.CIRC_ADMIN ]
-        }
+          permissions: [PERMISSIONS.CIRC_ADMIN],
+        },
       },
       {
         path: 'patron/:barcode',
@@ -52,73 +53,73 @@ export const circulationRoutes: Routes = [
           {
             path: '',
             redirectTo: 'loan',
-            pathMatch: 'full'
+            pathMatch: 'full',
           },
           {
             path: 'loan',
             component: LoanComponent,
             title: _('On loan'),
-            canActivate: [ permissionGuard ],
+            canActivate: [permissionGuard],
             data: {
-              permissions: [ PERMISSIONS.CIRC_ADMIN ]
-            }
+              permissions: [PERMISSIONS.CIRC_ADMIN],
+            },
           },
           {
             path: 'pickup',
             component: PickupComponent,
             title: _('To pick up'),
-            canActivate: [ permissionGuard ],
+            canActivate: [permissionGuard],
             data: {
-              permissions: [ PERMISSIONS.CIRC_ADMIN ]
-            }
+              permissions: [PERMISSIONS.CIRC_ADMIN],
+            },
           },
           {
             path: 'pending',
             component: PendingComponent,
             title: _('Pending'),
-            canActivate: [ permissionGuard ],
+            canActivate: [permissionGuard],
             data: {
-              permissions: [ PERMISSIONS.CIRC_ADMIN ]
-            }
+              permissions: [PERMISSIONS.CIRC_ADMIN],
+            },
           },
           {
             path: 'ill',
             component: IllRequestComponent,
             title: _('Interlibrary loan'),
-            canActivate: [ permissionGuard ],
+            canActivate: [permissionGuard],
             data: {
-              permissions: [ PERMISSIONS.CIRC_ADMIN ]
-            }
+              permissions: [PERMISSIONS.CIRC_ADMIN],
+            },
           },
           {
             path: 'profile',
             component: ProfileComponent,
             title: _('Profile'),
-            canActivate: [ permissionGuard ],
+            canActivate: [permissionGuard],
             data: {
-              permissions: [ PERMISSIONS.CIRC_ADMIN ]
-            }
+              permissions: [PERMISSIONS.CIRC_ADMIN],
+            },
           },
           {
             path: 'fees',
             component: PatronTransactionsComponent,
             title: _('Fees'),
-            canActivate: [ permissionGuard ],
+            canActivate: [permissionGuard],
             data: {
-              permissions: [ PERMISSIONS.CIRC_ADMIN ]
-            }
+              permissions: [PERMISSIONS.CIRC_ADMIN],
+            },
           },
           {
             path: 'history',
             component: HistoryComponent,
             title: _('History'),
-            canActivate: [ keepHistoryGuard, permissionGuard ],
+            canActivate: [keepHistoryGuard, permissionGuard],
             data: {
-              permissions: [ PERMISSIONS.CIRC_ADMIN ]
-            }
-          }
-        ]
+              permissions: [PERMISSIONS.CIRC_ADMIN],
+            },
+          },
+        ],
       },
-    ]
+    ],
   },
 ];

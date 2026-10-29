@@ -5,8 +5,9 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 @if (record()) {
   @let m = $any(record()!.metadata);
-  <div class="ui:grid ui:grid-cols-12 ui:gap-4 ui:p-2 ui:pl-1" [ngClass]="{'callout callout-success':m.state === 'ITEM_AT_DESK'}">
-
+  <div
+    class="ui:grid ui:grid-cols-12 ui:gap-4 ui:p-2 ui:pl-1"
+    [ngClass]="{ 'callout callout-success': m.state === 'ITEM_AT_DESK' }">
     <div class="ui:md:col-span-8 ui:col-span-12 ui:flex ui:gap-2">
       <shared-open-close-button (status)="isCollapsed = $event" />
       <div class="ui:w-full">
@@ -14,21 +15,20 @@ SPDX-License-Identifier: AGPL-3.0-or-later
         <public-search-patron-profile-document
           [record]="record()"
           [showAdditionalInformation]="!isCollapsed"
-          [isAnimated]="true"
-        />
+          [isAnimated]="true" />
         <dl class="ui:grid ui:grid-cols-4">
-          <dt class="ui:hidden ui:md:block ui:font-bold ui:mr-2" translate>Pickup location</dt>
+          <dt class="ui:hidden ui:md:block ui:font-bold ui:mr-2">{{ 'Pickup location' | translate }}</dt>
           <dd class="ui:col-span-3">{{ m.pickup_name }}</dd>
         </dl>
         <dl class="ui:md:hidden ui:grid ui:grid-cols-4">
-          <dt class="ui:hidden" translate>Status</dt>
+          <dt class="ui:hidden">{{ 'Status' | translate }}</dt>
           <dd class="ui:col-span-3">
             <ng-container [ngTemplateOutlet]="status" />
           </dd>
         </dl>
       </div>
     </div>
-        <!-- STATUS ========================================================= -->
+    <!-- STATUS ========================================================= -->
     <div class="ui:md:col-span-2 ui:col-span-12 ui:hidden ui:md:block">
       <ng-container [ngTemplateOutlet]="status" />
     </div>
@@ -43,8 +43,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
           [label]="'Cancel' | translate"
           outlined
           severity="danger"
-          [icon]="cancelInProgress() ? 'fa-solid fa-spinner': 'fa-solid fa-trash-can'"
-        />
+          [icon]="cancelInProgress() ? 'fa-solid fa-spinner' : 'fa-solid fa-trash-can'" />
       }
     </div>
   </div>
@@ -54,15 +53,15 @@ SPDX-License-Identifier: AGPL-3.0-or-later
   @let ms = $any(record()?.metadata);
   <!-- ITEM AT DESK -->
   @if (ms?.state === 'ITEM_AT_DESK') {
-    <i class="fa-solid fa-check text-success"  title="{{ 'item at desk' | translate }}" aria-hidden="true"></i>
+    <i class="fa-solid fa-check text-success" title="{{ 'item at desk' | translate }}" aria-hidden="true"></i>
     {{ 'to pick up' | translate }}
     @if (ms?.request_expire_date) {
-      {{ 'until' | translate }} {{ ms.request_expire_date | dateTranslate: 'shortDate'}}
+      {{ 'until' | translate }} {{ ms.request_expire_date | dateTranslate: 'shortDate' }}
     }
   }
   <!-- PENDING OR ITEM IN TRANSIT FOR PICKUP -->
   @if (['PENDING', 'ITEM_IN_TRANSIT_FOR_PICKUP'].includes(ms?.state)) {
-    <i class="fa-solid fa-ellipsis ui:pr-1"  title="{{ 'pending' | translate }}" aria-hidden="true"></i>
+    <i class="fa-solid fa-ellipsis ui:pr-1" title="{{ 'pending' | translate }}" aria-hidden="true"></i>
     <!-- TODO: Add expired date and remove "waiting" text
     expected availability 00.00.0000  -->
     {{ 'waiting' | translate }}

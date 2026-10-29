@@ -37,7 +37,6 @@ type CirculationPolicyValue = {
 };
 
 export class Settings {
-
   /** Current circulation policy */
   private circulationPolicy: CirculationPolicyValue = {};
 
@@ -70,27 +69,32 @@ export class Settings {
    * @param appliedToLibraries - the libraries for which the policy applied.
    * @return this
    */
-  createStructure(itemTypes: HitRecord[], patronTypes: HitRecord[], circPolicies: HitRecord[], appliedToLibraries: string[]): this {
+  createStructure(
+    itemTypes: HitRecord[],
+    patronTypes: HitRecord[],
+    circPolicies: HitRecord[],
+    appliedToLibraries: string[],
+  ): this {
     if (this.circulationPolicy.settings) {
       this.circulationMatching = this._processSettings(this.circulationPolicy.settings, []);
     }
-    const appliedToLibraryPids = appliedToLibraries.map(uri => uri.substring(uri.lastIndexOf('/') + 1));
+    const appliedToLibraryPids = appliedToLibraries.map((uri) => uri.substring(uri.lastIndexOf('/') + 1));
     this._processCirculationPolicies(circPolicies, appliedToLibraryPids);
-    itemTypes.forEach(itemType => {
+    itemTypes.forEach((itemType) => {
       const item: SettingsRow = {
         pid: itemType.metadata.pid,
         label: itemType.metadata.name,
         value: this.apiService.getRefEndpoint('item_types', itemType.metadata.pid),
-        patronTypes: []
+        patronTypes: [],
       };
-      patronTypes.forEach(patronType => {
+      patronTypes.forEach((patronType) => {
         const key = `${itemType.metadata.pid}-${patronType.metadata.pid}`;
         item.patronTypes.push({
           pid: patronType.metadata.pid,
           label: patronType.metadata.name,
           value: this.apiService.getRefEndpoint('patron_types', patronType.metadata.pid),
           checked: this.circulationMatching.includes(key),
-          disabled: this.matching.includes(key)
+          disabled: this.matching.includes(key),
         });
       });
       this.settings.push(item);
@@ -112,20 +116,20 @@ export class Settings {
    * @param appliedToLibraries - the library pids for which the policy applied.
    */
   private _processCirculationPolicies(circPolicies: HitRecord[], appliedToLibraries: string[]): void {
-    circPolicies.forEach(policy => {
+    circPolicies.forEach((policy) => {
       if (!('settings' in policy.metadata)) {
         return;
       }
       // Library level control: skip this policy if none of its libraries overlap
       // with the currently selected libraries.
       if (policy.metadata.libraries) {
-        const policyLibraryPids = policy.metadata.libraries.map(lib => lib.pid);
-        if (!policyLibraryPids.some(pid => appliedToLibraries.includes(pid))) {
+        const policyLibraryPids = policy.metadata.libraries.map((lib) => lib.pid);
+        if (!policyLibraryPids.some((pid) => appliedToLibraries.includes(pid))) {
           return;
         }
       }
       this.matching = this.matching.concat(
-        this._processSettings(policy.metadata.settings as RawSetting[], this.matching)
+        this._processSettings(policy.metadata.settings as RawSetting[], this.matching),
       );
     });
   }
@@ -139,10 +143,8 @@ export class Settings {
   private _processSettings(settings: RawSetting[], matching: string[]): string[] {
     const output: string[] = [];
     const regexPid = /.+\/(.+)$/;
-    settings.forEach(setting => {
-      const itemTypePid = setting.item_type.$ref
-        ? regexPid.exec(setting.item_type.$ref)![1]
-        : setting.item_type.pid!;
+    settings.forEach((setting) => {
+      const itemTypePid = setting.item_type.$ref ? regexPid.exec(setting.item_type.$ref)![1] : setting.item_type.pid!;
       const patronTypePid = setting.patron_type.$ref
         ? regexPid.exec(setting.patron_type.$ref)![1]
         : setting.patron_type.pid!;

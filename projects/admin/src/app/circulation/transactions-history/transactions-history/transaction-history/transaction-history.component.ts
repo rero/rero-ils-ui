@@ -19,15 +19,16 @@ import { computeTotalTransactionsAmount } from '@app/admin/circulation/utils/tra
 import { Item } from '@app/admin/classes/items';
 import { TransactionStatusPipe } from '@app/admin/pipe/transaction-status.pipe';
 import { ItemsService } from '@app/admin/service/items.service';
-import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
+import { Button } from '@openng/optimus-ui/button';
+import { ScrollPanel } from '@openng/optimus-ui/scrollpanel';
+import { Skeleton } from '@openng/optimus-ui/skeleton';
+import { Tag } from '@openng/optimus-ui/tag';
 import { DateTranslatePipe, RecordService } from '@rero/ng-core';
 import { AppStore, OpenCloseButtonComponent } from '@rero/shared';
-import { Button } from 'primeng/button';
-import { ScrollPanel } from 'primeng/scrollpanel';
-import { Skeleton } from 'primeng/skeleton';
-import { Tag } from 'primeng/tag';
 import { of } from 'rxjs';
 import { catchError, map, switchMap } from 'rxjs/operators';
+
 import { TransactionHistoryActorComponent } from './transaction-history-actor/transaction-history-actor.component';
 import { TransactionHistoryDetailsComponent } from './transaction-history-details/transaction-history-details.component';
 import { TransactionHistoryDocumentComponent } from './transaction-history-document/transaction-history-document.component';
@@ -47,13 +48,11 @@ import { TransactionHistoryDocumentComponent } from './transaction-history-docum
     TransactionHistoryDetailsComponent,
     TransactionHistoryDocumentComponent,
     TransactionStatusPipe,
-    TranslateDirective,
     TranslatePipe,
   ],
   templateUrl: './transaction-history.component.html',
 })
 export class TransactionHistoryComponent {
-
   private recordService = inject(RecordService);
   private itemsService = inject(ItemsService);
   private patronTransactionService = inject(PatronTransactionService);
@@ -78,31 +77,31 @@ export class TransactionHistoryComponent {
 
   /** The `loan` part of the operation_logs entry, or `undefined` for a scan_item entry. */
   protected logLoan = computed(() => {
-    const {metadata} = this.transaction();
+    const { metadata } = this.transaction();
     return isLoanMetadata(metadata) ? metadata.loan : undefined;
   });
 
   /** The `scan` part of the operation_logs entry, or `undefined` for a loan entry. */
   protected logScan = computed(() => {
-    const {metadata} = this.transaction();
+    const { metadata } = this.transaction();
     return isScanItemMetadata(metadata) ? metadata.scan : undefined;
   });
 
   /** Pid of the item involved in this entry, whether it's a loan or a scan_item. */
   private itemPid = computed(() => {
-    const {metadata} = this.transaction();
+    const { metadata } = this.transaction();
     return isLoanMetadata(metadata) ? metadata.loan.item.pid : metadata.scan.item.pid;
   });
 
   /** Pid of the document involved in this entry, whether it's a loan or a scan_item. */
   protected documentPid = computed(() => {
-    const {metadata} = this.transaction();
+    const { metadata } = this.transaction();
     return isLoanMetadata(metadata) ? metadata.loan.item.document.pid : metadata.scan.item.document.pid;
   });
 
   /** Document title, as captured in the operation_logs entry. */
   protected documentTitle = computed(() => {
-    const {metadata} = this.transaction();
+    const { metadata } = this.transaction();
     return isLoanMetadata(metadata) ? metadata.loan.item.document.title : metadata.scan.item.document.title;
   });
 
@@ -113,12 +112,14 @@ export class TransactionHistoryComponent {
    */
   private itemResource = toSignal(
     toObservable(this.itemPid).pipe(
-      switchMap((itemPid) => this.recordService.getRecord<ItemRecord>('items', itemPid).pipe(
-        map((value) => ({ value, notFound: false })),
-        catchError(() => of({ value: undefined, notFound: true }))
-      ))
+      switchMap((itemPid) =>
+        this.recordService.getRecord<ItemRecord>('items', itemPid).pipe(
+          map((value) => ({ value, notFound: false })),
+          catchError(() => of({ value: undefined, notFound: true })),
+        ),
+      ),
     ),
-    { initialValue: { value: undefined, notFound: false } }
+    { initialValue: { value: undefined, notFound: false } },
   );
 
   protected item = computed(() => this.itemResource().value);
@@ -141,12 +142,10 @@ export class TransactionHistoryComponent {
         if (!item?.metadata.barcode) {
           return of(undefined);
         }
-        return this.itemsService.getItem(item.metadata.barcode).pipe(
-          catchError(() => of(undefined))
-        );
-      })
+        return this.itemsService.getItem(item.metadata.barcode).pipe(catchError(() => of(undefined)));
+      }),
     ),
-    { initialValue: undefined }
+    { initialValue: undefined },
   );
 
   /**
@@ -169,11 +168,11 @@ export class TransactionHistoryComponent {
         }
         return this.patronTransactionService.patronTransactionsByLoan(loan.pid, 'overdue', 'open').pipe(
           switchMap((transactions) => of(computeTotalTransactionsAmount(transactions))),
-          catchError(() => of(0))
+          catchError(() => of(0)),
         );
-      })
+      }),
     ),
-    { initialValue: 0 }
+    { initialValue: 0 },
   );
 
   protected organisationCurrency = computed(() => this.appStore.organisation()?.default_currency);
@@ -190,11 +189,11 @@ export class TransactionHistoryComponent {
       switchMap((documentPid) =>
         this.recordService.getRecord<DocumentRecord>('documents', documentPid, { resolve: 1 }).pipe(
           map((value) => ({ value, notFound: false })),
-          catchError(() => of({ value: undefined, notFound: true }))
-        )
-      )
+          catchError(() => of({ value: undefined, notFound: true })),
+        ),
+      ),
     ),
-    { initialValue: { value: undefined, notFound: false } }
+    { initialValue: { value: undefined, notFound: false } },
   );
 
   protected document = computed(() => this.documentResource().value);
@@ -210,17 +209,17 @@ export class TransactionHistoryComponent {
   private patronResource = toSignal(
     toObservable(this.transaction).pipe(
       switchMap((transaction) => {
-        const {metadata} = transaction;
+        const { metadata } = transaction;
         if (!isLoanMetadata(metadata)) {
           return of({ value: undefined, notFound: false });
         }
         return this.recordService.getRecord<PatronRecord>('patrons', metadata.loan.patron.pid).pipe(
           map((value) => ({ value, notFound: false })),
-          catchError(() => of({ value: undefined, notFound: true }))
+          catchError(() => of({ value: undefined, notFound: true })),
         );
-      })
+      }),
     ),
-    { initialValue: { value: undefined, notFound: false } }
+    { initialValue: { value: undefined, notFound: false } },
   );
 
   protected patron = computed(() => this.patronResource().value);
@@ -234,17 +233,17 @@ export class TransactionHistoryComponent {
   private libraryResource = toSignal(
     toObservable(this.transaction).pipe(
       switchMap((transaction) => {
-        const {metadata} = transaction;
+        const { metadata } = transaction;
         if (!isScanItemMetadata(metadata)) {
           return of({ value: undefined, notFound: false });
         }
         return this.recordService.getRecord<LibraryRecord>('libraries', metadata.library.value).pipe(
           map((value) => ({ value, notFound: false })),
-          catchError(() => of({ value: undefined, notFound: true }))
+          catchError(() => of({ value: undefined, notFound: true })),
         );
-      })
+      }),
     ),
-    { initialValue: { value: undefined, notFound: false } }
+    { initialValue: { value: undefined, notFound: false } },
   );
 
   protected library = computed(() => this.libraryResource().value);

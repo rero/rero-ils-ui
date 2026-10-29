@@ -1,11 +1,12 @@
 // SPDX-FileCopyrightText: Fondation RERO+
 // SPDX-License-Identifier: AGPL-3.0-or-later
 import { TestBed } from '@angular/core/testing';
-import { of } from 'rxjs';
-import { PatronService } from '@app/admin/service/patron.service';
-import { PatronTransactionService } from '../services/patron-transaction.service';
 import { LoanFixedDateService } from '@app/admin/circulation/services/loan-fixed-date.service';
 import { PatronTransaction, PatronTransactionStatus } from '@app/admin/classes/patron-transaction';
+import { PatronService } from '@app/admin/service/patron.service';
+import { of } from 'rxjs';
+
+import { PatronTransactionService } from '../services/patron-transaction.service';
 import { CirculationStore } from './circulation.store';
 
 // ─── Fixtures ─────────────────────────────────────────────────────────────────
@@ -333,7 +334,7 @@ describe('CirculationStore', () => {
 
     it('should sum amounts of open transactions', () => {
       patronTransactionServiceMock.patronTransactionsByPatron.mockReturnValue(
-        of([makeTransaction(5), makeTransaction(3), makeTransaction(2)])
+        of([makeTransaction(5), makeTransaction(3), makeTransaction(2)]),
       );
       store.loadFees('p1');
       expect(store.totalFeesEngaged()).toBe(10);
@@ -341,9 +342,7 @@ describe('CirculationStore', () => {
 
     it('should exclude closed transactions from total', () => {
       const closed = makeTransaction(100, PatronTransactionStatus.CLOSED);
-      patronTransactionServiceMock.patronTransactionsByPatron.mockReturnValue(
-        of([makeTransaction(7), closed])
-      );
+      patronTransactionServiceMock.patronTransactionsByPatron.mockReturnValue(of([makeTransaction(7), closed]));
       store.loadFees('p1');
       expect(store.totalFeesEngaged()).toBe(7);
     });

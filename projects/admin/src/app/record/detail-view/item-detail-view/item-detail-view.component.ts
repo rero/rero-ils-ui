@@ -1,22 +1,35 @@
 // SPDX-FileCopyrightText: Fondation RERO+
 // SPDX-FileCopyrightText: UCLouvain
 // SPDX-License-Identifier: AGPL-3.0-or-later
-import { ChangeDetectionStrategy, Component, computed, effect, inject, input, model, signal } from '@angular/core';
+import { AsyncPipe, CurrencyPipe, JsonPipe, NgClass, NgPlural, NgPluralCase } from '@angular/common';
+import { Component, computed, effect, inject, input, model, signal } from '@angular/core';
+import { RouterLink } from '@angular/router';
 import { ItemApiService } from '@app/admin/api/item-api.service';
 import { IssueService } from '@app/admin/service/issue.service';
+import { TranslatePipe } from '@ngx-translate/core';
+import { Badge } from '@openng/optimus-ui/badge';
+import { Bind } from '@openng/optimus-ui/bind';
+import { Button } from '@openng/optimus-ui/button';
+import { Ripple } from '@openng/optimus-ui/ripple';
+import { Tab, TabList, TabPanel, TabPanels, Tabs } from '@openng/optimus-ui/tabs';
+import { Tooltip } from '@openng/optimus-ui/tooltip';
 import { DateTranslatePipe, GetRecordPipe, Nl2brPipe, RecordData, RecordService } from '@rero/ng-core';
-
-import { AsyncPipe, CurrencyPipe, JsonPipe, NgClass, NgPlural, NgPluralCase } from '@angular/common';
-import { RouterLink } from '@angular/router';
-import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
-import { AppStore, AvailabilityComponent, InheritedCallNumberComponent, IPermissions, IssueItemStatus, ItemHoldingsCallNumberPipe, KeyExistsPipe, MainTitlePipe, PERMISSION_OPERATOR, PERMISSIONS, PermissionsDirective, SafeUrlPipe } from '@rero/shared';
+import {
+  AppStore,
+  AvailabilityComponent,
+  InheritedCallNumberComponent,
+  IPermissions,
+  IssueItemStatus,
+  ItemHoldingsCallNumberPipe,
+  KeyExistsPipe,
+  MainTitlePipe,
+  PERMISSION_OPERATOR,
+  PERMISSIONS,
+  PermissionsDirective,
+  SafeUrlPipe,
+} from '@rero/shared';
 import { DateTime } from 'luxon';
-import { Badge } from 'primeng/badge';
-import { Bind } from 'primeng/bind';
-import { Button } from 'primeng/button';
-import { Ripple } from 'primeng/ripple';
-import { Tab, TabList, TabPanel, TabPanels, Tabs } from 'primeng/tabs';
-import { Tooltip } from 'primeng/tooltip';
+
 import { Item, ItemNote } from '../../../classes/items';
 import { ItemInCollectionPipe } from '../../../pipe/item-in-collection.pipe';
 import { HoldingsService } from '../../../service/holdings.service';
@@ -27,15 +40,48 @@ import { ItemFeesComponent } from './item-fees/item-fees.component';
 import { ItemTransactionsComponent } from './item-transactions/item-transactions.component';
 
 @Component({
-    selector: 'admin-item-detail-view',
-    templateUrl: './item-detail-view.component.html',
-    providers: [IssueService],
-    styles: ['dl * { margin-bottom: 0; }'],
-    imports: [Bind, Button, RouterLink, RecordMaskedComponent, TranslateDirective, InheritedCallNumberComponent, AvailabilityComponent, NgClass, Tooltip, Tabs, TabList, Ripple, Tab, NgPlural, NgPluralCase, TabPanels, TabPanel, CirculationLogsDialogComponent, ItemTransactionsComponent, ItemFeesComponent, PermissionsDirective, LocalFieldComponent, AsyncPipe, JsonPipe, CurrencyPipe, TranslatePipe, DateTranslatePipe, GetRecordPipe, ItemHoldingsCallNumberPipe, KeyExistsPipe, MainTitlePipe, Nl2brPipe, SafeUrlPipe, ItemInCollectionPipe, Badge],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  selector: 'admin-item-detail-view',
+  templateUrl: './item-detail-view.component.html',
+  providers: [IssueService],
+  styles: ['dl * { margin-bottom: 0; }'],
+  imports: [
+    Bind,
+    Button,
+    RouterLink,
+    RecordMaskedComponent,
+    InheritedCallNumberComponent,
+    AvailabilityComponent,
+    NgClass,
+    Tooltip,
+    Tabs,
+    TabList,
+    Ripple,
+    Tab,
+    NgPlural,
+    NgPluralCase,
+    TabPanels,
+    TabPanel,
+    CirculationLogsDialogComponent,
+    ItemTransactionsComponent,
+    ItemFeesComponent,
+    PermissionsDirective,
+    LocalFieldComponent,
+    AsyncPipe,
+    JsonPipe,
+    CurrencyPipe,
+    TranslatePipe,
+    DateTranslatePipe,
+    GetRecordPipe,
+    ItemHoldingsCallNumberPipe,
+    KeyExistsPipe,
+    MainTitlePipe,
+    Nl2brPipe,
+    SafeUrlPipe,
+    ItemInCollectionPipe,
+    Badge,
+  ],
 })
 export class ItemDetailViewComponent {
-
   public itemApiService: ItemApiService = inject(ItemApiService);
   private recordService: RecordService = inject(RecordService);
   private holdingService: HoldingsService = inject(HoldingsService);
@@ -61,13 +107,15 @@ export class ItemDetailViewComponent {
     effect(() => {
       const record = this.record();
       if (record != null) {
-        this.recordService.getRecord('locations', record.metadata.location.pid, { resolve: 1 }).subscribe(data => this.location.set(data));
+        this.recordService
+          .getRecord('locations', record.metadata.location.pid, { resolve: 1 })
+          .subscribe((data) => this.location.set(data));
       }
     });
   }
 
   readonly showLocalFieldsTab = computed(() =>
-    this.appStore.canAccess([PERMISSIONS.LOFI_SEARCH, PERMISSIONS.LOFI_CREATE])
+    this.appStore.canAccess([PERMISSIONS.LOFI_SEARCH, PERMISSIONS.LOFI_CREATE]),
   );
 
   /**
@@ -80,8 +128,9 @@ export class ItemDetailViewComponent {
 
   /** returns an array of claim dates in DESC order */
   get claimsDates(): string[] {
-    return this.record()?.metadata.issue.claims.dates
-      .sort((a: string, b: string) => new Date(b).getTime() - new Date(a).getTime());
+    return this.record()?.metadata.issue.claims.dates.sort(
+      (a: string, b: string) => new Date(b).getTime() - new Date(a).getTime(),
+    );
   }
 
   /**
@@ -108,8 +157,7 @@ export class ItemDetailViewComponent {
 
   /** Update item status */
   updateItemStatus(): void {
-    this.itemApiService.getItem(this.record()?.metadata.pid)
-      .subscribe((item: RecordData) => this.record.set(item));
+    this.itemApiService.getItem(this.record()?.metadata.pid).subscribe((item: RecordData) => this.record.set(item));
   }
 
   /**

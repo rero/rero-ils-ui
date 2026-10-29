@@ -10,11 +10,9 @@ export enum ROLES_TAG_SEVERITY {
   pro_circulation_manager = 'warn',
   pro_user_manager = 'info',
   pro_acquisition_manager = 'secondary',
-  pro_library_administrator = 'contrast'
+  pro_library_administrator = 'contrast',
 }
 
 export function roleTagSeverity(role: string): string {
-  return (role in ROLES_TAG_SEVERITY)
-    ? ROLES_TAG_SEVERITY[role]
-    : 'secondary';
+  return role in ROLES_TAG_SEVERITY ? ROLES_TAG_SEVERITY[role] : 'secondary';
 }

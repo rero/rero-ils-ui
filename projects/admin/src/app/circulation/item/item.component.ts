@@ -2,35 +2,63 @@
 // SPDX-FileCopyrightText: UCLouvain
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-import { Component, effect, inject, input, model, output, signal, ChangeDetectionStrategy} from '@angular/core';
+import { AsyncPipe, CurrencyPipe, JsonPipe, NgClass } from '@angular/common';
+import { Component, effect, inject, input, model, output, signal } from '@angular/core';
+import { RouterLink } from '@angular/router';
 import { DocumentApiService } from '@app/admin/api/document-api.service';
 import { PatronTransactionService } from '@app/admin/circulation/services/patron-transaction.service';
 import { Organisation } from '@app/admin/classes/core';
 import { Item, ItemAction, ItemNote, ItemNoteType } from '@app/admin/classes/items';
 import { Loan, LoanState } from '@app/admin/classes/loans';
 import { ItemsService } from '@app/admin/service/items.service';
-import { RecordService, DateTranslatePipe, GetRecordPipe, TruncateTextPipe } from '@rero/ng-core';
-import { AppStore, ItemStatus, OpenCloseButtonComponent, InheritedCallNumberComponent, ContributionComponent, IdAttributePipe, MainTitlePipe } from '@rero/shared';
+import { TranslatePipe } from '@ngx-translate/core';
+import { Bind } from '@openng/optimus-ui/bind';
+import { Button, ButtonDirective } from '@openng/optimus-ui/button';
+import { ScrollPanel } from '@openng/optimus-ui/scrollpanel';
+import { Tag } from '@openng/optimus-ui/tag';
+import { DateTranslatePipe, GetRecordPipe, RecordService, TruncateTextPipe } from '@rero/ng-core';
+import {
+  AppStore,
+  ContributionComponent,
+  IdAttributePipe,
+  InheritedCallNumberComponent,
+  ItemStatus,
+  MainTitlePipe,
+  OpenCloseButtonComponent,
+} from '@rero/shared';
 import { map } from 'rxjs/operators';
+
+import { GetLoanCipoPipe } from '../pipe/get-loan-cipo.pipe';
 import { CirculationStore } from '../store/circulation.store';
 import { computeTotalTransactionsAmount } from '../utils/transaction.utils';
-import { NgClass, AsyncPipe, JsonPipe, CurrencyPipe } from '@angular/common';
-import { RouterLink } from '@angular/router';
-import { Bind } from 'primeng/bind';
-import { Tag } from 'primeng/tag';
-import { ButtonDirective, Button } from 'primeng/button';
-import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
-import { ScrollPanel } from 'primeng/scrollpanel';
-import { GetLoanCipoPipe } from '../pipe/get-loan-cipo.pipe';
 
 @Component({
-    selector: 'admin-item',
-    templateUrl: './item.component.html',
-    imports: [NgClass, OpenCloseButtonComponent, RouterLink, InheritedCallNumberComponent, Bind, Tag, ContributionComponent, ButtonDirective, TranslateDirective, Button, ScrollPanel, AsyncPipe, JsonPipe, CurrencyPipe, DateTranslatePipe, GetRecordPipe, IdAttributePipe, MainTitlePipe, TruncateTextPipe, TranslatePipe, GetLoanCipoPipe],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  selector: 'admin-item',
+  templateUrl: './item.component.html',
+  imports: [
+    NgClass,
+    OpenCloseButtonComponent,
+    RouterLink,
+    InheritedCallNumberComponent,
+    Bind,
+    Tag,
+    ContributionComponent,
+    ButtonDirective,
+    Button,
+    ScrollPanel,
+    AsyncPipe,
+    JsonPipe,
+    CurrencyPipe,
+    DateTranslatePipe,
+    GetRecordPipe,
+    IdAttributePipe,
+    MainTitlePipe,
+    TruncateTextPipe,
+    TranslatePipe,
+    GetLoanCipoPipe,
+  ],
 })
 export class ItemComponent {
-
   private recordService: RecordService = inject(RecordService);
   private documentApiService: DocumentApiService = inject(DocumentApiService);
   private patronTransactionService: PatronTransactionService = inject(PatronTransactionService);
@@ -38,8 +66,7 @@ export class ItemComponent {
   private appStore = inject(AppStore);
   protected store = inject(CirculationStore);
 
-
-  NOTEAPI =  ItemNoteType.API;
+  NOTEAPI = ItemNoteType.API;
 
   // COMPONENT ATTRIBUTES ====================================================
   /** Current item */
@@ -85,8 +112,9 @@ export class ItemComponent {
         this.notifications.set(null);
         if (this.loan()) {
           const loanPid = item.loan.pid;
-          this.patronTransactionService.patronTransactionsByLoan(loanPid, 'overdue', 'open').subscribe(
-            (transactions) => {
+          this.patronTransactionService
+            .patronTransactionsByLoan(loanPid, 'overdue', 'open')
+            .subscribe((transactions) => {
               const amount = computeTotalTransactionsAmount(transactions);
               this.totalAmountOfFee.set(amount);
               if (amount > 0) {
@@ -95,17 +123,19 @@ export class ItemComponent {
                   this.store.loadFees(this.patron().pid);
                 }
               }
-            }
-          );
-          this.recordService.getRecords(
-            'notifications', { query: `context.loan.pid:${loanPid}`, page: 1, itemsPerPage: RecordService.MAX_REST_RESULTS_SIZE, sort: 'mostrecent' }
-          ).pipe(
-            map((results: any) => results.hits.hits)
-          ).subscribe((hits: any[]) => this.notifications.set(hits));
+            });
+          this.recordService
+            .getRecords('notifications', {
+              query: `context.loan.pid:${loanPid}`,
+              page: 1,
+              itemsPerPage: RecordService.MAX_REST_RESULTS_SIZE,
+              sort: 'mostrecent',
+            })
+            .pipe(map((results: any) => results.hits.hits))
+            .subscribe((hits: any[]) => this.notifications.set(hits));
         }
         if (item?.document?.pid) {
-          this.documentApiService.getDocument(item.document.pid)
-            .subscribe(doc => this.document.set(doc.metadata));
+          this.documentApiService.getDocument(item.document.pid).subscribe((doc) => this.document.set(doc.metadata));
         }
       }
     });
@@ -144,26 +174,27 @@ export class ItemComponent {
   getCirculationNoteForAction(): ItemNote[] {
     if (this.item().actionDone) {
       const notes: ItemNote[] = [];
-      const checkinNote = this.item().getNote(ItemNoteType.CHECKIN)
-      if (checkinNote && (
-        (this.item().actionDone === this.itemAction.checkin) || (
-          (((this.item().actionDone === this.itemAction.receive) && this.item().library.pid === this.appStore.currentLibraryPid()))
-        )
-      )) {
+      const checkinNote = this.item().getNote(ItemNoteType.CHECKIN);
+      if (
+        checkinNote &&
+        (this.item().actionDone === this.itemAction.checkin ||
+          (this.item().actionDone === this.itemAction.receive &&
+            this.item().library.pid === this.appStore.currentLibraryPid()))
+      ) {
         notes.push(checkinNote);
       }
-      const checkoutNote = this.item().getNote(ItemNoteType.CHECKOUT)
+      const checkoutNote = this.item().getNote(ItemNoteType.CHECKOUT);
       if (checkoutNote && this.item().actionDone === this.itemAction.checkout) {
         notes.push(checkoutNote);
       }
       // Also include API notes (like temporary item type removal)
-      const apiNotes = this.item()?.notes?.filter(i => i.type === ItemNoteType.API) || [];
+      const apiNotes = this.item()?.notes?.filter((i) => i.type === ItemNoteType.API) || [];
       notes.push(...apiNotes);
       return notes;
     } else if (this.item().notes) {
       // Notes for item without loan.
       // This api note is pushed on error exception.
-      return this.item()?.notes.filter(i => [ItemNoteType.CHECKIN, ItemNoteType.API].includes(i.type));
+      return this.item()?.notes.filter((i) => [ItemNoteType.CHECKIN, ItemNoteType.API].includes(i.type));
     }
     return [];
   }
@@ -175,7 +206,6 @@ export class ItemComponent {
   extendLoanClick(_event: any) {
     this.extendLoanClicked.emit(this.item());
   }
-
 
   /**
    * Is a callout wrapper is required for this item.

@@ -11,20 +11,15 @@ SPDX-License-Identifier: AGPL-3.0-or-later
     [updateStatus]="updateStatus()"
     [deleteStatus]="deleteStatus()"
     (recordEvent)="recordEvent($event)"
-    (deleteMessageEvent)="showDeleteMessage($event)"
-  >
+    (deleteMessageEvent)="showDeleteMessage($event)">
     <ng-container beforeButton>
       <p-button
         (onClick)="search(record())"
         outlined
         icon="fa-solid fa-magnifying-glass"
-        [label]="'Search documents' | translate"
-      />
+        [label]="'Search documents' | translate" />
       @if (appStore.isLogVisible('local_entities') && record()?.metadata.pid) {
-        <shared-operation-logs-dialog
-          resourceType="local_entities"
-          [resourcePid]="$any(record()?.metadata.pid)"
-        />
+        <shared-operation-logs-dialog resourceType="local_entities" [resourcePid]="$any(record()?.metadata.pid)" />
       }
     </ng-container>
   </ng-core-detail-button>

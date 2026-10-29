@@ -14,7 +14,8 @@ SPDX-License-Identifier: AGPL-3.0-or-later
         </a>
         @if (item.enumerationAndChronology) {
           <p-tag severity="info" [value]="item.enumerationAndChronology" />
-        }<br/>
+        }
+        <br />
       }
       <shared-contribution [contributions]="document()?.contribution" />
     </div>
@@ -23,7 +24,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
     </div>
     <div class="ui:col-span-2">
       @if (loan().metadata.request_expire_date) {
-        {{ loan().metadata.request_expire_date | dateTranslate:'shortDate' }}
+        {{ loan().metadata.request_expire_date | dateTranslate: 'shortDate' }}
       } @else {
         {{ 'Unknown' | translate }}
       }

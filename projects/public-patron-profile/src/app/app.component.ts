@@ -4,13 +4,11 @@
 import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { LoadingBarModule } from '@ngx-loading-bar/core';
-import { ToastModule } from 'primeng/toast';
+import { ToastModule } from '@openng/optimus-ui/toast';
 
 @Component({
-    selector: 'public-patron-profile-app',
-    templateUrl: './app.component.html',
-    imports: [RouterOutlet, LoadingBarModule, ToastModule]
+  selector: 'public-patron-profile-app',
+  templateUrl: './app.component.html',
+  imports: [RouterOutlet, LoadingBarModule, ToastModule],
 })
-export class AppComponent {
-
-}
+export class AppComponent {}

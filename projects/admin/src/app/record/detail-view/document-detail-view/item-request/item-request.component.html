@@ -2,53 +2,47 @@
 SPDX-FileCopyrightText: Fondation RERO+
 SPDX-License-Identifier: AGPL-3.0-or-later
 -->
-@defer(when formFields()) {
+@defer (when formFields()) {
   <div class="ui:flex ui:gap-2 ui:flex-col">
-  @if (requestedBy(); as requestedBy) {
-    @if (requestedBy.length > 0) {
-      <div class="ui:flex ui:gap-2 ui:my-1 ui:items-start">
-        <p-message class="ui:grow" showTransitionOptions="0ms">{{ queueMessage() }}</p-message>
-        <p-button
-          outlined
-          [routerLink]="['/records', 'items', 'detail', recordPid]"
-          (click)="closeModal()"
-          [label]="'Edit queue' | translate"
-        />
-      </div>
-    }
-  }
-  @if (patron(); as patron) {
-    <p-card [header]="patronHeader()" class="ui:bg-surface-100 ui:p-3">
-      <p class="ui:m-0">
-        {{ patron.street }}<br>
-        {{ patron.postal_code }} {{ patron.city }}<br>
-        {{ patron.email }}
-      </p>
-      @if (patronBlockedMsg(); as message) {
-        <p-message severity="error" showTransitionOptions="0ms">{{ message }}</p-message>
+    @if (requestedBy(); as requestedBy) {
+      @if (requestedBy.length > 0) {
+        <div class="ui:flex ui:gap-2 ui:my-1 ui:items-start">
+          <p-message class="ui:grow" showTransitionOptions="0ms">{{ queueMessage() }}</p-message>
+          <p-button
+            outlined
+            [routerLink]="['/records', 'items', 'detail', recordPid]"
+            (click)="closeModal()"
+            [label]="'Edit queue' | translate" />
+        </div>
       }
-    </p-card>
-  }
-  <form [formGroup]="form" (ngSubmit)="submit(model()!)">
-    <div class="ui:flex ui:gap-2 ui:flex-col">
-      <formly-form [form]="form" [fields]="formFields()!" [model]="model()!" />
-      <div class="ui:flex ui:justify-end">
-        <p-button
-          id="new-request-button"
-          type="submit"
-          size="small"
-          [disabled]="!form.valid || requestInProgress()"
-        >
-          @if (!requestInProgress()) {
-            {{ 'New request' | translate }}
-          } @else {
-            <i class="fa-solid fa-spinner fa-spin"></i>&nbsp;
-            {{ 'Request in progress' | translate }}
-          }
-        </p-button>
+    }
+    @if (patron(); as patron) {
+      <p-card [header]="patronHeader()" class="ui:bg-surface-100 ui:p-3">
+        <p class="ui:m-0">
+          {{ patron.street }}<br />
+          {{ patron.postal_code }} {{ patron.city }}<br />
+          {{ patron.email }}
+        </p>
+        @if (patronBlockedMsg(); as message) {
+          <p-message severity="error" showTransitionOptions="0ms">{{ message }}</p-message>
+        }
+      </p-card>
+    }
+    <form [formGroup]="form" (ngSubmit)="submit(model()!)">
+      <div class="ui:flex ui:gap-2 ui:flex-col">
+        <formly-form [form]="form" [fields]="formFields()!" [model]="model()!" />
+        <div class="ui:flex ui:justify-end">
+          <p-button id="new-request-button" type="submit" size="small" [disabled]="!form.valid || requestInProgress()">
+            @if (!requestInProgress()) {
+              {{ 'New request' | translate }}
+            } @else {
+              <i class="fa-solid fa-spinner fa-spin"></i>&nbsp;
+              {{ 'Request in progress' | translate }}
+            }
+          </p-button>
+        </div>
       </div>
-    </div>
-  </form>
+    </form>
   </div>
 } @placeholder {
   <i class="fa-solid fa-spin fa-spinner"></i>&nbsp;{{ 'Loading in progress…' | translate }}

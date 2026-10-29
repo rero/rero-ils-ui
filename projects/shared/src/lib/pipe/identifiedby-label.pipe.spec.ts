@@ -1,8 +1,9 @@
 // SPDX-FileCopyrightText: Fondation RERO+
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-import { TestBed } from "@angular/core/testing";
-import { IdentifiedByLabelPipe } from "./identifiedby-label.pipe";
+import { TestBed } from '@angular/core/testing';
+
+import { IdentifiedByLabelPipe } from './identifiedby-label.pipe';
 
 describe('IdentifiedByLabelPipe', () => {
   let pipe: IdentifiedByLabelPipe;
@@ -16,7 +17,7 @@ describe('IdentifiedByLabelPipe', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [IdentifiedByLabelPipe]
+      providers: [IdentifiedByLabelPipe],
     });
     pipe = TestBed.inject(IdentifiedByLabelPipe);
   });
@@ -30,10 +31,10 @@ describe('IdentifiedByLabelPipe', () => {
   });
 
   it('should return isbn and ean identifiers', () => {
-    expect(pipe.transform(identifiedBy, ['isbn', 'ean'])).toEqual('ISBN, ISBN2, EAN')
+    expect(pipe.transform(identifiedBy, ['isbn', 'ean'])).toEqual('ISBN, ISBN2, EAN');
   });
 
   it('should return all isbn separated by semicolons', () => {
-    expect(pipe.transform(identifiedBy, ['isbn'], '; ')).toEqual('ISBN; ISBN2')
+    expect(pipe.transform(identifiedBy, ['isbn'], '; ')).toEqual('ISBN; ISBN2');
   });
 });

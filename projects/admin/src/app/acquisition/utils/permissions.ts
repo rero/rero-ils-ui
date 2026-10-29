@@ -2,8 +2,8 @@
 // SPDX-FileCopyrightText: UCLouvain
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-import { IAcqOrder, AcqOrderStatus } from '../classes/order';
 import { RecordPermissions } from '../../classes/permissions';
+import { AcqOrderStatus, IAcqOrder } from '../classes/order';
 
 /**
  * Update the permissions analyzing an order. If an order is fully received, none
@@ -17,9 +17,9 @@ export function validateReceivedOrderPermissions(permissions: RecordPermissions,
       can: false,
       reasons: {
         others: {
-          order_fully_received: ''
-        }
-      }
+          order_fully_received: '',
+        },
+      },
     };
   }
   return permissions;

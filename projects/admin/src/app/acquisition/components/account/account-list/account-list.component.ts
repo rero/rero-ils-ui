@@ -3,30 +3,42 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 import { CurrencyPipe } from '@angular/common';
 import { HttpParams } from '@angular/common/http';
-import { ChangeDetectionStrategy, Component, computed, effect, inject, signal } from '@angular/core';
+import { Component, computed, effect, inject, signal } from '@angular/core';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { RouterLink } from '@angular/router';
 import { AcqAccountApiService } from '@app/admin/acquisition/api/acq-account-api.service';
 import { IAcqAccount } from '@app/admin/acquisition/classes/account';
 import { exportFormats } from '@app/admin/acquisition/routes/accounts-route';
 import { RecordPermissionService } from '@app/admin/service/record-permission.service';
-import { TranslateDirective, TranslatePipe, TranslateService } from '@ngx-translate/core';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
+import { TreeNode, TreeTableNode } from '@openng/optimus-ui/api';
+import { Bind } from '@openng/optimus-ui/bind';
+import { Button } from '@openng/optimus-ui/button';
+import { TooltipModule } from '@openng/optimus-ui/tooltip';
+import { TreeTableModule } from '@openng/optimus-ui/treetable';
 import { ApiService, ExportButtonComponent, Nl2brPipe, RecordService, RecordUiService } from '@rero/ng-core';
 import { AppStore, IPermissions, PERMISSIONS, PermissionsDirective } from '@rero/shared';
-import { TreeNode, TreeTableNode } from 'primeng/api';
-import { Bind } from 'primeng/bind';
-import { Button } from 'primeng/button';
-import { TooltipModule } from 'primeng/tooltip';
-import { TreeTableModule } from 'primeng/treetable';
 import { filter, forkJoin } from 'rxjs';
 import { map, switchMap, tap } from 'rxjs/operators';
+
 import { AccountAvailableAmountPipe } from '../../../pipes/account-available-amount.pipe';
 
 @Component({
-    selector: 'admin-account-list',
-    templateUrl: './account-list.component.html',
-    imports: [TranslateDirective, Bind, Button, RouterLink, PermissionsDirective, ExportButtonComponent, TreeTableModule, CurrencyPipe, Nl2brPipe, TranslatePipe, AccountAvailableAmountPipe, TooltipModule],
-    changeDetection: ChangeDetectionStrategy.OnPush
+  selector: 'admin-account-list',
+  templateUrl: './account-list.component.html',
+  imports: [
+    Bind,
+    Button,
+    RouterLink,
+    PermissionsDirective,
+    ExportButtonComponent,
+    TreeTableModule,
+    CurrencyPipe,
+    Nl2brPipe,
+    TranslatePipe,
+    AccountAvailableAmountPipe,
+    TooltipModule,
+  ],
 })
 export class AccountListComponent {
   private appStore = inject(AppStore);
@@ -62,15 +74,15 @@ export class AccountListComponent {
                 accounts.map((account) =>
                   this.recordPermissionService
                     .getPermission('acq_accounts', account.pid)
-                    .pipe(tap((permission) => (account.permissions = permission)))
-                )
-              )
+                    .pipe(tap((permission) => (account.permissions = permission))),
+                ),
+              ),
             ),
-            map(() => this.orderAccountsAsTree(localAccounts))
+            map(() => this.orderAccountsAsTree(localAccounts)),
           );
-        })
+        }),
       ),
-      { initialValue: [] as TreeTableNode[] }
+      { initialValue: [] as TreeTableNode[] },
     );
     effect(() => this.rootAccounts.set(_loaded()));
   }
@@ -124,26 +136,24 @@ export class AccountListComponent {
   // COMPONENT FUNCTIONS ========================================================
   /** Operations to do when an account is deleted */
   accountDelete(node): void {
-    this.recordUiService.deleteRecord(
-      'acq_accounts',
-      node.node.data.pid
-    ).pipe(
-      tap((success: boolean) => {
-        if (success) {
-          if (node.parent) {
-            node.parent.children = node.parent.children.filter(
-              (account) => account.data.pid !== node.node.data.pid
-            );
-            node.parent.leaf = !(node.parent.children.length > 0);
-            this.rootAccounts.update((accounts) => [...accounts]);
-          } else {
-            this.rootAccounts.update((accounts) =>
-              accounts.filter((account) => account.data.pid !== node.node.data.pid)
-            );
+    this.recordUiService
+      .deleteRecord('acq_accounts', node.node.data.pid)
+      .pipe(
+        tap((success: boolean) => {
+          if (success) {
+            if (node.parent) {
+              node.parent.children = node.parent.children.filter((account) => account.data.pid !== node.node.data.pid);
+              node.parent.leaf = !(node.parent.children.length > 0);
+              this.rootAccounts.update((accounts) => [...accounts]);
+            } else {
+              this.rootAccounts.update((accounts) =>
+                accounts.filter((account) => account.data.pid !== node.node.data.pid),
+              );
+            }
           }
-        }
-      })
-    ).subscribe();
+        }),
+      )
+      .subscribe();
   }
 
   deleteInfoMessage(permissions): string {

@@ -1,16 +1,16 @@
 // SPDX-FileCopyrightText: Fondation RERO+
 // SPDX-License-Identifier: AGPL-3.0-or-later
-import { inject, Injectable } from "@angular/core";
-import { AutoCompleteRecordType, NgCoreTranslateService, TruncateTextPipe } from "@rero/ng-core";
-import { MainTitlePipe } from "../../pipe/main-title.pipe";
-import { AppStore } from "../../store/app.store";
-import { Entity } from "../../classes/entity";
+import { inject, Injectable } from '@angular/core';
+import { AutoCompleteRecordType, NgCoreTranslateService, TruncateTextPipe } from '@rero/ng-core';
+
+import { Entity } from '../../classes/entity';
+import { MainTitlePipe } from '../../pipe/main-title.pipe';
+import { AppStore } from '../../store/app.store';
 
 @Injectable({
-  providedIn: null
+  providedIn: null,
 })
 export class RemoteSearchConfig {
-
   protected mainTitlePipe: MainTitlePipe = inject(MainTitlePipe);
   protected truncatePipe: TruncateTextPipe = inject(TruncateTextPipe);
   protected translateService: NgCoreTranslateService = inject(NgCoreTranslateService);
@@ -34,7 +34,7 @@ export class RemoteSearchConfig {
         maxSuggestions: 10,
         groupLabel: this.translateService.instant('documents'),
         preFilters: viewCode !== undefined ? { view: viewCode } : {},
-        processSuggestions: (documents: any, query: any) => this.processDocuments(documents, query)
+        processSuggestions: (documents: any, query: any) => this.processDocuments(documents, query),
       },
       {
         field: 'autocomplete_name',
@@ -42,9 +42,9 @@ export class RemoteSearchConfig {
         maxSuggestions: 10,
         groupLabel: this.translateService.instant('authors/subjects'),
         preFilters: viewCode !== undefined ? { view: viewCode } : {},
-        processSuggestions: (entities: any, query: any) => this.processEntities(entities, query)
-      }
-    ]
+        processSuggestions: (entities: any, query: any) => this.processEntities(entities, query),
+      },
+    ];
   }
 
   private processDocuments(documents: any, query: any): any[] {
@@ -88,7 +88,7 @@ export class RemoteSearchConfig {
         originalLabel: text,
         index: 'entities',
         link: this.generateEntityLink(hit.metadata),
-        iconClass: `fa ${Entity.getIcon(hit.metadata.type)}`
+        iconClass: `fa ${Entity.getIcon(hit.metadata.type)}`,
       });
     });
 
@@ -96,10 +96,7 @@ export class RemoteSearchConfig {
   }
 
   private highlightSearch(text: string, query: string): string {
-    return text.replace(new RegExp(
-      this.escapeRegExp(query), 'gi'),
-      `<b>${query}</b>`
-      );
+    return text.replace(new RegExp(this.escapeRegExp(query), 'gi'), `<b>${query}</b>`);
   }
 
   private escapeRegExp(data: string): string {
@@ -111,10 +108,8 @@ export class RemoteSearchConfig {
     if (metadata.resource_type === 'remote') {
       const language = this.translateService.getCurrentLang();
       const order: any = this.appStore.settings()?.agentLabelOrder;
-      const key = (language in order) ? language : 'fallback';
-      const agentSources = (key === 'fallback')
-        ? order[order[key]]
-        : order[key];
+      const key = language in order ? language : 'fallback';
+      const agentSources = key === 'fallback' ? order[order[key]] : order[key];
 
       for (const source of agentSources) {
         if (metadata[source] && metadata[source].authorized_access_point) {

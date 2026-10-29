@@ -1,0 +1,14 @@
+# Generated / vendored files (Prettier also honours .gitignore)
+pnpm-lock.yaml
+CHANGELOG.md
+.angular
+build
+dist
+coverage
+# Translations: written by ngx-translate-extract and Weblate
+projects/*/src/assets/rero-ils-ui/*/i18n
+projects/*/translations
+# Agent skills shared with the other RERO projects, kept identical to their source
+.claude/skills
+# ng-core checked out by the CI to test against a branch (.ng-core-ref)
+/ng-core

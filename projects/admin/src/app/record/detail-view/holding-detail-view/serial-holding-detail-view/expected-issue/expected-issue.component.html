@@ -3,17 +3,18 @@ SPDX-FileCopyrightText: Fondation RERO+
 SPDX-FileCopyrightText: UCLouvain
 SPDX-License-Identifier: AGPL-3.0-or-later
 -->
-  <div class="ui:grid ui:grid-cols-12 ui:gap-4 ui:bg-surface-50 ui:mb-1 ui:border ui:rounded-md ui:border-surface ui:p-2 ui:items-center">
-    <div class="ui:col-span-10">
-      <div class="ui:grid ui:grid-cols-12 ui:gap-4 ui:p-2 ui:items-center">
-        <span class="ui:col-start-2 ui:col-span-8">{{ issue().issue }}</span>
-        <span class="ui:col-span-3 ui:text-right">
-           {{'expected at' | translate }}
-           {{ issue().expected_date | dateTranslate: 'shortDate' }}
-        </span>
-      </div>
-    </div>
-    <div class="ui:col-span-2 ui:text-right">
-      <ng-content select="[actions]"></ng-content>
+<div
+  class="ui:grid ui:grid-cols-12 ui:gap-4 ui:bg-surface-50 ui:mb-1 ui:border ui:rounded-md ui:border-surface ui:p-2 ui:items-center">
+  <div class="ui:col-span-10">
+    <div class="ui:grid ui:grid-cols-12 ui:gap-4 ui:p-2 ui:items-center">
+      <span class="ui:col-start-2 ui:col-span-8">{{ issue().issue }}</span>
+      <span class="ui:col-span-3 ui:text-right">
+        {{ 'expected at' | translate }}
+        {{ issue().expected_date | dateTranslate: 'shortDate' }}
+      </span>
     </div>
   </div>
+  <div class="ui:col-span-2 ui:text-right">
+    <ng-content select="[actions]"></ng-content>
+  </div>
+</div>

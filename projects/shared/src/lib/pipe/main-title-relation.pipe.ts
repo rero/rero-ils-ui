@@ -4,7 +4,6 @@ import { Pipe, PipeTransform } from '@angular/core';
 
 @Pipe({ name: 'mainTitleRelation' })
 export class MainTitleRelationPipe implements PipeTransform {
-
   /**
    * Extract main title for relation
    * @param value - array of title field

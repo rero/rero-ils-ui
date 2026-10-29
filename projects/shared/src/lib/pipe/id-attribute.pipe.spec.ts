@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 import { TestBed } from '@angular/core/testing';
+
 import { IdAttributePipe } from './id-attribute.pipe';
 
 describe('IdAttributePipe', () => {
@@ -9,9 +10,7 @@ describe('IdAttributePipe', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [
-        IdAttributePipe
-      ]
+      providers: [IdAttributePipe],
     });
 
     idAttributePipe = TestBed.inject(IdAttributePipe);
@@ -26,20 +25,14 @@ describe('IdAttributePipe', () => {
   });
 
   it('should return the field name with a prefix', () => {
-    expect(
-      idAttributePipe.transform('my-field', { prefix: 'foo' })
-    ).toEqual('foo-my-field');
+    expect(idAttributePipe.transform('my-field', { prefix: 'foo' })).toEqual('foo-my-field');
   });
 
   it('should return the field name with a suffix', () => {
-    expect(
-      idAttributePipe.transform('my-field', { suffix: 'foo' })
-    ).toEqual('my-field-foo');
+    expect(idAttributePipe.transform('my-field', { suffix: 'foo' })).toEqual('my-field-foo');
   });
 
   it('should return the field name with a prefix and suffix', () => {
-    expect(
-      idAttributePipe.transform('my-field', { prefix: 'foo', suffix: 'bar' })
-    ).toEqual('foo-my-field-bar');
+    expect(idAttributePipe.transform('my-field', { prefix: 'foo', suffix: 'bar' })).toEqual('foo-my-field-bar');
   });
 });

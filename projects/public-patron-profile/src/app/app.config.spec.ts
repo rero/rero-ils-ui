@@ -8,12 +8,11 @@ import { TranslateService } from '@ngx-translate/core';
 import { CoreConfigService } from '@rero/ng-core';
 import { of } from 'rxjs';
 
-import { appConfig } from './app.config';
 import { AppConfigService } from './app-config-service.service';
 import { AppInitializerService } from './app-initializer.service';
+import { appConfig } from './app.config';
 
 describe('appConfig', () => {
-
   beforeEach(() => {
     // The app initializer sets the language before LOCALE_ID is resolved.
     vi.spyOn(TranslateService.prototype, 'getCurrentLang').mockReturnValue('fr');
@@ -22,7 +21,7 @@ describe('appConfig', () => {
         ...appConfig.providers,
         provideHttpClientTesting(),
         { provide: AppInitializerService, useValue: { load: vi.fn().mockReturnValue(of(null)) } },
-      ]
+      ],
     });
   });
 

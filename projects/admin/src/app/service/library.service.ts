@@ -7,10 +7,9 @@ import type { EsResult } from '@rero/shared';
 import { map } from 'rxjs/operators';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class LibraryService {
-
   private recordService: RecordService = inject(RecordService);
 
   /** Resource name */
@@ -21,12 +20,9 @@ export class LibraryService {
    * @return Observable
    */
   get count$() {
-    return this.recordService.getRecords(
-      LibraryService.resource,
-      { page: 1, itemsPerPage: 1 }
-    ).pipe(
-      map((results: EsResult) => results.hits.total)
-    );
+    return this.recordService
+      .getRecords(LibraryService.resource, { page: 1, itemsPerPage: 1 })
+      .pipe(map((results: EsResult) => results.hits.total));
   }
 
   /**
@@ -63,9 +59,11 @@ export class LibraryService {
    * @param order - string, order name
    */
   private _query(query: any, order = 'name') {
-    return this.recordService.getRecords(
-      LibraryService.resource,
-      { query, page: 1, itemsPerPage: RecordService.MAX_REST_RESULTS_SIZE, sort: order }
-    );
+    return this.recordService.getRecords(LibraryService.resource, {
+      query,
+      page: 1,
+      itemsPerPage: RecordService.MAX_REST_RESULTS_SIZE,
+      sort: order,
+    });
   }
 }

@@ -10,43 +10,41 @@ SPDX-License-Identifier: AGPL-3.0-or-later
   <form [formGroup]="formGroup">
     <div class="ui:flex ui:gap-2 ui:py-4">
       <span class="ui:font-bold">{{ 'Filter' | translate }}:</span>
-        @for (filter of filterTypes; track $index) {
-          <p-toggleswitch [inputId]="filter" [formControlName]="filter" />
-          <label [for]="filter">{{ ('op_filter_' + filter) | translate }}</label>
-        }
+      @for (filter of filterTypes; track $index) {
+        <p-toggleswitch [inputId]="filter" [formControlName]="filter" />
+        <label [for]="filter">{{ 'op_filter_' + filter | translate }}</label>
+      }
     </div>
   </form>
   @defer {
     @if (recordsTotal() > 0) {
       @for (record of records(); track $index; let isFirst = $first; let idx = $index) {
-        @if (isFirst || !isSamePeriod(record, records()[idx-1])) {
+        @if (isFirst || !isSamePeriod(record, records()[idx - 1])) {
           <div class="ui:bg-surface-100 ui:p-2 ui:border-surface ui:border-y ui:text-bold">
             <i class="fa-solid fa-calendar-days"></i>&nbsp;
-            {{ record.metadata.date | dateTranslate :'MMMM y' | titlecase }}
+            {{ record.metadata.date | dateTranslate: 'MMMM y' | titlecase }}
           </div>
         }
         @switch (record.metadata.record.type | circulationLogRecordType) {
-          @case('notification') {
+          @case ('notification') {
             <admin-circulation-log-notification
               [record]="record"
               [isHighlight]="record.metadata.loan.pid === highlightedLoanPid"
-              [separator]="!isSamePeriod(record, records()[idx-1], 'days')"
+              [separator]="!isSamePeriod(record, records()[idx - 1], 'days')"
               (mouseenter)="mouseEventTransaction(record)"
-              (mouseleave)="highlightedLoanPid=null"
-            />
+              (mouseleave)="highlightedLoanPid = null" />
           }
           @case ('scan') {
             <admin-circulation-item-scan [record]="record" />
           }
-          @case('circulation') {
+          @case ('circulation') {
             <admin-circulation-log-loan
               [record]="record"
               [isHighlight]="record.metadata.loan.pid === highlightedLoanPid"
-              [separator]="!isSamePeriod(record, records()[idx-1], 'days')"
+              [separator]="!isSamePeriod(record, records()[idx - 1], 'days')"
               (closeDialogEvent)="closeDialog()"
               (mouseenter)="mouseEventTransaction(record)"
-              (mouseleave)="highlightedLoanPid=null"
-            />
+              (mouseleave)="highlightedLoanPid = null" />
           }
         }
       }
@@ -62,10 +60,9 @@ SPDX-License-Identifier: AGPL-3.0-or-later
     <p-button
       id="show-more-items-{{ resourcePid }}"
       icon="fa-regular fa-circle-down"
-      [label]="'Show more'|translate"
+      [label]="'Show more' | translate"
       [text]="true"
-      (onClick)="showMore()"
-    />
+      (onClick)="showMore()" />
     @if (isLinkShowMore()) {
       <small>({{ hiddenTransactionLabel() }})</small>
     }

@@ -1,14 +1,14 @@
 // SPDX-FileCopyrightText: Fondation RERO+
 // SPDX-FileCopyrightText: UCLouvain
 // SPDX-License-Identifier: AGPL-3.0-or-later
-import { ChangeDetectionStrategy, Component, computed, inject, input } from '@angular/core';
+import { Component, computed, inject, input } from '@angular/core';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
-import { getTagSeverityFromStatus } from '@app/admin/utils/utils';
-import { RecordService, DateTranslatePipe } from '@rero/ng-core';
 import { RouterLink } from '@angular/router';
-import { Bind } from 'primeng/bind';
-import { Tag } from 'primeng/tag';
-import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
+import { getTagSeverityFromStatus } from '@app/admin/utils/utils';
+import { TranslatePipe } from '@ngx-translate/core';
+import { Bind } from '@openng/optimus-ui/bind';
+import { Tag } from '@openng/optimus-ui/tag';
+import { DateTranslatePipe, RecordService } from '@rero/ng-core';
 import { catchError, map, of, switchMap } from 'rxjs';
 
 type IllRequestRecord = {
@@ -38,13 +38,11 @@ type PatronRecord = {
 };
 
 @Component({
-    selector: 'admin-ill-requests-brief-view',
-    templateUrl: './ill-requests-brief-view.component.html',
-    imports: [RouterLink, Bind, Tag, TranslateDirective, TranslatePipe, DateTranslatePipe],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  selector: 'admin-ill-requests-brief-view',
+  templateUrl: './ill-requests-brief-view.component.html',
+  imports: [RouterLink, Bind, Tag, TranslatePipe, DateTranslatePipe],
 })
 export class IllRequestsBriefViewComponent {
-
   private recordService: RecordService = inject(RecordService);
 
   // COMPONENT ATTRIBUTES =======================================================
@@ -53,7 +51,7 @@ export class IllRequestsBriefViewComponent {
   /** Type of record */
   type = input<string>();
   /** Detail Url */
-  detailUrl = input<{ link: string, external: boolean }>();
+  detailUrl = input<{ link: string; external: boolean }>();
 
   /** the requester of the ILL request */
   private readonly requesterPid = computed(() => this.record()?.metadata?.patron?.pid ?? null);
@@ -66,11 +64,11 @@ export class IllRequestsBriefViewComponent {
         }
         return this.recordService.getRecord('patrons', pid).pipe(
           map((patron: PatronRecord) => patron.metadata ?? null),
-          catchError(() => of(null))
+          catchError(() => of(null)),
         );
-      })
+      }),
     ),
-    { initialValue: null }
+    { initialValue: null },
   );
 
   readonly tagSeverity = computed(() => getTagSeverityFromStatus(this.record()?.metadata?.status));

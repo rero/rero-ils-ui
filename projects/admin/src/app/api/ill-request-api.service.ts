@@ -8,10 +8,9 @@ import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class IllRequestApiService extends BaseApi {
-
   private recordService: RecordService = inject(RecordService);
 
   /** Resource name */
@@ -26,12 +25,19 @@ export class IllRequestApiService extends BaseApi {
   getByPatronPid(
     patronPid: string,
     // eslint-disable-next-line @typescript-eslint/consistent-indexed-object-style
-    filters?: {[key: string]: string},
-    sort = '-created'
+    filters?: { [key: string]: string },
+    sort = '-created',
   ): Observable<any> {
     const query = `patron.pid:${patronPid}`;
     return this.recordService
-      .getRecords(this.RESOURCE_NAME, { query, page: 1, itemsPerPage: RecordService.MAX_REST_RESULTS_SIZE, preFilters: filters, headers: BaseApi.reroJsonheaders, sort })
+      .getRecords(this.RESOURCE_NAME, {
+        query,
+        page: 1,
+        itemsPerPage: RecordService.MAX_REST_RESULTS_SIZE,
+        preFilters: filters,
+        headers: BaseApi.reroJsonheaders,
+        sort,
+      })
       .pipe(map((result: EsResult) => result.hits.hits));
   }
 }

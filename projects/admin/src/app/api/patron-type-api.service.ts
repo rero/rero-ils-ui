@@ -7,10 +7,9 @@ import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class PatronTypeApiService {
-
   private recordService: RecordService = inject(RecordService);
 
   /**

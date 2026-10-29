@@ -7,14 +7,14 @@ import { RecordData, RecordService } from '@rero/ng-core';
 import { BaseApi, EsResult, IAvailability, IAvailabilityService } from '@rero/shared';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { AppConfigService } from '../service/app-config.service';
+
 import { IAdvancedSearchConfig } from '../record/search-view/document-advanced-search-form/i-advanced-search-config-interface';
+import { AppConfigService } from '../service/app-config.service';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class DocumentApiService extends BaseApi implements IAvailabilityService {
-
   private recordService: RecordService = inject(RecordService);
   private httpClient: HttpClient = inject(HttpClient);
   private appConfigService: AppConfigService = inject(AppConfigService);
@@ -30,8 +30,7 @@ export class DocumentApiService extends BaseApi implements IAvailabilityService 
    * @returns Observable of the document record
    */
   getDocument(pid: string, resolve = 1): Observable<RecordData> {
-    return this.recordService.getRecord(
-      this.RESOURCE_NAME, pid, { resolve, headers: BaseApi.reroJsonheaders });
+    return this.recordService.getRecord(this.RESOURCE_NAME, pid, { resolve, headers: BaseApi.reroJsonheaders });
   }
 
   /**
@@ -40,9 +39,9 @@ export class DocumentApiService extends BaseApi implements IAvailabilityService 
    * @returns Observable<int>
    */
   getLinkedDocumentsCount(documentPid: string): Observable<number> {
-    return this.recordService.getRecords(
-      this.RESOURCE_NAME, { query: `partOf.document.pid:${documentPid}`, page: 1, itemsPerPage: 1 }
-    ).pipe(map((result: EsResult) => result.hits.total));
+    return this.recordService
+      .getRecords(this.RESOURCE_NAME, { query: `partOf.document.pid:${documentPid}`, page: 1, itemsPerPage: 1 })
+      .pipe(map((result: EsResult) => result.hits.total));
   }
 
   /**

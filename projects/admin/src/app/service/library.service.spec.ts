@@ -1,11 +1,12 @@
 // SPDX-FileCopyrightText: Fondation RERO+
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-import { TestBed } from "@angular/core/testing";
-import { LibraryService } from "./library.service";
-import { RecordService } from "@rero/ng-core";
-import { of } from "rxjs";
-import { apiResponse } from "@rero/shared";
+import { TestBed } from '@angular/core/testing';
+import { RecordService } from '@rero/ng-core';
+import { apiResponse } from '@rero/shared';
+import { of } from 'rxjs';
+
+import { LibraryService } from './library.service';
 
 describe('LibraryService', () => {
   let service: LibraryService;
@@ -13,10 +14,10 @@ describe('LibraryService', () => {
   const library = {
     metadata: {
       pid: '1',
-      name: 'Library name'
-    }
+      name: 'Library name',
+    },
   };
-  const response = {...apiResponse};
+  const response = { ...apiResponse };
   response.hits.hits = [library];
   response.hits.total = response.hits.hits.length;
 
@@ -26,10 +27,7 @@ describe('LibraryService', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [
-        LibraryService,
-        { provide: RecordService, useValue: recordServiceSpy }
-      ]
+      providers: [LibraryService, { provide: RecordService, useValue: recordServiceSpy }],
     });
 
     service = TestBed.inject(LibraryService);
@@ -44,7 +42,7 @@ describe('LibraryService', () => {
   });
 
   it('should return a library', () => {
-    service.get$('1').subscribe((result: any) => expect(result).toEqual(library))
+    service.get$('1').subscribe((result: any) => expect(result).toEqual(library));
   });
 
   it('should return the sorted libraries', () => {
@@ -52,7 +50,6 @@ describe('LibraryService', () => {
   });
 
   it('should return libraries matching the pid and sorted by', () => {
-    service.findByLibrariesPidAndOrderBy$(['1'])
-    .subscribe((result: any) => expect(result).toEqual(response));
+    service.findByLibrariesPidAndOrderBy$(['1']).subscribe((result: any) => expect(result).toEqual(response));
   });
 });

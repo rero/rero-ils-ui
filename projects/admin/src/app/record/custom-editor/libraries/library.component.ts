@@ -2,33 +2,43 @@
 // SPDX-FileCopyrightText: UCLouvain
 // SPDX-License-Identifier: AGPL-3.0-or-later
 import { NgClass, NgTemplateOutlet, TitleCasePipe } from '@angular/common';
-import { ChangeDetectionStrategy, Component, computed, effect, inject, signal } from '@angular/core';
+import { Component, computed, effect, inject, signal } from '@angular/core';
 import { AsyncValidatorFn, FormsModule, ReactiveFormsModule, UntypedFormArray, UntypedFormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CountryCodeTranslatePipe } from '@app/admin/pipe/country-code-translate.pipe';
-import { TranslateDirective, TranslatePipe, TranslateService } from '@ngx-translate/core';
-import { AbstractCanDeactivateComponent, ApiService, cleanDictKeys, CONFIG, RecordService, removeEmptyValues, UniqueValidator, UpperCaseFirstPipe } from '@rero/ng-core';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
+import { Accordion, AccordionContent, AccordionHeader, AccordionPanel } from '@openng/optimus-ui/accordion';
+import { MessageService } from '@openng/optimus-ui/api';
+import { Badge } from '@openng/optimus-ui/badge';
+import { Bind } from '@openng/optimus-ui/bind';
+import { Button } from '@openng/optimus-ui/button';
+import { Divider } from '@openng/optimus-ui/divider';
+import { DialogService } from '@openng/optimus-ui/dynamicdialog';
+import { Fieldset } from '@openng/optimus-ui/fieldset';
+import { InputGroup } from '@openng/optimus-ui/inputgroup';
+import { InputGroupAddon } from '@openng/optimus-ui/inputgroupaddon';
+import { InputNumber } from '@openng/optimus-ui/inputnumber';
+import { InputText } from '@openng/optimus-ui/inputtext';
+import { Ripple } from '@openng/optimus-ui/ripple';
+import { Select } from '@openng/optimus-ui/select';
+import { Tab, TabList, TabPanel, TabPanels, Tabs } from '@openng/optimus-ui/tabs';
+import { Tag } from '@openng/optimus-ui/tag';
+import { ToggleSwitch } from '@openng/optimus-ui/toggleswitch';
+import { Tooltip } from '@openng/optimus-ui/tooltip';
+import {
+  AbstractUnsavedChangesComponent,
+  ApiService,
+  cleanDictKeys,
+  CONFIG,
+  RecordService,
+  removeEmptyValues,
+  UniqueValidator,
+  UpperCaseFirstPipe,
+} from '@rero/ng-core';
 import { AppStore } from '@rero/shared';
-import { Accordion, AccordionContent, AccordionHeader, AccordionPanel } from 'primeng/accordion';
-import { MessageService } from 'primeng/api';
-import { Badge } from 'primeng/badge';
-import { Bind } from 'primeng/bind';
-import { Button } from 'primeng/button';
-import { Divider } from 'primeng/divider';
-import { DialogService } from 'primeng/dynamicdialog';
-import { Fieldset } from 'primeng/fieldset';
-import { InputGroup } from 'primeng/inputgroup';
-import { InputGroupAddon } from 'primeng/inputgroupaddon';
-import { InputNumber } from 'primeng/inputnumber';
-import { InputText } from 'primeng/inputtext';
-import { Ripple } from 'primeng/ripple';
-import { Select } from 'primeng/select';
-import { Tab, TabList, TabPanel, TabPanels, Tabs } from 'primeng/tabs';
-import { Tag } from 'primeng/tag';
-import { ToggleSwitch } from 'primeng/toggleswitch';
-import { Tooltip } from 'primeng/tooltip';
 import { finalize } from 'rxjs';
 import { take } from 'rxjs/operators';
+
 import { ExceptionDates, Library } from '../../../classes/library';
 import { NotificationType } from '../../../classes/notification';
 import { ExceptionDatesEditComponent } from './exception-dates-edit/exception-dates-edit.component';
@@ -40,14 +50,45 @@ import { NotificationTypePipe } from './pipe/notificationType.pipe';
 type SelectOption = { value: string; label: string; disabled?: boolean };
 
 @Component({
-    selector: 'admin-libraries-library',
-    templateUrl: './library.component.html',
-    providers: [LibraryStore, LibraryFormService],
-    imports: [TranslateDirective, FormsModule, ReactiveFormsModule, Bind, Accordion, AccordionPanel, Ripple, AccordionHeader, AccordionContent, InputText, InputGroup, InputGroupAddon, Select, NgClass, ToggleSwitch, Button, ExceptionDatesListComponent, InputNumber, Tooltip, Divider, Tabs, TabList, Tab, TabPanels, TabPanel, NgTemplateOutlet, Fieldset, Tag, TitleCasePipe, UpperCaseFirstPipe, TranslatePipe, NotificationTypePipe, Badge],
-    changeDetection: ChangeDetectionStrategy.OnPush
+  selector: 'admin-libraries-library',
+  templateUrl: './library.component.html',
+  providers: [LibraryStore, LibraryFormService],
+  imports: [
+    FormsModule,
+    ReactiveFormsModule,
+    Bind,
+    Accordion,
+    AccordionPanel,
+    Ripple,
+    AccordionHeader,
+    AccordionContent,
+    InputText,
+    InputGroup,
+    InputGroupAddon,
+    Select,
+    NgClass,
+    ToggleSwitch,
+    Button,
+    ExceptionDatesListComponent,
+    InputNumber,
+    Tooltip,
+    Divider,
+    Tabs,
+    TabList,
+    Tab,
+    TabPanels,
+    TabPanel,
+    NgTemplateOutlet,
+    Fieldset,
+    Tag,
+    TitleCasePipe,
+    UpperCaseFirstPipe,
+    TranslatePipe,
+    NotificationTypePipe,
+    Badge,
+  ],
 })
-export class LibraryComponent extends AbstractCanDeactivateComponent {
-
+export class LibraryComponent extends AbstractUnsavedChangesComponent {
   private libraryForm: LibraryFormService = inject(LibraryFormService);
   protected readonly libraryStore = inject(LibraryStore);
   private route: ActivatedRoute = inject(ActivatedRoute);
@@ -71,10 +112,10 @@ export class LibraryComponent extends AbstractCanDeactivateComponent {
 
   /** Translated options for dropdowns — derived from store data */
   readonly rolloverAccountTransferOptions = computed<SelectOption[]>(() =>
-    this.libraryStore.rolloverAccountTransferOptions().map(option => ({
+    this.libraryStore.rolloverAccountTransferOptions().map((option) => ({
       value: option,
       label: this.translateService.instant(option),
-    }))
+    })),
   );
 
   readonly availableCommunicationLanguagesOptions = computed<SelectOption[]>(() => {
@@ -82,15 +123,15 @@ export class LibraryComponent extends AbstractCanDeactivateComponent {
     if (!langs.length) return [];
     return [
       { value: '', label: this.translateService.instant('Choose a language'), disabled: true },
-      ...langs.map(lang => ({ value: lang, label: this.translateService.instant(`lang_${lang}`), disabled: false })),
+      ...langs.map((lang) => ({ value: lang, label: this.translateService.instant(`lang_${lang}`), disabled: false })),
     ];
   });
 
   readonly countryIsoCodesOptions = computed<SelectOption[]>(() =>
-    this.libraryStore.countryIsoCodes().map(code => ({
+    this.libraryStore.countryIsoCodes().map((code) => ({
       value: code,
       label: this.countryCodeTranslatePipe.transform(code),
-    }))
+    })),
   );
 
   /** possible delayed notification types. */
@@ -108,14 +149,30 @@ export class LibraryComponent extends AbstractCanDeactivateComponent {
   readonly exceptionDates = this.libraryStore.exceptionDates;
 
   // GETTER & SETTER ==========================================================
-  get name() { return this.libraryForm.name; }
-  get address() { return this.libraryForm.address; }
-  get email() { return this.libraryForm.email; }
-  get code() { return this.libraryForm.code; }
-  get communicationLanguage() { return this.libraryForm.communication_language; }
-  get openingHours() { return this.libraryForm.opening_hours as UntypedFormArray; }
-  get notificationSettings() { return this.libraryForm.notification_settings as UntypedFormArray; }
-  get rolloverSettings() { return this.libraryForm.rollover_settings as UntypedFormGroup; }
+  get name() {
+    return this.libraryForm.name;
+  }
+  get address() {
+    return this.libraryForm.address;
+  }
+  get email() {
+    return this.libraryForm.email;
+  }
+  get code() {
+    return this.libraryForm.code;
+  }
+  get communicationLanguage() {
+    return this.libraryForm.communication_language;
+  }
+  get openingHours() {
+    return this.libraryForm.opening_hours as UntypedFormArray;
+  }
+  get notificationSettings() {
+    return this.libraryForm.notification_settings as UntypedFormArray;
+  }
+  get rolloverSettings() {
+    return this.libraryForm.rollover_settings as UntypedFormGroup;
+  }
 
   constructor() {
     super();
@@ -149,17 +206,20 @@ export class LibraryComponent extends AbstractCanDeactivateComponent {
   }
 
   addException(): void {
-    this.dialogService.open(ExceptionDatesEditComponent, {
-      header: this.translateService.instant('Exception'),
-      modal: true,
-      width: '50vw',
-      closable: false,
-      data: { exceptionDate: null }
-    })?.onClose.pipe(take(1)).subscribe((value?: ExceptionDates) => {
-      if (value) {
-        this.libraryStore.addExceptionDate(value);
-      }
-    });
+    this.dialogService
+      .open(ExceptionDatesEditComponent, {
+        header: this.translateService.instant('Exception'),
+        modal: true,
+        width: '50vw',
+        closable: false,
+        data: { exceptionDate: null },
+      })
+      ?.onClose.pipe(take(1))
+      .subscribe((value?: ExceptionDates) => {
+        if (value) {
+          this.libraryStore.addExceptionDate(value);
+        }
+      });
   }
 
   // COMPONENT FUNCTIONS ======================================================
@@ -169,13 +229,15 @@ export class LibraryComponent extends AbstractCanDeactivateComponent {
         this.recordService,
         'libraries',
         'code',
-        this.libraryStore.library()?.pid ?? undefined
-      ) as AsyncValidatorFn
+        this.libraryStore.library()?.pid ?? undefined,
+      ) as AsyncValidatorFn,
     ]);
   }
 
   onSubmit() {
-    if (this.isSaving) { return; }
+    if (this.isSaving) {
+      return;
+    }
     this.isSaving = true;
     this.canDeactivate = true;
     const library = this.libraryStore.library()!;
@@ -187,49 +249,53 @@ export class LibraryComponent extends AbstractCanDeactivateComponent {
     if (library.pid) {
       this.recordService
         .update('libraries', library.pid, cleanDictKeys(library as any), this.libraryStore.currentLibraryETag())
-        .pipe(finalize(() => this.isSaving = false))
+        .pipe(finalize(() => (this.isSaving = false)))
         .subscribe({
           next: () => {
             this.messageService.add({
               severity: 'success',
               summary: this.translateService.instant('libraries'),
               detail: this.translateService.instant('Record Updated!'),
-              life: CONFIG.MESSAGE_LIFE
+              life: CONFIG.MESSAGE_LIFE,
             });
             this.router.navigate(['records', 'libraries', 'detail', library.pid]);
           },
           error: (error) => {
             this.messageService.add(
-              (error.status === 409 || error.status === 412)
+              error.status === 409 || error.status === 412
                 ? {
                     severity: 'warn',
                     summary: this.translateService.instant('Record conflict'),
-                    detail: this.translateService.instant('This record has been modified by another user. Please reload the page — your local changes will be lost.'),
+                    detail: this.translateService.instant(
+                      'This record has been modified by another user. Please reload the page — your local changes will be lost.',
+                    ),
                     sticky: true,
-                    closable: true
+                    closable: true,
                   }
                 : {
                     severity: 'error',
                     summary: this.translateService.instant('libraries'),
                     detail: error.title,
                     sticky: true,
-                    closable: true
-                  }
+                    closable: true,
+                  },
             );
-          }
-      });
+          },
+        });
     } else {
-      library.organisation = { $ref: this.apiService.getRefEndpoint('organisations', this.appStore.currentOrganisationPid()) };
+      library.organisation = {
+        $ref: this.apiService.getRefEndpoint('organisations', this.appStore.currentOrganisationPid()),
+      };
       this.recordService
         .create('libraries', cleanDictKeys(library as any))
-        .pipe(finalize(() => this.isSaving = false))
+        .pipe(finalize(() => (this.isSaving = false)))
         .subscribe({
           next: (record: any) => {
             this.messageService.add({
               severity: 'success',
               summary: this.translateService.instant('libraries'),
               detail: this.translateService.instant('Record created!'),
-              life: CONFIG.MESSAGE_LIFE
+              life: CONFIG.MESSAGE_LIFE,
             });
             this.router.navigate(['records', 'libraries', 'detail', record.metadata.pid]);
           },
@@ -239,10 +305,10 @@ export class LibraryComponent extends AbstractCanDeactivateComponent {
               summary: this.translateService.instant('libraries'),
               detail: error.title,
               sticky: true,
-              closable: true
+              closable: true,
             });
-          }
-      });
+          },
+        });
     }
   }
 
@@ -265,7 +331,9 @@ export class LibraryComponent extends AbstractCanDeactivateComponent {
         day.times = [];
       }
     });
-    formValues.notification_settings = formValues.notification_settings.filter((element: { email: string }) => element.email !== '');
+    formValues.notification_settings = formValues.notification_settings.filter(
+      (element: { email: string }) => element.email !== '',
+    );
     formValues.acquisition_settings = removeEmptyValues(formValues.acquisition_settings);
     formValues.serial_acquisition_settings = removeEmptyValues(formValues.serial_acquisition_settings);
   }

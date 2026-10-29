@@ -2,17 +2,17 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 import { computed, effect, inject, Injectable, signal } from '@angular/core';
 import { MenuStore } from '@app/admin/menu/store/menu.store';
+import { LIBRARIAN_STORAGE_KEYS } from '@app/admin/service/librarian-storage-keys';
 import { LocalStorageService } from '@rero/ng-core';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class LoanFixedDateService {
-
   private localeStorageService: LocalStorageService = inject(LocalStorageService);
   private menuStore = inject(MenuStore);
 
-  private readonly _dueDateKey = 'due_date_remember';
+  private readonly _dueDateKey = LIBRARIAN_STORAGE_KEYS.dueDate;
   private readonly _keyExpiration = 43200; // 12 hours in seconds
 
   private readonly _dueDate = signal<string | undefined>(this._readFromStorage());

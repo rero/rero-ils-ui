@@ -1,24 +1,24 @@
 // SPDX-FileCopyrightText: Fondation RERO+
 // SPDX-FileCopyrightText: UCLouvain
 // SPDX-License-Identifier: AGPL-3.0-or-later
-import { ChangeDetectionStrategy, Component, computed, inject, OnInit, signal } from '@angular/core';
+import { CurrencyPipe, NgTemplateOutlet } from '@angular/common';
+import { Component, computed, inject, OnInit, signal } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 import { IAcqAccount } from '@app/admin/acquisition/classes/account';
 import { FieldType } from '@ngx-formly/core';
-import { TranslateService, TranslatePipe } from '@ngx-translate/core';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
+import { MessageService } from '@openng/optimus-ui/api';
+import { SelectModule } from '@openng/optimus-ui/select';
 import { ApiService } from '@rero/ng-core';
 import { AppStore } from '@rero/shared';
-import { MessageService } from 'primeng/api';
+
 import { AcqAccountApiService } from '../../../../api/acq-account-api.service';
 import { orderAccountsAsTree } from '../../../../utils/account';
-import { FormsModule } from '@angular/forms';
-import { NgTemplateOutlet, CurrencyPipe } from '@angular/common';
-import { SelectModule } from 'primeng/select';
 
 @Component({
-    selector: 'admin-select-account-editor-widget',
-    templateUrl: './select-account-editor-widget.component.html',
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [FormsModule, NgTemplateOutlet, CurrencyPipe, TranslatePipe, SelectModule]
+  selector: 'admin-select-account-editor-widget',
+  templateUrl: './select-account-editor-widget.component.html',
+  imports: [FormsModule, NgTemplateOutlet, CurrencyPipe, TranslatePipe, SelectModule],
 })
 export class SelectAccountEditorWidgetComponent extends FieldType implements OnInit {
   // services
@@ -49,8 +49,8 @@ export class SelectAccountEditorWidgetComponent extends FieldType implements OnI
         if (this.field.props?.filterChildren && accountPid) {
           const newAccounts: IAcqAccount[] = [];
           const removed: string[] = [];
-          accounts.forEach(account => {
-            if (account.pid !== accountPid && !removed.some(pid => pid === account?.parent?.pid)) {
+          accounts.forEach((account) => {
+            if (account.pid !== accountPid && !removed.some((pid) => pid === account?.parent?.pid)) {
               newAccounts.push(account);
             } else {
               removed.push(account.pid!);

@@ -9,15 +9,13 @@ SPDX-License-Identifier: AGPL-3.0-or-later
     <li>
       <div class="ui:flex">
         <span class="ui:grow">{{ subtype.name | translate }}</span>
-        <span>{{ subtype.total | currency: org_currency: 'symbol' }}</span>
+        <span>{{ subtype.total | currency: org_currency : 'symbol' }}</span>
       </div>
     </li>
   }
-    <p-divider></p-divider>
+  <p-divider></p-divider>
   <li class="ui:flex ui:font-bold">
-    <span class="ui:grow" translate>Total</span>
-    <span>{{ data()?.total | currency: org_currency: 'symbol' }}</span>
+    <span class="ui:grow">{{ 'Total' | translate }}</span>
+    <span>{{ data()?.total | currency: org_currency : 'symbol' }}</span>
   </li>
 </ul>
-
-

@@ -1,21 +1,18 @@
 // SPDX-FileCopyrightText: Fondation RERO+
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-import { Component, input, ChangeDetectionStrategy} from '@angular/core';
-import { RouterLink } from '@angular/router';
-import { TranslateDirective } from '@ngx-translate/core';
-import { InheritedCallNumberComponent, ItemHoldingsCallNumberPipe } from '@rero/shared';
 import { AsyncPipe, JsonPipe } from '@angular/common';
-
+import { Component, input } from '@angular/core';
+import { RouterLink } from '@angular/router';
+import { TranslatePipe } from '@ngx-translate/core';
+import { InheritedCallNumberComponent, ItemHoldingsCallNumberPipe } from '@rero/shared';
 
 @Component({
-    selector: 'admin-inventory-brief-view',
-    templateUrl: './items-brief-view.component.html',
-    imports: [RouterLink, TranslateDirective, InheritedCallNumberComponent, AsyncPipe, JsonPipe, ItemHoldingsCallNumberPipe],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  selector: 'admin-inventory-brief-view',
+  templateUrl: './items-brief-view.component.html',
+  imports: [TranslatePipe, RouterLink, InheritedCallNumberComponent, AsyncPipe, JsonPipe, ItemHoldingsCallNumberPipe],
 })
 export class ItemsBriefViewComponent {
-
   /** Record */
   record = input<any>();
 
@@ -23,5 +20,5 @@ export class ItemsBriefViewComponent {
   type = input<string>();
 
   /** Detail Url */
-  detailUrl = input<{ link: string, external: boolean }>();
+  detailUrl = input<{ link: string; external: boolean }>();
 }

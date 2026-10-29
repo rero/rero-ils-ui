@@ -4,28 +4,29 @@ import { inject } from '@angular/core';
 import { ResolveFn, Routes } from '@angular/router';
 import { FormlyFieldConfig } from '@ngx-formly/core';
 import { _ } from '@ngx-translate/core';
-import type { ActionStatus, IFilter } from '@rero/ng-core';
 import {
   DetailComponent,
-  EditorComponent,
   JSONSchema7,
   RecordData,
   RecordSearchPageComponent,
   RecordService,
   RecordType,
   RouteDataTypesInterface,
+  type ActionStatus,
+  type IFilter,
 } from '@rero/ng-core';
+import { EditorComponent } from '@rero/ng-core/editor';
 import { EsResult, PERMISSION_OPERATOR, PERMISSIONS } from '@rero/shared';
 import { Observable, of } from 'rxjs';
 import { map } from 'rxjs/operators';
+
 import { CAN_ACCESS_ACTIONS, canAccessGuard } from '../guard/can-access.guard';
 import { permissionGuard } from '../guard/permission.guard';
 import { StatisticsCfgBriefViewComponent } from '../record/brief-view/statistics-cfg-brief-view-component';
 import { StatisticsCfgDetailViewComponent } from '../record/detail-view/statistics-cfg-detail-view/statistics-cfg-detail-view.component';
 import { BaseRoute } from './base-route';
 
-export const statisticsCfgRouteResolver: ResolveFn<Partial<RecordType>[]> = () =>
-  new StatisticsCfgRoute().getTypes();
+export const statisticsCfgRouteResolver: ResolveFn<Partial<RecordType>[]> = () => new StatisticsCfgRoute().getTypes();
 
 export const statisticsCfgRoutes: Routes = [
   {
@@ -104,7 +105,10 @@ class StatisticsCfgRoute extends BaseRoute implements RouteDataTypesInterface {
         }) as any,
         preCreateRecord: (data) => {
           data.library = {
-            $ref: this.routeToolService.apiService.getRefEndpoint('libraries', this.routeToolService.appStore.currentLibraryPid()),
+            $ref: this.routeToolService.apiService.getRefEndpoint(
+              'libraries',
+              this.routeToolService.appStore.currentLibraryPid(),
+            ),
           };
           return data;
         },
@@ -118,10 +122,7 @@ class StatisticsCfgRoute extends BaseRoute implements RouteDataTypesInterface {
    * @param jsonSchema - JSONSchema7
    * @return FormlyFieldConfig
    */
-  private _populateLocationsByCurrentUserLibrary(
-    field: FormlyFieldConfig,
-    jsonSchema: JSONSchema7
-  ): FormlyFieldConfig {
+  private _populateLocationsByCurrentUserLibrary(field: FormlyFieldConfig, jsonSchema: JSONSchema7): FormlyFieldConfig {
     const formWidget = jsonSchema.widget;
     if (formWidget?.formlyConfig?.props?.fieldMap === 'libraries') {
       field.type = 'select';
@@ -145,17 +146,15 @@ class StatisticsCfgRoute extends BaseRoute implements RouteDataTypesInterface {
               sort: 'name',
             })
             .pipe(
-              map((result: EsResult) =>
-                result.hits.total === 0 ? [] : result.hits.hits
-              ),
+              map((result: EsResult) => (result.hits.total === 0 ? [] : result.hits.hits)),
               map((hits: any) =>
                 hits.map((hit: any) => {
                   return {
                     label: hit.metadata.name,
                     value: apiService.getRefEndpoint('libraries', hit.metadata.pid),
                   };
-                })
-              )
+                }),
+              ),
             );
         },
       };
@@ -164,10 +163,16 @@ class StatisticsCfgRoute extends BaseRoute implements RouteDataTypesInterface {
   }
 
   private processFilterName(filter: IFilter): Observable<string> {
-    if(filter.name) { return of(filter.name); }
+    if (filter.name) {
+      return of(filter.name);
+    }
     switch (filter.aggregationKey) {
-      case 'library': return this.recordService.getRecord<{metadata: {name: string}}>('libraries', filter.key).pipe(map(record => record.metadata.name));
-      default: return this.routeToolService.translateService.stream(filter.key);
+      case 'library':
+        return this.recordService
+          .getRecord<{ metadata: { name: string } }>('libraries', filter.key)
+          .pipe(map((record) => record.metadata.name));
+      default:
+        return this.routeToolService.translateService.stream(filter.key);
     }
   }
 }

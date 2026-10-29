@@ -4,18 +4,12 @@ SPDX-FileCopyrightText: UCLouvain
 SPDX-License-Identifier: AGPL-3.0-or-later
 -->
 @if (globalPermissions()) {
-  <h1 translate>Permissions matrix</h1>
+  <h1>{{ 'Permissions matrix' | translate }}</h1>
   <div class="ui:flex ui:flex-col ui:gap-2">
-    <label for="filter" translate>Filter permission list</label>
-    <input
-      pInputText
-      id="filter"
-      aria-describedby="filter-help"
-      #search
-      (keyup)="filterPermissions(search.value)"
-    />
-    <small id="filter-help" class="ui:text-muted-color" translate>
-      Enter a part of the permission name to filter the list.
+    <label for="filter">{{ 'Filter permission list' | translate }}</label>
+    <input pInputText id="filter" aria-describedby="filter-help" #search (keyup)="filterPermissions(search.value)" />
+    <small id="filter-help" class="ui:text-muted-color">
+      {{ 'Enter a part of the permission name to filter the list.' | translate }}
     </small>
   </div>
 
@@ -38,7 +32,9 @@ SPDX-License-Identifier: AGPL-3.0-or-later
             @for (role of roles(); track role.name) {
               <td [ngClass]="roleClass(role.type)">
                 <span title="{{ role.name | translate }}">
-                  <i class="fa-solid fa-square" [ngClass]="permissionClass(globalPermissions()![role.name].actions[permissionName])"></i>
+                  <i
+                    class="fa-solid fa-square"
+                    [ngClass]="permissionClass(globalPermissions()![role.name].actions[permissionName])"></i>
                 </span>
               </td>
             }
@@ -47,6 +43,6 @@ SPDX-License-Identifier: AGPL-3.0-or-later
       </tbody>
     </table>
   } @else {
-    <p class="ui:mt-4" translate>No result</p>
+    <p class="ui:mt-4">{{ 'No result' | translate }}</p>
   }
 }

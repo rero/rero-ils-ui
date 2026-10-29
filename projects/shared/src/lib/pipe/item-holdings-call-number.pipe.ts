@@ -25,13 +25,12 @@ type RecordMetadata = {
 
 @Pipe({ name: 'itemHoldingsCallNumber' })
 export class ItemHoldingsCallNumberPipe implements PipeTransform {
-
   protected recordService: RecordService = inject(RecordService);
 
   /**
-    * Get item call numbers as an Observable.
-    * Use with the `async` pipe in templates.
-    * @return Observable<ItemCallNumbers>
+   * Get item call numbers as an Observable.
+   * Use with the `async` pipe in templates.
+   * @return Observable<ItemCallNumbers>
    */
   transform(record: unknown): Observable<ItemCallNumbers> {
     const metadata = this.extractMetadata(record);
@@ -42,7 +41,7 @@ export class ItemHoldingsCallNumberPipe implements PipeTransform {
     if (metadata.call_number) {
       return of({
         first: { source: 'item', value: metadata.call_number },
-        second: { source: 'item', value: metadata.second_call_number }
+        second: { source: 'item', value: metadata.second_call_number },
       });
     }
 
@@ -57,11 +56,11 @@ export class ItemHoldingsCallNumberPipe implements PipeTransform {
         return callNumber
           ? {
               first: { source: 'holding' as const, value: callNumber },
-              second: { source: 'item' as const, value: metadata.second_call_number }
+              second: { source: 'item' as const, value: metadata.second_call_number },
             }
           : this.emptyCallNumbers();
       }),
-      startWith(this.emptyCallNumbers())
+      startWith(this.emptyCallNumbers()),
     );
   }
 
@@ -91,7 +90,7 @@ export class ItemHoldingsCallNumberPipe implements PipeTransform {
   private emptyCallNumbers(): ItemCallNumbers {
     return {
       first: { source: undefined, value: undefined },
-      second: { source: undefined, value: undefined }
+      second: { source: undefined, value: undefined },
     };
   }
 }

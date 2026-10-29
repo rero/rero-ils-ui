@@ -1,26 +1,37 @@
 // SPDX-FileCopyrightText: Fondation RERO+
 // SPDX-FileCopyrightText: UCLouvain
 // SPDX-License-Identifier: AGPL-3.0-or-later
-import { Component, effect, inject, input, ChangeDetectionStrategy} from '@angular/core';
-import { DocumentApiService } from '@app/admin/api/document-api.service';
-import { ThumbnailComponent, ContributionComponent, PartOfComponent, AvailabilityComponent, MainTitlePipe } from '@rero/shared';
+import { Component, effect, inject, input } from '@angular/core';
 import { RouterLink } from '@angular/router';
+import { DocumentApiService } from '@app/admin/api/document-api.service';
+import {
+  AvailabilityComponent,
+  ContributionComponent,
+  MainTitlePipe,
+  PartOfComponent,
+  ThumbnailComponent,
+} from '@rero/shared';
 
 @Component({
-    selector: 'admin-documents-brief-view',
-    templateUrl: './documents-brief-view.component.html',
-    imports: [ThumbnailComponent, RouterLink, ContributionComponent, PartOfComponent, AvailabilityComponent, MainTitlePipe],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  selector: 'admin-documents-brief-view',
+  templateUrl: './documents-brief-view.component.html',
+  imports: [
+    ThumbnailComponent,
+    RouterLink,
+    ContributionComponent,
+    PartOfComponent,
+    AvailabilityComponent,
+    MainTitlePipe,
+  ],
 })
 export class DocumentsBriefViewComponent {
-
   public documentApiService: DocumentApiService = inject(DocumentApiService);
 
   record = input<any>();
 
   type = input<string>();
 
-  detailUrl = input<{ link: string, external: boolean }>();
+  detailUrl = input<{ link: string; external: boolean }>();
 
   /** Provision activities */
   provisionActivityPublications: any[] = [];

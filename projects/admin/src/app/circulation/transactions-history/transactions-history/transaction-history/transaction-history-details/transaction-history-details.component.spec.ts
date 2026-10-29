@@ -3,9 +3,10 @@
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Item } from '@app/admin/classes/items';
-import { TranslateModule } from '@ngx-translate/core';
+import { provideTranslateService } from '@ngx-translate/core';
 import { RecordService } from '@rero/ng-core';
 import { of } from 'rxjs';
+
 import { TransactionHistoryDetailsComponent } from './transaction-history-details.component';
 
 // ─── Mocks ────────────────────────────────────────────────────────────────────
@@ -17,9 +18,12 @@ const LOCATION_RECORD = {
 const recordServiceMock = {
   getRecord: vi.fn((type: string) => {
     switch (type) {
-      case 'locations': return of(LOCATION_RECORD);
-      case 'libraries': return of('Bibliothèque cantonale');
-      default: return of(undefined);
+      case 'locations':
+        return of(LOCATION_RECORD);
+      case 'libraries':
+        return of('Bibliothèque cantonale');
+      default:
+        return of(undefined);
     }
   }),
 };
@@ -32,15 +36,18 @@ describe('TransactionHistoryDetailsComponent', () => {
     vi.clearAllMocks();
     recordServiceMock.getRecord.mockImplementation((type: string) => {
       switch (type) {
-        case 'locations': return of(LOCATION_RECORD);
-        case 'libraries': return of('Bibliothèque cantonale');
-        default: return of(undefined);
+        case 'locations':
+          return of(LOCATION_RECORD);
+        case 'libraries':
+          return of('Bibliothèque cantonale');
+        default:
+          return of(undefined);
       }
     });
 
     await TestBed.configureTestingModule({
-      imports: [TranslateModule.forRoot(), TransactionHistoryDetailsComponent],
-      providers: [{ provide: RecordService, useValue: recordServiceMock }],
+      imports: [TransactionHistoryDetailsComponent],
+      providers: [provideTranslateService(), { provide: RecordService, useValue: recordServiceMock }],
     }).compileComponents();
 
     fixture = TestBed.createComponent(TransactionHistoryDetailsComponent);

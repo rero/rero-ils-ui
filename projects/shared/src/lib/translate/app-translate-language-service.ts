@@ -5,8 +5,10 @@ import { CoreConfigService, LanguageLoaderFn, TranslateLanguageService } from '@
 
 const SUPPORTED_LANGUAGES = ['de', 'fr', 'it'];
 
-export const ngCoreLanguage = (base: string, lang: string): LanguageLoaderFn =>
-  () => fetch(`${base}/assets/rero-ils-ui/ng-core/languages/${lang}.json`).then(r => r.json());
+export const ngCoreLanguage =
+  (base: string, lang: string): LanguageLoaderFn =>
+  () =>
+    fetch(`${base}/assets/rero-ils-ui/ng-core/languages/${lang}.json`).then((r) => r.json());
 
 @Injectable({ providedIn: 'root' })
 export class AppTranslateLanguageService extends TranslateLanguageService {

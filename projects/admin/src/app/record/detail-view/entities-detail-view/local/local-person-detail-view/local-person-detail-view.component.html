@@ -7,43 +7,43 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 <admin-entities-local-global [record]="record()">
   <!-- NAME -->
   @if (record().name) {
-    <dt translate>Name</dt>
+    <dt>{{ 'Name' | translate }}</dt>
     <dd>{{ record().name }}</dd>
   }
   <!-- DATE OF BIRTH -->
   @if (record().date_of_birth) {
-    <dt translate>Birth date</dt>
+    <dt>{{ 'Birth date' | translate }}</dt>
     <dd>{{ record().date_of_birth }}</dd>
   }
   <!-- DATE OF DEATH -->
   @if (record().date_of_death) {
-    <dt translate>Death date</dt>
+    <dt>{{ 'Death date' | translate }}</dt>
     <dd>{{ record().date_of_death }}</dd>
   }
   <!-- NUMERATION -->
   @if (record().numeration) {
-    <dt translate>Numeration</dt>
+    <dt>{{ 'Numeration' | translate }}</dt>
     <dd>{{ record().numeration }}</dd>
   }
   <!-- QUALIFIER -->
   @if (record().qualifier) {
-    <dt translate>Qualifier</dt>
+    <dt>{{ 'Qualifier' | translate }}</dt>
     <dd>{{ record().qualifier }}</dd>
   }
   <!-- FULLER FORM OF NAME -->
   @if (record().fuller_form_of_name) {
-    <dt translate>Fuller form of name</dt>
+    <dt>{{ 'Fuller form of name' | translate }}</dt>
     <dd>{{ record().fuller_form_of_name }}</dd>
   }
   <!-- ALTERNATIVE NAMES -->
   @if (record().alternative_names && record().alternative_names.length > 0) {
-      <dt translate>Alternative names</dt>
-      <dd>
-        <ul class="ui:list-none">
-          @for (name of record().alternative_names; track $index) {
-            <li>{{ name }}</li>
-          }
-        </ul>
+    <dt>{{ 'Alternative names' | translate }}</dt>
+    <dd>
+      <ul class="ui:list-none">
+        @for (name of record().alternative_names; track $index) {
+          <li>{{ name }}</li>
+        }
+      </ul>
     </dd>
   }
 </admin-entities-local-global>

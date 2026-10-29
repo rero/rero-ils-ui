@@ -1,18 +1,16 @@
 // SPDX-FileCopyrightText: Fondation RERO+
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-import { Component, input, ChangeDetectionStrategy} from '@angular/core';
+import { Component, input } from '@angular/core';
 import { TranslatePipe } from '@ngx-translate/core';
 import { SafeUrlPipe } from '@rero/shared';
 
 @Component({
-    selector: 'admin-related-resource',
-    templateUrl: './related-resource.component.html',
-    imports: [TranslatePipe, SafeUrlPipe],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  selector: 'admin-related-resource',
+  templateUrl: './related-resource.component.html',
+  imports: [TranslatePipe, SafeUrlPipe],
 })
 export class RelatedResourceComponent {
-
   electronicLocator = input<any>();
 
   /**

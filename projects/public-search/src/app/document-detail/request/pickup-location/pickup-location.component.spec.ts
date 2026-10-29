@@ -1,21 +1,20 @@
 // SPDX-FileCopyrightText: Fondation RERO+
 // SPDX-License-Identifier: AGPL-3.0-or-later
+import { provideHttpClient, withXhr } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
-import { FormlyModule } from '@ngx-formly/core';
-import { FormlyPrimeNGModule } from '@ngx-formly/primeng';
-import { TranslateModule } from '@ngx-translate/core';
-
+import { provideFormlyCore } from '@ngx-formly/core';
+import { provideTranslateService } from '@ngx-translate/core';
+import { withNgCoreFormly } from '@rero/ng-core/editor';
 import { of } from 'rxjs';
+
 import { HoldingsApiService } from '../../../api/holdings-api.service';
 import { ItemApiService } from '../../../api/item-api.service';
 import { LocationApiService } from '../../../api/location-api.service';
 import { PickupLocationComponent } from './pickup-location.component';
-import { provideHttpClient } from '@angular/common/http';
-
 
 describe('PickupLocationComponent', () => {
   let component: PickupLocationComponent;
@@ -23,13 +22,13 @@ describe('PickupLocationComponent', () => {
 
   const itemRecord = {
     metadata: {
-      pid: '1'
-    }
+      pid: '1',
+    },
   };
 
   const pickupLocations = [
     { pid: '1', name: 'location 1' },
-    { pid: '2', name: 'location 2' }
+    { pid: '2', name: 'location 2' },
   ];
 
   const locationServiceSpy = { getPickupLocationsByRecordId: vi.fn() };
@@ -39,24 +38,18 @@ describe('PickupLocationComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-    schemas: [
-        CUSTOM_ELEMENTS_SCHEMA
-    ],
-    imports: [BrowserModule,
-        TranslateModule.forRoot(),
-        FormsModule,
-        ReactiveFormsModule,
-        FormlyModule.forRoot(),
-        FormlyPrimeNGModule],
-    providers: [
+      schemas: [CUSTOM_ELEMENTS_SCHEMA],
+      imports: [BrowserModule, FormsModule, ReactiveFormsModule],
+      providers: [
+        provideTranslateService(),
+        provideFormlyCore(withNgCoreFormly()),
         { provide: LocationApiService, useValue: locationServiceSpy },
         { provide: ItemApiService, useValue: itemServiceSpy },
         { provide: HoldingsApiService, useValue: {} },
-        provideHttpClient(),
-        provideHttpClientTesting()
-    ]
-})
-    .compileComponents();
+        provideHttpClient(withXhr()),
+        provideHttpClientTesting(),
+      ],
+    }).compileComponents();
   });
 
   beforeEach(() => {

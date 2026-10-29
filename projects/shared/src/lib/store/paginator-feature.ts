@@ -1,8 +1,9 @@
 // SPDX-FileCopyrightText: Fondation RERO+
 // SPDX-License-Identifier: AGPL-3.0-or-later
-import { patchState, signalMethod, signalStoreFeature, withMethods, withState } from "@ngrx/signals";
-import { PaginatorState } from "primeng/paginator";
-import { Pager, Paginator } from "../component/paginator/model/paginator-model";
+import { patchState, signalMethod, signalStoreFeature, withMethods, withState } from '@ngrx/signals';
+import { PaginatorState } from '@openng/optimus-ui/paginator';
+
+import { Pager, Paginator } from '../component/paginator/model/paginator-model';
 
 /**
  * Build the next pager without modifying the PrimeNG event.
@@ -17,21 +18,21 @@ export function nextPager(current: Pager, event: PaginatorState): Pager {
     page: page + 1,
     first: page * rows + 1,
     rows,
-    rowsPerPageOptions: current.rowsPerPageOptions
+    rowsPerPageOptions: current.rowsPerPageOptions,
   };
 }
 
 export function withPaginator(pager: Pager) {
   return signalStoreFeature(
     withState<Paginator>({
-      pager: pager
+      pager: pager,
     }),
-    withMethods(store => ({
-      changePage: signalMethod<PaginatorState>(event => {
+    withMethods((store) => ({
+      changePage: signalMethod<PaginatorState>((event) => {
         patchState(store, {
-          pager: nextPager(store.pager(), event)
+          pager: nextPager(store.pager(), event),
         });
-      })
-    }))
+      }),
+    })),
   );
 }

@@ -9,36 +9,34 @@ SPDX-License-Identifier: AGPL-3.0-or-later
       <dl class="metadata">
         <!-- WEBSITE -->
         @if (record.metadata.website) {
-          <dt translate>Website</dt>
+          <dt>{{ 'Website' | translate }}</dt>
           <dd>
             <a target="_blank" [href]="record.metadata.website">{{ record.metadata.website }}</a>
           </dd>
         }
         <!-- COMMUNICATION_LANGUAGE -->
         @if (record.metadata.communication_language && record.metadata.communication_language.length > 0) {
-          <dt translate>Communication language</dt>
+          <dt>{{ 'Communication language' | translate }}</dt>
           <dd>
-            {{ record.metadata.communication_language | translateLanguage:currentLanguage }}
+            {{ record.metadata.communication_language | translateLanguage: currentLanguage }}
           </dd>
         }
         <!-- CURRENCY -->
         @if (record.metadata.currency) {
-          <dt translate>Currency</dt>
+          <dt>{{ 'Currency' | translate }}</dt>
           <dd>{{ record.metadata.currency }}</dd>
         }
         <!-- VAT RATE -->
         @if (record.metadata.vat_rate) {
-          <dt translate>VAT rate</dt>
+          <dt>{{ 'VAT rate' | translate }}</dt>
           <dd>{{ record.metadata.vat_rate }}%</dd>
         }
         <!-- NOTE -->
         @if (record.metadata.notes) {
-          <dt translate>Notes</dt>
+          <dt>{{ 'Notes' | translate }}</dt>
           <dd>
             @for (note of record.metadata.notes; track $index) {
-              <div>
-                <p-tag severity="secondary" [value]="note.type|translate"/>&nbsp;{{ note.content }}
-              </div>
+              <div><p-tag severity="secondary" [value]="note.type | translate" />&nbsp;{{ note.content }}</div>
             }
           </dd>
         }
@@ -52,13 +50,13 @@ SPDX-License-Identifier: AGPL-3.0-or-later
       <p-tabs [value]="tabSelected(record.metadata)">
         <p-tablist>
           @if (defaultContact) {
-            <p-tab value="default" translate>Default contact details</p-tab>
+            <p-tab value="default">{{ 'Default contact details' | translate }}</p-tab>
           }
           @if (orderContact) {
-            <p-tab value="order" translate>Order contact details</p-tab>
+            <p-tab value="order">{{ 'Order contact details' | translate }}</p-tab>
           }
           @if (serialContact) {
-            <p-tab value="serial" translate>Serial contact details</p-tab>
+            <p-tab value="serial">{{ 'Serial contact details' | translate }}</p-tab>
           }
         </p-tablist>
         <p-tabpanels>

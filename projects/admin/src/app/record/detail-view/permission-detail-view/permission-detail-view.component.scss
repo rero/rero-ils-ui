@@ -27,7 +27,7 @@ admin-permission-detail-view {
       td:nth-child(2),
       td.type-system-role + td.type-role {
         @apply ui:border-l-2;
-        border-color: var(--p-surface-100)
+        border-color: var(--p-surface-100);
       }
     }
   }

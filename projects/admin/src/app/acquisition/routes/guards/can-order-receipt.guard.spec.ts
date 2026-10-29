@@ -1,20 +1,21 @@
 // SPDX-FileCopyrightText: Fondation RERO+
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
+import { provideHttpClient, withXhr } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { NavigationEnd, Router, RouterModule, RouterStateSnapshot } from '@angular/router';
-import { TranslateModule } from '@ngx-translate/core';
+import { provideTranslateService } from '@ngx-translate/core';
 import { RecordUiService } from '@rero/ng-core';
 import { AppStore } from '@rero/shared';
 import { cloneDeep } from 'lodash-es';
 import { filter, firstValueFrom, of } from 'rxjs';
+
 import { ErrorPageComponent } from '../../../error/error-page/error-page.component';
 import { AcqOrderApiService } from '../../api/acq-order-api.service';
 import { AcqReceiptApiService } from '../../api/acq-receipt-api.service';
 import { AcqOrderStatus } from '../../classes/order';
 import { canOrderReceiptGuard } from './can-order-receipt.guard';
-import { provideHttpClient } from '@angular/common/http';
 
 describe('canOrderReceiptGuard', () => {
   let acqOrderApiService: AcqOrderApiService;
@@ -24,12 +25,12 @@ describe('canOrderReceiptGuard', () => {
   const routes = [
     {
       path: 'errors/400',
-      component: ErrorPageComponent
+      component: ErrorPageComponent,
     },
     {
       path: 'errors/403',
-      component: ErrorPageComponent
-    }
+      component: ErrorPageComponent,
+    },
   ];
 
   const order = {
@@ -40,77 +41,75 @@ describe('canOrderReceiptGuard', () => {
     account_statement: {
       provisional: {
         total_amount: 100,
-        quantity: 10
+        quantity: 10,
       },
       expenditure: {
         total_amount: 100,
-        quantity: 10
-      }
+        quantity: 10,
+      },
     },
     vendor: {
-      $ref: 'http://localhost/api/vendors/1'
+      $ref: 'http://localhost/api/vendors/1',
     },
     organisation: {
-      $ref: 'https://localhost/api/organisations/1'
+      $ref: 'https://localhost/api/organisations/1',
     },
     library: {
-      $ref: 'https://localhost/api/libraries/1'
+      $ref: 'https://localhost/api/libraries/1',
     },
     status: AcqOrderStatus.ORDERED,
     notes: [],
-    is_current_budget: true
+    is_current_budget: true,
   };
 
   const receipt = {
     acq_order: {
-      pid: '1' },
+      pid: '1',
+    },
     exchange_rate: 1,
-    amount_adjustments: [{
-      label: 'amount',
-      amount: 10,
-      acq_account: {
-        $ref: 'https://localhost/api/acq_accounts/1'
-      }
-    }],
+    amount_adjustments: [
+      {
+        label: 'amount',
+        amount: 10,
+        acq_account: {
+          $ref: 'https://localhost/api/acq_accounts/1',
+        },
+      },
+    ],
     organisation: {
-      $ref: 'https://localhost/api/organisations/1'
+      $ref: 'https://localhost/api/organisations/1',
     },
     notes: [],
-    is_current_budget: true
+    is_current_budget: true,
   };
 
-
-  const activatedRouteSnapshotSpy = { } as any;
+  const activatedRouteSnapshotSpy = {} as any;
   activatedRouteSnapshotSpy.params = { pid: '1' };
-  activatedRouteSnapshotSpy.queryParams = { };
+  activatedRouteSnapshotSpy.queryParams = {};
 
   const appStoreSpy = { currentLibraryPid: () => '1' } as any;
 
   const runGuard = (route: any) =>
-    TestBed.runInInjectionContext(() =>
-      canOrderReceiptGuard(route, {} as RouterStateSnapshot)
-    ) as any;
+    TestBed.runInInjectionContext(() => canOrderReceiptGuard(route, {} as RouterStateSnapshot)) as any;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-    imports: [RouterModule.forRoot(routes),
-        TranslateModule.forRoot()],
-    providers: [
+      imports: [RouterModule.forRoot(routes)],
+      providers: [
+        provideTranslateService(),
         { provide: AppStore, useValue: appStoreSpy },
         { provide: RecordUiService, useValue: {} },
-        provideHttpClient(),
-        provideHttpClientTesting()
-    ]
-});
+        provideHttpClient(withXhr()),
+        provideHttpClientTesting(),
+      ],
+    });
     acqOrderApiService = TestBed.inject(AcqOrderApiService);
     acqReceiptApiService = TestBed.inject(AcqReceiptApiService);
     router = TestBed.inject(Router);
   });
 
   async function waitForNavigation(): Promise<void> {
-    await firstValueFrom(
-      router.events.pipe(filter(e => e instanceof NavigationEnd))
-    );
+    await firstValueFrom(router.events.pipe(filter((e) => e instanceof NavigationEnd)));
   }
 
   it('should be created', () => {

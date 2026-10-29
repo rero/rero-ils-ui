@@ -1,45 +1,42 @@
 // SPDX-FileCopyrightText: Fondation RERO+
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-import { Component, inject, OnInit, signal, ChangeDetectionStrategy} from '@angular/core';
+import { Component, inject, OnInit, signal } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
-import { _, TranslatePipe } from "@ngx-translate/core";
+import { _, TranslatePipe } from '@ngx-translate/core';
+import { Bind } from '@openng/optimus-ui/bind';
+import { Button } from '@openng/optimus-ui/button';
 import { map } from 'rxjs/operators';
-import { Bind } from 'primeng/bind';
-import { Button } from 'primeng/button';
 
 @Component({
-    selector: 'admin-error-page',
-    template: `
+  selector: 'admin-error-page',
+  template: `
     <section class="ui:bg-white">
       <div class="ui:py-8 ui:px-4 ui:mx-auto ui:max-w-screen-xl ui:lg:py-16 ui:lg:px-6">
-          <div class="ui:mx-auto ui:max-w-screen-sm ui:text-center">
-              <span class="ui:mb-4 ui:text-7xl ui:tracking-tight ui:font-extrabold ui:lg:text-8xl ui:text-primary-600">
-              {{ statusCode() }}
-              </span>
-              <p class="ui:mb-4 ui:text-3xl ui:tracking-tight ui:font-bold ui:text-gray-900 ui:md:text-4xl">
-                {{ messages[statusCode()].title }}
-              </p>
-              <div class="ui:mb-4 ui:text-lg ui:font-light ui:text-gray-500">
-                <ul class="ui:list-none">
-                  @for (text of messages[statusCode()].description || []; track $index) {
-                    <li>{{ text }}</li>
-                  }
-                </ul>
-              </div>
-              <div class="ui:mt-4">
-                <p-button outlined [label]="'Back to dashboard'|translate" [routerLink]="['/']" />
-              </div>
+        <div class="ui:mx-auto ui:max-w-screen-sm ui:text-center">
+          <span class="ui:mb-4 ui:text-7xl ui:tracking-tight ui:font-extrabold ui:lg:text-8xl ui:text-primary-600">
+            {{ statusCode() }}
+          </span>
+          <p class="ui:mb-4 ui:text-3xl ui:tracking-tight ui:font-bold ui:text-gray-900 ui:md:text-4xl">
+            {{ messages[statusCode()].title }}
+          </p>
+          <div class="ui:mb-4 ui:text-lg ui:font-light ui:text-gray-500">
+            <ul class="ui:list-none">
+              @for (text of messages[statusCode()].description || []; track $index) {
+                <li>{{ text }}</li>
+              }
+            </ul>
           </div>
+          <div class="ui:mt-4">
+            <p-button outlined [label]="'Back to dashboard' | translate" [routerLink]="['/']" />
+          </div>
+        </div>
       </div>
     </section>
   `,
-    imports: [Bind, Button, RouterLink, TranslatePipe],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  imports: [Bind, Button, RouterLink, TranslatePipe],
 })
-
 export class ErrorPageComponent implements OnInit {
-
   private route: ActivatedRoute = inject(ActivatedRoute);
 
   /** the status code to display. By default 404 : Page not found */
@@ -54,41 +51,40 @@ export class ErrorPageComponent implements OnInit {
     400: {
       title: _('Bad Request'),
       description: [_('Malformed request syntax.')],
-      level: 'warning'
+      level: 'warning',
     },
     401: {
       title: _('Unauthorized'),
       description: [_('Access denied due to invalid credentials.')],
-      level: 'warning'
+      level: 'warning',
     },
     403: {
       title: _('Forbidden access'),
-      description: [_('You don\'t have permission to access this page.')],
-      level: 'warning'
+      description: [_("You don't have permission to access this page.")],
+      level: 'warning',
     },
     404: {
       title: _('Page not found'),
-      description: [_('Woops. Looks like this page doesn\'t exists')]
+      description: [_("Woops. Looks like this page doesn't exists")],
     },
     418: {
-      title: _('I\'m a teapot'),
-      description: [
-        _('The requested entity body is short and stout'),
-        _('Tip me over and pour me out')
-      ],
-      level: 'success'
+      title: _("I'm a teapot"),
+      description: [_('The requested entity body is short and stout'), _('Tip me over and pour me out')],
+      level: 'success',
     },
     500: {
       title: _('Internal server error'),
-      description: [_('Oops, Something went wrong !')]
-    }
+      description: [_('Oops, Something went wrong !')],
+    },
   };
 
   ngOnInit() {
-    this.route.params.pipe(
-      map(params => params.status_code || 404),  // check for status_code parameter from ActivatedRoute
-      map(code => /^\d+$/.test(code) ? parseInt(code, 10) : 404),  // try to parse status code to integer
-      map(code => code in this.messages ? code : 404)  // check if http code definition exists
-    ).subscribe(code => this.statusCode.set(code));
+    this.route.params
+      .pipe(
+        map((params) => params.status_code || 404), // check for status_code parameter from ActivatedRoute
+        map((code) => (/^\d+$/.test(code) ? parseInt(code, 10) : 404)), // try to parse status code to integer
+        map((code) => (code in this.messages ? code : 404)), // check if http code definition exists
+      )
+      .subscribe((code) => this.statusCode.set(code));
   }
 }

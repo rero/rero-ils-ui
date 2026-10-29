@@ -4,25 +4,29 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 -->
 @if (inline()) {
   <dl>
-    <dt class="ui:inline ui:font-bold ui:mr-1">
-      {{ fieldLabel() }}:
-    </dt>
+    <dt class="ui:inline ui:font-bold ui:mr-1">{{ fieldLabel() }}:</dt>
     <dd class="ui:inline">
       <ul class="ui:list-none ui:inline">
-        @for (edition of field(); track $index; let last=$last) {
+        @for (edition of field(); track $index; let last = $last) {
           <li class="ui:inline">
             @if (edition.label) {
               {{ edition.label }}
             } @else {
-              @if (edition.pid | getRecord : 'documents' : 'field' : 'title' | async; as documentTitle) {
+              @if (edition.pid | getRecord: 'documents' : 'field' : 'title' | async; as documentTitle) {
                 @if (isPublicView()) {
-                  <a href="/{{ viewcode() }}/documents/{{ edition.pid }}">{{ $any(documentTitle) | mainTitleRelation }}</a>
+                  <a href="/{{ viewcode() }}/documents/{{ edition.pid }}">{{
+                    $any(documentTitle) | mainTitleRelation
+                  }}</a>
                 } @else {
-                  <a [routerLink]="['/records', 'documents', 'detail', edition.pid]">{{ $any(documentTitle) | mainTitleRelation }}</a>
+                  <a [routerLink]="['/records', 'documents', 'detail', edition.pid]">{{
+                    $any(documentTitle) | mainTitleRelation
+                  }}</a>
                 }
               }
             }
-            @if(!last){ ; }
+            @if (!last) {
+              ;
+            }
           </li>
         }
       </ul>
@@ -33,20 +37,26 @@ SPDX-License-Identifier: AGPL-3.0-or-later
     <ng-container label>{{ fieldLabel() }}</ng-container>
     <ng-container content>
       <ul class="ui:list-none">
-        @for (edition of field(); track $index; let last=$last) {
+        @for (edition of field(); track $index; let last = $last) {
           <li class="ui:inline">
             @if (edition.label) {
               {{ edition.label }}
             } @else {
-              @if (edition.pid | getRecord : 'documents' : 'field' : 'title' | async; as documentTitle) {
+              @if (edition.pid | getRecord: 'documents' : 'field' : 'title' | async; as documentTitle) {
                 @if (isPublicView()) {
-                  <a href="/{{ viewcode() }}/documents/{{ edition.pid }}">{{ $any(documentTitle) | mainTitleRelation }}</a>
+                  <a href="/{{ viewcode() }}/documents/{{ edition.pid }}">{{
+                    $any(documentTitle) | mainTitleRelation
+                  }}</a>
                 } @else {
-                  <a [routerLink]="['/records', 'documents', 'detail', edition.pid]">{{ $any(documentTitle) | mainTitleRelation }}</a>
+                  <a [routerLink]="['/records', 'documents', 'detail', edition.pid]">{{
+                    $any(documentTitle) | mainTitleRelation
+                  }}</a>
                 }
               }
             }
-            @if(!last){ ; }
+            @if (!last) {
+              ;
+            }
           </li>
         }
       </ul>

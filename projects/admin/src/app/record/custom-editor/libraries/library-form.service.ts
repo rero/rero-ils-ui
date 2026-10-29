@@ -4,13 +4,20 @@
 import { inject, Injectable } from '@angular/core';
 import { AbstractControl, UntypedFormArray, UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { TimeValidator } from '@rero/ng-core';
-import { AcquisitionInformationDetail, AcquisitionInformations, Library, NotificationSettings, OpeningHours, RolloverSettings } from '../../../classes/library';
+
+import {
+  AcquisitionInformationDetail,
+  AcquisitionInformations,
+  Library,
+  NotificationSettings,
+  OpeningHours,
+  RolloverSettings,
+} from '../../../classes/library';
 import { NotificationType } from '../../../classes/notification';
 import { WeekDays } from '../../../classes/week-days';
 
 @Injectable()
 export class LibraryFormService {
-
   private fb: UntypedFormBuilder = inject(UntypedFormBuilder);
 
   // SERVICE ATTRIBUTES =======================================================
@@ -24,14 +31,30 @@ export class LibraryFormService {
   private readonly accountDefaultTransferOption = 'rollover_no_transfer';
 
   // GETTER & SETTER ==========================================================
-  get name(): AbstractControl { return this.form.get('name')!; }
-  get address(): AbstractControl { return this.form.get('address')!; }
-  get email(): AbstractControl { return this.form.get('email')!; }
-  get code(): AbstractControl { return this.form.get('code')!; }
-  get opening_hours(): UntypedFormArray { return this.form.get('opening_hours') as UntypedFormArray; }
-  get notification_settings(): UntypedFormArray { return this.form.get('notification_settings') as UntypedFormArray; }
-  get communication_language(): AbstractControl { return this.form.get('communication_language')!; }
-  get rollover_settings(): AbstractControl { return this.form.get('rollover_settings')!; }
+  get name(): AbstractControl {
+    return this.form.get('name')!;
+  }
+  get address(): AbstractControl {
+    return this.form.get('address')!;
+  }
+  get email(): AbstractControl {
+    return this.form.get('email')!;
+  }
+  get code(): AbstractControl {
+    return this.form.get('code')!;
+  }
+  get opening_hours(): UntypedFormArray {
+    return this.form.get('opening_hours') as UntypedFormArray;
+  }
+  get notification_settings(): UntypedFormArray {
+    return this.form.get('notification_settings') as UntypedFormArray;
+  }
+  get communication_language(): AbstractControl {
+    return this.form.get('communication_language')!;
+  }
+  get rollover_settings(): AbstractControl {
+    return this.form.get('rollover_settings')!;
+  }
 
   // SERVICE FUNCTIONS ========================================================
   /** Build the form structure */
@@ -47,15 +70,15 @@ export class LibraryFormService {
       notification_settings: this.fb.array([]),
       acquisition_settings: this.fb.group({
         shipping_informations: this._buildAcqInformation(),
-        billing_informations: this._buildAcqInformation()
+        billing_informations: this._buildAcqInformation(),
       }),
       serial_acquisition_settings: this.fb.group({
         shipping_informations: this._buildAcqInformation(),
-        billing_informations: this._buildAcqInformation()
+        billing_informations: this._buildAcqInformation(),
       }),
       rollover_settings: this.fb.group({
-        account_transfer: [this.accountDefaultTransferOption, [Validators.required]]
-      })
+        account_transfer: [this.accountDefaultTransferOption, [Validators.required]],
+      }),
     });
     this._initializeOpeningHours();
     this._initializeNotificationSettings();
@@ -68,10 +91,10 @@ export class LibraryFormService {
   populate(library: Library) {
     this.form.patchValue({
       name: library.name,
-      address:  library.address,
+      address: library.address,
       email: library.email,
       code: library.code,
-      communication_language: library.communication_language
+      communication_language: library.communication_language,
     });
     this._setOpeningHours(library.opening_hours);
     this._setNotificationSettings(library.notification_settings ?? []);
@@ -84,7 +107,6 @@ export class LibraryFormService {
   getValues(): any {
     return this.form.value;
   }
-
 
   /**
    * Allow to add a time period interval into the form for a specific day
@@ -130,7 +152,7 @@ export class LibraryFormService {
           atimes.removeAt(0);
           const hours = this.form.get('opening_hours')!.get(String(step))!;
           hours.get('is_open')!.setValue(day.is_open);
-          day.times.forEach(time => atimes.push(this._buildTimes(time.start_time, time.end_time)));
+          day.times.forEach((time) => atimes.push(this._buildTimes(time.start_time, time.end_time)));
         }
       } else {
         atimes.push(this._buildTimes('08:00', '18:00'));
@@ -145,13 +167,16 @@ export class LibraryFormService {
    * @param times - times array
    */
   private _buildOpeningHours(isOpen: boolean, day: string, times: UntypedFormArray): UntypedFormGroup {
-    return this.fb.group({
-      is_open: [isOpen],
-      day: [day],
-      times
-    }, {
-      validators: [TimeValidator.RangePeriodValidator()]
-    });
+    return this.fb.group(
+      {
+        is_open: [isOpen],
+        day: [day],
+        times,
+      },
+      {
+        validators: [TimeValidator.RangePeriodValidator()],
+      },
+    );
   }
 
   /**
@@ -161,22 +186,25 @@ export class LibraryFormService {
    */
   private _buildTimes(startTime = '00:01', endTime = '23:59'): UntypedFormGroup {
     const regex = '^(?!(0:00)|(00:00)$)([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$';
-    return this.fb.group({
-      start_time: [startTime, {
-        validators: [
-          Validators.required,
-          Validators.pattern(regex)
-        ]
-      }],
-      end_time: [endTime, {
-        validators: [
-          Validators.required,
-          Validators.pattern(regex)
-        ]
-      }]
-    }, {
-      validators: TimeValidator.greaterThanValidator('start_time', 'end_time')
-    });
+    return this.fb.group(
+      {
+        start_time: [
+          startTime,
+          {
+            validators: [Validators.required, Validators.pattern(regex)],
+          },
+        ],
+        end_time: [
+          endTime,
+          {
+            validators: [Validators.required, Validators.pattern(regex)],
+          },
+        ],
+      },
+      {
+        validators: TimeValidator.greaterThanValidator('start_time', 'end_time'),
+      },
+    );
   }
 
   /**
@@ -185,9 +213,7 @@ export class LibraryFormService {
    * @return: The corresponding FormArray (at least an empty array)
    */
   private _getTimesByDayIndex(dayIndex: number): UntypedFormArray {
-    return this.form.get('opening_hours')!
-      .get(String(dayIndex))!
-      .get('times') as UntypedFormArray;
+    return this.form.get('opening_hours')!.get(String(dayIndex))!.get('times') as UntypedFormArray;
   }
 
   /** Build structure to store acquisition information into the form */
@@ -202,7 +228,7 @@ export class LibraryFormService {
         city: ['', Validators.minLength(2)],
         country: ['', Validators.minLength(2)],
       }),
-      extra: ['', Validators.minLength(3)]
+      extra: ['', Validators.minLength(3)],
     });
   }
 
@@ -216,7 +242,11 @@ export class LibraryFormService {
       const fieldNames = ['shipping_informations', 'billing_informations'];
       fieldNames.forEach((fieldName) => {
         if (Object.hasOwn(acquisitionSettings, fieldName)) {
-          this._setAcquisitionInformation(blockName, fieldName, (acquisitionSettings as Record<string, any>)[fieldName]);
+          this._setAcquisitionInformation(
+            blockName,
+            fieldName,
+            (acquisitionSettings as Record<string, any>)[fieldName],
+          );
         }
       });
     }
@@ -248,7 +278,7 @@ export class LibraryFormService {
    */
   private _initializeNotificationSettings(notificationSettings = []) {
     const settings = this.form.get('notification_settings') as UntypedFormArray;
-    this.notificationTypes.forEach(type => settings.push(this._buildSettingsByType(type)));
+    this.notificationTypes.forEach((type) => settings.push(this._buildSettingsByType(type)));
     this._setNotificationSettings(notificationSettings);
   }
 
@@ -259,10 +289,10 @@ export class LibraryFormService {
   private _buildSettingsByType(settingType: NotificationType): UntypedFormGroup {
     const model: any = {
       type: settingType,
-      email: ['', Validators.email]
+      email: ['', Validators.email],
     };
     if ([NotificationType.AVAILABILITY].includes(settingType)) {
-      model.delay = ['',  Validators.max(720)];
+      model.delay = ['', Validators.max(720)];
     }
     return this.fb.group(model);
   }
@@ -276,7 +306,7 @@ export class LibraryFormService {
       const formSettings = this.form.get('notification_settings')!;
       for (let step = 0; step < formSettings.value.length; step++) {
         const formSetting = formSettings.get(String(step))!;
-        const currentSetting = notificationSettings.find(element => element.type === formSetting.get('type')!.value);
+        const currentSetting = notificationSettings.find((element) => element.type === formSetting.get('type')!.value);
         if (currentSetting !== undefined) {
           formSetting.get('email')!.setValue(currentSetting.email);
           if (currentSetting.delay !== undefined) {

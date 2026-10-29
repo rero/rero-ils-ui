@@ -9,15 +9,13 @@ SPDX-License-Identifier: AGPL-3.0-or-later
     <i class="{{ iconType.class }}" [title]="iconType.title" aria-hidden="true"></i>
     {{ $any(record).metadata.authorized_access_point }}
   </h1>
-  <small>
-    {{ 'Local ID' | translate }}: {{ $any(record).metadata.pid }}
-  </small>
+  <small> {{ 'Local ID' | translate }}: {{ $any(record).metadata.pid }} </small>
   <p-tag severity="info" [value]="'Local' | translate" />
 
   <div class="ui:pt-2">
     <p-panel class="ui:pb-3">
       <ng-template #header>
-        <span class="ui:font-medium ui:text-lg" translate>Local</span>
+        <span class="ui:font-medium ui:text-lg">{{ 'Local' | translate }}</span>
       </ng-template>
       <div class="ui:mx-4">
         @switch ($any(record).metadata.type) {
@@ -47,4 +45,3 @@ SPDX-License-Identifier: AGPL-3.0-or-later
     </p-panel>
   </div>
 }
-

@@ -3,7 +3,7 @@ SPDX-FileCopyrightText: Fondation RERO+
 SPDX-License-Identifier: AGPL-3.0-or-later
 -->
 @if (patron()?.patron) {
-  <div [ngClass]="{'ui:text-muted-color': !clearPatronButton()}">
+  <div [ngClass]="{ 'ui:text-muted-color': !clearPatronButton() }">
     <div class="ui:grid ui:grid-cols-12 ui:gap-x-4 ui:mt-1">
       <div class="ui:col-span-6">
         <div class="ui:flex ui:w-full">
@@ -24,7 +24,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
                 <div class="ui:col-span-6">
                   <div id="patron-birth-date">
                     @if (patron().birth_date) {
-                      {{ patron().birth_date | dateTranslate:'mediumDate' }}
+                      {{ patron().birth_date | dateTranslate: 'mediumDate' }}
                       ({{ patronAge() }} {{ 'years old' | translate }})
                       @if (isBirthday()) {
                         &nbsp;
@@ -35,7 +35,10 @@ SPDX-License-Identifier: AGPL-3.0-or-later
                   <div id="patron-city">{{ patron().city }}</div>
                 </div>
                 <div class="ui:col-span-6">
-                  @if (patron().patron.type.pid | getRecord: 'patron_types': 'string':'name' | async; as patronTypeName) {
+                  @if (
+                    patron().patron.type.pid | getRecord: 'patron_types' : 'string' : 'name' | async;
+                    as patronTypeName
+                  ) {
                     <div id="patron-type">{{ patronTypeName }}</div>
                   }
                   <div id="patron-barcode">{{ barcode() }}</div>
@@ -68,26 +71,21 @@ SPDX-License-Identifier: AGPL-3.0-or-later
       <div class="ui:col-span-6">
         <!-- Circulation message -->
         @if (displayCirculationMessages()) {
-            @if (patron().circulation_information) {
-              @for (message of patron().circulation_informations.messages; track $index) {
-                <p-message
-                  class="ui:w-full"
-                  [severity]="$any(getMessageSeverity(message.type))"
-                  showTransitionOptions="0ms"
-                >
-                  {{ message.content }}
-                </p-message>
-              }
-            }
-            @for (message of circulationMessages(); track $index) {
+          @if (patron().circulation_information) {
+            @for (message of patron().circulation_informations.messages; track $index) {
               <p-message
                 class="ui:w-full"
-                [severity]="$any(message.severity)"
-                showTransitionOptions="0ms"
-              >
-              {{ message.detail }}
+                [severity]="$any(getMessageSeverity(message.type))"
+                showTransitionOptions="0ms">
+                {{ message.content }}
               </p-message>
             }
+          }
+          @for (message of circulationMessages(); track $index) {
+            <p-message class="ui:w-full" [severity]="$any(message.severity)" showTransitionOptions="0ms">
+              {{ message.detail }}
+            </p-message>
+          }
         }
       </div>
     </div>
