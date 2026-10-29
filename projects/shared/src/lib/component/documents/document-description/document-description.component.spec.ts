@@ -2,7 +2,8 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { TranslateModule } from '@ngx-translate/core';
+import { provideTranslateService } from '@ngx-translate/core';
+
 import { DocumentDescriptionComponent } from './document-description.component';
 
 describe('DocumentDescriptionComponent', () => {
@@ -22,7 +23,8 @@ describe('DocumentDescriptionComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [TranslateModule.forRoot({}), DocumentDescriptionComponent]
+      imports: [DocumentDescriptionComponent],
+      providers: [provideTranslateService({})],
     }).compileComponents();
   });
 
@@ -47,19 +49,17 @@ describe('DocumentDescriptionComponent', () => {
     withMetadata({
       identifiedBy: [{ type: 'bf:Isbn', value: '9782070360024' }],
       note: [{ noteType: 'general', label: 'first document note' }],
-      temporalCoverage: [{ type: 'time', date: '+1789' }]
+      temporalCoverage: [{ type: 'time', date: '+1789' }],
     });
     expect(component.identifiedBy()).toHaveLength(1);
 
     fixture.componentRef.setInput('record', {
       metadata: {
-        identifiedBy: [{ type: 'bf:Issn', value: '1234-5678' }]
-      }
+        identifiedBy: [{ type: 'bf:Issn', value: '1234-5678' }],
+      },
     });
 
-    expect(component.identifiedBy()).toEqual([
-      { type: 'bf:Issn', value: '1234-5678', details: '' }
-    ]);
+    expect(component.identifiedBy()).toEqual([{ type: 'bf:Issn', value: '1234-5678', details: '' }]);
     expect(component.notesGeneral()).toBeUndefined();
     expect(component.temporalCoverages()).toEqual([]);
   });
@@ -67,22 +67,22 @@ describe('DocumentDescriptionComponent', () => {
   describe('identifiers', () => {
     it('should replace the bf:Local type by the source', () => {
       withMetadata({
-        identifiedBy: [{ type: 'bf:Local', source: 'RERO', value: 'R008745521' }]
+        identifiedBy: [{ type: 'bf:Local', source: 'RERO', value: 'R008745521' }],
       });
-      expect(component.identifiedBy()).toEqual([
-        { type: 'RERO', value: 'R008745521', details: '' }
-      ]);
+      expect(component.identifiedBy()).toEqual([{ type: 'RERO', value: 'R008745521', details: '' }]);
     });
 
     it('should join the qualifier, the status and the note as details', () => {
       withMetadata({
-        identifiedBy: [{
-          type: 'bf:Isbn',
-          value: '9782070360024',
-          qualifier: 'broché',
-          status: 'invalid',
-          note: 'sur la couverture'
-        }]
+        identifiedBy: [
+          {
+            type: 'bf:Isbn',
+            value: '9782070360024',
+            qualifier: 'broché',
+            status: 'invalid',
+            note: 'sur la couverture',
+          },
+        ],
       });
       expect(component.identifiedBy()[0].details).toEqual('broché, invalid, sur la couverture');
     });
@@ -96,23 +96,24 @@ describe('DocumentDescriptionComponent', () => {
   describe('series statement', () => {
     it('should display the default language first', () => {
       withMetadata({
-        seriesStatement: [{
-          _text: [
-            { language: 'fre', value: 'Collection Folio' },
-            { language: 'default', value: 'Folio' }
-          ]
-        }]
+        seriesStatement: [
+          {
+            _text: [
+              { language: 'fre', value: 'Collection Folio' },
+              { language: 'default', value: 'Folio' },
+            ],
+          },
+        ],
       });
-      expect(component.seriesStatement().map(statement => statement.value))
-        .toEqual(['Folio', 'Collection Folio']);
+      expect(component.seriesStatement().map((statement) => statement.value)).toEqual(['Folio', 'Collection Folio']);
     });
 
     it('should keep every statement', () => {
       withMetadata({
         seriesStatement: [
           { _text: [{ language: 'default', value: 'Folio' }] },
-          { _text: [{ language: 'default', value: 'Classiques' }] }
-        ]
+          { _text: [{ language: 'default', value: 'Classiques' }] },
+        ],
       });
       expect(component.seriesStatement()).toHaveLength(2);
     });
@@ -135,39 +136,42 @@ describe('DocumentDescriptionComponent', () => {
           { type: 'bf:Title', mainTitle: [{ value: 'Main title' }] },
           { type: 'bf:VariantTitle', mainTitle: [{ value: 'First variant' }] },
           { type: 'bf:VariantTitle', mainTitle: [{ value: 'Second variant' }] },
-          { type: 'bf:KeyTitle', mainTitle: [{ value: 'Key title' }] }
-        ]
+          { type: 'bf:KeyTitle', mainTitle: [{ value: 'Key title' }] },
+        ],
       });
       expect(component.titleVariants()).toEqual({
         'bf:VariantTitle': ['First variant', 'Second variant'],
-        'bf:KeyTitle': ['Key title']
+        'bf:KeyTitle': ['Key title'],
       });
     });
 
     it('should append the subtitle', () => {
       withMetadata({
-        title: [{
-          type: 'bf:VariantTitle',
-          mainTitle: [{ value: 'Main title' }],
-          subtitle: [{ value: 'Subtitle' }]
-        }]
+        title: [
+          {
+            type: 'bf:VariantTitle',
+            mainTitle: [{ value: 'Main title' }],
+            subtitle: [{ value: 'Subtitle' }],
+          },
+        ],
       });
       expect(component.titleVariants()['bf:VariantTitle']).toEqual(['Main title: Subtitle']);
     });
 
     it('should append the parts', () => {
       withMetadata({
-        title: [{
-          type: 'bf:VariantTitle',
-          mainTitle: [{ value: 'Main title' }],
-          part: [
-            { partNumber: [{ value: '2' }], partName: [{ value: 'Le retour' }] },
-            { partName: [{ value: 'Suite' }] }
-          ]
-        }]
+        title: [
+          {
+            type: 'bf:VariantTitle',
+            mainTitle: [{ value: 'Main title' }],
+            part: [
+              { partNumber: [{ value: '2' }], partName: [{ value: 'Le retour' }] },
+              { partName: [{ value: 'Suite' }] },
+            ],
+          },
+        ],
       });
-      expect(component.titleVariants()['bf:VariantTitle'])
-        .toEqual(['Main title. 2, Le retour. Suite']);
+      expect(component.titleVariants()['bf:VariantTitle']).toEqual(['Main title. 2, Le retour. Suite']);
     });
 
     it('should stay empty when the document only holds its main title', () => {
@@ -183,12 +187,12 @@ describe('DocumentDescriptionComponent', () => {
           { noteType: 'general', label: 'general note' },
           { noteType: 'citedBy', label: 'first citation' },
           { noteType: 'citedBy', label: 'second citation' },
-          { noteType: 'accompanyingMaterial', label: 'with a CD' }
-        ]
+          { noteType: 'accompanyingMaterial', label: 'with a CD' },
+        ],
       });
       expect(component.notesExceptGeneral()).toEqual({
         citedBy: ['first citation', 'second citation'],
-        accompanyingMaterial: ['with a CD']
+        accompanyingMaterial: ['with a CD'],
       });
     });
 
@@ -203,16 +207,18 @@ describe('DocumentDescriptionComponent', () => {
       withMetadata({
         provisionActivity: [
           { type: 'bf:Production', original_date: '1789' },
-          { type: 'bf:Manufacture', original_date: '1791' }
-        ]
+          { type: 'bf:Manufacture', original_date: '1791' },
+        ],
       });
-      expect(component.provisionActivityOriginalDate().map(provision => provision.original_date))
-        .toEqual(['1789', '1791']);
+      expect(component.provisionActivityOriginalDate().map((provision) => provision.original_date)).toEqual([
+        '1789',
+        '1791',
+      ]);
     });
 
     it('should discard the publication activities', () => {
       withMetadata({
-        provisionActivity: [{ type: 'bf:Publication', original_date: '1789' }]
+        provisionActivity: [{ type: 'bf:Publication', original_date: '1789' }],
       });
       expect(component.provisionActivityOriginalDate()).toEqual([]);
     });
@@ -229,21 +235,21 @@ describe('DocumentDescriptionComponent', () => {
         provisionActivity: [
           { type: 'bf:Production', note: 'assumed place' },
           { type: 'bf:Production', note: 'assumed agent' },
-          { type: 'bf:Distribution', note: 'distributor unknown' }
-        ]
+          { type: 'bf:Distribution', note: 'distributor unknown' },
+        ],
       });
       expect(component.provisionActivityNotes()).toEqual({
         'bf:Production': ['assumed place', 'assumed agent'],
-        'bf:Distribution': ['distributor unknown']
+        'bf:Distribution': ['distributor unknown'],
       });
     });
 
     it('should keep the note of a bf:Publication, whose statement is rendered in the header', () => {
       withMetadata({
-        provisionActivity: [{ type: 'bf:Publication', note: 'uncertain publication date' }]
+        provisionActivity: [{ type: 'bf:Publication', note: 'uncertain publication date' }],
       });
       expect(component.provisionActivityNotes()).toEqual({
-        'bf:Publication': ['uncertain publication date']
+        'bf:Publication': ['uncertain publication date'],
       });
     });
 
@@ -251,8 +257,8 @@ describe('DocumentDescriptionComponent', () => {
       withMetadata({
         provisionActivity: [
           { type: 'bf:Publication', startDate: 1999 },
-          { type: 'bf:Production', note: 'assumed place' }
-        ]
+          { type: 'bf:Production', note: 'assumed place' },
+        ],
       });
       expect(component.provisionActivityNotes()).toEqual({ 'bf:Production': ['assumed place'] });
     });
@@ -281,7 +287,7 @@ describe('DocumentDescriptionComponent', () => {
 
     it('should format a period', () => {
       withMetadata({
-        temporalCoverage: [{ type: 'period', start_date: '+1914', end_date: '+1918' }]
+        temporalCoverage: [{ type: 'period', start_date: '+1914', end_date: '+1918' }],
       });
       expect(component.temporalCoverages()).toEqual(['1914 - 1918']);
     });
@@ -293,7 +299,7 @@ describe('DocumentDescriptionComponent', () => {
 
     it('should append the period codes', () => {
       withMetadata({
-        temporalCoverage: [{ type: 'time', date: '+1945', period_code: ['x1x4', 'y2y5'] }]
+        temporalCoverage: [{ type: 'time', date: '+1945', period_code: ['x1x4', 'y2y5'] }],
       });
       expect(component.temporalCoverages()).toEqual(['1945 (x1x4, y2y5)']);
     });
@@ -333,7 +339,7 @@ describe('DocumentDescriptionComponent', () => {
 
     it('should discard an attribute holding no displayable value', () => {
       withMetadata({
-        cartographicAttributes: [{ coordinates: { longitude: 'E0060000' } }]
+        cartographicAttributes: [{ coordinates: { longitude: 'E0060000' } }],
       });
       expect(component.cartographicAttributes()).toEqual([]);
     });
@@ -342,7 +348,7 @@ describe('DocumentDescriptionComponent', () => {
   describe('work access point', () => {
     it('should include the form subdivisions', () => {
       withMetadata({
-        work_access_point: [{ title: 'Die Zauberflöte', form_subdivision: ['Libretti', 'Excerpts'] }]
+        work_access_point: [{ title: 'Die Zauberflöte', form_subdivision: ['Libretti', 'Excerpts'] }],
       });
       expect(component.workAccessPoint()).toEqual(['Die Zauberflöte. Libretti. Excerpts.']);
     });
@@ -354,83 +360,91 @@ describe('DocumentDescriptionComponent', () => {
 
     it('should complete the name of a person creator by its fuller form', () => {
       withMetadata({
-        work_access_point: [{
-          title: 'Die Zauberflöte',
-          creator: {
-            type: 'bf:Person',
-            preferred_name: 'Mozart, Wolfgang Amadeus',
-            fuller_form_of_name: 'Amadeus'
-          }
-        }]
+        work_access_point: [
+          {
+            title: 'Die Zauberflöte',
+            creator: {
+              type: 'bf:Person',
+              preferred_name: 'Mozart, Wolfgang Amadeus',
+              fuller_form_of_name: 'Amadeus',
+            },
+          },
+        ],
       });
-      expect(component.workAccessPoint())
-        .toEqual(['Mozart, Wolfgang Amadeus (Amadeus). Die Zauberflöte.']);
+      expect(component.workAccessPoint()).toEqual(['Mozart, Wolfgang Amadeus (Amadeus). Die Zauberflöte.']);
     });
 
     it('should discard the fuller form of name of a person creator holding a numeration', () => {
       withMetadata({
-        work_access_point: [{
-          title: 'Die Zauberflöte',
-          creator: {
-            type: 'bf:Person',
-            preferred_name: 'Mozart',
-            numeration: 'II',
-            fuller_form_of_name: 'Amadeus'
-          }
-        }]
+        work_access_point: [
+          {
+            title: 'Die Zauberflöte',
+            creator: {
+              type: 'bf:Person',
+              preferred_name: 'Mozart',
+              numeration: 'II',
+              fuller_form_of_name: 'Amadeus',
+            },
+          },
+        ],
       });
       expect(component.workAccessPoint()).toEqual(['Mozart II. Die Zauberflöte.']);
     });
 
     it('should separate the name, the qualifier and the dates of a person creator by a comma', () => {
       withMetadata({
-        work_access_point: [{
-          title: 'Die Zauberflöte',
-          creator: {
-            type: 'bf:Person',
-            preferred_name: 'Mozart',
-            numeration: 'II',
-            qualifier: 'compositeur',
-            date_of_birth: '1756',
-            date_of_death: '1791'
-          }
-        }]
+        work_access_point: [
+          {
+            title: 'Die Zauberflöte',
+            creator: {
+              type: 'bf:Person',
+              preferred_name: 'Mozart',
+              numeration: 'II',
+              qualifier: 'compositeur',
+              date_of_birth: '1756',
+              date_of_death: '1791',
+            },
+          },
+        ],
       });
-      expect(component.workAccessPoint())
-        .toEqual(['Mozart II, compositeur, 1756-1791. Die Zauberflöte.']);
+      expect(component.workAccessPoint()).toEqual(['Mozart II, compositeur, 1756-1791. Die Zauberflöte.']);
     });
 
     it('should end the qualifier of an unnumbered person creator by a period', () => {
       withMetadata({
-        work_access_point: [{
-          title: 'Die Zauberflöte',
-          creator: {
-            type: 'bf:Person',
-            preferred_name: 'Mozart',
-            qualifier: 'compositeur',
-            date_of_birth: '1756'
-          }
-        }]
+        work_access_point: [
+          {
+            title: 'Die Zauberflöte',
+            creator: {
+              type: 'bf:Person',
+              preferred_name: 'Mozart',
+              qualifier: 'compositeur',
+              date_of_birth: '1756',
+            },
+          },
+        ],
       });
       expect(component.workAccessPoint()).toEqual(['Mozart, 1756. compositeur. Die Zauberflöte.']);
     });
 
     it('should append the conference of an organisation creator to its units', () => {
       withMetadata({
-        work_access_point: [{
-          title: 'Proceedings',
-          creator: {
-            type: 'bf:Organisation',
-            preferred_name: 'Symposium on Glaucoma',
-            subordinate_unit: ['New Orleans Academy of Ophthalmology'],
-            numbering: '2nd',
-            conference_date: '1967',
-            place: 'New Orleans'
-          }
-        }]
+        work_access_point: [
+          {
+            title: 'Proceedings',
+            creator: {
+              type: 'bf:Organisation',
+              preferred_name: 'Symposium on Glaucoma',
+              subordinate_unit: ['New Orleans Academy of Ophthalmology'],
+              numbering: '2nd',
+              conference_date: '1967',
+              place: 'New Orleans',
+            },
+          },
+        ],
       });
       expect(component.workAccessPoint()).toEqual([
-        'Symposium on Glaucoma. New Orleans Academy of Ophthalmology. (2nd : 1967 : New Orleans). Proceedings.'
+        'Symposium on Glaucoma. New Orleans Academy of Ophthalmology. (2nd : 1967 : New Orleans). Proceedings.',
       ]);
     });
   });
@@ -438,8 +452,9 @@ describe('DocumentDescriptionComponent', () => {
   describe('scaleRatios', () => {
     it('should join the horizontal and vertical ratios', () => {
       withMetadata({});
-      expect(component.scaleRatios({ ratio_linear_horizontal: '25000', ratio_linear_vertical: '50000' }))
-        .toBe('25000 / 50000');
+      expect(component.scaleRatios({ ratio_linear_horizontal: '25000', ratio_linear_vertical: '50000' })).toBe(
+        '25000 / 50000',
+      );
     });
 
     it('should return the only available ratio', () => {
@@ -456,23 +471,25 @@ describe('DocumentDescriptionComponent', () => {
   describe('classificationQualifiers', () => {
     it('should join the type, the edition and the assigner', () => {
       withMetadata({});
-      expect(component.classificationQualifiers({
-        type: 'bf:ClassificationDdc',
-        edition: '23',
-        assigner: 'DLC'
-      })).toBe('bf:ClassificationDdc, 23, DLC');
+      expect(
+        component.classificationQualifiers({
+          type: 'bf:ClassificationDdc',
+          edition: '23',
+          assigner: 'DLC',
+        }),
+      ).toBe('bf:ClassificationDdc, 23, DLC');
     });
 
     it('should keep the type alone when no other qualifier is set', () => {
       withMetadata({});
-      expect(component.classificationQualifiers({ type: 'bf:ClassificationLcc' }))
-        .toBe('bf:ClassificationLcc');
+      expect(component.classificationQualifiers({ type: 'bf:ClassificationLcc' })).toBe('bf:ClassificationLcc');
     });
 
     it('should skip the missing edition', () => {
       withMetadata({});
-      expect(component.classificationQualifiers({ type: 'bf:ClassificationUdc', assigner: 'DLC' }))
-        .toBe('bf:ClassificationUdc, DLC');
+      expect(component.classificationQualifiers({ type: 'bf:ClassificationUdc', assigner: 'DLC' })).toBe(
+        'bf:ClassificationUdc, DLC',
+      );
     });
   });
 });

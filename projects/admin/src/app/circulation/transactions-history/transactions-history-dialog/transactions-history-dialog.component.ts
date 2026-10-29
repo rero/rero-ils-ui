@@ -4,10 +4,11 @@
 import { Component, computed, inject } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { LangChangeEvent, TranslateService } from '@ngx-translate/core';
+import { Button } from '@openng/optimus-ui/button';
+import { DialogService } from '@openng/optimus-ui/dynamicdialog';
 import { AppStore } from '@rero/shared';
-import { Button } from 'primeng/button';
-import { DialogService } from 'primeng/dynamicdialog';
 import { map, take } from 'rxjs';
+
 import { TransactionsHistoryComponent } from '../transactions-history/transactions-history.component';
 
 @Component({
@@ -16,7 +17,6 @@ import { TransactionsHistoryComponent } from '../transactions-history/transactio
   templateUrl: './transactions-history-dialog.component.html',
 })
 export class TransactionsHistoryDialogComponent {
-
   private dialogService = inject(DialogService);
   private translateService = inject(TranslateService);
   private appStoreUser = inject(AppStore).user();
@@ -24,7 +24,7 @@ export class TransactionsHistoryDialogComponent {
   /** Current language, to rebuild the label when the language changes. */
   private currentLanguage = toSignal(
     this.translateService.onLangChange.pipe(map((event: LangChangeEvent) => event.lang)),
-    { initialValue: this.translateService.getCurrentLang() }
+    { initialValue: this.translateService.getCurrentLang() },
   );
 
   protected label = computed(() => {
@@ -42,10 +42,8 @@ export class TransactionsHistoryDialogComponent {
       position: 'top',
     });
 
-    dialogRef?.onChildComponentLoaded
-      .pipe(take(1))
-      .subscribe((component: TransactionsHistoryComponent) => {
-        component.closeRequested.subscribe(() => dialogRef.close());
-      });
+    dialogRef?.onChildComponentLoaded.pipe(take(1)).subscribe((component: TransactionsHistoryComponent) => {
+      component.closeRequested.subscribe(() => dialogRef.close());
+    });
   }
 }

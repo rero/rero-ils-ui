@@ -1,15 +1,16 @@
 // SPDX-FileCopyrightText: Fondation RERO+
 // SPDX-License-Identifier: AGPL-3.0-or-later
-import { ChangeDetectionStrategy, Component, DestroyRef, inject, OnInit, signal } from '@angular/core';
+import { Component, DestroyRef, inject, OnInit, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { CirculationPolicyApiService } from '@app/admin/api/circulation-policy-api.service';
 import { ItemTypeApiService } from '@app/admin/api/item-type-api.service';
 import { PatronTypeApiService } from '@app/admin/api/patron-type-api.service';
 import { FieldArrayType } from '@ngx-formly/core';
+import { TableModule } from '@openng/optimus-ui/table';
 import { ApiService } from '@rero/ng-core';
 import { forkJoin } from 'rxjs';
+
 import { HitRecord, Settings, SettingsRow } from './class/settings';
-import { TableModule } from 'primeng/table';
 
 export type Setting = {
   item_type: { $ref: string };
@@ -25,10 +26,8 @@ type LibraryRef = {
   selector: 'admin-cipo-patron-type-item-type',
   templateUrl: './cipo-patron-type-item-type.component.html',
   imports: [TableModule],
-  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CipoPatronTypeItemTypeComponent extends FieldArrayType implements OnInit {
-
   private patronTypeApiService = inject(PatronTypeApiService);
   private itemTypeApiService = inject(ItemTypeApiService);
   private circulationPolicyApiService = inject(CirculationPolicyApiService);
@@ -56,24 +55,22 @@ export class CipoPatronTypeItemTypeComponent extends FieldArrayType implements O
     forkJoin([
       this.patronTypeApiService.getAll(),
       this.itemTypeApiService.getAll(),
-      this.circulationPolicyApiService.getAll(this.field.parent!.model.pid)
+      this.circulationPolicyApiService.getAll(this.field.parent!.model.pid),
     ])
-    .pipe(takeUntilDestroyed(this.destroyRef))
-    .subscribe(([patronTypes, itemTypes, circPolicies]) => {
-      this.patronTypes.set(patronTypes as HitRecord[]);
-      this.itemTypes = itemTypes as HitRecord[];
-      this.circPolicies = circPolicies as HitRecord[];
-      this._loadSettings();
-    });
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(([patronTypes, itemTypes, circPolicies]) => {
+        this.patronTypes.set(patronTypes as HitRecord[]);
+        this.itemTypes = itemTypes as HitRecord[];
+        this.circPolicies = circPolicies as HitRecord[];
+        this._loadSettings();
+      });
 
     // Detect form changes: if user selects "library level" cipo, rebuild the
     // settings table according to the selected libraries.
     this.form.valueChanges
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((changes: { libraries?: LibraryRef[] }) => {
-        const formLibraries = Object.hasOwn(changes, 'libraries')
-          ? this._getLibrariesRef(changes.libraries!)
-          : [];
+        const formLibraries = Object.hasOwn(changes, 'libraries') ? this._getLibrariesRef(changes.libraries!) : [];
         if (JSON.stringify(formLibraries) !== JSON.stringify(this.prevSelectedLibraries)) {
           this.prevSelectedLibraries = formLibraries;
           this._loadSettings();
@@ -97,9 +94,7 @@ export class CipoPatronTypeItemTypeComponent extends FieldArrayType implements O
     if (checked) {
       this.add(settingsControl.value.length, value);
     } else {
-      const index = (settingsControl.value as Setting[]).findIndex(
-        e => JSON.stringify(e) === JSON.stringify(value)
-      );
+      const index = (settingsControl.value as Setting[]).findIndex((e) => JSON.stringify(e) === JSON.stringify(value));
       this.remove(index);
     }
   }
@@ -114,7 +109,7 @@ export class CipoPatronTypeItemTypeComponent extends FieldArrayType implements O
   private _setting(itemTypePid: string, patronTypePid: string): Setting {
     return {
       item_type: { $ref: this.apiService.getRefEndpoint('item_types', itemTypePid) },
-      patron_type: { $ref: this.apiService.getRefEndpoint('patron_types', patronTypePid) }
+      patron_type: { $ref: this.apiService.getRefEndpoint('patron_types', patronTypePid) },
     };
   }
 
@@ -129,8 +124,6 @@ export class CipoPatronTypeItemTypeComponent extends FieldArrayType implements O
 
   /** Extract $ref strings from an array of library objects */
   private _getLibrariesRef(libraries: LibraryRef[]): string[] {
-    return Array.from(new Set(
-      libraries.map(library => library.$ref).filter((ref): ref is string => Boolean(ref))
-    ));
+    return Array.from(new Set(libraries.map((library) => library.$ref).filter((ref): ref is string => Boolean(ref))));
   }
 }

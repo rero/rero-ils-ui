@@ -8,16 +8,19 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 @if (document) {
   <p-tabs [scrollable]="true" value="get">
     <p-tablist>
-      <p-tab value="get" translate>Get</p-tab>
-      <p-tab value="description" translate>Description</p-tab>
+      <p-tab value="get">{{ 'Get' | translate }}</p-tab>
+      <p-tab value="description">{{ 'Description' | translate }}</p-tab>
       @if (showinfo() !== 'false') {
-        <p-tab value="more" translate>More Info</p-tab>
+        <p-tab value="more">{{ 'More Info' | translate }}</p-tab>
       }
     </p-tablist>
     <p-tabpanels>
       <p-tabpanel value="get">
         <div class="ui:mb-2">
-          <shared-doc-files [documentPid]="$any(document).metadata.pid" [routerPath]="['/', viewcode(), 'search', 'documents']" [useHref]="true"/>
+          <shared-doc-files
+            [documentPid]="$any(document).metadata.pid"
+            [routerPath]="['/', viewcode(), 'search', 'documents']"
+            [useHref]="true" />
         </div>
         <public-search-holdings [viewcode]="viewcode()" [documentPid]="$any(document).metadata.pid" />
         <public-search-electronic-holdings [viewcode]="viewcode()" [documentPid]="$any(document).metadata.pid" />
@@ -34,11 +37,11 @@ SPDX-License-Identifier: AGPL-3.0-or-later
   </p-tabs>
 
   <div class="ui:flex ui:gap-2 ui:items-start">
-    @for(item of exportItems; track $index) {
+    @for (item of exportItems; track $index) {
       <a [href]="item.url" class="ui:p-2 ui:flex ui:flex-col ui:items-center ui:justify-center ui:w-24" download>
-          <i [ngClass]="[item.icon, 'fa-2x ui:mb-1 ui:text-muted-color']"></i>
-          <span class="ui:text-center ui:text-xs ui:text-muted-color">{{ item.label }}</span>
-        </a>
+        <i [ngClass]="[item.icon, 'fa-2x ui:mb-1 ui:text-muted-color']"></i>
+        <span class="ui:text-center ui:text-xs ui:text-muted-color">{{ item.label }}</span>
+      </a>
     }
   </div>
 }

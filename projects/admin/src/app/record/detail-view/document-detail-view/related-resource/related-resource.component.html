@@ -4,13 +4,13 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 -->
 
 @if (electronicLocator()) {
-    <a target="_blank" [href]="electronicLocator().url | safeUrl">
-      <i class="fa-solid fa-link"></i> {{ electronicLocator().type | translate }}
-      @if (electronicLocator().content) {
-        : {{ electronicLocator().content | translate }}
-      }
-    </a>
-    @if (publicNotes) {
-      ({{ publicNotes }})
+  <a target="_blank" [href]="electronicLocator().url | safeUrl">
+    <i class="fa-solid fa-link"></i> {{ electronicLocator().type | translate }}
+    @if (electronicLocator().content) {
+      : {{ electronicLocator().content | translate }}
     }
+  </a>
+  @if (publicNotes) {
+    ({{ publicNotes }})
+  }
 }

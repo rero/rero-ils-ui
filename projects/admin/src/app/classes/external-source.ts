@@ -6,12 +6,12 @@
 
 export class ExternalSourceSetting {
   key: string;
-  label = "";
+  label = '';
   weight?: number = 100;
   endpoint?: string;
 
   constructor(obj?: any) {
-    Object.assign(this, obj)
+    Object.assign(this, obj);
   }
 
   /**
@@ -19,8 +19,6 @@ export class ExternalSourceSetting {
    * @return: the endpoint url to use to import external sources
    */
   getImportEndpoint(): string {
-    return (this.endpoint != undefined)
-      ? this.endpoint
-      : `import_${this.key}`;
+    return this.endpoint != undefined ? this.endpoint : `import_${this.key}`;
   }
 }

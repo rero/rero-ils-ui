@@ -5,26 +5,26 @@ import { ResolveFn, Routes } from '@angular/router';
 import { _ } from '@ngx-translate/core';
 import {
   ActionStatus,
-  ComponentCanDeactivateGuard,
   DetailComponent,
-  EditorComponent,
   IFilter,
   RecordData,
   RecordSearchPageComponent,
   RecordService,
   RecordType,
   RouteDataTypesInterface,
+  unsavedChangesGuard,
 } from '@rero/ng-core';
+import { EditorComponent } from '@rero/ng-core/editor';
 import { PERMISSION_OPERATOR, PERMISSIONS } from '@rero/shared';
 import { map, Observable, of } from 'rxjs';
+
 import { CAN_ACCESS_ACTIONS, canAccessGuard } from '../guard/can-access.guard';
 import { permissionGuard } from '../guard/permission.guard';
 import { IllRequestsBriefViewComponent } from '../record/brief-view/ill-requests-brief-view/ill-requests-brief-view.component';
 import { IllRequestDetailViewComponent } from '../record/detail-view/ill-request-detail-view/ill-request-detail-view.component';
 import { BaseRoute } from './base-route';
 
-export const illRequestsRouteResolver: ResolveFn<Partial<RecordType>[]> = () =>
-  new IllRequestsRoute().getTypes();
+export const illRequestsRouteResolver: ResolveFn<Partial<RecordType>[]> = () => new IllRequestsRoute().getTypes();
 
 export const illRequestsRoutes: Routes = [
   {
@@ -51,7 +51,7 @@ export const illRequestsRoutes: Routes = [
     component: EditorComponent,
     title: _('ILL request'),
     canActivate: [canAccessGuard],
-    canDeactivate: [ComponentCanDeactivateGuard],
+    canDeactivate: [unsavedChangesGuard],
     data: {
       action: CAN_ACCESS_ACTIONS.UPDATE,
     },
@@ -61,7 +61,7 @@ export const illRequestsRoutes: Routes = [
     component: EditorComponent,
     title: _('ILL request'),
     canActivate: [permissionGuard],
-    canDeactivate: [ComponentCanDeactivateGuard],
+    canDeactivate: [unsavedChangesGuard],
     data: {
       permissions: [PERMISSIONS.ILL_CREATE],
     },
@@ -85,8 +85,7 @@ class IllRequestsRoute extends BaseRoute implements RouteDataTypesInterface {
         component: IllRequestsBriefViewComponent,
         detailComponent: IllRequestDetailViewComponent,
         searchFilters: [this.expertSearchFilter()],
-        canAdd: () =>
-          of({ can: this.routeToolService.appStore.canAccess(PERMISSIONS.ILL_CREATE) } as ActionStatus),
+        canAdd: () => of({ can: this.routeToolService.appStore.canAccess(PERMISSIONS.ILL_CREATE) } as ActionStatus),
         canUpdate: (record: RecordData) => this.routeToolService.canUpdate(record, this.recordType),
         canDelete: (record: RecordData) => this.routeToolService.canDelete(record, this.recordType),
         processFilterName: (filter: IFilter) => this.processFilterName(filter),
@@ -101,10 +100,16 @@ class IllRequestsRoute extends BaseRoute implements RouteDataTypesInterface {
   }
 
   private processFilterName(filter: IFilter): Observable<string> {
-    if(filter.name) { return of(filter.name); }
+    if (filter.name) {
+      return of(filter.name);
+    }
     switch (filter.aggregationKey) {
-      case 'library': return this.recordService.getRecord<{metadata: {name: string}}>('libraries', filter.key).pipe(map(record => record.metadata.name));
-      default: return this.routeToolService.translateService.stream(filter.key);
+      case 'library':
+        return this.recordService
+          .getRecord<{ metadata: { name: string } }>('libraries', filter.key)
+          .pipe(map((record) => record.metadata.name));
+      default:
+        return this.routeToolService.translateService.stream(filter.key);
     }
   }
 }

@@ -15,4 +15,3 @@ describe('Tools', () => {
     expect(Tools.currencySymbol('en', 'USD')).toEqual('$');
   });
 });
-

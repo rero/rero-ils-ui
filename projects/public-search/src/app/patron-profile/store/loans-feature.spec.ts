@@ -4,9 +4,10 @@ import { signal } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { signalStore, withMethods, withProps } from '@ngrx/signals';
 import { TranslateService } from '@ngx-translate/core';
+import { MessageService } from '@openng/optimus-ui/api';
 import { CONFIG } from '@rero/ng-core';
-import { MessageService } from 'primeng/api';
 import { of, Subject, throwError } from 'rxjs';
+
 import { LoanApiService } from '../../api/loan-api.service';
 import { withLoansFeature } from './loans-feature';
 
@@ -19,12 +20,12 @@ type RenewalResponse = {
 
 const LoansFeatureStore = signalStore(
   withProps(() => ({ patronPid: signal<string | null>(null) })),
-  withMethods(store => ({
+  withMethods((store) => ({
     setPatronPid(patronPid: string | null): void {
       store.patronPid.set(patronPid);
     },
   })),
-  withLoansFeature()
+  withLoansFeature(),
 );
 
 describe('LoansFeature', () => {
@@ -98,15 +99,17 @@ describe('LoansFeature', () => {
   it('updates the matching loan after a successful renewal', () => {
     const otherLoan = { metadata: { pid: 'loan-2', overdue: 1 } };
     loanApiService.getOnLoan.mockReturnValue(of({ hits: { hits: [loan, otherLoan], total: 2 } }));
-    loanApiService.renew.mockReturnValue(of({
-      end_date: '2026-07-01',
-      extension_count: 2,
-      is_late: false,
-      due_soon_date: '2026-06-30',
-    }));
-    loanApiService.canExtend.mockImplementation((loanPid: string) => of(
-      loanPid === 'loan-1' ? { can: false, reasons: {} } : undefined
-    ));
+    loanApiService.renew.mockReturnValue(
+      of({
+        end_date: '2026-07-01',
+        extension_count: 2,
+        is_late: false,
+        due_soon_date: '2026-06-30',
+      }),
+    );
+    loanApiService.canExtend.mockImplementation((loanPid: string) =>
+      of(loanPid === 'loan-1' ? { can: false, reasons: {} } : undefined),
+    );
     store.setPatronPid('patron-1');
     TestBed.tick();
 
@@ -176,19 +179,17 @@ describe('LoansFeature', () => {
       },
       canExtend: { can: false, reasons: { blocked: 'Blocked' } },
     };
-    loanApiService.getOnLoan.mockReturnValue(of({
-      hits: { hits: [{ ...loan, canExtend: { can: true, reasons: {} } }, renewableLoan, nonRenewableLoan], total: 3 },
-    }));
+    loanApiService.getOnLoan.mockReturnValue(
+      of({
+        hits: { hits: [{ ...loan, canExtend: { can: true, reasons: {} } }, renewableLoan, nonRenewableLoan], total: 3 },
+      }),
+    );
     const firstRenewal = new Subject<RenewalResponse>();
     const secondRenewal = new Subject<RenewalResponse>();
-    loanApiService.renew
-      .mockReturnValueOnce(firstRenewal)
-      .mockReturnValueOnce(secondRenewal);
-    loanApiService.canExtend.mockImplementation((loanPid: string) => of(
-      loanPid === 'loan-3'
-        ? { can: false, reasons: { blocked: 'Blocked' } }
-        : { can: true, reasons: {} }
-    ));
+    loanApiService.renew.mockReturnValueOnce(firstRenewal).mockReturnValueOnce(secondRenewal);
+    loanApiService.canExtend.mockImplementation((loanPid: string) =>
+      of(loanPid === 'loan-3' ? { can: false, reasons: { blocked: 'Blocked' } } : { can: true, reasons: {} }),
+    );
     store.setPatronPid('patron-1');
     TestBed.tick();
 
@@ -235,38 +236,30 @@ describe('LoansFeature', () => {
       },
       canExtend: { can: true, reasons: {} },
     };
-    loanApiService.getOnLoan.mockReturnValue(of({
-      hits: {
-        hits: [
-          { ...loan, canExtend: { can: true, reasons: {} } },
-          secondLoan,
-        ],
-        total: 2,
-      },
-    }));
+    loanApiService.getOnLoan.mockReturnValue(
+      of({
+        hits: {
+          hits: [{ ...loan, canExtend: { can: true, reasons: {} } }, secondLoan],
+          total: 2,
+        },
+      }),
+    );
     loanApiService.canExtend.mockReturnValue(of({ can: true, reasons: {} }));
-    loanApiService.renew
-      .mockReturnValueOnce(throwError(() => new Error('Renewal failed')))
-      .mockReturnValueOnce(of({
+    loanApiService.renew.mockReturnValueOnce(throwError(() => new Error('Renewal failed'))).mockReturnValueOnce(
+      of({
         end_date: '2026-08-03',
         extension_count: 1,
         is_late: false,
         due_soon_date: '2026-08-01',
-      }));
+      }),
+    );
     store.setPatronPid('patron-1');
     TestBed.tick();
 
     store.renewAllLoans();
 
     expect(loanApiService.renew).toHaveBeenCalledTimes(2);
-    expect(loanApiService.renew).toHaveBeenNthCalledWith(
-      1,
-      expect.objectContaining({ pid: 'loan-1' })
-    );
-    expect(loanApiService.renew).toHaveBeenNthCalledWith(
-      2,
-      expect.objectContaining({ pid: 'loan-2' })
-    );
+    expect(loanApiService.renew).toHaveBeenNthCalledWith(1, expect.objectContaining({ pid: 'loan-1' }));
+    expect(loanApiService.renew).toHaveBeenNthCalledWith(2, expect.objectContaining({ pid: 'loan-2' }));
   });
-
 });

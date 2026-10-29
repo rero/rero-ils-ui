@@ -1,11 +1,11 @@
 // SPDX-FileCopyrightText: Fondation RERO+
 // SPDX-License-Identifier: AGPL-3.0-or-later
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { TranslateModule } from '@ngx-translate/core';
+import { provideTranslateService } from '@ngx-translate/core';
+import { ButtonModule } from '@openng/optimus-ui/button';
+
 import { Paginator } from '../paginator';
 import { ShowMorePagerComponent } from './show-more-pager.component';
-import { ButtonModule } from 'primeng/button';
-
 
 describe('ShowMorePagerComponent', () => {
   let component: ShowMorePagerComponent;
@@ -14,13 +14,9 @@ describe('ShowMorePagerComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-    imports: [
-        TranslateModule.forRoot(),
-        ButtonModule,
-        ShowMorePagerComponent
-    ]
-})
-    .compileComponents();
+      imports: [ButtonModule, ShowMorePagerComponent],
+      providers: [provideTranslateService()],
+    }).compileComponents();
   });
 
   beforeEach(() => {

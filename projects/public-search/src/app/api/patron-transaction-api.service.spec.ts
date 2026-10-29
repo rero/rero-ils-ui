@@ -1,13 +1,13 @@
 // SPDX-FileCopyrightText: Fondation RERO+
 // SPDX-License-Identifier: AGPL-3.0-or-later
-import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClient, withXhr } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
-import { TranslateModule } from '@ngx-translate/core';
+import { provideTranslateService } from '@ngx-translate/core';
 import { RecordService } from '@rero/ng-core';
 import { of } from 'rxjs';
-import { PatronTransactionApiService } from './patron-transaction-api.service';
 
+import { PatronTransactionApiService } from './patron-transaction-api.service';
 
 describe('PatronTranslationApiService', () => {
   let service: PatronTransactionApiService;
@@ -15,19 +15,17 @@ describe('PatronTranslationApiService', () => {
   const record = {
     medatadata: {
       pid: '1',
-      name: 'transaction name'
-    }
+      name: 'transaction name',
+    },
   };
 
   const apiResponse = {
     aggregations: {},
     hits: {
       total: 1,
-      hits: [
-        record
-      ]
+      hits: [record],
     },
-    links: {}
+    links: {},
   };
 
   const recordServiceSpy = { getRecords: vi.fn() };
@@ -35,13 +33,13 @@ describe('PatronTranslationApiService', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-    imports: [TranslateModule.forRoot()],
-    providers: [
+      providers: [
+        provideTranslateService(),
         { provide: RecordService, useValue: recordServiceSpy },
-        provideHttpClient(),
-        provideHttpClientTesting()
-    ]
-});
+        provideHttpClient(withXhr()),
+        provideHttpClientTesting(),
+      ],
+    });
     service = TestBed.inject(PatronTransactionApiService);
   });
 
@@ -50,7 +48,6 @@ describe('PatronTranslationApiService', () => {
   });
 
   it('should load the fees', () => {
-    service.getFees('1', 'open', 1)
-      .subscribe((response: any) => expect(response).toEqual(apiResponse));
+    service.getFees('1', 'open', 1).subscribe((response: any) => expect(response).toEqual(apiResponse));
   });
 });

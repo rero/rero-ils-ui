@@ -10,14 +10,14 @@ SPDX-License-Identifier: AGPL-3.0-or-later
       [attr.id]="item.id"
       [routerLink]="item.routerLink"
       [href]="item.url"
-      [queryParams]="item.queryParams"
-    >
+      [queryParams]="item.queryParams">
       @if (item.icon) {
         <span [class]="item.icon" class="p-menubar-item-icon"></span>
       }
       <span>{{ item.label }}</span>
       @if (item.shortcut) {
-        <span class="ui:ml-auto ui:border ui:border-surface ui:rounded ui:bg-surface-100 ui:bg-emphasis ui:text-muted-color ui:text-xs ui:p-1">
+        <span
+          class="ui:ml-auto ui:border ui:border-surface ui:rounded ui:bg-surface-100 ui:bg-emphasis ui:text-muted-color ui:text-xs ui:p-1">
           {{ item.shortcut }}
         </span>
       }

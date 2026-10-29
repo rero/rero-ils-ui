@@ -1,10 +1,9 @@
 // SPDX-FileCopyrightText: Fondation RERO+
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-import { roleTagSeverity } from "./roles";
+import { roleTagSeverity } from './roles';
 
 describe('Roles', () => {
-
   it('should return the severity of the tag according to the role', () => {
     expect(roleTagSeverity('patron')).toEqual('primary');
     expect(roleTagSeverity('pro_full_permissions')).toEqual('danger');

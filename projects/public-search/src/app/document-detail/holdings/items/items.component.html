@@ -11,9 +11,11 @@ SPDX-License-Identifier: AGPL-3.0-or-later
     @if (store.total() > 0) {
       <small class="ui:ml-2">
         @if (store.filterTotal() <= 1) {
-          {{ "{{ total }} result of {{ remoteTotal }}" | translate: { total: store.filterTotal(), remoteTotal: store.total() } }}
+          {{ "{{ total }} result of {{ remoteTotal }}" | translate: { total: store.filterTotal(), remoteTotal:
+          store.total() } }}
         } @else {
-          {{ "{{ total }} results of {{ remoteTotal }}" | translate: { total: store.filterTotal(), remoteTotal: store.total() } }}
+          {{ "{{ total }} results of {{ remoteTotal }}" | translate: { total: store.filterTotal(), remoteTotal:
+          store.total() } }}
         }
       </small>
     }
@@ -25,7 +27,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
     <public-search-item context="holding" [item]="item" [viewcode]="store.viewCode()" />
   </div>
 } @empty {
-  <div class="ui:my-3 ui:font-bold" translate>No item found.</div>
+  <div class="ui:my-3 ui:font-bold">{{ 'No item found.' | translate }}</div>
 }
 
 @if (store.isPaginatorEnabled()) {

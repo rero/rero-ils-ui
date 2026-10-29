@@ -1,25 +1,37 @@
 // SPDX-FileCopyrightText: Fondation RERO+
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-import { Component, computed, ElementRef, inject, input, OnInit, signal, viewChild, ChangeDetectionStrategy} from '@angular/core';
-import { TranslateService, TranslateDirective, TranslatePipe } from '@ngx-translate/core';
-import { DateTranslatePipe, HttpPendingService, RecordSearchStore, RecordService } from '@rero/ng-core';
-import { MessageService } from 'primeng/api';
-import { Bind } from 'primeng/bind';
-import { Inplace } from 'primeng/inplace';
-import { FormsModule } from '@angular/forms';
-import { Button } from 'primeng/button';
-import { Tag } from 'primeng/tag';
-import { MigrationMetadataBriefComponent } from '../migration-metadata/migration-metadata.component';
 import { DecimalPipe } from '@angular/common';
-import { Message } from 'primeng/message';
-import { InputText } from 'primeng/inputtext';
+import { Component, computed, ElementRef, inject, input, OnInit, signal, viewChild } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
+import { MessageService } from '@openng/optimus-ui/api';
+import { Bind } from '@openng/optimus-ui/bind';
+import { Button } from '@openng/optimus-ui/button';
+import { Inplace } from '@openng/optimus-ui/inplace';
+import { InputText } from '@openng/optimus-ui/inputtext';
+import { Message } from '@openng/optimus-ui/message';
+import { Tag } from '@openng/optimus-ui/tag';
+import { DateTranslatePipe, HttpPendingService, RecordSearchStore, RecordService } from '@rero/ng-core';
+
+import { MigrationMetadataBriefComponent } from '../migration-metadata/migration-metadata.component';
 
 @Component({
-    selector: 'admin-migration-data-deduplication',
-    templateUrl: './migration-data-deduplication.component.html',
-    imports: [Bind, Inplace, InputText, FormsModule, Button, Tag, TranslateDirective, MigrationMetadataBriefComponent, DecimalPipe, DateTranslatePipe, TranslatePipe, Message],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  selector: 'admin-migration-data-deduplication',
+  templateUrl: './migration-data-deduplication.component.html',
+  imports: [
+    Bind,
+    Inplace,
+    InputText,
+    FormsModule,
+    Button,
+    Tag,
+    MigrationMetadataBriefComponent,
+    DecimalPipe,
+    DateTranslatePipe,
+    TranslatePipe,
+    Message,
+  ],
 })
 export class MigrationDataDeduplicationBriefComponent implements OnInit {
   protected toastService = inject(MessageService);
@@ -86,20 +98,22 @@ export class MigrationDataDeduplicationBriefComponent implements OnInit {
         this.currentCandidate.set(this.record()?.metadata?.deduplication?.candidates[existingCandidateIndex]);
         this.updateIlsPid();
       } else {
-        this.recordService.getRecords('documents', { query: `pid:${ilsPid}`, page: 1, itemsPerPage: 1 }).subscribe((results: any) => {
-          if (results.hits.hits.length === 1) {
-            const record = results.hits.hits[0].metadata;
-            this.record().metadata.deduplication.candidates = [
-              { pid: record.pid, json: record },
-              ...this.candidates().filter((c: any) => c.score),
-            ];
-            this.currentCandidateIndex.set(0);
-            this.currentCandidate.set(this.record()?.metadata?.deduplication?.candidates[0]);
-            this.updateIlsPid();
-          } else {
-            this.toastService.add({ severity: 'warn', summary: this.translateService.instant('Record not found.') });
-          }
-        });
+        this.recordService
+          .getRecords('documents', { query: `pid:${ilsPid}`, page: 1, itemsPerPage: 1 })
+          .subscribe((results: any) => {
+            if (results.hits.hits.length === 1) {
+              const record = results.hits.hits[0].metadata;
+              this.record().metadata.deduplication.candidates = [
+                { pid: record.pid, json: record },
+                ...this.candidates().filter((c: any) => c.score),
+              ];
+              this.currentCandidateIndex.set(0);
+              this.currentCandidate.set(this.record()?.metadata?.deduplication?.candidates[0]);
+              this.updateIlsPid();
+            } else {
+              this.toastService.add({ severity: 'warn', summary: this.translateService.instant('Record not found.') });
+            }
+          });
       }
     }
   }
@@ -136,7 +150,9 @@ export class MigrationDataDeduplicationBriefComponent implements OnInit {
   }
 
   save(): void {
-    if (this.httpPending.isPending()) { return; }
+    if (this.httpPending.isPending()) {
+      return;
+    }
     this.recordService
       .update('migration_data', `${this.record().id}?migration=${this.record().metadata.migration_id}`, {
         ils_pid: this.ilsPid(),
@@ -159,7 +175,10 @@ export class MigrationDataDeduplicationBriefComponent implements OnInit {
         this.toastService.add({
           severity: 'success',
           summary: `${record.id} ` + this.translateService.instant('has been successfully updated.'),
-          detail: this.translateService.instant('The status is now:') + ' ' + this.translateService.instant(record.deduplication.status),
+          detail:
+            this.translateService.instant('The status is now:') +
+            ' ' +
+            this.translateService.instant(record.deduplication.status),
         });
       });
   }

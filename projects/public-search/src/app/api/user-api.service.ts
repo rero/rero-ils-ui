@@ -6,10 +6,9 @@ import { ApiService } from '@rero/ng-core';
 import { Observable } from 'rxjs';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class UserApiService {
-
   private httpClient: HttpClient = inject(HttpClient);
   private apiService: ApiService = inject(ApiService);
 
@@ -23,10 +22,7 @@ export class UserApiService {
   }
 
   validatePassword(password: string): Observable<any> {
-    return this.httpClient.post(
-      this.apiService.getEndpointByType('user/password/validate'),
-      { 'password': password }
-    );
+    return this.httpClient.post(this.apiService.getEndpointByType('user/password/validate'), { password: password });
   }
 }
 
@@ -34,4 +30,4 @@ type IPassword = {
   password: string;
   new_password: string;
   new_password_confirm: string;
-}
+};

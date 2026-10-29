@@ -1,22 +1,21 @@
 // SPDX-FileCopyrightText: Fondation RERO+
 // SPDX-License-Identifier: AGPL-3.0-or-later
-import { Component, inject, input, ChangeDetectionStrategy} from '@angular/core';
-import { IPermissions, PERMISSIONS } from '../../../util/permissions';
-import { DialogService } from 'primeng/dynamicdialog';
-import { OperationLogsComponent, sortOptionType } from '../operation-logs.component';
-import { TranslateService, TranslatePipe, _ } from '@ngx-translate/core';
-import { Bind } from 'primeng/bind';
-import { Button } from 'primeng/button';
+import { Component, inject, input } from '@angular/core';
+import { _, TranslatePipe, TranslateService } from '@ngx-translate/core';
+import { Bind } from '@openng/optimus-ui/bind';
+import { Button } from '@openng/optimus-ui/button';
+import { DialogService } from '@openng/optimus-ui/dynamicdialog';
+
 import { PermissionsDirective } from '../../../directive/permissions.directive';
+import { IPermissions, PERMISSIONS } from '../../../util/permissions';
+import { OperationLogsComponent, sortOptionType } from '../operation-logs.component';
 
 @Component({
   selector: 'shared-operation-logs-dialog',
   templateUrl: './operation-logs-dialog.component.html',
   imports: [Bind, Button, PermissionsDirective, TranslatePipe],
-  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class OperationLogsDialogComponent {
-
   private dialogService: DialogService = inject(DialogService);
   private translateService: TranslateService = inject(TranslateService);
 
@@ -30,7 +29,7 @@ export class OperationLogsDialogComponent {
 
   readonly sortOptions = input<sortOptionType[]>([
     { value: 'mostrecent', label: _('Date (newest)'), icon: 'fa fa-sort-amount-desc' },
-    { value: 'created', label: _('Date (oldest)'), icon: 'fa fa-sort-amount-asc' }
+    { value: 'created', label: _('Date (oldest)'), icon: 'fa fa-sort-amount-asc' },
   ]);
 
   /** return all permissions */
@@ -49,8 +48,8 @@ export class OperationLogsDialogComponent {
         resourceType: this.resourceType(),
         resourcePid: this.resourcePid(),
         sortCriteria: this.sortCriteria(),
-        sortOptions: this.sortOptions()
-      }
+        sortOptions: this.sortOptions(),
+      },
     });
   }
 }

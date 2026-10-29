@@ -8,12 +8,14 @@ export class Tools {
    * @returns boolean - true if the email address is valid
    */
   static validateEmail(email: string): boolean {
-    const re = /^(([^<>()[\].,;:\s@"]+(\.[^<>()[\].,;:\s@"]+)*)|(".+"))@(([^<>()[\].,;:\s@"]+\.)+[^<>()[\].,;:\s@"]{2,})$/i;
+    const re =
+      /^(([^<>()[\].,;:\s@"]+(\.[^<>()[\].,;:\s@"]+)*)|(".+"))@(([^<>()[\].,;:\s@"]+\.)+[^<>()[\].,;:\s@"]{2,})$/i;
     return re.test(String(email).toLowerCase());
   }
 
   static currencySymbol(language: string, currency: string): string {
-    return Intl.NumberFormat(language,{ style:'currency', currency })
-      .formatToParts().find(part => part.type === 'currency').value;
+    return Intl.NumberFormat(language, { style: 'currency', currency })
+      .formatToParts()
+      .find((part) => part.type === 'currency').value;
   }
 }

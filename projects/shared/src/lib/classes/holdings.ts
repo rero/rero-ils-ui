@@ -11,5 +11,5 @@ export enum HoldingsNoteType {
   ROUTING = 'routing_note',
   BINDING = 'binding_note',
   ACQUISITION = 'acquisition_note',
-  ACCESS = 'access_note'
+  ACCESS = 'access_note',
 }

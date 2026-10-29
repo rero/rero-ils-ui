@@ -4,23 +4,23 @@ import { ResolveFn, Routes } from '@angular/router';
 import { _ } from '@ngx-translate/core';
 import {
   ActionStatus,
-  ComponentCanDeactivateGuard,
   DetailComponent,
-  EditorComponent,
   RecordData,
   RecordType,
   RouteDataTypesInterface,
+  unsavedChangesGuard,
 } from '@rero/ng-core';
+import { EditorComponent } from '@rero/ng-core/editor';
 import { PERMISSIONS } from '@rero/shared';
 import { of } from 'rxjs';
+
 import { CAN_ACCESS_ACTIONS, canAccessGuard } from '../guard/can-access.guard';
 import { libraryGuard } from '../guard/library.guard';
 import { permissionGuard } from '../guard/permission.guard';
 import { LocationDetailViewComponent } from '../record/detail-view/location-detail-view/location-detail-view.component';
 import { BaseRoute } from './base-route';
 
-export const locationsRouteResolver: ResolveFn<Partial<RecordType>[]> = () =>
-  new LocationsRoute().getTypes();
+export const locationsRouteResolver: ResolveFn<Partial<RecordType>[]> = () => new LocationsRoute().getTypes();
 
 export const locationsRoutes: Routes = [
   {
@@ -37,7 +37,7 @@ export const locationsRoutes: Routes = [
     component: EditorComponent,
     title: _('Location'),
     canActivate: [canAccessGuard],
-    canDeactivate: [ComponentCanDeactivateGuard],
+    canDeactivate: [unsavedChangesGuard],
     data: {
       action: CAN_ACCESS_ACTIONS.UPDATE,
     },
@@ -47,7 +47,7 @@ export const locationsRoutes: Routes = [
     component: EditorComponent,
     title: _('Location'),
     canActivate: [permissionGuard, libraryGuard],
-    canDeactivate: [ComponentCanDeactivateGuard],
+    canDeactivate: [unsavedChangesGuard],
     data: {
       permissions: [PERMISSIONS.LOC_CREATE],
     },
@@ -67,8 +67,7 @@ class LocationsRoute extends BaseRoute implements RouteDataTypesInterface {
         key: this.name,
         label: _('Locations'),
         detailComponent: LocationDetailViewComponent,
-        canAdd: () =>
-          of({ can: this.routeToolService.appStore.canAccess(PERMISSIONS.LOC_CREATE) } as ActionStatus),
+        canAdd: () => of({ can: this.routeToolService.appStore.canAccess(PERMISSIONS.LOC_CREATE) } as ActionStatus),
         permissions: (record: RecordData) => this.routeToolService.permissions(record, this.recordType),
         preprocessRecordEditor: (record: any) => {
           // Location resource use a asynchronous validator ('valueAlreadyExists').
@@ -78,7 +77,7 @@ class LocationsRoute extends BaseRoute implements RouteDataTypesInterface {
             record.library = {
               $ref: this.routeToolService.apiService.getRefEndpoint(
                 'libraries',
-                this.routeToolService.getRouteQueryParam('library')
+                this.routeToolService.getRouteQueryParam('library'),
               ),
             };
           }

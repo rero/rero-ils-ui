@@ -4,50 +4,56 @@ SPDX-FileCopyrightText: UCLouvain
 SPDX-License-Identifier: AGPL-3.0-or-later
 -->
 <div class="ui:p-2 ui:border-surface ui:hover:bg-surface-100" [class.ui:border-top-1]="separator()">
-    <div class="ui:grid ui:grid-cols-12 ui:gap-4">
-      <!-- transaction date -->
-      <div class="ui:col-span-2 ui:text-sm">
-        <div class="ui:flex ui:gap-2">
-        <shared-open-close-button [styleClass]="isHighlight? 'ui:bg-blue-100': 'ui:bg-white'" (status)="isCollapsed = $event; toggleCollapsed()" />
+  <div class="ui:grid ui:grid-cols-12 ui:gap-4">
+    <!-- transaction date -->
+    <div class="ui:col-span-2 ui:text-sm">
+      <div class="ui:flex ui:gap-2">
+        <shared-open-close-button
+          [styleClass]="isHighlight ? 'ui:bg-blue-100' : 'ui:bg-white'"
+          (status)="isCollapsed = $event; toggleCollapsed()" />
         <div>
-        <div><i class="fa-solid fa-calendar-days"></i>&nbsp;{{ record().metadata.date | dateTranslate :'shortDate' }}</div>
-        <div><i class="fa-regular fa-clock"></i>&nbsp;{{ record().metadata.date | dateTranslate :'mediumTime' }}</div>
-      </div>
-      </div>
-      </div>
-      <!-- transaction badge -->
-      <div class="ui:col-span-2">
-        <ng-content select="[badge]" />
-      </div>
-      <!-- content -->
-      <div class="ui:col-span-8">
-        @if (isCollapsed) {
-          <ng-content select="[collapsedContent]" />
-        } @else {
-          <div class="ui:grid ui:grid-cols-12 ui:w-full">
-            <div class="ui:col-span-11">
-              <ng-content select="[expandedContent]" />
-            </div>
-            <!-- debug mode button -->
-            @if (canUseDebugMode) {
-              <div class="ui:col-span-1 ui:flex ui:justify-end">
-                <p-button [icon]="debugMode ? 'fa-solid fa-toggle-on' : 'fa-solid fa-toggle-off'" severity="warn" [outlined]="!debugMode" size="small"
-                (onClick)="debugMode=!debugMode"
-                >
-                  <i class="fa-solid fa-bug"></i>
-                </p-button>
-              </div>
-            }
+          <div>
+            <i class="fa-solid fa-calendar-days"></i>&nbsp;{{ record().metadata.date | dateTranslate: 'shortDate' }}
           </div>
-        }
+          <div><i class="fa-regular fa-clock"></i>&nbsp;{{ record().metadata.date | dateTranslate: 'mediumTime' }}</div>
+        </div>
       </div>
     </div>
-    <!-- debug information -->
-    <div class="ui:col-span-12" [hidden]="!debugMode || isCollapsed">
-      <h5 class="text-error"><i class="fa-solid fa-bug"></i>&nbsp;{{ 'Debug' | translate }}</h5>
-      <p-scrollPanel class="ui:w-full" [style]="{ height: '300px' }">
-        <pre class="ui:text-sm">{{ record() | json }}</pre>
-      </p-scrollPanel>
+    <!-- transaction badge -->
+    <div class="ui:col-span-2">
+      <ng-content select="[badge]" />
     </div>
+    <!-- content -->
+    <div class="ui:col-span-8">
+      @if (isCollapsed) {
+        <ng-content select="[collapsedContent]" />
+      } @else {
+        <div class="ui:grid ui:grid-cols-12 ui:w-full">
+          <div class="ui:col-span-11">
+            <ng-content select="[expandedContent]" />
+          </div>
+          <!-- debug mode button -->
+          @if (canUseDebugMode) {
+            <div class="ui:col-span-1 ui:flex ui:justify-end">
+              <p-button
+                [icon]="debugMode ? 'fa-solid fa-toggle-on' : 'fa-solid fa-toggle-off'"
+                severity="warn"
+                [outlined]="!debugMode"
+                size="small"
+                (onClick)="debugMode = !debugMode">
+                <i class="fa-solid fa-bug"></i>
+              </p-button>
+            </div>
+          }
+        </div>
+      }
+    </div>
+  </div>
+  <!-- debug information -->
+  <div class="ui:col-span-12" [hidden]="!debugMode || isCollapsed">
+    <h5 class="text-error"><i class="fa-solid fa-bug"></i>&nbsp;{{ 'Debug' | translate }}</h5>
+    <p-scrollPanel class="ui:w-full" [style]="{ height: '300px' }">
+      <pre class="ui:text-sm">{{ record() | json }}</pre>
+    </p-scrollPanel>
+  </div>
 </div>
-

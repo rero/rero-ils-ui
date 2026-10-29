@@ -1,37 +1,50 @@
 // SPDX-FileCopyrightText: Fondation RERO+
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-import { ChangeDetectionStrategy, Component, computed, effect, inject, input, signal } from '@angular/core';
+import { AsyncPipe, CurrencyPipe, NgClass } from '@angular/common';
+import { Component, computed, effect, inject, input, signal } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { PatronTransactionService } from '@app/admin/circulation/services/patron-transaction.service';
 import { CirculationStore } from '@app/admin/circulation/store/circulation.store';
-import { PatronTransaction, PatronTransactionEventType, PatronTransactionStatus } from '@app/admin/classes/patron-transaction';
-import { tap } from 'rxjs';
 import {
-  PatronTransactionEventFormComponent
-} from '../patron-transaction-event-form/patron-transaction-event-form.component';
-import { DialogService } from 'primeng/dynamicdialog';
-import { TranslateService, TranslateDirective, TranslatePipe } from '@ngx-translate/core';
-import { MenuItem } from 'primeng/api';
-import { CurrencyPipe, NgClass, AsyncPipe } from '@angular/common';
-import { SelectChangeEvent } from 'primeng/select';
-import { AppStore, OpenCloseButtonComponent } from '@rero/shared';
-import { FormsModule } from '@angular/forms';
-import { OverdueTransactionDetailComponent } from './overdue-transaction-detail/overdue-transaction-detail.component';
-import { DefaultTransactionDetailComponent } from './default-transaction-detail/default-transaction-detail.component';
-import { PatronTransactionHistoryComponent } from './patron-transaction-history/patron-transaction-history.component';
+  PatronTransaction,
+  PatronTransactionEventType,
+  PatronTransactionStatus,
+} from '@app/admin/classes/patron-transaction';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
+import { MenuItem } from '@openng/optimus-ui/api';
+import { DialogService } from '@openng/optimus-ui/dynamicdialog';
+import { Select, SelectChangeEvent } from '@openng/optimus-ui/select';
 import { DateTranslatePipe, GetRecordPipe } from '@rero/ng-core';
-import { Select } from 'primeng/select';
+import { AppStore, OpenCloseButtonComponent } from '@rero/shared';
+import { tap } from 'rxjs';
+
+import { PatronTransactionEventFormComponent } from '../patron-transaction-event-form/patron-transaction-event-form.component';
+import { DefaultTransactionDetailComponent } from './default-transaction-detail/default-transaction-detail.component';
+import { OverdueTransactionDetailComponent } from './overdue-transaction-detail/overdue-transaction-detail.component';
+import { PatronTransactionHistoryComponent } from './patron-transaction-history/patron-transaction-history.component';
 
 @Component({
   selector: 'admin-patron-transaction',
   templateUrl: './patron-transaction.component.html',
-  imports: [NgClass, OpenCloseButtonComponent, FormsModule, TranslateDirective, OverdueTransactionDetailComponent, DefaultTransactionDetailComponent, PatronTransactionHistoryComponent, AsyncPipe, CurrencyPipe, DateTranslatePipe, GetRecordPipe, TranslatePipe, Select],
+  imports: [
+    NgClass,
+    OpenCloseButtonComponent,
+    FormsModule,
+    OverdueTransactionDetailComponent,
+    DefaultTransactionDetailComponent,
+    PatronTransactionHistoryComponent,
+    AsyncPipe,
+    CurrencyPipe,
+    DateTranslatePipe,
+    GetRecordPipe,
+    TranslatePipe,
+    Select,
+  ],
   providers: [CurrencyPipe],
-  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class PatronTransactionComponent {
-
   private dialogService: DialogService = inject(DialogService);
   private appStore = inject(AppStore);
   private circulationStore = inject(CirculationStore);
@@ -56,13 +69,16 @@ export class PatronTransactionComponent {
       {
         label: [
           this.translateService.instant('Pay'),
-          this.currencyPipe.transform(t.total_amount, this.appStore.organisation()?.default_currency)
+          this.currencyPipe.transform(t.total_amount, this.appStore.organisation()?.default_currency),
         ].join(' '),
-        command: () => this.patronTransactionAction('pay', 'full')
+        command: () => this.patronTransactionAction('pay', 'full'),
       },
-      { label: this.translateService.instant('Pay a part'), command: () => this.patronTransactionAction('pay', 'part') },
+      {
+        label: this.translateService.instant('Pay a part'),
+        command: () => this.patronTransactionAction('pay', 'part'),
+      },
       { label: this.translateService.instant('Dispute'), command: () => this.patronTransactionAction('dispute') },
-      { label: this.translateService.instant('Delete'), command: () => this.patronTransactionAction('cancel') }
+      { label: this.translateService.instant('Delete'), command: () => this.patronTransactionAction('cancel') },
     ];
   });
 
@@ -99,8 +115,8 @@ export class PatronTransactionComponent {
 
   isDisputed(): boolean {
     const t = this.currentTransaction();
-    return (t?.status === PatronTransactionStatus.OPEN)
-      ? t.events.some(e => e.type === PatronTransactionEventType.DISPUTE)
+    return t?.status === PatronTransactionStatus.OPEN
+      ? t.events.some((e) => e.type === PatronTransactionEventType.DISPUTE)
       : false;
   }
 
@@ -118,7 +134,7 @@ export class PatronTransactionComponent {
       focusOnShow: false,
       closable: true,
       width: '40vw',
-      data: { action, mode, transactions: [t] }
+      data: { action, mode, transactions: [t] },
     });
     if (!ref) return;
     // patronPid is set by the form on successful submit; undefined means cancelled.
@@ -131,23 +147,28 @@ export class PatronTransactionComponent {
   }
 
   private _loadHistory(t: PatronTransaction): void {
-    this.patronTransactionService.loadTransactionHistory(t).pipe(
-      tap(events => this.currentTransaction.set(new PatronTransaction({ ...t, events })))
-    ).subscribe();
+    this.patronTransactionService
+      .loadTransactionHistory(t)
+      .pipe(tap((events) => this.currentTransaction.set(new PatronTransaction({ ...t, events }))))
+      .subscribe();
   }
 
   eventLabel(event: any): string {
-    return (event.subtype)
+    return event.subtype
       ? `${this.translateService.instant(event.type.toString())} [${this.translateService.instant(event.subtype)}]`
       : this.translateService.instant(event.type.toString());
   }
 
   tagSeverity(event: any): string | undefined {
     switch (event.type) {
-      case this.patronTransactionEventType.FEE: return 'danger';
-      case this.patronTransactionEventType.PAYMENT: return 'success';
-      case this.patronTransactionEventType.CANCEL: return 'info';
-      default: return undefined;
+      case this.patronTransactionEventType.FEE:
+        return 'danger';
+      case this.patronTransactionEventType.PAYMENT:
+        return 'success';
+      case this.patronTransactionEventType.CANCEL:
+        return 'info';
+      default:
+        return undefined;
     }
   }
 }

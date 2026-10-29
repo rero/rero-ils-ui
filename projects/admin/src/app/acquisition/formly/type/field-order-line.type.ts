@@ -2,31 +2,35 @@
 // SPDX-FileCopyrightText: UCLouvain
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-import { ChangeDetectorRef, Component, inject, OnInit, ChangeDetectionStrategy} from '@angular/core';
-import { FieldType } from '@ngx-formly/core';
-import { extractIdOnRef, RecordService } from '@rero/ng-core';
+import { ChangeDetectorRef, Component, inject, OnInit } from '@angular/core';
 import { DocumentApiService } from '@app/admin/api/document-api.service';
-import { catchError, map, of, switchMap, tap } from 'rxjs';
-import { DocumentBriefViewComponent } from '@rero/shared';
-import { NotesComponent } from '../../components/notes/notes.component';
-import { Bind } from 'primeng/bind';
-import { OverlayBadge } from 'primeng/overlaybadge';
+import { FieldType } from '@ngx-formly/core';
 import { TranslatePipe } from '@ngx-translate/core';
+import { Bind } from '@openng/optimus-ui/bind';
+import { OverlayBadge } from '@openng/optimus-ui/overlaybadge';
+import { extractIdOnRef, RecordService } from '@rero/ng-core';
+import { DocumentBriefViewComponent } from '@rero/shared';
+import { catchError, map, of, switchMap, tap } from 'rxjs';
+
+import { NotesComponent } from '../../components/notes/notes.component';
 
 @Component({
-    selector: 'admin-formly-order-line-type',
-    template: `
+  selector: 'admin-formly-order-line-type',
+  template: `
     @if (orderLine) {
       <div class="ui:flex ui:gap-2">
         <div class="ui:grow-1">
           @if (document) {
             <shared-document-brief-view [record]="document" />
           } @else if (document === null) {
-            <span class="ui:text-muted-color"><i class="fa-solid fa-triangle-exclamation"></i>&nbsp;{{ "Unknown document" | translate }} (pid {{ documentPid }})</span>
+            <span class="ui:text-muted-color"
+              ><i class="fa-solid fa-triangle-exclamation"></i>&nbsp;{{ 'Unknown document' | translate }} (pid
+              {{ documentPid }})</span
+            >
           }
-          <admin-notes class="ui:text-sm" [notes]="$any(orderLine.notes)"/>
+          <admin-notes class="ui:text-sm" [notes]="$any(orderLine.notes)" />
         </div>
-        @if(orderLine.priority) {
+        @if (orderLine.priority) {
           <div class="ui:flex">
             <p-overlaybadge [value]="orderLine.priority" [severity]="$any(severity(orderLine.priority))">
               <i class="fa-solid fa-gauge-high" style="font-size: 1.2rem"></i>
@@ -36,14 +40,7 @@ import { TranslatePipe } from '@ngx-translate/core';
       </div>
     }
   `,
-    imports: [
-        DocumentBriefViewComponent,
-        NotesComponent,
-        Bind,
-        OverlayBadge,
-        TranslatePipe,
-    ],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  imports: [DocumentBriefViewComponent, NotesComponent, Bind, OverlayBadge, TranslatePipe],
 })
 export class OrderLineTypeComponent extends FieldType implements OnInit {
   private recordService: RecordService = inject(RecordService);
@@ -66,13 +63,9 @@ export class OrderLineTypeComponent extends FieldType implements OnInit {
       .pipe(
         tap((line) => (this.orderLine = line.metadata)),
         map(() => extractIdOnRef(this.orderLine.document.$ref)),
-        switchMap((pid) =>
-          this.documentApiService.getDocument(pid).pipe(
-            catchError(() => of(null))
-          )
-        ),
+        switchMap((pid) => this.documentApiService.getDocument(pid).pipe(catchError(() => of(null)))),
         tap((document) => (this.document = document?.metadata ?? null)),
-        tap(() => this.changeDetectorRef.detectChanges())
+        tap(() => this.changeDetectorRef.detectChanges()),
       )
       .subscribe();
   }

@@ -3,10 +3,16 @@
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideRouter, Router } from '@angular/router';
-import { LibraryRecord, PatronRecord, TransactionLoan, TransactionScan } from '@app/admin/circulation/model/circulation.model';
+import {
+  LibraryRecord,
+  PatronRecord,
+  TransactionLoan,
+  TransactionScan,
+} from '@app/admin/circulation/model/circulation.model';
 import { Item } from '@app/admin/classes/items';
-import { TranslateModule } from '@ngx-translate/core';
+import { provideTranslateService } from '@ngx-translate/core';
 import { ItemStatus } from '@rero/shared';
+
 import { TransactionHistoryActorComponent } from './transaction-history-actor.component';
 
 // ─── Fixtures ─────────────────────────────────────────────────────────────────
@@ -40,8 +46,8 @@ describe('TransactionHistoryActorComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [TranslateModule.forRoot(), TransactionHistoryActorComponent],
-      providers: [provideRouter([])],
+      imports: [TransactionHistoryActorComponent],
+      providers: [provideTranslateService(), provideRouter([])],
     }).compileComponents();
 
     fixture = TestBed.createComponent(TransactionHistoryActorComponent);
@@ -85,7 +91,7 @@ describe('TransactionHistoryActorComponent', () => {
       fixture.detectChanges();
 
       let emitted = false;
-      component.closeRequested.subscribe(() => emitted = true);
+      component.closeRequested.subscribe(() => (emitted = true));
 
       fixture.nativeElement.querySelector('a').click();
 
@@ -102,10 +108,13 @@ describe('TransactionHistoryActorComponent', () => {
 
     it('should prefer the up-to-date end_date from currentFullItem over the log end_date', () => {
       fixture.componentRef.setInput('loan', makeLoan({ end_date: '2026-01-01' }));
-      fixture.componentRef.setInput('currentFullItem', makeItem({
-        status: ItemStatus.ON_LOAN,
-        loan: { end_date: '2026-10-22' } as Item['loan'],
-      }));
+      fixture.componentRef.setInput(
+        'currentFullItem',
+        makeItem({
+          status: ItemStatus.ON_LOAN,
+          loan: { end_date: '2026-10-22' } as Item['loan'],
+        }),
+      );
       fixture.detectChanges();
 
       // Both dates render through the same pipe — this only asserts no crash and a due date is shown.
@@ -157,9 +166,12 @@ describe('TransactionHistoryActorComponent', () => {
 
     it('should display the renewals badge (singular) when extension_count is 1', () => {
       fixture.componentRef.setInput('loan', makeLoan());
-      fixture.componentRef.setInput('currentFullItem', makeItem({
-        loan: { extension_count: 1 } as Item['loan'],
-      }));
+      fixture.componentRef.setInput(
+        'currentFullItem',
+        makeItem({
+          loan: { extension_count: 1 } as Item['loan'],
+        }),
+      );
       fixture.detectChanges();
       expect(fixture.nativeElement.textContent).toContain('1');
       expect(fixture.nativeElement.textContent).toContain('renewal');
@@ -167,9 +179,12 @@ describe('TransactionHistoryActorComponent', () => {
 
     it('should display the renewals badge (plural) when extension_count is greater than 1', () => {
       fixture.componentRef.setInput('loan', makeLoan());
-      fixture.componentRef.setInput('currentFullItem', makeItem({
-        loan: { extension_count: 3 } as Item['loan'],
-      }));
+      fixture.componentRef.setInput(
+        'currentFullItem',
+        makeItem({
+          loan: { extension_count: 3 } as Item['loan'],
+        }),
+      );
       fixture.detectChanges();
       expect(fixture.nativeElement.textContent).toContain('3');
       expect(fixture.nativeElement.textContent).toContain('renewals');

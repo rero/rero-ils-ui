@@ -9,35 +9,19 @@
     "moduleResolution": "bundler",
     "importHelpers": true,
     "target": "ES2022",
-    "typeRoots": [
-      "./node_modules/@types"
-    ],
+    "typeRoots": ["./node_modules/@types"],
     "resolveJsonModule": true,
     "skipLibCheck": true,
+    "strict": false,
     "paths": {
-      "@rero/shared": [
-        "./dist/shared"
-      ],
-      "@rero/shared/*": [
-        "./dist/shared/*"
-      ],
-      "@app/admin/*": [
-        "./projects/admin/src/app/*"
-      ],
-      "@app/public-search/*": [
-        "./projects/public-search/src/app/*"
-      ],
-      "moment": [
-        "./node_modules/moment/min/moment.min.js"
-      ],
-      "@rero/prime/*": [
-        "./node_modules/@rero/ng-core/lib/record/editor/formly/primeng/*"
-      ]
+      "@rero/shared": ["./dist/shared"],
+      "@rero/shared/*": ["./dist/shared/*"],
+      "@app/admin/*": ["./projects/admin/src/app/*"],
+      "@app/public-search/*": ["./projects/public-search/src/app/*"]
     },
     "useDefineForClassFields": false
   },
   "angularCompilerOptions": {
-    "strictTemplates": true,
     "strictInjectionParameters": true
   }
 }

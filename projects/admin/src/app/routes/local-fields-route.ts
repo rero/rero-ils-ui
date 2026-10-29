@@ -2,16 +2,17 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 import { ResolveFn, Routes } from '@angular/router';
 import { _ } from '@ngx-translate/core';
-import { ComponentCanDeactivateGuard, EditorComponent, RecordData, RecordType, RouteDataTypesInterface } from '@rero/ng-core';
+import { RecordData, RecordType, RouteDataTypesInterface, unsavedChangesGuard } from '@rero/ng-core';
+import { EditorComponent } from '@rero/ng-core/editor';
 import { PERMISSIONS } from '@rero/shared';
 import { of } from 'rxjs';
+
 import { CAN_ACCESS_ACTIONS, canAccessGuard } from '../guard/can-access.guard';
 import { canAddLocalFieldsGuard } from '../guard/can-add-local-fields.guard';
 import { permissionGuard } from '../guard/permission.guard';
 import { BaseRoute } from './base-route';
 
-export const localFieldsRouteResolver: ResolveFn<Partial<RecordType>[]> = () =>
-  new LocalFieldsRoute().getTypes();
+export const localFieldsRouteResolver: ResolveFn<Partial<RecordType>[]> = () => new LocalFieldsRoute().getTypes();
 
 export const localFieldsRoutes: Routes = [
   {
@@ -19,7 +20,7 @@ export const localFieldsRoutes: Routes = [
     component: EditorComponent,
     title: _('Local fields'),
     canActivate: [canAccessGuard],
-    canDeactivate: [ComponentCanDeactivateGuard],
+    canDeactivate: [unsavedChangesGuard],
     data: {
       action: CAN_ACCESS_ACTIONS.UPDATE,
     },
@@ -29,7 +30,7 @@ export const localFieldsRoutes: Routes = [
     component: EditorComponent,
     title: _('Local fields'),
     canActivate: [permissionGuard, canAddLocalFieldsGuard],
-    canDeactivate: [ComponentCanDeactivateGuard],
+    canDeactivate: [unsavedChangesGuard],
     data: {
       permissions: [PERMISSIONS.LOFI_CREATE],
     },
@@ -53,12 +54,15 @@ class LocalFieldsRoute extends BaseRoute implements RouteDataTypesInterface {
         preCreateRecord: (data) => {
           if (data.parent == null) {
             data.organisation = {
-              $ref: this.routeToolService.apiService.getRefEndpoint('organisations', this.routeToolService.appStore.currentOrganisationPid()),
+              $ref: this.routeToolService.apiService.getRefEndpoint(
+                'organisations',
+                this.routeToolService.appStore.currentOrganisationPid(),
+              ),
             };
             data.parent = {
               $ref: this.routeToolService.apiService.getRefEndpoint(
                 this.routeToolService.getRouteQueryParam('type'),
-                this.routeToolService.getRouteQueryParam('ref')
+                this.routeToolService.getRouteQueryParam('ref'),
               ),
             };
           }

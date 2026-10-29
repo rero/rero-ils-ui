@@ -8,17 +8,8 @@
     "inlineSources": true,
     "preserveSymlinks": true,
     "types": [],
-    "paths": {
-      "@rero/ng-core": [
-        "./node_modules/@rero/ng-core"
-      ]
-    }
+    "paths": {}
   },
-  "exclude": [
-    "src/test.ts",
-    "**/*.spec.ts"
-  ],
-  "typeRoots": [
-    "./typings.d.ts"
-  ]
+  "exclude": ["src/test.ts", "**/*.spec.ts"],
+  "typeRoots": ["./typings.d.ts"]
 }

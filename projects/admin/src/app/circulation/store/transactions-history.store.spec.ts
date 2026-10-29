@@ -2,9 +2,10 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 import { Injector, signal } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
+import { AppStore, OperationLogsApiService } from '@rero/shared';
 import { DateTime } from 'luxon';
 import { of, throwError } from 'rxjs';
-import { AppStore, OperationLogsApiService } from '@rero/shared';
+
 import { TransactionRecord } from '../model/circulation.model';
 import { transactionsHistoryStore } from './transactions-history.store';
 
@@ -109,8 +110,9 @@ describe('transactionsHistoryStore', () => {
     it('should load the transactions of the connected librarian on init', () => {
       appStoreMock.user.set({ patronLibrarian: { pid: 'patron-1' } });
       // A new store instance runs its onInit hook with the user already set.
-      Injector.create({ providers: [transactionsHistoryStore], parent: TestBed.inject(Injector) })
-        .get(transactionsHistoryStore);
+      Injector.create({ providers: [transactionsHistoryStore], parent: TestBed.inject(Injector) }).get(
+        transactionsHistoryStore,
+      );
       TestBed.tick();
       expect(operationLogsApiServiceMock.getCirculationTransactionsByUser).toHaveBeenCalledWith('patron-1', 1, 10);
     });
@@ -147,9 +149,7 @@ describe('transactionsHistoryStore', () => {
     });
 
     it('should set total from the API result', () => {
-      operationLogsApiServiceMock.getCirculationTransactionsByUser.mockReturnValue(
-        of(makeEsResult([], 42))
-      );
+      operationLogsApiServiceMock.getCirculationTransactionsByUser.mockReturnValue(of(makeEsResult([], 42)));
 
       store.loadTransactions('patron-1');
 
@@ -158,7 +158,7 @@ describe('transactionsHistoryStore', () => {
 
     it('should default total to 0 when the result has no total', () => {
       operationLogsApiServiceMock.getCirculationTransactionsByUser.mockReturnValue(
-        of({ aggregations: {}, hits: { hits: [] }, links: {} })
+        of({ aggregations: {}, hits: { hits: [] }, links: {} }),
       );
 
       store.loadTransactions('patron-1');
@@ -168,7 +168,7 @@ describe('transactionsHistoryStore', () => {
 
     it('should leave the state untouched when the API returns an error payload', () => {
       operationLogsApiServiceMock.getCirculationTransactionsByUser.mockReturnValue(
-        of({ status: 500, title: 'Internal error' })
+        of({ status: 500, title: 'Internal error' }),
       );
 
       store.loadTransactions('patron-1');
@@ -179,7 +179,7 @@ describe('transactionsHistoryStore', () => {
 
     it('should not throw when the service observable errors out', () => {
       operationLogsApiServiceMock.getCirculationTransactionsByUser.mockReturnValue(
-        throwError(() => new Error('network error'))
+        throwError(() => new Error('network error')),
       );
 
       expect(() => store.loadTransactions('patron-1')).not.toThrow();
@@ -214,7 +214,7 @@ describe('transactionsHistoryStore', () => {
       const morning = makeLoanTransaction('t1', '2026-09-22T08:00:00+00:00');
       const evening = makeLoanTransaction('t2', '2026-09-22T18:00:00+00:00');
       operationLogsApiServiceMock.getCirculationTransactionsByUser.mockReturnValue(
-        of(makeEsResult([morning, evening], 2))
+        of(makeEsResult([morning, evening], 2)),
       );
 
       store.loadTransactions('patron-1');
@@ -227,9 +227,7 @@ describe('transactionsHistoryStore', () => {
     it('should sort date groups in descending order (most recent first)', () => {
       const older = makeLoanTransaction('t1', '2026-09-20T10:00:00+00:00');
       const newer = makeLoanTransaction('t2', '2026-09-22T10:00:00+00:00');
-      operationLogsApiServiceMock.getCirculationTransactionsByUser.mockReturnValue(
-        of(makeEsResult([older, newer], 2))
-      );
+      operationLogsApiServiceMock.getCirculationTransactionsByUser.mockReturnValue(of(makeEsResult([older, newer], 2)));
 
       store.loadTransactions('patron-1');
 
@@ -241,9 +239,7 @@ describe('transactionsHistoryStore', () => {
       // (e.g. Switzerland) — the day header must reflect that, not the UTC date.
       const isoDate = '2026-09-22T23:30:00+00:00';
       const lateEvening = makeLoanTransaction('t1', isoDate);
-      operationLogsApiServiceMock.getCirculationTransactionsByUser.mockReturnValue(
-        of(makeEsResult([lateEvening], 1))
-      );
+      operationLogsApiServiceMock.getCirculationTransactionsByUser.mockReturnValue(of(makeEsResult([lateEvening], 1)));
 
       store.loadTransactions('patron-1');
 
@@ -259,7 +255,7 @@ describe('transactionsHistoryStore', () => {
       const first = makeLoanTransaction('t1', '2026-09-22T08:00:00+00:00');
       const second = makeLoanTransaction('t2', '2026-09-22T09:00:00+00:00');
       operationLogsApiServiceMock.getCirculationTransactionsByUser.mockReturnValue(
-        of(makeEsResult([first, second], 2))
+        of(makeEsResult([first, second], 2)),
       );
 
       store.loadTransactions('patron-1');

@@ -2,21 +2,20 @@
 // SPDX-FileCopyrightText: UCLouvain
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-import { Component, computed, input, Signal, ChangeDetectionStrategy} from '@angular/core';
-import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
-import { Bind } from 'primeng/bind';
-import { Tag } from 'primeng/tag';
 import { NgTemplateOutlet } from '@angular/common';
+import { Component, computed, input, Signal } from '@angular/core';
+import { TranslatePipe } from '@ngx-translate/core';
+import { Bind } from '@openng/optimus-ui/bind';
+import { Tag } from '@openng/optimus-ui/tag';
+
 import { Match, RawIdentifier, RawMatch } from './model/remote-topic-model';
 
 @Component({
-    selector: 'admin-remote-topic-detail-view',
-    templateUrl: './remote-topic-detail-view.component.html',
-    imports: [TranslateDirective, Bind, Tag, NgTemplateOutlet, TranslatePipe],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  selector: 'admin-remote-topic-detail-view',
+  templateUrl: './remote-topic-detail-view.component.html',
+  imports: [Bind, Tag, NgTemplateOutlet, TranslatePipe],
 })
 export class RemoteTopicDetailViewComponent {
-
   /** Record metadata */
   record = input<any>();
 
@@ -40,7 +39,7 @@ export class RemoteTopicDetailViewComponent {
     return (match ?? []).map((m: RawMatch) => {
       const element: Match = {
         authorized_access_point: m.authorized_access_point,
-        source: m.source
+        source: m.source,
       };
       const uris = m.identifiedBy?.filter((id: RawIdentifier) => id.type === 'uri') || [];
       if (uris.length > 0) {

@@ -1,18 +1,18 @@
 // SPDX-FileCopyrightText: Fondation RERO+
 // SPDX-FileCopyrightText: UCLouvain
 // SPDX-License-Identifier: AGPL-3.0-or-later
-import { BaseRoute } from '@app/admin/routes/base-route';
 import { ResolveFn, Routes } from '@angular/router';
+import { BaseRoute } from '@app/admin/routes/base-route';
 import { _ } from '@ngx-translate/core';
 import { DetailComponent, RecordSearchPageComponent, RecordType, RouteDataTypesInterface } from '@rero/ng-core';
-import { PERMISSIONS, PERMISSION_OPERATOR } from '@rero/shared';
+import { PERMISSION_OPERATOR, PERMISSIONS } from '@rero/shared';
+
 import { CAN_ACCESS_ACTIONS, canAccessGuard } from '../../guard/can-access.guard';
 import { permissionGuard } from '../../guard/permission.guard';
 import { BudgetsBriefViewComponent } from '../components/budget/budget-brief-view/budgets-brief-view.component';
 import { BudgetDetailViewComponent } from '../components/budget/budget-detail-view/budget-detail-view.component';
 
-export const budgetsRouteResolver: ResolveFn<Partial<RecordType>[]> = () =>
-  new BudgetsRoute().getTypes();
+export const budgetsRouteResolver: ResolveFn<Partial<RecordType>[]> = () => new BudgetsRoute().getTypes();
 
 export const budgetsRoutes: Routes = [
   {

@@ -5,24 +5,24 @@ import { ResolveFn, Routes } from '@angular/router';
 import { _ } from '@ngx-translate/core';
 import {
   ActionStatus,
-  ComponentCanDeactivateGuard,
   DetailComponent,
-  EditorComponent,
   RecordData,
   RecordSearchPageComponent,
   RecordType,
   RouteDataTypesInterface,
+  unsavedChangesGuard,
 } from '@rero/ng-core';
-import { PERMISSIONS, PERMISSION_OPERATOR } from '@rero/shared';
+import { EditorComponent } from '@rero/ng-core/editor';
+import { PERMISSION_OPERATOR, PERMISSIONS } from '@rero/shared';
 import { Observable, Subscriber } from 'rxjs';
+
 import { CAN_ACCESS_ACTIONS, canAccessGuard } from '../guard/can-access.guard';
 import { permissionGuard } from '../guard/permission.guard';
 import { TemplatesBriefViewComponent } from '../record/brief-view/templates-brief-view.component';
 import { TemplateDetailViewComponent } from '../record/detail-view/template-detail-view/template-detail-view.component';
 import { BaseRoute } from './base-route';
 
-export const templatesRouteResolver: ResolveFn<Partial<RecordType>[]> = () =>
-  new TemplatesRoute().getTypes();
+export const templatesRouteResolver: ResolveFn<Partial<RecordType>[]> = () => new TemplatesRoute().getTypes();
 
 export const templatesRoutes: Routes = [
   {
@@ -49,7 +49,7 @@ export const templatesRoutes: Routes = [
     component: EditorComponent,
     title: _('Template'),
     canActivate: [canAccessGuard],
-    canDeactivate: [ComponentCanDeactivateGuard],
+    canDeactivate: [unsavedChangesGuard],
     data: {
       action: CAN_ACCESS_ACTIONS.UPDATE,
     },
@@ -57,7 +57,6 @@ export const templatesRoutes: Routes = [
 ];
 
 class TemplatesRoute extends BaseRoute implements RouteDataTypesInterface {
-
   /** Route name */
   readonly name = 'templates';
 
@@ -117,7 +116,7 @@ class TemplatesRoute extends BaseRoute implements RouteDataTypesInterface {
                   source: this.recordType,
                   pid: record.metadata.pid,
                 },
-              }
+              },
             );
             const url = this.routeToolService.urlSerializer.serialize(urlTree);
             actionStatus.url = url;

@@ -1,22 +1,21 @@
 // SPDX-FileCopyrightText: Fondation RERO+
 // SPDX-License-Identifier: AGPL-3.0-or-later
-import { Component, computed, DestroyRef, inject, signal, ChangeDetectionStrategy} from '@angular/core';
+import { Component, computed, DestroyRef, inject, signal } from '@angular/core';
 import { takeUntilDestroyed, toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { IssueService } from '@app/admin/service/issue.service';
-import { OperationLogsDialogComponent } from '@rero/shared';
 import { RecordPermissionService } from '@app/admin/service/record-permission.service';
-import { DetailComponent, DetailButtonComponent, ErrorComponent } from '@rero/ng-core';
-import { AppStore } from '@rero/shared';
-import { DynamicDialogRef } from 'primeng/dynamicdialog';
+import { TranslatePipe } from '@ngx-translate/core';
+import { Bind } from '@openng/optimus-ui/bind';
+import { Button } from '@openng/optimus-ui/button';
+import { DynamicDialogRef } from '@openng/optimus-ui/dynamicdialog';
+import { DetailButtonComponent, DetailComponent, ErrorComponent } from '@rero/ng-core';
+import { AppStore, OperationLogsDialogComponent } from '@rero/shared';
 import { of, switchMap, tap } from 'rxjs';
-import { Bind } from 'primeng/bind';
-import { Button } from 'primeng/button';
-import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
+
 @Component({
-    selector: 'admin-item-page-detail',
-    templateUrl: './item-page-detail.component.html',
-    imports: [DetailButtonComponent, Bind, Button, TranslateDirective, OperationLogsDialogComponent, ErrorComponent, TranslatePipe],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  selector: 'admin-item-page-detail',
+  templateUrl: './item-page-detail.component.html',
+  imports: [DetailButtonComponent, Bind, Button, OperationLogsDialogComponent, ErrorComponent, TranslatePipe],
 })
 export class ItemPageDetailComponent extends DetailComponent {
   private readonly _destroyRef = inject(DestroyRef);
@@ -35,14 +34,14 @@ export class ItemPageDetailComponent extends DetailComponent {
               this.recordPermissionService.membership(
                 this.appStore.currentLibraryPid(),
                 record?.metadata?.library?.pid,
-                permission
-              )
+                permission,
+              ),
             );
-          })
+          }),
         );
-      })
+      }),
     ),
-    { initialValue: null }
+    { initialValue: null },
   );
   private readonly _recordPermissionsValue = signal<any>(null);
   readonly resolvedRecordPermissions = computed(() => this._recordPermissionsValue());

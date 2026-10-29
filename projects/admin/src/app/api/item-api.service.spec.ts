@@ -2,41 +2,42 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 import { HttpClient } from '@angular/common/http';
 import { TestBed } from '@angular/core/testing';
-import { TranslateModule } from '@ngx-translate/core';
+import { provideTranslateService } from '@ngx-translate/core';
 import { ApiService, RecordData, RecordService } from '@rero/ng-core';
 import { IAvailability } from '@rero/shared';
 import { of } from 'rxjs';
-import { ItemApiService } from './item-api.service';
+
 import { ITypeEmail } from '../shared/preview-email/IPreviewInterface';
+import { ItemApiService } from './item-api.service';
 
 describe('ItemApiService', () => {
   let service: ItemApiService;
 
   const record = {
     metadata: {
-      pid: '1'
-    }
+      pid: '1',
+    },
   };
 
   const availability: IAvailability = {
     available: true,
-    status: 'on_loan'
-  }
+    status: 'on_loan',
+  };
 
   const item = {
     pid: 1,
     location: {
-      $ref: '1'
-    }
+      $ref: '1',
+    },
   };
 
   const statItem = {
     total: {
-      checkout: 5
+      checkout: 5,
     },
     total_year: {
-      checkout: 1
-    }
+      checkout: 1,
+    },
   };
 
   const preview = {
@@ -44,20 +45,20 @@ describe('ItemApiService', () => {
     recipient_suggestions: [
       {
         address: 'foo@bar.com',
-        type: ['to']
+        type: ['to'],
       },
       {
         address: 'bar@foo.com',
-        type: ['cc', 'reply_to']
-      }
-    ]
+        type: ['cc', 'reply_to'],
+      },
+    ],
   };
 
   const emailTypes: ITypeEmail[] = [
     {
       type: 'to',
-      address: 'foo@bar.com'
-    }
+      address: 'foo@bar.com',
+    },
   ];
 
   const httpClientSpy = { get: vi.fn(), post: vi.fn() };
@@ -67,14 +68,12 @@ describe('ItemApiService', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [
-        TranslateModule.forRoot()
-      ],
       providers: [
+        provideTranslateService(),
         { provide: RecordService, useValue: recordServiceSpy },
         { provide: HttpClient, useValue: httpClientSpy },
-        { provide: ApiService, useValue: { getRefEndpoint: vi.fn().mockReturnValue('api/locations/2') } }
-      ]
+        { provide: ApiService, useValue: { getRefEndpoint: vi.fn().mockReturnValue('api/locations/2') } },
+      ],
     });
     service = TestBed.inject(ItemApiService);
   });
@@ -85,40 +84,38 @@ describe('ItemApiService', () => {
 
   it('should request the item with the rero+json representation', () => {
     service.getItem('1').subscribe((result: RecordData) => expect(result).toEqual(record));
-    expect(recordServiceSpy.getRecord).toHaveBeenCalledWith(
-      'items', '1', { resolve: 1, headers: { Accept: 'application/rero+json' } });
+    expect(recordServiceSpy.getRecord).toHaveBeenCalledWith('items', '1', {
+      resolve: 1,
+      headers: { Accept: 'application/rero+json' },
+    });
   });
 
-  it('should return the item\'s updated location', () => {
-    const itemUpdated = {...item};
+  it("should return the item's updated location", () => {
+    const itemUpdated = { ...item };
     itemUpdated.location = { $ref: 'api/locations/2' };
     recordServiceSpy.update.mockReturnValue(of(itemUpdated));
     service.updateLocation(item, '2').subscribe((result: any) => {
       expect(result).toEqual(itemUpdated);
-    })
+    });
   });
 
   it('should return the availability of the item', () => {
     httpClientSpy.get.mockReturnValue(of(availability));
-    service.getAvailability('1')
-      .subscribe((response: IAvailability) => expect(response).toEqual(availability));
+    service.getAvailability('1').subscribe((response: IAvailability) => expect(response).toEqual(availability));
   });
 
   it('should return statistics on an item', () => {
     httpClientSpy.get.mockReturnValue(of(statItem));
-    service.getStatsByItemPid('1')
-      .subscribe((result: any) => expect(result).toEqual(statItem));
+    service.getStatsByItemPid('1').subscribe((result: any) => expect(result).toEqual(statItem));
   });
 
   it('should return the preview on the item', () => {
     httpClientSpy.get.mockReturnValue(of(preview));
-    service.getPreviewByItemPid('1')
-      .subscribe((result: any) => expect(result).toEqual(preview));
+    service.getPreviewByItemPid('1').subscribe((result: any) => expect(result).toEqual(preview));
   });
 
   it('should add a claim at the end of the item', () => {
     httpClientSpy.post.mockReturnValue(of(true));
-    service.addClaimIssue('1', emailTypes)
-      .subscribe((result: any) => expect(result).toBe(true))
+    service.addClaimIssue('1', emailTypes).subscribe((result: any) => expect(result).toBe(true));
   });
 });

@@ -1,11 +1,12 @@
 // SPDX-FileCopyrightText: Fondation RERO+
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-import { TestBed } from "@angular/core/testing";
-import { KeyboardShortcutsService } from "./keyboard-shortcuts.service";
-import { Router } from "@angular/router";
-import { TranslateModule } from "@ngx-translate/core";
-import { HotkeysService } from "@ngneat/hotkeys";
+import { TestBed } from '@angular/core/testing';
+import { Router } from '@angular/router';
+import { HotkeysService } from '@ngneat/hotkeys';
+import { provideTranslateService } from '@ngx-translate/core';
+
+import { KeyboardShortcutsService } from './keyboard-shortcuts.service';
 
 describe('KeyboardShortcutsService', () => {
   let service: KeyboardShortcutsService;
@@ -13,14 +14,7 @@ describe('KeyboardShortcutsService', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [
-        TranslateModule.forRoot()
-      ],
-      providers: [
-        KeyboardShortcutsService,
-        HotkeysService,
-        Router
-      ]
+      providers: [provideTranslateService(), KeyboardShortcutsService, HotkeysService, Router],
     });
 
     service = TestBed.inject(KeyboardShortcutsService);
@@ -39,7 +33,7 @@ describe('KeyboardShortcutsService', () => {
   it('should define a shortcut to focus the result list search input', () => {
     service.initializeShortcuts();
     const shortcuts = hotkeys.getHotkeys();
-    expect(shortcuts.some(shortcut => shortcut.keys === 'q')).toBe(true);
+    expect(shortcuts.some((shortcut) => shortcut.keys === 'q')).toBe(true);
   });
 
   it('should focus the search input with the q shortcut', () => {

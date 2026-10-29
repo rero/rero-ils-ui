@@ -7,17 +7,16 @@ SPDX-License-Identifier: AGPL-3.0-or-later
   <div [class]="class()">
     <i
       class="fa-solid fa-circle ui:mr-1"
-      [ngClass]="{'text-success': data.available, 'text-error': !data.available}"
-    ></i>
+      [ngClass]="{ 'text-success': data.available, 'text-error': !data.available }"></i>
     @switch (recordType()) {
-      @case('item') {
-        @switch(data.status) {
-          @case('on_loan') {
+      @case ('item') {
+        @switch (data.status) {
+          @case ('on_loan') {
             {{ 'due until' | translate }}
-            {{ data.due_date | dateTranslate :'shortDate' }}
+            {{ data.due_date | dateTranslate: 'shortDate' }}
           }
           @default {
-            {{ data.circulation_message | getTranslatedLabel : language() }}
+            {{ data.circulation_message | getTranslatedLabel: language() }}
           }
         }
         @if (data.number_of_request > 0) {

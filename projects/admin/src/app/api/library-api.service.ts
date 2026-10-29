@@ -7,10 +7,9 @@ import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class LibraryApiService {
-
   private recordService: RecordService = inject(RecordService);
 
   /**
@@ -19,7 +18,6 @@ export class LibraryApiService {
    * @returns the library metadata
    */
   getByPid(pid: string): Observable<any> {
-    return this.recordService.getRecord('libraries', pid)
-      .pipe(map(record => record.metadata));
+    return this.recordService.getRecord('libraries', pid).pipe(map((record) => record.metadata));
   }
 }

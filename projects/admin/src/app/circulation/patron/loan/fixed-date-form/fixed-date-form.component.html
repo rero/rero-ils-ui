@@ -14,11 +14,10 @@ SPDX-License-Identifier: AGPL-3.0-or-later
       [showIcon]="true"
       [iconDisplay]="'input'"
       [firstDayOfWeek]="1"
-      [ngClass]="{'ui:border-warning': formGroup.controls.endDate.touched && formGroup.controls.endDate.invalid}"
+      [ngClass]="{ 'ui:border-warning': formGroup.controls.endDate.touched && formGroup.controls.endDate.invalid }"
       [readonlyInput]="true"
       [disabledDays]="disabledDays"
-      [minDate]="today"
-    />
+      [minDate]="today" />
     <div>
       @if (formGroup.controls.endDate.valid || !formGroup.controls.endDate.touched) {
         <span class="text-warning ui:flex ui:gap-1">
@@ -27,29 +26,31 @@ SPDX-License-Identifier: AGPL-3.0-or-later
         </span>
       }
       @if (formGroup.controls.endDate.touched && formGroup.controls.endDate.hasError('required')) {
-        <ng-container [ngTemplateOutlet]="errorMessage"
-                      [ngTemplateOutletContext]="{message: 'The field is required' | translate}">
+        <ng-container
+          [ngTemplateOutlet]="errorMessage"
+          [ngTemplateOutletContext]="{ message: 'The field is required' | translate }">
         </ng-container>
       }
       @if (formGroup.controls.endDate.touched && formGroup.controls.endDate.hasError('minimum-date')) {
-        <ng-container [ngTemplateOutlet]="errorMessage"
-                      [ngTemplateOutletContext]="{message: 'Selected date cannot be in the past.' | translate}">
+        <ng-container
+          [ngTemplateOutlet]="errorMessage"
+          [ngTemplateOutletContext]="{ message: 'Selected date cannot be in the past.' | translate }">
         </ng-container>
       }
     </div>
     <div class="ui:flex ui:gap-1">
       <p-checkbox [binary]="true" inputId="remember" formControlName="remember" />
-      <label for="remember" translate>Remember this date in current session</label>
+      <label for="remember">{{ 'Remember this date in current session' | translate }}</label>
     </div>
   </div>
 
   <div class="ui:mt-4 ui:flex ui:gap-1 ui:justify-end">
-    <p-button [label]="'Cancel' |translate" severity="danger" outlined (onClick)="closeModal()" />
-    <p-button type="submit" [label]="'Apply' |translate" [disabled]="this.formGroup.invalid || isSending()" />
+    <p-button [label]="'Cancel' | translate" severity="danger" outlined (onClick)="closeModal()" />
+    <p-button type="submit" [label]="'Apply' | translate" [disabled]="this.formGroup.invalid || isSending()" />
   </div>
 </form>
 
-<ng-template #errorMessage let-message='message'>
+<ng-template #errorMessage let-message="message">
   <span class="text-error ui:flex ui:gap-1">
     <i class="fa-solid fa-circle-xmark"></i>
     {{ message }}

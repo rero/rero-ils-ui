@@ -1,53 +1,59 @@
 // SPDX-FileCopyrightText: Fondation RERO+
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-import { HttpClient } from "@angular/common/http";
-import { TestBed } from "@angular/core/testing";
-import { Notification, NotificationType } from "@app/admin/classes/notification";
-import { IPreview } from "@app/admin/shared/preview-email/IPreviewInterface";
-import { TranslateModule } from "@ngx-translate/core";
-import { RecordService, RecordUiService } from "@rero/ng-core";
-import { apiResponse } from "@rero/shared";
-import { ConfirmationService, MessageService } from "primeng/api";
-import { of } from "rxjs";
-import { AcqOrderHistoryVersionResponseInterface, AcqOrderLineStatus, AcqOrderStatus, IAcqOrder, orderDefaultData, orderLineDefaultData } from "../classes/order";
-import { AcqOrderApiService } from "./acq-order-api.service";
+import { HttpClient } from '@angular/common/http';
+import { TestBed } from '@angular/core/testing';
+import { Notification, NotificationType } from '@app/admin/classes/notification';
+import { IPreview } from '@app/admin/shared/preview-email/IPreviewInterface';
+import { provideTranslateService } from '@ngx-translate/core';
+import { ConfirmationService, MessageService } from '@openng/optimus-ui/api';
+import { RecordService, RecordUiService } from '@rero/ng-core';
+import { apiResponse } from '@rero/shared';
+import { of } from 'rxjs';
+
+import {
+  AcqOrderHistoryVersionResponseInterface,
+  AcqOrderLineStatus,
+  AcqOrderStatus,
+  IAcqOrder,
+  orderDefaultData,
+  orderLineDefaultData,
+} from '../classes/order';
+import { AcqOrderApiService } from './acq-order-api.service';
 
 describe('AcqOrderApiService', () => {
   let service: AcqOrderApiService;
 
   const orderRecord: IAcqOrder = {
-    reference: "Order A1112",
+    reference: 'Order A1112',
     priority: 0,
     status: AcqOrderStatus.CANCELLED,
-    currency: "CHF",
+    currency: 'CHF',
     order_date: new Date('2025-01-01'),
     account_statement: {
       provisional: {
         total_amount: 10,
-        quantity: 1
+        quantity: 1,
       },
       expenditure: {
         total_amount: 10,
-        quantity: 1
-      }
+        quantity: 1,
+      },
     },
     vendor: {
-      pid: '1'
+      pid: '1',
     },
     is_current_budget: true,
     organisation: {
-      pid: '1'
+      pid: '1',
     },
-    notes: []
+    notes: [],
   };
 
   const orderPreview = {
     preview: 'preview',
-    recipient_suggestions: [
-      {address: 'address 1'}
-    ]
-  }
+    recipient_suggestions: [{ address: 'address 1' }],
+  };
 
   const notification = {
     pid: '1',
@@ -55,9 +61,9 @@ describe('AcqOrderApiService', () => {
     notification_sent: true,
     notification_type: NotificationType.AVAILABILITY,
     context: {
-      recipients: [{ type: 'to', address: 'foo@bar.com'}]
-    }
-  }
+      recipients: [{ type: 'to', address: 'foo@bar.com' }],
+    },
+  };
 
   const orderHistory: AcqOrderHistoryVersionResponseInterface[] = [
     {
@@ -66,8 +72,8 @@ describe('AcqOrderApiService', () => {
       description: 'description',
       created: new Date('2025-04-01'),
       updated: new Date('2025-04-17'),
-      current: true
-    }
+      current: true,
+    },
   ];
 
   const orderLines = [
@@ -84,20 +90,20 @@ describe('AcqOrderApiService', () => {
         discount_amount: 0,
         total_amount: 20,
         acq_account: {
-          pid: '1'
+          pid: '1',
         },
         acq_order: {
-          pid: '1'
+          pid: '1',
         },
         document: {
-          pid: '1'
+          pid: '1',
         },
         organisation: {
-          pid: '1'
+          pid: '1',
         },
-        notes: []
-      }
-    }
+        notes: [],
+      },
+    },
   ];
 
   const orderWithDenormalizedLines = {
@@ -106,8 +112,8 @@ describe('AcqOrderApiService', () => {
       order_lines: [
         { pid: '1', document: { pid: '1', title: 'Title 1' } },
         { pid: '2', document: { pid: '2' } },
-      ]
-    }
+      ],
+    },
   };
 
   const recordServiceSpy = { getRecord: vi.fn(), getRecords: vi.fn() };
@@ -119,17 +125,15 @@ describe('AcqOrderApiService', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [
-        TranslateModule.forRoot()
-      ],
       providers: [
+        provideTranslateService(),
         AcqOrderApiService,
         ConfirmationService,
         MessageService,
         { provide: RecordService, useValue: recordServiceSpy },
         { provide: RecordUiService, useValue: recordUiServiceSpy },
         { provide: HttpClient, useValue: httpClientSpy },
-      ]
+      ],
     });
 
     service = TestBed.inject(AcqOrderApiService);
@@ -140,45 +144,44 @@ describe('AcqOrderApiService', () => {
   });
 
   it('should return a budget', () => {
-    const data = {...orderDefaultData, ...orderRecord};
+    const data = { ...orderDefaultData, ...orderRecord };
     recordServiceSpy.getRecord.mockReturnValue(of({ metadata: orderRecord }));
     service.getOrder('1').subscribe((result: IAcqOrder) => expect(result).toEqual(data));
   });
 
   it('should return the order preview', () => {
     httpClientSpy.get.mockReturnValue(of(orderPreview));
-    service.getOrderPreview('1')
-      .subscribe((result: IPreview) => expect(result).toEqual(orderPreview));
+    service.getOrderPreview('1').subscribe((result: IPreview) => expect(result).toEqual(orderPreview));
   });
 
   it('should return the notification sent', () => {
-    httpClientSpy.post.mockReturnValue(of({data: notification}));
-    service.sendOrder('1', [{ type: 'to', address: 'foo@bar.com'}])
-      .subscribe((result: Notification) => {
-        expect(result).toBeInstanceOf(Notification);
-      })
+    httpClientSpy.post.mockReturnValue(of({ data: notification }));
+    service.sendOrder('1', [{ type: 'to', address: 'foo@bar.com' }]).subscribe((result: Notification) => {
+      expect(result).toBeInstanceOf(Notification);
+    });
   });
 
   it('should return a list of the order history', () => {
     httpClientSpy.get.mockReturnValue(of(orderHistory));
-    service.getOrderHistory('1')
-      .subscribe((result: any) => expect(result).toEqual(orderHistory));
+    service.getOrderHistory('1').subscribe((result: any) => expect(result).toEqual(orderHistory));
   });
 
   it('should return a list of lines in an order', () => {
     apiResponse.hits.hits = orderLines;
     apiResponse.hits.total = apiResponse.hits.hits.length;
     recordServiceSpy.getRecords.mockReturnValue(of(apiResponse));
-    const data = [{
-      ...orderLineDefaultData,
-      ...orderLines[0].metadata,
-      created: orderLines[0].created,
-      updated: orderLines[0].updated
-    }];
+    const data = [
+      {
+        ...orderLineDefaultData,
+        ...orderLines[0].metadata,
+        created: orderLines[0].created,
+        updated: orderLines[0].updated,
+      },
+    ];
     service.getOrderLines('1').subscribe((result: any) => {
-        expect(result).toEqual(data);
-        expect(result[0].quantity).toEqual(2);
-      });
+      expect(result).toEqual(data);
+      expect(result[0].quantity).toEqual(2);
+    });
   });
 
   it('should return an empty document titles map when the order has no hits', () => {

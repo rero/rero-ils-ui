@@ -5,12 +5,19 @@
 import { signal } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { RecordPermissions } from '@app/admin/classes/permissions';
-import { AcqOrderApiService } from '../../../../api/acq-order-api.service';
-import { AcqReceiptApiService } from '../../../../api/acq-receipt-api.service';
-import { RecordPermissionService } from '../../../../../service/record-permission.service';
 import { AppStore } from '@rero/shared';
 import { of, throwError } from 'rxjs';
-import { AcqOrderHistoryVersion, AcqOrderLineStatus, AcqOrderStatus, IAcqOrder, IAcqOrderLine } from '../../../../classes/order';
+
+import { RecordPermissionService } from '../../../../../service/record-permission.service';
+import { AcqOrderApiService } from '../../../../api/acq-order-api.service';
+import { AcqReceiptApiService } from '../../../../api/acq-receipt-api.service';
+import {
+  AcqOrderHistoryVersion,
+  AcqOrderLineStatus,
+  AcqOrderStatus,
+  IAcqOrder,
+  IAcqOrderLine,
+} from '../../../../classes/order';
 import { IAcqReceipt } from '../../../../classes/receipt';
 import { OrderDetailStore } from './order-detail.store';
 
@@ -211,7 +218,10 @@ describe('OrderDetailStore', () => {
       store.setFromRecord({
         metadata: {
           ...mockOrder,
-          account_statement: { provisional: { total_amount: 0, quantity: 0 }, expenditure: { total_amount: 0, quantity: 0 } },
+          account_statement: {
+            provisional: { total_amount: 0, quantity: 0 },
+            expenditure: { total_amount: 0, quantity: 0 },
+          },
         },
       });
       expect(store.canPlaceOrder()).toBe(false);
@@ -308,7 +318,7 @@ describe('OrderDetailStore', () => {
       const result = store.orderCreateInfoMessage();
       expect(recordPermissionServiceSpy.generateTooltipMessage).toHaveBeenCalledWith(
         mockPermissions.create.reasons,
-        'create'
+        'create',
       );
       expect(result).toBe('tooltip message');
     });
@@ -319,10 +329,7 @@ describe('OrderDetailStore', () => {
       const store = setupStore();
       store['loadReceiptPermissions']('1');
       const result = store.receiptCreateInfoMessage();
-      expect(recordPermissionServiceSpy.generateTooltipMessage).toHaveBeenCalledWith(
-        undefined,
-        'create'
-      );
+      expect(recordPermissionServiceSpy.generateTooltipMessage).toHaveBeenCalledWith(undefined, 'create');
       expect(result).toBe('tooltip message');
     });
   });
@@ -354,12 +361,10 @@ describe('OrderDetailStore', () => {
     it('should merge document titles returned by getOrderLinesDocumentTitles', () => {
       const store = setupStore();
       acqOrderServiceSpy.getOrderLines.mockReturnValue(of([mockOrderLineA, mockOrderLineB]));
-      acqOrderServiceSpy.getOrderLinesDocumentTitles.mockReturnValue(
-        of(new Map([['lineA', 'Title A']]))
-      );
+      acqOrderServiceSpy.getOrderLinesDocumentTitles.mockReturnValue(of(new Map([['lineA', 'Title A']])));
       store['loadOrderLines']('1');
-      expect(store.orderLines().find(l => l.pid === 'lineA')?.documentTitle).toBe('Title A');
-      expect(store.orderLines().find(l => l.pid === 'lineB')?.documentTitle).toBeUndefined();
+      expect(store.orderLines().find((l) => l.pid === 'lineA')?.documentTitle).toBe('Title A');
+      expect(store.orderLines().find((l) => l.pid === 'lineB')?.documentTitle).toBeUndefined();
     });
   });
 
@@ -383,7 +388,12 @@ describe('OrderDetailStore', () => {
       const store = setupStore();
       acqOrderServiceSpy.getOrderLines.mockReturnValue(of([mockOrderLineA, mockOrderLineB]));
       acqOrderServiceSpy.getOrderLinesDocumentTitles.mockReturnValue(
-        of(new Map([['lineA', 'Zebra'], ['lineB', 'Alpha']]))
+        of(
+          new Map([
+            ['lineA', 'Zebra'],
+            ['lineB', 'Alpha'],
+          ]),
+        ),
       );
       store['loadOrderLines']('1');
       return store;
@@ -391,69 +401,69 @@ describe('OrderDetailStore', () => {
 
     it('should sort by priority descending by default', () => {
       const store = setupSortedStore();
-      expect(store.sortedOrderLines().map(l => l.pid)).toEqual(['lineA', 'lineB']);
+      expect(store.sortedOrderLines().map((l) => l.pid)).toEqual(['lineA', 'lineB']);
     });
 
     it('should sort by priority ascending', () => {
       const store = setupSortedStore();
       store.setSortCriteria('priority');
-      expect(store.sortedOrderLines().map(l => l.pid)).toEqual(['lineB', 'lineA']);
+      expect(store.sortedOrderLines().map((l) => l.pid)).toEqual(['lineB', 'lineA']);
     });
 
     it('should sort by document title ascending', () => {
       const store = setupSortedStore();
       store.setSortCriteria('documenttitle');
-      expect(store.sortedOrderLines().map(l => l.pid)).toEqual(['lineB', 'lineA']);
+      expect(store.sortedOrderLines().map((l) => l.pid)).toEqual(['lineB', 'lineA']);
     });
 
     it('should sort by document title descending', () => {
       const store = setupSortedStore();
       store.setSortCriteria('-documenttitle');
-      expect(store.sortedOrderLines().map(l => l.pid)).toEqual(['lineA', 'lineB']);
+      expect(store.sortedOrderLines().map((l) => l.pid)).toEqual(['lineA', 'lineB']);
     });
 
     it('should sort by status ascending', () => {
       const store = setupSortedStore();
       store.setSortCriteria('status');
-      expect(store.sortedOrderLines().map(l => l.pid)).toEqual(['lineB', 'lineA']);
+      expect(store.sortedOrderLines().map((l) => l.pid)).toEqual(['lineB', 'lineA']);
     });
 
     it('should sort by status descending', () => {
       const store = setupSortedStore();
       store.setSortCriteria('-status');
-      expect(store.sortedOrderLines().map(l => l.pid)).toEqual(['lineA', 'lineB']);
+      expect(store.sortedOrderLines().map((l) => l.pid)).toEqual(['lineA', 'lineB']);
     });
 
     it('should sort by created ascending', () => {
       const store = setupSortedStore();
       store.setSortCriteria('created');
-      expect(store.sortedOrderLines().map(l => l.pid)).toEqual(['lineB', 'lineA']);
+      expect(store.sortedOrderLines().map((l) => l.pid)).toEqual(['lineB', 'lineA']);
     });
 
     it('should sort by created descending', () => {
       const store = setupSortedStore();
       store.setSortCriteria('-created');
-      expect(store.sortedOrderLines().map(l => l.pid)).toEqual(['lineA', 'lineB']);
+      expect(store.sortedOrderLines().map((l) => l.pid)).toEqual(['lineA', 'lineB']);
     });
 
     it('should sort by updated ascending', () => {
       const store = setupSortedStore();
       store.setSortCriteria('updated');
-      expect(store.sortedOrderLines().map(l => l.pid)).toEqual(['lineA', 'lineB']);
+      expect(store.sortedOrderLines().map((l) => l.pid)).toEqual(['lineA', 'lineB']);
     });
 
     it('should sort by updated descending', () => {
       const store = setupSortedStore();
       store.setSortCriteria('-updated');
-      expect(store.sortedOrderLines().map(l => l.pid)).toEqual(['lineB', 'lineA']);
+      expect(store.sortedOrderLines().map((l) => l.pid)).toEqual(['lineB', 'lineA']);
     });
 
     it('should not mutate the original orderLines array', () => {
       const store = setupSortedStore();
-      const before = store.orderLines().map(line => line.pid);
+      const before = store.orderLines().map((line) => line.pid);
       store.setSortCriteria('-priority');
       store.sortedOrderLines();
-      expect(store.orderLines().map(line => line.pid)).toEqual(before);
+      expect(store.orderLines().map((line) => line.pid)).toEqual(before);
     });
   });
 
@@ -474,7 +484,14 @@ describe('OrderDetailStore', () => {
   describe('loadHistory', () => {
     it('should populate historyVersions with AcqOrderHistoryVersion instances', () => {
       const store = setupStore();
-      const rawVersion = { $ref: '/api/acq_orders/2', label: 'v1', description: '', created: new Date(), updated: new Date(), current: true };
+      const rawVersion = {
+        $ref: '/api/acq_orders/2',
+        label: 'v1',
+        description: '',
+        created: new Date(),
+        updated: new Date(),
+        current: true,
+      };
       acqOrderServiceSpy.getOrderHistory.mockReturnValue(of([rawVersion]));
       store['loadHistory']('1');
       expect(store.historyVersions().length).toBe(1);

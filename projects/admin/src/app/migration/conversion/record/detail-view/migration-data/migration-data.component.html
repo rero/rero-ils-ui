@@ -6,26 +6,22 @@ SPDX-License-Identifier: AGPL-3.0-or-later
   <h5>
     {{ record().id }}&nbsp;
     <p-tag
-      [severity]="$any(status() === 'complete'? 'success': status().endsWith('error') ? 'danger': 'secondary')"
-      [value]="record().conversion.status | translate"
-    />
+      [severity]="$any(status() === 'complete' ? 'success' : status().endsWith('error') ? 'danger' : 'secondary')"
+      [value]="record().conversion.status | translate" />
   </h5>
   <div class="ui:text-xs ui:italic">
-    <span translate>Modification date</span>:&nbsp;{{ record()?.updated_at | dateTranslate : "medium" }}
+    <span>{{ 'Modification date' | translate }}</span
+    >:&nbsp;{{ record()?.updated_at | dateTranslate: 'medium' }}
   </div>
   <div class="ui:my-3">
     @for (message of messages(); track $index) {
-      <p-message styleClass="ui:mb-2" [severity]="$any(message.severity)" showTransitionOptions="0ms"
-      >
+      <p-message styleClass="ui:mb-2" [severity]="$any(message.severity)" showTransitionOptions="0ms">
         {{ message.detail }}
       </p-message>
     }
   </div>
   <div class="ui:text-sm ui:grid ui:grid-cols-12 ui:gap-2 data">
     <div class="markdown ui:col-span-6 col-overflow" [innerHTML]="record().raw | markdown"></div>
-    <div
-      class="json ui:col-span-6 col-overflow"
-      [innerHTML]="record()?.conversion?.json | json | highlightJson"
-    ></div>
+    <div class="json ui:col-span-6 col-overflow" [innerHTML]="record()?.conversion?.json | json | highlightJson"></div>
   </div>
 }

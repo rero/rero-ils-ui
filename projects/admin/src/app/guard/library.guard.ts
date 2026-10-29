@@ -13,7 +13,7 @@ import { catchError, map } from 'rxjs/operators';
 export function checkLibraryAccess(
   owningLibrary$: Observable<string>,
   appStore: InstanceType<typeof AppStore>,
-  router: Router
+  router: Router,
 ) {
   return owningLibrary$.pipe(
     map((owningLibrary: string) => {
@@ -22,7 +22,7 @@ export function checkLibraryAccess(
       }
       return true;
     }),
-    catchError(() => of(router.createUrlTree(['/errors/500'])))
+    catchError(() => of(router.createUrlTree(['/errors/500']))),
   );
 }
 

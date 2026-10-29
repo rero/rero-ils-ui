@@ -1,7 +1,7 @@
 // SPDX-FileCopyrightText: Fondation RERO+
 // SPDX-License-Identifier: AGPL-3.0-or-later
-import { IQueryOptions, ISuggestionItem } from '@rero/ng-core';
-import { Observable } from "rxjs";
+import { IQueryOptions, ISuggestionItem } from '@rero/ng-core/editor';
+import { Observable } from 'rxjs';
 
 export type IRemoteAutocomplete = {
   getName(): string;
@@ -9,4 +9,4 @@ export type IRemoteAutocomplete = {
   getSuggestions(query: string, queryOptions: IQueryOptions, currentPid: string | null): Observable<ISuggestionItem[]>;
 
   getValueAsHTML(queryOptions: IQueryOptions, item: ISuggestionItem): Observable<string>;
-}
+};

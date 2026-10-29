@@ -1,17 +1,17 @@
 // SPDX-FileCopyrightText: Fondation RERO+
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
+import { provideHttpClient, withXhr } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { Router, RouterModule, RouterStateSnapshot, UrlTree } from '@angular/router';
-import { TranslateModule } from '@ngx-translate/core';
+import { provideTranslateService } from '@ngx-translate/core';
 import { AppStore } from '@rero/shared';
 import { cloneDeep } from 'lodash-es';
 import { firstValueFrom } from 'rxjs';
+
 import { ErrorPageComponent } from '../error/error-page/error-page.component';
 import { libraryGuard } from './library.guard';
-import { provideHttpClient } from '@angular/common/http';
-
 
 describe('libraryGuard', () => {
   let router: Router;
@@ -19,30 +19,28 @@ describe('libraryGuard', () => {
   const routes = [
     {
       path: 'errors/403',
-      component: ErrorPageComponent
-    }
+      component: ErrorPageComponent,
+    },
   ];
 
-  const activatedRouteSnapshotSpy = { } as any;
+  const activatedRouteSnapshotSpy = {} as any;
   activatedRouteSnapshotSpy.queryParams = { library: '1' };
 
   const appStoreSpy = { currentLibraryPid: vi.fn(() => '1') } as any;
 
   const runGuard = (route: any) =>
-    TestBed.runInInjectionContext(() =>
-      libraryGuard(route, {} as RouterStateSnapshot)
-    ) as any;
+    TestBed.runInInjectionContext(() => libraryGuard(route, {} as RouterStateSnapshot)) as any;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-    imports: [RouterModule.forRoot(routes),
-        TranslateModule.forRoot()],
-    providers: [
+      imports: [RouterModule.forRoot(routes)],
+      providers: [
+        provideTranslateService(),
         { provide: AppStore, useValue: appStoreSpy },
-        provideHttpClient(),
-        provideHttpClientTesting()
-    ]
-});
+        provideHttpClient(withXhr()),
+        provideHttpClientTesting(),
+      ],
+    });
     router = TestBed.inject(Router);
   });
 

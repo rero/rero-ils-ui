@@ -4,6 +4,7 @@ import { inject } from '@angular/core';
 import { ActivatedRouteSnapshot, CanActivateFn, Router } from '@angular/router';
 import { AppStore } from '@rero/shared';
 import { map } from 'rxjs/operators';
+
 import { LocalFieldApiService } from '../api/local-field-api.service';
 
 const typeMap: Record<string, string> = {
@@ -33,5 +34,5 @@ export const canAddLocalFieldsGuard: CanActivateFn = (route: ActivatedRouteSnaps
 
   return localFieldsApiService
     .getByResourceTypeAndResourcePidAndOrganisationId(mappedType, ref, appStore.currentOrganisationPid()!)
-    .pipe(map(record => !record.metadata));
+    .pipe(map((record) => !record.metadata));
 };

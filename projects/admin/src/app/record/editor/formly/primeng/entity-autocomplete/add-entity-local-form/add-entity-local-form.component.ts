@@ -1,26 +1,25 @@
 // SPDX-FileCopyrightText: Fondation RERO+
 // SPDX-FileCopyrightText: UCLouvain
 // SPDX-License-Identifier: AGPL-3.0-or-later
-import { Component, inject, OnDestroy, OnInit, ChangeDetectionStrategy} from '@angular/core';
+import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { FormlyFieldConfig, FormlyModule } from '@ngx-formly/core';
 import { FormlyJsonschema } from '@ngx-formly/core/json-schema';
-import { HttpPendingService, NgCoreTranslateService, processJsonSchema, RecordService } from '@rero/ng-core';
-import { MessageService } from 'primeng/api';
-import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
-import { Subscription } from 'rxjs';
-import { Bind } from 'primeng/bind';
-import { Button } from 'primeng/button';
 import { TranslatePipe } from '@ngx-translate/core';
+import { MessageService } from '@openng/optimus-ui/api';
+import { Bind } from '@openng/optimus-ui/bind';
+import { Button } from '@openng/optimus-ui/button';
+import { DynamicDialogConfig, DynamicDialogRef } from '@openng/optimus-ui/dynamicdialog';
+import { HttpPendingService, NgCoreTranslateService, RecordService } from '@rero/ng-core';
+import { processJsonSchema } from '@rero/ng-core/editor';
+import { Subscription } from 'rxjs';
 
 @Component({
-    selector: 'admin-add-entity-local-form',
-    templateUrl: './add-entity-local-form.component.html',
-    imports: [FormsModule, ReactiveFormsModule, FormlyModule, Bind, Button, TranslatePipe],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  selector: 'admin-add-entity-local-form',
+  templateUrl: './add-entity-local-form.component.html',
+  imports: [FormsModule, ReactiveFormsModule, FormlyModule, Bind, Button, TranslatePipe],
 })
 export class AddEntityLocalFormComponent implements OnInit, OnDestroy {
-
   private messageService = inject(MessageService);
   private dynamicDialogRef: DynamicDialogRef = inject(DynamicDialogRef);
   private dynamicDialogConfig: DynamicDialogConfig = inject(DynamicDialogConfig);
@@ -31,7 +30,7 @@ export class AddEntityLocalFormComponent implements OnInit, OnDestroy {
 
   /** TODO: Find a better solution for next iteration */
   translatedTypes = {
-    'concepts_genreForm': 'bf:Topic'
+    concepts_genreForm: 'bf:Topic',
   };
 
   /** Available types for the select menu on form */
@@ -59,27 +58,33 @@ export class AddEntityLocalFormComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     const { selectedType, searchTerm } = this.dynamicDialogConfig.data;
     this.form = new FormGroup({});
-    this.subscriptions.add(this.recordService.getSchemaForm('local_entities').subscribe((schemaResult) => {
-      let schema: any = processJsonSchema((schemaResult as any).schema);
-      // Transfer the selected oneOf to the root schema
-      schema = schema.oneOf.find((element: any) => element.properties.type.const === this.translatedType(selectedType));
-      // Deleting the oneOf key from the schema
-      delete schema.oneOf;
-      this.fields = [this.formlyJsonschema.toFieldConfig(schema, {
-        map: (field: FormlyFieldConfig) => {
-          // Put the value typed by the user in the corresponding field
-          if (this.populateFields.includes(String(field.key))) {
-            field.defaultValue = searchTerm;
-          }
-          // If the type is concept-genreForm, we set the genreForm field flag
-          if (field.key === 'genreForm' && selectedType === 'concepts-genreForm') {
-            field.defaultValue = true;
-          }
-          return field;
-        }
-      })];
-      this.schema = schema;
-    }));
+    this.subscriptions.add(
+      this.recordService.getSchemaForm('local_entities').subscribe((schemaResult) => {
+        let schema: any = processJsonSchema((schemaResult as any).schema);
+        // Transfer the selected oneOf to the root schema
+        schema = schema.oneOf.find(
+          (element: any) => element.properties.type.const === this.translatedType(selectedType),
+        );
+        // Deleting the oneOf key from the schema
+        delete schema.oneOf;
+        this.fields = [
+          this.formlyJsonschema.toFieldConfig(schema, {
+            map: (field: FormlyFieldConfig) => {
+              // Put the value typed by the user in the corresponding field
+              if (this.populateFields.includes(String(field.key))) {
+                field.defaultValue = searchTerm;
+              }
+              // If the type is concept-genreForm, we set the genreForm field flag
+              if (field.key === 'genreForm' && selectedType === 'concepts-genreForm') {
+                field.defaultValue = true;
+              }
+              return field;
+            },
+          }),
+        ];
+        this.schema = schema;
+      }),
+    );
   }
 
   /** OnDestroy hook */
@@ -89,20 +94,25 @@ export class AddEntityLocalFormComponent implements OnInit, OnDestroy {
 
   /** Submit form */
   submit(): void {
-    if (this.httpPending.isPending()) { return; }
+    if (this.httpPending.isPending()) {
+      return;
+    }
     if (this.form.valid) {
-      this.subscriptions.add(this.recordService.create('local_entities', this.model).subscribe({
-        next: (response: any) => {
-          this.closeDialog(response);
-        },
-        error: () => this.messageService.add({
-          severity: 'error',
-          summary: this.translateService.instant('Add local entity'),
-          detail: this.translateService.instant('Data submission generated an error.'),
-          sticky: true,
-          closable: true
-        })
-      }));
+      this.subscriptions.add(
+        this.recordService.create('local_entities', this.model).subscribe({
+          next: (response: any) => {
+            this.closeDialog(response);
+          },
+          error: () =>
+            this.messageService.add({
+              severity: 'error',
+              summary: this.translateService.instant('Add local entity'),
+              detail: this.translateService.instant('Data submission generated an error.'),
+              sticky: true,
+              closable: true,
+            }),
+        }),
+      );
     }
   }
 

@@ -1,7 +1,7 @@
 // SPDX-FileCopyrightText: Fondation RERO+
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-import { EsRecord } from "@rero/shared";
+import { EsRecord } from '@rero/shared';
 
 /** Minimal shape of a document referenced by a loan item, as exposed by operation_logs. */
 export type TransactionDocument = {
@@ -121,7 +121,7 @@ export type ItemRecordMetadata = {
   loan?: {
     end_date?: string;
     extension_count?: number;
-  }
+  };
 };
 
 export type ItemRecord = EsRecord<ItemRecordMetadata>;

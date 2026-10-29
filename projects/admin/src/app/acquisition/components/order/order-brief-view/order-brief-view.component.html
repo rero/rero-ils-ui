@@ -6,24 +6,29 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 @if (order) {
   <article class="ui:grid ui:grid-cols-12 ui:gap-4">
     <div class="ui:col-span-12 ui:lg:col-span-9">
-      <h5><a [routerLink]="[detailUrl().link]">{{ order.reference }}</a></h5>
+      <h5>
+        <a [routerLink]="[detailUrl().link]">{{ order.reference }}</a>
+      </h5>
       @let notes = order.notes | notesFilter: [noteType.STAFF_NOTE];
       @if (notes.length > 0) {
         <div class="ui:italic" [innerHTML]="notes[0].content | nl2br"></div>
       }
       <span class="ui:font-bold ui:text-muted-color ui:text-sm">
         [
-        <i class="fa-solid" [title]="order.status | translate" [ngClass]="{
-          'fa-inbox': order.status === orderStatus.PENDING,
-          'fa-paper-plane': order.status === orderStatus.ORDERED,
-          'fa-box-open text-warning': order.status === orderStatus.PARTIALLY_RECEIVED,
-          'fa-circle-check text-success': order.status === orderStatus.RECEIVED,
-          'fa-ban text-error': order.status === orderStatus.CANCELLED
-        }"></i>
+        <i
+          class="fa-solid"
+          [title]="order.status | translate"
+          [ngClass]="{
+            'fa-inbox': order.status === orderStatus.PENDING,
+            'fa-paper-plane': order.status === orderStatus.ORDERED,
+            'fa-box-open text-warning': order.status === orderStatus.PARTIALLY_RECEIVED,
+            'fa-circle-check text-success': order.status === orderStatus.RECEIVED,
+            'fa-ban text-error': order.status === orderStatus.CANCELLED,
+          }"></i>
         {{ order.status | translate }}
         @switch (order.status) {
           @case (orderStatus.ORDERED) {
-            - {{ order.order_date| dateTranslate: 'shortDate' }}
+            - {{ order.order_date | dateTranslate: 'shortDate' }}
           }
           @case (orderStatus.RECEIVED) {
             - {{ receptionDate | dateTranslate: 'shortDate' }}
@@ -32,9 +37,9 @@ SPDX-License-Identifier: AGPL-3.0-or-later
             - {{ receptionDate | dateTranslate: 'shortDate' }}
           }
         }
-        @let vendor = order.vendor.pid | getRecord: 'vendors': 'field': 'name' | async;
+        @let vendor = order.vendor.pid | getRecord: 'vendors' : 'field' : 'name' | async;
         @if (vendor) {
-          - {{ $any(vendor) | truncateText : 10 : '…'}}
+          - {{ $any(vendor) | truncateText: 10 : '…' }}
         }
         ]
       </span>
@@ -42,20 +47,24 @@ SPDX-License-Identifier: AGPL-3.0-or-later
     <div class="ui:col-span-12 ui:lg:col-span-3 ui:flex ui:flex-col ui:gap-1">
       @if (displayProvisionalAccountingData) {
         <div class="ui:flex">
-          <span class="ui:w-8/12 ui:text-center ui:border-surface ui:border ui:p-2 ui:bg-surface-100 ui:rounded-l ui:font-bold">
-            {{ order.account_statement.provisional.total_amount | currency : order.currency }}
+          <span
+            class="ui:w-8/12 ui:text-center ui:border-surface ui:border ui:p-2 ui:bg-surface-100 ui:rounded-l ui:font-bold">
+            {{ order.account_statement.provisional.total_amount | currency: order.currency }}
           </span>
-          <span class="ui:w-4/12 ui:text-center ui:border-surface ui:border ui:p-2 ui:bg-surface-100 ui:rounded-r ui:text-muted-color ui:text-right">
+          <span
+            class="ui:w-4/12 ui:text-center ui:border-surface ui:border ui:p-2 ui:bg-surface-100 ui:rounded-r ui:text-muted-color ui:text-right">
             <i class="fa-solid fa-cart-shopping"></i>&nbsp;{{ order.account_statement.provisional.quantity }}
           </span>
         </div>
       }
       @if (displayExpenditureAccountingData) {
         <div class="ui:flex">
-          <span class="ui:w-8/12 ui:text-center ui:border-surface ui:border ui:p-2 ui:bg-surface-100 ui:rounded-l ui:font-bold">
-            {{ order.account_statement.expenditure.total_amount | currency : order.currency }}
+          <span
+            class="ui:w-8/12 ui:text-center ui:border-surface ui:border ui:p-2 ui:bg-surface-100 ui:rounded-l ui:font-bold">
+            {{ order.account_statement.expenditure.total_amount | currency: order.currency }}
           </span>
-          <span class="ui:w-4/12 ui:text-center ui:border-surface ui:border ui:p-2 ui:bg-surface-100 ui:rounded-r ui:text-muted-color ui:text-right">
+          <span
+            class="ui:w-4/12 ui:text-center ui:border-surface ui:border ui:p-2 ui:bg-surface-100 ui:rounded-r ui:text-muted-color ui:text-right">
             <i class="fa-solid fa-circle-check"></i>&nbsp;{{ order.account_statement.expenditure.quantity }}
           </span>
         </div>

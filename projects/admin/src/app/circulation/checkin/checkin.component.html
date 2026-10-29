@@ -4,7 +4,7 @@ SPDX-FileCopyrightText: UCLouvain
 SPDX-License-Identifier: AGPL-3.0-or-later
 -->
 <div class="ui:flex ui:items-center ui:justify-between">
-  <h4 translate>Checkout/checkin</h4>
+  <h4>{{ 'Checkout/checkin' | translate }}</h4>
   <admin-transactions-history-dialog />
 </div>
 <section class="ui:mt-2">
@@ -14,19 +14,14 @@ SPDX-License-Identifier: AGPL-3.0-or-later
       [searchText]="searchText()"
       [focus]="searchInputFocus()"
       [disabled]="searchInputDisabled()"
-      (searchQuery)="searchValueUpdated($event)"
-    />
-    @if(patronInfo()) {
+      (searchQuery)="searchValueUpdated($event)" />
+    @if (patronInfo()) {
       <admin-circulation-patron-detailed
         [patron]="patronInfo()"
         [barcode]="barcode()"
         [linkMode]="'circulation'"
-        [clearPatronButton]="false"
-      />
+        [clearPatronButton]="false" />
     }
-    <admin-circulation-items-list
-      [checkedInItems]="items()"
-      (hasFeesEmitter)="hasFees($event)"
-    />
+    <admin-circulation-items-list [checkedInItems]="items()" (hasFeesEmitter)="hasFees($event)" />
   </div>
 </section>

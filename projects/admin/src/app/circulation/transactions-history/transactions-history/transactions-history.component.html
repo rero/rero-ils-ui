@@ -4,7 +4,8 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 -->
 <div class="ui:flex ui:flex-col ui:gap-2">
   <div class="ui:self-end">
-    {{ store.total() ?? 0 }} {{ (store.total() ?? 0) | i18nPlural: {'=1': 'transaction' | translate, 'other': 'transactions' | translate} }}
+    {{ store.total() ?? 0 }}
+    {{ store.total() ?? 0 | i18nPlural: { '=1': 'transaction' | translate, other: 'transactions' | translate } }}
   </div>
 
   <div>
@@ -24,4 +25,3 @@ SPDX-License-Identifier: AGPL-3.0-or-later
     <shared-paginator [pager]="store.pager()" [total]="store.total()" (pageChange)="store.setPaginator($event)" />
   }
 </div>
-

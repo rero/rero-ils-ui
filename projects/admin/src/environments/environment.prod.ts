@@ -11,10 +11,16 @@ export const environment = {
   adminRoles: ['system_librarian', 'librarian'],
   translationsVersion: version,
   translationsURLs: [
-    { url: '/static/node_modules/@rero/rero-ils-ui/dist/admin/browser/assets/rero-ils-ui/shared/i18n/${lang}.json', versioned: true },
-    { url: '/static/node_modules/@rero/rero-ils-ui/dist/admin/browser/assets/rero-ils-ui/admin/i18n/${lang}.json', versioned: true },
-    '/api/translations/${lang}.json'
+    {
+      url: '/static/node_modules/@rero/rero-ils-ui/dist/admin/browser/assets/rero-ils-ui/shared/i18n/${lang}.json',
+      versioned: true,
+    },
+    {
+      url: '/static/node_modules/@rero/rero-ils-ui/dist/admin/browser/assets/rero-ils-ui/admin/i18n/${lang}.json',
+      versioned: true,
+    },
+    '/api/translations/${lang}.json',
   ],
   ngCoreAssetsUrl: '/static/node_modules/@rero/rero-ils-ui/dist/admin/browser',
-  librarySwitchCheckParamsUrl: ['new', 'edit']
+  librarySwitchCheckParamsUrl: ['new', 'edit'],
 };

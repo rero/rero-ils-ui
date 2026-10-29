@@ -1,24 +1,23 @@
 // SPDX-FileCopyrightText: Fondation RERO+
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-import { Component, inject, input, ChangeDetectionStrategy} from '@angular/core';
+import { Component, inject, input } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
-import { AppStore, PERMISSIONS } from '@rero/shared';
-import { roleTagSeverity } from '../../../utils/roles';
-import { Bind } from 'primeng/bind';
-import { Button } from 'primeng/button';
-import { Tag } from 'primeng/tag';
 import { TranslatePipe } from '@ngx-translate/core';
+import { Bind } from '@openng/optimus-ui/bind';
+import { Button } from '@openng/optimus-ui/button';
+import { Tag } from '@openng/optimus-ui/tag';
 import { DateTranslatePipe } from '@rero/ng-core';
+import { AppStore, PERMISSIONS } from '@rero/shared';
+
+import { roleTagSeverity } from '../../../utils/roles';
 
 @Component({
-    selector: 'admin-patrons-brief-view',
-    templateUrl: './patrons-brief-view.component.html',
-    imports: [RouterLink, Bind, Button, Tag, TranslatePipe, DateTranslatePipe],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  selector: 'admin-patrons-brief-view',
+  templateUrl: './patrons-brief-view.component.html',
+  imports: [RouterLink, Bind, Button, Tag, TranslatePipe, DateTranslatePipe],
 })
 export class PatronsBriefViewComponent {
-
   private appStore = inject(AppStore);
   private router = inject(Router);
 
@@ -27,13 +26,13 @@ export class PatronsBriefViewComponent {
   /** the record type */
   type = input<string>();
   /** the url to access detail view */
-  detailUrl = input<{ link: string, external: boolean }>();
+  detailUrl = input<{ link: string; external: boolean }>();
 
   /**
    * Circulation access check
    * @return true if the circulation permission is allowed
    */
-   get circulationAccess(): boolean {
+  get circulationAccess(): boolean {
     return this.appStore.canAccess(PERMISSIONS.CIRC_ADMIN);
   }
 

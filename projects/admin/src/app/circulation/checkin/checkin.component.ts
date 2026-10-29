@@ -1,32 +1,30 @@
 // SPDX-FileCopyrightText: Fondation RERO+
 // SPDX-FileCopyrightText: UCLouvain
 // SPDX-License-Identifier: AGPL-3.0-or-later
-import { Component, DestroyRef, inject, signal, ChangeDetectionStrategy } from '@angular/core';
+import { Component, DestroyRef, inject, signal } from '@angular/core';
 import { Router } from '@angular/router';
-import { _, TranslateDirective, TranslatePipe } from "@ngx-translate/core";
-import { TranslateService } from '@ngx-translate/core';
+import { _, TranslatePipe, TranslateService } from '@ngx-translate/core';
+import { MessageService } from '@openng/optimus-ui/api';
+import { DialogService, DynamicDialogRef } from '@openng/optimus-ui/dynamicdialog';
 import { CONFIG, RecordService, SearchInputComponent } from '@rero/ng-core';
 import { AppStore, ItemStatus, User } from '@rero/shared';
-import { MessageService } from 'primeng/api';
-import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { forkJoin } from 'rxjs';
 import { map } from 'rxjs/operators';
+
 import { Item, ItemAction, ItemNoteType } from '../../classes/items';
 import { ItemsService } from '../../service/items.service';
 import { PatronService } from '../../service/patron.service';
-import { CheckinActionComponent } from './checkin-action/checkin-action.component';
-import { CardComponent } from '../patron/card/card.component';
 import { ItemsListComponent } from '../items-list/items-list.component';
+import { CardComponent } from '../patron/card/card.component';
 import { TransactionsHistoryDialogComponent } from '../transactions-history/transactions-history-dialog/transactions-history-dialog.component';
+import { CheckinActionComponent } from './checkin-action/checkin-action.component';
 
 @Component({
-    selector: 'admin-circulation-checkout',
-    templateUrl: './checkin.component.html',
-    imports: [TranslateDirective, SearchInputComponent, CardComponent, ItemsListComponent, TranslatePipe, TransactionsHistoryDialogComponent],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  selector: 'admin-circulation-checkout',
+  templateUrl: './checkin.component.html',
+  imports: [SearchInputComponent, CardComponent, ItemsListComponent, TranslatePipe, TransactionsHistoryDialogComponent],
 })
 export class CheckinComponent {
-
   private messageService: MessageService = inject(MessageService);
   private dialogService: DialogService = inject(DialogService);
   private appStore = inject(AppStore);
@@ -79,7 +77,7 @@ export class CheckinComponent {
             summary: this.translate.instant('Checkin'),
             detail: this.translate.instant('Item or patron not found!'),
             sticky: true,
-            closable: true
+            closable: true,
           });
           this._resetSearchInput();
           return;
@@ -93,7 +91,7 @@ export class CheckinComponent {
             content: this.translate.instant('Temporary item type removed: {{ name }}', {
               name: item.removed_temporary_item_type.name,
             }),
-            type: ItemNoteType.API
+            type: ItemNoteType.API,
           });
         }
         if (item.hasRequests) {
@@ -101,7 +99,7 @@ export class CheckinComponent {
             severity: 'warn',
             summary: this.translate.instant('Checkin'),
             detail: this.translate.instant('The item contains requests'),
-            life: CONFIG.MESSAGE_LIFE
+            life: CONFIG.MESSAGE_LIFE,
           });
         }
         switch (item.actionDone) {
@@ -110,7 +108,7 @@ export class CheckinComponent {
               severity: 'warn',
               summary: this.translate.instant('Checkin'),
               detail: this.translate.instant('The item has been returned from missing'),
-              life: CONFIG.MESSAGE_LIFE
+              life: CONFIG.MESSAGE_LIFE,
             });
             break;
           case ItemAction.checkin:
@@ -123,8 +121,8 @@ export class CheckinComponent {
               this.messageService.add({
                 severity: 'warn',
                 summary: this.translate.instant('Checkin'),
-                detail: this.translate.instant('The item is in transit to {{ destination }}', {destination}),
-                life: CONFIG.MESSAGE_LIFE
+                detail: this.translate.instant('The item is in transit to {{ destination }}', { destination }),
+                life: CONFIG.MESSAGE_LIFE,
               });
             }
             break;
@@ -141,7 +139,7 @@ export class CheckinComponent {
             }
             break;
         }
-        this.items.update(current => [item, ...current]);
+        this.items.update((current) => [item, ...current]);
         this._resetSearchInput();
       },
       error: (error) => {
@@ -154,7 +152,7 @@ export class CheckinComponent {
             }
             item.notes.push({
               content: error.error.message,
-              type: ItemNoteType.API
+              type: ItemNoteType.API,
             });
             // Add note about removed temporary item type if applicable
             if (error.error?.removed_temporary_item_type) {
@@ -162,10 +160,10 @@ export class CheckinComponent {
                 content: this.translate.instant('Temporary item type removed: {{ name }}', {
                   name: error.error.removed_temporary_item_type.name,
                 }),
-                type: ItemNoteType.API
+                type: ItemNoteType.API,
               });
             }
-            this.items.update(current => [item, ...current]);
+            this.items.update((current) => [item, ...current]);
             // If no action could be done by the '/item/checkin' api, an error will be raised.
             // catch this error to display it as a Toast message.
             this._checkinErrorManagement(error, item);
@@ -175,11 +173,11 @@ export class CheckinComponent {
             severity: 'warn',
             summary: this.translate.instant('Checkin'),
             detail: error.error.message,
-            life: CONFIG.MESSAGE_LIFE
+            life: CONFIG.MESSAGE_LIFE,
           });
           this._resetSearchInput();
         }
-      }
+      },
     });
   }
 
@@ -192,13 +190,14 @@ export class CheckinComponent {
       this.barcode.set(barcode);
       this.patronService.getPatron(barcode).subscribe({
         next: (patron) => this.patronInfo.set(patron),
-        error: (error) => this.messageService.add({
-          severity: 'error',
-          summary: this.translate.instant('Checkin'),
-          detail: error.message,
-          sticky: true,
-          closable: true
-        })
+        error: (error) =>
+          this.messageService.add({
+            severity: 'error',
+            summary: this.translate.instant('Checkin'),
+            detail: error.message,
+            sticky: true,
+            closable: true,
+          }),
       });
     } else {
       this.patronInfo.set(undefined);
@@ -218,15 +217,14 @@ export class CheckinComponent {
     const itemQuery = this.recordService
       .getRecords('items', { query: `barcode:${barcode}`, page: 1, itemsPerPage: 1 })
       .pipe(map((result: any) => result.hits));
-    forkJoin([patronQuery, itemQuery])
-    .subscribe({
+    forkJoin([patronQuery, itemQuery]).subscribe({
       next: ([patron, item]: any[]) => {
         if (patron.total === 0 && item.total === 0) {
           this.messageService.add({
             severity: 'warn',
             summary: this.translate.instant('Checkin'),
             detail: this.translate.instant('Patron not found!'),
-            life: CONFIG.MESSAGE_LIFE
+            life: CONFIG.MESSAGE_LIFE,
           });
         }
         if (patron.total > 1 && item.total === 0) {
@@ -234,7 +232,7 @@ export class CheckinComponent {
             severity: 'warn',
             summary: this.translate.instant('Checkin'),
             detail: this.translate.instant('Found more than one patron.'),
-            life: CONFIG.MESSAGE_LIFE
+            life: CONFIG.MESSAGE_LIFE,
           });
         }
         if (patron.total === 1 && item.total === 1) {
@@ -244,14 +242,12 @@ export class CheckinComponent {
             focusOnShow: false,
             closable: true,
             width: '25vw',
-          })
+          });
           ref.onClose.subscribe((action: string) => {
             if (action) {
               switch (action) {
                 case 'patron':
-                  this.router.navigate(
-                    ['/circulation', 'patron', barcode, 'loan']
-                  );
+                  this.router.navigate(['/circulation', 'patron', barcode, 'loan']);
                   break;
                 case 'item':
                   this.checkin(barcode);
@@ -263,33 +259,32 @@ export class CheckinComponent {
             }
           });
         } else if (item.total === 1) {
-            this.item = item.hits[0].metadata;
-            // Check if the item is already into the item list. If it happens,
-            // just notify the user and clear the form.
-            if (this.items().find((it: Item) => it.barcode === barcode)) {
-              this.messageService.add({
-                severity: 'warn',
-                summary: this.translate.instant('Checkin'),
-                detail: this.translate.instant('The item is already in the list.'),
-                life: CONFIG.MESSAGE_LIFE
-              });
-              this._resetSearchInput();
-            } else {
-              this.checkin(barcode);
-            }
+          this.item = item.hits[0].metadata;
+          // Check if the item is already into the item list. If it happens,
+          // just notify the user and clear the form.
+          if (this.items().find((it: Item) => it.barcode === barcode)) {
+            this.messageService.add({
+              severity: 'warn',
+              summary: this.translate.instant('Checkin'),
+              detail: this.translate.instant('The item is already in the list.'),
+              life: CONFIG.MESSAGE_LIFE,
+            });
+            this._resetSearchInput();
+          } else {
+            this.checkin(barcode);
+          }
         } else if (patron.total === 1) {
-            this.router.navigate(
-              ['/circulation', 'patron', barcode, 'loan']
-            );
+          this.router.navigate(['/circulation', 'patron', barcode, 'loan']);
         }
       },
-      error: (error) => this.messageService.add({
-        severity: 'error',
-        summary: this.translate.instant('Checkin'),
-        detail: error.message,
-        sticky: true,
-        closable: true
-      })
+      error: (error) =>
+        this.messageService.add({
+          severity: 'error',
+          summary: this.translate.instant('Checkin'),
+          detail: error.message,
+          sticky: true,
+          closable: true,
+        }),
     });
   }
 
@@ -308,9 +303,11 @@ export class CheckinComponent {
       if (message.length > 0) {
         message.push('<br/>');
       }
-      message.push(this.translate.instant('Temporary item type removed: {{ name }}', {
-        name: item.removed_temporary_item_type.name,
-      }));
+      message.push(
+        this.translate.instant('Temporary item type removed: {{ name }}', {
+          name: item.removed_temporary_item_type.name,
+        }),
+      );
     }
     // Show additional message only for the owning library
     if (item.library.pid === this.appStore.currentLibraryPid()) {
@@ -327,11 +324,10 @@ export class CheckinComponent {
         severity: 'warn',
         summary: this.translate.instant('Checkin'),
         detail: message.join(''),
-        life: CONFIG.MESSAGE_LIFE
+        life: CONFIG.MESSAGE_LIFE,
       });
     }
   }
-
 
   /** create the most relevant message concerning a checkin operation error and display it as a Toast
    *
@@ -340,9 +336,8 @@ export class CheckinComponent {
    */
   private _checkinErrorManagement(error: any, item: Item) {
     // get the error message from the raised error. This will be the Toast message core.
-    let message = (Object.hasOwn(error, 'error') && Object.hasOwn(error.error, 'message'))
-      ? error.error.message
-      : error.message;
+    let message =
+      Object.hasOwn(error, 'error') && Object.hasOwn(error.error, 'message') ? error.error.message : error.message;
     message = this.translate.instant(message);
     message += `<br/>${this.translate.instant('Status')}: ${this.translate.instant(item.status.toString())}`;
     if (item.status === ItemStatus.IN_TRANSIT && item.loan && item.loan.item_destination) {
@@ -351,7 +346,7 @@ export class CheckinComponent {
     }
     const checkinNote = item.getNote(ItemNoteType.CHECKIN);
     if (checkinNote) {
-      message += `<br/>${this.translate.instant('Note')}: ${checkinNote.content}`
+      message += `<br/>${this.translate.instant('Note')}: ${checkinNote.content}`;
     }
     // Add removed temporary item type message if applicable
     if (error.error?.removed_temporary_item_type) {
@@ -370,7 +365,7 @@ export class CheckinComponent {
       severity: 'warn',
       summary: this.translate.instant('Checkin'),
       detail: message,
-      life: CONFIG.MESSAGE_LIFE
+      life: CONFIG.MESSAGE_LIFE,
     });
     this._resetSearchInput();
   }
@@ -385,7 +380,9 @@ export class CheckinComponent {
       message.push('.');
     }
     if (item.temporary_location) {
-      message.push(`<br/>${this.translate.instant('This item is in temporary location')} "${item.temporary_location.name}".`);
+      message.push(
+        `<br/>${this.translate.instant('This item is in temporary location')} "${item.temporary_location.name}".`,
+      );
     }
 
     return message.join('');
@@ -397,7 +394,7 @@ export class CheckinComponent {
         severity: 'warn',
         summary: this.translate.instant('Checkin'),
         detail: this.translate.instant('The item has fees'),
-        life: CONFIG.MESSAGE_LIFE
+        life: CONFIG.MESSAGE_LIFE,
       });
     }
   }

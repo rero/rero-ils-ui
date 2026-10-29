@@ -4,13 +4,13 @@ import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { CoreConfigService } from '@rero/ng-core';
 import { Observable } from 'rxjs';
+
 import { User } from '../classes/user';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class UserApiService {
-
   protected httpClient: HttpClient = inject(HttpClient);
   protected configService: CoreConfigService = inject(CoreConfigService);
 
@@ -33,7 +33,7 @@ export class UserApiService {
     const data = {
       username,
       new_password: password,
-      new_password_confirm: password
+      new_password_confirm: password,
     };
     const url = `${this.configService.apiEndpointPrefix}/change-password`;
     return this.httpClient.post<any>(url, data);

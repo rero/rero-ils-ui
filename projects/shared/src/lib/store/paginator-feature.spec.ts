@@ -2,27 +2,26 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 import { TestBed } from '@angular/core/testing';
 import { signalStore } from '@ngrx/signals';
-import { nextPager, withPaginator } from './paginator-feature';
+import { PaginatorState } from '@openng/optimus-ui/paginator';
+
 import { Pager } from '../component/paginator/model/paginator-model';
-import { PaginatorState } from 'primeng/paginator';
+import { nextPager, withPaginator } from './paginator-feature';
 
 describe('PaginatorFeature', () => {
   const initialPager: Pager = {
     page: 1,
     first: 1,
     rows: 10,
-    rowsPerPageOptions: [10, 20, 50]
+    rowsPerPageOptions: [10, 20, 50],
   };
 
-  const PaginatorStore = signalStore(
-    withPaginator(initialPager)
-  );
+  const PaginatorStore = signalStore(withPaginator(initialPager));
 
   let store: InstanceType<typeof PaginatorStore>;
 
   beforeEach(() => {
     store = TestBed.configureTestingModule({
-      providers: [PaginatorStore]
+      providers: [PaginatorStore],
     }).inject(PaginatorStore);
   });
 
@@ -35,7 +34,7 @@ describe('PaginatorFeature', () => {
       page: 1, // Moving to 2nd page (0-indexed)
       first: 10,
       rows: 10,
-      pageCount: 5
+      pageCount: 5,
     };
 
     store.changePage(event);
@@ -51,7 +50,7 @@ describe('PaginatorFeature', () => {
       page: 1,
       first: 10,
       rows: 10,
-      pageCount: 5
+      pageCount: 5,
     });
 
     expect(store.pager().page).toBe(2);
@@ -61,7 +60,7 @@ describe('PaginatorFeature', () => {
       page: 1, // Trying to stay on page 2 (index 1) but changing rows
       first: 10,
       rows: 20,
-      pageCount: 3
+      pageCount: 3,
     };
 
     store.changePage(event);
@@ -77,7 +76,7 @@ describe('PaginatorFeature', () => {
       page: 2, // 3rd page
       first: 20,
       rows: undefined, // Missing rows
-      pageCount: 5
+      pageCount: 5,
     };
 
     store.changePage(event);
@@ -92,7 +91,7 @@ describe('PaginatorFeature', () => {
       page: 1,
       first: 10,
       rows: 20,
-      pageCount: 3
+      pageCount: 3,
     };
 
     nextPager(initialPager, event);
@@ -101,7 +100,7 @@ describe('PaginatorFeature', () => {
       page: 1,
       first: 10,
       rows: 20,
-      pageCount: 3
+      pageCount: 3,
     });
   });
 });

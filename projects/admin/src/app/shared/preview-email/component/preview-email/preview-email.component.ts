@@ -2,28 +2,27 @@
 // SPDX-FileCopyrightText: UCLouvain
 // SPDX-License-Identifier: AGPL-3.0-or-later
 import { NgTemplateOutlet } from '@angular/common';
-import { ChangeDetectionStrategy, Component, effect, input, output, signal } from '@angular/core';
+import { Component, effect, input, output, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
+import { AutoComplete } from '@openng/optimus-ui/autocomplete';
+import { Bind } from '@openng/optimus-ui/bind';
+import { Button } from '@openng/optimus-ui/button';
+import { Draggable, Droppable } from '@openng/optimus-ui/dragdrop';
+import { Panel } from '@openng/optimus-ui/panel';
+import { Tag } from '@openng/optimus-ui/tag';
 import { Tools } from '@rero/shared';
-import { AutoComplete } from 'primeng/autocomplete';
-import { Bind } from 'primeng/bind';
-import { Button } from 'primeng/button';
-import { Draggable, Droppable } from 'primeng/dragdrop';
-import { Panel } from 'primeng/panel';
-import { Tag } from 'primeng/tag';
+
 import { ITypeEmail } from '../../IPreviewInterface';
 
 export type RecipientType = 'to' | 'cc' | 'bcc' | 'reply_to';
 
 @Component({
-    selector: 'admin-preview-email',
-    templateUrl: './preview-email.component.html',
-    imports: [NgTemplateOutlet, TranslateDirective, Bind, Panel, Tag, Draggable, AutoComplete, Droppable, FormsModule, Button, TranslatePipe],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  selector: 'admin-preview-email',
+  templateUrl: './preview-email.component.html',
+  imports: [NgTemplateOutlet, Bind, Panel, Tag, Draggable, AutoComplete, Droppable, FormsModule, Button, TranslatePipe],
 })
 export class PreviewEmailComponent {
-
   /** Suggested emails */
   emails = input.required<string[]>();
   /** Email body text preview */
@@ -56,7 +55,9 @@ export class PreviewEmailComponent {
         const keys = Object.keys(this.recipients) as RecipientType[];
         const recipients: Record<RecipientType, string[]> = { to: [], cc: [], bcc: [], reply_to: [] };
         keys.forEach((type: RecipientType) => {
-          recipients[type] = [...new Set(rep.filter((el: ITypeEmail) => el.type === type).map((el: ITypeEmail) => el.address))];
+          recipients[type] = [
+            ...new Set(rep.filter((el: ITypeEmail) => el.type === type).map((el: ITypeEmail) => el.address)),
+          ];
         });
         this.recipients = recipients;
       }
@@ -102,10 +103,14 @@ export class PreviewEmailComponent {
    * The closing of the dialog takes place in the parent if the transmitted data are valid.
    */
   confirm(): void {
-    if (this.isSending()) { return; }
+    if (this.isSending()) {
+      return;
+    }
     this.isSending.set(true);
     const recipients: ITypeEmail[] = [];
-    (Object.keys(this.recipients) as RecipientType[]).forEach((key) => this.recipients[key].every((email: string) => recipients.push({ type: key, address: email })));
+    (Object.keys(this.recipients) as RecipientType[]).forEach((key) =>
+      this.recipients[key].every((email: string) => recipients.push({ type: key, address: email })),
+    );
     this.data.emit(recipients);
   }
 
@@ -119,14 +124,16 @@ export class PreviewEmailComponent {
       return false;
     }
     // Validation of all email addresses of each recipient
-    return (Object.keys(this.recipients) as RecipientType[]).every((key) => this.recipients[key].every(email => Tools.validateEmail(email)));
+    return (Object.keys(this.recipients) as RecipientType[]).every((key) =>
+      this.recipients[key].every((email) => Tools.validateEmail(email)),
+    );
   }
 
   onBlur(event: Event): void {
     const inputElement = event.target as HTMLInputElement;
     const inputValue = inputElement.value;
-    if(inputValue) {
-      inputElement?.dispatchEvent(new KeyboardEvent('keydown', { 'code': 'Enter' } ));
+    if (inputValue) {
+      inputElement?.dispatchEvent(new KeyboardEvent('keydown', { code: 'Enter' }));
     }
   }
 }

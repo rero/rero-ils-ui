@@ -1,6 +1,7 @@
 // SPDX-FileCopyrightText: Fondation RERO+
 // SPDX-License-Identifier: AGPL-3.0-or-later
 import { TestBed } from '@angular/core/testing';
+
 import { KeyExistsPipe } from './key-exists.pipe';
 
 describe('KeyExistsPipe', () => {
@@ -8,16 +9,14 @@ describe('KeyExistsPipe', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [
-        KeyExistsPipe
-      ]
+      providers: [KeyExistsPipe],
     });
 
     pipe = TestBed.inject(KeyExistsPipe);
   });
 
   const record = {
-    foo: 'bar'
+    foo: 'bar',
   };
 
   it('create an instance', () => {
@@ -32,5 +31,3 @@ describe('KeyExistsPipe', () => {
     expect(pipe.transform(record, 'foo')).toBeTruthy();
   });
 });
-
-

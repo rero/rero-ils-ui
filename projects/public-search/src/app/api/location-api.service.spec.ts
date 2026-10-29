@@ -3,8 +3,8 @@
 import { HttpClient } from '@angular/common/http';
 import { TestBed } from '@angular/core/testing';
 import { of } from 'rxjs';
-import { LocationApiService } from './location-api.service';
 
+import { LocationApiService } from './location-api.service';
 
 describe('LocationService', () => {
   let service: LocationApiService;
@@ -12,13 +12,13 @@ describe('LocationService', () => {
   const locations = {
     locations: [
       { pid: '1', pickup_name: 'location 1 pickup name', name: 'location 1 name' },
-      { pid: '2',  name: 'location 2 name' }
-    ]
+      { pid: '2', name: 'location 2 name' },
+    ],
   };
 
   const locationsResponse = [
     { pid: '1', name: 'location 1 pickup name' },
-    { pid: '2', name: 'location 2 name' }
+    { pid: '2', name: 'location 2 name' },
   ];
 
   const httpClientSpy = { get: vi.fn() };
@@ -27,9 +27,7 @@ describe('LocationService', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [],
-      providers: [
-        { provide: HttpClient, useValue: httpClientSpy }
-      ]
+      providers: [{ provide: HttpClient, useValue: httpClientSpy }],
     });
     service = TestBed.inject(LocationApiService);
   });
@@ -39,7 +37,7 @@ describe('LocationService', () => {
   });
 
   it('should a set of pickup locations', () => {
-    service.getPickupLocationsByRecordId('item', '1').subscribe(response => {
+    service.getPickupLocationsByRecordId('item', '1').subscribe((response) => {
       expect(response).toEqual(locationsResponse);
     });
   });

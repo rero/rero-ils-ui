@@ -1,22 +1,29 @@
 // SPDX-FileCopyrightText: Fondation RERO+
 // SPDX-FileCopyrightText: UCLouvain
 // SPDX-License-Identifier: AGPL-3.0-or-later
-import { Component, computed, effect, inject, input, ChangeDetectionStrategy} from '@angular/core';
-import { TranslateDirective, TranslatePipe, TranslateService } from '@ngx-translate/core';
-import { AvailabilityComponent, NotesFilterPipe, SafeUrlPipe, AppStore } from '@rero/shared';
+import { Component, computed, effect, inject, input } from '@angular/core';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { Nl2brPipe, RecordData } from '@rero/ng-core';
+import { AppStore, AvailabilityComponent, NotesFilterPipe, SafeUrlPipe } from '@rero/shared';
+
 import { ItemApiService } from '../../api/item-api.service';
-import { ItemRequestComponent } from './item-request.component';
 import { PickupLocationComponent } from '../request/pickup-location/pickup-location.component';
+import { ItemRequestComponent } from './item-request.component';
 
 @Component({
-    selector: 'public-search-item',
-    templateUrl: './item.component.html',
-    imports: [TranslateDirective, AvailabilityComponent, Nl2brPipe, NotesFilterPipe, SafeUrlPipe, TranslatePipe, ItemRequestComponent, PickupLocationComponent],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  selector: 'public-search-item',
+  templateUrl: './item.component.html',
+  imports: [
+    AvailabilityComponent,
+    Nl2brPipe,
+    NotesFilterPipe,
+    SafeUrlPipe,
+    TranslatePipe,
+    ItemRequestComponent,
+    PickupLocationComponent,
+  ],
 })
 export class ItemComponent {
-
   private translateService = inject(TranslateService);
   private appStore = inject(AppStore);
   public itemApiService = inject(ItemApiService);
@@ -41,7 +48,7 @@ export class ItemComponent {
     'condition_note',
     'general_note',
     'patrimonial_note',
-    'provenance_note'
+    'provenance_note',
   ];
 
   showRequestDialog = false;
@@ -52,7 +59,9 @@ export class ItemComponent {
       if (item) {
         const { circulation_information } = (item.metadata as any).item_type;
         if (circulation_information) {
-          const information = circulation_information.find((obj: any) => obj.language === this.translateService.getCurrentLang());
+          const information = circulation_information.find(
+            (obj: any) => obj.language === this.translateService.getCurrentLang(),
+          );
           if (information) {
             this.circulationInformation = information.label;
           }

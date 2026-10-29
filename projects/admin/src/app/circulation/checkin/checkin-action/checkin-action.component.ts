@@ -1,19 +1,17 @@
 // SPDX-FileCopyrightText: Fondation RERO+
 // SPDX-License-Identifier: AGPL-3.0-or-later
-import { Component, inject, ChangeDetectionStrategy} from '@angular/core';
-import { DynamicDialogRef } from 'primeng/dynamicdialog';
-import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
-import { Bind } from 'primeng/bind';
-import { Button } from 'primeng/button';
+import { Component, inject } from '@angular/core';
+import { TranslatePipe } from '@ngx-translate/core';
+import { Bind } from '@openng/optimus-ui/bind';
+import { Button } from '@openng/optimus-ui/button';
+import { DynamicDialogRef } from '@openng/optimus-ui/dynamicdialog';
 
 @Component({
-    selector: 'admin-checkin-action',
-    templateUrl: './checkin-action.component.html',
-    imports: [TranslateDirective, Bind, Button, TranslatePipe],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  selector: 'admin-checkin-action',
+  templateUrl: './checkin-action.component.html',
+  imports: [Bind, Button, TranslatePipe],
 })
 export class CheckinActionComponent {
-
   private dynamicDialogRef: DynamicDialogRef = inject(DynamicDialogRef);
 
   /** Checkin action */

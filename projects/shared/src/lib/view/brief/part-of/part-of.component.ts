@@ -1,18 +1,16 @@
 // SPDX-FileCopyrightText: Fondation RERO+
 // SPDX-License-Identifier: AGPL-3.0-or-later
-import { Component, inject, input, ChangeDetectionStrategy} from '@angular/core';
-import { TranslateService } from '@ngx-translate/core';
+import { Component, inject, input } from '@angular/core';
 import { RouterLink } from '@angular/router';
+import { TranslateService } from '@ngx-translate/core';
 import { RecordData } from '@rero/ng-core';
 
 @Component({
-    selector: 'shared-part-of',
-    templateUrl: './part-of.component.html',
-    imports: [RouterLink],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  selector: 'shared-part-of',
+  templateUrl: './part-of.component.html',
+  imports: [RouterLink],
 })
 export class PartOfComponent {
-
   protected translateService: TranslateService = inject(TranslateService);
 
   /** Document */
@@ -38,11 +36,11 @@ export class PartOfComponent {
   getPartOfLabel(hostDocument: any): string {
     switch (hostDocument.metadata.issuance.subtype) {
       case 'periodical':
-          return this.translateService.instant('Journal');
+        return this.translateService.instant('Journal');
       case 'monographicSeries':
-          return this.translateService.instant('Series');
+        return this.translateService.instant('Series');
       default:
-           return this.translateService.instant('Published in');
+        return this.translateService.instant('Published in');
     }
   }
 

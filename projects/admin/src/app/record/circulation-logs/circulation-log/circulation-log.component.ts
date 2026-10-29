@@ -1,23 +1,21 @@
 // SPDX-FileCopyrightText: Fondation RERO+
 // SPDX-FileCopyrightText: UCLouvain
 // SPDX-License-Identifier: AGPL-3.0-or-later
-import { Component, inject, input, output, ChangeDetectionStrategy} from '@angular/core';
-import { AppStore, OpenCloseButtonComponent } from '@rero/shared';
-import { Bind } from 'primeng/bind';
-import { Button } from 'primeng/button';
-import { ScrollPanel } from 'primeng/scrollpanel';
 import { JsonPipe } from '@angular/common';
+import { Component, inject, input, output } from '@angular/core';
 import { TranslatePipe } from '@ngx-translate/core';
+import { Bind } from '@openng/optimus-ui/bind';
+import { Button } from '@openng/optimus-ui/button';
+import { ScrollPanel } from '@openng/optimus-ui/scrollpanel';
 import { DateTranslatePipe } from '@rero/ng-core';
+import { AppStore, OpenCloseButtonComponent } from '@rero/shared';
 
 @Component({
-    selector: 'admin-circulation-log',
-    templateUrl: './circulation-log.component.html',
-    imports: [OpenCloseButtonComponent, Bind, Button, ScrollPanel, JsonPipe, TranslatePipe, DateTranslatePipe],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  selector: 'admin-circulation-log',
+  templateUrl: './circulation-log.component.html',
+  imports: [OpenCloseButtonComponent, Bind, Button, ScrollPanel, JsonPipe, TranslatePipe, DateTranslatePipe],
 })
 export class CirculationLogComponent {
-
   private appStore = inject(AppStore);
 
   // COMPONENT ATTRIBUTES =====================================================

@@ -1,11 +1,12 @@
 // SPDX-FileCopyrightText: Fondation RERO+
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClient, withXhr } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterModule } from '@angular/router';
-import { TranslateModule } from '@ngx-translate/core';
+import { provideTranslateService } from '@ngx-translate/core';
+
 import { PartOfComponent } from './part-of.component';
 
 describe('PartOfComponent', () => {
@@ -14,16 +15,9 @@ describe('PartOfComponent', () => {
 
   beforeEach(async () => {
     TestBed.configureTestingModule({
-    imports: [
-        TranslateModule.forRoot({}),
-        RouterModule,
-        PartOfComponent
-    ],
-    providers: [
-        provideHttpClient(),
-        provideHttpClientTesting()
-    ]
-}).compileComponents();
+      imports: [RouterModule, PartOfComponent],
+      providers: [provideTranslateService({}), provideHttpClient(withXhr()), provideHttpClientTesting()],
+    }).compileComponents();
   });
 
   beforeEach(() => {

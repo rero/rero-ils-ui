@@ -7,7 +7,6 @@ import { DateTime } from 'luxon';
 
 /** Custom date validators */
 export class DateValidators {
-
   /** Date format to check */
   static DATE_FORMAT = 'yyyy-LL-dd';
 
@@ -27,15 +26,15 @@ export class DateValidators {
         return null;
       }
       const validationDate = minDate.setHours(0, 0, 0, 0);
-      date.set({ hours: 0, minutes: 0, seconds: 0, milliseconds: 0});
+      date.set({ hours: 0, minutes: 0, seconds: 0, milliseconds: 0 });
       return date >= validationDate
         ? null
         : {
-          'minimum-date': {
-            'date-minimum': DateTime.fromJSDate(minDate).toFormat(dateFormat),
-            actual: date.toFormat(dateFormat)
-          }
-        };
+            'minimum-date': {
+              'date-minimum': DateTime.fromJSDate(minDate).toFormat(dateFormat),
+              actual: date.toFormat(dateFormat),
+            },
+          };
     };
   }
 }

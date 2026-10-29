@@ -7,12 +7,12 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 <admin-entities-local-global [record]="record()">
   <!-- TITLE -->
   @if (record().title) {
-    <dt translate>Title</dt>
+    <dt>{{ 'Title' | translate }}</dt>
     <dd>{{ record().title }}</dd>
   }
   <!-- CREATOR -->
   @if (record().creator) {
-    <dt translate>Creator</dt>
+    <dt>{{ 'Creator' | translate }}</dt>
     <dd>{{ record().creator }}</dd>
   }
 </admin-entities-local-global>

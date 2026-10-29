@@ -7,7 +7,8 @@ SPDX-License-Identifier: AGPL-3.0-or-later
     <div class="ui:w-full">
       <p-card class="ui:bg-white">
         <ng-template #header>
-          <div class="ui:bg-primary-950 ui:text-white ui:gap-1 ui:flex ui:items-center ui:p-4 ui:font-bold ui:rounded-t-lg">
+          <div
+            class="ui:bg-primary-950 ui:text-white ui:gap-1 ui:flex ui:items-center ui:p-4 ui:font-bold ui:rounded-t-lg">
             @if (item.icon) {
               <i [class]="item.icon"></i>
             }
@@ -23,16 +24,16 @@ SPDX-License-Identifier: AGPL-3.0-or-later
                 [attr.id]="item.id"
                 [routerLink]="item.routerLink"
                 [href]="item.url"
-                [queryParams]="item.queryParams"
-              >
+                [queryParams]="item.queryParams">
                 @if (item.icon) {
                   <span [class]="item.icon" class="p-tieredmenu-item-icon"></span>
                 }
                 <span class="p-tieredmenu-item-label">{{ item.label }}</span>
                 @if (item.shortcut) {
-                  <span class="ui:ml-auto ui:border ui:border-surface ui:rounded ui:bg-emphasis  ui:text-muted-color ui:text-xs ui:p-1">
+                  <span
+                    class="ui:ml-auto ui:border ui:border-surface ui:rounded ui:bg-emphasis ui:text-muted-color ui:text-xs ui:p-1">
                     {{ item.shortcut }}
-                </span>
+                  </span>
                 }
                 @if (item.items) {
                   <i class="fa-solid fa-angle-right ui:ml-auto"></i>

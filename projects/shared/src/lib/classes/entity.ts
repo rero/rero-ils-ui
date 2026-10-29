@@ -5,7 +5,7 @@
 export enum EntityField$ref {
   CONTRIBUTION = 'contribution',
   GENRE_FORM = 'genreForm',
-  SUBJECTS = 'subjects'
+  SUBJECTS = 'subjects',
 }
 
 export enum EntityType {
@@ -28,13 +28,8 @@ export enum EntityTypeIcon {
 }
 
 export class Entity {
-
   /** Available fields with entity ref */
-  static FIELDS_WITH_REF = [
-    EntityField$ref.CONTRIBUTION,
-    EntityField$ref.GENRE_FORM,
-    EntityField$ref.SUBJECTS
-  ];
+  static FIELDS_WITH_REF = [EntityField$ref.CONTRIBUTION, EntityField$ref.GENRE_FORM, EntityField$ref.SUBJECTS];
 
   /** Map of types => fields */
   private static TYPES_FIELDS = new Map<string, string[]>([
@@ -43,7 +38,7 @@ export class Entity {
     [EntityType.PLACE, [EntityField$ref.SUBJECTS]],
     [EntityType.TEMPORAL, [EntityField$ref.SUBJECTS]],
     [EntityType.TOPIC, [EntityField$ref.GENRE_FORM, EntityField$ref.SUBJECTS]],
-    [EntityType.WORK, [EntityField$ref.SUBJECTS]]
+    [EntityType.WORK, [EntityField$ref.SUBJECTS]],
   ]);
 
   /** Map entity type => icon class */
@@ -53,7 +48,7 @@ export class Entity {
     [EntityType.PLACE, EntityTypeIcon.PLACE],
     [EntityType.TEMPORAL, EntityTypeIcon.TEMPORAL],
     [EntityType.TOPIC, EntityTypeIcon.TOPIC],
-    [EntityType.WORK, EntityTypeIcon.WORK]
+    [EntityType.WORK, EntityTypeIcon.WORK],
   ]);
 
   /**
@@ -90,9 +85,7 @@ export class Entity {
   static generateSearchQuery(resourceType: string, catalogKey: string, catalogPid: string): string {
     const queries = [];
     const fields = Entity.getFieldsSearch(resourceType);
-    fields.every(
-      (field: string) => queries.push(`${field}.entity.pids.${catalogKey}:${catalogPid}`)
-    );
+    fields.every((field: string) => queries.push(`${field}.entity.pids.${catalogKey}:${catalogPid}`));
     return queries.join(' OR ');
   }
 

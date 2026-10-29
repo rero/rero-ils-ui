@@ -1,27 +1,36 @@
 // SPDX-FileCopyrightText: Fondation RERO+
 // SPDX-FileCopyrightText: UCLouvain
 // SPDX-License-Identifier: AGPL-3.0-or-later
-import { Component, computed, inject, input, OnInit, signal, WritableSignal, ChangeDetectionStrategy} from '@angular/core';
-
-import { PatronTransaction, PatronTransactionEvent, PatronTransactionEventType } from '@app/admin/classes/patron-transaction';
+import { CurrencyPipe, DatePipe } from '@angular/common';
+import { Component, computed, inject, input, OnInit, signal, WritableSignal } from '@angular/core';
+import {
+  PatronTransaction,
+  PatronTransactionEvent,
+  PatronTransactionEventType,
+} from '@app/admin/classes/patron-transaction';
+import { TranslatePipe } from '@ngx-translate/core';
+import { Bind } from '@openng/optimus-ui/bind';
+import { Tag } from '@openng/optimus-ui/tag';
 import { AppStore } from '@rero/shared';
 
 import { PatronTransactionsService } from '../../../service/patron-transactions.service';
-import { PatronTransactionEventOverdueComponent } from './patron-transaction-event-overdue.component';
 import { PatronTransactionEventDefaultComponent } from './patron-transaction-event-default.component';
-import { Bind } from 'primeng/bind';
-import { Tag } from 'primeng/tag';
-import { CurrencyPipe, DatePipe } from '@angular/common';
-import { TranslatePipe } from '@ngx-translate/core';
+import { PatronTransactionEventOverdueComponent } from './patron-transaction-event-overdue.component';
 
 @Component({
-    selector: 'admin-patron-transaction-events-brief-view',
-    templateUrl: './patron-transaction-events-brief-view.component.html',
-    imports: [PatronTransactionEventOverdueComponent, PatronTransactionEventDefaultComponent, Bind, Tag, CurrencyPipe, DatePipe, TranslatePipe],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  selector: 'admin-patron-transaction-events-brief-view',
+  templateUrl: './patron-transaction-events-brief-view.component.html',
+  imports: [
+    PatronTransactionEventOverdueComponent,
+    PatronTransactionEventDefaultComponent,
+    Bind,
+    Tag,
+    CurrencyPipe,
+    DatePipe,
+    TranslatePipe,
+  ],
 })
 export class PatronTransactionEventsBriefViewComponent implements OnInit {
-
   private appStore = inject(AppStore);
   private patronTransactionService: PatronTransactionsService = inject(PatronTransactionsService);
 
@@ -44,7 +53,7 @@ export class PatronTransactionEventsBriefViewComponent implements OnInit {
   /** reference to PatronTransactionEventType */
   eventTypes = PatronTransactionEventType;
   severity = computed(() => {
-    switch(this.event().type) {
+    switch (this.event().type) {
       case 'fee':
         return 'danger';
       case 'payment':
@@ -66,5 +75,4 @@ export class PatronTransactionEventsBriefViewComponent implements OnInit {
         this.loaded.set(true);
       });
   }
-
 }

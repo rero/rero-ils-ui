@@ -9,4 +9,4 @@ export type Pager = {
 
 export type Paginator = {
   pager: Pager;
-}
+};

@@ -13,15 +13,21 @@ SPDX-License-Identifier: AGPL-3.0-or-later
         <h1>{{ metadata.name }}</h1>
         <dl class="metadata">
           @if (metadata.code) {
-            <dt><i class="fa-solid fa-code"></i>&nbsp;<span translate>Code</span></dt>
+            <dt>
+              <i class="fa-solid fa-code"></i>&nbsp;<span>{{ 'Code' | translate }}</span>
+            </dt>
             <dd>{{ metadata.code }}</dd>
           }
           @if (metadata.address) {
-            <dt><i class="fa-solid fa-house"></i>&nbsp;<span translate>Address</span></dt>
+            <dt>
+              <i class="fa-solid fa-house"></i>&nbsp;<span>{{ 'Address' | translate }}</span>
+            </dt>
             <dd>{{ metadata.address }}</dd>
           }
           @if (metadata.default_currency) {
-            <dt><i class="fa-solid fa-money-bill-wave"></i>&nbsp;<span translate>Default currency</span></dt>
+            <dt>
+              <i class="fa-solid fa-money-bill-wave"></i>&nbsp;<span>{{ 'Default currency' | translate }}</span>
+            </dt>
             <dd>{{ metadata.default_currency }}</dd>
           }
         </dl>
@@ -36,7 +42,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
       <p-accordion-header>
         <div class="ui:flex ui:w-full ui:items-center ui:justify-between ui:mr-2">
           <div>
-            <i class="fa-solid fa-user-xmark"></i>&nbsp;<span translate>Patron cleanup configuration</span>
+            <i class="fa-solid fa-user-xmark"></i>&nbsp;<span>{{ 'Patron cleanup configuration' | translate }}</span>
           </div>
         </div>
       </p-accordion-header>
@@ -45,15 +51,15 @@ SPDX-License-Identifier: AGPL-3.0-or-later
           @if (metadata.patron_cleanup; as cleanup) {
             <dl class="metadata">
               @if (cleanup.expiration_years) {
-                <dt translate>Expiration threshold (years)</dt>
+                <dt>{{ 'Expiration threshold (years)' | translate }}</dt>
                 <dd>{{ cleanup.expiration_years }}</dd>
               }
               @if (cleanup.inactivity_years) {
-                <dt translate>Inactivity threshold (years)</dt>
+                <dt>{{ 'Inactivity threshold (years)' | translate }}</dt>
                 <dd>{{ cleanup.inactivity_years }}</dd>
               }
               @if (cleanup.excluded_patron_types?.length) {
-                <dt translate>Excluded patron types</dt>
+                <dt>{{ 'Excluded patron types' | translate }}</dt>
                 <dd>{{ cleanup.excluded_patron_types.join(', ') }}</dd>
               }
             </dl>
@@ -70,7 +76,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
           <p-accordion-header>
             <div class="ui:flex ui:w-full ui:items-center ui:justify-between ui:mr-2">
               <div>
-                <i class="fa-solid fa-bullhorn"></i>&nbsp;<span translate>Slogan</span>
+                <i class="fa-solid fa-bullhorn"></i>&nbsp;<span>{{ 'Slogan' | translate }}</span>
               </div>
             </div>
           </p-accordion-header>
@@ -96,7 +102,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
           <p-accordion-header>
             <div class="ui:flex ui:w-full ui:items-center ui:justify-between ui:mr-2">
               <div>
-                <i class="fa-solid fa-magnifying-glass"></i>&nbsp;<span translate>Placeholder</span>
+                <i class="fa-solid fa-magnifying-glass"></i>&nbsp;<span>{{ 'Placeholder' | translate }}</span>
               </div>
             </div>
           </p-accordion-header>
@@ -123,9 +129,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
             <p-accordion-panel [value]="block.key">
               <p-accordion-header>
                 <div class="ui:flex ui:w-full ui:items-center ui:justify-between ui:mr-2">
-                  <div>
-                    <i class="fa-solid fa-table-cells-large"></i>&nbsp;<span [translate]="block.label"></span>
-                  </div>
+                  <div><i class="fa-solid fa-table-cells-large"></i>&nbsp;<span [translate]="block.label"></span></div>
                 </div>
               </p-accordion-header>
               <p-accordion-content>

@@ -1,26 +1,24 @@
 // SPDX-FileCopyrightText: Fondation RERO+
 // SPDX-FileCopyrightText: UCLouvain
 // SPDX-License-Identifier: AGPL-3.0-or-later
-import { Component, computed, inject, input, output, signal, Signal, ChangeDetectionStrategy } from '@angular/core';
+import { Component, computed, inject, input, output, signal, Signal } from '@angular/core';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
+import { RouterLink } from '@angular/router';
 import { LocalFieldApiService } from '@app/admin/api/local-field-api.service';
 import { RecordPermissionService } from '@app/admin/service/record-permission.service';
+import { TranslatePipe } from '@ngx-translate/core';
+import { Bind } from '@openng/optimus-ui/bind';
+import { Button } from '@openng/optimus-ui/button';
 import { AppStore, JoinPipe } from '@rero/shared';
 import { catchError, map, of, switchMap, tap } from 'rxjs';
-import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
-import { Bind } from 'primeng/bind';
-import { Button } from 'primeng/button';
-import { RouterLink } from '@angular/router';
 
 @Component({
-    selector: 'admin-local-field',
-    templateUrl: './local-field.component.html',
-    providers: [JoinPipe],
-    imports: [TranslateDirective, Bind, Button, RouterLink, TranslatePipe, JoinPipe],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  selector: 'admin-local-field',
+  templateUrl: './local-field.component.html',
+  providers: [JoinPipe],
+  imports: [Bind, Button, RouterLink, TranslatePipe, JoinPipe],
 })
 export class LocalFieldComponent {
-
   private localFieldApiService: LocalFieldApiService = inject(LocalFieldApiService);
   private readonly appStore = inject(AppStore);
   private recordPermissionService: RecordPermissionService = inject(RecordPermissionService);
@@ -47,7 +45,7 @@ export class LocalFieldComponent {
   private readonly _resourceTypes: Record<string, string> = {
     documents: 'doc',
     holdings: 'hold',
-    items: 'item'
+    items: 'item',
   };
 
   // SIGNALS ==================================================================
@@ -58,27 +56,29 @@ export class LocalFieldComponent {
   private readonly _fetchedRecord = toSignal(
     toObservable(this.resourcePid).pipe(
       tap(() => this.isLoading.set(true)),
-      switchMap(pid =>
-        this.localFieldApiService.getByResourceTypeAndResourcePidAndOrganisationId(
-          this._translateType(this.resourceType()),
-          pid,
-          this.appStore.currentOrganisationPid()
-        ).pipe(
-          tap(result => {
-            const pid = result?.metadata?.pid ?? null;
-            this.pid.set(pid);
-            this.hasLocalFields.emit(pid != null);
-          }),
-          catchError(() => {
-            this.isLoading.set(false);
-            this.pid.set(null);
-            this.hasLocalFields.emit(false);
-            return of({});
-          })
-        )
-      )
+      switchMap((pid) =>
+        this.localFieldApiService
+          .getByResourceTypeAndResourcePidAndOrganisationId(
+            this._translateType(this.resourceType()),
+            pid,
+            this.appStore.currentOrganisationPid(),
+          )
+          .pipe(
+            tap((result) => {
+              const pid = result?.metadata?.pid ?? null;
+              this.pid.set(pid);
+              this.hasLocalFields.emit(pid != null);
+            }),
+            catchError(() => {
+              this.isLoading.set(false);
+              this.pid.set(null);
+              this.hasLocalFields.emit(false);
+              return of({});
+            }),
+          ),
+      ),
     ),
-    { initialValue: null }
+    { initialValue: null },
   );
 
   /** Source of truth: null when pid is null (deleted or not found), else the fetched data */
@@ -90,32 +90,30 @@ export class LocalFieldComponent {
   /** Permissions for the current record */
   readonly recordPermissions = toSignal(
     toObservable(this.record).pipe(
-      switchMap(record => {
+      switchMap((record) => {
         if (record?.metadata) {
-          return this.recordPermissionService
-            .getPermission('local_fields', record.metadata.pid)
-            .pipe(
-              tap(() => this.isLoading.set(false)),
-              catchError(() => {
-                this.isLoading.set(false);
-                return of({});
-              })
-            );
+          return this.recordPermissionService.getPermission('local_fields', record.metadata.pid).pipe(
+            tap(() => this.isLoading.set(false)),
+            catchError(() => {
+              this.isLoading.set(false);
+              return of({});
+            }),
+          );
         }
         this.isLoading.set(false);
         return of({});
-      })
+      }),
     ),
-    { initialValue: null }
+    { initialValue: null },
   );
 
   /** Backend create permission for local_fields (role-level, not resource-specific) */
   private readonly canCreatePermission = toSignal(
     this.recordPermissionService.getPermission('local_fields').pipe(
-      map(perms => perms?.create?.can ?? false),
-      catchError(() => of(false))
+      map((perms) => perms?.create?.can ?? false),
+      catchError(() => of(false)),
     ),
-    { initialValue: false }
+    { initialValue: false },
   );
 
   /** Whether the current user can add a local field to this resource */
@@ -124,7 +122,7 @@ export class LocalFieldComponent {
     const libraryPid = this.resourceLibraryPid();
     if (libraryPid !== undefined) {
       const userLibraries = this.appStore.user()?.patronLibrarian?.libraries ?? [];
-      return userLibraries.some(lib => lib.pid === libraryPid);
+      return userLibraries.some((lib) => lib.pid === libraryPid);
     }
     return true;
   });
@@ -135,19 +133,17 @@ export class LocalFieldComponent {
     if (!fields) return [];
     return Object.keys(fields)
       .sort((k1, k2) => parseInt(k1.replace(/\D/g, '')) - parseInt(k2.replace(/\D/g, '')))
-      .map(key => ({ name: key, value: fields[key] }));
+      .map((key) => ({ name: key, value: fields[key] }));
   });
 
   // PUBLIC FUNCTIONS =========================================================
   /** Delete the complete LocalField resource. */
   delete(): void {
-    this.localFieldApiService
-      .delete(this.pid()!)
-      .subscribe((success: any) => {
-        if (success) {
-          this.pid.set(null);
-        }
-      });
+    this.localFieldApiService.delete(this.pid()!).subscribe((success: any) => {
+      if (success) {
+        this.pid.set(null);
+      }
+    });
   }
 
   // PRIVATE FUNCTIONS ========================================================

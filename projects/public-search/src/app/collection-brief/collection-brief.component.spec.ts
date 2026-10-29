@@ -2,19 +2,20 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 import { formatDate, registerLocaleData } from '@angular/common';
+import localeEnGb from '@angular/common/locales/en-GB';
 import { Pipe, PipeTransform } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute } from '@angular/router';
-import { TranslateModule } from '@ngx-translate/core';
+import { provideTranslateService } from '@ngx-translate/core';
 import { DateTranslatePipe, Nl2brPipe } from '@rero/ng-core';
 import { SafeUrlPipe } from '@rero/shared';
 import { of } from 'rxjs';
+
 import { CollectionBriefComponent } from './collection-brief.component';
-import localeEnGb from '@angular/common/locales/en-GB';
 
 registerLocaleData(localeEnGb);
 
-@Pipe({ name: 'dateTranslate'})
+@Pipe({ name: 'dateTranslate' })
 class MockDateTranslatePipe implements PipeTransform {
   transform(value: string, format = 'mediumDate', timezone?: string): string | null {
     if (value === null || value === undefined) return null;
@@ -26,14 +27,18 @@ class MockDateTranslatePipe implements PipeTransform {
   }
 }
 
-@Pipe({ name: 'nl2br'})
+@Pipe({ name: 'nl2br' })
 class MockNl2brPipe implements PipeTransform {
-  transform(value: string): string { return value ?? ''; }
+  transform(value: string): string {
+    return value ?? '';
+  }
 }
 
-@Pipe({ name: 'safeUrl'})
+@Pipe({ name: 'safeUrl' })
 class MockSafeUrlPipe implements PipeTransform {
-  transform(value: string): string { return value ?? ''; }
+  transform(value: string): string {
+    return value ?? '';
+  }
 }
 
 describe('CollectionBriefComponent', () => {
@@ -45,33 +50,28 @@ describe('CollectionBriefComponent', () => {
       title: 'Collection title',
       collection_id: 'C01',
       description: 'description of the collection',
-      teachers: [
-        { name: 'Teacher name 1' },
-        { name: 'Teacher name 2' },
-      ],
+      teachers: [{ name: 'Teacher name 1' }, { name: 'Teacher name 2' }],
       start_date: '2025-01-01 08:00:00',
-      end_date: '2025-03-31 18:00:00'
-    }
+      end_date: '2025-03-31 18:00:00',
+    },
   };
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [
-        TranslateModule.forRoot(),
-        CollectionBriefComponent
-      ],
+      imports: [CollectionBriefComponent],
       providers: [
+        provideTranslateService(),
         {
           provide: ActivatedRoute,
-          useValue: { params: of({ viewcode: 'test' }) }
-        }
-      ]
+          useValue: { params: of({ viewcode: 'test' }) },
+        },
+      ],
     })
-    .overrideComponent(CollectionBriefComponent, {
-      remove: { imports: [DateTranslatePipe, Nl2brPipe, SafeUrlPipe] },
-      add: { imports: [MockDateTranslatePipe, MockNl2brPipe, MockSafeUrlPipe] }
-    })
-    .compileComponents();
+      .overrideComponent(CollectionBriefComponent, {
+        remove: { imports: [DateTranslatePipe, Nl2brPipe, SafeUrlPipe] },
+        add: { imports: [MockDateTranslatePipe, MockNl2brPipe, MockSafeUrlPipe] },
+      })
+      .compileComponents();
   });
 
   beforeEach(() => {

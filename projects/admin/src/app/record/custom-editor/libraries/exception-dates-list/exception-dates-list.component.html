@@ -4,29 +4,27 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 -->
 
 @if (exceptionDates()) {
-    @for(exception of exceptionDates(); track $index; let i=$index) {
-      <div class="ui:odd:bg-surface-50">
-        <admin-exception-date [exception]="exception">
+  @for (exception of exceptionDates(); track $index; let i = $index) {
+    <div class="ui:odd:bg-surface-50">
+      <admin-exception-date [exception]="exception">
         <!-- Actions -->
         <div class="ui:flex ui:gap-1 ui:justify-end">
-            <p-button
-              [outlined]="true"
-              severity="primary"
-              size="small"
-              icon="fa-solid fa-pencil"
-              (onClick)="editException(i)"
-              [title]="'Edit'|translate"
-            />
-            <p-button
-              [outlined]="true"
-              size="small"
-              severity="danger"
-              (onClick)="deleteException(i)"
-              icon="fa-solid fa-trash-can"
-              [title]="'Delete'|translate"
-            />
-          </div>
-        </admin-exception-date>
-      </div>
-    }
+          <p-button
+            [outlined]="true"
+            severity="primary"
+            size="small"
+            icon="fa-solid fa-pencil"
+            (onClick)="editException(i)"
+            [title]="'Edit' | translate" />
+          <p-button
+            [outlined]="true"
+            size="small"
+            severity="danger"
+            (onClick)="deleteException(i)"
+            icon="fa-solid fa-trash-can"
+            [title]="'Delete' | translate" />
+        </div>
+      </admin-exception-date>
+    </div>
   }
+}

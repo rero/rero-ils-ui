@@ -1,29 +1,54 @@
 // SPDX-FileCopyrightText: Fondation RERO+
 // SPDX-License-Identifier: AGPL-3.0-or-later
 import { I18nPluralPipe, NgClass } from '@angular/common';
-import { computed, Component, inject, input, OnInit, ChangeDetectionStrategy} from '@angular/core';
-import { TranslateDirective, TranslatePipe, TranslateService } from "@ngx-translate/core";
-import { AvailabilityComponent, DescriptionZoneComponent, GetTranslatedLabelPipe, HoldingsNoteType, NotesFilterPipe, AppStore } from '@rero/shared';
+import { Component, computed, inject, input, OnInit } from '@angular/core';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
+import { Accordion, AccordionContent, AccordionHeader, AccordionPanel } from '@openng/optimus-ui/accordion';
+import { ButtonDirective } from '@openng/optimus-ui/button';
+import { Message } from '@openng/optimus-ui/message';
+import { MultiSelect } from '@openng/optimus-ui/multiselect';
+import { Ripple } from '@openng/optimus-ui/ripple';
 import { Nl2brPipe } from '@rero/ng-core';
-import { Accordion, AccordionContent, AccordionHeader, AccordionPanel } from 'primeng/accordion';
-import { ButtonDirective } from 'primeng/button';
-import { Message } from 'primeng/message';
-import { Ripple } from 'primeng/ripple';
+import {
+  AppStore,
+  AvailabilityComponent,
+  DescriptionZoneComponent,
+  GetTranslatedLabelPipe,
+  HoldingsNoteType,
+  NotesFilterPipe,
+} from '@rero/shared';
+
 import { HoldingsApiService } from '../../api/holdings-api.service';
 import { HoldingsRequestComponent } from '../request/holdings-request.component';
 import { HoldingsStore } from '../store/holdings-store';
 import { ItemsComponent } from './items/items.component';
-import { MultiSelect } from 'primeng/multiselect';
 
 @Component({
-    selector: 'public-search-holdings',
-    templateUrl: './holdings.component.html',
-    imports: [Message, Accordion, AccordionPanel, Ripple, AccordionHeader, AvailabilityComponent, DescriptionZoneComponent, GetTranslatedLabelPipe, Nl2brPipe, NotesFilterPipe, TranslateDirective, AccordionContent, ItemsComponent, HoldingsRequestComponent, NgClass, ButtonDirective, I18nPluralPipe, TranslatePipe, MultiSelect],
-    providers: [HoldingsStore],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  selector: 'public-search-holdings',
+  templateUrl: './holdings.component.html',
+  imports: [
+    Message,
+    Accordion,
+    AccordionPanel,
+    Ripple,
+    AccordionHeader,
+    AvailabilityComponent,
+    DescriptionZoneComponent,
+    GetTranslatedLabelPipe,
+    Nl2brPipe,
+    NotesFilterPipe,
+    AccordionContent,
+    ItemsComponent,
+    HoldingsRequestComponent,
+    NgClass,
+    ButtonDirective,
+    I18nPluralPipe,
+    TranslatePipe,
+    MultiSelect,
+  ],
+  providers: [HoldingsStore],
 })
 export class HoldingsComponent implements OnInit {
-
   protected holdingsApiService = inject(HoldingsApiService);
   private translateService = inject(TranslateService);
   private appStore = inject(AppStore);
@@ -32,7 +57,9 @@ export class HoldingsComponent implements OnInit {
 
   protected readonly isAuthenticated = computed(() => this.appStore.user()?.isAuthenticated ?? false);
   protected readonly isPatron = computed(() => this.appStore.user()?.hasRoles(['patron']) ?? false);
-  protected get currentLang() { return this.translateService.currentLang; }
+  protected get currentLang() {
+    return this.translateService.getCurrentLang();
+  }
 
   // COMPONENTS ATTRIBUTES ====================================================
   /** View code */

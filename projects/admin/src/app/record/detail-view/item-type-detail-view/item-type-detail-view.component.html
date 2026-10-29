@@ -7,34 +7,40 @@ SPDX-License-Identifier: AGPL-3.0-or-later
   <dl class="metadata ui:mt-4">
     <!-- DESCRIPTION -->
     @if (record.metadata.description) {
-      <dt translate>Description</dt>
+      <dt>{{ 'Description' | translate }}</dt>
       <dd>{{ record.metadata.description }}</dd>
     }
     <!-- TYPE -->
-    <dt translate>Type</dt>
+    <dt>{{ 'Type' | translate }}</dt>
     <dd>{{ record.metadata.type }}</dd>
     <!-- ITEM AVAILABILITY -->
-    <dt translate>Items availability</dt>
+    <dt>{{ 'Items availability' | translate }}</dt>
     <dd>
-      <i class="fa-solid" aria-hidden="true" [ngClass]="{
-        'fa-check text-success': !record.metadata.negative_availability,
-        'fa-xmark text-error': record.metadata.negative_availability
-      }"></i>
+      <i
+        class="fa-solid"
+        aria-hidden="true"
+        [ngClass]="{
+          'fa-check text-success': !record.metadata.negative_availability,
+          'fa-xmark text-error': record.metadata.negative_availability,
+        }"></i>
     </dd>
     <!-- REMOVE TEMPORARY ITEM TYPE ON SCAN -->
-    <dt translate>Remove temporary item type on check-in/checkout</dt>
+    <dt>{{ 'Remove temporary item type on check-in/checkout' | translate }}</dt>
     <dd>
-      <i class="fa-solid" aria-hidden="true" [ngClass]="{
-        'fa-check text-success': record.metadata.remove_temporary_item_type_on_scan,
-        'fa-xmark text-error': !record.metadata.remove_temporary_item_type_on_scan
-      }"></i>
+      <i
+        class="fa-solid"
+        aria-hidden="true"
+        [ngClass]="{
+          'fa-check text-success': record.metadata.remove_temporary_item_type_on_scan,
+          'fa-xmark text-error': !record.metadata.remove_temporary_item_type_on_scan,
+        }"></i>
     </dd>
   </dl>
 
   <section class="ui:mt-4">
     <!-- DISPLAYED status -->
     @if (record.metadata.displayed_status) {
-      <p-panel [header]="'Displayed status'|translate">
+      <p-panel [header]="'Displayed status' | translate">
         <ul class="ui:list-none ui:my-2 ui:ml-5">
           @for (status of record.metadata.displayed_status; track $index) {
             <li>
@@ -48,10 +54,10 @@ SPDX-License-Identifier: AGPL-3.0-or-later
       </p-panel>
     }
   </section>
-    <!-- CIRCULATION INFORMATION'S -->
+  <!-- CIRCULATION INFORMATION'S -->
   <section class="ui:mt-3">
     @if (record.metadata.circulation_information) {
-      <p-panel [header]="'Circulation information'|translate">
+      <p-panel [header]="'Circulation information' | translate">
         <ul class="ui:list-none ui:my-2 ui:ml-5">
           @for (circulation of record.metadata.circulation_information; track $index) {
             <li>

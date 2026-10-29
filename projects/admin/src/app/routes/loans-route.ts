@@ -3,15 +3,23 @@
 import { inject } from '@angular/core';
 import { ResolveFn, Routes } from '@angular/router';
 import { _ } from '@ngx-translate/core';
-import { ActionStatus, Bucket, IFilter, RecordData, RecordSearchPageComponent, RecordType, RouteDataTypesInterface } from '@rero/ng-core';
+import {
+  ActionStatus,
+  Bucket,
+  IFilter,
+  RecordData,
+  RecordSearchPageComponent,
+  RecordType,
+  RouteDataTypesInterface,
+} from '@rero/ng-core';
 import { map, Observable, of } from 'rxjs';
+
 import { LibraryApiService } from '../api/library-api.service';
 import { LoanState } from '../classes/loans';
 import { LoansBriefViewComponent } from '../record/brief-view/loans-brief-view/loans-brief-view.component';
 import { BaseRoute } from './base-route';
 
-export const loansRouteResolver: ResolveFn<Partial<RecordType>[]> = () =>
-  new LoansRoute().getTypes();
+export const loansRouteResolver: ResolveFn<Partial<RecordType>[]> = () => new LoansRoute().getTypes();
 
 export const loansRoutes: Routes = [
   {
@@ -86,12 +94,18 @@ class LoansRoute extends BaseRoute implements RouteDataTypesInterface {
    * @return Observable of the name.
    */
   private processName(bucketOrFilter: Bucket | IFilter): Observable<string> {
-    if(bucketOrFilter.name) { return of(bucketOrFilter.name); }
+    if (bucketOrFilter.name) {
+      return of(bucketOrFilter.name);
+    }
     switch (bucketOrFilter.aggregationKey) {
       case 'owner_library':
       case 'pickup_library':
-      case 'transaction_library': return this.libraryApiService.getByPid(bucketOrFilter.key).pipe(map(record => record.name));
-      default: return bucketOrFilter.name ? of(bucketOrFilter.name) : this.routeToolService.translateService.stream(bucketOrFilter.key);
+      case 'transaction_library':
+        return this.libraryApiService.getByPid(bucketOrFilter.key).pipe(map((record) => record.name));
+      default:
+        return bucketOrFilter.name
+          ? of(bucketOrFilter.name)
+          : this.routeToolService.translateService.stream(bucketOrFilter.key);
     }
   }
 }

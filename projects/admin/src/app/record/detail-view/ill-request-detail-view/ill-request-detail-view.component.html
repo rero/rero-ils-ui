@@ -14,14 +14,14 @@ SPDX-License-Identifier: AGPL-3.0-or-later
         </span>
       </ng-template>
       <dl class="metadata ui:m-3">
-        <dt translate>Title</dt>
+        <dt>{{ 'Title' | translate }}</dt>
         <dd>{{ rec.metadata.document.title }}</dd>
         @if (rec.metadata.document.authors; as authors) {
-          <dt translate>Authors</dt>
+          <dt>{{ 'Authors' | translate }}</dt>
           <dd>{{ authors }}</dd>
         }
         @if (rec.metadata.document.publisher || rec.metadata.document.year) {
-          <dt translate>Edition</dt>
+          <dt>{{ 'Edition' | translate }}</dt>
           <dd>
             @if (rec.metadata.document.publisher; as publisher) {
               {{ publisher }}
@@ -32,111 +32,115 @@ SPDX-License-Identifier: AGPL-3.0-or-later
           </dd>
         }
         @if (rec.metadata.document.identifier; as identifier) {
-          <dt translate>Identifiers</dt>
+          <dt>{{ 'Identifiers' | translate }}</dt>
           <dd>{{ identifier }}</dd>
         }
         @if (rec.metadata.document.source; as source) {
-          <dt translate>Published in</dt>
+          <dt>{{ 'Published in' | translate }}</dt>
           <dd>
             {{ source.journal_title }}
             @if (source.volume || source.number) {
-              &nbsp;(@if (source.volume) { Vol.{{ source.volume }} }
-              @if (source.volume && source.number) { &mdash; }
-              @if (source.number) { n° {{ source.number }} })
+              &nbsp;(
+              @if (source.volume) {
+                Vol.{{ source.volume }}
+              }
+              @if (source.volume && source.number) {
+                &mdash;
+              }
+              @if (source.number) {
+                n° {{ source.number }}
+              }
+              )
             }
           </dd>
         }
       </dl>
-  </p-panel>
+    </p-panel>
 
-  <!-- REQUEST ADDITIONAL DETAILS -->
-  <p-panel>
-    <ng-template #header>
-      <span class="ui:text-xl">
-        <i class="fa-solid fa-circle-info"></i>&nbsp;
-        {{ 'Request additional informations' | translate }}
-      </span>
-    </ng-template>
-    <dl class="metadata ui:m-3">
-      @if (rec.metadata.found_in; as source) {
-        <dt translate>Found in</dt>
-        <dd>
-          {{ source.source }} &mdash;
-          <a
-            [title]="source.url"
-            class="rero-ils-external-link"
-            href="{{ source.url }}"
-          >
-            {{ source.url | truncateText: 100 : '…' : 'char' }}
-          </a>
-        </dd>
-      }
-      <dt translate>Requester</dt>
-      <dd>
-        @if (requester(); as req) {
-          @if (req.patron?.barcode?.[0]; as barcode) {
-            <a [routerLink]="['/circulation', 'patron', barcode]">
-              <span id="patron-last-name">{{ req.last_name }}</span>
-              @if (req.first_name; as firstName) {
-                <span id="patron-first-name">, {{ firstName }}</span>
-              }
-            </a>
-          }
-        } @else {
-          <span translate>Unknown</span>
-        }
-      </dd>
-      <dt translate>Request date</dt>
-      <dd>{{ rec.created | dateTranslate : 'medium' }}</dd>
-      <dt translate>Request status</dt>
-      <dd>
-        <p-tag [severity]="$any(tagSeverity())">
-          {{ rec.metadata.status | translate }}
-        </p-tag>
-      </dd>
-      @if (rec.metadata.loan_status) {
-        <dt translate>Loan status</dt>
-        <dd>
-          <p-tag [severity]="$any(loanTagSeverity())">
-            {{ rec.metadata.loan_status | translate}}
-          </p-tag>
-        </dd>
-      }
-      <dt translate>Pickup location</dt>
-      <dd>
-        {{ pickupName() || 'Unknown' | translate }}
-      </dd>
-      <dt translate>Scope</dt>
-      <dd>
-        @if (rec.metadata.copy) {
-          <span translate>Copy</span>
-        } @else {
-          <span translate>Loan</span>
-        }
-      </dd>
-      @if (rec.metadata.copy) {
-        <dt translate>Pages</dt>
-        <dd>{{ rec.metadata.pages }}</dd>
-      }
-    </dl>
-  </p-panel>
-
-  <!-- NOTES :: public/staff -->
-  @if (rec.metadata.notes) {
+    <!-- REQUEST ADDITIONAL DETAILS -->
     <p-panel>
       <ng-template #header>
         <span class="ui:text-xl">
-          <i class="fa-regular fa-note-sticky"></i>&nbsp;
-          {{ 'Notes' | translate }}
+          <i class="fa-solid fa-circle-info"></i>&nbsp;
+          {{ 'Request additional informations' | translate }}
         </span>
       </ng-template>
       <dl class="metadata ui:m-3">
-        @for (note of rec.metadata.notes; track $index) {
-          <dt translate>{{ note.type }}</dt>
-          <dd [innerHTML]="note.content | nl2br"></dd>
+        @if (rec.metadata.found_in; as source) {
+          <dt>{{ 'Found in' | translate }}</dt>
+          <dd>
+            {{ source.source }} &mdash;
+            <a [title]="source.url" class="rero-ils-external-link" href="{{ source.url }}">
+              {{ source.url | truncateText: 100 : '…' : 'char' }}
+            </a>
+          </dd>
+        }
+        <dt>{{ 'Requester' | translate }}</dt>
+        <dd>
+          @if (requester(); as req) {
+            @if (req.patron?.barcode?.[0]; as barcode) {
+              <a [routerLink]="['/circulation', 'patron', barcode]">
+                <span id="patron-last-name">{{ req.last_name }}</span>
+                @if (req.first_name; as firstName) {
+                  <span id="patron-first-name">, {{ firstName }}</span>
+                }
+              </a>
+            }
+          } @else {
+            <span>{{ 'Unknown' | translate }}</span>
+          }
+        </dd>
+        <dt>{{ 'Request date' | translate }}</dt>
+        <dd>{{ rec.created | dateTranslate: 'medium' }}</dd>
+        <dt>{{ 'Request status' | translate }}</dt>
+        <dd>
+          <p-tag [severity]="$any(tagSeverity())">
+            {{ rec.metadata.status | translate }}
+          </p-tag>
+        </dd>
+        @if (rec.metadata.loan_status) {
+          <dt>{{ 'Loan status' | translate }}</dt>
+          <dd>
+            <p-tag [severity]="$any(loanTagSeverity())">
+              {{ rec.metadata.loan_status | translate }}
+            </p-tag>
+          </dd>
+        }
+        <dt>{{ 'Pickup location' | translate }}</dt>
+        <dd>
+          {{ pickupName() || 'Unknown' | translate }}
+        </dd>
+        <dt>{{ 'Scope' | translate }}</dt>
+        <dd>
+          @if (rec.metadata.copy) {
+            <span>{{ 'Copy' | translate }}</span>
+          } @else {
+            <span>{{ 'Loan' | translate }}</span>
+          }
+        </dd>
+        @if (rec.metadata.copy) {
+          <dt>{{ 'Pages' | translate }}</dt>
+          <dd>{{ rec.metadata.pages }}</dd>
         }
       </dl>
     </p-panel>
-  }
+
+    <!-- NOTES :: public/staff -->
+    @if (rec.metadata.notes) {
+      <p-panel>
+        <ng-template #header>
+          <span class="ui:text-xl">
+            <i class="fa-regular fa-note-sticky"></i>&nbsp;
+            {{ 'Notes' | translate }}
+          </span>
+        </ng-template>
+        <dl class="metadata ui:m-3">
+          @for (note of rec.metadata.notes; track $index) {
+            <dt>{{ note.type | translate }}</dt>
+            <dd [innerHTML]="note.content | nl2br"></dd>
+          }
+        </dl>
+      </p-panel>
+    }
   </div>
 }

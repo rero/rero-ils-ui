@@ -1,12 +1,13 @@
 // SPDX-FileCopyrightText: Fondation RERO+
 // SPDX-FileCopyrightText: UCLouvain
 // SPDX-License-Identifier: AGPL-3.0-or-later
-import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
+import { Component, computed, inject } from '@angular/core';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
+import { Bind } from '@openng/optimus-ui/bind';
+import { Button } from '@openng/optimus-ui/button';
+import { DialogService } from '@openng/optimus-ui/dynamicdialog';
 import { RecordSearchStore } from '@rero/ng-core';
-import { Bind } from 'primeng/bind';
-import { Button } from 'primeng/button';
-import { DialogService } from 'primeng/dynamicdialog';
+
 import { DocumentAdvancedSearchFormComponent } from './document-advanced-search-form/document-advanced-search-form.component';
 
 @Component({
@@ -18,15 +19,12 @@ import { DocumentAdvancedSearchFormComponent } from './document-advanced-search-
         outlined
         icon="fa-solid fa-magnifying-glass"
         iconPos="right"
-        (onClick)="openModalBox()"
-      />
+        (onClick)="openModalBox()" />
     }
   `,
   imports: [Bind, Button, TranslatePipe],
-  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class DocumentAdvancedSearchComponent {
-
   private dialogService = inject(DialogService);
   private translateService = inject(TranslateService);
   private store = inject(RecordSearchStore);

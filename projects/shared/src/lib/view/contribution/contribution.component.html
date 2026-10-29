@@ -6,31 +6,35 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 @if (displayedContributions()) {
   <ul class="ui:list-none">
-    @for (contributor of displayedContributions(); track $index; let last=$last) {
+    @for (contributor of displayedContributions(); track $index; let last = $last) {
       <li class="ui:inline">
         @if (activateLink() || withEntityLink()) {
           @if (withEntityLink() && contributor.entity?.pid) {
-            <a [routerLink]="['/records/', contributor.entity.resource_type+'_entities', 'detail', contributor.entity.pid]">{{ contributor.entity | entityLabel }}</a>
+            <a
+              [routerLink]="[
+                '/records/',
+                contributor.entity.resource_type + '_entities',
+                'detail',
+                contributor.entity.pid,
+              ]"
+              >{{ contributor.entity | entityLabel }}</a
+            >
           } @else {
             @if (view() !== 'professional') {
               <shared-entity-link
-              resourceName="contribution"
-              [external]="true"
-              [entity]="contributor.entity"
-              [routerLinkParams]="['/', view(), 'search', 'documents']"
-            />
-            } @else {
-              <shared-entity-link
                 resourceName="contribution"
+                [external]="true"
                 [entity]="contributor.entity"
-              />
+                [routerLinkParams]="['/', view(), 'search', 'documents']" />
+            } @else {
+              <shared-entity-link resourceName="contribution" [entity]="contributor.entity" />
             }
           }
         } @else {
           {{ contributor.entity | entityLabel }}
         }
         @if (withRoles() && contributor.role && contributor.role.length > 0) {
-          <span class="ui:ml-1 ui:text-muted-color">({{ contributor.role | arrayTranslate| join: ', '}})</span>
+          <span class="ui:ml-1 ui:text-muted-color">({{ contributor.role | arrayTranslate | join: ', ' }})</span>
         }
       </li>
       @if (!last) {

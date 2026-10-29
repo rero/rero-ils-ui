@@ -2,28 +2,26 @@
 // SPDX-FileCopyrightText: UCLouvain
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-import { Component, inject, input, ChangeDetectionStrategy} from '@angular/core';
-import { TranslateService } from '@ngx-translate/core';
 import { NgClass } from '@angular/common';
+import { Component, inject, input } from '@angular/core';
 import { RouterLink } from '@angular/router';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
-    selector: 'admin-budgets-brief-view',
-    template: `
+  selector: 'admin-budgets-brief-view',
+  template: `
     <h5>
       <i
         class="fa-solid fa-circle ui:mr-2"
         [title]="title"
-        [ngClass]="{'text-success': record().metadata.is_active, 'text-error': !record().metadata.is_active}"
-      ></i>&nbsp;
+        [ngClass]="{ 'text-success': record().metadata.is_active, 'text-error': !record().metadata.is_active }"></i
+      >&nbsp;
       <a [routerLink]="[detailUrl().link]">{{ record().metadata.name }}</a>
     </h5>
   `,
-    imports: [NgClass, RouterLink],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  imports: [NgClass, RouterLink],
 })
 export class BudgetsBriefViewComponent {
-
   private translateService: TranslateService = inject(TranslateService);
 
   /** The record to display */
@@ -31,7 +29,7 @@ export class BudgetsBriefViewComponent {
   /** The record type */
   type = input<string>();
   /** The URL to the detail view of the record */
-  detailUrl = input<{ link: string, external: boolean }>();
+  detailUrl = input<{ link: string; external: boolean }>();
 
   /**
    * Status of the budget on bullet title

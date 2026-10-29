@@ -9,7 +9,7 @@ import { UrlMatcher, UrlSegment } from '@angular/router';
  */
 export function recordTypeMatcher(type: string): UrlMatcher {
   return (url: UrlSegment[]) => {
-if (url.length >= 2 && url[0].path === 'records' && url[1].path === type) {
+    if (url.length >= 2 && url[0].path === 'records' && url[1].path === type) {
       return {
         consumed: [url[0], url[1]],
         posParams: { type: new UrlSegment(type, {}) },

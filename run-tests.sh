@@ -16,6 +16,8 @@ display_success_message () {
 
 set -e
 
+display_success_message "Checking the formatting..."
+pnpm run format:check
 display_success_message "Linting the projects..."
 ng lint
 

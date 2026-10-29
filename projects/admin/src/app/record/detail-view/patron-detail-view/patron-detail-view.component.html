@@ -5,258 +5,262 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 @if (patron(); as p) {
   <div class="ui:py-2">
-  <!-- BLOCKED OR NOT? -->
-  @if (p.patron && p.patron.blocked) {
-    <div class="ui:my-4">
-      <p-message severity="error" showTransitionOptions="0ms">
-        {{ 'This patron is currently blocked' | translate }}<br>
-        {{ p.patron.blocked_note }}
-      </p-message>
-    </div>
-  }
+    <!-- BLOCKED OR NOT? -->
+    @if (p.patron && p.patron.blocked) {
+      <div class="ui:my-4">
+        <p-message severity="error" showTransitionOptions="0ms">
+          {{ 'This patron is currently blocked' | translate }}<br />
+          {{ p.patron.blocked_note }}
+        </p-message>
+      </div>
+    }
 
-  <section id="contact-profile" class="ui:flex ui:flex-col ui:gap-2">
-    <!-- MAIN PROFILE SECTION ================================================== -->
-    <div class="ui:rounded-border ui:border ui:border-surface ui:flex ui:gap-6 ui:p-6">
+    <section id="contact-profile" class="ui:flex ui:flex-col ui:gap-2">
+      <!-- MAIN PROFILE SECTION ================================================== -->
+      <div class="ui:rounded-border ui:border ui:border-surface ui:flex ui:gap-6 ui:p-6">
         <div class="ui:bg-surface-500 ui:rounded-full ui:w-40 ui:h-40 ui:flex ui:items-center ui:justify-center">
           <i class="fa-regular fa-user fa-4x ui:text-white"></i>
         </div>
-      <div class="ui:grow">
-        <div class="ui:flex ui:items-center ui:gap-4 ui:mb-2">
-          <span class=" ui:text-4xl">{{ p.last_name }} {{ p.first_name }}</span>
+        <div class="ui:grow">
+          <div class="ui:flex ui:items-center ui:gap-4 ui:mb-2">
+            <span class="ui:text-4xl">{{ p.last_name }} {{ p.first_name }}</span>
 
-          @if (p.patron) {
-            <a
-              pButton
-              outlined
-              size="small"
-              [permissions]="permissions.CIRC_ADMIN"
-              [routerLink]="['/circulation', 'patron', p.patron.barcode[0]]"
-            >
-              <i class="fa-solid fa-right-left"></i>&nbsp;{{ 'Circulation' | translate }}
-            </a>
-          }
-        </div>
-        <dl class="metadata">
-          <dt>
-            <i class="fa-solid fa-calendar-days"></i>&nbsp;{{ 'Date of birth' | translate }}
-          </dt>
-          <dd>{{ p.birth_date | dateTranslate:'mediumDate' }}</dd>
-          @if (p.email) {
-              <dt>
-                <i class="fa-solid fa-envelope"></i>&nbsp;{{ 'Email' | translate }}
-              </dt>
-              <dd>{{ p.email }}</dd>
-          }
-          @if (phones(); as patronPhones) {
-            @if (patronPhones.length > 0) {
-              <dt>
-                <i class="fa-solid fa-phone"></i>&nbsp;
-                {{ patronPhones.length | i18nPlural: {'=1': 'Phone' | translate, 'other': 'Phones' | translate} }}
-              </dt>
-              <dd>
-                <ul class="ui:list-none">
-                  @for (phone of patronPhones; track $index) {
-                    <li>
-                      {{ phone.value }}&nbsp;
-                      <span class="ui:italic ui:text-muted-color" >({{ phone.type | translate }})</span>
-                    </li>
-                  }
-                </ul>
-              </dd>
+            @if (p.patron) {
+              <a
+                pButton
+                outlined
+                size="small"
+                [permissions]="permissions.CIRC_ADMIN"
+                [routerLink]="['/circulation', 'patron', p.patron.barcode[0]]">
+                <i class="fa-solid fa-right-left"></i>&nbsp;{{ 'Circulation' | translate }}
+              </a>
             }
-          }
-          @if (p.street || p.postal_code || p.city || p.country) {
-            <dt>
-              <i class="fa-solid fa-house"></i>&nbsp;
-              {{ 'Address' | translate }}
-            </dt>
-            <dd>
-              @if (p.street) {
-                {{ p.street }}<br/>
-              }
-              @if (p.postal_code || p.city) {
-                {{ p.postal_code }} {{ p.city }}<br/>
-              }
-              @if (p.country) {
-                {{ 'country_' + p.country | translate }}
-              }
-            </dd>
-          }
-        </dl>
-      </div>
-    </div>
-
-    <div class="ui:flex ui:gap-6 ui:mt-6">
-    <p-accordion [multiple]="true" class="ui:grow" [value]="['0', '1']">
-      <!-- NOTES ================================================================= -->
-      @if (p.notes && p.notes.length > 0) {
-      <p-accordion-panel value="0">
-        <p-accordion-header>
-          <span class="ui:text-bold ui:text-xl">
-            {{ p.notes.length | i18nPlural: {'=1': 'Note', 'other': 'Notes'} | translate }}
-          </span>
-        </p-accordion-header>
-        <p-accordion-content>
-          @for (note of p.notes; track $index) {
-            <div class="ui:mt-2">
-              <dl class="metadata">
-                <dt translate>
-                  {{ note.type }}
-                </dt>
-                <dd [innerHTML]="note.content | nl2br"></dd>
-              </dl>
-            </div>
-          }
-        </p-accordion-content>
-        </p-accordion-panel>
-        }
-        <!-- USER INFORMATION'S SECTION ============================================= -->
-        <p-accordion-panel value="1">
-          <p-accordion-header>
-            <span class="ui:text-bold ui:text-xl" translate>User informations</span>
-          </p-accordion-header>
-          <p-accordion-content>
-            <div class="ui:mt-2">
-              <dl class="metadata">
+          </div>
+          <dl class="metadata">
+            <dt><i class="fa-solid fa-calendar-days"></i>&nbsp;{{ 'Date of birth' | translate }}</dt>
+            <dd>{{ p.birth_date | dateTranslate: 'mediumDate' }}</dd>
+            @if (p.email) {
+              <dt><i class="fa-solid fa-envelope"></i>&nbsp;{{ 'Email' | translate }}</dt>
+              <dd>{{ p.email }}</dd>
+            }
+            @if (phones(); as patronPhones) {
+              @if (patronPhones.length > 0) {
                 <dt>
-                  <i class="fa-solid fa-user"></i>&nbsp;
-                  {{ 'Username' | translate }}
-                </dt>
-                <dd>{{ p.username }}</dd>
-                <dt>
-                  <i class="fa-solid fa-clock-rotate-left"></i>&nbsp;
-                  {{ 'Keep history' }}
+                  <i class="fa-solid fa-phone"></i>&nbsp;
+                  {{ patronPhones.length | i18nPlural: { '=1': 'Phone' | translate, other: 'Phones' | translate } }}
                 </dt>
                 <dd>
-                  <i [ngClass]="p.keep_history ? 'fa-solid fa-check text-success' : 'fa-solid fa-xmark text-error'"></i>
+                  <ul class="ui:list-none">
+                    @for (phone of patronPhones; track $index) {
+                      <li>
+                        {{ phone.value }}&nbsp;
+                        <span class="ui:italic ui:text-muted-color">({{ phone.type | translate }})</span>
+                      </li>
+                    }
+                  </ul>
                 </dd>
-                <dt translate>{{ p.roles | i18nPlural: {'=1': 'Role', 'other': 'Roles'} }}</dt>
-                <dd class="ui:flex ui:gap-1 ui:flex-wrap">
-                  @for (role of p.roles; track $index) {
-                    <p-tag [severity]="$any(getRoleTagSeverity(role))" [value]="role | translate" />
-                  }
-                </dd>
-                <dt translate>Creation date</dt>
-                <dd>{{ record().created | dateTranslate: 'mediumDate' }}</dd>
-              </dl>
-            </div>
-          </p-accordion-content>
-        </p-accordion-panel>
-
-    <!-- PATRON INFORMATION'S SECTION =========================================== -->
-    @if (p.patron) {
-    <p-accordion-panel value="3">
-      <p-accordion-header>
-        <span class="ui:text-bold ui:text-xl" translate>Patron information</span>
-      </p-accordion-header>
-      <p-accordion-content>
-        <div class="ui:mt-2">
-          <dl class="metadata">
-            <dt>
-              <i class="fa-solid fa-barcode"></i>&nbsp;
-              {{ 'Barcode' | translate }}
-            </dt>
-            <dd>
-              <a [routerLink]="['/circulation', 'patron', p.patron.barcode[0]]" [linkPermissions]="permissions.CIRC_ADMIN">{{ p.patron.barcode | join: ', ' }}</a>
-            </dd>
-            <dt translate>Type</dt>
-            <dd>
-              {{ p.patron.type.pid | getRecord: 'patron_types' : 'field' : 'name' | async }}
-            </dd>
-            <dt translate>Account expiration</dt>
-            <dd>
-              {{ p.patron.expiration_date | dateTranslate:'mediumDate' }}
-            </dd>
-            @if (p.patron.libraries && p.patron.libraries.length > 0) {
-              <dt>
-                <i class="fa-solid fa-building-columns"></i>&nbsp;
-                {{ 'Affiliation libraries' | translate }}
-              </dt>
-              <dd>
-                <ul class="ui:list-none">
-                  @for (library of p.patron.libraries; track $index) {
-                    <li>
-                      {{ library.pid | getRecord: 'libraries' : 'field' : 'name' | async }}
-                    </li>
-                  }
-                </ul>
-              </dd>
+              }
             }
-            @if (p.source) {
-              <dt translate>Source</dt>
-              <dd>{{ p.source }}</dd>
-            }
-            @if (p.local_codes) {
-              <dt translate>Local code</dt>
-              <dd>{{ p.local_codes | join: ', ' }}</dd>
-            }
-            @if (p.second_address) {
+            @if (p.street || p.postal_code || p.city || p.country) {
               <dt>
                 <i class="fa-solid fa-house"></i>&nbsp;
-                {{ 'Second address' | translate }}
+                {{ 'Address' | translate }}
               </dt>
               <dd>
-                @if (p.second_address.street) {
-                  {{ p.second_address.street }}<br/>
+                @if (p.street) {
+                  {{ p.street }}<br />
                 }
-                @if (p.second_address.postal_code || p.second_address.city) {
-                  {{ p.second_address.postal_code }} {{ p.second_address.city }}<br/>
+                @if (p.postal_code || p.city) {
+                  {{ p.postal_code }} {{ p.city }}<br />
                 }
-                @if (p.second_address.country) {
-                  {{ 'country_' + p.second_address.country | translate }}
+                @if (p.country) {
+                  {{ 'country_' + p.country | translate }}
                 }
               </dd>
             }
           </dl>
         </div>
-      </p-accordion-content>
-    </p-accordion-panel>
-  }
-    <!-- LIBRARIAN INFORMATION'S SECTION ======================================== -->
+      </div>
 
-    @if (p.libraries?.length > 0) {
-      <p-accordion-panel value="4">
-        <p-accordion-header>
-          <span class="ui:text-bold ui:text-xl" translate>Librarian information</span>
-        </p-accordion-header>
-        <p-accordion-content>
-          <div class="ui:mt-2">
-            <dl class="metadata">
-              <dt>
-                <i class="fa-solid fa-building-columns"></i>&nbsp;
-                {{ p.libraries.length | i18nPlural: {'=1': 'Library' | translate, 'other': 'Libraries' | translate} }}
-              </dt>
-              <dd>
-                <ul class="ui:list-none">
-                  @for (library of p.libraries; track $index) {
-                    <li>
-                      {{ library.pid | getRecord: 'libraries' : 'field' : 'name' | async }}
-                    </li>
-                  }
-                </ul>
-              </dd>
-            </dl>
-          </div>
-        </p-accordion-content>
-      </p-accordion-panel>
-    }
+      <div class="ui:flex ui:gap-6 ui:mt-6">
+        <p-accordion [multiple]="true" class="ui:grow" [value]="['0', '1']">
+          <!-- NOTES ================================================================= -->
+          @if (p.notes && p.notes.length > 0) {
+            <p-accordion-panel value="0">
+              <p-accordion-header>
+                <span class="ui:text-bold ui:text-xl">
+                  {{ p.notes.length | i18nPlural: { '=1': 'Note', other: 'Notes' } | translate }}
+                </span>
+              </p-accordion-header>
+              <p-accordion-content>
+                @for (note of p.notes; track $index) {
+                  <div class="ui:mt-2">
+                    <dl class="metadata">
+                      <dt>
+                        {{ note.type | translate }}
+                      </dt>
+                      <dd [innerHTML]="note.content | nl2br"></dd>
+                    </dl>
+                  </div>
+                }
+              </p-accordion-content>
+            </p-accordion-panel>
+          }
+          <!-- USER INFORMATION'S SECTION ============================================= -->
+          <p-accordion-panel value="1">
+            <p-accordion-header>
+              <span class="ui:text-bold ui:text-xl">{{ 'User informations' | translate }}</span>
+            </p-accordion-header>
+            <p-accordion-content>
+              <div class="ui:mt-2">
+                <dl class="metadata">
+                  <dt>
+                    <i class="fa-solid fa-user"></i>&nbsp;
+                    {{ 'Username' | translate }}
+                  </dt>
+                  <dd>{{ p.username }}</dd>
+                  <dt>
+                    <i class="fa-solid fa-clock-rotate-left"></i>&nbsp;
+                    {{ 'Keep history' }}
+                  </dt>
+                  <dd>
+                    <i
+                      [ngClass]="
+                        p.keep_history ? 'fa-solid fa-check text-success' : 'fa-solid fa-xmark text-error'
+                      "></i>
+                  </dd>
+                  <dt>{{ p.roles | i18nPlural: { '=1': 'Role', other: 'Roles' } | translate }}</dt>
+                  <dd class="ui:flex ui:gap-1 ui:flex-wrap">
+                    @for (role of p.roles; track $index) {
+                      <p-tag [severity]="$any(getRoleTagSeverity(role))" [value]="role | translate" />
+                    }
+                  </dd>
+                  <dt>{{ 'Creation date' | translate }}</dt>
+                  <dd>{{ record().created | dateTranslate: 'mediumDate' }}</dd>
+                </dl>
+              </div>
+            </p-accordion-content>
+          </p-accordion-panel>
 
-    <!-- PERMISSIONS ======================================== -->
-    @if (canAccessDisplayPermissions()) {
-      <p-accordion-panel value="5">
-        <p-accordion-header>
-          <span class="ui:text-bold ui:text-xl" translate>Permissions</span>
-        </p-accordion-header>
-        <p-accordion-content>
-          <div class="ui:mt-2">
-            <admin-patron-permissions [hidden]="false" [pid]="p.pid"></admin-patron-permissions>
-          </div>
-        </p-accordion-content>
-      </p-accordion-panel>
-    }
-    </p-accordion>
-    </div>
-  </section>
+          <!-- PATRON INFORMATION'S SECTION =========================================== -->
+          @if (p.patron) {
+            <p-accordion-panel value="3">
+              <p-accordion-header>
+                <span class="ui:text-bold ui:text-xl">{{ 'Patron information' | translate }}</span>
+              </p-accordion-header>
+              <p-accordion-content>
+                <div class="ui:mt-2">
+                  <dl class="metadata">
+                    <dt>
+                      <i class="fa-solid fa-barcode"></i>&nbsp;
+                      {{ 'Barcode' | translate }}
+                    </dt>
+                    <dd>
+                      <a
+                        [routerLink]="['/circulation', 'patron', p.patron.barcode[0]]"
+                        [linkPermissions]="permissions.CIRC_ADMIN"
+                        >{{ p.patron.barcode | join: ', ' }}</a
+                      >
+                    </dd>
+                    <dt>{{ 'Type' | translate }}</dt>
+                    <dd>
+                      {{ p.patron.type.pid | getRecord: 'patron_types' : 'field' : 'name' | async }}
+                    </dd>
+                    <dt>{{ 'Account expiration' | translate }}</dt>
+                    <dd>
+                      {{ p.patron.expiration_date | dateTranslate: 'mediumDate' }}
+                    </dd>
+                    @if (p.patron.libraries && p.patron.libraries.length > 0) {
+                      <dt>
+                        <i class="fa-solid fa-building-columns"></i>&nbsp;
+                        {{ 'Affiliation libraries' | translate }}
+                      </dt>
+                      <dd>
+                        <ul class="ui:list-none">
+                          @for (library of p.patron.libraries; track $index) {
+                            <li>
+                              {{ library.pid | getRecord: 'libraries' : 'field' : 'name' | async }}
+                            </li>
+                          }
+                        </ul>
+                      </dd>
+                    }
+                    @if (p.source) {
+                      <dt>{{ 'Source' | translate }}</dt>
+                      <dd>{{ p.source }}</dd>
+                    }
+                    @if (p.local_codes) {
+                      <dt>{{ 'Local code' | translate }}</dt>
+                      <dd>{{ p.local_codes | join: ', ' }}</dd>
+                    }
+                    @if (p.second_address) {
+                      <dt>
+                        <i class="fa-solid fa-house"></i>&nbsp;
+                        {{ 'Second address' | translate }}
+                      </dt>
+                      <dd>
+                        @if (p.second_address.street) {
+                          {{ p.second_address.street }}<br />
+                        }
+                        @if (p.second_address.postal_code || p.second_address.city) {
+                          {{ p.second_address.postal_code }} {{ p.second_address.city }}<br />
+                        }
+                        @if (p.second_address.country) {
+                          {{ 'country_' + p.second_address.country | translate }}
+                        }
+                      </dd>
+                    }
+                  </dl>
+                </div>
+              </p-accordion-content>
+            </p-accordion-panel>
+          }
+          <!-- LIBRARIAN INFORMATION'S SECTION ======================================== -->
+
+          @if (p.libraries?.length > 0) {
+            <p-accordion-panel value="4">
+              <p-accordion-header>
+                <span class="ui:text-bold ui:text-xl">{{ 'Librarian information' | translate }}</span>
+              </p-accordion-header>
+              <p-accordion-content>
+                <div class="ui:mt-2">
+                  <dl class="metadata">
+                    <dt>
+                      <i class="fa-solid fa-building-columns"></i>&nbsp;
+                      {{
+                        p.libraries.length | i18nPlural: { '=1': 'Library' | translate, other: 'Libraries' | translate }
+                      }}
+                    </dt>
+                    <dd>
+                      <ul class="ui:list-none">
+                        @for (library of p.libraries; track $index) {
+                          <li>
+                            {{ library.pid | getRecord: 'libraries' : 'field' : 'name' | async }}
+                          </li>
+                        }
+                      </ul>
+                    </dd>
+                  </dl>
+                </div>
+              </p-accordion-content>
+            </p-accordion-panel>
+          }
+
+          <!-- PERMISSIONS ======================================== -->
+          @if (canAccessDisplayPermissions()) {
+            <p-accordion-panel value="5">
+              <p-accordion-header>
+                <span class="ui:text-bold ui:text-xl">{{ 'Permissions' | translate }}</span>
+              </p-accordion-header>
+              <p-accordion-content>
+                <div class="ui:mt-2">
+                  <admin-patron-permissions [hidden]="false" [pid]="p.pid"></admin-patron-permissions>
+                </div>
+              </p-accordion-content>
+            </p-accordion-panel>
+          }
+        </p-accordion>
+      </div>
+    </section>
   </div>
 }

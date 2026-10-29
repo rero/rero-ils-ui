@@ -1,29 +1,41 @@
 // SPDX-FileCopyrightText: Fondation RERO+
 // SPDX-License-Identifier: AGPL-3.0-or-later
-import { ChangeDetectionStrategy, Component, computed, inject, input, output, signal } from '@angular/core';
+import { AsyncPipe } from '@angular/common';
+import { Component, computed, inject, input, output, signal } from '@angular/core';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { RouterLink } from '@angular/router';
+import { TranslatePipe } from '@ngx-translate/core';
+import { Badge } from '@openng/optimus-ui/badge';
+import { Bind } from '@openng/optimus-ui/bind';
+import { Tag } from '@openng/optimus-ui/tag';
 import { DateTranslatePipe, GetRecordPipe } from '@rero/ng-core';
 import { ContributionComponent, MainTitlePipe, OpenCloseButtonComponent } from '@rero/shared';
-import { TranslateDirective } from '@ngx-translate/core';
-import { Bind } from 'primeng/bind';
-import { Tag } from 'primeng/tag';
-import { Badge } from 'primeng/badge';
 import { forkJoin, of } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
+
 import { DocumentApiService } from '../../../../api/document-api.service';
 import { ItemsService } from '../../../../service/items.service';
 import { CancelRequestButtonComponent } from '../../cancel-request-button.component';
-import { AsyncPipe } from '@angular/common';
 
 @Component({
   selector: 'admin-pending-item',
   templateUrl: './pending-item.component.html',
-  imports: [OpenCloseButtonComponent, RouterLink, Bind, Tag, ContributionComponent, TranslateDirective, CancelRequestButtonComponent, AsyncPipe, DateTranslatePipe, GetRecordPipe, MainTitlePipe, Badge],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  imports: [
+    TranslatePipe,
+    OpenCloseButtonComponent,
+    RouterLink,
+    Bind,
+    Tag,
+    ContributionComponent,
+    CancelRequestButtonComponent,
+    AsyncPipe,
+    DateTranslatePipe,
+    GetRecordPipe,
+    MainTitlePipe,
+    Badge,
+  ],
 })
 export class PendingItemComponent {
-
   private documentApiService = inject(DocumentApiService);
   private itemService = inject(ItemsService);
 
@@ -37,18 +49,18 @@ export class PendingItemComponent {
 
   private readonly loanData = toSignal(
     toObservable(this.loan).pipe(
-      switchMap(loan => {
+      switchMap((loan) => {
         if (!loan) {
           return of(null);
         }
         const item$ = this.itemService.getItem(loan.metadata.item.barcode, loan.metadata.paton_pid);
         const doc$ = this.documentApiService.getDocument(loan.metadata.item.document.pid);
         return forkJoin([item$, doc$]).pipe(
-          map(([itemData, documentData]: [any, any]) => ({ item: itemData, document: documentData.metadata }))
+          map(([itemData, documentData]: [any, any]) => ({ item: itemData, document: documentData.metadata })),
         );
-      })
+      }),
     ),
-    { initialValue: null }
+    { initialValue: null },
   );
 
   readonly item = computed(() => this.loanData()?.item ?? null);

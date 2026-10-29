@@ -2,100 +2,102 @@
 SPDX-FileCopyrightText: Fondation RERO+
 SPDX-License-Identifier: AGPL-3.0-or-later
 -->
-@let document = log().metadata.loan.item.document.pid | getRecord:'documents':'object':'':{ Accept:'application/rero+json' } | async;
+@let document =
+  log().metadata.loan.item.document.pid
+    | getRecord: 'documents' : 'object' : '' : { Accept: 'application/rero+json' }
+    | async;
 
-@if(document) {
-<div>
-  <!-- Basic loan information's -->
-  <div class="ui:grid ui:grid-cols-12 ui:p-2">
-    <div class="ui:col-span-10 ui:flex ui:gap-2">
-      <shared-open-close-button (status)="isCollapsed = $event; loadCheckout()" />
-      <div class="ui:flex ui:flex-col">
-        @if (document) {
-          <div class="ui:flex ui:gap-2">
-            <a [routerLink]="['/records','documents','detail', log().metadata.loan.item.document.pid]">
-              {{ log().metadata.loan.item.document.title }}
-            </a>
-            @if (log().metadata.loan.item.enumerationAndChronology) {
-              <p-tag severity="info" [value]="log().metadata.loan.item.enumerationAndChronology" />
-            }
+@if (document) {
+  <div>
+    <!-- Basic loan information's -->
+    <div class="ui:grid ui:grid-cols-12 ui:p-2">
+      <div class="ui:col-span-10 ui:flex ui:gap-2">
+        <shared-open-close-button (status)="isCollapsed = $event; loadCheckout()" />
+        <div class="ui:flex ui:flex-col">
+          @if (document) {
+            <div class="ui:flex ui:gap-2">
+              <a [routerLink]="['/records', 'documents', 'detail', log().metadata.loan.item.document.pid]">
+                {{ log().metadata.loan.item.document.title }}
+              </a>
+              @if (log().metadata.loan.item.enumerationAndChronology) {
+                <p-tag severity="info" [value]="log().metadata.loan.item.enumerationAndChronology" />
+              }
+            </div>
+          } @else {
+            {{ log().metadata.loan.item.document.title }}
+          }
+          @if ($any(document)?.metadata?.contribution && $any(document).metadata.contribution.length > 0) {
+            <shared-contribution [contributions]="$any(document).metadata.contribution" [limitRecord]="3" />
+          }
         </div>
-        } @else {
-          {{ log().metadata.loan.item.document.title }}
-        }
-        @if ($any(document)?.metadata?.contribution && $any(document).metadata.contribution.length > 0) {
-          <shared-contribution [contributions]="$any(document).metadata.contribution" [limitRecord]="3" />
-        }
-
+      </div>
+      <div class="ui:col-span-2">
+        {{ log().metadata.date | dateTranslate: 'short' }}
       </div>
     </div>
-    <div class="ui:col-span-2">
-      {{ log().metadata.date | dateTranslate: 'short' }}
-    </div>
-  </div>
-  <!-- Transaction history check-in / checkout -->
-  @if (!isCollapsed) {
-    <div class="ui:m-4 ui:pb-4">
-      @if (log().metadata.loan.item.pid | getRecord:'items' | async; as item) {
-        <div class="ui:grid ui:grid-cols-12">
-          <div class="ui:col-span-2 ui:font-bold" translate>Item</div>
-          <div class="ui:col-span-10">
-            <a [routerLink]="['/records', 'items', 'detail', $any(item).metadata.pid]">
-              @if (!$any(item).metadata.barcode && !$any(item).metadata.call_number) {
-                {{ $any(item).metadata.pid }}
-              }
-              @if ($any(item).metadata.barcode) {
-                {{ $any(item).metadata.barcode }}
-              }
-              @if (!$any(item).metadata.barcode && $any(item).metadata.call_number) {
-                {{ $any(item).metadata.call_number }}
-              }
-            </a>
-          </div>
-        </div>
-      }
-      <h6 class="ui:mt-2" translate>Transaction history</h6>
-      <p-timeline [value]="events">
-        <ng-template #marker let-event>
-          <span
-            class="ui:flex ui:w-4 ui:h-4 ui:items-center ui:justify-center ui:text-white ui:rounded-full ui:z-10 ui:shadow-sm"
-            [ngClass]="{
-              'ui:bg-green-200': event.type === 'Checkin',
-              'ui:bg-red-200': event.type === 'Checkout'
-            }"
-          ></span>
-        </ng-template>
-        <ng-template #content let-event>
+    <!-- Transaction history check-in / checkout -->
+    @if (!isCollapsed) {
+      <div class="ui:m-4 ui:pb-4">
+        @if (log().metadata.loan.item.pid | getRecord: 'items' | async; as item) {
           <div class="ui:grid ui:grid-cols-12">
-            <div class="ui:col-span-3">
-              <div class="ui:flex ui:gap-2">
-                <i class="fa-solid" [ngClass]="{
-                  'fa-angles-left': event.type === 'Checkin',
-                  'fa-angles-right': event.type === 'Checkout',
-                }"></i>
-                <span>
-                  {{ event.type | translate }}
-                </span>
+            <div class="ui:col-span-2 ui:font-bold">{{ 'Item' | translate }}</div>
+            <div class="ui:col-span-10">
+              <a [routerLink]="['/records', 'items', 'detail', $any(item).metadata.pid]">
+                @if (!$any(item).metadata.barcode && !$any(item).metadata.call_number) {
+                  {{ $any(item).metadata.pid }}
+                }
+                @if ($any(item).metadata.barcode) {
+                  {{ $any(item).metadata.barcode }}
+                }
+                @if (!$any(item).metadata.barcode && $any(item).metadata.call_number) {
+                  {{ $any(item).metadata.call_number }}
+                }
+              </a>
+            </div>
+          </div>
+        }
+        <h6 class="ui:mt-2">{{ 'Transaction history' | translate }}</h6>
+        <p-timeline [value]="events">
+          <ng-template #marker let-event>
+            <span
+              class="ui:flex ui:w-4 ui:h-4 ui:items-center ui:justify-center ui:text-white ui:rounded-full ui:z-10 ui:shadow-sm"
+              [ngClass]="{
+                'ui:bg-green-200': event.type === 'Checkin',
+                'ui:bg-red-200': event.type === 'Checkout',
+              }"></span>
+          </ng-template>
+          <ng-template #content let-event>
+            <div class="ui:grid ui:grid-cols-12">
+              <div class="ui:col-span-3">
+                <div class="ui:flex ui:gap-2">
+                  <i
+                    class="fa-solid"
+                    [ngClass]="{
+                      'fa-angles-left': event.type === 'Checkin',
+                      'fa-angles-right': event.type === 'Checkout',
+                    }"></i>
+                  <span>
+                    {{ event.type | translate }}
+                  </span>
+                </div>
+              </div>
+              <div class="ui:col-span-9">
+                <ng-container
+                  [ngTemplateOutlet]="logLibrary"
+                  [ngTemplateOutletContext]="{ $implicit: event.loan.transaction_location }" />
               </div>
             </div>
-            <div class="ui:col-span-9">
-              <ng-container
-              [ngTemplateOutlet]="logLibrary"
-              [ngTemplateOutletContext]="{ $implicit: event.loan.transaction_location }"
-            />
-            </div>
-          </div>
-        </ng-template>
-        <ng-template #opposite let-event>
-          <small class="ui:text-muted-color">
-            <i class="fa-solid fa-calendar-days"></i> {{ event.date | dateTranslate: 'shortDate' }}
-            <i class="fa-regular fa-clock ui:pl-1"></i> {{ event.date | dateTranslate: 'HH:mm:ss' }}
-          </small>
-        </ng-template>
-      </p-timeline>
-    </div>
-  }
-</div>
+          </ng-template>
+          <ng-template #opposite let-event>
+            <small class="ui:text-muted-color">
+              <i class="fa-solid fa-calendar-days"></i> {{ event.date | dateTranslate: 'shortDate' }}
+              <i class="fa-regular fa-clock ui:pl-1"></i> {{ event.date | dateTranslate: 'HH:mm:ss' }}
+            </small>
+          </ng-template>
+        </p-timeline>
+      </div>
+    }
+  </div>
 }
 
 <ng-template #logLibrary let-location>

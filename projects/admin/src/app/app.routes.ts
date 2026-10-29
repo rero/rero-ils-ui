@@ -3,7 +3,7 @@
 import { Routes } from '@angular/router';
 import { _ } from '@ngx-translate/core';
 import { PERMISSIONS } from '@rero/shared';
-import { recordTypeMatcher } from './routes/record-type-matcher';
+
 import { ErrorPageComponent } from './error/error-page/error-page.component';
 import { permissionGuard } from './guard/permission.guard';
 import { PermissionDetailViewComponent } from './record/detail-view/permission-detail-view/permission-detail-view.component';
@@ -23,13 +23,14 @@ import { librariesRouteResolver } from './routes/libraries-route';
 import { loansRouteResolver } from './routes/loans-route';
 import { localFieldsRouteResolver } from './routes/local-fields-route';
 import { locationsRouteResolver } from './routes/locations-route';
+import { organisationsRouteResolver } from './routes/organisations-route';
 import { patronTransactionEventsRouteResolver } from './routes/patron-transaction-events-route';
 import { patronTypesRouteResolver } from './routes/patron-types-route';
 import { patronsRouteResolver } from './routes/patrons-route';
+import { recordTypeMatcher } from './routes/record-type-matcher';
 import { statisticsCfgRouteResolver } from './routes/statistics-cfg-route';
 import { templatesRouteResolver } from './routes/templates-route';
 import { FrontpageComponent } from './widgets/frontpage/frontpage.component';
-import { organisationsRouteResolver } from './routes/organisations-route';
 
 export const routes: Routes = [
   {

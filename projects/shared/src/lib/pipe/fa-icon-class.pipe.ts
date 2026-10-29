@@ -4,7 +4,6 @@ import { Pipe, PipeTransform } from '@angular/core';
 
 @Pipe({ name: 'faIconClass' })
 export class FaIconClassPipe implements PipeTransform {
-
   /**
    * Get the font awesome class name for a given mime type.
    *
@@ -44,7 +43,7 @@ export class FaIconClassPipe implements PipeTransform {
    * @returns the font awesome classes.
    */
   transform(value: string, type: string): string | null {
-    switch(type) {
+    switch (type) {
       case 'file':
         return this.faClassForMimeType(value);
     }

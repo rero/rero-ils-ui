@@ -6,10 +6,9 @@ import { BaseApi } from '@rero/shared';
 import { Observable } from 'rxjs';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class PatronApiService extends BaseApi {
-
   private httpClient: HttpClient = inject(HttpClient);
 
   /**
@@ -29,4 +28,4 @@ export class PatronApiService extends BaseApi {
 export type Message = {
   type: string;
   content: string;
-}
+};

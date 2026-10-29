@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 import { TestBed } from '@angular/core/testing';
 import { ActivatedRouteSnapshot, Router, RouterModule, RouterStateSnapshot, UrlTree } from '@angular/router';
+
 import { AppConfigService } from '../app-config.service';
 import { ErrorPageComponent } from '../error/error-page.component';
 import { collectionAccessGuard } from './collection-access.guard';
@@ -16,19 +17,15 @@ describe('collectionAccessGuard', () => {
   let router: Router;
   let appConfigService: AppConfigService;
 
-  const routes = [
-    { path: 'errors/403', component: ErrorPageComponent }
-  ];
+  const routes = [{ path: 'errors/403', component: ErrorPageComponent }];
 
   const runGuard = (route: ActivatedRouteSnapshot) =>
-    TestBed.runInInjectionContext(() =>
-      collectionAccessGuard(route, {} as RouterStateSnapshot)
-    );
+    TestBed.runInInjectionContext(() => collectionAccessGuard(route, {} as RouterStateSnapshot));
 
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [RouterModule.forRoot(routes)],
-      providers: [AppConfigService]
+      providers: [AppConfigService],
     });
     router = TestBed.inject(Router);
     appConfigService = TestBed.inject(AppConfigService);

@@ -12,10 +12,11 @@ import {
 } from '@app/admin/circulation/model/circulation.model';
 import { PatronTransactionService } from '@app/admin/circulation/services/patron-transaction.service';
 import { ItemsService } from '@app/admin/service/items.service';
-import { TranslateModule } from '@ngx-translate/core';
+import { provideTranslateService } from '@ngx-translate/core';
 import { RecordService } from '@rero/ng-core';
 import { AppStore } from '@rero/shared';
 import { of, throwError } from 'rxjs';
+
 import { TransactionHistoryComponent } from './transaction-history.component';
 
 // ─── Fixtures ─────────────────────────────────────────────────────────────────
@@ -83,11 +84,16 @@ const LIBRARY_RECORD: LibraryRecord = {
 const recordServiceMock = {
   getRecord: vi.fn((type: string) => {
     switch (type) {
-      case 'items': return of(ITEM_RECORD);
-      case 'documents': return of(DOCUMENT_RECORD);
-      case 'patrons': return of(PATRON_RECORD);
-      case 'libraries': return of(LIBRARY_RECORD);
-      default: return of(undefined);
+      case 'items':
+        return of(ITEM_RECORD);
+      case 'documents':
+        return of(DOCUMENT_RECORD);
+      case 'patrons':
+        return of(PATRON_RECORD);
+      case 'libraries':
+        return of(LIBRARY_RECORD);
+      default:
+        return of(undefined);
     }
   }),
 };
@@ -113,11 +119,16 @@ describe('TransactionHistoryComponent', () => {
     vi.clearAllMocks();
     recordServiceMock.getRecord.mockImplementation((type: string) => {
       switch (type) {
-        case 'items': return of(ITEM_RECORD);
-        case 'documents': return of(DOCUMENT_RECORD);
-        case 'patrons': return of(PATRON_RECORD);
-        case 'libraries': return of(LIBRARY_RECORD);
-        default: return of(undefined);
+        case 'items':
+          return of(ITEM_RECORD);
+        case 'documents':
+          return of(DOCUMENT_RECORD);
+        case 'patrons':
+          return of(PATRON_RECORD);
+        case 'libraries':
+          return of(LIBRARY_RECORD);
+        default:
+          return of(undefined);
       }
     });
     itemsServiceMock.getItem.mockReturnValue(of(undefined));
@@ -126,8 +137,9 @@ describe('TransactionHistoryComponent', () => {
     appStoreMock.canAccessDebugMode.mockReturnValue(false);
 
     await TestBed.configureTestingModule({
-      imports: [TranslateModule.forRoot(), TransactionHistoryComponent],
+      imports: [TransactionHistoryComponent],
       providers: [
+        provideTranslateService(),
         provideRouter([]),
         { provide: RecordService, useValue: recordServiceMock },
         { provide: ItemsService, useValue: itemsServiceMock },
@@ -206,7 +218,7 @@ describe('TransactionHistoryComponent', () => {
 
     it('should mark the item as not found and render a message when the items request fails', async () => {
       recordServiceMock.getRecord.mockImplementation((type: string) =>
-        type === 'items' ? throwError(() => new Error('404')) : of(undefined)
+        type === 'items' ? throwError(() => new Error('404')) : of(undefined),
       );
       await createWith(makeLoanTransaction());
       expect(component['item']()).toBeUndefined();
@@ -237,7 +249,7 @@ describe('TransactionHistoryComponent', () => {
     it('should not fetch the full item when the item has no barcode', async () => {
       const itemWithoutBarcode = { metadata: { pid: 'item-1' } } as unknown as ItemRecord;
       recordServiceMock.getRecord.mockImplementation((type: string) =>
-        type === 'items' ? of(itemWithoutBarcode) : of(undefined)
+        type === 'items' ? of(itemWithoutBarcode) : of(undefined),
       );
       await createWith(makeLoanTransaction());
       expect(itemsServiceMock.getItem).not.toHaveBeenCalled();
@@ -254,9 +266,12 @@ describe('TransactionHistoryComponent', () => {
   // ─── totalAmountOfFee ───────────────────────────────────────────────────────
 
   describe('totalAmountOfFee()', () => {
-    it('should query fees using the loan pid captured in the log entry, not the item\'s currently attached loan', async () => {
+    it("should query fees using the loan pid captured in the log entry, not the item's currently attached loan", async () => {
       patronTransactionServiceMock.patronTransactionsByLoan.mockReturnValue(
-        of([{ status: 'open', total_amount: 3.5 }, { status: 'open', total_amount: 4.3 }])
+        of([
+          { status: 'open', total_amount: 3.5 },
+          { status: 'open', total_amount: 4.3 },
+        ]),
       );
 
       await createWith(makeLoanTransaction());
@@ -268,7 +283,10 @@ describe('TransactionHistoryComponent', () => {
     it('should still resolve fees once the item no longer has this loan attached (e.g. after a later checkin)', async () => {
       itemsServiceMock.getItem.mockReturnValue(of({ loan: undefined }));
       patronTransactionServiceMock.patronTransactionsByLoan.mockReturnValue(
-        of([{ status: 'open', total_amount: 3.5 }, { status: 'open', total_amount: 4.3 }])
+        of([
+          { status: 'open', total_amount: 3.5 },
+          { status: 'open', total_amount: 4.3 },
+        ]),
       );
 
       await createWith(makeLoanTransaction());
@@ -278,9 +296,7 @@ describe('TransactionHistoryComponent', () => {
     });
 
     it('should fall back to 0 when the fees request fails', async () => {
-      patronTransactionServiceMock.patronTransactionsByLoan.mockReturnValue(
-        throwError(() => new Error('network'))
-      );
+      patronTransactionServiceMock.patronTransactionsByLoan.mockReturnValue(throwError(() => new Error('network')));
 
       await createWith(makeLoanTransaction());
 

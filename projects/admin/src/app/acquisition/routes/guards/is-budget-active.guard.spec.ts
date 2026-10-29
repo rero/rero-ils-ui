@@ -1,15 +1,16 @@
 // SPDX-FileCopyrightText: Fondation RERO+
 // SPDX-License-Identifier: AGPL-3.0-or-later
+import { provideHttpClient, withXhr } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { NavigationEnd, Router, RouterModule, RouterStateSnapshot } from '@angular/router';
-import { TranslateModule } from '@ngx-translate/core';
+import { provideTranslateService } from '@ngx-translate/core';
 import { RecordService } from '@rero/ng-core';
 import { cloneDeep } from 'lodash-es';
 import { filter, firstValueFrom, of } from 'rxjs';
+
 import { ErrorPageComponent } from '../../../error/error-page/error-page.component';
 import { isBudgetActiveGuard } from './is-budget-active.guard';
-import { provideHttpClient } from '@angular/common/http';
 
 describe('isBudgetActiveGuard', () => {
   let recordService: RecordService;
@@ -18,53 +19,51 @@ describe('isBudgetActiveGuard', () => {
   const routes = [
     {
       path: 'errors/403',
-      component: ErrorPageComponent
-    }
+      component: ErrorPageComponent,
+    },
   ];
 
   const receipt = {
     metadata: {
       acq_order: {
-        pid: '1' },
+        pid: '1',
+      },
       exchange_rate: 1,
-      amount_adjustments: [{
-        label: 'amount',
-        amount: 10,
-        acq_account: {
-          $ref: 'https://localhost/api/acq_accounts/1'
-        }
-      }],
+      amount_adjustments: [
+        {
+          label: 'amount',
+          amount: 10,
+          acq_account: {
+            $ref: 'https://localhost/api/acq_accounts/1',
+          },
+        },
+      ],
       organisation: {
-        $ref: 'https://localhost/api/organisations/1'
+        $ref: 'https://localhost/api/organisations/1',
       },
       notes: [],
-      is_current_budget: true
-    }
+      is_current_budget: true,
+    },
   };
 
-  const activatedRouteSnapshotSpy = { } as any;
+  const activatedRouteSnapshotSpy = {} as any;
   activatedRouteSnapshotSpy.params = { type: 'acq_receipt', pid: '1' };
-  activatedRouteSnapshotSpy.queryParams = { };
+  activatedRouteSnapshotSpy.queryParams = {};
 
   const runGuard = (route: any) =>
-    TestBed.runInInjectionContext(() =>
-      isBudgetActiveGuard(route, {} as RouterStateSnapshot)
-    ) as any;
+    TestBed.runInInjectionContext(() => isBudgetActiveGuard(route, {} as RouterStateSnapshot)) as any;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-    imports: [RouterModule.forRoot(routes),
-        TranslateModule.forRoot()],
-    providers: [provideHttpClient(), provideHttpClientTesting()]
-});
+      imports: [RouterModule.forRoot(routes)],
+      providers: [provideTranslateService(), provideHttpClient(withXhr()), provideHttpClientTesting()],
+    });
     recordService = TestBed.inject(RecordService);
     router = TestBed.inject(Router);
   });
 
   async function waitForNavigation(): Promise<void> {
-    await firstValueFrom(
-      router.events.pipe(filter(e => e instanceof NavigationEnd))
-    );
+    await firstValueFrom(router.events.pipe(filter((e) => e instanceof NavigationEnd)));
   }
 
   it('should be created', () => {

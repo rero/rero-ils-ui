@@ -2,19 +2,17 @@
 // SPDX-FileCopyrightText: UCLouvain
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-import { Component, input, ChangeDetectionStrategy} from '@angular/core';
-import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
+import { Component, input } from '@angular/core';
+import { TranslatePipe } from '@ngx-translate/core';
 import { Nl2brPipe } from '@rero/ng-core';
 import { UrlActivePipe } from '@rero/shared';
 
 @Component({
-    selector: 'admin-remote-entities-person-detail-view',
-    templateUrl: './remote-entities-person-detail-view.component.html',
-    imports: [TranslateDirective, TranslatePipe, Nl2brPipe, UrlActivePipe],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  selector: 'admin-remote-entities-person-detail-view',
+  templateUrl: './remote-entities-person-detail-view.component.html',
+  imports: [TranslatePipe, Nl2brPipe, UrlActivePipe],
 })
 export class RemoteEntitiesPersonDetailViewComponent {
-
   /** record metadata */
   record = input<any>();
 

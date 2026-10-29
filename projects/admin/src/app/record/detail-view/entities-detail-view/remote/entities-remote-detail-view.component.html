@@ -7,15 +7,13 @@ SPDX-License-Identifier: AGPL-3.0-or-later
   @let iconType = icon($any(record).metadata.type);
   <h1>
     <i class="{{ iconType.class }}" [title]="iconType.title" aria-hidden="true"></i>
-    {{ $any(record).metadata | extractSourceField : 'authorized_access_point' }}
+    {{ $any(record).metadata | extractSourceField: 'authorized_access_point' }}
   </h1>
-  <small>
-    {{ 'MEF ID' | translate }}: {{ $any(record).metadata.pid }}
-  </small>
+  <small> {{ 'MEF ID' | translate }}: {{ $any(record).metadata.pid }} </small>
   <p-tag severity="warn" [value]="'Remote' | translate" />
 
   <!-- SOURCES -->
-   <div class="ui:mt-2 ui:flex ui:flex-col ui:gap-2">
+  <div class="ui:mt-2 ui:flex ui:flex-col ui:gap-2">
     @for (source of $any(record).metadata.sources.sort(); track $index) {
       <p-panel class="ui:pb-3">
         <ng-template #header>
@@ -27,7 +25,9 @@ SPDX-License-Identifier: AGPL-3.0-or-later
               <admin-remote-entities-person-detail-view [record]="$any(record).metadata[source]" [source]="source" />
             }
             @case (entityType.ORGANISATION) {
-              <admin-remote-entities-organisation-detail-view [record]="$any(record).metadata[source]" [source]="source" />
+              <admin-remote-entities-organisation-detail-view
+                [record]="$any(record).metadata[source]"
+                [source]="source" />
             }
             @case (entityType.TOPIC) {
               <admin-remote-topic-detail-view [record]="$any(record).metadata[source]" [source]="source" />
@@ -45,26 +45,35 @@ SPDX-License-Identifier: AGPL-3.0-or-later
           <!-- IDENTIFIED BY -->
           @if ($any(record).metadata[source].identifiedBy?.length) {
             @if (identifiedByFilter($any(record).metadata[source].identifiedBy).length > 0) {
-            <dl class="metadata">
-              <dt translate>Identified by</dt>
-              <dd>
-                <ul class="ui:list-none">
-                  @for (identifiedBy of identifiedByFilter($any(record).metadata[source].identifiedBy); track $index) {
-                    <li>
-                      <a class="rero-ils-external-link" href="{{ identifiedBy.value }}" title="{{ identifiedBy.value }}" target="_blank">{{ identifiedBy.source }}</a>
-                    </li>
-                  }
-                </ul>
-              </dd>
+              <dl class="metadata">
+                <dt>{{ 'Identified by' | translate }}</dt>
+                <dd>
+                  <ul class="ui:list-none">
+                    @for (
+                      identifiedBy of identifiedByFilter($any(record).metadata[source].identifiedBy);
+                      track $index
+                    ) {
+                      <li>
+                        <a
+                          class="rero-ils-external-link"
+                          href="{{ identifiedBy.value }}"
+                          title="{{ identifiedBy.value }}"
+                          target="_blank"
+                          >{{ identifiedBy.source }}</a
+                        >
+                      </li>
+                    }
+                  </ul>
+                </dd>
               </dl>
             }
           }
           <dl class="metadata">
-            <dt translate>Id</dt>
+            <dt>{{ 'Id' | translate }}</dt>
             <dd>{{ $any(record).metadata[source].pid }}</dd>
           </dl>
         </div>
-    </p-panel>
+      </p-panel>
     }
   </div>
 }

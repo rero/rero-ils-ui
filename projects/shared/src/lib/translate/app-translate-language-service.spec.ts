@@ -1,6 +1,7 @@
 // SPDX-FileCopyrightText: Fondation RERO+
 // SPDX-License-Identifier: AGPL-3.0-or-later
 import { TranslateLanguageService } from '@rero/ng-core';
+
 import { AppTranslateLanguageService, ngCoreLanguage } from './app-translate-language-service';
 
 describe('AppTranslateLanguageService', () => {

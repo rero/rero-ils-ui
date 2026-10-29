@@ -4,136 +4,128 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 -->
 <ngx-spinner name="file-upload" color="#fff" size="medium" type="ball-zig-zag" [fullScreen]="true">
   <p class="ui:text-white">
-    {{ "Loading..." | translate }}
-    @if (fileUpload()?.files?.length > 0) { ({{ nUploadedFiles() }} /
-    {{ fileUpload()!.files.length }}) }
+    {{ 'Loading...' | translate }}
+    @if (fileUpload()?.files?.length > 0) {
+      ({{ nUploadedFiles() }} / {{ fileUpload()!.files.length }})
+    }
   </p>
 </ngx-spinner>
 
 @if (files()) {
-<div class="ui:flex ui:flex-col ui:gap-2 ui:py-2">
-  <admin-files-collections />
-  <div>
-    <h5 translate>Upload Files</h5>
-    <p-fileUpload
-      [disabled]="reachMaxFileLimit()"
-      #fileUpload
-      [auto]="true"
-      [multiple]="true"
-      name="uploadFiles"
-      [chooseLabel]="'Add file' | translate"
-      [customUpload]="true"
-      (uploadHandler)="uploadHandler($event, '')"
-      mode="advanced"
-      [maxFileSize]="500 * 1024 * 1024"
-      (onSelect)="onSelect($event, '')"
-      styleClass="ui:[&>.p-fileupload-header]:flex-col ui:[&>.p-fileupload-header]:items-start"
-    >
-      <ng-template #toolbar>
-        <div class="ui:mt-2">
-          <p class="text-warning ui:w-full" translate>
-            By uploading a file, I declare that I am aware of the terms and
+  <div class="ui:flex ui:flex-col ui:gap-2 ui:py-2">
+    <admin-files-collections />
+    <div>
+      <h5>{{ 'Upload Files' | translate }}</h5>
+      <p-fileUpload
+        [disabled]="reachMaxFileLimit()"
+        #fileUpload
+        [auto]="true"
+        [multiple]="true"
+        name="uploadFiles"
+        [chooseLabel]="'Add file' | translate"
+        [customUpload]="true"
+        (uploadHandler)="uploadHandler($event, '')"
+        mode="advanced"
+        [maxFileSize]="500 * 1024 * 1024"
+        (onSelect)="onSelect($event, '')"
+        styleClass="ui:[&>.p-fileupload-header]:flex-col ui:[&>.p-fileupload-header]:items-start">
+        <ng-template #toolbar>
+          <div class="ui:mt-2">
+            <p class="text-warning ui:w-full">
+              {{
+                'By uploading a file, I declare that I am aware of the terms and
             conditions of the copyright transfer agreement governing the
             publication of the respective document, and that the deposit of its
-            full-text content in the current platform is compatible with those.
-          </p>
-        </div>
-      </ng-template>
-      <ng-template #file let-file></ng-template>
-      <ng-template #content let-file>
-        @if (reachMaxFileLimit()) {
-          <p-message severity="error" showTransitionOptions="0ms">
-            {{ 'The maximum number of files is reached. No additional upload is allowed.' | translate }}
-          </p-message>
-        } @else {
-        <span translate>Drag and drop files.</span>
-        }
-      </ng-template>
-    </p-fileUpload>
-  </div>
+            full-text content in the current platform is compatible with those.' | translate
+              }}
+            </p>
+          </div>
+        </ng-template>
+        <ng-template #file let-file></ng-template>
+        <ng-template #content let-file>
+          @if (reachMaxFileLimit()) {
+            <p-message severity="error" showTransitionOptions="0ms">
+              {{ 'The maximum number of files is reached. No additional upload is allowed.' | translate }}
+            </p-message>
+          } @else {
+            <span>{{ 'Drag and drop files.' | translate }}</span>
+          }
+        </ng-template>
+      </p-fileUpload>
+    </div>
 
-  @if ((files()?.length ?? 0) > 0) {
-  <div>
-    <h5 translate>Uploaded Files</h5>
-    <p-inputGroup>
-      <input
-        id="filter"
-        type="text"
-        pInputText
-        [placeholder]="'filter' | translate"
-        [ngModel]="filterText()"
-        (ngModelChange)="filterText.set($event)"
-      />
-      <p-inputGroupAddon>
-        <i class="fa-solid fa-filter"></i>
-      </p-inputGroupAddon>
-    </p-inputGroup>
+    @if ((files()?.length ?? 0) > 0) {
+      <div>
+        <h5>{{ 'Uploaded Files' | translate }}</h5>
+        <p-inputGroup>
+          <input
+            id="filter"
+            type="text"
+            pInputText
+            [placeholder]="'filter' | translate"
+            [ngModel]="filterText()"
+            (ngModelChange)="filterText.set($event)" />
+          <p-inputGroupAddon>
+            <i class="fa-solid fa-filter"></i>
+          </p-inputGroupAddon>
+        </p-inputGroup>
 
-    <small id="filtered-results">
-      {{ getResultsText() }}
-    </small>
-  </div>
-
-  @if(filteredFiles().length > 0) {
-  <ul class="ui:list-none ui:border ui:border-surface ui:rounded-border ui:p-2">
-    @for (file of filteredFiles();track file.key) {
-    <li class="ui:odd:bg-surface-50">
-      <div class="ui:grid ui:grid-cols-12 ui:gap-4 ui:items-center">
-        <div class="ui:col-span-6">
-          <a
-            class="text-link"
-            tabindex="-1"
-            [pTooltip]="
-              (+file.size | filesize) +
-              ' / ' +
-              (file.updated | dateTranslate : 'medium')
-            "
-            tooltipPosition="top"
-            title="download"
-            [href]="toRelative(file.links.content)"
-            download
-            >{{ file.key }} <i class="fa-solid fa-download"></i
-          ></a>
-        </div>
-        <div class="ui:col-span-5">
-          <p-inputGroup>
-            <input
-              pInputText
-              #inputLabel
-              [value]="file.label"
-              type="text"
-              [placeholder]="'label' | translate"
-              aria-label="label"
-              (keyup.enter)="updateLabel(file, inputLabel.value)"
-            />
-            <p-button
-              [disabled]="
-                inputLabel.value.length === 0 ||
-                inputLabel.value.trim() === file.label
-              "
-              (onClick)="updateLabel(file, inputLabel.value)"
-              outlined
-              type="button"
-              icon="fa-solid fa-floppy-disk"
-            ></p-button>
-          </p-inputGroup>
-        </div>
-        <div class="ui:col-span-1 ui:flex ui:justify-end">
-          <p-button
-            outlined
-            tabindex="-1"
-            severity="danger"
-            (onClick)="deleteFile(file)"
-            [title]="'remove' | translate"
-            icon="fa-solid fa-trash-can"
-          />
-        </div>
+        <small id="filtered-results">
+          {{ getResultsText() }}
+        </small>
       </div>
-    </li>
+
+      @if (filteredFiles().length > 0) {
+        <ul class="ui:list-none ui:border ui:border-surface ui:rounded-border ui:p-2">
+          @for (file of filteredFiles(); track file.key) {
+            <li class="ui:odd:bg-surface-50">
+              <div class="ui:grid ui:grid-cols-12 ui:gap-4 ui:items-center">
+                <div class="ui:col-span-6">
+                  <a
+                    class="text-link"
+                    tabindex="-1"
+                    [pTooltip]="(+file.size | filesize) + ' / ' + (file.updated | dateTranslate: 'medium')"
+                    tooltipPosition="top"
+                    title="download"
+                    [href]="toRelative(file.links.content)"
+                    download
+                    >{{ file.key }} <i class="fa-solid fa-download"></i
+                  ></a>
+                </div>
+                <div class="ui:col-span-5">
+                  <p-inputGroup>
+                    <input
+                      pInputText
+                      #inputLabel
+                      [value]="file.label"
+                      type="text"
+                      [placeholder]="'label' | translate"
+                      aria-label="label"
+                      (keyup.enter)="updateLabel(file, inputLabel.value)" />
+                    <p-button
+                      [disabled]="inputLabel.value.length === 0 || inputLabel.value.trim() === file.label"
+                      (onClick)="updateLabel(file, inputLabel.value)"
+                      outlined
+                      type="button"
+                      icon="fa-solid fa-floppy-disk"></p-button>
+                  </p-inputGroup>
+                </div>
+                <div class="ui:col-span-1 ui:flex ui:justify-end">
+                  <p-button
+                    outlined
+                    tabindex="-1"
+                    severity="danger"
+                    (onClick)="deleteFile(file)"
+                    [title]="'remove' | translate"
+                    icon="fa-solid fa-trash-can" />
+                </div>
+              </div>
+            </li>
+          }
+        </ul>
+      }
     }
-  </ul>
-  } }
-</div>
+  </div>
 } @else {
-<i class="fa-solid fa-spinner fa-spin"></i>
+  <i class="fa-solid fa-spinner fa-spin"></i>
 }

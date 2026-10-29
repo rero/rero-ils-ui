@@ -2,11 +2,11 @@
 SPDX-FileCopyrightText: Fondation RERO+
 SPDX-License-Identifier: AGPL-3.0-or-later
 -->
-@if(!store.isDocumentHarvested()) {
+@if (!store.isDocumentHarvested()) {
   <admin-menu-actions [document]="store.document()" />
 }
 
-@if(store.filter().length > 1) {
+@if (store.filter().length > 1) {
   <div class="ui:my-3">
     <p-multiselect
       [options]="store.filter()"
@@ -14,20 +14,23 @@ SPDX-License-Identifier: AGPL-3.0-or-later
       optionValue="pid"
       [fluid]="true"
       [maxSelectedLabels]="2"
-      [placeholder]="'Filter by library'|translate"
+      [placeholder]="'Filter by library' | translate"
       [ngModel]="store.filteredLibrary()"
-      (onChange)="store.setLibraryFilter($event)"
-    />
+      (onChange)="store.setLibraryFilter($event)" />
   </div>
 }
 
 @if (store.holdingsCurrentOrganisation().length > 0) {
   <div class="ui:my-2">
     <p-accordion [multiple]="true" [value]="store.holdingsCurrentOrganisation().length === 1 ? 0 : null">
-      @for(record of store.holdingsCurrentOrganisation(); track record.metadata.pid; let i = $index) {
+      @for (record of store.holdingsCurrentOrganisation(); track record.metadata.pid; let i = $index) {
         <p-accordion-panel [value]="i" class="ui:mb-2">
           <p-accordion-header>
-            <admin-holding-header class="ui:w-full" [holding]="record" [isCurrentOrganisation]="true" (deleteHolding)="store.delete(record)" />
+            <admin-holding-header
+              class="ui:w-full"
+              [holding]="record"
+              [isCurrentOrganisation]="true"
+              (deleteHolding)="store.delete(record)" />
           </p-accordion-header>
           <p-accordion-content #content>
             @if (content.active()) {
@@ -42,9 +45,9 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 @if (store.holdingsOtherOrganisation().length > 0) {
   <div class="ui:mt-4">
-    <h5 translate>Other organisations</h5>
+    <h5>{{ 'Other organisations' | translate }}</h5>
     <p-accordion [multiple]="true">
-      @for(record of store.holdingsOtherOrganisation(); track record.metadata.pid; let i = $index) {
+      @for (record of store.holdingsOtherOrganisation(); track record.metadata.pid; let i = $index) {
         <p-accordion-panel [value]="i" class="ui:mb-2">
           <p-accordion-header>
             <admin-holding-header class="ui:w-full" [holding]="record" [isCurrentOrganisation]="false" />

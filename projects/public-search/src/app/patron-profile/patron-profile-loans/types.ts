@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 import type { RecordData } from '@rero/ng-core';
+
 import type { CanExtend } from '../../api/loan-api.service';
 
 export type PatronLoan = RecordData<{

@@ -8,6 +8,7 @@ import { rxMethod } from '@ngrx/signals/rxjs-interop';
 import { RecordData, RecordService } from '@rero/ng-core';
 import { EMPTY, Observable, pipe } from 'rxjs';
 import { catchError, filter, map, switchMap, tap } from 'rxjs/operators';
+
 import { UserApiService } from '../api/user-api.service';
 import { Organisation } from '../classes/core';
 import { RecordPermission, RecordPermissions } from '../classes/permissions';
@@ -65,7 +66,7 @@ export const AppStore = signalStore(
   withComputed((store) => ({
     isLogged: () => store.user() !== null,
     isAuthenticated: () => store.user()?.isAuthenticated ?? false,
-    availableLanguageCodes: () => store.settings()?.availableLanguages.map(l => l.code) ?? [],
+    availableLanguageCodes: () => store.settings()?.availableLanguages.map((l) => l.code) ?? [],
   })),
   withMethods((store, userApiService = inject(UserApiService), recordService = inject(RecordService)) => ({
     load(): Observable<User | null> {
@@ -84,7 +85,7 @@ export const AppStore = signalStore(
         catchError((error: unknown) => {
           patchState(store, setError(String(error)));
           return EMPTY;
-        })
+        }),
       );
     },
 
@@ -111,10 +112,10 @@ export const AppStore = signalStore(
           recordService.getRecord<RecordData<Organisation>>('organisations', pid).pipe(
             map((orgRecord) => orgRecord.metadata),
             tap((organisation) => patchState(store, { organisation })),
-            catchError(() => EMPTY)
-          )
-        )
-      )
+            catchError(() => EMPTY),
+          ),
+        ),
+      ),
     ),
 
     canAccess(permission: string | string[], operator: string = PERMISSION_OPERATOR.OR): boolean {
@@ -138,7 +139,7 @@ export const AppStore = signalStore(
       if (store.currentLibraryPid() !== ownerLibraryPid) {
         const disabledPermission: RecordPermission = {
           can: false,
-          reasons: { others: { record_not_in_current_library: '' } }
+          reasons: { others: { record_not_in_current_library: '' } },
         };
         permissions.create = disabledPermission;
         permissions.delete = disabledPermission;
@@ -162,8 +163,8 @@ export const AppStore = signalStore(
   withHooks((store) => ({
     onInit: () => {
       store.loadOrganisation(
-        toObservable(store.currentOrganisationPid).pipe(filter((pid): pid is string => pid !== null))
+        toObservable(store.currentOrganisationPid).pipe(filter((pid): pid is string => pid !== null)),
       );
     },
-  }))
+  })),
 );

@@ -4,126 +4,126 @@
 
 export const PERMISSIONS = {
   // Acquisition accounts
-  'ACAC_ACCESS': 'acac-access',
-  'ACAC_CREATE': 'acac-create',
-  'ACAC_SEARCH': 'acac-search',
-  'ACAC_TRANSFER': 'acac-transfer',
+  ACAC_ACCESS: 'acac-access',
+  ACAC_CREATE: 'acac-create',
+  ACAC_SEARCH: 'acac-search',
+  ACAC_TRANSFER: 'acac-transfer',
   // Acquisition order lines
-  'ACOL_ACCESS': 'acol-access',
-  'ACOL_CREATE': 'acol-create',
-  'ACOL_SEARCH': 'acol-search',
+  ACOL_ACCESS: 'acol-access',
+  ACOL_CREATE: 'acol-create',
+  ACOL_SEARCH: 'acol-search',
   // Acquisition orders
-  'ACOR_ACCESS': 'acor-access',
-  'ACOR_CREATE': 'acor-create',
-  'ACOR_SEARCH': 'acor-search',
+  ACOR_ACCESS: 'acor-access',
+  ACOR_CREATE: 'acor-create',
+  ACOR_SEARCH: 'acor-search',
   // Acquisition receipts
-  'ACRE_ACCESS': 'acre-access',
-  'ACRE_CREATE': 'acre-create',
-  'ACRE_SEARCH': 'acre-search',
+  ACRE_ACCESS: 'acre-access',
+  ACRE_CREATE: 'acre-create',
+  ACRE_SEARCH: 'acre-search',
   // Acquisition receipt lines
-  'ACRL_ACCESS': 'acrl-access',
-  'ACRL_CREATE': 'acrl-create',
-  'ACRL_SEARCH': 'acrl-search',
+  ACRL_ACCESS: 'acrl-access',
+  ACRL_CREATE: 'acrl-create',
+  ACRL_SEARCH: 'acrl-search',
   // Acquisition budgets
-  'BUDG_ACCESS': 'budg-access',
-  'BUDG_SEARCH': 'budg-search',
+  BUDG_ACCESS: 'budg-access',
+  BUDG_SEARCH: 'budg-search',
   // Circulation policies
-  'CIPO_ACCESS': 'cipo-access',
-  'CIPO_CREATE': 'cipo-create',
-  'CIPO_SEARCH': 'cipo-search',
+  CIPO_ACCESS: 'cipo-access',
+  CIPO_CREATE: 'cipo-create',
+  CIPO_SEARCH: 'cipo-search',
   // Circulation management
-  'CIRC_ADMIN': 'access-circulation',
+  CIRC_ADMIN: 'access-circulation',
   // Collections
-  'COLL_ACCESS': 'coll-access',
-  'COLL_CREATE': 'coll-create',
-  'COLL_SEARCH': 'coll-search',
+  COLL_ACCESS: 'coll-access',
+  COLL_CREATE: 'coll-create',
+  COLL_SEARCH: 'coll-search',
   // Debug mode
-  'DEBUG_MODE': 'can-use-debug-mode',
+  DEBUG_MODE: 'can-use-debug-mode',
   // Documents
-  'DOC_ACCESS': 'doc-access',
-  'DOC_CREATE': 'doc-create',
-  'DOC_SEARCH': 'doc-search',
+  DOC_ACCESS: 'doc-access',
+  DOC_CREATE: 'doc-create',
+  DOC_SEARCH: 'doc-search',
   // Documents
-  'FILE_ACCESS': 'file-access',
-  'FILE_CREATE': 'file-create',
-  'FILE_SEARCH': 'file-search',
+  FILE_ACCESS: 'file-access',
+  FILE_CREATE: 'file-create',
+  FILE_SEARCH: 'file-search',
   // Entities
   // Entities
-  'LOCENT_ACCESS': 'locent-access',
-  'LOCENT_CREATE': 'locent-create',
-  'LOCENT_SEARCH': 'locent-search',
+  LOCENT_ACCESS: 'locent-access',
+  LOCENT_CREATE: 'locent-create',
+  LOCENT_SEARCH: 'locent-search',
   // Holdings
-  'HOLD_ACCESS': 'hold-access',
-  'HOLD_CREATE': 'hold-create',
-  'HOLD_SEARCH': 'hold-search',
+  HOLD_ACCESS: 'hold-access',
+  HOLD_CREATE: 'hold-create',
+  HOLD_SEARCH: 'hold-search',
   // ILL requests
-  'ILL_ACCESS': 'illr-access',
-  'ILL_CREATE': 'illr-create',
-  'ILL_SEARCH': 'illr-search',
+  ILL_ACCESS: 'illr-access',
+  ILL_CREATE: 'illr-create',
+  ILL_SEARCH: 'illr-search',
   // Issue management
-  'ISSUE_MANAGEMENT': 'late-issue-management',
+  ISSUE_MANAGEMENT: 'late-issue-management',
   // Items
-  'ITEM_ACCESS': 'item-access',
-  'ITEM_CREATE': 'item-create',
-  'ITEM_SEARCH': 'item-search',
+  ITEM_ACCESS: 'item-access',
+  ITEM_CREATE: 'item-create',
+  ITEM_SEARCH: 'item-search',
   // Item types
-  'ITTY_ACCESS': 'itty-access',
-  'ITTY_CREATE': 'itty-create',
-  'ITTY_SEARCH': 'itty-search',
+  ITTY_ACCESS: 'itty-access',
+  ITTY_CREATE: 'itty-create',
+  ITTY_SEARCH: 'itty-search',
   // Libraries
-  'LIB_ACCESS': 'lib-access',
-  'LIB_CREATE': 'lib-create',
-  'LIB_SEARCH': 'lib-search',
+  LIB_ACCESS: 'lib-access',
+  LIB_CREATE: 'lib-create',
+  LIB_SEARCH: 'lib-search',
   // Locations
-  'LOC_ACCESS': 'loc-access',
-  'LOC_CREATE': 'loc-create',
-  'LOC_SEARCH': 'loc-search',
+  LOC_ACCESS: 'loc-access',
+  LOC_CREATE: 'loc-create',
+  LOC_SEARCH: 'loc-search',
   // Local fields
-  'LOFI_ACCESS': 'lofi-access',
-  'LOFI_CREATE': 'lofi-create',
-  'LOFI_SEARCH': 'lofi-search',
+  LOFI_ACCESS: 'lofi-access',
+  LOFI_CREATE: 'lofi-create',
+  LOFI_SEARCH: 'lofi-search',
   // Operation logs
-  'OPLG_SEARCH': 'oplg-search',
+  OPLG_SEARCH: 'oplg-search',
   // Organisations search
-  'ORG_ACCESS': 'org-access',
-  'ORG_SEARCH': 'org-search',
+  ORG_ACCESS: 'org-access',
+  ORG_SEARCH: 'org-search',
   // Permission management
-  'PERM_MANAGEMENT': 'permission-management',
+  PERM_MANAGEMENT: 'permission-management',
   // Patrons
-  'PTRN_ACCESS': 'ptrn-access',
-  'PTRN_CREATE': 'ptrn-create',
-  'PTRN_SEARCH': 'ptrn-search',
+  PTRN_ACCESS: 'ptrn-access',
+  PTRN_CREATE: 'ptrn-create',
+  PTRN_SEARCH: 'ptrn-search',
   // PatronTransaction
-  'PTTR_ACCESS': 'pttr-access',
-  'PTTR_CREATE': 'pttr-create',
-  'PTTR_SEARCH': 'pttr-search',
+  PTTR_ACCESS: 'pttr-access',
+  PTTR_CREATE: 'pttr-create',
+  PTTR_SEARCH: 'pttr-search',
   // Patron types
-  'PTTY_ACCESS': 'ptty-access',
-  'PTTY_CREATE': 'ptty-create',
-  'PTTY_SEARCH': 'ptty-search',
+  PTTY_ACCESS: 'ptty-access',
+  PTTY_CREATE: 'ptty-create',
+  PTTY_SEARCH: 'ptty-search',
   // Templates
-  'TMPL_ACCESS': 'tmpl-access',
-  'TMPL_CREATE': 'tmpl-create',
-  'TMPL_SEARCH': 'tmpl-search',
+  TMPL_ACCESS: 'tmpl-access',
+  TMPL_CREATE: 'tmpl-create',
+  TMPL_SEARCH: 'tmpl-search',
   // Statistics Configuration
-  'STAT_CFG_ACCESS': 'stat_cfg-access',
-  'STAT_CFG_CREATE': 'stat_cfg-create',
-  'STAT_CFG_SEARCH': 'stat_cfg-search',
+  STAT_CFG_ACCESS: 'stat_cfg-access',
+  STAT_CFG_CREATE: 'stat_cfg-create',
+  STAT_CFG_SEARCH: 'stat_cfg-search',
   // Admin User interface access
-  'UI_ACCESS': 'admin-ui-access',
+  UI_ACCESS: 'admin-ui-access',
   // Vendors
-  'VNDR_ACCESS': 'vndr-access',
-  'VNDR_CREATE': 'vndr-create',
-  'VNDR_SEARCH': 'vndr-search',
+  VNDR_ACCESS: 'vndr-access',
+  VNDR_CREATE: 'vndr-create',
+  VNDR_SEARCH: 'vndr-search',
   // Migrations
-  'MIG_ACCESS': 'mig-access',
-  'MIG_SEARCH': 'mig-search'
+  MIG_ACCESS: 'mig-access',
+  MIG_SEARCH: 'mig-search',
 };
 
 // User with permission service
 export enum PERMISSION_OPERATOR {
   AND = 'and',
-  OR = 'or'
+  OR = 'or',
 }
 
 export type IPermissions = Record<string, string>;

@@ -1,13 +1,13 @@
 // SPDX-FileCopyrightText: Fondation RERO+
 // SPDX-License-Identifier: AGPL-3.0-or-later
+import { provideHttpClient, withXhr } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
-import { TranslateModule } from '@ngx-translate/core';
+import { provideTranslateService } from '@ngx-translate/core';
 import { RecordService, RecordUiService } from '@rero/ng-core';
 import { of } from 'rxjs';
 
 import { HoldingsApiService } from './holdings-api.service';
-import { provideHttpClient } from '@angular/common/http';
 
 describe('HoldingsApiService', () => {
   let service: HoldingsApiService;
@@ -16,13 +16,15 @@ describe('HoldingsApiService', () => {
     aggregations: {},
     hits: {
       total: 1,
-      hits: [{
-        metadata: {
-          pid: 1
-        }
-      }]
+      hits: [
+        {
+          metadata: {
+            pid: 1,
+          },
+        },
+      ],
     },
-    links: {}
+    links: {},
   };
 
   const recordServiceSpy = { getRecords: vi.fn() };
@@ -30,15 +32,14 @@ describe('HoldingsApiService', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-    imports: [
-        TranslateModule.forRoot()],
-    providers: [
+      providers: [
+        provideTranslateService(),
         { provide: RecordService, useValue: recordServiceSpy },
         { provide: RecordUiService, useValue: {} },
-        provideHttpClient(),
+        provideHttpClient(withXhr()),
         provideHttpClientTesting(),
-    ]
-});
+      ],
+    });
     service = TestBed.inject(HoldingsApiService);
   });
 

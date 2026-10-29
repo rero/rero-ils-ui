@@ -1,22 +1,21 @@
 // SPDX-FileCopyrightText: Fondation RERO+
 // SPDX-License-Identifier: AGPL-3.0-or-later
-import { Injectable, inject } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
+import { LIBRARIAN_STORAGE_KEYS } from '@app/admin/service/librarian-storage-keys';
 import { LocalStorageService } from '@rero/ng-core';
 
 export type ILibrarySwitchDataStorage = {
-  userId: number;
   currentLibrary: string;
   libraryName: string;
-}
+};
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class LibrarySwitchStorageService {
-
   private localStorage: LocalStorageService = inject(LocalStorageService);
 
-  static readonly STORAGE_KEY = 'menu_library';
+  static readonly STORAGE_KEY = LIBRARIAN_STORAGE_KEYS.library;
 
   has(): boolean {
     return this.localStorage.has(LibrarySwitchStorageService.STORAGE_KEY);

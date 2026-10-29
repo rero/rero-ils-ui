@@ -8,15 +8,15 @@
 export const environment = {
   production: false,
   projectTitle: 'RERO ILS',
-  apiBaseUrl: "",
-  $refPrefix: "https://bib.rero.ch",
-  globalViewName: "global",
+  apiBaseUrl: '',
+  $refPrefix: 'https://bib.rero.ch',
+  globalViewName: 'global',
   // no version in development: translation files are never cached
   translationsVersion: '',
   translationsURLs: [
-    { url: "/assets/rero-ils-ui/shared/i18n/${lang}.json", versioned: true },
-    { url: "/assets/rero-ils-ui/public-search/i18n/${lang}.json", versioned: true },
-    "/api/translations/${lang}.json",
+    { url: '/assets/rero-ils-ui/shared/i18n/${lang}.json', versioned: true },
+    { url: '/assets/rero-ils-ui/public-search/i18n/${lang}.json', versioned: true },
+    '/api/translations/${lang}.json',
   ],
   ngCoreAssetsUrl: '',
 };

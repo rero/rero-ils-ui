@@ -6,15 +6,10 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 @if (!operationLogsResult()) {
   <i class="fa-solid fa-spinner fa-pulse"></i>
 } @else if (records().length === 0) {
-  <p>{{ "No operation log found." | translate }}</p>
+  <p>{{ 'No operation log found.' | translate }}</p>
 } @else {
   <div class="ui:flex ui:justify-end ui:mb-2">
-    <p-select
-      appendTo="body"
-      [ngModel]="sortCriteria()"
-      [options]="sortOptions()"
-      (onChange)="sortChange($event)"
-    >
+    <p-select appendTo="body" [ngModel]="sortCriteria()" [options]="sortOptions()" (onChange)="sortChange($event)">
       <ng-template #selectedItem let-item>
         <div class="ui:flex ui:items-center ui:gap-2">
           <i [class]="item.icon"></i>
@@ -32,25 +27,21 @@ SPDX-License-Identifier: AGPL-3.0-or-later
   <p-table stripedRows [value]="records()" [tableStyle]="{ 'min-width': '50rem' }" size="small">
     <ng-template #body let-record>
       <tr>
-          <td class=" ui:text-muted-color ui:w-1/4">
-            <i class="fa-solid fa-calendar-days"></i>&nbsp;{{ record.metadata.date | dateTranslate :'shortDate' }} - {{ record.metadata.date | dateTranslate :'mediumTime' }}
-          </td>
-          <td class="ui:font-bold ui:uppercase ui:w-1/4">
-            {{ record.metadata.operation | translate }}
-          </td>
-          <td class="ui:w-2/4">
-            {{ record.metadata.user_name }}
-            @if (record.metadata.library) {
-              - {{ record.metadata.library.name }}
-            }
-          </td>
+        <td class="ui:text-muted-color ui:w-1/4">
+          <i class="fa-solid fa-calendar-days"></i>&nbsp;{{ record.metadata.date | dateTranslate: 'shortDate' }} -
+          {{ record.metadata.date | dateTranslate: 'mediumTime' }}
+        </td>
+        <td class="ui:font-bold ui:uppercase ui:w-1/4">
+          {{ record.metadata.operation | translate }}
+        </td>
+        <td class="ui:w-2/4">
+          {{ record.metadata.user_name }}
+          @if (record.metadata.library) {
+            - {{ record.metadata.library.name }}
+          }
+        </td>
       </tr>
     </ng-template>
   </p-table>
-  <shared-paginator
-    [pager]="pager()"
-    [total]="recordTotals()"
-    (pageChange)="pageChange($event)"
-  />
-
+  <shared-paginator [pager]="pager()" [total]="recordTotals()" (pageChange)="pageChange($event)" />
 }

@@ -1,23 +1,32 @@
 // SPDX-FileCopyrightText: Fondation RERO+
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-import { Component, computed, inject, input, ChangeDetectionStrategy } from '@angular/core';
-import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
-import { AppStore } from '@rero/shared';
-import { Bind } from 'primeng/bind';
-import { Panel } from 'primeng/panel';
-import { TableModule } from 'primeng/table';
-import { NgClass, AsyncPipe, CurrencyPipe, I18nPluralPipe, KeyValuePipe } from '@angular/common';
+import { AsyncPipe, CurrencyPipe, I18nPluralPipe, KeyValuePipe, NgClass } from '@angular/common';
+import { Component, computed, inject, input } from '@angular/core';
+import { TranslatePipe } from '@ngx-translate/core';
+import { Bind } from '@openng/optimus-ui/bind';
+import { Panel } from '@openng/optimus-ui/panel';
+import { TableModule } from '@openng/optimus-ui/table';
 import { GetRecordPipe } from '@rero/ng-core';
+import { AppStore } from '@rero/shared';
 
 @Component({
-    selector: 'admin-circ-policy-detail-view',
-    templateUrl: './circ-policy-detail-view.component.html',
-    imports: [TranslateDirective, Bind, Panel, TableModule, NgClass, AsyncPipe, CurrencyPipe, I18nPluralPipe, KeyValuePipe, TranslatePipe, GetRecordPipe],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  selector: 'admin-circ-policy-detail-view',
+  templateUrl: './circ-policy-detail-view.component.html',
+  imports: [
+    Bind,
+    Panel,
+    TableModule,
+    NgClass,
+    AsyncPipe,
+    CurrencyPipe,
+    I18nPluralPipe,
+    KeyValuePipe,
+    TranslatePipe,
+    GetRecordPipe,
+  ],
 })
 export class CircPolicyDetailViewComponent {
-
   private appStore = inject(AppStore);
 
   readonly record = input<any>();
@@ -26,9 +35,7 @@ export class CircPolicyDetailViewComponent {
   readonly reminders = computed(() => {
     const r = this.record();
     if (!r?.metadata?.reminders) return [];
-    return [...r.metadata.reminders].sort((a: any, b: any) =>
-      a.type > b.type ? 1 : a.days_delay - b.days_delay
-    );
+    return [...r.metadata.reminders].sort((a: any, b: any) => (a.type > b.type ? 1 : a.days_delay - b.days_delay));
   });
 
   readonly overdues = computed(() => {

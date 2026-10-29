@@ -1,16 +1,16 @@
 // SPDX-FileCopyrightText: Fondation RERO+
 // SPDX-License-Identifier: AGPL-3.0-or-later
-import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClient, withXhr } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { DebugElement } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { RouterModule } from '@angular/router';
-import { TranslateModule } from '@ngx-translate/core';
-import { ButtonModule } from 'primeng/button';
-import { DynamicDialogModule, DynamicDialogRef } from 'primeng/dynamicdialog';
-import { CheckinActionComponent } from './checkin-action.component';
+import { provideTranslateService } from '@ngx-translate/core';
+import { ButtonModule } from '@openng/optimus-ui/button';
+import { DynamicDialogModule, DynamicDialogRef } from '@openng/optimus-ui/dynamicdialog';
 
+import { CheckinActionComponent } from './checkin-action.component';
 
 describe('CheckinActionComponent', () => {
   let component: CheckinActionComponent;
@@ -18,19 +18,14 @@ describe('CheckinActionComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-    imports: [
-        TranslateModule.forRoot(),
-        RouterModule,
-        ButtonModule,
-        DynamicDialogModule,
-        CheckinActionComponent
-    ],
-    providers: [
+      imports: [RouterModule, ButtonModule, DynamicDialogModule, CheckinActionComponent],
+      providers: [
+        provideTranslateService(),
         DynamicDialogRef,
-        provideHttpClient(),
-        provideHttpClientTesting()
-    ]
-}).compileComponents();
+        provideHttpClient(withXhr()),
+        provideHttpClientTesting(),
+      ],
+    }).compileComponents();
   });
 
   beforeEach(() => {

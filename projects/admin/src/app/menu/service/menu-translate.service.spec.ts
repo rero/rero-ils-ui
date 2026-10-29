@@ -1,9 +1,10 @@
 // SPDX-FileCopyrightText: Fondation RERO+
 // SPDX-License-Identifier: AGPL-3.0-or-later
 import { TestBed } from '@angular/core/testing';
-import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { provideTranslateService, TranslateService } from '@ngx-translate/core';
+import { MenuItem } from '@openng/optimus-ui/api';
 import { AppStore } from '@rero/shared';
-import { MenuItem } from 'primeng/api';
+
 import { MenuTranslateService } from './menu-translate.service';
 
 describe('MenuTranslateService', () => {
@@ -14,95 +15,103 @@ describe('MenuTranslateService', () => {
     currentLibraryPid: () => '1',
     currentOrganisationPid: () => '2',
     user: () => ({ symbolName: 'AM' }),
-    currentBudgetPid: () => '1'
+    currentBudgetPid: () => '1',
   } as any;
 
   const translations = {
-    'user': 'utilisateur'
+    user: 'utilisateur',
   };
 
-  const menuItems: MenuItem[] = [{
-    label: '$symbolName',
-    translateLabel: '$symbolName',
-    items: [
-      {
-        label: 'user',
-        translateLabel: 'user'
+  const menuItems: MenuItem[] = [
+    {
+      label: '$symbolName',
+      translateLabel: '$symbolName',
+      items: [
+        {
+          label: 'user',
+          translateLabel: 'user',
+        },
+        {
+          label: 'my library',
+          translateLabel: 'my library',
+          routerLink: ['/', 'my-library', '$currentLibrary'],
+        },
+        {
+          label: 'query params',
+          translateLabel: 'query params',
+          queryParams: {
+            id: 1,
+            organisation: '$currentOrganisation',
+          },
+        },
+      ],
+    },
+  ];
+
+  const menuItemsResult: MenuItem[] = [
+    {
+      label: 'AM',
+      translateLabel: '$symbolName',
+      items: [
+        {
+          label: 'utilisateur',
+          translateLabel: 'user',
+        },
+        {
+          label: 'my library',
+          translateLabel: 'my library',
+          routerLink: ['/', 'my-library', '1'],
+        },
+        {
+          label: 'query params',
+          translateLabel: 'query params',
+          queryParams: {
+            id: 1,
+            organisation: '2',
+          },
+        },
+      ],
+    },
+  ];
+
+  const menuItemDateRange: MenuItem[] = [
+    {
+      label: 'date range',
+      translateLabel: 'date range',
+      queryParams: {
+        range: '$currentDayRange',
       },
-      {
-        label: 'my library',
-        translateLabel: 'my library',
-        routerLink: ['/', 'my-library', '$currentLibrary']
+    },
+  ];
+
+  const menuLabelError: MenuItem[] = [
+    {
+      label: '$fooBar',
+      translateLabel: '$fooBar',
+    },
+  ];
+
+  const menuRouterLinkError: MenuItem[] = [
+    {
+      label: 'label',
+      translateLabel: 'label',
+      routerLink: ['/', '$fooBar'],
+    },
+  ];
+
+  const menuQueryParamsError: MenuItem[] = [
+    {
+      label: 'label',
+      translateLabel: 'label',
+      queryParams: {
+        id: '$fooBar',
       },
-      {
-        label: 'query params',
-        translateLabel: 'query params',
-        queryParams: {
-          id: 1,
-          organisation: '$currentOrganisation' }
-      }
-    ]
-  }];
-
-  const menuItemsResult: MenuItem[] = [{
-    label: 'AM',
-    translateLabel: '$symbolName',
-    items: [
-      {
-        label: 'utilisateur',
-        translateLabel: 'user'
-      },
-      {
-        label: 'my library',
-        translateLabel: 'my library',
-        routerLink: ['/', 'my-library', '1']
-      },
-      {
-        label: 'query params',
-        translateLabel: 'query params',
-        queryParams: {
-          id: 1,
-          organisation: '2'
-        }
-      }
-    ]
-  }];
-
-  const menuItemDateRange: MenuItem[] = [{
-    label: 'date range',
-    translateLabel: 'date range',
-    queryParams: {
-      range: '$currentDayRange'
-    }
-  }];
-
-  const menuLabelError: MenuItem[] = [{
-    label: '$fooBar',
-    translateLabel: '$fooBar' }];
-
-  const menuRouterLinkError: MenuItem[] = [{
-    label: 'label',
-    translateLabel: 'label',
-    routerLink: ['/', '$fooBar']
-  }];
-
-  const menuQueryParamsError: MenuItem[] = [{
-    label: 'label',
-    translateLabel: 'label',
-    queryParams: {
-      id: '$fooBar'
-    }
-  }];
+    },
+  ];
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [
-        TranslateModule.forRoot()
-      ],
-      providers: [
-        { provide: AppStore, useValue: appStoreSpy },
-        TranslateService
-      ]
+      providers: [provideTranslateService(), { provide: AppStore, useValue: appStoreSpy }, TranslateService],
     });
     service = TestBed.inject(MenuTranslateService);
     translate = TestBed.inject(TranslateService);
@@ -127,17 +136,20 @@ describe('MenuTranslateService', () => {
   });
 
   it('should have an error if the variable does not exist for the label', () => {
-    expect(function() { service.process(menuLabelError) })
-      .toThrow(new EvalError('Label exception: This variable "$fooBar" is not available.'));
+    expect(function () {
+      service.process(menuLabelError);
+    }).toThrow(new EvalError('Label exception: This variable "$fooBar" is not available.'));
   });
 
   it('should have an error if the variable does not exist for the routerlink', () => {
-    expect(function() { service.process(menuRouterLinkError) })
-      .toThrow(new EvalError('RouterLink exception: This variable "$fooBar" is not available.'));
+    expect(function () {
+      service.process(menuRouterLinkError);
+    }).toThrow(new EvalError('RouterLink exception: This variable "$fooBar" is not available.'));
   });
 
   it('should have an error if the variable does not exist for the queryParams', () => {
-    expect(function() { service.process(menuQueryParamsError) })
-      .toThrow(new EvalError('Query Param exception: This variable "$fooBar" is not available.'));
+    expect(function () {
+      service.process(menuQueryParamsError);
+    }).toThrow(new EvalError('Query Param exception: This variable "$fooBar" is not available.'));
   });
 });

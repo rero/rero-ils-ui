@@ -1,15 +1,15 @@
 // SPDX-FileCopyrightText: Fondation RERO+
 // SPDX-FileCopyrightText: UCLouvain
 // SPDX-License-Identifier: AGPL-3.0-or-later
-import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClient, withXhr } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
-import { provideNoopAnimations } from '@angular/platform-browser/animations';
-import { TranslateModule } from '@ngx-translate/core';
+import { provideTranslateService } from '@ngx-translate/core';
+import { MessageService } from '@openng/optimus-ui/api';
+import { DialogService, DynamicDialogModule, DynamicDialogRef } from '@openng/optimus-ui/dynamicdialog';
+import { MessageModule } from '@openng/optimus-ui/message';
 import { IssueItemStatus } from '@rero/shared';
-import { MessageService } from 'primeng/api';
-import { DialogService, DynamicDialogModule, DynamicDialogRef } from 'primeng/dynamicdialog';
-import { MessageModule } from 'primeng/message';
+
 import { IssueEmailComponent } from '../components/issues/issue-email/issue-email.component';
 import { IssueService } from './issue.service';
 
@@ -18,27 +18,22 @@ describe('IssueService', () => {
 
   const record = {
     metadata: {
-      pid: '1'
-    }
-  }
+      pid: '1',
+    },
+  };
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-    imports: [
-        TranslateModule.forRoot(),
-        DynamicDialogModule,
-        MessageModule,
-        IssueEmailComponent
-    ],
-    providers: [
+      imports: [DynamicDialogModule, MessageModule, IssueEmailComponent],
+      providers: [
+        provideTranslateService(),
         IssueService,
         DialogService,
         MessageService,
-        provideHttpClient(),
+        provideHttpClient(withXhr()),
         provideHttpClientTesting(),
-        provideNoopAnimations()
-    ]
-});
+      ],
+    });
     service = TestBed.inject(IssueService);
   });
 
@@ -47,10 +42,12 @@ describe('IssueService', () => {
   });
 
   it('should return if claim is authorized or not', () => {
-    [IssueItemStatus.DELETED, IssueItemStatus.RECEIVED]
-      .forEach(element => expect(service.isClaimAllowed(element)).toBe(false));
-    [IssueItemStatus.EXPECTED, IssueItemStatus.LATE]
-      .forEach(element => expect(service.isClaimAllowed(element)).toBe(true));
+    [IssueItemStatus.DELETED, IssueItemStatus.RECEIVED].forEach((element) =>
+      expect(service.isClaimAllowed(element)).toBe(false),
+    );
+    [IssueItemStatus.EXPECTED, IssueItemStatus.LATE].forEach((element) =>
+      expect(service.isClaimAllowed(element)).toBe(true),
+    );
   });
 
   it('should return the modal reference', () => {

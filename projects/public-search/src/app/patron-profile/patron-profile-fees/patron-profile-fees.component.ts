@@ -1,20 +1,19 @@
 // SPDX-FileCopyrightText: Fondation RERO+
 // SPDX-License-Identifier: AGPL-3.0-or-later
 import { CurrencyPipe } from '@angular/common';
-import { ChangeDetectionStrategy, Component, inject, input } from '@angular/core';
-import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
-import { PanelModule } from 'primeng/panel';
+import { Component, inject, input } from '@angular/core';
+import { TranslatePipe } from '@ngx-translate/core';
+import { PanelModule } from '@openng/optimus-ui/panel';
+
 import { PatronProfileStore } from '../store/patron-profile.store';
 import { PatronProfileFeeComponent } from './patron-profile-fee/patron-profile-fee.component';
 
 @Component({
   selector: 'public-search-patron-profile-fees',
   templateUrl: './patron-profile-fees.component.html',
-  imports: [CurrencyPipe, TranslateDirective, TranslatePipe, PanelModule, PatronProfileFeeComponent],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  imports: [CurrencyPipe, TranslatePipe, PanelModule, PatronProfileFeeComponent],
 })
 export class PatronProfileFeesComponent {
-
   protected store = inject(PatronProfileStore);
 
   feesTotal = input<number>();

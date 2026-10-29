@@ -7,14 +7,14 @@ import { RecordService } from '@rero/ng-core';
 import { BaseApi, EsResult, IAvailability, IAvailabilityService } from '@rero/shared';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
+
 import { AppConfigService } from '../app-config.service';
 import { HoldingCanRequest, HoldingPatronRequest } from '../classes/holdings';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class HoldingsApiService extends BaseApi implements IAvailabilityService {
-
   private recordService: RecordService = inject(RecordService);
   private httpClient: HttpClient = inject(HttpClient);
   private appConfigService: AppConfigService = inject(AppConfigService);
@@ -25,16 +25,18 @@ export class HoldingsApiService extends BaseApi implements IAvailabilityService 
    * @param viewcode - string
    * @return Observable
    */
-  getHoldingsByDocumentPidAndViewcode(
-    documentPid: string, viewcode: string): Observable<EsResult> {
+  getHoldingsByDocumentPidAndViewcode(documentPid: string, viewcode: string): Observable<EsResult> {
     const query = `document.pid:${documentPid} AND ((holdings_type:standard AND public_items_count:[1 TO *]) OR holdings_type:serial) NOT _masked:true`;
     return this.recordService
-    .getRecords('holdings', {
-      query, page: 1, itemsPerPage: 9999,
-      preFilters: { view: viewcode },
-      headers: BaseApi.reroJsonheaders,
-      sort: 'organisation_library_location'
-    }).pipe(map((response: EsResult) => response));
+      .getRecords('holdings', {
+        query,
+        page: 1,
+        itemsPerPage: 9999,
+        preFilters: { view: viewcode },
+        headers: BaseApi.reroJsonheaders,
+        sort: 'organisation_library_location',
+      })
+      .pipe(map((response: EsResult) => response));
   }
 
   /**
@@ -43,17 +45,24 @@ export class HoldingsApiService extends BaseApi implements IAvailabilityService 
    * @param viewcode - string
    * @return Observable
    */
-    getElectronicHoldingsByDocumentPidAndViewcode(
-      documentPid: string, viewcode: string, page: number, itemsPerPage = 5): Observable<EsResult['hits']> {
-      const query = `document.pid:${documentPid} AND  holdings_type:electronic NOT _masked:true`;
-      return this.recordService
+  getElectronicHoldingsByDocumentPidAndViewcode(
+    documentPid: string,
+    viewcode: string,
+    page: number,
+    itemsPerPage = 5,
+  ): Observable<EsResult['hits']> {
+    const query = `document.pid:${documentPid} AND  holdings_type:electronic NOT _masked:true`;
+    return this.recordService
       .getRecords('holdings', {
-        query, page, itemsPerPage,
+        query,
+        page,
+        itemsPerPage,
         preFilters: { view: viewcode },
         headers: BaseApi.reroJsonheaders,
-        sort: 'organisation_library_location'
-      }).pipe(map((response: EsResult) => response.hits));
-    }
+        sort: 'organisation_library_location',
+      })
+      .pipe(map((response: EsResult) => response.hits));
+  }
 
   /**
    * Holding Can request
@@ -64,9 +73,7 @@ export class HoldingsApiService extends BaseApi implements IAvailabilityService 
    */
   canRequest(holdingPid: string, libraryPid: string, patronBarcode: string): Observable<HoldingCanRequest> {
     const url = `${this.appConfigService.apiEndpointPrefix}/holding/${holdingPid}/can_request`;
-    const params = new HttpParams()
-      .set('library_pid', libraryPid)
-      .set('patron_barcode', patronBarcode);
+    const params = new HttpParams().set('library_pid', libraryPid).set('patron_barcode', patronBarcode);
     return this.httpClient.get<HoldingCanRequest>(url, { params });
   }
 
@@ -75,7 +82,11 @@ export class HoldingsApiService extends BaseApi implements IAvailabilityService 
    * @param data - Holding pid, pickup location pid, description
    * @return Observable - Create provisional item
    */
-  request(data: { holding_pid: string, pickup_location_pid: string, description: string }): Observable<HoldingPatronRequest> {
+  request(data: {
+    holding_pid: string;
+    pickup_location_pid: string;
+    description: string;
+  }): Observable<HoldingPatronRequest> {
     const url = `${this.appConfigService.apiEndpointPrefix}/holding/patron_request`;
     return this.httpClient.post<HoldingPatronRequest>(url, data);
   }

@@ -7,7 +7,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
     <ng-template #body let-report>
       <tr>
         <td>
-            <a class="ui:pl-2" target="_blank" [href]="getReportUrl(report.metadata.pid)">
+          <a class="ui:pl-2" target="_blank" [href]="getReportUrl(report.metadata.pid)">
             {{ report.created | dateTranslate: 'longDate' }}
             <i class="ui:pl-1 fa-solid fa-up-right-from-square"></i>
           </a>
@@ -16,17 +16,15 @@ SPDX-License-Identifier: AGPL-3.0-or-later
           <a
             pButton
             text
-            [href]="getReportUrl(report.metadata.pid)+'?format=csv'"
-            [attr.aria-label]="'Export to CSV' | translate"
-          >
+            [href]="getReportUrl(report.metadata.pid) + '?format=csv'"
+            [attr.aria-label]="'Export to CSV' | translate">
             <i class="fa-solid fa-file-csv"></i>
           </a>
           <a
             pButton
             text
-            [href]="getReportUrl(report.metadata.pid)+'?format=xlsx'"
-            [attr.aria-label]="'Export to Excel' | translate"
-          >
+            [href]="getReportUrl(report.metadata.pid) + '?format=xlsx'"
+            [attr.aria-label]="'Export to Excel' | translate">
             <i class="fa-regular fa-file-excel"></i>
           </a>
         </td>
@@ -34,5 +32,5 @@ SPDX-License-Identifier: AGPL-3.0-or-later
     </ng-template>
   </p-table>
 } @else {
-  <p class="ui:m-0 ui:px-6 ui:py-2  ui:text-muted-color" translate>No result</p>
+  <p class="ui:m-0 ui:px-6 ui:py-2 ui:text-muted-color">{{ 'No result' | translate }}</p>
 }

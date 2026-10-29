@@ -1,19 +1,36 @@
 // SPDX-FileCopyrightText: Fondation RERO+
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-import { computed, inject } from "@angular/core";
-import { toObservable } from "@angular/core/rxjs-interop";
-import { HoldingsApiService } from "@app/admin/api/holdings-api.service";
-import { HoldingsService, PredictionIssue } from "@app/admin/service/holdings.service";
-import { patchState, signalMethod, signalStore, withComputed, withHooks, withMethods, withProps, withState } from "@ngrx/signals";
-import { rxMethod } from "@ngrx/signals/rxjs-interop";
-import { _, TranslateService } from "@ngx-translate/core";
-import { CONFIG, RecordUiService } from "@rero/ng-core";
-import { AppStore, EsRecord, EsResult, nonNullable, Pager, PERMISSIONS, withPaginator } from "@rero/shared";
-import { MessageService } from "primeng/api";
-import { PaginatorState } from "primeng/paginator";
-import { numberGreatThan } from "@rero/shared";
-import { catchError, debounceTime, pipe, switchMap, tap } from "rxjs";
+import { computed, inject } from '@angular/core';
+import { toObservable } from '@angular/core/rxjs-interop';
+import { HoldingsApiService } from '@app/admin/api/holdings-api.service';
+import { HoldingsService, PredictionIssue } from '@app/admin/service/holdings.service';
+import {
+  patchState,
+  signalMethod,
+  signalStore,
+  withComputed,
+  withHooks,
+  withMethods,
+  withProps,
+  withState,
+} from '@ngrx/signals';
+import { rxMethod } from '@ngrx/signals/rxjs-interop';
+import { _, TranslateService } from '@ngx-translate/core';
+import { MessageService } from '@openng/optimus-ui/api';
+import { PaginatorState } from '@openng/optimus-ui/paginator';
+import { CONFIG, RecordUiService } from '@rero/ng-core';
+import {
+  AppStore,
+  EsRecord,
+  EsResult,
+  nonNullable,
+  numberGreatThan,
+  Pager,
+  PERMISSIONS,
+  withPaginator,
+} from '@rero/shared';
+import { catchError, debounceTime, pipe, switchMap, tap } from 'rxjs';
 
 type HoldingsSerialState = {
   holdings: EsRecord | undefined;
@@ -27,7 +44,7 @@ type HoldingsSerialState = {
   quickReceive: boolean;
   quickReceiveDisableButton: boolean;
   reload: boolean;
-}
+};
 
 const initialState: HoldingsSerialState = {
   holdings: undefined,
@@ -43,17 +60,14 @@ const initialState: HoldingsSerialState = {
   reload: false,
 };
 
-export const localFieldsPermissions = [
-  PERMISSIONS.LOFI_SEARCH,
-  PERMISSIONS.LOFI_CREATE
-];
+export const localFieldsPermissions = [PERMISSIONS.LOFI_SEARCH, PERMISSIONS.LOFI_CREATE];
 
 const initialPagerConfig: Pager = {
   page: 1,
   first: 1,
   rows: 10,
-  rowsPerPageOptions: [10, 20, 50]
-}
+  rowsPerPageOptions: [10, 20, 50],
+};
 
 export const HoldingsSerialStore = signalStore(
   withState(initialState),
@@ -70,9 +84,7 @@ export const HoldingsSerialStore = signalStore(
     isFilterEnabled: computed(() => store.receivedItemsCount() >= 11 || '' !== store.filter()),
     isPaginatorEnabled: computed(() => store.pager.rows() < store.filterTotal()),
     isAllowIssueCreation: computed(() => store.appStore.currentLibraryPid() === store.holdings().metadata.library.pid),
-    showLocalFieldsTab: computed(() =>
-      store.appStore.canAccess(localFieldsPermissions)
-    ),
+    showLocalFieldsTab: computed(() => store.appStore.canAccess(localFieldsPermissions)),
   })),
   withMethods((store) => ({
     setHoldings: signalMethod<EsRecord>((holdings: EsRecord) => {
@@ -87,13 +99,15 @@ export const HoldingsSerialStore = signalStore(
     loadItems: rxMethod<void>(
       pipe(
         debounceTime(400),
-        switchMap(() => store.holdingsApiService.getIssuesByHoldings(
-          store.holdings().metadata.pid,
-          store.pager.page(),
-          store.pager.rows(),
-          store.quickReceive(),
-          store.filter()
-        )),
+        switchMap(() =>
+          store.holdingsApiService.getIssuesByHoldings(
+            store.holdings().metadata.pid,
+            store.pager.page(),
+            store.pager.rows(),
+            store.quickReceive(),
+            store.filter(),
+          ),
+        ),
         tap((result: EsResult) => {
           if (!store.filter()) {
             patchState(store, { receivedItemsCount: result.hits.total });
@@ -101,17 +115,17 @@ export const HoldingsSerialStore = signalStore(
           patchState(store, {
             receivedItems: result.hits.hits,
             filterTotal: result.hits.total,
-            quickReceive: false
+            quickReceive: false,
           });
         }),
-        tap(() => patchState(store, { reload: false }))
+        tap(() => patchState(store, { reload: false })),
       ),
     ),
     updateItem(item: EsRecord) {
       const current = store.receivedItems();
       if (current) {
         patchState(store, {
-          receivedItems: current.map(i => i.metadata.pid === item.metadata.pid ? item : i)
+          receivedItems: current.map((i) => (i.metadata.pid === item.metadata.pid ? item : i)),
         });
       }
     },
@@ -127,17 +141,19 @@ export const HoldingsSerialStore = signalStore(
             patchState(store, {
               reload: true,
               filter: undefined,
-              pager: { ...store.pager(), page, first: (page - 1) * rows + 1 }
+              pager: { ...store.pager(), page, first: (page - 1) * rows + 1 },
             });
           }
-        })
-      )
+        }),
+      ),
     ),
     loadIssues: rxMethod<void>(
       pipe(
-        switchMap(() => store.holdingsService.getHoldingPatternPreview(store.holdings().metadata.pid, store.issuesCount())),
-        tap((issues: PredictionIssue[]) => patchState(store, { issues }))
-      )
+        switchMap(() =>
+          store.holdingsService.getHoldingPatternPreview(store.holdings().metadata.pid, store.issuesCount()),
+        ),
+        tap((issues: PredictionIssue[]) => patchState(store, { issues })),
+      ),
     ),
     moreIssues: (count: number) => patchState(store, { issuesCount: store.issuesCount() + count }),
     quickIssueReceive: rxMethod<void>(
@@ -153,40 +169,52 @@ export const HoldingsSerialStore = signalStore(
               severity: 'error',
               summary: store.translateService.instant(_('Issue creation failed!')),
               sticky: true,
-              closable: true
+              closable: true,
             });
           }
         }),
-        tap(() => store.messageService.add({
-          severity: 'success',
-          summary: store.translateService.instant(_('Issue')),
-          detail: store.translateService.instant(_('New issue created.')),
-          life: CONFIG.MESSAGE_LIFE
-        })),
+        tap(() =>
+          store.messageService.add({
+            severity: 'success',
+            summary: store.translateService.instant(_('Issue')),
+            detail: store.translateService.instant(_('New issue created.')),
+            life: CONFIG.MESSAGE_LIFE,
+          }),
+        ),
         tap(() => patchState(store, { quickReceiveDisableButton: false })),
-      )
-    )
+      ),
+    ),
   })),
   withHooks((store) => ({
     onInit: () => {
-      toObservable(store.holdings).pipe(nonNullable()).subscribe(() => {
-        store.loadItems();
-        store.loadIssues();
-      });
-      toObservable(store.quickReceive).pipe(nonNullable()).subscribe(() => {
-        if (store.quickReceive()) {
+      toObservable(store.holdings)
+        .pipe(nonNullable())
+        .subscribe(() => {
           store.loadItems();
           store.loadIssues();
-        }
-      });
-      toObservable(store.issuesCount).pipe(numberGreatThan(3)).subscribe(() => store.loadIssues());
-      toObservable(store.filter).pipe(nonNullable()).subscribe(() => store.loadItems());
-      toObservable(store.pager).pipe(nonNullable()).subscribe(() => store.loadItems());
-      toObservable(store.reload).subscribe(reload => {
+        });
+      toObservable(store.quickReceive)
+        .pipe(nonNullable())
+        .subscribe(() => {
+          if (store.quickReceive()) {
+            store.loadItems();
+            store.loadIssues();
+          }
+        });
+      toObservable(store.issuesCount)
+        .pipe(numberGreatThan(3))
+        .subscribe(() => store.loadIssues());
+      toObservable(store.filter)
+        .pipe(nonNullable())
+        .subscribe(() => store.loadItems());
+      toObservable(store.pager)
+        .pipe(nonNullable())
+        .subscribe(() => store.loadItems());
+      toObservable(store.reload).subscribe((reload) => {
         if (reload) {
           store.loadItems();
         }
-      })
-    }
-  }))
-)
+      });
+    },
+  })),
+);

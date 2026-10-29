@@ -4,16 +4,17 @@ import { signal } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { patchState, signalStore, withMethods, withProps, withState } from '@ngrx/signals';
 import { TranslateService } from '@ngx-translate/core';
+import { MessageService } from '@openng/optimus-ui/api';
 import { CONFIG } from '@rero/ng-core';
-import { MessageService } from 'primeng/api';
 import { of, throwError } from 'rxjs';
+
 import { LoanApiService } from '../../api/loan-api.service';
 import { withRequestsFeature } from './request-feature';
 
 const RequestsFeatureStore = signalStore(
   withState({ activeTab: null as string | null }),
   withProps(() => ({ patronPid: signal<string | null>(null) })),
-  withMethods(store => ({
+  withMethods((store) => ({
     setPatronPid(patronPid: string | null): void {
       store.patronPid.set(patronPid);
     },
@@ -21,7 +22,7 @@ const RequestsFeatureStore = signalStore(
       patchState(store, { activeTab });
     },
   })),
-  withRequestsFeature()
+  withRequestsFeature(),
 );
 
 describe('RequestsFeature', () => {

@@ -1,21 +1,33 @@
 <!doctype html>
 <html lang="fr">
   <head>
-    <meta charset="utf-8">
+    <meta charset="utf-8" />
     <title>SearchBar</title>
-    <base href="/">
-  <style>
-    @layer bootstrap, theme, base, rero-ils-ui, primeng, utilities;
-  </style>
-  <style type="text/css" data-primeng-style-id="layer-order"></style>
+    <base href="/" />
+    <style>
+      @layer bootstrap, theme, base, rero-ils-ui, optimus, utilities;
+    </style>
+    <style type="text/css" data-optimus-style-id="layer-order"></style>
   </head>
   <body>
     <div class="container">
       <h4>Search bar</h4>
       <div style="margin-bottom: 10px; width: 600px">
-        <main-search-bar styleclass="ui:w-full" inputstyleclass="ui:text-lg ui:w-full" placeholder="Search (Aoste view)" viewcode="aoste" language="fr" class="rero-ils-ui"></main-search-bar>
+        <main-search-bar
+          styleclass="ui:w-full"
+          inputstyleclass="ui:text-lg ui:w-full"
+          placeholder="Search (Aoste view)"
+          viewcode="aoste"
+          language="fr"
+          class="rero-ils-ui"></main-search-bar>
       </div>
-      <main-search-bar styleclass="ui:w-full" inputstyleclass="ui:text-lg ui:w-full" placeholder="Search (Admin view)"  language="fr" class="rero-ils-ui" internal></main-search-bar>
+      <main-search-bar
+        styleclass="ui:w-full"
+        inputstyleclass="ui:text-lg ui:w-full"
+        placeholder="Search (Admin view)"
+        language="fr"
+        class="rero-ils-ui"
+        internal></main-search-bar>
     </div>
   </body>
 </html>

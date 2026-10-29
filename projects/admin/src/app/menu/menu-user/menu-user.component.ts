@@ -1,31 +1,30 @@
 // SPDX-FileCopyrightText: Fondation RERO+
 // SPDX-License-Identifier: AGPL-3.0-or-later
-import { ChangeDetectionStrategy, Component, computed, effect, inject } from '@angular/core';
+import { NgClass } from '@angular/common';
+import { Component, computed, effect, inject } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { cloneDeep } from 'lodash-es';
+import { Router, RouterLink } from '@angular/router';
+import { MenuItem } from '@openng/optimus-ui/api';
+import { Badge } from '@openng/optimus-ui/badge';
+import { Bind } from '@openng/optimus-ui/bind';
+import { Menubar } from '@openng/optimus-ui/menubar';
+import { Ripple } from '@openng/optimus-ui/ripple';
 import { NgCoreTranslateService } from '@rero/ng-core';
 import { AppStore } from '@rero/shared';
-import { MenuTranslateService } from '../service/menu-translate.service';
-import { MenuStore } from '../store/menu.store';
-import { Router, RouterLink } from '@angular/router';
-import { MenuItem } from 'primeng/api';
+import { cloneDeep } from 'lodash-es';
 import { map, startWith } from 'rxjs/operators';
+
 import { MENU_IDS } from '../menu-definition/menu-ids';
 import { MENU_USER } from '../menu-definition/menu-user';
-import { Bind } from 'primeng/bind';
-import { Menubar } from 'primeng/menubar';
-import { Ripple } from 'primeng/ripple';
-import { NgClass } from '@angular/common';
-import { Badge } from 'primeng/badge';
+import { MenuTranslateService } from '../service/menu-translate.service';
+import { MenuStore } from '../store/menu.store';
 
 @Component({
-    selector: 'admin-menu-user',
-    templateUrl: './menu-user.component.html',
-    imports: [Bind, Menubar, Ripple, RouterLink, NgClass, Badge],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  selector: 'admin-menu-user',
+  templateUrl: './menu-user.component.html',
+  imports: [Bind, Menubar, Ripple, RouterLink, NgClass, Badge],
 })
 export class MenuUserComponent {
-
   private translateService: NgCoreTranslateService = inject(NgCoreTranslateService);
   private appStore = inject(AppStore);
   private menuStore = inject(MenuStore);
@@ -35,9 +34,9 @@ export class MenuUserComponent {
   private readonly currentLanguage = toSignal(
     this.translateService.onLangChange.pipe(
       map(() => this.translateService.getCurrentLang()),
-      startWith(this.translateService.getCurrentLang())
+      startWith(this.translateService.getCurrentLang()),
     ),
-    { initialValue: this.translateService.getCurrentLang() }
+    { initialValue: this.translateService.getCurrentLang() },
   );
 
   readonly items = computed((): MenuItem[] => {
@@ -68,7 +67,10 @@ export class MenuUserComponent {
     languageMenu.items = this.menuStore.generateMenuLanguages();
 
     const items = this.menuTranslateService.process(userMenu);
-    const logout = this.findRequiredItem(this.findRequiredItem(items, MENU_IDS.USER.MENU).items ?? [], MENU_IDS.USER.LOGOUT);
+    const logout = this.findRequiredItem(
+      this.findRequiredItem(items, MENU_IDS.USER.MENU).items ?? [],
+      MENU_IDS.USER.LOGOUT,
+    );
     logout.command = () => this.menuStore.logout();
 
     return items;

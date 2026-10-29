@@ -2,14 +2,16 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 import { TransactionRecord } from '@app/admin/circulation/model/circulation.model';
+
 import { TransactionStatusPipe } from './transaction-status.pipe';
 
 describe('TransactionStatusPipe', () => {
   const pipe = new TransactionStatusPipe();
 
-  const loanRecord = (trigger: string): TransactionRecord => ({
-    metadata: { record: { type: 'loan' }, loan: { trigger } },
-  }) as unknown as TransactionRecord;
+  const loanRecord = (trigger: string): TransactionRecord =>
+    ({
+      metadata: { record: { type: 'loan' }, loan: { trigger } },
+    }) as unknown as TransactionRecord;
 
   it('should resolve the label of each loan trigger', () => {
     expect(pipe.transform(loanRecord('checkout')).label).toBe('checkout');

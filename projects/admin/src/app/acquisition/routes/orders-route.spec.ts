@@ -7,9 +7,10 @@ import { TestBed } from '@angular/core/testing';
 import { RecordData, RecordService } from '@rero/ng-core';
 import { AppStore } from '@rero/shared';
 import { of } from 'rxjs';
+
+import { RouteToolService } from '../../routes/route-tool.service';
 import { AcqReceiptApiService } from '../api/acq-receipt-api.service';
 import { IAcqReceipt } from '../classes/receipt';
-import { RouteToolService } from '../../routes/route-tool.service';
 import { OrdersRoute } from './orders-route';
 
 describe('OrdersRoute', () => {

@@ -4,7 +4,8 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideRouter, Router } from '@angular/router';
 import { DocumentRecord } from '@app/admin/circulation/model/circulation.model';
-import { TranslateModule } from '@ngx-translate/core';
+import { provideTranslateService } from '@ngx-translate/core';
+
 import { TransactionHistoryDocumentComponent } from './transaction-history-document.component';
 
 describe('TransactionHistoryDocumentComponent', () => {
@@ -13,8 +14,8 @@ describe('TransactionHistoryDocumentComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [TranslateModule.forRoot(), TransactionHistoryDocumentComponent],
-      providers: [provideRouter([])],
+      imports: [TransactionHistoryDocumentComponent],
+      providers: [provideTranslateService(), provideRouter([])],
     }).compileComponents();
 
     fixture = TestBed.createComponent(TransactionHistoryDocumentComponent);
@@ -47,7 +48,7 @@ describe('TransactionHistoryDocumentComponent', () => {
     fixture.detectChanges();
 
     let emitted = false;
-    component.closeRequested.subscribe(() => emitted = true);
+    component.closeRequested.subscribe(() => (emitted = true));
 
     fixture.nativeElement.querySelector('a').click();
 
@@ -57,7 +58,9 @@ describe('TransactionHistoryDocumentComponent', () => {
   it('should not display contributions when the document has none', () => {
     fixture.componentRef.setInput('documentPid', 'doc-1');
     fixture.componentRef.setInput('documentTitle', 'Bundesgerichtspraxis');
-    fixture.componentRef.setInput('document', { metadata: { pid: 'doc-1', contribution: [] } } as unknown as DocumentRecord);
+    fixture.componentRef.setInput('document', {
+      metadata: { pid: 'doc-1', contribution: [] },
+    } as unknown as DocumentRecord);
     fixture.detectChanges();
 
     expect(fixture.nativeElement.querySelector('shared-contribution')).toBeNull();

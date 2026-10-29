@@ -1,17 +1,18 @@
 // SPDX-FileCopyrightText: Fondation RERO+
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-import { provideHttpClient } from "@angular/common/http";
-import { provideHttpClientTesting } from "@angular/common/http/testing";
-import { TestBed } from "@angular/core/testing";
-import { TranslateModule } from "@ngx-translate/core";
-import { EsRecord, EsResult } from "@rero/shared";
-import { ConfirmationService, MessageService } from "primeng/api";
-import { Observable, of } from "rxjs";
-import { ItemApiService } from "../../../../../api/item-api.service";
-import { DocumentDetailStore } from "../../store/document-detail.store";
-import { HoldingsStore } from "./holdings-store";
-import { ItemsStore } from "./items-store";
+import { provideHttpClient, withXhr } from '@angular/common/http';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
+import { TestBed } from '@angular/core/testing';
+import { provideTranslateService } from '@ngx-translate/core';
+import { ConfirmationService, MessageService } from '@openng/optimus-ui/api';
+import { EsRecord, EsResult } from '@rero/shared';
+import { Observable, of } from 'rxjs';
+
+import { ItemApiService } from '../../../../../api/item-api.service';
+import { DocumentDetailStore } from '../../store/document-detail.store';
+import { HoldingsStore } from './holdings-store';
+import { ItemsStore } from './items-store';
 
 describe('Items Store', () => {
   let documentDetailStore: {
@@ -27,6 +28,7 @@ describe('Items Store', () => {
     holdingsStore = { removeHiddenStandardHolding: vi.fn() };
     TestBed.configureTestingModule({
       providers: [
+        provideTranslateService(),
         ItemsStore,
         { provide: DocumentDetailStore, useValue: documentDetailStore },
         { provide: HoldingsStore, useValue: holdingsStore },
@@ -34,12 +36,9 @@ describe('Items Store', () => {
         MessageService,
         ItemApiServiceMock,
         { provide: ItemApiService, useExisting: ItemApiServiceMock },
-        provideHttpClient(),
+        provideHttpClient(withXhr()),
         provideHttpClientTesting(),
       ],
-      imports: [
-        TranslateModule.forRoot()
-      ]
     });
   });
 
@@ -141,48 +140,48 @@ describe('Items Store', () => {
 });
 
 const holdings = {
-  "created": "2025-11-03T12:46:15.669328+00:00",
-  "id": "199",
-  "links": {
-    "self": "https://localhost:5000/api/holdings/199"
+  created: '2025-11-03T12:46:15.669328+00:00',
+  id: '199',
+  links: {
+    self: 'https://localhost:5000/api/holdings/199',
   },
-  "metadata": {
-      "$schema": "https://bib.rero.ch/schemas/holdings/holding-v0.0.1.json",
-      "circulation_category": {
-      "$schema": "https://bib.rero.ch/schemas/item_types/item_type-v0.0.1.json",
-      "description": "Standard checkout for adults only (16+)",
-      "name": "Standard adult",
-      "negative_availability": false,
-      "organisation": {
-          "$ref": "https://bib.rero.ch/api/organisations/1"
+  metadata: {
+    $schema: 'https://bib.rero.ch/schemas/holdings/holding-v0.0.1.json',
+    circulation_category: {
+      $schema: 'https://bib.rero.ch/schemas/item_types/item_type-v0.0.1.json',
+      description: 'Standard checkout for adults only (16+)',
+      name: 'Standard adult',
+      negative_availability: false,
+      organisation: {
+        $ref: 'https://bib.rero.ch/api/organisations/1',
       },
-      "pid": "5",
-      "type": "standard"
-      },
-      "document": {
-          "pid": "262",
-          "type": "doc"
-      },
-      "holdings_type": "standard",
-      "items_count": 1,
-      "library": {
-        "name": "Bibliothèque communale et scolaire d'Avise",
-        "pid": "1",
-        "type": "lib"
-      },
-      "location": {
-          "name": "Espaces publics",
-          "pid": "11",
-          "type": "loc"
-      },
-      "organisation": {
-        "pid": "1",
-        "type": "org"
-      },
-      "pid": "199",
-      "public_items_count": 1
+      pid: '5',
+      type: 'standard',
+    },
+    document: {
+      pid: '262',
+      type: 'doc',
+    },
+    holdings_type: 'standard',
+    items_count: 1,
+    library: {
+      name: "Bibliothèque communale et scolaire d'Avise",
+      pid: '1',
+      type: 'lib',
+    },
+    location: {
+      name: 'Espaces publics',
+      pid: '11',
+      type: 'loc',
+    },
+    organisation: {
+      pid: '1',
+      type: 'org',
+    },
+    pid: '199',
+    public_items_count: 1,
   },
-  "updated": "2025-11-03T12:46:15.669330+00:00"
+  updated: '2025-11-03T12:46:15.669330+00:00',
 };
 
 class ItemApiServiceMock {
@@ -192,64 +191,64 @@ class ItemApiServiceMock {
     const items = [];
     for (let i = 0; i < this.itemsCount; i++) {
       items.push({
-        "created": "2025-11-03T12:46:25.825446+00:00",
-        "id": `${i}`,
-        "links": {
-          "self": `https://localhost:5000/api/items/${i}`
+        created: '2025-11-03T12:46:25.825446+00:00',
+        id: `${i}`,
+        links: {
+          self: `https://localhost:5000/api/items/${i}`,
         },
-        "metadata": {
-          "$schema": "https://bib.rero.ch/schemas/items/item-v0.0.1.json",
-          "acquisition_date": "2020-08-13",
-          "barcode": `10000000${i}`,
-          "call_number": `00${i}`,
-          "current_pending_requests": 0,
-          "document": {
-            "document_type": [
+        metadata: {
+          $schema: 'https://bib.rero.ch/schemas/items/item-v0.0.1.json',
+          acquisition_date: '2020-08-13',
+          barcode: `10000000${i}`,
+          call_number: `00${i}`,
+          current_pending_requests: 0,
+          document: {
+            document_type: [
               {
-                "main_type": "docmaintype_book",
-                "subtype": "docsubtype_other_book"
-              }
+                main_type: 'docmaintype_book',
+                subtype: 'docsubtype_other_book',
+              },
             ],
-            "pid": "262",
-            "type": "doc"
+            pid: '262',
+            type: 'doc',
           },
-          "holding": {
-            "pid": "199",
-            "type": "hold"
+          holding: {
+            pid: '199',
+            type: 'hold',
           },
-          "item_type": {
-            "pid": "5",
-            "type": "itty"
+          item_type: {
+            pid: '5',
+            type: 'itty',
           },
-          "library": {
-            "name": "Bibliothèque communale et scolaire d'Avise",
-            "pid": "3",
-            "type": "lib"
+          library: {
+            name: "Bibliothèque communale et scolaire d'Avise",
+            pid: '3',
+            type: 'lib',
           },
-          "location": {
-            "name": "Espaces publics",
-            "pid": "11",
-            "type": "loc"
+          location: {
+            name: 'Espaces publics',
+            pid: '11',
+            type: 'loc',
           },
-          "organisation": {
-            "pid": "1",
-            "type": "org",
-            "viewcode": "aoste"
+          organisation: {
+            pid: '1',
+            type: 'org',
+            viewcode: 'aoste',
           },
-          "pid": `${i}`,
-          "price": 18,
-          "status": "on_loan",
-          "type": "standard",
-          "ui_title_text": "Beauté du siècle"
+          pid: `${i}`,
+          price: 18,
+          status: 'on_loan',
+          type: 'standard',
+          ui_title_text: 'Beauté du siècle',
         },
-        "updated": "2025-11-03T12:59:22.014051+00:00"
-      })
-    };
+        updated: '2025-11-03T12:59:22.014051+00:00',
+      });
+    }
 
-    let itemsHits = [];
-    let count = 0;
-    if ((!filter)) {
-      itemsHits = items.slice((page - 1) * itemsPerPage, ((page - 1) * itemsPerPage) + itemsPerPage);
+    let itemsHits: EsRecord[];
+    let count: number;
+    if (!filter) {
+      itemsHits = items.slice((page - 1) * itemsPerPage, (page - 1) * itemsPerPage + itemsPerPage);
       count = items.length;
     } else {
       itemsHits = items.filter((item: EsRecord) => item.metadata.barcode === filter);
@@ -260,11 +259,11 @@ class ItemApiServiceMock {
       aggregations: {},
       hits: {
         hits: itemsHits,
-        total: count
+        total: count,
       },
       links: {
-        self: ''
-      }
+        self: '',
+      },
     };
 
     return of(response);

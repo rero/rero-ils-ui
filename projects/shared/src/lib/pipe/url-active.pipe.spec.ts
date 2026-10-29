@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 import { TestBed } from '@angular/core/testing';
+
 import { UrlActivePipe } from './url-active.pipe';
 
 describe('Pipe: UrlActivee', () => {
@@ -9,9 +10,7 @@ describe('Pipe: UrlActivee', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [
-        UrlActivePipe
-      ]
+      providers: [UrlActivePipe],
     });
 
     urlActivePipe = TestBed.inject(UrlActivePipe);
@@ -19,11 +18,9 @@ describe('Pipe: UrlActivee', () => {
 
   const text = 'A text with a link http://www.rero.ch';
 
-  const textResult =
-  'A text with a link <a href="http://www.rero.ch" target="_self">http://www.rero.ch</a>';
+  const textResult = 'A text with a link <a href="http://www.rero.ch" target="_self">http://www.rero.ch</a>';
 
-  const textResultBlank =
-  'A text with a link <a href="http://www.rero.ch" target="_blank">http://www.rero.ch</a>';
+  const textResultBlank = 'A text with a link <a href="http://www.rero.ch" target="_blank">http://www.rero.ch</a>';
 
   it('create an instance', () => {
     expect(urlActivePipe).toBeTruthy();

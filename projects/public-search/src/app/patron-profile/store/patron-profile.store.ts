@@ -3,12 +3,13 @@
 import { computed } from '@angular/core';
 import { patchState, signalMethod, signalStore, withComputed, withMethods, withState } from '@ngrx/signals';
 import { IPatron, User } from '@rero/shared';
-import { withLoansFeature } from './loans-feature';
-import { withRequestsFeature } from './request-feature';
+
 import { withFeesFeature } from './fees-feature';
 import { withIllRequestsFeature } from './ill-requests-feature';
+import { withLoansFeature } from './loans-feature';
+import { withRequestsFeature } from './request-feature';
 
-export type IMenu = { value: string; name: string; };
+export type IMenu = { value: string; name: string };
 
 type PatronProfileState = {
   patrons: IPatron[];
@@ -44,8 +45,8 @@ export const PatronProfileStore = signalStore(
 
     return {
       init(user: User): void {
-        const patrons = user.patrons.filter(p => p.roles.includes('patron'));
-        const menu = patrons.map(p => ({ value: p.pid, name: p.organisation.name }));
+        const patrons = user.patrons.filter((p) => p.roles.includes('patron'));
+        const menu = patrons.map((p) => ({ value: p.pid, name: p.organisation.name }));
         resetPatronFeatures();
         patchState(store, {
           patrons,
@@ -53,8 +54,8 @@ export const PatronProfileStore = signalStore(
           currentPatron: patrons[0] ?? null,
         });
       },
-      changePatron: signalMethod<string>(patronPid => {
-        const patron = store.patrons().find(p => p.pid === patronPid) ?? null;
+      changePatron: signalMethod<string>((patronPid) => {
+        const patron = store.patrons().find((p) => p.pid === patronPid) ?? null;
         if (patron?.pid === store.patronPid()) return;
 
         resetPatronFeatures();
@@ -62,7 +63,7 @@ export const PatronProfileStore = signalStore(
           currentPatron: patron,
         });
       }),
-      changeTab: signalMethod<string>(tab => patchState(store, { activeTab: tab })),
+      changeTab: signalMethod<string>((tab) => patchState(store, { activeTab: tab })),
     };
-  })
+  }),
 );
