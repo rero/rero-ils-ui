@@ -1,5 +1,14 @@
 # Changelog
 
+## [21.3.1](https://github.com/rero/rero-ils-ui/compare/v21.3.0...v21.3.1) (2026-10-29)
+
+### Bug Fixes
+
+* **circulation:** correct pickup location ([3d1eacd](https://github.com/rero/rero-ils-ui/commit/3d1eacd01ef2d6fd78ae21835c5c5f54df42ce85)), closes [rero/rero-ils#2722](https://github.com/rero/rero-ils/issues/2722)
+* **holdings:** display due dates in all languages ([c3e5fd9](https://github.com/rero/rero-ils-ui/commit/c3e5fd9c0fe55f8dcca13fe258a8fb5d90e4112c))
+* localise patron fees, share config service ([5f15004](https://github.com/rero/rero-ils-ui/commit/5f150046ffd9fc08231cdac2a53d37d9f1e6dd89))
+* **menu:** reload the admin on language change ([e929a6a](https://github.com/rero/rero-ils-ui/commit/e929a6a3c2f68787fbf266778afb993411ad205b))
+
 ## [21.3.0](https://github.com/rero/rero-ils-ui/compare/v21.2.0...v21.3.0) (2026-10-13)
 
 ### Features
