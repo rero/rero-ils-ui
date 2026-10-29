@@ -3,7 +3,7 @@
 
 import { APP_BASE_HREF, PlatformLocation } from '@angular/common';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
-import { ApplicationConfig, inject, provideAppInitializer, provideZonelessChangeDetection } from '@angular/core';
+import { ApplicationConfig, inject, LOCALE_ID, provideAppInitializer, provideZonelessChangeDetection } from '@angular/core';
 import { provideRouter } from '@angular/router';
 import { registerFormlyExtension } from '@app/admin/acquisition/formly/extension';
 import {
@@ -62,7 +62,8 @@ export const appConfig: ApplicationConfig = {
       deps: [PlatformLocation],
     },
     { provide: TranslateService, useExisting: NgCoreTranslateService },
-    { provide: CoreConfigService, useClass: AppConfigService },
+    { provide: LOCALE_ID, useFactory: (translate: TranslateService) => translate.getCurrentLang(), deps: [TranslateService] },
+    { provide: CoreConfigService, useExisting: AppConfigService },
     ConfirmationService,
     MessageService,
   ],
