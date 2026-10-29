@@ -1,12 +1,13 @@
 // SPDX-FileCopyrightText: Fondation RERO+
 // SPDX-License-Identifier: AGPL-3.0-or-later
+import { DOCUMENT } from '@angular/common';
 import { provideHttpClient } from '@angular/common/http';
-import { provideHttpClientTesting } from '@angular/common/http/testing';
+import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { CoreConfigService } from '@rero/ng-core';
 import { AppStore, testPermissions, testUserLibrarianWithSettings, User } from '@rero/shared';
-import { MenuItem } from 'primeng/api';
+import { MenuItem, MenuItemCommandEvent } from 'primeng/api';
 import { of } from 'rxjs';
 import { LibraryApiService } from '../api/library-api.service';
 import { LibrarySwitchStorageService } from '../service/library-switch-storage.service';
@@ -59,6 +60,12 @@ describe('MenuStore', () => {
     languages: ['fr', 'de', 'en', 'it']
   };
 
+  // jsdom does not allow to spy on location.reload
+  const documentSpy = {
+    cookie: '',
+    location: { reload: vi.fn() }
+  };
+
   beforeEach(() => {
     vi.useFakeTimers();
     // Reset all mock implementations before each test
@@ -82,6 +89,7 @@ describe('MenuStore', () => {
         { provide: LibrarySwitchStorageService, useValue: librarySwitchStorageSpy },
         { provide: TranslateService, useValue: translateServiceSpy },
         { provide: CoreConfigService, useValue: coreConfigServiceSpy },
+        { provide: DOCUMENT, useValue: documentSpy },
         provideHttpClient(),
         provideHttpClientTesting(),
       ]
@@ -219,6 +227,21 @@ describe('MenuStore', () => {
       const items = store.generateMenuLanguages();
       const labels = items.map((i) => String(i.label));
       expect(labels).toEqual([...labels].sort());
+    });
+
+    it('should reload the page once the language is saved', () => {
+      const { reload } = documentSpy.location;
+      const httpTesting = TestBed.inject(HttpTestingController);
+      const german = store.generateMenuLanguages().find((i) => i.id === 'lang-de');
+
+      german?.command?.({} as MenuItemCommandEvent);
+      const req = httpTesting.expectOne({ method: 'POST', url: '/language' });
+      expect(req.request.body).toEqual({ lang: 'de' });
+      expect(reload).not.toHaveBeenCalled();
+
+      req.flush({});
+      expect(reload).toHaveBeenCalledOnce();
+      expect(translateServiceSpy.use).not.toHaveBeenCalled();
     });
   });
 

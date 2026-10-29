@@ -1,5 +1,6 @@
 // SPDX-FileCopyrightText: Fondation RERO+
 // SPDX-License-Identifier: AGPL-3.0-or-later
+import { DOCUMENT } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { computed, inject } from '@angular/core';
 import { toObservable } from '@angular/core/rxjs-interop';
@@ -105,7 +106,8 @@ export const MenuStore = signalStore(
     librarySwitchStorageService = inject(LibrarySwitchStorageService),
     libraryApiService = inject(LibraryApiService),
     translateService = inject(TranslateService),
-    httpClient = inject(HttpClient)
+    httpClient = inject(HttpClient),
+    document = inject(DOCUMENT)
   ) => {
     const libraryKeys = ['library', 'owner_library', 'owning_library'];
 
@@ -191,9 +193,11 @@ export const MenuStore = signalStore(
             translateLabel: `ui_language_${language}`,
             id: `lang-${language}`,
             styleClass: currentLanguage === language ? 'ui:font-bold' : '',
+            // Reload rather than translateService.use(): LOCALE_ID and the pipes
+            // depending on it are only resolved at startup.
             command: () => httpClient
               .post(`/language`, { lang: language })
-              .subscribe(() => translateService.use(language)),
+              .subscribe(() => document.location.reload()),
           }))
           .sort((a: MenuItem, b: MenuItem) => String(a.label).localeCompare(String(b.label)));
       },
