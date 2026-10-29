@@ -70,7 +70,7 @@ export const appConfig: ApplicationConfig = {
     { provide: remoteAutocompleteToken, useExisting: ItemsRemoteService, multi: true },
     { provide: remoteAutocompleteToken, useExisting: MefRemoteService, multi: true },
     { provide: remoteAutocompleteToken, useExisting: PatronsRemoteService, multi: true },
-    { provide: CoreConfigService, useClass: AppConfigService },
+    { provide: CoreConfigService, useExisting: AppConfigService },
     {
       provide: LOCALE_ID,
       useFactory: (translate: TranslateService) => translate.getCurrentLang(),

@@ -30,7 +30,7 @@ export const appConfig: ApplicationConfig = {
       const appInitializerService = inject(AppInitializerService);
       return appInitializerService.load();
     }),
-    { provide: CoreConfigService, useClass: AppConfigService },
+    { provide: CoreConfigService, useExisting: AppConfigService },
     { provide: TranslateService, useExisting: NgCoreTranslateService },
     { provide: NgCoreTranslateService, useExisting: AppTranslateService },
     { provide: TranslateLanguageService, useExisting: AppTranslateLanguageService },
