@@ -1,0 +1,71 @@
+name: CI with deps update
+
+on:
+  schedule:
+    - cron: '0 6 * * 1'
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      with:
+        persist-credentials: false
+    - name: Use Node.js 24
+      uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+      with:
+        node-version: 24
+
+    - name: Read ng-core ref
+      id: ng_core
+      run: |
+        VALUE=$(cat .ng-core-ref 2>/dev/null | grep -v '^#' | tr -d '[:space:]')
+        VALUE=${VALUE:-published}
+        if [ "$VALUE" = "published" ]; then
+          echo "local=false" >> $GITHUB_OUTPUT
+        else
+          echo "local=true" >> $GITHUB_OUTPUT
+          # support owner/repo@ref or plain ref (defaults to rero/ng-core)
+          if [[ "$VALUE" == *"@"* ]]; then
+            echo "repository=${VALUE%@*}" >> $GITHUB_OUTPUT
+            echo "ref=${VALUE#*@}" >> $GITHUB_OUTPUT
+          else
+            echo "repository=rero/ng-core" >> $GITHUB_OUTPUT
+            echo "ref=$VALUE" >> $GITHUB_OUTPUT
+          fi
+        fi
+
+    - name: Enable Corepack
+      run: corepack enable
+    - name: Update and install dependencies
+      run: pnpm update
+
+    - name: Checkout ng-core
+      if: steps.ng_core.outputs.local == 'true'
+      uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      with:
+        repository: ${{ steps.ng_core.outputs.repository }}
+        path: ng-core
+        ref: ${{ steps.ng_core.outputs.ref }}
+        persist-credentials: false
+
+    - name: Build and install local ng-core
+      if: steps.ng_core.outputs.local == 'true'
+      run: |
+        pnpm ci --dir ng-core
+        pnpm --dir ng-core run pack
+        # The tarball, not dist/: a linked directory resolves its imports
+        # from ng-core/node_modules and loads a second Angular.
+        pnpm add ./ng-core/rero-ng-core-*.tgz
+
+    - name: run tests
+      run: pnpm exec ./run-tests.sh
+      env:
+        CI: true
