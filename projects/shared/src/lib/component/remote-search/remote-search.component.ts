@@ -16,6 +16,14 @@ import { RemoteSearchConfig } from './remote-search-config.service';
   templateUrl: './remote-search.component.html',
   providers: [RemoteSearchConfig],
   imports: [SearchAutocompleteComponent, UpperCaseFirstPipe],
+  // Hide the search area instead of removing it from the DOM: re-creating the
+  // autocomplete would re-trigger its autofocus and steal the focus from the
+  // search input of the page we navigate to. `visibility` (not `display`) keeps
+  // the layout width the autocomplete uses to size its suggestion overlay, and
+  // makes the input unfocusable while hidden.
+  host: {
+    '[style.visibility]': "hideSearchElement() ? 'hidden' : null",
+  },
 })
 export class RemoteSearchComponent implements OnInit, OnDestroy {
   private router: Router = inject(Router);
