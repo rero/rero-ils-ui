@@ -77,7 +77,7 @@ export class PatronProfilePersonalEditorComponent implements OnInit, OnDestroy {
                   field.props!.itemCssClass = fkey in this._cssConfig ? this._cssConfig[fkey] : this._cssConfig.default;
                   // Deactivation of the fields if we have a patron record
                   if (
-                    this.appStore.user()?.profile.roles.length > 0 &&
+                    this.appStore.user()?.patrons.length > 0 &&
                     field.key !== undefined &&
                     disabledFields.includes(fkey)
                   ) {
