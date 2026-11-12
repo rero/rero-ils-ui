@@ -1,7 +1,7 @@
 // SPDX-FileCopyrightText: Fondation RERO+
 // SPDX-License-Identifier: AGPL-3.0-or-later
 import { APP_BASE_HREF, DatePipe, PlatformLocation } from '@angular/common';
-import { provideHttpClient, withInterceptors, withXhr } from '@angular/common/http';
+import { provideHttpClient, withInterceptors, withInterceptorsFromDi } from '@angular/common/http';
 import {
   ApplicationConfig,
   importProvidersFrom,
@@ -11,7 +11,7 @@ import {
 } from '@angular/core';
 import { provideRouter } from '@angular/router';
 import { FORMLY_CONFIG, FormlyModule } from '@ngx-formly/core';
-import { LoadingBarHttpClientModule } from '@ngx-loading-bar/http-client';
+import { provideLoadingBarInterceptor } from '@ngx-loading-bar/http-client';
 import { provideTranslateLoader, provideTranslateService, TranslateService } from '@ngx-translate/core';
 import { provideOptimus } from '@openng/optimus-ui/config';
 import {
@@ -87,9 +87,10 @@ export const appConfig: ApplicationConfig = {
     CountryCodeTranslatePipe,
     { provide: CoreRecordHandleErrorService, useExisting: RecordHandleErrorService },
     provideHttpClient(
-      withXhr(),
       withInterceptors([httpPendingInterceptor, noCacheInterceptor, userCurrentLibraryInterceptor]),
+      withInterceptorsFromDi(),
     ),
+    provideLoadingBarInterceptor(),
     provideCore(),
     provideCoreFormly(),
     {
@@ -120,7 +121,6 @@ export const appConfig: ApplicationConfig = {
           { name: 'user-id', component: UserIdComponent },
         ],
       }),
-      LoadingBarHttpClientModule,
     ),
     { provide: TranslateService, useExisting: NgCoreTranslateService },
     { provide: NgCoreTranslateService, useExisting: AppTranslateService },
