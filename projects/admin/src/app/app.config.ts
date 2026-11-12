@@ -1,7 +1,7 @@
 // SPDX-FileCopyrightText: Fondation RERO+
 // SPDX-License-Identifier: AGPL-3.0-or-later
 import { APP_BASE_HREF, DatePipe, PlatformLocation } from '@angular/common';
-import { provideHttpClient, withInterceptors, withXhr } from '@angular/common/http';
+import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import {
   ApplicationConfig,
   importProvidersFrom,
@@ -86,10 +86,7 @@ export const appConfig: ApplicationConfig = {
     ItemHoldingsCallNumberPipe,
     CountryCodeTranslatePipe,
     { provide: CoreRecordHandleErrorService, useExisting: RecordHandleErrorService },
-    provideHttpClient(
-      withXhr(),
-      withInterceptors([httpPendingInterceptor, noCacheInterceptor, userCurrentLibraryInterceptor]),
-    ),
+    provideHttpClient(withInterceptors([httpPendingInterceptor, noCacheInterceptor, userCurrentLibraryInterceptor])),
     provideCore(),
     provideCoreFormly(),
     {
