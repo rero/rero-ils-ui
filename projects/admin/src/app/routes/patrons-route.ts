@@ -6,6 +6,7 @@ import { FormlyFieldConfig } from '@ngx-formly/core';
 import { _ } from '@ngx-translate/core';
 import {
   ActionStatus,
+  extractIdOnRef,
   IFilter,
   JSONSchema7,
   RecordData,
@@ -71,7 +72,7 @@ export const patronsRoutes: Routes = [
   },
 ];
 
-class PatronsRoute extends BaseRoute implements RouteDataTypesInterface {
+export class PatronsRoute extends BaseRoute implements RouteDataTypesInterface {
   protected recordService = inject(RecordService);
 
   /** Route name */
@@ -203,9 +204,8 @@ class PatronsRoute extends BaseRoute implements RouteDataTypesInterface {
     }
 
     // LIBRARY MANAGEMENT -------------------------------------
-    //   If current logged user doesn't have the 'system_librarian' role, then the only library available
-    //   should be the current_user.current_library. Set default value for library select the current_library URI
-    //   and disable the field (so the user can't change/manage other libraries)
+    //   The only libraries available are the ones the current logged user can manage. A library already
+    //   selected that the user cannot manage stays visible but disabled, so it is neither hidden nor replaced.
     if (formWidget?.formlyConfig?.props?.fieldMap === 'libraries') {
       field.type = 'select';
       field.hooks = {
@@ -222,6 +222,14 @@ class PatronsRoute extends BaseRoute implements RouteDataTypesInterface {
               libraries.push(library.pid);
             });
           });
+
+          if (f.formControl.value) {
+            const currentPid = extractIdOnRef(f.formControl.value);
+            if (!libraries.includes(currentPid)) {
+              libraries.push(currentPid);
+              f.props.disabled = true;
+            }
+          }
 
           f.props.options = recordService
             .getRecords('libraries', {
