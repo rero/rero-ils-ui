@@ -2,13 +2,11 @@
 SPDX-FileCopyrightText: Fondation RERO+
 SPDX-License-Identifier: AGPL-3.0-or-later
 -->
-@if (!hideSearchElement()) {
-  <ng-core-search-autocomplete
-    [placeholder]="translatedPlaceholder() | ucfirst"
-    [value]="value()"
-    [recordTypes]="recordTypes"
-    [inputStyleClass]="inputstyleclass()"
-    [styleClass]="styleclass()"
-    scrollHeight="400px"
-    (searchQuery)="onSearch($event)" />
-}
+<ng-core-search-autocomplete
+  [placeholder]="translatedPlaceholder() | ucfirst"
+  [value]="value()"
+  [recordTypes]="recordTypes"
+  [inputStyleClass]="inputstyleclass()"
+  [styleClass]="styleclass()"
+  scrollHeight="400px"
+  (searchQuery)="onSearch($event)" />
