@@ -3,7 +3,10 @@
 import { provideHttpClient, withXhr } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
-import { LIBRARIAN_STORAGE_KEYS } from '@app/admin/service/librarian-storage-keys';
+import {
+  LIBRARIAN_STORAGE_KEYS,
+  LIBRARIAN_STORAGE_KEYS_KEPT_ON_LOGOUT,
+} from '@app/admin/service/librarian-storage-keys';
 import { provideTranslateService, TranslateService } from '@ngx-translate/core';
 import { MenuItem } from '@openng/optimus-ui/api';
 import { CoreConfigService } from '@rero/ng-core';
@@ -158,9 +161,21 @@ describe('MenuStore', () => {
       Object.values(LIBRARIAN_STORAGE_KEYS).forEach((key) => localStorage.setItem(key, '{}'));
       localStorage.setItem('other', '{}');
       store.logout();
-      Object.values(LIBRARIAN_STORAGE_KEYS).forEach((key) => expect(localStorage.getItem(key)).toBeNull());
+      Object.values(LIBRARIAN_STORAGE_KEYS)
+        .filter((key) => !LIBRARIAN_STORAGE_KEYS_KEPT_ON_LOGOUT.includes(key))
+        .forEach((key) => expect(localStorage.getItem(key)).toBeNull());
       expect(localStorage.getItem('other')).toBe('{}');
-      localStorage.removeItem('other');
+      localStorage.clear();
+    });
+
+    it('should keep the library switched to', () => {
+      Object.values(LIBRARIAN_STORAGE_KEYS).forEach((key) => localStorage.setItem(key, '{}'));
+      store.logout();
+      expect(LIBRARIAN_STORAGE_KEYS_KEPT_ON_LOGOUT).toContain(LIBRARIAN_STORAGE_KEYS.library);
+      expect(localStorage.getItem(LIBRARIAN_STORAGE_KEYS.library)).toBe('{}');
+      expect(localStorage.getItem(LIBRARIAN_STORAGE_KEYS.dueDate)).toBeNull();
+      expect(localStorage.getItem(LIBRARIAN_STORAGE_KEYS.advancedSearch)).toBeNull();
+      localStorage.clear();
     });
   });
 

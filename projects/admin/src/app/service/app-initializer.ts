@@ -25,7 +25,7 @@ export function initializeApp(): Observable<any> {
         const libraries = user.patronLibrarian?.libraries ?? [];
         const library = libraries[0];
         if (librarySwitchStorageService.has()) {
-          const currentLibraryCache = librarySwitchStorageService.get().currentLibrary;
+          const currentLibraryCache = librarySwitchStorageService.get()?.currentLibrary;
           const cachedLibraryExists = libraries.some((lib: { pid: string }) => lib.pid === currentLibraryCache);
           if (cachedLibraryExists) {
             appStore.setCurrentLibrary(currentLibraryCache);
