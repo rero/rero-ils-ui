@@ -1,7 +1,7 @@
 // SPDX-FileCopyrightText: Fondation RERO+
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-import { provideHttpClient, withXhr } from '@angular/common/http';
+import { provideHttpClient } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { ActivatedRouteSnapshot, Router, RouterModule, RouterStateSnapshot, UrlTree } from '@angular/router';
@@ -57,7 +57,7 @@ describe('acqOrderLineGuard', () => {
         { provide: RecordService, useValue: recordServiceSpy },
         { provide: ActivatedRouteSnapshot, useValue: activatedRouteSnapshotSpy },
         { provide: AppStore, useValue: appStoreSpy },
-        provideHttpClient(withXhr()),
+        provideHttpClient(),
         provideHttpClientTesting(),
       ],
     });

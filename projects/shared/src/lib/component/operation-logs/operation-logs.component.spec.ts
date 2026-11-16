@@ -1,6 +1,6 @@
 // SPDX-FileCopyrightText: Fondation RERO+
 // SPDX-License-Identifier: AGPL-3.0-or-later
-import { provideHttpClient, withXhr } from '@angular/common/http';
+import { provideHttpClient } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { LOCALE_ID, Pipe, PipeTransform } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
@@ -73,7 +73,7 @@ describe('OperationLogsComponent', () => {
         { provide: NgCoreTranslateService, useValue: { instant: vi.fn((x: string) => x) } },
         { provide: AppStore, useValue: appStoreSpy },
         { provide: OperationLogsApiService, useValue: operationLogsApiServiceSpy },
-        provideHttpClient(withXhr()),
+        provideHttpClient(),
         provideHttpClientTesting(),
         DynamicDialogRef,
         {

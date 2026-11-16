@@ -1,7 +1,7 @@
 // SPDX-FileCopyrightText: Fondation RERO+
 // SPDX-License-Identifier: AGPL-3.0-or-later
 import { CommonModule, formatDate, registerLocaleData } from '@angular/common';
-import { provideHttpClient, withXhr } from '@angular/common/http';
+import { provideHttpClient } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import localeEnGb from '@angular/common/locales/en-GB';
 import { Pipe, PipeTransform } from '@angular/core';
@@ -65,7 +65,7 @@ describe('PatronProfilePersonalComponent', () => {
         provideTranslateService(),
         { provide: ActivatedRoute, useValue: fakeActivatedRoute },
         { provide: AppStore, useValue: appStoreSpy },
-        provideHttpClient(withXhr()),
+        provideHttpClient(),
         provideHttpClientTesting(),
       ],
     })

@@ -1,7 +1,7 @@
 // SPDX-FileCopyrightText: Fondation RERO+
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-import { provideHttpClient, withXhr } from '@angular/common/http';
+import { provideHttpClient } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { AppConfigService } from '@app/admin/service/app-config.service';
@@ -31,7 +31,7 @@ describe('AppInitializerService', () => {
     TestBed.configureTestingModule({
       providers: [
         provideTranslateService(),
-        provideHttpClient(withXhr()),
+        provideHttpClient(),
         provideHttpClientTesting(),
         {
           provide: AppStore,
