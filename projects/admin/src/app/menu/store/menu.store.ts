@@ -3,7 +3,10 @@
 import { HttpClient } from '@angular/common/http';
 import { computed, DOCUMENT, inject } from '@angular/core';
 import { toObservable } from '@angular/core/rxjs-interop';
-import { LIBRARIAN_STORAGE_KEYS } from '@app/admin/service/librarian-storage-keys';
+import {
+  LIBRARIAN_STORAGE_KEYS,
+  LIBRARIAN_STORAGE_KEYS_KEPT_ON_LOGOUT,
+} from '@app/admin/service/librarian-storage-keys';
 import { patchState, signalStore, withComputed, withHooks, withMethods, withState } from '@ngrx/signals';
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
 import { TranslateService } from '@ngx-translate/core';
@@ -207,7 +210,9 @@ export const MenuStore = signalStore(
 
         logout(): void {
           // Removed here rather than by their owners, which may not be instantiated.
-          Object.values(LIBRARIAN_STORAGE_KEYS).forEach((key) => localStorageService.remove(key));
+          Object.values(LIBRARIAN_STORAGE_KEYS)
+            .filter((key) => !LIBRARIAN_STORAGE_KEYS_KEPT_ON_LOGOUT.includes(key))
+            .forEach((key) => localStorageService.remove(key));
           patchState(store, { logoutCounter: store.logoutCounter() + 1 });
         },
 
