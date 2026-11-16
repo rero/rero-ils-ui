@@ -1,7 +1,7 @@
 // SPDX-FileCopyrightText: Fondation RERO+
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-import { provideHttpClient, withXhr } from '@angular/common/http';
+import { provideHttpClient } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { computeTotalTransactionsAmount } from '@app/admin/circulation/utils/transaction.utils';
@@ -98,7 +98,7 @@ describe('PatronTransactionService', () => {
         RecordService,
         { provide: AppStore, useValue: appStoreSpy },
         MessageService,
-        provideHttpClient(withXhr()),
+        provideHttpClient(),
         provideHttpClientTesting(),
       ],
     });

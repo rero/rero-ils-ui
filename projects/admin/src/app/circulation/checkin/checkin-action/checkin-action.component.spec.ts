@@ -1,6 +1,6 @@
 // SPDX-FileCopyrightText: Fondation RERO+
 // SPDX-License-Identifier: AGPL-3.0-or-later
-import { provideHttpClient, withXhr } from '@angular/common/http';
+import { provideHttpClient } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { DebugElement } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
@@ -19,12 +19,7 @@ describe('CheckinActionComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [RouterModule, ButtonModule, DynamicDialogModule, CheckinActionComponent],
-      providers: [
-        provideTranslateService(),
-        DynamicDialogRef,
-        provideHttpClient(withXhr()),
-        provideHttpClientTesting(),
-      ],
+      providers: [provideTranslateService(), DynamicDialogRef, provideHttpClient(), provideHttpClientTesting()],
     }).compileComponents();
   });
 

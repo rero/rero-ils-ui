@@ -1,6 +1,6 @@
 // SPDX-FileCopyrightText: Fondation RERO+
 // SPDX-License-Identifier: AGPL-3.0-or-later
-import { provideHttpClient, withXhr } from '@angular/common/http';
+import { provideHttpClient } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { Component, Input, NO_ERRORS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
@@ -83,7 +83,7 @@ describe('PatronProfileFeeComponent', () => {
           provide: RecordService,
           useValue: { getRecord: vi.fn().mockReturnValue(of(null)), MAX_REST_RESULTS_SIZE: 1000 },
         },
-        provideHttpClient(withXhr()),
+        provideHttpClient(),
         provideHttpClientTesting(),
       ],
     })

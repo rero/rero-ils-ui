@@ -1,6 +1,6 @@
 // SPDX-FileCopyrightText: Fondation RERO+
 // SPDX-License-Identifier: AGPL-3.0-or-later
-import { provideHttpClient, withXhr } from '@angular/common/http';
+import { provideHttpClient } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { NavigationEnd, Router, RouterModule, RouterStateSnapshot } from '@angular/router';
@@ -56,7 +56,7 @@ describe('isBudgetActiveGuard', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [RouterModule.forRoot(routes)],
-      providers: [provideTranslateService(), provideHttpClient(withXhr()), provideHttpClientTesting()],
+      providers: [provideTranslateService(), provideHttpClient(), provideHttpClientTesting()],
     });
     recordService = TestBed.inject(RecordService);
     router = TestBed.inject(Router);

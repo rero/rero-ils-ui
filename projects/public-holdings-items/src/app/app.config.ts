@@ -1,7 +1,7 @@
 // SPDX-FileCopyrightText: Fondation RERO+
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-import { provideHttpClient, withInterceptorsFromDi, withXhr } from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { ApplicationConfig, inject, provideAppInitializer, provideZonelessChangeDetection } from '@angular/core';
 import { provideRouter } from '@angular/router';
 import { provideLoadingBar } from '@ngx-loading-bar/core';
@@ -25,7 +25,7 @@ export const appConfig: ApplicationConfig = {
   providers: [
     provideZonelessChangeDetection(),
     provideRouter([]),
-    provideHttpClient(withXhr(), withInterceptorsFromDi()),
+    provideHttpClient(withInterceptorsFromDi()),
     provideOptimus(optimusUIConfig),
     provideTranslateService({
       loader: provideTranslateLoader(AppTranslateLoader),

@@ -1,7 +1,7 @@
 // SPDX-FileCopyrightText: Fondation RERO+
 // SPDX-FileCopyrightText: UCLouvain
 // SPDX-License-Identifier: AGPL-3.0-or-later
-import { provideHttpClient, withXhr } from '@angular/common/http';
+import { provideHttpClient } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { provideTranslateService } from '@ngx-translate/core';
@@ -26,7 +26,7 @@ describe('OrganisationApiService', () => {
       providers: [
         provideTranslateService(),
         { provide: RecordService, useValue: recordServiceSpy },
-        provideHttpClient(withXhr()),
+        provideHttpClient(),
         provideHttpClientTesting(),
       ],
     });
