@@ -1,6 +1,6 @@
 // SPDX-FileCopyrightText: Fondation RERO+
 // SPDX-License-Identifier: AGPL-3.0-or-later
-import { provideHttpClient, withInterceptors, withInterceptorsFromDi, withXhr } from '@angular/common/http';
+import { provideHttpClient, withInterceptors, withInterceptorsFromDi } from '@angular/common/http';
 import {
   ApplicationConfig,
   inject,
@@ -31,7 +31,7 @@ export const appConfig: ApplicationConfig = {
   providers: [
     provideZonelessChangeDetection(),
     provideRouter(APP_ROUTES),
-    provideHttpClient(withXhr(), withInterceptors([httpPendingInterceptor]), withInterceptorsFromDi()),
+    provideHttpClient(withInterceptors([httpPendingInterceptor]), withInterceptorsFromDi()),
     provideLoadingBarInterceptor(),
     provideTranslateService({
       loader: provideTranslateLoader(AppTranslateLoader),

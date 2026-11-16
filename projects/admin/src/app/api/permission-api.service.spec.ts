@@ -1,6 +1,6 @@
 // SPDX-FileCopyrightText: Fondation RERO+
 // SPDX-License-Identifier: AGPL-3.0-or-later
-import { HttpClient, provideHttpClient, withXhr } from '@angular/common/http';
+import { HttpClient, provideHttpClient } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { of } from 'rxjs';
@@ -25,7 +25,7 @@ describe('PermissionService', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [provideHttpClient(withXhr()), provideHttpClientTesting()],
+      providers: [provideHttpClient(), provideHttpClientTesting()],
     });
     service = TestBed.inject(PermissionApiService);
     client = TestBed.inject(HttpClient);

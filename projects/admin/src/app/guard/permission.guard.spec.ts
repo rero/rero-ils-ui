@@ -1,6 +1,6 @@
 // SPDX-FileCopyrightText: Fondation RERO+
 // SPDX-License-Identifier: AGPL-3.0-or-later
-import { provideHttpClient, withXhr } from '@angular/common/http';
+import { provideHttpClient } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { ActivatedRouteSnapshot, Router, RouterModule, RouterStateSnapshot, UrlTree } from '@angular/router';
@@ -27,7 +27,7 @@ describe('permissionGuard', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [RouterModule.forRoot(routes)],
-      providers: [provideTranslateService(), provideHttpClient(withXhr()), provideHttpClientTesting()],
+      providers: [provideTranslateService(), provideHttpClient(), provideHttpClientTesting()],
     });
     appStore = TestBed.inject(AppStore);
     router = TestBed.inject(Router);

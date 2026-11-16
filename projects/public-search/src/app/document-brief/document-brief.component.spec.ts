@@ -1,7 +1,7 @@
 // SPDX-FileCopyrightText: Fondation RERO+
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-import { provideHttpClient, withXhr } from '@angular/common/http';
+import { provideHttpClient } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute } from '@angular/router';
@@ -27,7 +27,7 @@ describe('DocumentBriefComponent', () => {
       imports: [DocumentBriefComponent],
       providers: [
         provideTranslateService(),
-        provideHttpClient(withXhr()),
+        provideHttpClient(),
         provideHttpClientTesting(),
         { provide: ActivatedRoute, useValue: { params: of({ viewcode: 'global' }) } },
         { provide: DocumentApiService, useValue: { getAvailability: () => of({ available: true }) } },

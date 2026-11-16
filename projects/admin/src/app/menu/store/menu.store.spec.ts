@@ -1,6 +1,6 @@
 // SPDX-FileCopyrightText: Fondation RERO+
 // SPDX-License-Identifier: AGPL-3.0-or-later
-import { provideHttpClient, withXhr } from '@angular/common/http';
+import { provideHttpClient } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { LIBRARIAN_STORAGE_KEYS } from '@app/admin/service/librarian-storage-keys';
@@ -84,7 +84,7 @@ describe('MenuStore', () => {
         { provide: LibrarySwitchStorageService, useValue: librarySwitchStorageSpy },
         { provide: TranslateService, useValue: translateServiceSpy },
         { provide: CoreConfigService, useValue: coreConfigServiceSpy },
-        provideHttpClient(withXhr()),
+        provideHttpClient(),
         provideHttpClientTesting(),
       ],
     }).inject(MenuStore);
