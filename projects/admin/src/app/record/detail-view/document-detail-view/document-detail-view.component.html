@@ -82,8 +82,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
       <!-- FREQUENCY -->
       @if (record().metadata.frequency) {
         <div id="doc-frequency">
-          <b>{{ 'Frequency' | translate }}</b
-          >:
+          <b>{{ 'Frequency' | translate }}</b>:
           @for (freq of $any(record()).metadata.frequency; track $index; let isLast = $last) {
             {{ freq.label }}
             @if (freq.date) {

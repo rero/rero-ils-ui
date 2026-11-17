@@ -123,11 +123,15 @@ SPDX-License-Identifier: AGPL-3.0-or-later
               @if (store.receivedItemsCount() > 0) {
                 <small class="ui:ml-2">
                   @if (store.filterTotal() <= 1) {
-                    {{ "{{ total }} result of {{ remoteTotal }}" | translate: { total: store.filterTotal(), remoteTotal:
-                    store.receivedItemsCount() } }}
+                    {{
+                      '{{ total }} result of {{ remoteTotal }}'
+                        | translate: { total: store.filterTotal(), remoteTotal: store.receivedItemsCount() }
+                    }}
                   } @else {
-                    {{ "{{ total }} results of {{ remoteTotal }}" | translate: { total: store.filterTotal(),
-                    remoteTotal: store.receivedItemsCount() } }}
+                    {{
+                      '{{ total }} results of {{ remoteTotal }}'
+                        | translate: { total: store.filterTotal(), remoteTotal: store.receivedItemsCount() }
+                    }}
                   }
                 </small>
               }

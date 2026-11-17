@@ -99,8 +99,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
             <dd>
               @for (collection of collections; track $any(collection).metadata.pid; let last = $last) {
                 <a [routerLink]="['/records', 'collections', 'detail', $any(collection).metadata.pid]">
-                  {{ $any(collection).metadata.title }} </a
-                >{{ last ? '' : '; ' }}
+                  {{ $any(collection).metadata.title }} </a>{{ last ? '' : '; ' }}
               }
             </dd>
           </dl>

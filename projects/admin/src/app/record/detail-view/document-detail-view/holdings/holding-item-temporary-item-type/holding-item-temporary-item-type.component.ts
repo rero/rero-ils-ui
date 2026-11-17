@@ -13,8 +13,7 @@ import { DateTime } from 'luxon';
     @if (hasTemporaryItemType()) {
       <dl class="metadata">
         <dt>
-          <span class="text-warning">{{ 'Temporary item type' | translate }}</span
-          >&nbsp;
+          <span class="text-warning">{{ 'Temporary item type' | translate }}</span>&nbsp;
           <i class="fa-solid fa-triangle-exclamation text-warning"></i>
         </dt>
         <dd>

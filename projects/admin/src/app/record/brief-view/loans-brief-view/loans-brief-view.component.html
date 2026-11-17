@@ -56,8 +56,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
                   ({{ 'due date' | translate }}
                   <span [ngClass]="{ 'text-error ui:font-bold': record().metadata?.is_late }">{{
                     record().metadata.end_date | date: 'shortDate'
-                  }}</span
-                  >)
+                  }}</span>)
                 </div>
               </div>
             }
@@ -68,8 +67,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
               ({{ 'request expire at' | translate }}
               <span [ngClass]="{ 'text-error': isRequestExpired }">{{
                 record().metadata.request_expire_date | date: 'shortDate'
-              }}</span
-              >)
+              }}</span>)
             </div>
           }
         }
