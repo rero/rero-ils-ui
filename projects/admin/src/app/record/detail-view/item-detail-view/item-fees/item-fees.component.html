@@ -10,8 +10,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
           {{ 'Fees' | translate }}
         </div>
         <div class="ui:order-2">
-          <span class="ui:font-bold">{{ 'Total' | translate }}</span
-          >&nbsp;
+          <span class="ui:font-bold">{{ 'Total' | translate }}</span>&nbsp;
           <p-tag severity="danger">{{ total() | currency: organisation.default_currency }}</p-tag>
         </div>
       </div>

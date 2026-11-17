@@ -10,8 +10,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
       [value]="record().conversion.status | translate" />
   </h5>
   <div class="ui:text-xs ui:italic">
-    <span>{{ 'Modification date' | translate }}</span
-    >:&nbsp;{{ record()?.updated_at | dateTranslate: 'medium' }}
+    <span>{{ 'Modification date' | translate }}</span>:&nbsp;{{ record()?.updated_at | dateTranslate: 'medium' }}
   </div>
   <div class="ui:my-3">
     @for (message of messages(); track $index) {

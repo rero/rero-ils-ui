@@ -79,8 +79,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
     @if (currentCandidate()) {
       <div class="ui:flex ui:items-center ui:justify-center">
         @if (currentCandidate()?.score) {
-          <strong>{{ 'Score' | translate }}</strong
-          >&nbsp;{{ currentCandidate()!.score | number }}
+          <strong>{{ 'Score' | translate }}</strong>&nbsp;{{ currentCandidate()!.score | number }}
         } @else {
           <strong>{{ 'Manually added' | translate }}</strong>
         }

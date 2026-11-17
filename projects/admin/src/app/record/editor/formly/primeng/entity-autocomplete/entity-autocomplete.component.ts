@@ -58,7 +58,7 @@ import { AddEntityLocalFormComponent } from './add-entity-local-form/add-entity-
                   aria-hidden="true"
                   (click)="addLocalEntity($event)"></i>
               } @else {
-                {{ "link to authority {{ sourceName }}" | translate:{ sourceName: data.label } }}
+                {{ 'link to authority {{ sourceName }}' | translate: { sourceName: data.label } }}
               }
             </span>
           </ng-template>
