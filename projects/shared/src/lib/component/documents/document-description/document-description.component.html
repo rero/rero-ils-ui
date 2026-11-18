@@ -66,13 +66,8 @@ SPDX-License-Identifier: AGPL-3.0-or-later
       <ng-container label>{{ 'Language' | translate }}</ng-container>
       <ng-container content>
         @for (lang of metadata().language; track $index; let isLast = $last) {
-          {{ lang.value | translateLanguage: currentLanguage }}
-          @if (lang.note) {
-            ({{ lang.note }})
-          }
-          @if (!isLast) {
-            ,
-          }
+          @let label = lang.value | translateLanguage: currentLanguage;
+          {{ lang.note ? label + ' (' + lang.note + ')' : label }}{{ isLast ? '' : ',' }}
         }
       </ng-container>
     </shared-description-zone>
@@ -84,10 +79,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
       <ng-container label>{{ 'Original language' | translate }}</ng-container>
       <ng-container content>
         @for (lang of metadata().originalLanguage; track $index; let isLast = $last) {
-          {{ lang | translateLanguage: currentLanguage }}
-          @if (!isLast) {
-            ,
-          }
+          {{ lang | translateLanguage: currentLanguage }}{{ isLast ? '' : ',' }}
         }
       </ng-container>
     </shared-description-zone>
@@ -157,10 +149,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
       <ng-container label>{{ 'Intended audience' | translate }}</ng-container>
       <ng-container content>
         @for (audience of metadata().intendedAudience; track $index; let isLast = $last) {
-          {{ audience.value | translate }}
-          @if (!isLast) {
-            ,
-          }
+          {{ audience.value | translate }}{{ isLast ? '' : ',' }}
         }
       </ng-container>
     </shared-description-zone>
@@ -182,10 +171,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
       <ng-container label>{{ 'Colors' | translate }}</ng-container>
       <ng-container content>
         @for (color of metadata().colorContent; track $index; let isLast = $last) {
-          {{ color | translate }}
-          @if (!isLast) {
-            ,
-          }
+          {{ color | translate }}{{ isLast ? '' : ',' }}
         }
       </ng-container>
     </shared-description-zone>
@@ -372,12 +358,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
         <ng-container content>
           <ul class="ui:list-none">
             @for (value of provision.value; track $index; let isLast = $last) {
-              <li>
-                {{ value }}
-                @if (!isLast) {
-                  ,
-                }
-              </li>
+              <li>{{ value }}{{ isLast ? '' : ',' }}</li>
             }
           </ul>
         </ng-container>
@@ -391,10 +372,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
       <ng-container label>{{ 'Date of the original' | translate }}</ng-container>
       <ng-container content>
         @for (provision of provisionActivityOriginalDate(); track $index; let isLast = $last) {
-          {{ provision.original_date }}
-          @if (!isLast) {
-            ,
-          }
+          {{ provision.original_date }}{{ isLast ? '' : ',' }}
         }
       </ng-container>
     </shared-description-zone>
@@ -462,10 +440,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
       <ng-container label>{{ 'Production method' | translate }}</ng-container>
       <ng-container content>
         @for (method of metadata().productionMethod; track $index; let isLast = $last) {
-          {{ method | translate }}
-          @if (!isLast) {
-            ,
-          }
+          {{ method | translate }}{{ isLast ? '' : ',' }}
         }
       </ng-container>
     </shared-description-zone>
@@ -545,27 +520,10 @@ SPDX-License-Identifier: AGPL-3.0-or-later
   <!-- -------------- TYPOLOGY -------------- -->
 
   <!-- CONTENT MEDIA CARRIER -->
-  @if (metadata().contentMediaCarrier) {
+  @if (contentMediaCarriers()) {
     <shared-description-zone>
       <ng-container label>{{ 'Carrier and content type' | translate }}</ng-container>
-      <ng-container content>
-        @for (content of metadata().contentMediaCarrier; track $index; let isLastL1 = $last) {
-          {{ content.carrierType | translate }}
-          @if (content.contentType) {
-            (
-            @for (type of content.contentType; track $index; let isLast = $last) {
-              {{ type | translate }}
-              @if (!isLast) {
-                ,
-              }
-            }
-            )
-          }
-          @if (!isLastL1) {
-            ,
-          }
-        }
-      </ng-container>
+      <ng-container content>{{ contentMediaCarriers() }}</ng-container>
     </shared-description-zone>
   }
 

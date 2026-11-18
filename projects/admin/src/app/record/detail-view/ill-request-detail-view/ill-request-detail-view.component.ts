@@ -25,6 +25,16 @@ export class IllRequestDetailViewComponent {
   readonly tagSeverity = computed(() => getTagSeverityFromStatus(this.record()?.metadata?.status));
   readonly loanTagSeverity = computed(() => getTagSeverityFromStatus(this.record()?.metadata?.loan_status));
 
+  /**
+   * Volume and number of the journal the requested document is published in, i.e. 'Vol.3 — n° 4'.
+   */
+  readonly sourceNumbering = computed(() => {
+    const { volume, number } = this.record()?.metadata?.document?.source ?? {};
+    return [volume ? `Vol.${volume}` : null, number ? `n° ${number}` : null]
+      .filter((part: string | null) => part)
+      .join(' — ');
+  });
+
   readonly requester = toSignal(
     toObservable(this.record).pipe(
       switchMap((r) => {

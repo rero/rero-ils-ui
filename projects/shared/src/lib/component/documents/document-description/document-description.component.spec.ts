@@ -2,9 +2,10 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { provideTranslateService } from '@ngx-translate/core';
+import { provideTranslateService, TranslateService } from '@ngx-translate/core';
 
 import { DocumentDescriptionComponent } from './document-description.component';
+import { ContentMediaCarrier } from './model/document-description-model';
 
 describe('DocumentDescriptionComponent', () => {
   let component: DocumentDescriptionComponent;
@@ -446,6 +447,103 @@ describe('DocumentDescriptionComponent', () => {
       expect(component.workAccessPoint()).toEqual([
         'Symposium on Glaucoma. New Orleans Academy of Ophthalmology. (2nd : 1967 : New Orleans). Proceedings.',
       ]);
+    });
+  });
+
+  describe('carrier and content types', () => {
+    it('should put the content types between parentheses, without inner spaces', () => {
+      withMetadata({
+        contentMediaCarrier: [
+          { carrierType: 'rdacarrier:1049', contentType: ['rdaco:1020', 'rdaco:1014'] },
+          { carrierType: 'rdacarrier:1018', contentType: ['rdaco:1020'] },
+        ],
+      });
+      expect(component.contentMediaCarriers()).toBe(
+        'rdacarrier:1049 (rdaco:1020, rdaco:1014), rdacarrier:1018 (rdaco:1020)',
+      );
+    });
+
+    it('should keep the carrier type alone without content type', () => {
+      withMetadata({
+        contentMediaCarrier: [{ carrierType: 'rdacarrier:1049' }, { carrierType: 'rdacarrier:1018', contentType: [] }],
+      });
+      expect(component.contentMediaCarriers()).toBe('rdacarrier:1049, rdacarrier:1018');
+    });
+
+    it('should be empty without carrier type', () => {
+      withMetadata({});
+      expect(component.contentMediaCarriers()).toBe('');
+    });
+
+    it('should render the content types alone for an unknown media', () => {
+      const contentOnly: ContentMediaCarrier = { contentType: ['rdaco:1020'] };
+      withMetadata({
+        contentMediaCarrier: [contentOnly, { carrierType: 'rdacarrier:1049', contentType: ['rdaco:1014'] }],
+      });
+      expect(component.contentMediaCarriers()).toBe('rdaco:1020, rdacarrier:1049 (rdaco:1014)');
+      fixture.detectChanges();
+      expect(fixture.nativeElement.textContent).toContain('rdaco:1020, rdacarrier:1049 (rdaco:1014)');
+    });
+
+    it('should render the translated types', () => {
+      const translateService = TestBed.inject(TranslateService);
+      translateService.setTranslation('fr', { 'rdacarrier:1049': 'volume', 'rdaco:1020': 'texte' });
+      translateService.use('fr');
+      withMetadata({ contentMediaCarrier: [{ carrierType: 'rdacarrier:1049', contentType: ['rdaco:1020'] }] });
+      fixture.detectChanges();
+      expect(fixture.nativeElement.textContent).toContain('volume (texte)');
+    });
+  });
+
+  describe('separators', () => {
+    /**
+     * Render the description zones as displayed text, with collapsed whitespace.
+     * @returns the label and the content of each zone
+     */
+    function renderZones(): string[] {
+      fixture.detectChanges();
+      return [...fixture.nativeElement.querySelectorAll('shared-description-zone')].map((zone: HTMLElement) =>
+        zone.textContent.replace(/\s+/g, ' ').trim(),
+      );
+    }
+
+    it('should render the commas of the lists without a space before them', () => {
+      withMetadata({
+        language: [{ value: 'fre', note: 'note' }, { value: 'ger' }],
+        originalLanguage: ['eng', 'ita'],
+        intendedAudience: [{ value: 'A1' }, { value: 'A2' }],
+        colorContent: ['C1', 'C2'],
+        productionMethod: ['P1', 'P2'],
+        provisionActivity: [
+          {
+            type: 'bf:Manufacture',
+            original_date: '1900',
+            statement: [],
+            _text: [
+              { language: 'default', value: 'Lausanne' },
+              { language: 'default', value: 'Genève' },
+            ],
+          },
+          { type: 'bf:Distribution', original_date: '1901' },
+        ],
+      });
+      const zones = renderZones();
+      expect(zones).toContain('Language French (note), German');
+      expect(zones).toContain('Original language English, Italian');
+      expect(zones).toContain('Intended audience A1, A2');
+      expect(zones).toContain('Colors C1, C2');
+      expect(zones).toContain('Production method P1, P2');
+      expect(zones).toContain('Date of the original 1900, 1901');
+      // The statements are list items, displayed one per line
+      const statements = [...fixture.nativeElement.querySelectorAll('li')].map((li: HTMLElement) => li.textContent);
+      expect(statements).toEqual(['Lausanne,', 'Genève']);
+    });
+
+    it('should not end a list with a comma', () => {
+      withMetadata({ language: [{ value: 'fre' }], colorContent: ['C1'] });
+      const zones = renderZones();
+      expect(zones).toContain('Language French');
+      expect(zones).toContain('Colors C1');
     });
   });
 

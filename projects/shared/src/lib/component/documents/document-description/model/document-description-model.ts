@@ -20,6 +20,12 @@ export type SeriesStatement = {
   _text?: LocalizedText[];
 };
 
+/** A carrier type of a document and its content types, as described by the `contentMediaCarrier` field. */
+export type ContentMediaCarrier = {
+  carrierType?: string;
+  contentType?: string[];
+};
+
 /** A cartographic attribute of a document, as described by MARC 255. */
 export type CartographicAttribute = {
   projection?: string;
@@ -133,7 +139,7 @@ export type DocumentMetadata = {
   cartographicAttributes?: CartographicAttribute[];
   classification?: Classification[];
   colorContent?: string[];
-  contentMediaCarrier?: { carrierType: string; contentType?: string[] }[];
+  contentMediaCarrier?: ContentMediaCarrier[];
   copyrightDate?: string[];
   credits?: string[];
   dimensions?: string[];

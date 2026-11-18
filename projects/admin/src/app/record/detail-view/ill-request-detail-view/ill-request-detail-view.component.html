@@ -39,18 +39,8 @@ SPDX-License-Identifier: AGPL-3.0-or-later
           <dt>{{ 'Published in' | translate }}</dt>
           <dd>
             {{ source.journal_title }}
-            @if (source.volume || source.number) {
-              &nbsp;(
-              @if (source.volume) {
-                Vol.{{ source.volume }}
-              }
-              @if (source.volume && source.number) {
-                &mdash;
-              }
-              @if (source.number) {
-                n° {{ source.number }}
-              }
-              )
+            @if (sourceNumbering()) {
+              ({{ sourceNumbering() }})
             }
           </dd>
         }

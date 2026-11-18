@@ -82,13 +82,11 @@ SPDX-License-Identifier: AGPL-3.0-or-later
               <li>
                 {{ item().status | translate }}
                 @if (getTransitLocationPid() | getRecord: 'locations' | async; as location) {
-                  ({{ 'to' | translate }}
-                  @if (item().loan && item().loan.state === 'ITEM_IN_TRANSIT_FOR_PICKUP') {
-                    {{ $any(location).metadata.pickup_name }}
-                  } @else {
-                    {{ $any(location).metadata.library.pid | getRecord: 'libraries' : 'field' : 'name' | async }}
-                  }
-                  )
+                  @let destination =
+                    item().loan && item().loan.state === 'ITEM_IN_TRANSIT_FOR_PICKUP'
+                      ? $any(location).metadata.pickup_name
+                      : ($any(location).metadata.library.pid | getRecord: 'libraries' : 'field' : 'name' | async);
+                  ({{ 'to' | translate }} {{ destination }})
                 }
               </li>
             }
