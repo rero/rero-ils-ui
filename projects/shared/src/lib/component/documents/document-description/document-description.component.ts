@@ -16,6 +16,7 @@ import { SafeUrlPipe } from '../../../pipe/safe-url.pipe';
 import { DescriptionZoneComponent } from './description-zone/description-zone.component';
 import {
   CartographicAttribute,
+  ContentMediaCarrier,
   DocumentMetadata,
   Identifier,
   LocalizedText,
@@ -229,6 +230,25 @@ export class DocumentDescriptionComponent {
     return (this.metadata().work_access_point ?? []).map((workAccess: WorkAccessPoint) =>
       this.formatWorkAccessPoint(workAccess),
     );
+  });
+
+  /**
+   * Carrier and content types, i.e. 'volume (text, still image), online resource (text)'.
+   * Depends on the interface language.
+   */
+  readonly contentMediaCarriers: Signal<string> = computed(() => {
+    this.language();
+    return (this.metadata().contentMediaCarrier ?? [])
+      .map(({ carrierType, contentType }: ContentMediaCarrier) => {
+        const contents = (contentType ?? []).map((type: string) => this.translateService.instant(type)).join(', ');
+        if (!carrierType) {
+          return contents;
+        }
+        const carrier = this.translateService.instant(carrierType);
+        return contents ? `${carrier} (${contents})` : carrier;
+      })
+      .filter((label: string) => label)
+      .join(', ');
   });
 
   /**

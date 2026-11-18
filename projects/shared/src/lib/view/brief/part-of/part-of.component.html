@@ -19,12 +19,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
         ;
         @for (numbering of partOf.numbering; track $index; let i = $index; let isLast = $last) {
           @if (formatNumbering(numbering); as num) {
-            <span id="{{ 'doc-part-of-numbering-' + i }}">
-              {{ num }}
-              @if (!isLast) {
-                ,
-              }
-            </span>
+            <span id="{{ 'doc-part-of-numbering-' + i }}">{{ num }}{{ isLast ? '' : ', ' }}</span>
           }
         }
       }
