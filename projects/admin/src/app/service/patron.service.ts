@@ -44,10 +44,12 @@ export class PatronService {
   /**
    * Get patron by pid
    * @param pid - string : the patron pid
-   * @return Observable on patron metadata.
+   * @return Observable on patron metadata, failing with the HTTP error response.
    */
   getPatronByPid(pid: string): Observable<any> {
-    return this.recordService.getRecord('patrons', pid).pipe(map((data: any) => data.metadata));
+    return this.httpClient
+      .get(`${this.apiService.getEndpointByType('patrons', true)}/${pid}`)
+      .pipe(map((data: any) => data.metadata));
   }
 
   /**
