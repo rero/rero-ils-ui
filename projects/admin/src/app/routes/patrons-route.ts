@@ -176,6 +176,15 @@ class PatronsRoute extends BaseRoute implements RouteDataTypesInterface {
         ],
         showFacetsIfNoResults: true,
       },
+      // Required for saving templates in the patron editor
+      {
+        key: 'templates',
+        preCreateRecord: (data) => this.addDefaultValuesForTemplate(data),
+        redirectUrl: (record: RecordData) => {
+          return this.redirectUrl(record.metadata, '/records/templates/detail');
+        },
+        hideInTabs: true,
+      },
     ];
   }
 
