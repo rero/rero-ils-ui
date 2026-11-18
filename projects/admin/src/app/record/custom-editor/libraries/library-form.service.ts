@@ -292,7 +292,7 @@ export class LibraryFormService {
       email: ['', Validators.email],
     };
     if ([NotificationType.AVAILABILITY].includes(settingType)) {
-      model.delay = ['', Validators.max(720)];
+      model.delay = [0, Validators.max(720)];
     }
     return this.fb.group(model);
   }
