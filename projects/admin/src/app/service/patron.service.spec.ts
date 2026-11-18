@@ -62,8 +62,9 @@ describe('PatronService', () => {
 
   it('should return a patron by its pid', () => {
     const patron = { ...testPatron };
-    recordServiceSpy.getRecord.mockReturnValue(of(patron));
+    httpClientSpy.get.mockReturnValue(of(patron));
     service.getPatronByPid('1').subscribe((result: any) => expect(result).toEqual(patron.metadata));
+    expect(httpClientSpy.get).toHaveBeenCalledWith('/api//1');
   });
 
   it('should return a list of items for a patron', () => {

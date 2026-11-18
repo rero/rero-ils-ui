@@ -47,23 +47,14 @@ SPDX-License-Identifier: AGPL-3.0-or-later
         </div>
       }
       @if (event.operator) {
-        @if (event.operator.pid | getRecord: 'patrons' | async; as operator) {
+        @let operatorName = event.operator.pid | patronName | async;
+        @if (operatorName !== null) {
           <div class="ui:grid ui:grid-cols-12 ui:gap-4">
             <div class="ui:col-span-4">
               <i class="fa-solid fa-user"></i>&nbsp;
               {{ 'Operator' | translate }}
             </div>
-            <div class="ui:col-span-8">
-              @if ($any(operator).metadata.last_name) {
-                {{ $any(operator).metadata.last_name }}
-              }
-              @if ($any(operator).metadata.last_name && $any(operator).metadata.first_name) {
-                ,
-              }
-              @if ($any(operator).metadata.first_name) {
-                {{ $any(operator).metadata.first_name }}
-              }
-            </div>
+            <div class="ui:col-span-8">{{ operatorName || ('Unknown' | translate) }}</div>
           </div>
         }
       }

@@ -3,6 +3,7 @@
 import { AsyncPipe, CurrencyPipe, NgClass } from '@angular/common';
 import { Component, inject, input } from '@angular/core';
 import { PatronTransactionEventType } from '@app/admin/classes/patron-transaction';
+import { PatronNamePipe } from '@app/admin/pipe/patron-name.pipe';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { Bind } from '@openng/optimus-ui/bind';
 import { Tag } from '@openng/optimus-ui/tag';
@@ -13,7 +14,18 @@ import { AppStore } from '@rero/shared';
 @Component({
   selector: 'admin-patron-transaction-history',
   templateUrl: './patron-transaction-history.component.html',
-  imports: [Bind, Timeline, NgClass, Tag, AsyncPipe, CurrencyPipe, DateTranslatePipe, GetRecordPipe, TranslatePipe],
+  imports: [
+    Bind,
+    Timeline,
+    NgClass,
+    Tag,
+    AsyncPipe,
+    CurrencyPipe,
+    DateTranslatePipe,
+    GetRecordPipe,
+    PatronNamePipe,
+    TranslatePipe,
+  ],
 })
 export class PatronTransactionHistoryComponent {
   private translateService: TranslateService = inject(TranslateService);

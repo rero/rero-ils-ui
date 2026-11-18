@@ -1,9 +1,9 @@
 // SPDX-FileCopyrightText: Fondation RERO+
 // SPDX-FileCopyrightText: UCLouvain
 // SPDX-License-Identifier: AGPL-3.0-or-later
+import { HttpErrorResponse } from '@angular/common/http';
 import { inject, Pipe, PipeTransform } from '@angular/core';
-import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { catchError, map, Observable, of, throwError } from 'rxjs';
 
 import { PatronService } from '../service/patron.service';
 import { formatPatronName } from '../utils/patron.utils';
@@ -15,9 +15,12 @@ export class PatronNamePipe implements PipeTransform {
   /**
    * Build the usage name for a patron based on its PID
    * @param patronPid - string: the patron pid
-   * @returns an observable returning the patron name as string if patron exists.
+   * @returns an observable returning the patron name, or an empty string if the patron does not exist anymore.
    */
-  transform(patronPid: string): Observable<undefined | string> {
-    return this.patronService.getPatronByPid(patronPid).pipe(map((metadata: any) => formatPatronName(metadata)));
+  transform(patronPid: string): Observable<string> {
+    return this.patronService.getPatronByPid(patronPid).pipe(
+      map((metadata: any) => formatPatronName(metadata)),
+      catchError((error: HttpErrorResponse) => ([404, 410].includes(error.status) ? of('') : throwError(() => error))),
+    );
   }
 }
