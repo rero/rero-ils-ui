@@ -334,6 +334,11 @@ export class LibraryComponent extends AbstractUnsavedChangesComponent {
     formValues.notification_settings = formValues.notification_settings.filter(
       (element: { email: string }) => element.email !== '',
     );
+    formValues.notification_settings.forEach((setting: { delay?: number | null }) => {
+      if (setting.delay === null) {
+        setting.delay = 0;
+      }
+    });
     formValues.acquisition_settings = removeEmptyValues(formValues.acquisition_settings);
     formValues.serial_acquisition_settings = removeEmptyValues(formValues.serial_acquisition_settings);
   }
