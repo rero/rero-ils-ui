@@ -70,8 +70,8 @@ export class CheckinComponent {
     this.searchInputDisabled.set(true);
     this.itemsService.checkin(itemBarcode, this.appStore.currentLibraryPid()).subscribe({
       next: (item) => {
-        // TODO: remove this when policy will be in place
-        if (item === null || item.location.organisation.pid !== this.appStore.currentOrganisationPid()) {
+        // The service maps a 404 response to null.
+        if (item === null) {
           this.messageService.add({
             severity: 'error',
             summary: this.translate.instant('Checkin'),
@@ -210,12 +210,12 @@ export class CheckinComponent {
    */
   getPatronOrItem(barcode: string) {
     this.item = undefined;
-    const query = `patron.barcode:${barcode} AND organisation.pid:${this.appStore.currentOrganisationPid()}`;
+    const organisationQuery = `organisation.pid:${this.appStore.currentOrganisationPid()}`;
     const patronQuery = this.recordService
-      .getRecords('patrons', { query, page: 1, itemsPerPage: 1 })
+      .getRecords('patrons', { query: `patron.barcode:${barcode} AND ${organisationQuery}`, page: 1, itemsPerPage: 1 })
       .pipe(map((result: any) => result.hits));
     const itemQuery = this.recordService
-      .getRecords('items', { query: `barcode:${barcode}`, page: 1, itemsPerPage: 1 })
+      .getRecords('items', { query: `barcode:${barcode} AND ${organisationQuery}`, page: 1, itemsPerPage: 1 })
       .pipe(map((result: any) => result.hits));
     forkJoin([patronQuery, itemQuery]).subscribe({
       next: ([patron, item]: any[]) => {
@@ -223,7 +223,7 @@ export class CheckinComponent {
           this.messageService.add({
             severity: 'warn',
             summary: this.translate.instant('Checkin'),
-            detail: this.translate.instant('Patron not found!'),
+            detail: this.translate.instant('Item or patron not found!'),
             life: CONFIG.MESSAGE_LIFE,
           });
         }
