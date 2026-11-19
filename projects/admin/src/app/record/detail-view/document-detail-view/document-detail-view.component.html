@@ -18,7 +18,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
     <div class="ui:grow ui:flex ui:flex-col ui:gap-1">
       <!-- TITLE -->
       @if (record().metadata.title && record().metadata.title | mainTitle; as title) {
-        <h1 id="doc-title">
+        <h1>
           <ng-core-read-more
             [text]="title"
             [unit]="'char'"
@@ -30,8 +30,8 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
       <!-- TITLE ALTERNATIVE GRAPHICS -->
       @if (record().metadata.ui_title_altgr) {
-        @for (altgr_title of $any(record()).metadata.ui_title_altgr; track $index; let i = $index) {
-          <h3 id="{{ 'doc-altgr-title-' + i }}">{{ altgr_title }}</h3>
+        @for (altgr_title of $any(record()).metadata.ui_title_altgr; track $index) {
+          <h3>{{ altgr_title }}</h3>
         }
       }
 
@@ -58,19 +58,19 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
       <!-- EXTENT-->
       @if (record().metadata.extent) {
-        <div id="doc-extent">
+        <div>
           {{ record().metadata.extent }}
         </div>
       }
 
       <!-- DURATION -->
       @if (record().metadata.duration && $any(record()).metadata.duration.length > 0) {
-        <div id="doc-duration">{{ 'Duration' | translate }}: {{ $any(record()).metadata.duration.join(', ') }}</div>
+        <div>{{ 'Duration' | translate }}: {{ $any(record()).metadata.duration.join(', ') }}</div>
       }
 
       <!-- EDITION STATEMENT -->
       @if (record().metadata.editionStatement) {
-        <div id="doc-edition-statement">
+        <div>
           <ul class="ui:list-none">
             @for (edition of $any(record()).metadata.editionStatement; track $index) {
               <li>{{ edition._text[0].value }}</li>
@@ -81,7 +81,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
       <!-- FREQUENCY -->
       @if (record().metadata.frequency) {
-        <div id="doc-frequency">
+        <div>
           <b>{{ 'Frequency' | translate }}</b>:
           @for (freq of $any(record()).metadata.frequency; track $index; let isLast = $last) {
             {{ freq.label }}
