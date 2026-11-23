@@ -1,7 +1,7 @@
 // SPDX-FileCopyrightText: Fondation RERO+
 // SPDX-FileCopyrightText: UCLouvain
 // SPDX-License-Identifier: AGPL-3.0-or-later
-import { NgClass, NgTemplateOutlet, TitleCasePipe } from '@angular/common';
+import { Location, NgClass, NgTemplateOutlet, TitleCasePipe } from '@angular/common';
 import { Component, computed, effect, inject, signal } from '@angular/core';
 import { AsyncValidatorFn, FormsModule, ReactiveFormsModule, UntypedFormArray, UntypedFormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -31,6 +31,7 @@ import {
   cleanDictKeys,
   CONFIG,
   RecordService,
+  RecordUiService,
   removeEmptyValues,
   UniqueValidator,
   UpperCaseFirstPipe,
@@ -93,6 +94,8 @@ export class LibraryComponent extends AbstractUnsavedChangesComponent {
   protected readonly libraryStore = inject(LibraryStore);
   private route: ActivatedRoute = inject(ActivatedRoute);
   private router: Router = inject(Router);
+  private location: Location = inject(Location);
+  private recordUiService: RecordUiService = inject(RecordUiService);
   private appStore = inject(AppStore);
   private apiService: ApiService = inject(ApiService);
   private translateService: TranslateService = inject(TranslateService);
@@ -251,14 +254,14 @@ export class LibraryComponent extends AbstractUnsavedChangesComponent {
         .update('libraries', library.pid, cleanDictKeys(library as any), this.libraryStore.currentLibraryETag())
         .pipe(finalize(() => (this.isSaving = false)))
         .subscribe({
-          next: () => {
+          next: (record: any) => {
             this.messageService.add({
               severity: 'success',
               summary: this.translateService.instant('libraries'),
               detail: this.translateService.instant('Record Updated!'),
               life: CONFIG.MESSAGE_LIFE,
             });
-            this.router.navigate(['records', 'libraries', 'detail', library.pid]);
+            this.recordUiService.redirectAfterSave(library.pid!, record, null, 'update', this.route);
           },
           error: (error) => {
             this.messageService.add(
@@ -297,7 +300,7 @@ export class LibraryComponent extends AbstractUnsavedChangesComponent {
               detail: this.translateService.instant('Record created!'),
               life: CONFIG.MESSAGE_LIFE,
             });
-            this.router.navigate(['records', 'libraries', 'detail', record.metadata.pid]);
+            this.recordUiService.redirectAfterSave(record.metadata.pid, record, null, 'create', this.route);
           },
           error: (error) => {
             this.messageService.add({
@@ -314,7 +317,12 @@ export class LibraryComponent extends AbstractUnsavedChangesComponent {
 
   onCancel() {
     this.canDeactivate = true;
-    this.router.navigate(['/', 'records', 'libraries', 'detail', this.libraryStore.library()!.pid]);
+    if (this.router.lastSuccessfulNavigation()?.previousNavigation) {
+      this.location.back();
+    } else {
+      // Opened from a link: there is no previous page to go back to.
+      this.router.navigate(['/', 'records', 'libraries'], { replaceUrl: true });
+    }
   }
 
   addTime(dayIndex: number): void {
