@@ -1,5 +1,6 @@
 // SPDX-FileCopyrightText: Fondation RERO+
 // SPDX-License-Identifier: AGPL-3.0-or-later
+import { Location } from '@angular/common';
 import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FormsModule, ReactiveFormsModule, UntypedFormGroup } from '@angular/forms';
@@ -25,6 +26,7 @@ import { OrderReceiptForm } from './order-receipt-form';
 export class OrderReceiptViewComponent implements OnInit {
   private route: ActivatedRoute = inject(ActivatedRoute);
   private router: Router = inject(Router);
+  private location: Location = inject(Location);
   private orderReceipt: OrderReceipt = inject(OrderReceipt);
   private acqReceiptApiService: AcqReceiptApiService = inject(AcqReceiptApiService);
   private translateService: TranslateService = inject(TranslateService);
@@ -167,10 +169,16 @@ export class OrderReceiptViewComponent implements OnInit {
     }
   }
 
-  /** Redirect to order detail view */
+  /** Redirect to order detail view, without keeping this form in the history */
   redirectToOrder(): void {
+    // The form is opened from the order: go back to it.
+    if (this.router.lastSuccessfulNavigation()?.previousNavigation) {
+      this.location.back();
+      return;
+    }
     this.router.navigate(['/acquisition', 'records', 'acq_orders', 'detail', this.orderPid()], {
       queryParams: { tab: 'reception' },
+      replaceUrl: true,
     });
   }
 }
