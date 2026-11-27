@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 import { CurrencyPipe } from '@angular/common';
 import { Component, inject, OnInit } from '@angular/core';
-import { FormsModule, ReactiveFormsModule, UntypedFormGroup, ValidationErrors } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule, UntypedFormGroup } from '@angular/forms';
 import { PatronTransactionService } from '@app/admin/circulation/services/patron-transaction.service';
 import { PatronTransaction } from '@app/admin/classes/patron-transaction';
 import { FormlyFieldConfig, FormlyModule } from '@ngx-formly/core';
@@ -98,27 +98,13 @@ export class PatronTransactionEventFormComponent implements OnInit {
       props: {
         label: this.translateService.instant('Amount'),
         type: 'number',
-        min: 0,
+        min: 0.01,
         max: this._computeTotalAmount(),
-        step: 0.1,
-        pattern: '^\\d*(\\.\\d{0,2})?$',
+        step: 0.01,
         required: true,
         addonLeft: [
           Tools.currencySymbol(this.translateService.getCurrentLang(), this.appStore.organisation().default_currency),
         ],
-      },
-      validation: {
-        messages: {
-          pattern: (_error: ValidationErrors, _field: FormlyFieldConfig) => `Only 2 decimals are allowed`,
-        },
-      },
-      validators: {
-        min: {
-          // As we use 'step' property, we need to specify 'min' property to '0' for a nice value interval. But
-          // with this special validator, we disallow to place a payment with a 0 amount
-          expression: (c) => c.value > 0,
-          message: (_error) => this.translateService.instant('Must be greater than 0'),
-        },
       },
     };
   }
